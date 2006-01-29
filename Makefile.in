@@ -1,0 +1,28 @@
+default:	server_ client_
+server_:		
+	$(MAKE) -C server
+client_:		
+	$(MAKE) -C client 
+example_:
+	$(MAKE) -C example
+apps_:
+	$(MAKE) -C apps 
+all: server_ client_ example_ apps_
+clean:
+	$(MAKE) -C server clean
+	$(MAKE) -C client clean
+	$(MAKE) -C example clean
+	$(MAKE) -C apps clean
+mostlyclean: clean
+distclean: clean
+cvsclean: distclean
+	rm Makefile */Makefile */*/Makefile config.h
+	
+install:
+	$(MAKE) -C server install
+	$(MAKE) -C client install
+	rm config.cache
+uninstall: 
+	$(MAKE) -C server uninstall
+	$(MAKE) -C client uninstall
+	$(MAKE) -C example uninstall

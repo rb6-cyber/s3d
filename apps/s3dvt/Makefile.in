@@ -1,0 +1,26 @@
+SOURCES=terminal.c main.c
+LIBS=-ls3d
+BIN=s3dvt
+OBJS=$(SOURCES:.c=.o)
+CC=gcc
+LD=gcc
+PREFIX=@PREFIX@
+CFLAGS=-pedantic -Wall -pg -ggdb -I$(PREFIX)/include/s3d/
+LDFLAGS=-ggdb 
+INSTALL_PROGRAM= /usr/bin/install -c -s -m 755
+.SUFFIXES: .c
+default:	all
+all:	$(BIN) 
+$(BIN): $(OBJS)
+	$(LD) $(OBJS) $(LIBS) -pthread -o $@
+.c.o:
+	gcc $(CFLAGS) -c $<
+clean:
+	rm -rf $(OBJS) $(BIN)
+depend:
+	makedepend $(CFLAGS) $(SOURCES)
+install:
+	$(INSTALL_PROGRAM) $(BIN) $(PREFIX)/bin
+uninstall:
+	rm -f $(PREFIX)/bin/$(BIN)
+	

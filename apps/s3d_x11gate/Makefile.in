@@ -1,0 +1,28 @@
+BIN=s3d_x11gate
+SOURCES=s3d_x11gate.c
+OBJS=$(SOURCES:.c=.o)
+LIBS=-ls3d -L/usr/X11R6/lib -L/usr/lib -lX11 -lXtst
+CC=gcc
+LD=gcc
+PREFIX=@PREFIX@
+CFLAGS=-pedantic -Wall -pg -ggdb -I$(PREFIX)/include/s3d/
+LDFLAGS=-ggdb -pg
+INSTALL_PROGRAM= /usr/bin/install -c -s -m 755
+.SUFFIXES: .c
+default:	all
+all:	$(BIN)
+s3d_x11gate:	s3d_x11gate.o
+	$(LD) $@.o $(LDFLAGS) $(LIBS)  -o $@
+.c.o:
+	gcc $(CFLAGS) -c $<
+clean:
+	rm -rf $(OBJS) $(BIN)
+depend:
+	makedepend $(CFLAGS) $(SOURCES)
+profile:
+	gprof $(BIN) gmon.out
+install:
+	$(INSTALL_PROGRAM) s3d_x11gate $(PREFIX)/bin
+uninstall:
+	rm -f $(PREFIX)/bin/s3_x11gate
+	

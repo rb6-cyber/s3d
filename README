@@ -1,0 +1,83 @@
+Well ... Hello :)
+this should give you a little starting point in my s3d project.
+
+1.REASONS
+---------
+
+There are several reasons for this project, one of the most influencing
+ones is boredem. i'm bored and blessed with too much time, and my gpu is bored
+as well with all this computing power which remains unused on common
+desktops.
+
+I think a 3d desktop would/could be a very interesting thing (when it works :),
+since it gives so many new possibility's in GUI design (or possibilitys in 
+confusing users, depends on readers view). 
+there are/were other projects like 3dwm which died somehow (3dwm.org is not 
+accessable, for me), and I did not understand it's system thou ... looking 
+glass from sun seems to be very interesting too, but I haven't tried it out 
+yet ... so my ignorance and stupidity were reasons for this project as well :)
+
+2.INSTALL
+---------
+
+$ ./configure
+$ make
+$ make install 
+
+in the root directory will compile server, client-lib and the examples
+for you. you might want to change server/config.h before compiling thou ...
+there is not too much to configure yet anyways :)
+
+after that, go
+
+$ cd server
+$ ./s3d
+
+fire up the server. if you're lucky, a window appears.now the s3d is listening 
+on port 6066. 
+now it's time to test some things. on another terminal:
+
+$ cd examples
+$ ./3dsloader miu3ds/miu.3ds
+
+now there should appear a rotating cat. you can move with with the middle 
+mouse-button pushed.
+now you can try the MCP, which is something like a windowmanager in X:
+
+$ cd examples
+$ ./dot_mcp
+
+now you should get some fancy window decorations :D
+there are a few other examples, just play around
+
+3. WARRANTY
+-----------
+
+I've written this program to satisfy myself (in some way), so please don't
+assume that it could have ANY USEFULNESS. I just published it because I 
+thought someone might find it interesting, but there is no warranty for
+anything. if you find bugs or you have ideas what you would like to see
+implemented, or patches, please drop me a line.
+
+4. LICENSE
+----------
+
+All those things are published under the GPLv2 or later at your option. 
+The Library is under ther LGPL (Lesser or Library GPL), so you can 
+also write close-sourced thing which links to the library (if you 
+really have to ...).
+if I'm mistaken in any ownership-concerns, please tell me and don't be 
+too mad at me, as I have had no idea of licensing at all.
+
+5. DOCUMENTATION
+----------------
+
+please see the "Documentation" folder
+
+6. CONTACT
+----------
+
+MAIL: 	dotslash@packetmixer.de
+IRC: 	#s3d @ irc.freenode.org
+
+Any Feedback is welcome!!

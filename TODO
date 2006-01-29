@@ -1,0 +1,18 @@
+configure: 
+	prefix
+	honor LD_LIBRAR_PATH
+	make install PREFIX=/LOCAL/...
+		
+client(portability?!):
+	shmat() return (char *) -1 or NULL?! data_ctos/data_stoc should
+	really not be 0x0
+	check 3dsreader binary stuff, gints/gintl, maybe there is some clean
+	function ....
+
+general:
+	start mcp with s3d
+olsrs3d:
+	delete old/not needed vertices
+	rotate text in cam-direction
+	search for vertices (text input?)
+	show link times

@@ -1,0 +1,371 @@
+2005-22-12	Simon Wunderlich - <dotslash@packetmixer.de>
+	- fixed: server did not unfocus when app quits ...
+	- mcp got some nice rotation mode
+2005-21-12	Simon Wunderlich - <dotslash@packetmixer.de>
+	- fixed some focusing/camera update issues
+	- perfomance improvement in olsrs3d
+2005-16-12	Simon Wunderlich - <dotslash@packetmixer.de>
+	- telling the mcp/programs aspect ratio of the cam
+	- new layout in the mcp.
+2005-12-12	Simon Wunderlich - <dotslash@packetmixer.de>
+	- tuning on the configure/make system
+	- added glutInit(), to make glut happy
+2005-05-12	Simon Wunderlich - <dotslash@packetmixer.de>
+	- some more work on the olsr visualizer, testing with 
+	  more graphs, hope it won't explode anymore ;)
+2005-27-11	Simon Wunderlich - <dotslash@packetmixer.de>
+	- finished olsrs3d, the olsr-visualizer
+2005-26-11	Simon Wunderlich - <dotslash@packetmixer.de>
+	- removed some race condition bug in the server
+2005-25-11	Simon Wunderlich - <dotslash@packetmixer.de>
+	- starting olsrs3d
+2005-24-10	Simon Wunderlich - <dotslash@packetmixer.de>
+	- some more bugfixes in the autoconf-script.
+2005-23-10	Simon Wunderlich - <dotslash@packetmixer.de>
+	- autoconf script nearly completed, it only compiled
+	  the apps you have the right libraries available.
+2005-14-10	Simon Wunderlich - <dotslash@packetmixer.de>
+	- so long no update ... project is kind of sleeping :(
+	- autoconf configure script started. Now you can check
+	  for your libs before compiling.
+2005-10-7	Simon Wunderlich - <dotslash@packetmixer.de>
+	- filebrowser is now some cake with pies to select :)
+2005-04-7	Simon Wunderlich - <dotslash@packetmixer.de>
+	- massive cleanup in s3dvt, removing nextchar in 
+	  linestructures-weirdness, just having cx/cy
+	  as cursor positions.
+2005-03-7	Simon Wunderlich - <dotslash@packetmixer.de>
+	- fixed backspace and startup race-condition in 
+	  s3dvt
+	- fixed some CR/LF confusion in s3dvt
+2005-27-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- logical and won't work on OF_CAM as it has 2 bits
+	  set - fixed some code handling this.
+2005-26-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- forgot to check if link-request wants to link on
+	  itself
+	- internal cleanup, like renaming obj_link_remove
+	  into obj_unlink in the server
+	- removed some bugs which caused a segfault when
+	  trying to pep/delete something which is not 
+	  present.
+	- mcp does not use ring-structure anymore, places
+	  apps at the bottom of the screen.
+2005-25-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- added ignore-callback into client-lib ... 
+	  keeps the event-stack clean.
+	- some standard-signal-handlers for sigint/sigterm
+	  added into s3d_init()
+2005-22-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- some fixing in the clones-radius calculations
+	- system-apps are now properly transfered
+2005-21-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- transferring system-positions (like cams etc)
+	  to app-space and reporting it. this is useful
+	  for HUD-like things in apps. (e.g. linking things
+	  to the cam).
+	- some fixes with clone/system confusion
+	- somehow I passed the 10.000-line-mark O_o
+2005-20-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- mcp-objects will be added when app logs in
+	- no static cam-object anymore
+	- each app get it's copy of system objects
+2005-19-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- scale now only has one parameter for uniform scale,
+	  no x/y/z-scale anymore ... it's too much trouble for
+	  me.
+2005-16-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- fixed camera navigation
+	- put some rounding error-workaround into myInvert(),
+	  no more flickering in the camera
+2005-15-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- rotation order changed, now this order: y,x,z
+	  this would logically be the earth position order:
+	  placing at longitude/latitude(y/x), and spin yourself
+	  at this place (z) :)
+2005-14-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- linking to camera works now ... somehow :)
+	- shm does not segfault on after quit-signal anymore
+	- added s3d_object_info, to replace the mcp_* things
+	  later
+	- camera info is now transferred to client
+	- some minor fixes
+2005-13-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- added some flags O_o
+2005-7-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- shm checks for connection after some idle time
+	- removed stupid usleep in shm_writen/shm_readn
+	  which is now only called after buffer was full
+2005-4-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- matrix inverse works now.
+2005-3-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- started matrix inverse (the buggy base)
+2005-29-5	Simon Wunderlich - <dotslash@packetmixer.de>
+	- changed matrix-type name from t_mat to t_mtrx so
+	  it can't be confused with struct t_mat
+	- started cull.c, should speed things up by culling
+2005-26-5	Simon Wunderlich - <dotslash@packetmixer.de>
+	- s3d_x11gate now sends key-events to the server, 
+	  thou special keys are not properly supported yet.
+	  support for different depths added.
+2005-25-5	Simon Wunderlich - <dotslash@packetmixer.de>
+	- calibrated card positions of s3dgps
+2005-22-5	Simon Wunderlich - <dotslash@packetmixer.de>
+	- seperated the mcp-menu into s3d_appstarter.c
+	- changed the mcp-display structure to a ring/planet
+	  like one
+2005-16-5	Simon Wunderlich - <dotslash@packetmixer.de>
+	- fixed a bug in matrix.c which was responsible for 
+	  bad calculation of the z-axis in object radius
+	- wiped obsolete find_cloneparent() and 
+	  get_obj_by_oid() in server
+2005-15-5	Simon Wunderlich - <dotslash@packetmixer.de>
+	- s3dgps now draws gpsdrive-downloaded maps and
+	  marks position acquired from gpsd
+2005-14-5	Simon Wunderlich - <dotslash@packetmixer.de>
+	- lots of cleanup
+	- passing struct t_process pointers instead of pids
+	  internally
+	- fixed bad order in transformations in the server,
+	  it  first rotated, then scaled
+2005-11-5	Simon Wunderlich - <dotslash@packetmixer.de>
+	- fixed some bugs with new process managment and mcp
+	- focus_pid becomes focus_oid
+	- shm works ;)
+2005-8-5	Simon Wunderlich - <dotslash@packetmixer.de>
+	- reimplementation of process-managment
+	- added apps/ directory for some programs which
+	  are (/supposed to be) more than plain examples
+	- started s3dgps.c
+2005-6-5	Simon Wunderlich - <dotslash@packetmixer.de>
+	- client can now connect to shm by url
+2005-5-5	Simon Wunderlich - <dotslash@packetmixer.de>
+	- fixed server picking code
+	- fixed Makefile
+	- implemented shm.c and shm_ringbuffer.c in both
+	  client and server, phew ...
+	- server: created tcp.c, removing tcp-special things 
+	  from network.c to make things generic for upcoming 
+	  shm and other ways to communicate.
+	- server: cleaned up prot_com_in() and prot_com_out()
+2005-30-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- put some (u)intXX_t's into the client code
+2005-29-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- added a running cat (katze.c) in examples
+	- renamed s3d_clone_object to s3d_clone and
+	  s3d_change_clone_target to s3d_clone_target
+2005-28-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- now checking FD_SETSIZE so we don't overflow
+	- snowman is now spinning ;)
+	- all files compile with -pedantic now (removed
+	  C++ style // comments and such)
+	- removed bad signal handling which only worked
+	  with -O2
+2005-26-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- some cleanup in server/object.c
+	- scaled clone objects are properly handled now
+	- introducing OF_CLONE_SRC and OF_LINK_SRC
+	- using fstat() to get filesize
+2005-22-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- added snowman.c in examples
+2005-21-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- s3d_x11gate only updating changed scanlines
+	- cleaned up the typemess in server. objects are now
+	  declared as uint32_t there.
+2005-20-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- s3d_x11gate added, can display some x11-screen into
+	  an s3d-texture
+2005-19-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- fixed some bug in texture loading
+	- mplayer vo-plugin is working ;)
+2005-17-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- repaired texture functions so any texture size
+	  can now be applied.
+	- added make install/uninstall
+	- started some simple mplayer vo plugin
+	- added s3d_pep_texture() in client
+2005-16-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- remove -O3 as it breaks on functions with 
+	  many arguments
+	- added texture handling functions for both client
+	  and server
+	- added texturetest.c - textures finally work!
+	- renamed s3d_push_polygon_array to s3d_push_polygons
+	  and other *_array* functions like that
+2005-13-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- added full load/pepping for texture coords, normals
+	  and materials in the server.
+	- repaired some things in the s3dvt
+2005-9-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- no obj_size_update() in obj_push_vertex, using
+	  "realtime updating" for performance.
+2005-6-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- app radius and object radius is now recalculated 
+	  instantly using obj_size_update(), obj_pos_update()
+	  and obj_check_biggest_obj()
+	- NULL-pointers at the end of the object stack will
+	  be freed now
+	- using macro obj_valid() to obtain object (and check)
+	- lots of bugfixing
+2005-5-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- checking for circular links when calling obj_link()
+	- added obj_pos_update()
+	- no clone-forwarding now! it's only confusing
+	  anyways ...
+	- link/clone references of mcp-objects get handled
+	  when a process disappears
+2005-4-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- some changes in obj_clone_change and others
+	  so clone chains can't be build anymore.
+2005-2-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- started some simple configure script
+2005-1-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- some optimizations in s3dvt.c
+	- s3d gives focus to latest entered program if there
+	  is no mcp
+2005-25-3	Simon Wunderlich - <dotslash@packetmixer.de>
+	- mcp_focus gave focus to mcp-object, not pid - 
+	  fixed.
+2005-24-3	Simon Wunderlich - <dotslash@packetmixer.de>
+	- checking clone container for unallowed,
+	  e.g. virtual objects before cloning
+	- fixed s3dvt.c for pipe mode, but it does not
+	  really satisfies (ssh does not work, weird
+	  behavior).
+	- pipe mode will only work as fallback now.
+	- fixed minor bugs in dot_mcp.c. added a
+	  a transparent sphere around the objects
+2005-23-3	Simon Wunderlich - <dotslash@packetmixer.de>
+	- client/object_queue.c created. object adding
+	  is now cached and MUCH faster!
+	- remove clone call. it works now with 
+	  changing clone target.
+2005-19-3	Simon Wunderlich - <dotslash@packetmixer.de>
+	- changed example/s3dvt.c to work with pipes instead
+	  of tty's
+2005-18-3	Simon Wunderlich - <dotslash@packetmixer.de>
+	- server/object.c: can't upload data to OF_VIRTUAL-
+	  objects now.
+2005-17-3	Simon Wunderlich - <dotslash@packetmixer.de>
+	- fixed some bug in freetype.c (char overflowing)
+2005-16-3	Simon Wunderlich - <dotslash@packetmixer.de>
+	- fixed some error in matrix.c, radius is now
+	  calculated correctly for app objects (I hope)
+	- s3d_pep_material[_a]() added
+2005-13-3	Simon Wunderlich - <dotslash@packetmixer.de>
+	- added alpha transparency
+	- using into_position into render_by_mcp() now.
+2005-12-3	Simon Wunderlich - <dotslash@packetmixer.de>
+	- obj_load_tex() written
+	- added a simple menu in dot_mcp.c
+2005-8-3	Simon Wunderlich - <dotslash@packetmixer.de>
+	- now telling mcp about resizing (buggy)
+	- some more caching in size calculation
+	- filebrowser minor things
+	- mcp updates apps now.
+2005-1-3	Simon Wunderlich - <dotslash@packetmixer.de>
+	- started the Documentation.
+2005-28-2	Simon Wunderlich - <dotslash@packetmixer.de>
+	- now caching tesselated glyphs (but seems not to be
+	  a big performance boost ...)
+2005-27-2	Simon Wunderlich - <dotslash@packetmixer.de>
+	- prepared proto.h for textures
+	- removed some bug which deleted display lists of 
+		clone parents if the clone is deleted
+	- some more work on the filebrowser
+2005-17-2	Simon Wunderlich - <dotslash@packetmixer.de>
+	- introducing s3d_mainloop, changing all examples for
+		new api ...
+	- deleted example/picktest.c (it's useless)
+	- added client/config.h
+2005-16-2	Simon Wunderlich - <dotslash@packetmixer.de>
+	- made local cvs, including proto.h with -I compiler
+	  option now instead of symlinking it.
+2005-14-2	Simon Wunderlich - <dotslash@packetmixer.de>
+	- added libfontconfig support for fontselect.c
+2005-12-2	Simon Wunderlich - <dotslash@packetmixer.de>
+	- removed some stupid bug in event.c :)
+	- fontselect.c for selecting the right font
+	- implemented smoothing groups for 3dsreader.c
+	- some more malloc()s and free()s in client removed
+	- renamed s3d_add_* to s3d_push_* as / s3d_del_*
+		s3d_pop_* to match protocol better.
+	- added S3D_P_C_PEP_POLY_NORMAL to protocol,server 
+	 	client
+2005-11-2	Simon Wunderlich - <dotslash@packetmixer.de>
+	- callback system implemented in client
+2005-10-2	Simon Wunderlich - <dotslash@packetmixer.de>
+	- finished obj_get_maximum() for clones and links
+		and applications.
+	- added find_cloneparent() 
+	- added matrix.c
+2005-9-2	Simon Wunderlich - <dotslash@packetmixer.de>	
+	- made SIGIO optional, fixed G_GLUT/G_SDL config options
+	- attempt to make code a little bit more win32-friendly
+2005-8-2	Simon Wunderlich - <dotslash@packetmixer.de>	
+	- client shared lib is now compiling with -fPIC for x86_64
+2005-5-2	Simon Wunderlich - <dotslash@packetmixer.de>
+	- fixed some bug in (the bad) font selection code
+	- added get_radius() and sizing things to the protocol
+	- added get_maximum() to find size of an object
+	- normalizing has it's own function now, calc_normal()
+	- cleaned up obj_render() somehow
+2005-2-2	Simon Wunderlich - <dotslash@packetmixer.de>	
+	- remove static font paths.
+	- eliminated some bad malloc in proto.c :)
+*Release: 	s3d-0.0.2	(2005-1-30) 
+2005-1-30	Simon Wunderlich - <dotslash@packetmixer.de>	
+	- args are now removed after read by s3d_init()
+	- changed the s3d_init() call to use pointer
+	- removed a few examples which showed just nothing
+	- search ttf files over the Xfontpath now
+	- added clock.c
+	- some Makefile changes and server bugfixes
+	- client now listens to S3D-env again
+2005-1-28	Simon Wunderlich - <dotslash@packetmixer.de>		
+	- have a standard url to connect to (s3d://127.0.0.1:6066)
+*Release: 	s3d-0.0.1	(2005-1-27) 
+2005-1-27	Simon Wunderlich - <dotslash@packetmixer.de>
+	- dot_mcp close button works :D
+	- fixed picking problems
+	- some Makefile enhancements
+2005-1-22	Simon Wunderlich - <dotslash@packetmixer.de>
+	- removed funky debugging colors from freetype.c
+	- fixed drawing problems in s3dvt.c
+	- saving font file in memory for performance reasons
+	- icons in the mcp
+	- changed the link-loop in the right direction with a 
+		recursive solution
+2005-1-21	Simon Wunderlich - <dotslash@packetmixer.de>
+	- fixed some little picking glitch
+	- polygon packet fragmentation
+2005-1-12	Simon Wunderlich - <dotslash@packetmixer.de>
+	- client is now operating with sigio
+	- some advances in dot_mcp and minor fixes
+2005-1-8	Simon Wunderlich - <dotslash@packetmixer.de>
+	- merged headerfiles graphics.h, user.h into global.h
+	- masking flags private
+	- some cleanup in user.c, mousewheel can now be used, 
+	  using mouse-move-difference now.
+	- the camera is now an object
+	- implemented rotate and scale
+	- picking now goes throu render_mcp()
+2005-1-7	Simon Wunderlich - <dotslash@packetmixer.de>
+	- implemented mcp-focus, unlinking and changing targets for clones
+	- freetype fonts normalized to height 1
+2005-1-6	Simon Wunderlich - <dotslash@packetmixer.de>
+	- cleared some bad code, s3dvt works now 
+	- changed SIGIO so polling will only be called throu network_main(),
+		because things are not thread-safe now.
+2005-1-4	Simon Wunderlich - <dotslash@packetmixer.de>
+	- changed the malloc(), memcpy()-rest things to realloc()
+2005-1-3	Simon Wunderlich - <dotslash@packetmixer.de>
+	- changed network polling to SIGIO
+	- some minor cleanups
+2005-1-2	Simon Wunderlich - <dotslash@packetmixer.de>
+	- started changelog ;)
+	- finished basic truetype support
+	- s3dvt.c started
+	- some minor graphics optimizations
+	- added usleep() into 3dsloader.c
+	...

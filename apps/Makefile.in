@@ -1,0 +1,5 @@
+default:	all
+APPS=@APP_TARGETS@
+PREFIX=@PREFIX@
+all install uninstall clean: $(APPS)
+	(for i in $(APPS); do $(MAKE) -C $$i $@; done)

@@ -1,0 +1,11 @@
+server/cull.c
+	- culling code adapted from Ruud van Gaal
+client/freetype.c
+	- tesselation things come from the OpenGL redbook
+apps/s3dvt/s3dvt.c
+	- much of the code comes from glterm by <helly@gmx.net>
+example/miu3ds/*
+	- objects things come from yd
+
+	
+- some win32 addition come from rudi. <chru@hrz.tu-chemnitz.de>
