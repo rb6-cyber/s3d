@@ -3,6 +3,7 @@
 static int _s3d_tesssub(struct tessp_t *t, struct t_buf *b,int s);
 static int _s3d_addtri(struct tessp_t *t, struct t_buf *b,int p, int i, int n);
 
+
 static void tessdebug(struct tessp_t *t, struct t_buf *b)
 {
 	int i,n,p;
