@@ -63,7 +63,7 @@ implemented, or patches, please drop me a line.
 ----------
 
 All those things are published under the GPLv2 or later at your option. 
-The Library is under ther LGPL (Lesser or Library GPL), so you can 
+The Library is licensed under the GNU Lesser GPL (LGPL), so you can 
 also write close-sourced thing which links to the library (if you 
 really have to ...).
 if I'm mistaken in any ownership-concerns, please tell me and don't be 
