@@ -12,25 +12,37 @@ AC_PATH_XTRA
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS(fcntl.h sys/ioctl.h sys/time.h unistd.h)
-PREFIX=/usr/local
+
 WARNS=""
 MAKEF="Makefile client/Makefile server/Makefile"
+CFLAGS="$CFLAGS $X_CFLAGS"
 LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS"
+AC_ARG_ENABLE([devel], AC_HELP_STRING([--enable-devel],[Enable devel flags]), [
+DEVEL_CFLAGS="-ggdb -pg"
+DEVEL_LDFLAGS="-ggdb -pg"
+], [
+DEVEL_CFLAGS=
+DEVEL_LDFLAGS=
+])
 
+AC_SUBST(DEVEL_CFLAGS)
+AC_SUBST(DEVEL_LDFLAGS)
 dnl ##################################### SERVER #######################################
 AC_CHECK_LIB(m, main,,exit)
 AC_CHECK_LIB(GL, main,,exit)
-AC_CHECK_LIB(X11, main,,exit)
 AC_CHECK_LIB(glut, main, HAVE_glut="x")
-AC_CHECK_LIB(SDL, main, HAVE_SDL="x")
-if test x${HAVE_glut}${HAVE_SDL} == "x"; then
+SDL_VERSION=1.2.7
+AM_PATH_SDL($SDL_VERSION, [HAVE_SDL="x"], [])
+if test "x${HAVE_glut}${HAVE_SDL}" = "x"; then
 	AC_MSG_ERROR([No OpenGL Framework found. Try installing GLUT or SDL, or both])
 fi
-if test "${HAVE_SDL}" == "x"; then
-	LIBS="$LIBS `sdl-config --libs`"
+if test "${HAVE_SDL}" = "x"; then
+	LIBS="$LIBS $SDL_LIBS"
+	CFLAGS="$CFLAGS $SDL_CFLAGS"
 fi
-if test "${HAVE_glut}" == "x"; then
+if test "${HAVE_glut}" = "x"; then
 	LIBS="$LIBS -lglut"
+	# XXX: missing X11 stuff
 fi
 
 
@@ -40,24 +52,26 @@ AC_SUBST(SERVER_LIBS)
 
 dnl ##################################### CLIENT #######################################
 
-AC_CHECK_LIB(fontconfig, main,,exit)
-AC_CHECK_LIB(freetype, main, HAVE_FREETYPE="x",exit)
-FTCFLAGS=""
-if test "${HAVE_FREETYPE}" == "x"; then
-	LIBS="$LIBS \`freetype-config --libs\`"
-	FTCFLAGS='`freetype-config --cflags`'
-fi
-if test x${HAVE_glut} == "x"; then
+PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.3.0, [:], [AC_MSG_ERROR([Fuck, fontconfig missing])])
+PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.8.0, [:], [AC_MSG_ERROR([Fuck, freetype2 missing])])
+
+# XXX: use directly where needed
+LIBS="$LIBS $FREETYPE_LIBS"
+
+if test "x${HAVE_glut}" = "x"; then
     AC_MSG_ERROR([Sorry, we need glut for the client in for Glyph Tesselation ...])
 else
-    LIBS="$LIBS -lglut"
+    LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS -lglut" # XXX: check.
 fi
 CLIENT_LIBS=$LIBS
 LIBS=""
+FTCFLAGS=$FREETYPE_CFLAGS # XXX: subst everywhere
 AC_SUBST(CLIENT_LIBS)
 AC_SUBST(FTCFLAGS)
 
 dnl ##################################### EXAMPLES #####################################
+
+# XXX: make it optional. 
 
 AC_CHECK_LIB(s3d, main,HAVE_s3d="x")
 if test "${HAVE_s3d}" == "x"; then
@@ -69,6 +83,7 @@ if test "${HAVE_s3d}" == "x"; then
 dnl ##################################### APPLICATIONS #################################
 	MAKEF="$MAKEF apps/s3dvt/Makefile apps/olsrs3d/Makefile apps/Makefile"
 	APP_TARGETS="s3dvt olsrs3d"
+	
 	AC_CHECK_LIB(gps, main, HAVE_GPS="x")
 	if test "${HAVE_GPS}" == "x"; 
 	then
@@ -77,6 +92,7 @@ dnl ##################################### APPLICATIONS #########################
 	else 
 		WARNS="$WARNS ### Sorry, you lack the gps library to compile s3dgps ... \n"
 	fi 
+	
 	LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS"
 	AC_CHECK_LIB(Xtst, main, HAVE_Xtst="x")
 	if test "${HAVE_Xtst}" == "x"; 
@@ -92,7 +108,6 @@ else
 fi
 
 
-AC_SUBST(PREFIX)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -107,5 +122,7 @@ AC_CHECK_FUNCS(select socket strerror strtod strtol)
 
 AC_CONFIG_HEADER(config.h)
 AC_OUTPUT($MAKEF)
-echo -e $WARNS
+
+AC_MSG_WARN($WARNS)
+
 echo "now use 'make' to compile and 'make install' to install"

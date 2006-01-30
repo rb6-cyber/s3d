@@ -5,8 +5,8 @@ BINS=$(SOURCES:.c=)
 CC=gcc
 LD=gcc
 PREFIX=@PREFIX@
-CFLAGS=-pedantic -Wall -pg -ggdb -I$(PREFIX)/include/s3d/
-LDFLAGS=-ggdb -pg
+CFLAGS=-pedantic -Wall @DEVEL_CFLAGS@ -I$(PREFIX)/include/s3d/
+LDFLAGS=@DEVEL_LDFLAGS@
 LIBS=$(LDFLAGS) @EXAMPLE_LIBS@
 INSTALL_PROGRAM= /usr/bin/install -c -s -m 755
 .SUFFIXES: .c

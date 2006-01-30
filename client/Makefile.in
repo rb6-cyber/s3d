@@ -11,9 +11,10 @@ INSTALL_PROGRAM= /usr/bin/install -c -s -m 755
 INSTALL_DIR= /usr/bin/install -c -d -m 755
 INSTALL_DATA= /usr/bin/install -c -m 644
 PREFIX=@PREFIX@
-CFLAGS=@CFLAGS@ @DEFS@ @FTCFLAGS@ -Wall -ansi -pedantic -ggdb -pg -fPIC -I../server/
+CFLAGS=@CFLAGS@ @DEFS@ @FTCFLAGS@ -Wall -ansi -pedantic @DEVEL_CFLAGS@ -fPIC -I../server/
 
-LDFLAGS=@LDFLAGS@ -ggdb -pg
+LDFLAGS=@LDFLAGS@ @DEVEL_LDFLAGS@
+
 all:	$(LIB_STATIC) $(LIB_SHARED) 
 $(LIB_STATIC):	$(OBJS)
 	ar rc $@ $(OBJS)

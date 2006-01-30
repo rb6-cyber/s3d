@@ -5,8 +5,8 @@ LIBS=-ls3d -L/usr/X11R6/lib -L/usr/lib -lX11 -lXtst
 CC=gcc
 LD=gcc
 PREFIX=@PREFIX@
-CFLAGS=-pedantic -Wall -pg -ggdb -I$(PREFIX)/include/s3d/
-LDFLAGS=-ggdb -pg
+CFLAGS=-pedantic -Wall @DEVEL_CFLAGS@ -I$(PREFIX)/include/s3d/
+LDFLAGS=@DEVEL_LDFLAGS@
 INSTALL_PROGRAM= /usr/bin/install -c -s -m 755
 .SUFFIXES: .c
 default:	all

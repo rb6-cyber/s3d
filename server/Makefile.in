@@ -15,9 +15,9 @@ OBJS=$(SOURCES:.c=.o)
 
 CC=@CC@
 LD=@CC@
-#CFLAGS=-Wall -O2 -ggdb -pg -pedantic
-CFLAGS=@CFLAGS@ @DEFS@ -Wall -Wstrict-prototypes -pedantic -ggdb -pg 
-LDFLAGS=@LDFLAGS@ -ggdb -pg
+#CFLAGS=-Wall -O2 @DEVEL_CFLAGS@ -pedantic
+CFLAGS=@CFLAGS@ @DEFS@ -Wall -Wstrict-prototypes -pedantic @DEVEL_CFLAGS@ 
+LDFLAGS=@LDFLAGS@ @DEVEL_LDFLAGS@
 #.SUFFIXES: .c
 
 all:	$(BIN)
