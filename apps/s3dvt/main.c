@@ -105,7 +105,7 @@ endloop:
 		return 0; 
 	}
 /* 	fnctl(F_SETFL,O_NONBLOCK); */
-	signal(SIGCLD, SIG_IGN);
+	signal(SIGCHLD, SIG_IGN);
     pid = fork();
 	if(!pid) 
 	{
