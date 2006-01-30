@@ -6,6 +6,8 @@ LOW:
  - culling for selection-mode - do it with line-culling, not plane-culling!
  - checking for biggest object is not cool implemented
  - checking on clone sources is not very nice too ...
+ - migrate stuff from server/config.h to config.h, and provide configure options
+   for these.
 
 VLOW:
  - `grep TODO\: *.c *.h` for more ;)
