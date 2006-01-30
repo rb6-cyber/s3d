@@ -1,5 +1,5 @@
 #include "global.h"
-#include <SDL/SDL.h>
+#include <SDL.h>
 /*  this file reads user input */
 /*  this is done right now by SDL-polling */
 int user_init_sdl() {
