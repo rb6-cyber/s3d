@@ -20,13 +20,53 @@ yet ... so my ignorance and stupidity were reasons for this project as well :)
 2.INSTALL
 ---------
 
-$ ./configure
+2.1 Preparing 
+
+Before being able to install s3d and the sample programs, you need to prepare
+the build, and compile s3d. 
+
+2.1.1 Subversion Checkout
+
+If you are using a version directly checked out from subversion, you will need
+to setup the GNU autotools first. The following assumes that automake 1.9,
+autoconf 2.59 are available and installed into a directory listed in the $PATH
+environment variable.
+
+$ ./autogen.sh [--prefix=/some/where] [--disable-debug] [--enable-profiling]
+
+This will create configure, and run it. Use the --prefix command line argument
+to select a different prefix to install s3d into. The default is /usr/local, so
+binaries will get installed into /usr/local/bin, libraries into
+/usr/local/lib, and documentation into /usr/local/share/doc/s3d-version.
+If you are not intending to work on s3d, you can use the --disable-debug
+argument to disable building a debug version. Likewise, --enable-profiling
+will enable a version compiled for profiling.
+
+After configure has been created, you can also use
+
+$ ./configure --help
+
+to learn about more configuration parameters.
+
+2.1.2 Preparing a Released Version
+
+A released version of s3d contains a pregenerated configure script, which you
+can run directly:
+
+$ ./configure [--prefix=/somewhere] [--enable-debug] [--enable-profiling]
+
+Releases do not have debugging or profiling enabled by default, if you want these
+features you have to enable them with --enable-debug and --enable-profiling,
+respectively.
+
+2.2 Building
+
+After configure has finished, you can start the build of s3d:
+
 $ make
-$ make install 
 
 in the root directory will compile server, client-lib and the examples
-for you. you might want to change server/config.h before compiling thou ...
-there is not too much to configure yet anyways :)
+for you.
 
 after that, go
 
@@ -49,6 +89,15 @@ $ ./dot_mcp
 
 now you should get some fancy window decorations :D
 there are a few other examples, just play around
+
+2.3 Installing
+
+You can use the install target to install s3d into the selected prefix. 
+Currently, you have to install s3d, otherwise the examples will not get built.
+
+$ make install
+
+Depending on the selected prefix, you may need to become superuser first.
 
 3. WARRANTY
 -----------

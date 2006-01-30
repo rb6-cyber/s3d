@@ -17,13 +17,24 @@ WARNS=""
 MAKEF="Makefile client/Makefile server/Makefile"
 CFLAGS="$CFLAGS $X_CFLAGS"
 LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS"
-AC_ARG_ENABLE([devel], AC_HELP_STRING([--enable-devel],[Enable devel flags]), [
-DEVEL_CFLAGS="-ggdb -pg"
-DEVEL_LDFLAGS="-ggdb -pg"
-], [
+
+###
+### Optional features 
+###
 DEVEL_CFLAGS=
 DEVEL_LDFLAGS=
-])
+# XXX: switch default and help string for releases.
+AC_ARG_ENABLE([devel], AS_HELP_STRING([--disable-debug],[Enable debugging flags]), [enable_debug=$enableval], [enable_debug=yes])
+if test x$enable_debug = xyes; then
+	DEVEL_CFLAGS="$DEVEL_CFLAGS -ggdb"
+	DEVEL_LDFLAGS="$DEVEL_LDFLAGS -ggdb"
+fi
+
+AC_ARG_ENABLE([profiling], AS_HELP_STRING([--enable-profiling], [Enable building for profiling]), [enable_profiling=$enableval], [enable_profiling=no])
+if test x$enable_profiling = xyes; then
+	DEVEL_CFLAGS="$DEVEL_CFLAGS -pg"
+	DEVEL_LDFLAGS="$DEVEL_LDFLAGS -pg"
+fi
 
 AC_SUBST(DEVEL_CFLAGS)
 AC_SUBST(DEVEL_LDFLAGS)
@@ -52,8 +63,8 @@ AC_SUBST(SERVER_LIBS)
 
 dnl ##################################### CLIENT #######################################
 
-PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.3.0, [:], [AC_MSG_ERROR([Fuck, fontconfig missing])])
-PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.8.0, [:], [AC_MSG_ERROR([Fuck, freetype2 missing])])
+PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.3.0, [:], [AC_MSG_ERROR([Please install fontconfig (version 2.3.0 or higher)])])
+PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.8.0, [:], [AC_MSG_ERROR([Please install freetype2 (version 9.8.0 or higher)])])
 
 # XXX: use directly where needed
 LIBS="$LIBS $FREETYPE_LIBS"
