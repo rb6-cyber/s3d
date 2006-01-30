@@ -82,33 +82,24 @@ AM_CONDITIONAL([BUILD_GLUT], test x"${HAVE_glut}" != x)
 dnl ##################################### CLIENT #######################################
 
 PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.3.0, [:], [AC_MSG_ERROR([Please install fontconfig (version 2.3.0 or higher)])])
-PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.8.0, [:], [AC_MSG_ERROR([Please install freetype2 (version 9.8.0 or higher)])])
-
-# XXX: use directly where needed
-LIBS="$LIBS $FREETYPE_LIBS"
+PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.5.0, [:], [AC_MSG_ERROR([Please install freetype2 (version 9.5.0 or higher)])])
 
 if test "x${HAVE_glut}" = "x"; then
     AC_MSG_ERROR([Sorry, we need glut for the client in for Glyph Tesselation ...])
-else
-    LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS -lglut" # XXX: check.
 fi
-CLIENT_LIBS=$LIBS
-LIBS=""
-FTCFLAGS=$FREETYPE_CFLAGS # XXX: subst everywhere
-AC_SUBST(CLIENT_LIBS)
-AC_SUBST(FTCFLAGS)
 
 dnl ##################################### EXAMPLES / APPS ######################
 
 AC_CHECK_LIB(gps, main, [HAVE_GPS=yes], [HAVE_GPS=no])
 AM_CONDITIONAL([BUILD_S3DGPS], [test x$HAVE_GPS = xyes])
-if test x$HAVE_GPS = xno; then
+if test x$HAVE_GPS = xyes; then
 	GPS_CFLAGS=
 	GPS_LIBS=-lgpl	
 	AC_SUBST(GPS_CFLAGS)
 	AC_SUBST(GPS_LIBS)
 else
-	WARNS="$WARNS ### Sorry, you lack the gps library to compile the s3dgps application.\n"
+	WARNS="$WARNS
+ ### Sorry, you lack the gps library to compile the s3dgps application."
 fi
 
 AC_CHECK_LIB(Xtst, main, [HAVE_Xtst=yes], [HAVE_Xtst=no], [$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS])
@@ -119,7 +110,8 @@ if test x$HAVE_Xtst = xyes; then
 	AC_SUBST(XTST_CFLAGS)
 	AC_SUBST(XTST_LIBS)
 else
-	WARNS="$WARNS ### Sorry, you lack the Xtest Extension to compile the s3d to X11 Gateway\n"
+	WARNS="$WARNS
+ ### Sorry, you lack the Xtest Extension to compile the s3d to X11 Gateway."
 fi
 
 HAVE_PTHREAD
@@ -140,6 +132,9 @@ AC_CONFIG_FILES([
 	example/Makefile])
 AC_OUTPUT
 
-AC_MSG_WARN($WARNS)
-
+echo "
+--------------------------------------------------------------------------------
+$WARNS
+--------------------------------------------------------------------------------
+"
 echo "now use 'make' to compile and 'make install' to install"
