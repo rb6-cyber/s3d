@@ -8,10 +8,11 @@
 /*  glut version of graphics init ... */
 int graphics_init_glut()
 {
-	int argc=0;
-	char *argv=NULL;
+	/* XXX: Faking argc and argv is probably not a good idea. */
+	int argc=1;
+	char *argv[]={"s3d", NULL};
 	dprintf(MED,"Using GLUT for GL/windowing ...");
- 	glutInit(&argc,&argv); 
+ 	glutInit(&argc, argv); 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGBA);
 	glutInitWindowSize (X_RES, Y_RES);
 	glutCreateWindow("grmbl");
