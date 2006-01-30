@@ -1,9 +1,12 @@
 #include "s3d.h"
 #include "s3dlib.h"
-#include <string.h> 	 /*  memcpy() */
+#include <sys/types.h>
 #include <stdlib.h>		 /*  malloc(), free() */
 #include <unistd.h>		 /*  read(), write() */
 #include <errno.h>		 /*  errno */
+
+#include <string.h> 	 /*  memcpy() */
+#include <sys/socket.h>
 #include <netinet/in.h>  /*  htons(),htonl() */
 #ifndef WIN32
 	#include <sys/select.h>

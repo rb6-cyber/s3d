@@ -1,5 +1,8 @@
+#include <unistd.h> /* sleep */
+
 #include "s3d.h"
 #include "s3dlib.h"
+
 static int _s3d_tesssub(struct tessp_t *t, struct t_buf *b,int s);
 static int _s3d_addtri(struct tessp_t *t, struct t_buf *b,int p, int i, int n);
 
