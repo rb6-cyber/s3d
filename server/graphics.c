@@ -4,7 +4,7 @@
 #include <GL/glut.h> 	 /*  glutWireTorus() -  to be removed later */ 
 #include <GL/gl.h>		 /*  GLint */
 #ifdef G_SDL
-#include <SDL/SDL.h>	 /*  SDL_GL_SwapBuffers */
+#include <SDL.h>	 /*  SDL_GL_SwapBuffers */
 #endif
 #include <math.h>		 /*  sin(),cos() */
 /*  this file handles graphics routines */
