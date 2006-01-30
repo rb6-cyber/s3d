@@ -90,11 +90,19 @@ require_success() {
 check_env() {
 	[ $quiet -ne 0 ] || echo "checking and preparing environment..."
 
+	# Do sanity checks.
+	if [ ! -f $SRCDIR/Makefile.am ]; then
+		error "$SRCDIR/Makefile.am missing."
+	fi
+	if [ ! -f $SRCDIR/configure.in ]; then
+		error "$SRCDIR/configure.in missing."
+	fi
+
 	require_tool aclocal
 	require_tool autoheader
 	require_tool autoconf
-	#require_tool automake
-	#require_tool libtoolize
+	require_tool automake
+	require_tool libtoolize
 
 	return 0
 }
@@ -132,7 +140,6 @@ while [ $# -gt 0 ]; do
 			run_configure=0
 			;;
 		--configure)
-			# For compat with older versions
 			run_configure=1
 			;;
 		--help|-h)
@@ -153,10 +160,10 @@ check_env
 
 note "generating build scripts..."
 	
-#require_success "test -f $WSDIR/config/ltmain.sh || ${LIBTOOLIZE} --force --copy" "\$? -eq 0 -a -f $WSDIR/config/ltmain.sh" "${LIBTOOLIZE} failed."
+require_success "test -f $WSDIR/ltmain.sh || ${LIBTOOLIZE} --force --copy" "\$? -eq 0 -a -f $WSDIR/ltmain.sh" "${LIBTOOLIZE} failed."
 require_success "${ACLOCAL} -I $WSDIR/config ${ACLOCAL_FLAGS}"
 require_success "${AUTOHEADER}"
-#require_success "${AUTOMAKE} --foreign --include-deps --add-missing --copy"
+require_success "${AUTOMAKE} --foreign --include-deps --add-missing --copy"
 require_success "${AUTOCONF}"
 if [ $run_configure -eq 1 ]; then
         require_success "./configure $configure_args"

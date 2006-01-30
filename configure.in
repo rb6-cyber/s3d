@@ -1,20 +1,35 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(server/main.c)
 
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
+AM_INIT_AUTOMAKE([s3d], [0.1])
+
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LN_S
-AC_PROG_RANLIB
 AC_PROG_MAKE_SET
 AC_PATH_X
 AC_PATH_XTRA
+AC_PROG_LIBTOOL
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS(fcntl.h sys/ioctl.h sys/time.h unistd.h)
 
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_HEADER_TIME
+AC_STRUCT_TM
+
+dnl Checks for library functions.
+AC_PROG_GCC_TRADITIONAL
+AC_FUNC_SETVBUF_REVERSED
+AC_TYPE_SIGNAL
+AC_CHECK_FUNCS(select socket strerror strtod strtol)
+
 WARNS=""
-MAKEF="Makefile client/Makefile server/Makefile"
 CFLAGS="$CFLAGS $X_CFLAGS"
 LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS"
 
@@ -39,27 +54,30 @@ fi
 AC_SUBST(DEVEL_CFLAGS)
 AC_SUBST(DEVEL_LDFLAGS)
 dnl ##################################### SERVER #######################################
-AC_CHECK_LIB(m, main,,exit)
-AC_CHECK_LIB(GL, main,,exit)
-AC_CHECK_LIB(glut, main, HAVE_glut="x")
+AC_CHECK_LIBM
+AC_SUBST(LIBM)
+
+MDL_HAVE_OPENGL
+AC_SEARCH_LIBS(glutInit, glut, [
+HAVE_glut=x
+GLUT_CFLAGS=
+GLUT_LIBS=-lglut
+], [
+HAVE_glut=
+GLUT_CFLAGS=
+GLUT_LIBS=
+])
+AC_SUBST(GLUT_CFLAGS)
+AC_SUBST(GLUT_LIBS)
+
 SDL_VERSION=1.2.7
 AM_PATH_SDL($SDL_VERSION, [HAVE_SDL="x"], [])
 if test "x${HAVE_glut}${HAVE_SDL}" = "x"; then
 	AC_MSG_ERROR([No OpenGL Framework found. Try installing GLUT or SDL, or both])
 fi
-if test "${HAVE_SDL}" = "x"; then
-	LIBS="$LIBS $SDL_LIBS"
-	CFLAGS="$CFLAGS $SDL_CFLAGS"
-fi
-if test "${HAVE_glut}" = "x"; then
-	LIBS="$LIBS -lglut"
-	# XXX: missing X11 stuff
-fi
 
-
-SERVER_LIBS=$LIBS
-LIBS=""
-AC_SUBST(SERVER_LIBS)
+AM_CONDITIONAL([BUILD_SDL], test x"${HAVE_SDL}" != x)
+AM_CONDITIONAL([BUILD_GLUT], test x"${HAVE_glut}" != x)
 
 dnl ##################################### CLIENT #######################################
 
@@ -80,59 +98,47 @@ FTCFLAGS=$FREETYPE_CFLAGS # XXX: subst everywhere
 AC_SUBST(CLIENT_LIBS)
 AC_SUBST(FTCFLAGS)
 
-dnl ##################################### EXAMPLES #####################################
+dnl ##################################### EXAMPLES / APPS ######################
 
-# XXX: make it optional. 
-
-AC_CHECK_LIB(s3d, main,HAVE_s3d="x")
-if test "${HAVE_s3d}" == "x"; then
-	LIBS=" -ls3d"
-	EXAMPLE_LIBS=$LIBS
-	LIBS=""
-	AC_SUBST(EXAMPLE_LIBS)
-	MAKEF="$MAKEF example/Makefile"
-dnl ##################################### APPLICATIONS #################################
-	MAKEF="$MAKEF apps/s3dvt/Makefile apps/olsrs3d/Makefile apps/Makefile"
-	APP_TARGETS="s3dvt olsrs3d"
-	
-	AC_CHECK_LIB(gps, main, HAVE_GPS="x")
-	if test "${HAVE_GPS}" == "x"; 
-	then
-		MAKEF="$MAKEF apps/s3dgps/Makefile"
-		APP_TARGETS="$APP_TARGETS s3dgps"
-	else 
-		WARNS="$WARNS ### Sorry, you lack the gps library to compile s3dgps ... \n"
-	fi 
-	
-	LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS"
-	AC_CHECK_LIB(Xtst, main, HAVE_Xtst="x")
-	if test "${HAVE_Xtst}" == "x"; 
-	then
-		MAKEF="$MAKEF apps/s3d_x11gate/Makefile"
-		APP_TARGETS="$APP_TARGETS s3d_x11gate"
-	else 
-		WARNS="$WARNS ### Sorry, you lack the Xtest Extension to compile the s3d to X11 Gateway ... \n"
-	fi
-	AC_SUBST(APP_TARGETS)
+AC_CHECK_LIB(gps, main, [HAVE_GPS=yes], [HAVE_GPS=no])
+AM_CONDITIONAL([BUILD_S3DGPS], [test x$HAVE_GPS = xyes])
+if test x$HAVE_GPS = xno; then
+	GPS_CFLAGS=
+	GPS_LIBS=-lgpl	
+	AC_SUBST(GPS_CFLAGS)
+	AC_SUBST(GPS_LIBS)
 else
-	WARNS="$WARNS ### Sorry, you need to have the library installed to compile the examples and apps. try make && make install and configure again ... \n"
+	WARNS="$WARNS ### Sorry, you lack the gps library to compile the s3dgps application.\n"
 fi
 
+AC_CHECK_LIB(Xtst, main, [HAVE_Xtst=yes], [HAVE_Xtst=no], [$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS])
+AM_CONDITIONAL([BUILD_X11GATE], [test x$HAVE_Xtst = xyes])
+if test x$HAVE_Xtst = xyes; then
+	XTST_CFLAGS=
+	XTST_LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS -lXtst"
+	AC_SUBST(XTST_CFLAGS)
+	AC_SUBST(XTST_LIBS)
+else
+	WARNS="$WARNS ### Sorry, you lack the Xtest Extension to compile the s3d to X11 Gateway\n"
+fi
 
+HAVE_PTHREAD
 
-dnl Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-AC_HEADER_TIME
-AC_STRUCT_TM
-
-dnl Checks for library functions.
-AC_PROG_GCC_TRADITIONAL
-AC_FUNC_SETVBUF_REVERSED
-AC_TYPE_SIGNAL
-AC_CHECK_FUNCS(select socket strerror strtod strtol)
+AC_ARG_WITH([examples], AS_HELP_STRING([--with-examples], [build examples]), [with_examples=$withval], [with_examples=yes])
+AM_CONDITIONAL([BUILD_EXAMPLES], [test x$with_examples = xyes])
 
 AC_CONFIG_HEADER(config.h)
-AC_OUTPUT($MAKEF)
+AC_CONFIG_FILES([
+	Makefile
+	server/Makefile
+	client/Makefile
+	apps/Makefile
+	apps/olsrs3d/Makefile
+	apps/s3d_x11gate/Makefile
+	apps/s3dgps/Makefile
+	apps/s3dvt/Makefile
+	example/Makefile])
+AC_OUTPUT
 
 AC_MSG_WARN($WARNS)
 
