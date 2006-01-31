@@ -199,7 +199,7 @@ int _s3d_clear_tessbuf()
 	return(0);
 }
 /*  tessaltes a character and adds it to the buffer */
-int _s3d_add_tessbuf_gl(unsigned short a)
+int _s3d_add_tessbuf(unsigned short a)
 {
 	float norm;
 	int j,c;
@@ -249,7 +249,7 @@ int _s3d_add_tessbuf_gl(unsigned short a)
 	return(0);
 }
 /*  tesselates a character and adds it to the buffer, without glu */
-int _s3d_add_tessbuf(unsigned short a)
+int _s3d_add_tessbuf_new(unsigned short a)
 {
 	float norm;
 	int j,c,start;
