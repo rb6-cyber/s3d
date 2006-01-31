@@ -94,7 +94,7 @@ AC_CHECK_LIB(gps, main, [HAVE_GPS=yes], [HAVE_GPS=no])
 AM_CONDITIONAL([BUILD_S3DGPS], [test x$HAVE_GPS = xyes])
 if test x$HAVE_GPS = xyes; then
 	GPS_CFLAGS=
-	GPS_LIBS=-lgpl	
+	GPS_LIBS=-lgps	
 	AC_SUBST(GPS_CFLAGS)
 	AC_SUBST(GPS_LIBS)
 else
