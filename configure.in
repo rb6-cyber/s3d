@@ -91,7 +91,6 @@ fi
 dnl ##################################### EXAMPLES / APPS ######################
 
 AC_CHECK_LIB(gps, main, [HAVE_GPS=yes], [HAVE_GPS=no])
-AM_CONDITIONAL([BUILD_S3DGPS], [test x$HAVE_GPS = xyes])
 if test x$HAVE_GPS = xyes; then
 	GPS_CFLAGS=
 	GPS_LIBS=-lgps	
@@ -101,9 +100,18 @@ else
 	WARNS="$WARNS
  ### Sorry, you lack the gps library to compile the s3dgps application."
 fi
+SIM_AC_HAVE_SIMAGE_IFELSE([
+	SIMAGE_CFLAGS=$sim_ac_simage_cppflags
+	SIMAGE_LIBS="$sim_ac_simage_ldflags $sim_ac_simage_libs"
+	AC_SUBST(SIMAGE_CFLAGS)
+	AC_SUBST(SIMAGE_LIBS)
+],[
+	WARNS="$WARNS
+ ### Sorry, you lack the simage library to compile the s3dgps application."
+])
+AM_CONDITIONAL([BUILD_S3DGPS], [test x$HAVE_GPS = xyes && test x$sim_ac_simage_avail = xtrue])
 
 AC_CHECK_LIB(Xtst, main, [HAVE_Xtst=yes], [HAVE_Xtst=no], [$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS])
-AM_CONDITIONAL([BUILD_X11GATE], [test x$HAVE_Xtst = xyes])
 if test x$HAVE_Xtst = xyes; then
 	XTST_CFLAGS=
 	XTST_LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS -lXtst"
@@ -113,6 +121,7 @@ else
 	WARNS="$WARNS
  ### Sorry, you lack the Xtest Extension to compile the s3d to X11 Gateway."
 fi
+AM_CONDITIONAL([BUILD_X11GATE], [test x$HAVE_Xtst = xyes])
 
 HAVE_PTHREAD
 
