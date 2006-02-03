@@ -215,12 +215,13 @@ void object_info(struct s3d_evt *hrmz)
 int main( int argc, char *argv[] ) {
 
 	char s3d_options[256];
+	int optchar;
 
-	strncpy(OLSR_HOST,"127.0.0.1",256);
+	strncpy( OLSR_HOST, "127.0.0.1", 256 );
 
-	while ( ( argc > 1 ) && ( argv[1][0] == '-' ) ) {
+	while ( ( optchar = getopt ( argc, argv, "d?h:" ) ) != -1 ) {
 
-		switch ( argv[1][1] ) {
+		switch ( optchar ) {
 
 			case 'd':
 				DEBUG = 1;
@@ -232,18 +233,15 @@ int main( int argc, char *argv[] ) {
 				return (0);
 
 			case 'h':
-				strncpy(OLSR_HOST,argv[1][1],256);
+				strncpy( OLSR_HOST, optarg, 256 );
 				break;
 
 			default:
-				printf( "Bad option %s\n", argv[1] );
+				printf( "Bad option %s\n", optarg );
 				print_usage();
 				return (0);
 
 		}
-
-		++argv;
-		--argc;
 
 	}
 
