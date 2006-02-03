@@ -1,10 +1,14 @@
 #include <stdio.h>
 #include <s3d.h>
-#include <unistd.h>	/* sleep() */
-#include <string.h> /* strncpy() */
-#include <math.h>	/* sqrt() */
+#include <unistd.h>		/* sleep() */
+#include <string.h> 		/* strncpy() */
+#include <math.h>		/* sqrt() */
+#include <getopt.h>		/*  getopt() */
 #include "olsrs3d.h"
 #define SPEED		10.0
+
+int DEBUG = 0;
+char OLSR_HOST[256];
 
 int node_count=-1;
 int alpha=0;
@@ -12,6 +16,26 @@ int obj,mesh;
 float asp=1.0;
 float bottom=-1.0;
 float left=-1.0;
+
+
+
+/***
+ *
+ * print usage info
+ *
+ ***/
+
+void print_usage( void ) {
+
+	printf( "Usage is olsrs3d [options]\n" );
+	printf( "Options:\n" );
+	printf( "   -?\tprint this short help\n" );
+	printf( "   -d\tenable debug mode\n" );
+	printf( "   -h\tconnect to olsr node [default: localhost]\n" );
+
+}
+
+
 
 /***
  *
@@ -185,17 +209,50 @@ void object_info(struct s3d_evt *hrmz)
 		s3d_flags_on(mesh,S3D_OF_VISIBLE);
 	}
 }
-int main(int argc, char **argv)
-{
 
-	char host[256];
-    if (argc > 1) {
-		strncpy(host,argv[1],256);
-    } else {
-		strncpy(host,"127.0.0.1",256);
+
+
+int main( int argc, char *argv[] ) {
+
+	char s3d_options[256];
+
+	strncpy(OLSR_HOST,"127.0.0.1",256);
+
+	while ( ( argc > 1 ) && ( argv[1][0] == '-' ) ) {
+
+		switch ( argv[1][1] ) {
+
+			case 'd':
+				DEBUG = 1;
+				printf( "debug mode enabled ...\n" );
+				break;
+
+			case '?':
+				print_usage();
+				return (0);
+
+			case 'h':
+				strncpy(OLSR_HOST,argv[1][1],256);
+				break;
+
+			default:
+				printf( "Bad option %s\n", argv[1] );
+				print_usage();
+				return (0);
+
+		}
+
+		++argv;
+		--argc;
+
 	}
-	process_init(host);
-	if (!net_init(host))
+
+	printf( "OLSR_HOST: %s\n", OLSR_HOST );
+
+	return (0);
+
+	process_init(OLSR_HOST);
+	if (!net_init(OLSR_HOST))
 	{
 
 		if (!s3d_init(&argc,&argv,"olsrs3d"))
