@@ -8,12 +8,24 @@ int max,new_max;
 float 	*adj,*new_adj;
 int		*adj_obj,*new_adj_obj;
 
+
+/***
+ *
+ * create new or alter connection between 2 nodes
+ *
+ *   n1   =>   node id 1
+ *   n2   =>   node id 2
+ *   l    =>   length ? ETX ?
+ *
+ ***/
+
 int add_adj(int n1, int n2, float l)
 {
 	int o,i,j;
 	i=n1<n2?n1:n2;
 	j=n1>n2?n1:n2;
 	if ((n1<max) && (n2<max))
+		/* connection already exists */
 		o=adj_obj[i*max+j];
 	else o=-1;
 	if (o==-1)
@@ -27,23 +39,34 @@ int add_adj(int n1, int n2, float l)
 		s3d_push_polygon(o,3,1,2,0);
 
 /*		printf("new adjacent object %d between %d and %d\n",o,i,j);*/
-	} 
+	}
 	new_adj_obj[i*new_max+j]=o;
 	new_adj[i*new_max+j]=l;
 	new_adj[j*new_max+i]=l;
-		
+
 	return(0);
 }
+
+
+
+/***
+ *
+ * redo all connections between nodes ?
+ *
+ ***/
+
 int resize_adj()
 {
 	int i,ind;
-	new_adj=	realloc(new_adj,	sizeof(float)*new_max*new_max);
+	new_adj=realloc(new_adj,sizeof(float)*new_max*new_max);
 	new_adj_obj=realloc(new_adj_obj,sizeof(int)*new_max*new_max);
+
 	if (new_max>1)
-	{		
+	{
+		/* leave out one ? */
 		for (i=(new_max-2);i>=0;i--)
 		{
-			memmove(new_adj+	new_max*i,new_adj	+(new_max-1)*i,sizeof(float)*(new_max-1));
+			memmove(new_adj+new_max*i,new_adj+(new_max-1)*i,sizeof(float)*(new_max-1));
 			memmove(new_adj_obj+new_max*i,new_adj_obj+(new_max-1)*i,sizeof(float)*(new_max-1));
 			ind=i*new_max+(new_max-1);				/* the right edge */
 			new_adj[ind]=0.0f;
@@ -57,39 +80,57 @@ int resize_adj()
 	new_adj_obj[new_max*new_max-1]=-1;			/* the right bottom corner */
 	return(0);
 }
+
+
+
+/***
+ *
+ * get node id or create new node if node string could not be found
+ *
+ *   *str   =>   node description
+ *
+ *   return node id
+ *
+ ***/
+
 int get_node_num(char *str)
 {
-	int i,j;
-	float f;
+	int i,j;   /* inc vars */
+	float f;   /* where does it get its value from ? */
+
 	for (i=0;i<new_max;i++)
 	{
 		if (strncmp(node[i].name,str,NAMEMAX)==0)
 		{
 			return(i); /* return the index */
 		}
-	} 
-	
+	}
+
 	/* i==new_max now */
 	new_max++;
 
 	node=realloc(node,sizeof(struct t_node)*new_max);
-	
+
+	/* create new node */
 	strncpy(node[i].name,str,NAMEMAX);
 	node[i].obj=s3d_clone(obj);
 	s3d_flags_on(node[i].obj,S3D_OF_VISIBLE);
-	
+
+	/* create node text and attach (link) it to the node */
 	node[i].s_obj=s3d_draw_string(str,&f);
 	s3d_link(node[i].s_obj, node[i].obj);
 	s3d_translate(node[i].s_obj,-f/2,-2,0);
 	/*s3d_rotate(node[i].s_obj,0,180,0);*/
 	s3d_flags_on(node[i].s_obj,S3D_OF_VISIBLE);
-	
+
 	printf("new %s [%d], obj nr. %d - %d\n",str,i,node[i].obj,node[i].s_obj);
+
 	for (j=0;j<3;j++)
 	{
 		node[i].pos[j]=((float)2.0*rand())/RAND_MAX-1.0;
 		node[i].mov[j]=0.0;
 	}
+
 	resize_adj();
 
 	return(i);
@@ -102,6 +143,7 @@ int commit_input()
 	int  	*swap_adj_obj;
 	char	nc_str[20];
 	printf("committing input ... \n");
+
 	/* remove old adjacent objects ... */
 	for (i=0;i<max;i++)
 		for (j=i+1;j<max;j++)
@@ -115,10 +157,13 @@ int commit_input()
 	/* swap the matrices */
 	swap_adj=adj;
 	swap_adj_obj=adj_obj;
-	
+
 	adj=new_adj;
 	adj_obj=new_adj_obj;
-	
+
+
+	/* if we have more nodes redraw node count */
+	/* what if we have less nodes ?? */
 	if (new_max>max)
 	{
 		swap_adj=realloc(swap_adj,sizeof(float)*new_max*new_max);
@@ -132,6 +177,8 @@ int commit_input()
 		s3d_translate(node_count,left*3.0,-bottom*3.0-0.2,-3.0);
 
 	}
+
+
 	new_adj=swap_adj;
 	new_adj_obj=swap_adj_obj;
 	/* setting new maxsize */
@@ -167,7 +214,7 @@ int parse_line(int n)
 				}
 				dn++;
 				break;
-			case '}':	
+			case '}':
 				if (!(dn%2))	/* we don't end the input inside of strings ... this won't happen anyway, I guess */
 					commit_input();
 				break;
@@ -179,7 +226,7 @@ int parse_line(int n)
 /*		printf("######link from [%s] to [%s], label [%s]\n",data[0],data[1],data[2]);*/
 		n1=get_node_num(data[0]);
 		n2=get_node_num(data[1]);
-		f=5.0+strtod(data[2],NULL)/10.0;
+		f=10.0+strtod(data[2],NULL)/10.0;
 /*		printf("######link from %d to %d, %f, %d\n",n1,n2,f, f>=10);*/
 		if (f>=5) /* just to prevent ascii to float converting inconsistency ... */
 			add_adj(n1,n2,f);
