@@ -13,6 +13,17 @@ float asp=1.0;
 float bottom=-1.0;
 float left=-1.0;
 
+/***
+ *
+ * calculate distance between 2 vectors => http://en.wikipedia.org/wiki/Euclidean_distance
+ *
+ *   p1   =>   vector of node 1
+ *   p2   =>   vector of node 2
+ *
+ *   return distance
+ *
+ ***/
+
 float dist(float p1[], float p2[])
 {
 	float p[3];
@@ -22,6 +33,21 @@ float dist(float p1[], float p2[])
 	return (sqrt(p[0]*p[0]   +  p[1]*p[1]  +  p[2]*p[2]));
 
 }
+
+
+
+/***
+ *
+ * calculate distance between 2 vectors and substract vector1 from vector2
+ *  => http://en.wikipedia.org/wiki/Vector_%28spatial%29#Vector_addition_and_subtraction
+ *
+ *   p1   =>   vector of node 1
+ *   p2   =>   vector of node 2
+ *
+ *   return distance
+ *
+ ***/
+
 float dirt(float p1[], float p2[], float p3[])
 {
 	float d;
@@ -36,6 +62,20 @@ float dirt(float p1[], float p2[], float p3[])
 	}
 	return(d);
 }
+
+
+
+/***
+ *
+ * calculate new movement of node by adding the product of the factor and the vector to the movement vector
+ *  => http://en.wikipedia.org/wiki/Vector_%28spatial%29#Scalar_multiplication
+ *
+ *   mov  =>   current mov vector
+ *   p    =>   vector of node
+ *   fac  =>   factor which is
+ *
+ ***/
+
 void mov_add(float mov[], float p[], float fac)
 {
 /*	if (fac>1000)
@@ -45,6 +85,9 @@ void mov_add(float mov[], float p[], float fac)
 	mov[1]+=fac*p[1];
 	mov[2]+=fac*p[2];
 }
+
+
+
 void mainloop()
 {
 	int i,j,o,r;
@@ -101,17 +144,17 @@ void mainloop()
 				s3d_push_vertex(o,node[i].pos[0],	 node[i].pos[1],node[i].pos[2]);
 				s3d_push_vertex(o,node[i].pos[0]+0.2,node[i].pos[1],node[i].pos[2]);
 				s3d_push_vertex(o,node[i].pos[0]-0.2,node[i].pos[1],node[i].pos[2]);
-				
+
 				s3d_push_vertex(o,node[j].pos[0],	 node[j].pos[1],node[j].pos[2]);
 				s3d_push_vertex(o,node[j].pos[0],node[j].pos[1]+0.2,node[j].pos[2]);
 				s3d_push_vertex(o,node[j].pos[0],node[j].pos[1]-0.2,node[j].pos[2]);
-				
+
 /*				s3d_push_polygon(o,0,4,5,0);
 				s3d_push_polygon(o,3,1,2,0);*/
 			}
 	}
-	while (0!=(r=net_main())) 
-		if (r==-1) 
+	while (0!=(r=net_main()))
+		if (r==-1)
 		{
 			s3d_quit();
 			break;
@@ -155,7 +198,7 @@ int main(int argc, char **argv)
 	if (!net_init(host))
 	{
 
-		if (!s3d_init(&argc,&argv,"olsrs3d")) 
+		if (!s3d_init(&argc,&argv,"olsrs3d"))
 		{
 			s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
 			if (s3d_select_font("vera"))
@@ -167,7 +210,7 @@ int main(int argc, char **argv)
 			s3d_scale(mesh,0.15);
 
 			s3d_mainloop(mainloop);
-			s3d_quit(); 
+			s3d_quit();
 			net_quit();
 			process_quit();
 		}
