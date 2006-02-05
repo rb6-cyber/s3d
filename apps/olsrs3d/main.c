@@ -7,8 +7,8 @@
 #include "olsrs3d.h"
 #define SPEED		10.0
 
-int DEBUG = 0;
-char OLSR_HOST[256];
+int Debug = 0;
+char Olsr_host[256];
 
 int node_count=-1;
 int alpha=0;
@@ -27,11 +27,11 @@ float left=-1.0;
 
 void print_usage( void ) {
 
-	printf( "Usage is olsrs3d [options]\n" );
-	printf( "Options:\n" );
-	printf( "   -?\tprint this short help\n" );
+	printf( "Usage is olsrs3d [options] [-- [s3d options]]\n" );
+	printf( "olsrs3d options:\n" );
+	printf( "   -h\tprint this short help\n" );
 	printf( "   -d\tenable debug mode\n" );
-	printf( "   -h\tconnect to olsr node [default: localhost]\n" );
+	printf( "   -H\tconnect to olsr node [default: localhost]\n" );
 
 }
 
@@ -214,30 +214,23 @@ void object_info(struct s3d_evt *hrmz)
 
 int main( int argc, char *argv[] ) {
 
-	char s3d_options[256];
 	int optchar;
+	strncpy( Olsr_host, "127.0.0.1", 256 );
 
-	strncpy( OLSR_HOST, "127.0.0.1", 256 );
-
-	while ( ( optchar = getopt ( argc, argv, "d?h:" ) ) != -1 ) {
+	while ( ( optchar = getopt ( argc, argv, "dhH:" ) ) != -1 ) {
 
 		switch ( optchar ) {
 
 			case 'd':
-				DEBUG = 1;
-				printf( "debug mode enabled ...\n" );
+				Debug = 1;
 				break;
 
-			case '?':
-				print_usage();
-				return (0);
+			case 'H':
+				strncpy( Olsr_host, optarg, 256 );
+				break;
 
 			case 'h':
-				strncpy( OLSR_HOST, optarg, 256 );
-				break;
-
 			default:
-				printf( "Bad option %s\n", optarg );
 				print_usage();
 				return (0);
 
@@ -245,12 +238,18 @@ int main( int argc, char *argv[] ) {
 
 	}
 
-	printf( "OLSR_HOST: %s\n", OLSR_HOST );
+	if ( Debug ) printf( "debug mode enabled ...\n" );
 
-	return (0);
+	/* delete olsrs3d options */
+	while ( ( optind < argc ) && ( argv[optind][0] != '-' ) ) optind++;   /* optind may point to ip addr of '-H' */
+	optind--;
+	argv[optind] = argv[0];   /* save program path */
+	argc -= optind;   /* jump over olsrs3d options */
+	argv += optind;
 
-	process_init(OLSR_HOST);
-	if (!net_init(OLSR_HOST))
+
+	process_init(Olsr_host);
+	if (!net_init(Olsr_host))
 	{
 
 		if (!s3d_init(&argc,&argv,"olsrs3d"))
