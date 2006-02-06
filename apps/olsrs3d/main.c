@@ -210,46 +210,6 @@ void object_info(struct s3d_evt *hrmz)
 	}
 }
 
-/*
-int main(int argc, char **argv)
-{
-
-	char host[256];
-    if (argc > 2) {
-		strncpy(host,argv[1],256);
-    } else {
-		strncpy(host,"127.0.0.1",256);
-	}
-	process_init(host);
-	if (!net_init(host))
-	{
-
-		if (!s3d_init(&argc,&argv,"olsrs3d")) 
-		{
-			int i;
-			for(i=0;i<argc;i++) {
-				printf("arg %d = %s\n",i,argv[i]);
-			}
-			s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
-			if (s3d_select_font("vera"))
-				printf("font not found\n");
-
-			obj=s3d_import_3ds_file("accesspoint.3ds");
-			mesh=s3d_import_3ds_file("meshnode.3ds");
-			s3d_link(mesh,0);
-			s3d_scale(mesh,0.15);
-
-			s3d_mainloop(mainloop);
-			s3d_quit(); 
-			net_quit();
-			process_quit();
-		}
-	}
-	return(0);
-}
-*/
-
-
 int main( int argc, char *argv[] ) {
 
 	int optchar;
@@ -278,17 +238,16 @@ int main( int argc, char *argv[] ) {
 
 	if ( Debug ) printf( "debug mode enabled ...\n" );
 
-	/* delete olsrs3d options */
-	while ( ( optind < argc ) && ( argv[optind][0] != '-' ) ) optind++;		/* optind may point to ip addr of '-H' */
+	// delete olsrs3d options
+	while ( ( optind < argc ) && ( argv[optind][0] != '-' ) ) optind++;		// optind may point to ip addr of '-H'
 	optind--;
-	argv[optind] = argv[0];		/* save program path */
-	argc -= optind;					/* jump over olsrs3d options */
+	argv[optind] = argv[0];		// save program path
+	argc -= optind;					// jump over olsrs3d options
 	argv += optind;
 
-	/* push the ip addr back in the array */
-	argv[argc] = Olsr_host;
-	argc++;
-	
+	// set extern int optind = 0 for parse_args in io.c
+	optind = 0;
+
 	process_init(Olsr_host);
 	if (!net_init(Olsr_host))
 	{
