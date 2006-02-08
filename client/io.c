@@ -18,7 +18,7 @@
 	#include <netdb.h>		 /*  gethostbyname()  */
 #endif
 
-static char				*url=NULL; 
+static char				*url=NULL;
 extern int 				con_type;
 /*  this file is the client-lib-implementation which holds the function to connect and control the server. */
 #ifdef WITH_SIGNALS
@@ -39,16 +39,16 @@ void sigint_handler(int sig, int code)  /*  ... ? */
 #endif
 int s3d_usage()
 {
-	printf("s3d-parameters:");
-	printf(" --s3d-url <url>: skip S3D enviroment and connect to this url");
-	printf(" --help, -?, -h, --s3d-help: this helpful text");
+	printf("s3d-parameters:\n");
+	printf(" --s3d-url <url>: skip S3D enviroment and connect to this url\n");
+	printf(" --help, -?, -h, --s3d-help: this helpful text\n");
 }
 
 static int parse_args(int *argc, char ***argv)
 {
 	char				 c;
 	int					 lopt_idx;
-	struct option long_options[] = 
+	struct option long_options[] =
 	{
 		{"s3d-url",1,0,0},
 		{"help",0,0,'h'},
@@ -67,7 +67,7 @@ static int parse_args(int *argc, char ***argv)
 					url=optarg;
 					dprintf(HIGH,"connecting to %s",url);
 				}
-			} 
+			}
 			break;
 		case '?':
 		case 'h':
@@ -81,7 +81,7 @@ static int parse_args(int *argc, char ***argv)
 		*argc-=(optind-1); 				 /*  hide s3d-options */
 		(*argv)[optind-1]=(*argv)[0]; 	 /*  restore program path */
 		*argv+=(optind-1); 				 /*  set the string pointer at the right position */
-	}	
+	}
 	return(0);
 }
 /*  external functions go here ... */
@@ -121,7 +121,7 @@ int s3d_init(int *argc, char ***argv, char *name)
 	} else {
 		strncpy(urlc,url,256);	 /*  this should keep buffer overflows away, maybe */
 		urlc[256]=0;			 /*  just to make sure */
-		if (!strncmp(urlc, "s3d:// ",6)) 
+		if (!strncmp(urlc, "s3d:// ",6))
 		{
 			if (s3d_net_init(urlc)==CON_NULL) return(-1);
 		} else {
@@ -135,9 +135,9 @@ int s3d_init(int *argc, char ***argv, char *name)
 	 /*  TODO: we should wait for the INIT-event here before proceeding. */
 	_queue_init();
 #ifdef SIGNAL
-    if (signal(SIGINT, (sig_t)sigint_handler) == SIG_ERR) 
+    if (signal(SIGINT, (sig_t)sigint_handler) == SIG_ERR)
 		errn("s3d_init():signal()",errno);
-    if (signal(SIGTERM, (sig_t)sigint_handler) == SIG_ERR) 
+    if (signal(SIGTERM, (sig_t)sigint_handler) == SIG_ERR)
 		errn("s3d_init():signal()",errno);
 
 #endif
@@ -201,7 +201,7 @@ int s3d_open_file(char *fname, char **pointer)
 	{
 		errn("s3d_open_3ds_file():malloc()",errno);
 		exit(-1);
-	} 
+	}
 	fread(buf, filesize, 1, fp);
 	fclose(fp);
 	*pointer=buf;
