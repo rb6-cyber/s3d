@@ -37,6 +37,12 @@ void sigint_handler(int sig, int code)  /*  ... ? */
 }
 
 #endif
+int s3d_usage()
+{
+	printf("s3d-parameters:");
+	printf(" --s3d-url <url>: skip S3D enviroment and connect to this url");
+	printf(" --help, -?, -h, --s3d-help: this helpful text");
+}
 
 static int parse_args(int *argc, char ***argv)
 {
@@ -65,10 +71,8 @@ static int parse_args(int *argc, char ***argv)
 			break;
 		case '?':
 		case 'h':
-			dprintf(VHIGH,"usage: %s [options]",(*argv)[0]);
-			dprintf(VHIGH,"s3d-parameters:");
-			dprintf(VHIGH," --s3d-url <url>: skip S3D enviroment and connect to this url");
-			dprintf(VHIGH," --help, -?, -h, --s3d-help: this helpful text");
+			printf("usage: %s [options]",(*argv)[0]);
+			s3d_usage();
 			return(-1);
 		}
 	}
