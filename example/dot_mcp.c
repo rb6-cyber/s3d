@@ -295,6 +295,7 @@ void object_info(struct s3d_evt *hrmz)
 	if (inf->object==0)
 	{
 		asp=inf->scale;
+		printf("screen aspect: %f\n",asp);
 		if (asp>1.0) /* wide screen */
 		{
 			bottom=-1.0;
