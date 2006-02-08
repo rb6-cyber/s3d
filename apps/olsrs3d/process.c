@@ -230,8 +230,10 @@ int parse_line(int n)
 			// connection to internet
 			if ( strcmp( data[1], "0.0.0.0/0.0.0.0" ) == 0 ) {
 				n1=get_node_num(data[0]);
+				s3d_del_object(node[n1].obj);
 				node[n1].obj=s3d_clone(Olsr_node_inet_obj);
 				s3d_flags_on(node[n1].obj,S3D_OF_VISIBLE);
+				s3d_link(node[n1].s_obj, node[n1].obj);
 
 			}
 
