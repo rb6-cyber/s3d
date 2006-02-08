@@ -32,6 +32,7 @@ void print_usage( void ) {
 	printf( "   -h\tprint this short help\n" );
 	printf( "   -d\tenable debug mode\n" );
 	printf( "   -H\tconnect to olsr node [default: localhost]\n" );
+	s3d_usage();
 
 }
 
