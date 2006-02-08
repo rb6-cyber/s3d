@@ -5,11 +5,12 @@ struct t_node {
 	int obj,s_obj;
 };
 
-extern int 		max, new_max;
+extern int 	max, new_max;
 extern float 	*adj;
-extern int		*adj_obj;
-extern int		obj;
-extern int		node_count;
+extern int	*adj_obj;
+extern int	Olsr_node_obj;
+extern int	Olsr_node_inet_obj;
+extern int	node_count;
 extern float 	bottom,left;
 
 struct t_node 	*node;

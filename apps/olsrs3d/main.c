@@ -3,7 +3,7 @@
 #include <unistd.h>		/* sleep() */
 #include <string.h> 		/* strncpy() */
 #include <math.h>		/* sqrt() */
-#include <getopt.h>		/*  getopt() */
+#include <getopt.h>		/* getopt() */
 #include "olsrs3d.h"
 #define SPEED		10.0
 
@@ -12,7 +12,7 @@ char Olsr_host[256];
 
 int node_count=-1;
 int alpha=0;
-int obj,mesh;
+int Olsr_node_obj,Olsr_node_inet_obj,mesh;
 float asp=1.0;
 float bottom=-1.0;
 float left=-1.0;
@@ -239,10 +239,10 @@ int main( int argc, char *argv[] ) {
 	if ( Debug ) printf( "debug mode enabled ...\n" );
 
 	// delete olsrs3d options
-	while ( ( optind < argc ) && ( argv[optind][0] != '-' ) ) optind++;		// optind may point to ip addr of '-H'
+	while ( ( optind < argc ) && ( argv[optind][0] != '-' ) ) optind++;   // optind may point to ip addr of '-H'
 	optind--;
-	argv[optind] = argv[0];		// save program path
-	argc -= optind;					// jump over olsrs3d options
+	argv[optind] = argv[0];   // save program path
+	argc -= optind;   // jump over olsrs3d options
 	argv += optind;
 
 	// set extern int optind = 0 for parse_args in io.c
@@ -257,7 +257,8 @@ int main( int argc, char *argv[] ) {
 			if (s3d_select_font("vera"))
 				printf("font not found\n");
 
-			obj=s3d_import_3ds_file("accesspoint.3ds");
+			Olsr_node_obj=s3d_import_3ds_file("accesspoint.3ds");
+			Olsr_node_inet_obj=s3d_import_3ds_file("accesspoint_inet.3ds");
 			mesh=s3d_import_3ds_file("meshnode.3ds");
 			s3d_link(mesh,0);
 			s3d_scale(mesh,0.15);

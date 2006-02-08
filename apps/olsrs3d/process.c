@@ -113,7 +113,7 @@ int get_node_num(char *str)
 
 	/* create new node */
 	strncpy(node[i].name,str,NAMEMAX);
-	node[i].obj=s3d_clone(obj);
+	node[i].obj=s3d_clone(Olsr_node_obj);
 	s3d_flags_on(node[i].obj,S3D_OF_VISIBLE);
 
 	/* create node text and attach (link) it to the node */
@@ -123,7 +123,7 @@ int get_node_num(char *str)
 	/*s3d_rotate(node[i].s_obj,0,180,0);*/
 	s3d_flags_on(node[i].s_obj,S3D_OF_VISIBLE);
 
-	printf("new %s [%d], obj nr. %d - %d\n",str,i,node[i].obj,node[i].s_obj);
+	printf("new %s [%d], Olsr_node_obj nr. %d - %d\n",str,i,node[i].obj,node[i].s_obj);
 
 	for (j=0;j<3;j++)
 	{
@@ -224,12 +224,28 @@ int parse_line(int n)
 	if (dn>=6)
 	{
 /*		printf("######link from [%s] to [%s], label [%s]\n",data[0],data[1],data[2]);*/
-		n1=get_node_num(data[0]);
-		n2=get_node_num(data[1]);
-		f=10.0+strtod(data[2],NULL)/10.0;
+		// announced network via HNA
+		if ( strcmp( data[2], "HNA" ) == 0 ) {
+
+			// connection to internet
+			if ( strcmp( data[1], "0.0.0.0/0.0.0.0" ) == 0 ) {
+				n1=get_node_num(data[0]);
+				node[n1].obj=s3d_clone(Olsr_node_inet_obj);
+				s3d_flags_on(node[n1].obj,S3D_OF_VISIBLE);
+
+			}
+
+			// TODO: other HNA hast to be done
+
+		// normal node
+		} else {
+			n1=get_node_num(data[0]);
+			n2=get_node_num(data[1]);
+			f=10.0+strtod(data[2],NULL)/10.0;
 /*		printf("######link from %d to %d, %f, %d\n",n1,n2,f, f>=10);*/
-		if (f>=5) /* just to prevent ascii to float converting inconsistency ... */
-			add_adj(n1,n2,f);
+			if (f>=5) /* just to prevent ascii to float converting inconsistency ... */
+				add_adj(n1,n2,f);
+		}
 	}
 	return(0);
 }
