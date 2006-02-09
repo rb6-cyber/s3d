@@ -6,7 +6,7 @@ struct t_node {
 };
 
 
-// binary tree for the connections
+// linked list for the connections
 struct olsr_con {
 
 	struct olsr_con *next_olsr_con;   // pointer to next connection
@@ -14,7 +14,7 @@ struct olsr_con {
 	int obj_id;   // id of connection object in s3d
 	float etx;
 
-}
+};
 
 
 // we contruct a binary tree to handle the nodes
@@ -32,6 +32,10 @@ struct olsr_node {
 	struct olsr_con *olsr_con;   // pointer to first connection
 
 };
+
+
+
+static struct olsr_node *Root = NULL;   // top of olsr node tree
 
 
 extern int 	max, new_max;

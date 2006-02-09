@@ -142,46 +142,47 @@ int resize_adj()
  *
  ***/
 
-void *get_olsr_node( struct olsr_node **node, char *ip ) {
+void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
 	int i;   // inc var
 	int result;   // result of strcmp
 
 	// if node is NULL we reached the end of the tree and must create a new olsr_node
-	if ( (*node) == NULL ) {
+	if ( (*olsr_node) == NULL ) {
 
-		(*node) = malloc( sizeof( struct olsr_node ) );
-		if ( (*node) == NULL ) out_of_mem();
+		(*olsr_node) = malloc( sizeof( struct olsr_node ) );
+		if ( (*olsr_node) == NULL ) out_of_mem();
 
-		(*node)->left = NULL;
-		(*node)->right = NULL;
-		strncpy((*node)->ip,ip,NAMEMAX);
-		(*node)->inet_gw = 0;
-		(*node)->inet_gw_modified = 1;
+		(*olsr_node)->left = NULL;
+		(*olsr_node)->right = NULL;
+		strncpy((*olsr_node)->ip,ip,NAMEMAX);
+		(*olsr_node)->inet_gw = 0;
+		(*olsr_node)->inet_gw_modified = 1;
+		printf( "add: %s\n", (*olsr_node)->ip );
 
 		for ( i=0; i<3; i++ ) {
-			(*node)->pos_vec[i] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
-			(*node)->mov_vec[i] = 0.0;
+			(*olsr_node)->pos_vec[i] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
+			(*olsr_node)->mov_vec[i] = 0.0;
 		}
 
-		(*node)->obj_id = NULL;
-		(*node)->desc_id = NULL;
-		(*node)->olsr_con = NULL;
+		(*olsr_node)->obj_id = NULL;
+		(*olsr_node)->desc_id = NULL;
+		(*olsr_node)->olsr_con = NULL;
 
-		return (*node);
+		return (*olsr_node);
 
 	}
 
-	result = strncmp( (*node)->ip, ip, NAMEMAX );
+	result = strncmp( (*olsr_node)->ip, ip, NAMEMAX );
 
 	// we found the node
-	if ( result == 0 ) return (*node);
+	if ( result == 0 ) return (*olsr_node);
 
 	// the searched node must be in the subtree
 	if ( result < 0 ) {
-		get_olsr_node( &(*node)->right, ip );
+		get_olsr_node( &(*olsr_node)->right, ip );
 	} else {
-		get_olsr_node( &(*node)->left, ip );
+		get_olsr_node( &(*olsr_node)->left, ip );
 	}
 
 }
@@ -332,22 +333,27 @@ int parse_line(int n)
 	{
 /*		printf("######link from [%s] to [%s], label [%s]\n",data[0],data[1],data[2]);*/
 		// announced network via HNA
-// 		if ( strcmp( data[2], "HNA" ) == 0 ) {
-//
-// 			// connection to internet
-// 			if ( strcmp( data[1], "0.0.0.0/0.0.0.0" ) == 0 ) {
-// 				n1=get_node_num(data[0]);
-// 				s3d_del_object(node[n1].obj);
-// 				node[n1].obj=s3d_clone(Olsr_node_inet_obj);
-// 				s3d_flags_on(node[n1].obj,S3D_OF_VISIBLE);
-// 				s3d_link(node[n1].s_obj, node[n1].obj);
-//
-// 			}
-//
-// 			// TODO: other HNA hast to be done
-//
-// 		// normal node
-// 		} else {
+		if ( strcmp( data[2], "HNA" ) == 0 ) {
+
+			// connection to internet
+			if ( strcmp( data[1], "0.0.0.0/0.0.0.0" ) == 0 ) {
+
+				olsr_node1 = get_olsr_node( &Root, data[0] );
+
+				if ( olsr_node1->inet_gw == 0 ) {
+
+					olsr_node1->inet_gw = 1;
+					olsr_node1->inet_gw_modified = 1;
+					printf( "new internet: %s\n", olsr_node1->ip );
+
+				}
+
+			}
+
+			/* TODO: other HNA hast to be done */
+
+		// normal node
+		} else {
 // 			n1=get_node_num(data[0]);
 // 			n2=get_node_num(data[1]);
 			olsr_node1 = get_olsr_node( &Root, data[0] );
@@ -356,8 +362,8 @@ int parse_line(int n)
 /*		printf("######link from %d to %d, %f, %d\n",n1,n2,f, f>=10);*/
 			if (f>=5) /* just to prevent ascii to float converting inconsistency ... */
 // 				add_adj(n1,n2,f);
-				add_olsr_con( olsr_node1->olsr_con, olsr_node2, f );
-// 		}
+				add_olsr_con( &(olsr_node1)->olsr_con, olsr_node2, f );
+		}
 	}
 	return(0);
 }
