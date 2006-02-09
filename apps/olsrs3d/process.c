@@ -13,6 +13,54 @@ int		*adj_obj,*new_adj_obj;
  *
  * create new or alter connection between 2 nodes
  *
+ *   olsr_con =>   pointer to current olsr connection
+ *   con_to   =>   node to connect to
+ *   l        =>   length ? ETX ?
+ *
+ ***/
+
+int add_olsr_con( struct olsr_con **olsr_con, struct olsr_node *con_to, float l ) {
+
+	// new connection
+	if ( (*olsr_con) == NULL ) {
+
+		(*olsr_con) = malloc( sizeof( struct olsr_con ) );
+		if ( (*olsr_con) == NULL ) out_of_mem();
+
+		// create connection object
+		(*olsr_con)->obj_id = s3d_new_object();
+		s3d_push_material((*olsr_con)->obj_id,
+				  1.0,1.0,1.0,
+				  1.0,1.0,1.0,
+				  1.0,1.0,1.0);
+		s3d_push_polygon((*olsr_con)->obj_id,0,4,5,0);
+		s3d_push_polygon((*olsr_con)->obj_id,3,1,2,0);
+
+		(*olsr_con)->next_olsr_con = NULL;
+		(*olsr_con)->etx = l;
+
+		return( 0 );
+
+	}
+
+	// existing connection
+	if ( (*olsr_con)->olsr_node == con_to ) {
+
+		(*olsr_con)->etx = l;
+		return( 0 );
+
+	}
+
+	add_olsr_con( &(*olsr_con)->next_olsr_con, con_to, l );
+
+}
+
+
+
+/***
+ *
+ * create new or alter connection between 2 nodes
+ *
  *   n1   =>   node id 1
  *   n2   =>   node id 2
  *   l    =>   length ? ETX ?
@@ -85,6 +133,63 @@ int resize_adj()
 
 /***
  *
+ * get pointer to olsr node or create new node if node string could not be found
+ *
+ *   **node =>   pointer to current olsr_node
+ *   *ip    =>   node ip
+ *
+ *   return olsr node pointer
+ *
+ ***/
+
+void *get_olsr_node( struct olsr_node **node, char *ip ) {
+
+	int i;   // inc var
+	int result;   // result of strcmp
+
+	// if node is NULL we reached the end of the tree and must create a new olsr_node
+	if ( (*node) == NULL ) {
+
+		(*node) = malloc( sizeof( struct olsr_node ) );
+		if ( (*node) == NULL ) out_of_mem();
+
+		(*node)->left = NULL;
+		(*node)->right = NULL;
+		strncpy((*node)->ip,ip,NAMEMAX);
+		(*node)->inet_gw = 0;
+		(*node)->inet_gw_modified = 1;
+
+		for ( i=0; i<3; i++ ) {
+			(*node)->pos_vec[i] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
+			(*node)->mov_vec[i] = 0.0;
+		}
+
+		(*node)->obj_id = NULL;
+		(*node)->desc_id = NULL;
+		(*node)->olsr_con = NULL;
+
+		return (*node);
+
+	}
+
+	result = strncmp( (*node)->ip, ip, NAMEMAX );
+
+	// we found the node
+	if ( result == 0 ) return (*node);
+
+	// the searched node must be in the subtree
+	if ( result < 0 ) {
+		get_olsr_node( &(*node)->right, ip );
+	} else {
+		get_olsr_node( &(*node)->left, ip );
+	}
+
+}
+
+
+
+/***
+ *
  * get node id or create new node if node string could not be found
  *
  *   *str   =>   node description
@@ -145,21 +250,21 @@ int commit_input()
 	printf("committing input ... \n");
 
 	/* remove old adjacent objects ... */
-	for (i=0;i<max;i++)
-		for (j=i+1;j<max;j++)
-			if (adj_obj[i*max+j]!=-1)
-				if (new_adj_obj[i*new_max+j]==-1)
-				{
-/*					printf("old link does not exist anymore ...\n");*/
-					/* this link does not exist anymore ... */
-					s3d_del_object(adj_obj[i*max+j]);
-				}
+// 	for (i=0;i<max;i++)
+// 		for (j=i+1;j<max;j++)
+// 			if (adj_obj[i*max+j]!=-1)
+// 				if (new_adj_obj[i*new_max+j]==-1)
+// 				{
+// /*					printf("old link does not exist anymore ...\n");*/
+// 					/* this link does not exist anymore ... */
+// 					s3d_del_object(adj_obj[i*max+j]);
+// 				}
 	/* swap the matrices */
-	swap_adj=adj;
-	swap_adj_obj=adj_obj;
-
-	adj=new_adj;
-	adj_obj=new_adj_obj;
+// 	swap_adj=adj;
+// 	swap_adj_obj=adj_obj;
+//
+// 	adj=new_adj;
+// 	adj_obj=new_adj_obj;
 
 
 	/* if we have more nodes redraw node count */
@@ -179,22 +284,24 @@ int commit_input()
 	}
 
 
-	new_adj=swap_adj;
-	new_adj_obj=swap_adj_obj;
+// 	new_adj=swap_adj;
+// 	new_adj_obj=swap_adj_obj;
 	/* setting new maxsize */
 	max=new_max;
 	/* resetting the input-matrices*/
-	for (i=0;i<max;i++)
-	for (j=0;j<max;j++)
-	{
-		new_adj[i*max+j]=0.0;
-		new_adj_obj[i*max+j]=-1;
-	}
+// 	for (i=0;i<max;i++)
+// 	for (j=0;j<max;j++)
+// 	{
+// 		new_adj[i*max+j]=0.0;
+// 		new_adj_obj[i*max+j]=-1;
+// 	}
 	return(0);
 }
 int parse_line(int n)
 {
-	char *data[3]; /* in this order: ip_from, ip_to, label */
+	char *data[3];   // in this order: ip_from, ip_to, label
+	struct olsr_node *olsr_node1;   // pointer to olsr nodes
+	struct olsr_node *olsr_node2;
 	int i,dn,n1,n2;
 	float f;
 	data[0]=data[1]=data[2]=NULL;
@@ -225,29 +332,32 @@ int parse_line(int n)
 	{
 /*		printf("######link from [%s] to [%s], label [%s]\n",data[0],data[1],data[2]);*/
 		// announced network via HNA
-		if ( strcmp( data[2], "HNA" ) == 0 ) {
-
-			// connection to internet
-			if ( strcmp( data[1], "0.0.0.0/0.0.0.0" ) == 0 ) {
-				n1=get_node_num(data[0]);
-				s3d_del_object(node[n1].obj);
-				node[n1].obj=s3d_clone(Olsr_node_inet_obj);
-				s3d_flags_on(node[n1].obj,S3D_OF_VISIBLE);
-				s3d_link(node[n1].s_obj, node[n1].obj);
-
-			}
-
-			// TODO: other HNA hast to be done
-
-		// normal node
-		} else {
-			n1=get_node_num(data[0]);
-			n2=get_node_num(data[1]);
+// 		if ( strcmp( data[2], "HNA" ) == 0 ) {
+//
+// 			// connection to internet
+// 			if ( strcmp( data[1], "0.0.0.0/0.0.0.0" ) == 0 ) {
+// 				n1=get_node_num(data[0]);
+// 				s3d_del_object(node[n1].obj);
+// 				node[n1].obj=s3d_clone(Olsr_node_inet_obj);
+// 				s3d_flags_on(node[n1].obj,S3D_OF_VISIBLE);
+// 				s3d_link(node[n1].s_obj, node[n1].obj);
+//
+// 			}
+//
+// 			// TODO: other HNA hast to be done
+//
+// 		// normal node
+// 		} else {
+// 			n1=get_node_num(data[0]);
+// 			n2=get_node_num(data[1]);
+			olsr_node1 = get_olsr_node( &Root, data[0] );
+			olsr_node2 = get_olsr_node( &Root, data[1] );
 			f=10.0+strtod(data[2],NULL)/10.0;
 /*		printf("######link from %d to %d, %f, %d\n",n1,n2,f, f>=10);*/
 			if (f>=5) /* just to prevent ascii to float converting inconsistency ... */
-				add_adj(n1,n2,f);
-		}
+// 				add_adj(n1,n2,f);
+				add_olsr_con( olsr_node1->olsr_con, olsr_node2, f );
+// 		}
 	}
 	return(0);
 }

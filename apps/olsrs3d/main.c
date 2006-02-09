@@ -8,7 +8,10 @@
 #define SPEED		10.0
 
 int Debug = 0;
-char Olsr_host[256];
+
+char Olsr_host[256];   // ip or hostname of olsr node with running dot_draw plugin
+
+static struct olsr_node *Root = NULL;   // top of olsr node tree
 
 int node_count=-1;
 int alpha=0;
@@ -33,6 +36,21 @@ void print_usage( void ) {
 	printf( "   -d\tenable debug mode\n" );
 	printf( "   -H\tconnect to olsr node [default: localhost]\n" );
 	s3d_usage();
+
+}
+
+
+
+/***
+ *
+ * print error and exit
+ *
+ ***/
+
+void out_of_mem( void ) {
+
+	printf( "Sorry - you ran out of memory !\n" );
+	exit( 8 );
 
 }
 
@@ -113,17 +131,74 @@ void mov_add(float mov[], float p[], float fac)
 
 
 
+/***
+ *
+ * check whether is a new / modified node and handle it accordingly
+ *
+ *   *olsr_node =>   pointer to current olsr_node
+ *
+ ***/
+
+void handle_olsr_node( struct olsr_node *olsr_node ) {
+
+	float f;
+
+	// no more node left
+	if ( olsr_node == NULL ) return;
+
+	// reset movement vector
+	olsr_node->mov_vec[0] = olsr_node->mov_vec[1] = olsr_node->mov_vec[2] = 0.0;
+
+	// olsr node shape has been modified
+	if ( olsr_node->inet_gw_modified ) {
+
+		/* delete old shape */
+		if ( olsr_node->obj_id != NULL ) s3d_del_object( olsr_node->obj_id );
+		if ( olsr_node->desc_id != NULL ) s3d_del_object( olsr_node->desc_id );
+
+		/* create new shape */
+		if ( olsr_node->inet_gw ) {
+			// olsr node offers internet access
+			olsr_node->obj_id = s3d_clone( Olsr_node_inet_obj );
+		} else {
+			// normal olsr node
+			olsr_node->obj_id = s3d_clone( Olsr_node_obj );
+		}
+
+		s3d_flags_on( olsr_node->obj_id, S3D_OF_VISIBLE );
+
+		/* create olsr node text and attach (link) it to the node */
+		node->desc_id = s3d_draw_string( olsr_node->ip, &f );
+		s3d_link( olsr_node->desc_id, olsr_node->obj_id );
+		s3d_translate( olsr_node->desc_id, -f/2,-2,0 );
+		s3d_flags_on( olsr_node->desc_id, S3D_OF_VISIBLE );
+
+		olsr_node->inet_gw_modified = 0;
+
+	}
+
+	handle_olsr_node( olsr_node->left );
+	handle_olsr_node( olsr_node->right );
+
+}
+
+
+
 void mainloop()
 {
 	int i,j,o,r;
 	float d,gd,f,m[3];
 	float z[3]={0,0,0};
-	for (i=0;i<max;i++)
-	{
-		node[i].mov[0]=
-		node[i].mov[1]=
-		node[i].mov[2]=0.0;
-	}
+// 	for (i=0;i<max;i++)
+// 	{
+// 		node[i].mov[0]=
+// 		node[i].mov[1]=
+// 		node[i].mov[2]=0.0;
+// 	}
+
+	// prepare nodes
+	handle_olsr_node( &Root );
+
 	for (i=0;i<max;i++)
 	{
 		for (j=i+1;j<max;j++)
