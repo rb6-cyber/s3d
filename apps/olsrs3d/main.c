@@ -351,7 +351,7 @@ int main( int argc, char *argv[] ) {
 				printf("font not found\n");
 
 			Olsr_node_obj=s3d_import_3ds_file("accesspoint.3ds");
-			Olsr_node_inet_obj=s3d_import_3ds_file("internet.3ds");
+			Olsr_node_inet_obj=s3d_import_3ds_file("accesspoint_inet.3ds");
 			mesh=s3d_import_3ds_file("meshnode.3ds");
 			s3d_link(mesh,0);
 			s3d_scale(mesh,0.15);
