@@ -46,7 +46,7 @@ int add_olsr_con( struct olsr_con **olsr_con, struct olsr_node *con_to, float l 
 	}
 
 	// existing connection
-	printf( "connected to: %f\n", (*olsr_con)->olsr_node );
+	printf( "connected to: %s\n", (*olsr_con)->olsr_node ->ip);
 	if ( strncmp( (*olsr_con)->olsr_node->ip, con_to->ip, NAMEMAX ) == 0 ) {
 
 		printf( "modified connection to %s: %f\n", con_to->ip, l );
