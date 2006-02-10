@@ -43,7 +43,7 @@ int add_olsr_con( struct olsr_con **olsr_con, struct olsr_node *con_to, float l 
 		(*olsr_con)->olsr_node = con_to;
 		(*olsr_con)->etx = l;
 
-		return( 0 );
+		return ( 0 );
 
 	}
 
@@ -51,7 +51,7 @@ int add_olsr_con( struct olsr_con **olsr_con, struct olsr_node *con_to, float l 
 	if ( strncmp( (*olsr_con)->olsr_node->ip, con_to->ip, NAMEMAX ) == 0 ) {
 
 		(*olsr_con)->etx = l;
-		return( 0 );
+		return ( 0 );
 
 	}
 
@@ -146,7 +146,7 @@ int resize_adj()
  *
  ***/
 
-void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
+void *get_olsr_node_by_ip( struct olsr_node **olsr_node, char *ip ) {
 
 	int i;   /* inc var */
 	int result;   /* result of strcmp */
@@ -184,10 +184,40 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
 	/* the searched node must be in the subtree */
 	if ( result < 0 ) {
-		get_olsr_node( &(*olsr_node)->right, ip );
+		get_olsr_node_by_ip( &(*olsr_node)->right, ip );
 	} else {
-		get_olsr_node( &(*olsr_node)->left, ip );
+		get_olsr_node_by_ip( &(*olsr_node)->left, ip );
 	}
+
+}
+
+
+
+/***
+ *
+ * get pointer to olsr node, search by node object id
+ *
+ *   **node =>   pointer to current olsr_node
+ *   *id    =>   node object id
+ *
+ *   return olsr node pointer
+ *
+ ***/
+
+void *get_olsr_node_by_id( struct olsr_node **olsr_node, int id ) {
+
+	int i;   /* inc var */
+	int result;   /* result of strcmp */
+
+	/* if node is NULL we reached the end of the tree and could not find the olsr node */
+	if ( (*olsr_node) == NULL ) return;
+
+	/* we found the node */
+	if ( (*olsr_node)->obj_id == id ) return (*olsr_node);
+
+	/* the searched node must be in the subtree */
+	get_olsr_node_by_id( &(*olsr_node)->right, id );
+	get_olsr_node_by_id( &(*olsr_node)->left, id );
 
 }
 
@@ -342,7 +372,7 @@ int parse_line(int n)
 			// connection to internet
 			if ( strcmp( data[1], "0.0.0.0/0.0.0.0" ) == 0 ) {
 
-				olsr_node1 = get_olsr_node( &Root, data[0] );
+				olsr_node1 = get_olsr_node_by_ip( &Root, data[0] );
 
 				if ( olsr_node1->inet_gw == 0 ) {
 
@@ -360,8 +390,8 @@ int parse_line(int n)
 		} else {
 // 			n1=get_node_num(data[0]);
 // 			n2=get_node_num(data[1]);
-			olsr_node1 = get_olsr_node( &Root, data[0] );
-			olsr_node2 = get_olsr_node( &Root, data[1] );
+			olsr_node1 = get_olsr_node_by_ip( &Root, data[0] );
+			olsr_node2 = get_olsr_node_by_ip( &Root, data[1] );
 			f=10.0+strtod(data[2],NULL)/10.0;
 /*		printf("######link from %d to %d, %f, %d\n",n1,n2,f, f>=10);*/
 			if (f>=5) /* just to prevent ascii to float converting inconsistency ... */
