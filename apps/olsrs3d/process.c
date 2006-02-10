@@ -146,7 +146,7 @@ int resize_adj()
  *
  ***/
 
-void *get_olsr_node_by_ip( struct olsr_node **olsr_node, char *ip ) {
+void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
 	int i;   /* inc var */
 	int result;   /* result of strcmp */
@@ -188,36 +188,6 @@ void *get_olsr_node_by_ip( struct olsr_node **olsr_node, char *ip ) {
 	} else {
 		get_olsr_node_by_ip( &(*olsr_node)->left, ip );
 	}
-
-}
-
-
-
-/***
- *
- * get pointer to olsr node, search by node object id
- *
- *   **node =>   pointer to current olsr_node
- *   *id    =>   node object id
- *
- *   return olsr node pointer
- *
- ***/
-
-void *get_olsr_node_by_id( struct olsr_node **olsr_node, int id ) {
-
-	int i;   /* inc var */
-	int result;   /* result of strcmp */
-
-	/* if node is NULL we reached the end of the tree and could not find the olsr node */
-	if ( (*olsr_node) == NULL ) return;
-
-	/* we found the node */
-	if ( (*olsr_node)->obj_id == id ) return (*olsr_node);
-
-	/* the searched node must be in the subtree */
-	get_olsr_node_by_id( &(*olsr_node)->right, id );
-	get_olsr_node_by_id( &(*olsr_node)->left, id );
 
 }
 
