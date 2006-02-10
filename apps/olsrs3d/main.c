@@ -181,19 +181,18 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	olsr_node->mov_vec[0] = olsr_node->mov_vec[1] = olsr_node->mov_vec[2] = 0.0;
 
 	/* calculate new movement vector */
-	(*olsr_con) = &olsr_node->olsr_con;
+	olsr_con = &olsr_node->olsr_con;
 
-// 	while ( (*olsr_con) != NULL ) {
+	while ( (*olsr_con) != NULL ) {
 
-// 		printf( "distance: %i\n", olsr_con->olsr_node );
-// 		distance = dirt( olsr_node->pos_vec, (*olsr_con)->olsr_node->pos_vec, tmp_mov_vec );
-// 		f = (*olsr_con)->etx / distance;
-// 		if ( f < 0.3 ) f = 0.3;
-// 		mov_add( olsr_node->mov_vec, tmp_mov_vec, 1/f-1);
+		distance = dirt( olsr_node->pos_vec, (*olsr_con)->olsr_node->pos_vec, tmp_mov_vec );
+		f = (*olsr_con)->etx / distance;
+		if ( f < 0.3 ) f = 0.3;
+		mov_add( olsr_node->mov_vec, tmp_mov_vec, 1/f-1);
 
-// 		(*olsr_con) = &olsr_con->next_olsr_con;
+		olsr_con = &(*olsr_con)->next_olsr_con;
 
-// 	}
+	}
 
 	handle_olsr_node( olsr_node->left );
 	handle_olsr_node( olsr_node->right );

@@ -21,7 +21,7 @@ int		*adj_obj,*new_adj_obj;
 
 int add_olsr_con( struct olsr_con **olsr_con, struct olsr_node *con_to, float l ) {
 
-	// new connection
+	/* new connection */
 	if ( (*olsr_con) == NULL ) {
 
 		(*olsr_con) = malloc( sizeof( struct olsr_con ) );
@@ -37,24 +37,21 @@ int add_olsr_con( struct olsr_con **olsr_con, struct olsr_node *con_to, float l 
 		s3d_push_polygon((*olsr_con)->obj_id,3,1,2,0);
 
 		(*olsr_con)->next_olsr_con = NULL;
+		(*olsr_con)->olsr_node = con_to;
 		(*olsr_con)->etx = l;
-
-		printf( "new connection to %s: %f\n", con_to->ip, l );
 
 		return( 0 );
 
 	}
 
-	// existing connection
-	printf( "connected to: %s\n", (*olsr_con)->olsr_node ->ip);
+	/* existing connection */
 	if ( strncmp( (*olsr_con)->olsr_node->ip, con_to->ip, NAMEMAX ) == 0 ) {
 
-		printf( "modified connection to %s: %f\n", con_to->ip, l );
 		(*olsr_con)->etx = l;
 		return( 0 );
 
 	}
-	printf( "connection not found %s: %f\n", con_to->ip, l );
+
 	add_olsr_con( &(*olsr_con)->next_olsr_con, con_to, l );
 
 }
