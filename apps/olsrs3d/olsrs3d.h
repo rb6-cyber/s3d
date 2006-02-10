@@ -36,6 +36,7 @@ struct olsr_node {
 
 
 extern struct olsr_node *Root;   /* top of olsr node tree */
+extern int	*obj_to_ip;
 extern int 	max, new_max;
 extern float 	*adj;
 extern int	*adj_obj;

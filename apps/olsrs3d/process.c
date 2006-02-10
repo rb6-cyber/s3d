@@ -184,9 +184,9 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
 	/* the searched node must be in the subtree */
 	if ( result < 0 ) {
-		get_olsr_node_by_ip( &(*olsr_node)->right, ip );
+		get_olsr_node( &(*olsr_node)->right, ip );
 	} else {
-		get_olsr_node_by_ip( &(*olsr_node)->left, ip );
+		get_olsr_node( &(*olsr_node)->left, ip );
 	}
 
 }
@@ -342,7 +342,7 @@ int parse_line(int n)
 			// connection to internet
 			if ( strcmp( data[1], "0.0.0.0/0.0.0.0" ) == 0 ) {
 
-				olsr_node1 = get_olsr_node_by_ip( &Root, data[0] );
+				olsr_node1 = get_olsr_node( &Root, data[0] );
 
 				if ( olsr_node1->inet_gw == 0 ) {
 
@@ -360,8 +360,8 @@ int parse_line(int n)
 		} else {
 // 			n1=get_node_num(data[0]);
 // 			n2=get_node_num(data[1]);
-			olsr_node1 = get_olsr_node_by_ip( &Root, data[0] );
-			olsr_node2 = get_olsr_node_by_ip( &Root, data[1] );
+			olsr_node1 = get_olsr_node( &Root, data[0] );
+			olsr_node2 = get_olsr_node( &Root, data[1] );
 			f=10.0+strtod(data[2],NULL)/10.0;
 /*		printf("######link from %d to %d, %f, %d\n",n1,n2,f, f>=10);*/
 			if (f>=5) /* just to prevent ascii to float converting inconsistency ... */

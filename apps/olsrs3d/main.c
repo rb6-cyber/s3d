@@ -9,9 +9,10 @@
 
 int Debug = 0;
 
-char Olsr_host[256];   // ip or hostname of olsr node with running dot_draw plugin
+char Olsr_host[256];   /* ip or hostname of olsr node with running dot_draw plugin */
 
-struct olsr_node *Root = NULL;   // top of olsr node tree
+struct olsr_node *Root = NULL;   /* top of olsr node tree */
+int *obj_to_ip;   /* save pointer to olsr nodes */
 
 
 int node_count=-1;
@@ -153,7 +154,12 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	if ( olsr_node->inet_gw_modified ) {
 
 		/* delete old shape */
-		if ( olsr_node->obj_id != -1 ) s3d_del_object( olsr_node->obj_id );
+		if ( olsr_node->obj_id != -1 ) {
+			s3d_del_object( olsr_node->obj_id );
+		} else {
+			obj_to_ip = realloc( obj_to_ip, sizeof( int ) * sizeof( obj_to_ip ) + 1 );
+		}
+
 		if ( olsr_node->desc_id != -1 ) s3d_del_object( olsr_node->desc_id );
 
 		/* create new shape */
@@ -166,6 +172,8 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 		}
 
 		s3d_flags_on( olsr_node->obj_id, S3D_OF_VISIBLE );
+
+		obj_to_ip[ olsr_node->obj_id ] = olsr_node;
 
 		/* create olsr node text and attach (link) it to the node */
 		olsr_node->desc_id = s3d_draw_string( olsr_node->ip, &f );
