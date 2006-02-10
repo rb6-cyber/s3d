@@ -186,7 +186,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	while ( (*olsr_con) != NULL ) {
 
 		distance = dirt( olsr_node->pos_vec, (*olsr_con)->olsr_node->pos_vec, tmp_mov_vec );
-		f = (*olsr_con)->etx / distance;
+		f = (*olsr_con)->etx * 5.0 / distance;
 		if ( f < 0.3 ) f = 0.3;
 		mov_add( olsr_node->mov_vec, tmp_mov_vec, 1/f-1);
 
@@ -203,13 +203,14 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 		s3d_pop_vertex( (*olsr_con)->obj_id, 6 );
 		s3d_pop_polygon( (*olsr_con)->obj_id, 2 );
+
 		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0], olsr_node->pos_vec[1], olsr_node->pos_vec[2] );
 		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0]+0.2, olsr_node->pos_vec[1], olsr_node->pos_vec[2] );
 		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0]-0.2, olsr_node->pos_vec[1], olsr_node->pos_vec[2] );
 
-		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0], olsr_node->pos_vec[1], olsr_node->pos_vec[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0], olsr_node->pos_vec[1]+0.2, olsr_node->pos_vec[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0], olsr_node->pos_vec[1]-0.2, olsr_node->pos_vec[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->olsr_node->pos_vec[0], (*olsr_con)->olsr_node->pos_vec[1], (*olsr_con)->olsr_node->pos_vec[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->olsr_node->pos_vec[0], (*olsr_con)->olsr_node->pos_vec[1]+0.2, (*olsr_con)->olsr_node->pos_vec[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->olsr_node->pos_vec[0], (*olsr_con)->olsr_node->pos_vec[1]-0.2, (*olsr_con)->olsr_node->pos_vec[2] );
 
 		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0);
 		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0);

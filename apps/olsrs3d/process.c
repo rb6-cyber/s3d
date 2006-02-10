@@ -27,14 +27,17 @@ int add_olsr_con( struct olsr_con **olsr_con, struct olsr_node *con_to, float l 
 		(*olsr_con) = malloc( sizeof( struct olsr_con ) );
 		if ( (*olsr_con) == NULL ) out_of_mem();
 
-		// create connection object
+		/* create connection object */
 		(*olsr_con)->obj_id = s3d_new_object();
-		s3d_push_material((*olsr_con)->obj_id,
+		s3d_push_material( (*olsr_con)->obj_id,
 				  1.0,1.0,1.0,
 				  1.0,1.0,1.0,
 				  1.0,1.0,1.0);
-		s3d_push_polygon((*olsr_con)->obj_id,0,4,5,0);
-		s3d_push_polygon((*olsr_con)->obj_id,3,1,2,0);
+
+		s3d_flags_on( (*olsr_con)->obj_id, S3D_OF_VISIBLE );
+
+		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
+		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );
 
 		(*olsr_con)->next_olsr_con = NULL;
 		(*olsr_con)->olsr_node = con_to;
