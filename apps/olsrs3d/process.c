@@ -39,18 +39,22 @@ int add_olsr_con( struct olsr_con **olsr_con, struct olsr_node *con_to, float l 
 		(*olsr_con)->next_olsr_con = NULL;
 		(*olsr_con)->etx = l;
 
+		printf( "new connection to %s: %f\n", con_to->ip, l );
+
 		return( 0 );
 
 	}
 
 	// existing connection
-	if ( (*olsr_con)->olsr_node == con_to ) {
+	printf( "connected to: %f\n", (*olsr_con)->olsr_node );
+	if ( strncmp( (*olsr_con)->olsr_node->ip, con_to->ip, NAMEMAX ) == 0 ) {
 
+		printf( "modified connection to %s: %f\n", con_to->ip, l );
 		(*olsr_con)->etx = l;
 		return( 0 );
 
 	}
-
+	printf( "connection not found %s: %f\n", con_to->ip, l );
 	add_olsr_con( &(*olsr_con)->next_olsr_con, con_to, l );
 
 }
@@ -165,8 +169,8 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 			(*olsr_node)->mov_vec[i] = 0.0;
 		}
 
-		(*olsr_node)->obj_id = NULL;
-		(*olsr_node)->desc_id = NULL;
+		(*olsr_node)->obj_id = -1;
+		(*olsr_node)->desc_id = -1;
 		(*olsr_node)->olsr_con = NULL;
 
 		return (*olsr_node);

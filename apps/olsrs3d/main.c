@@ -11,6 +11,8 @@ int Debug = 0;
 
 char Olsr_host[256];   // ip or hostname of olsr node with running dot_draw plugin
 
+struct olsr_node *Root = NULL;   // top of olsr node tree
+
 
 int node_count=-1;
 int alpha=0;
@@ -144,22 +146,22 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	float tmp_mov_vec[3];
 	struct olsr_con **olsr_con;
 
-	// no more node left
+	/* no more nodes left */
 	if ( olsr_node == NULL ) return;
-printf( "durchlauf: %s\n", olsr_node );
-	// olsr node shape has been modified
+
+	/* olsr node shape has been modified */
 	if ( olsr_node->inet_gw_modified ) {
 
 		/* delete old shape */
-		if ( olsr_node->obj_id != NULL ) s3d_del_object( olsr_node->obj_id );
-		if ( olsr_node->desc_id != NULL ) s3d_del_object( olsr_node->desc_id );
+		if ( olsr_node->obj_id != -1 ) s3d_del_object( olsr_node->obj_id );
+		if ( olsr_node->desc_id != -1 ) s3d_del_object( olsr_node->desc_id );
 
 		/* create new shape */
 		if ( olsr_node->inet_gw ) {
-			// olsr node offers internet access
+			/* olsr node offers internet access */
 			olsr_node->obj_id = s3d_clone( Olsr_node_inet_obj );
 		} else {
-			// normal olsr node
+			/* normal olsr node */
 			olsr_node->obj_id = s3d_clone( Olsr_node_obj );
 		}
 
@@ -179,17 +181,18 @@ printf( "durchlauf: %s\n", olsr_node );
 	olsr_node->mov_vec[0] = olsr_node->mov_vec[1] = olsr_node->mov_vec[2] = 0.0;
 
 	/* calculate new movement vector */
-// 	olsr_con = &olsr_node->olsr_con;
-//
+	(*olsr_con) = &olsr_node->olsr_con;
+
 // 	while ( (*olsr_con) != NULL ) {
-//
+
+// 		printf( "distance: %i\n", olsr_con->olsr_node );
 // 		distance = dirt( olsr_node->pos_vec, (*olsr_con)->olsr_node->pos_vec, tmp_mov_vec );
-// 		f = ( (*olsr_con)->etx ) / distance;
+// 		f = (*olsr_con)->etx / distance;
 // 		if ( f < 0.3 ) f = 0.3;
 // 		mov_add( olsr_node->mov_vec, tmp_mov_vec, 1/f-1);
-//
-// 		olsr_con = &(*olsr_con)->next_olsr_con;
-//
+
+// 		(*olsr_con) = &olsr_con->next_olsr_con;
+
 // 	}
 
 	handle_olsr_node( olsr_node->left );
@@ -329,14 +332,14 @@ int main( int argc, char *argv[] ) {
 
 	if ( Debug ) printf( "debug mode enabled ...\n" );
 
-	// delete olsrs3d options
-	while ( ( optind < argc ) && ( argv[optind][0] != '-' ) ) optind++;   // optind may point to ip addr of '-H'
+	/* delete olsrs3d options */
+	while ( ( optind < argc ) && ( argv[optind][0] != '-' ) ) optind++;   /* optind may point to ip addr of '-H' */
 	optind--;
-	argv[optind] = argv[0];   // save program path
-	argc -= optind;   // jump over olsrs3d options
+	argv[optind] = argv[0];   /* save program path */
+	argc -= optind;   /* jump over olsrs3d options */
 	argv += optind;
 
-	// set extern int optind = 0 for parse_args in io.c
+	/* set extern int optind = 0 for parse_args in io.c */
 	optind = 0;
 
 	process_init(Olsr_host);

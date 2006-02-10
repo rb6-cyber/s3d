@@ -35,9 +35,7 @@ struct olsr_node {
 
 
 
-static struct olsr_node *Root = NULL;   // top of olsr node tree
-
-
+extern struct olsr_node *Root;   // top of olsr node tree
 extern int 	max, new_max;
 extern float 	*adj;
 extern int	*adj_obj;
