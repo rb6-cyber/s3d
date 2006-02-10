@@ -194,6 +194,30 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 	}
 
+	/* move it */
+	mov_add( olsr_node->pos_vec, olsr_node->mov_vec, 0.1 );
+	s3d_translate( olsr_node->obj_id, olsr_node->pos_vec[0], olsr_node->pos_vec[1], olsr_node->pos_vec[2] );
+
+	olsr_con = &olsr_node->olsr_con;
+	while ( (*olsr_con) != NULL ) {
+
+		s3d_pop_vertex( (*olsr_con)->obj_id, 6 );
+		s3d_pop_polygon( (*olsr_con)->obj_id, 2 );
+		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0], olsr_node->pos_vec[1], olsr_node->pos_vec[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0]+0.2, olsr_node->pos_vec[1], olsr_node->pos_vec[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0]-0.2, olsr_node->pos_vec[1], olsr_node->pos_vec[2] );
+
+		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0], olsr_node->pos_vec[1], olsr_node->pos_vec[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0], olsr_node->pos_vec[1]+0.2, olsr_node->pos_vec[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0], olsr_node->pos_vec[1]-0.2, olsr_node->pos_vec[2] );
+
+		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0);
+		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0);
+
+		olsr_con = &(*olsr_con)->next_olsr_con;
+
+	}
+
 	handle_olsr_node( olsr_node->left );
 	handle_olsr_node( olsr_node->right );
 

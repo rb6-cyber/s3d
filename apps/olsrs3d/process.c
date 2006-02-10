@@ -145,10 +145,10 @@ int resize_adj()
 
 void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
-	int i;   // inc var
-	int result;   // result of strcmp
+	int i;   /* inc var */
+	int result;   /* result of strcmp */
 
-	// if node is NULL we reached the end of the tree and must create a new olsr_node
+	/* if node is NULL we reached the end of the tree and must create a new olsr_node */
 	if ( (*olsr_node) == NULL ) {
 
 		(*olsr_node) = malloc( sizeof( struct olsr_node ) );
@@ -176,10 +176,10 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
 	result = strncmp( (*olsr_node)->ip, ip, NAMEMAX );
 
-	// we found the node
+	/* we found the node */
 	if ( result == 0 ) return (*olsr_node);
 
-	// the searched node must be in the subtree
+	/* the searched node must be in the subtree */
 	if ( result < 0 ) {
 		get_olsr_node( &(*olsr_node)->right, ip );
 	} else {
