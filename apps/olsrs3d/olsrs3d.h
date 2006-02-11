@@ -1,5 +1,4 @@
-#define NAMEMAX		128
-#define MAXLIST		100000		
+#define NAMEMAX		128	
 struct t_node {
 	float pos[3], mov[3];
 	char name[NAMEMAX];
