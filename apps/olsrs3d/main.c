@@ -541,7 +541,6 @@ int main( int argc, char *argv[] ) {
 
 	if ( Debug ) printf( "debug mode enabled ...\n" );
 	/* initialize obj2ip linked list */
-	/* TODO: next step is a double linked list to search,add, remove faster */
 	lst_initialize();
 	/* delete olsrs3d options */
 	while ( ( optind < argc ) && ( argv[optind][0] != '-' ) ) optind++;   /* optind may point to ip addr of '-H' */
