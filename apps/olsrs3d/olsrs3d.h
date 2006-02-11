@@ -1,4 +1,4 @@
-#define NAMEMAX		128	
+#define NAMEMAX		128
 struct t_node {
 	float pos[3], mov[3];
 	char name[NAMEMAX];
@@ -10,9 +10,11 @@ struct t_node {
 struct olsr_con {
 
 	struct olsr_con *next_olsr_con;   /* pointer to next connection */
-	struct olsr_node *olsr_node;   /* pointer to end point of the connection */
+	struct olsr_node *left_olsr_node;   /* pointer to left end point of the connection */
+	struct olsr_node *right_olsr_node;   /* pointer to right end point of the connection */
+	float left_etx;   /* etx of left olsr node */
+	float right_etx;   /* etx of right olsr node */
 	int obj_id;   /* id of connection object in s3d */
-	float etx;
 
 };
 
@@ -42,8 +44,12 @@ struct Obj_to_ip {
 
 
 
-extern struct olsr_node *Root;   																/* top of olsr node tree */
-extern struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end,*List_ptr;			/* struct list */
+extern int Debug;
+
+extern struct olsr_con *Con_begin;   /* begin of connection list */
+extern struct olsr_node *Olsr_root;   /* top of olsr node tree */
+extern struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end,*List_ptr;   /* struct list */
+
 extern int 	max, new_max;
 extern float 	*adj;
 extern int	*adj_obj;
