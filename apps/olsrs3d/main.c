@@ -1,19 +1,17 @@
 #include <stdio.h>
 #include <s3d.h>
-#include <unistd.h>		/* sleep() */
-#include <string.h> 		/* strncpy() */
+#include <unistd.h>	/* sleep() */
+#include <string.h>	/* strncpy() */
 #include <math.h>		/* sqrt() */
-#include <getopt.h>		/* getopt() */
+#include <getopt.h>	/* getopt() */
 #include "olsrs3d.h"
 #define SPEED		10.0
 
 int Debug = 0;
 
-char Olsr_host[256];   /* ip or hostname of olsr node with running dot_draw plugin */
-
-struct olsr_node *Root = NULL;   /* top of olsr node tree */
-int *obj_to_ip;   /* save pointer to olsr nodes */
-
+char Olsr_host[256];   													/* ip or hostname of olsr node with running dot_draw plugin */
+struct olsr_node *Root = NULL;   									/* top of olsr node tree */
+struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end;			/* needed pointer for linked list */
 
 int node_count=-1;
 int alpha=0;
@@ -21,6 +19,11 @@ int Olsr_node_obj,Olsr_node_inet_obj,mesh;
 float asp=1.0;
 float bottom=-1.0;
 float left=-1.0;
+
+float CamPosition[2][3];													/* CamPosition[trans|rot][x-z] */
+float ZeroPosition[3] = {0,0,0};										/* current position zero position */
+int ZeroPoint;																	/* object zeropoint */
+
 
 
 
@@ -52,7 +55,7 @@ void print_usage( void ) {
 void out_of_mem( void ) {
 
 	printf( "Sorry - you ran out of memory !\n" );
-	exit( 8 );
+	exit(8);
 
 }
 
@@ -146,7 +149,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	float f, distance;
 	float tmp_mov_vec[3];
 	struct olsr_con **olsr_con;
-
+	
 	/* no more nodes left */
 	if ( olsr_node == NULL ) return;
 
@@ -155,9 +158,8 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 		/* delete old shape */
 		if ( olsr_node->obj_id != -1 ) {
+			lst_del(olsr_node->obj_id);
 			s3d_del_object( olsr_node->obj_id );
-		} else {
-			obj_to_ip = realloc( obj_to_ip, sizeof( int ) * sizeof( obj_to_ip ) + 1 );
 		}
 
 		if ( olsr_node->desc_id != -1 ) s3d_del_object( olsr_node->desc_id );
@@ -166,15 +168,17 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 		if ( olsr_node->inet_gw ) {
 			/* olsr node offers internet access */
 			olsr_node->obj_id = s3d_clone( Olsr_node_inet_obj );
+			s3d_link(olsr_node->obj_id,ZeroPoint);
 		} else {
 			/* normal olsr node */
 			olsr_node->obj_id = s3d_clone( Olsr_node_obj );
+			s3d_link(olsr_node->obj_id,ZeroPoint);
 		}
 
-		s3d_flags_on( olsr_node->obj_id, S3D_OF_VISIBLE );
-
-		obj_to_ip[ olsr_node->obj_id ] = olsr_node;
-
+		s3d_flags_on( olsr_node->obj_id, S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		/* add object_id and olsr_node to linked list */
+		lst_add(olsr_node->obj_id,&olsr_node);
+		
 		/* create olsr node text and attach (link) it to the node */
 		olsr_node->desc_id = s3d_draw_string( olsr_node->ip, &f );
 		s3d_link( olsr_node->desc_id, olsr_node->obj_id );
@@ -194,6 +198,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	while ( (*olsr_con) != NULL ) {
 
 		distance = dirt( olsr_node->pos_vec, (*olsr_con)->olsr_node->pos_vec, tmp_mov_vec );
+		/* f = (*olsr_con)->etx / distance; */
 		f = (*olsr_con)->etx * 5.0 / distance;
 		if ( f < 0.3 ) f = 0.3;
 		mov_add( olsr_node->mov_vec, tmp_mov_vec, 1/f-1);
@@ -212,13 +217,13 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 		s3d_pop_vertex( (*olsr_con)->obj_id, 6 );
 		s3d_pop_polygon( (*olsr_con)->obj_id, 2 );
 
-		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0], olsr_node->pos_vec[1], olsr_node->pos_vec[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0]+0.2, olsr_node->pos_vec[1], olsr_node->pos_vec[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0]-0.2, olsr_node->pos_vec[1], olsr_node->pos_vec[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0]+ ZeroPosition[0], olsr_node->pos_vec[1]+ ZeroPosition[1], olsr_node->pos_vec[2]+ ZeroPosition[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0]+0.2+ ZeroPosition[0], olsr_node->pos_vec[1]+ ZeroPosition[1], olsr_node->pos_vec[2]+ ZeroPosition[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0]-0.2+ ZeroPosition[0], olsr_node->pos_vec[1]+ ZeroPosition[1], olsr_node->pos_vec[2]+ ZeroPosition[2] );
 
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->olsr_node->pos_vec[0], (*olsr_con)->olsr_node->pos_vec[1], (*olsr_con)->olsr_node->pos_vec[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->olsr_node->pos_vec[0], (*olsr_con)->olsr_node->pos_vec[1]+0.2, (*olsr_con)->olsr_node->pos_vec[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->olsr_node->pos_vec[0], (*olsr_con)->olsr_node->pos_vec[1]-0.2, (*olsr_con)->olsr_node->pos_vec[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->olsr_node->pos_vec[0]+ ZeroPosition[0], (*olsr_con)->olsr_node->pos_vec[1]+ ZeroPosition[1], (*olsr_con)->olsr_node->pos_vec[2]+ ZeroPosition[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->olsr_node->pos_vec[0]+ ZeroPosition[0], (*olsr_con)->olsr_node->pos_vec[1]+0.2+ ZeroPosition[1], (*olsr_con)->olsr_node->pos_vec[2] + ZeroPosition[2]);
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->olsr_node->pos_vec[0]+ ZeroPosition[0], (*olsr_con)->olsr_node->pos_vec[1]-0.2+ ZeroPosition[1], (*olsr_con)->olsr_node->pos_vec[2] + ZeroPosition[2]);
 
 		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0);
 		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0);
@@ -231,8 +236,6 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	handle_olsr_node( olsr_node->right );
 
 }
-
-
 
 void mainloop()
 {
@@ -315,12 +318,45 @@ void mainloop()
 /*	sleep(1);*/
 	return;
 }
+
+/***
+ *
+ * eventhandler when object clicked
+ *
+ ***/
+
+void object_click(struct s3d_evt *evt) 
+{
+	int oid;
+	oid=(int)*((unsigned long *)evt->buf);
+	/*s3d_translate(ZeroPoint,0,50,40);
+	ZeroPosition[0] = 0;
+	ZeroPosition[1] = 50;
+	ZeroPosition[2] = 40;*/
+	struct olsr_node *olsr_node;
+	olsr_node = *lst_search(oid);
+	printf("obj2ip: search return %s\n",olsr_node->ip);
+}
+
+/***
+ *
+ * eventhandler when object change by user
+ * such as Cam
+ *
+ ***/
+
 void object_info(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
 	inf=(struct s3d_obj_info *)hrmz->buf;
 	if (inf->object==0)
 	{
+		CamPosition[0][0] = inf->trans_x;
+		CamPosition[0][1] = inf->trans_y;
+		CamPosition[0][2] = inf->trans_z;
+		CamPosition[1][0] = inf->rot_x;
+		CamPosition[1][1] = inf->rot_y;
+		CamPosition[1][2] = inf->rot_z;
 		asp=inf->scale;
 		if (asp>1.0) /* wide screen */
 		{
@@ -334,6 +370,97 @@ void object_info(struct s3d_evt *hrmz)
 		s3d_translate(mesh,(-left)*3.0-1.8,bottom*3.0+0.8,-3.0);
 		s3d_flags_on(mesh,S3D_OF_VISIBLE);
 	}
+}
+
+/***
+ *
+ * initialize the struct for a linked list obj2ip
+ *
+ ***/
+
+void lst_initialize() {
+	Obj_to_ip_head = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
+	Obj_to_ip_end = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
+	if(Obj_to_ip_head == NULL || Obj_to_ip_end == NULL) {
+		printf("not enough memory to initialize struct list\n");
+		exit(8);
+	}
+	Obj_to_ip_head->next = Obj_to_ip_end->next = Obj_to_ip_end;
+}
+
+/***
+ *
+ * add a link object_id to olsr_node, to get ip adress and coordinates per object_id
+ *                 id => object_id, returned from s3d_clone or s3d_new_object
+ *  **olsr_node => pointer to pointer of current olsr_node 
+ *
+ ***/
+
+void lst_add(int id,struct olsr_node **olsr_node) {
+	struct Obj_to_ip *new, *lst_ptr;
+	new = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
+	if(new == NULL) {
+		printf("not enough memory to add element to struct list\n");
+		exit(8);
+	}
+	new->id = id;
+	new->olsr_node = *olsr_node;
+	printf("obj2ip: add object %d ip %s to list\n",new->id,new->olsr_node->ip);
+	lst_ptr = Obj_to_ip_head;
+	while(lst_ptr->next != lst_ptr->next->next) {
+		if(id > lst_ptr->next->id)
+			break;
+		lst_ptr = lst_ptr->next;
+	}
+	new->next = lst_ptr->next;
+	lst_ptr->next = new;
+}
+
+/***
+ *
+ * remove element from obj2ip linked list
+ * id => object_id, returned from s3d_clone or s3d_new_object
+ *	
+ ***/
+
+void lst_del(int id) {
+	struct Obj_to_ip *del, *lst_ptr;
+	lst_ptr = Obj_to_ip_head;
+	while(lst_ptr != lst_ptr->next) {
+		if(id == lst_ptr->next->id)
+			break;
+		lst_ptr = lst_ptr->next;
+	}
+	if(lst_ptr == lst_ptr->next)
+		printf("obj2ip: id to remove not found in list\n");
+	else {
+		printf("obj2ip: remove object %d ip %s from list\n",lst_ptr->next->id,lst_ptr->next->olsr_node->ip);
+		del = lst_ptr->next;
+		lst_ptr->next = lst_ptr->next->next;
+		free(del);
+	}
+}
+
+/***
+ *
+ * search a object_id in linked list and return pointer on struct olsr_node
+ *	id => object_id , returned from s3d_clone or s3d_new_object
+ * 
+ ***/
+
+struct olsr_node **lst_search(int id) {
+	struct Obj_to_ip *lst_ptr;
+	lst_ptr = Obj_to_ip_head;
+	while(lst_ptr != lst_ptr->next) {
+		if(id == lst_ptr->next->id)
+			break;
+		lst_ptr = lst_ptr->next;
+	}
+	if(lst_ptr == lst_ptr->next)
+		printf("obj2ip: search id....id not found\n");
+	else
+		printf("obj2ip: search found objekt_id=%d objekt_ip=%s\n",id,lst_ptr->next->olsr_node->ip);
+	return(&lst_ptr->next->olsr_node);
 }
 
 int main( int argc, char *argv[] ) {
@@ -363,7 +490,9 @@ int main( int argc, char *argv[] ) {
 	}
 
 	if ( Debug ) printf( "debug mode enabled ...\n" );
-
+	/* initialize obj2ip linked list */
+	/* TODO: next step is a double linked list to search,add, remove faster */
+	lst_initialize();
 	/* delete olsrs3d options */
 	while ( ( optind < argc ) && ( argv[optind][0] != '-' ) ) optind++;   /* optind may point to ip addr of '-H' */
 	optind--;
@@ -380,15 +509,15 @@ int main( int argc, char *argv[] ) {
 		if (!s3d_init(&argc,&argv,"olsrs3d"))
 		{
 			s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
+			s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
 			if (s3d_select_font("vera"))
 				printf("font not found\n");
-
 			Olsr_node_obj=s3d_import_3ds_file("accesspoint.3ds");
 			Olsr_node_inet_obj=s3d_import_3ds_file("accesspoint_inet.3ds");
 			mesh=s3d_import_3ds_file("meshnode.3ds");
 			s3d_link(mesh,0);
 			s3d_scale(mesh,0.15);
-
+			ZeroPoint = s3d_new_object();
 			s3d_mainloop(mainloop);
 			s3d_quit();
 			net_quit();
