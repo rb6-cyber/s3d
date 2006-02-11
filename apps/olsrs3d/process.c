@@ -13,13 +13,34 @@ int		*adj_obj,*new_adj_obj;
  *
  * create new or alter connection between 2 nodes
  *
- *   olsr_con =>   pointer to current olsr connection
+ *   con_from =>   current node
  *   con_to   =>   node to connect to
- *   l        =>   length ? ETX ?
+ *   etx      =>   ETX
  *
  ***/
 
-int add_olsr_con( struct olsr_con **olsr_con, struct olsr_node *con_to, float l ) {
+int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float etx ) {
+
+	struct olsr_con **olsr_con = &Con_begin;
+
+	while ( (*olsr_con) != NULL ) {
+
+		/* connection already exists */
+		if ( ( strncmp( (*olsr_con)->left_olsr_node->ip, con_from->ip, NAMEMAX ) == 0 ) && ( strncmp( (*olsr_con)->right_olsr_node->ip, con_to->ip, NAMEMAX ) == 0 ) ) {
+
+			(*olsr_con)->left_etx = etx;
+			break;
+
+		} else if ( ( strncmp( (*olsr_con)->right_olsr_node->ip, con_from->ip, NAMEMAX ) == 0 ) && ( strncmp( (*olsr_con)->left_olsr_node->ip, con_to->ip, NAMEMAX ) == 0 ) ) {
+
+			(*olsr_con)->right_etx = etx;
+			break;
+
+		}
+
+		olsr_con = &(*olsr_con)->next_olsr_con;
+
+	}
 
 	/* new connection */
 	if ( (*olsr_con) == NULL ) {
@@ -39,23 +60,13 @@ int add_olsr_con( struct olsr_con **olsr_con, struct olsr_node *con_to, float l 
 		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
 		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );
 
+		(*olsr_con)->left_olsr_node = con_from;
+		(*olsr_con)->right_olsr_node = con_to;
+		(*olsr_con)->left_etx = etx;
+
 		(*olsr_con)->next_olsr_con = NULL;
-		(*olsr_con)->olsr_node = con_to;
-		(*olsr_con)->etx = l;
-
-		return ( 0 );
 
 	}
-
-	/* existing connection */
-	if ( strncmp( (*olsr_con)->olsr_node->ip, con_to->ip, NAMEMAX ) == 0 ) {
-
-		(*olsr_con)->etx = l;
-		return ( 0 );
-
-	}
-
-	add_olsr_con( &(*olsr_con)->next_olsr_con, con_to, l );
 
 }
 
@@ -151,6 +162,22 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 	int i;   /* inc var */
 	int result;   /* result of strcmp */
 
+	while ( (*olsr_node) != NULL ) {
+
+		result = strncmp( (*olsr_node)->ip, ip, NAMEMAX );
+
+		/* we found the node */
+		if ( result == 0 ) return (*olsr_node);
+
+		/* the searched node must be in the subtree */
+		if ( result < 0 ) {
+			olsr_node = &(*olsr_node)->right;
+		} else {
+			olsr_node = &(*olsr_node)->left;
+		}
+
+	}
+
 	/* if node is NULL we reached the end of the tree and must create a new olsr_node */
 	if ( (*olsr_node) == NULL ) {
 
@@ -162,7 +189,8 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 		strncpy((*olsr_node)->ip,ip,NAMEMAX);
 		(*olsr_node)->inet_gw = 0;
 		(*olsr_node)->inet_gw_modified = 1;
-		printf( "add: %s\n", (*olsr_node)->ip );
+
+		if ( Debug ) printf( "new olsr node: %s\n", (*olsr_node)->ip );
 
 		for ( i=0; i<3; i++ ) {
 			(*olsr_node)->pos_vec[i] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
@@ -175,18 +203,6 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
 		return (*olsr_node);
 
-	}
-
-	result = strncmp( (*olsr_node)->ip, ip, NAMEMAX );
-
-	/* we found the node */
-	if ( result == 0 ) return (*olsr_node);
-
-	/* the searched node must be in the subtree */
-	if ( result < 0 ) {
-		get_olsr_node( &(*olsr_node)->right, ip );
-	} else {
-		get_olsr_node( &(*olsr_node)->left, ip );
 	}
 
 }
@@ -342,13 +358,13 @@ int parse_line(int n)
 			// connection to internet
 			if ( strcmp( data[1], "0.0.0.0/0.0.0.0" ) == 0 ) {
 
-				olsr_node1 = get_olsr_node( &Root, data[0] );
+				olsr_node1 = get_olsr_node( &Olsr_root, data[0] );
 
 				if ( olsr_node1->inet_gw == 0 ) {
 
 					olsr_node1->inet_gw = 1;
 					olsr_node1->inet_gw_modified = 1;
-					printf( "new internet: %s\n", olsr_node1->ip );
+					if ( Debug ) printf( "new internet: %s\n", olsr_node1->ip );
 
 				}
 
@@ -360,13 +376,13 @@ int parse_line(int n)
 		} else {
 // 			n1=get_node_num(data[0]);
 // 			n2=get_node_num(data[1]);
-			olsr_node1 = get_olsr_node( &Root, data[0] );
-			olsr_node2 = get_olsr_node( &Root, data[1] );
+			olsr_node1 = get_olsr_node( &Olsr_root, data[0] );
+			olsr_node2 = get_olsr_node( &Olsr_root, data[1] );
 			f=10.0+strtod(data[2],NULL)/10.0;
 /*		printf("######link from %d to %d, %f, %d\n",n1,n2,f, f>=10);*/
 			if (f>=5) /* just to prevent ascii to float converting inconsistency ... */
 // 				add_adj(n1,n2,f);
-				add_olsr_con( &(olsr_node1)->olsr_con, olsr_node2, f );
+				add_olsr_con( olsr_node1, olsr_node2, f );
 		}
 	}
 	return(0);
