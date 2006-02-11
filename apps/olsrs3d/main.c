@@ -26,6 +26,7 @@ float left=-1.0;
 float CamPosition[2][3];   /* CamPosition[trans|rot][x-z] */
 float ZeroPosition[3] = {0,0,0};   /* current position zero position */
 int ZeroPoint;   /* object zeropoint */
+int Follow_id = 0;
 
 
 
@@ -161,6 +162,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 		/* delete old shape */
 		if ( olsr_node->obj_id != -1 ) {
+			/* remove element from ob2ip list */
 			lst_del( olsr_node->obj_id );
 			s3d_del_object( olsr_node->obj_id );
 		}
@@ -387,6 +389,12 @@ void mainloop()
 	return;
 }
 
+int follow_node() {
+	if(Follow_id == 0)
+		return(0);
+	
+}
+
 void stop()
 {
 	s3d_quit();
@@ -416,15 +424,21 @@ void keypress(struct s3d_evt *event) {
 
 void object_click(struct s3d_evt *evt)
 {
+	struct olsr_node *F_node;
 	int oid;
 	oid=(int)*((unsigned long *)evt->buf);
+	if (Follow_id != 0 && oid == Follow_id) {
+		Follow_id == 0;
+		/* set world to start point */
+	} else {
+		F_node = *lst_search(oid);
+		printf("%s",F_node->ip);
+	}
 	/*s3d_translate(ZeroPoint,0,50,40);
 	ZeroPosition[0] = 0;
 	ZeroPosition[1] = 50;
 	ZeroPosition[2] = 40;*/
-	struct olsr_node *olsr_node;
-	olsr_node = *lst_search(oid);
-	printf("obj2ip: search return %s\n",olsr_node->ip);
+
 }
 
 /***
@@ -459,6 +473,7 @@ void object_info(struct s3d_evt *hrmz)
 		s3d_translate(mesh,(-left)*3.0-1.8,bottom*3.0+0.8,-3.0);
 		s3d_flags_on(mesh,S3D_OF_VISIBLE);
 	}
+	printf("%f %f %f\n",inf->trans_x,inf->trans_y,inf->trans_z);
 }
 
 /***
@@ -470,10 +485,8 @@ void object_info(struct s3d_evt *hrmz)
 void lst_initialize() {
 	Obj_to_ip_head = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
 	Obj_to_ip_end = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
-	if(Obj_to_ip_head == NULL || Obj_to_ip_end == NULL) {
-		printf("not enough memory to initialize struct list\n");
-		exit(8);
-	}
+	if(Obj_to_ip_head == NULL || Obj_to_ip_end == NULL)
+		out_of_mem();
 	Obj_to_ip_head->id = 0;
 	Obj_to_ip_end->id = -1;
 	Obj_to_ip_head->prev = Obj_to_ip_end->prev = Obj_to_ip_head;
@@ -492,10 +505,8 @@ void lst_initialize() {
 void lst_add(int id,struct olsr_node **olsr_node) {
 	struct Obj_to_ip *new;
 	new = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
-	if(new == NULL) {
-		printf("not enough memory to add element to linked list\n");
-		exit(8);
-	}
+	if(new == NULL)
+		out_of_mem();
 	new->id = id;
 	new->olsr_node = *olsr_node;
 	move_lst_ptr(&id);
@@ -569,6 +580,12 @@ void move_lst_ptr(int *id) {
  *
  * search a object_id in linked list and return pointer on struct olsr_node
  *	id => object_id , returned from s3d_clone or s3d_new_object
+ *
+ * <example>
+ *     struct olsr_node *olsr_node;
+ *     olsr_node = *lst_search(oid);
+ *     printf("obj2ip: search return %s\n",olsr_node->ip);
+ * </example>
  *
  ***/
 
