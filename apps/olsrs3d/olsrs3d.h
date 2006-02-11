@@ -33,10 +33,16 @@ struct olsr_node {
 
 };
 
+struct Obj_to_ip {
+	int id;
+	struct olsr_node *olsr_node;
+	struct Obj_to_ip *next;
+};
 
 
-extern struct olsr_node *Root;   /* top of olsr node tree */
-extern int	*obj_to_ip;
+
+extern struct olsr_node *Root;   															/* top of olsr node tree */
+extern struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end;			/* struct list */
 extern int 	max, new_max;
 extern float 	*adj;
 extern int	*adj_obj;
@@ -57,3 +63,7 @@ int process_quit();
 int net_init(char *host);
 int net_main();
 int net_quit();
+/* main obj2ip list*/
+void lst_add(int id,struct olsr_node **olsr_node);
+void lst_del(int id);
+struct olsr_node **lst_search(int id);
