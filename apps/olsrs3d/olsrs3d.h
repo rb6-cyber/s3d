@@ -1,4 +1,5 @@
 #define NAMEMAX		128
+#define MAXLIST		100000		
 struct t_node {
 	float pos[3], mov[3];
 	char name[NAMEMAX];
@@ -37,12 +38,13 @@ struct Obj_to_ip {
 	int id;
 	struct olsr_node *olsr_node;
 	struct Obj_to_ip *next;
+	struct Obj_to_ip *prev;
 };
 
 
 
-extern struct olsr_node *Root;   															/* top of olsr node tree */
-extern struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end;			/* struct list */
+extern struct olsr_node *Root;   																/* top of olsr node tree */
+extern struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end,*List_ptr;			/* struct list */
 extern int 	max, new_max;
 extern float 	*adj;
 extern int	*adj_obj;
@@ -66,4 +68,5 @@ int net_quit();
 /* main obj2ip list*/
 void lst_add(int id,struct olsr_node **olsr_node);
 void lst_del(int id);
+void move_lst_ptr(int *id);
 struct olsr_node **lst_search(int id);
