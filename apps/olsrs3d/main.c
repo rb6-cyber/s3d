@@ -2,16 +2,19 @@
 #include <s3d.h>
 #include <unistd.h>	/* sleep() */
 #include <string.h>	/* strncpy() */
-#include <math.h>		/* sqrt() */
+#include <math.h>	/* sqrt() */
 #include <getopt.h>	/* getopt() */
 #include "olsrs3d.h"
 #define SPEED		10.0
 
 int Debug = 0;
 
-char Olsr_host[256];   											/* ip or hostname of olsr node with running dot_draw plugin */
-struct olsr_node *Root = NULL;   							/* top of olsr node tree */
-struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end,*List_ptr;			/* needed pointer for linked list */
+
+char Olsr_host[256];   /* ip or hostname of olsr node with running dot_draw plugin */
+
+struct olsr_con *Con_begin = NULL;   /* begin of connection list */
+struct olsr_node *Olsr_root = NULL;   /* top of olsr node tree */
+struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end, *List_ptr;   /* needed pointer for linked list */
 
 int node_count=-1;
 int alpha=0;
@@ -20,9 +23,9 @@ float asp=1.0;
 float bottom=-1.0;
 float left=-1.0;
 
-float CamPosition[2][3];													/* CamPosition[trans|rot][x-z] */
-float ZeroPosition[3] = {0,0,0};										/* current position zero position */
-int ZeroPoint;																	/* object zeropoint */
+float CamPosition[2][3];   /* CamPosition[trans|rot][x-z] */
+float ZeroPosition[3] = {0,0,0};   /* current position zero position */
+int ZeroPoint;   /* object zeropoint */
 
 
 
@@ -149,7 +152,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	float f, distance;
 	float tmp_mov_vec[3];
 	struct olsr_con **olsr_con;
-	
+
 	/* no more nodes left */
 	if ( olsr_node == NULL ) return;
 
@@ -158,7 +161,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 		/* delete old shape */
 		if ( olsr_node->obj_id != -1 ) {
-			lst_del(olsr_node->obj_id);
+			lst_del( olsr_node->obj_id );
 			s3d_del_object( olsr_node->obj_id );
 		}
 
@@ -168,17 +171,18 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 		if ( olsr_node->inet_gw ) {
 			/* olsr node offers internet access */
 			olsr_node->obj_id = s3d_clone( Olsr_node_inet_obj );
-			s3d_link(olsr_node->obj_id,ZeroPoint);
 		} else {
 			/* normal olsr node */
 			olsr_node->obj_id = s3d_clone( Olsr_node_obj );
-			s3d_link(olsr_node->obj_id,ZeroPoint);
 		}
 
 		s3d_flags_on( olsr_node->obj_id, S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+
+		/* link newly created object to ZeroPoint */
+		s3d_link( olsr_node->obj_id, ZeroPoint );
 		/* add object_id and olsr_node to linked list */
 		lst_add(olsr_node->obj_id,&olsr_node);
-		
+
 		/* create olsr node text and attach (link) it to the node */
 		olsr_node->desc_id = s3d_draw_string( olsr_node->ip, &f );
 		s3d_link( olsr_node->desc_id, olsr_node->obj_id );
@@ -189,53 +193,111 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 	}
 
-	/* reset movement vector */
-	olsr_node->mov_vec[0] = olsr_node->mov_vec[1] = olsr_node->mov_vec[2] = 0.0;
-
-	/* calculate new movement vector */
-	olsr_con = &olsr_node->olsr_con;
-
-	while ( (*olsr_con) != NULL ) {
-
-		distance = dirt( olsr_node->pos_vec, (*olsr_con)->olsr_node->pos_vec, tmp_mov_vec );
-		/* f = (*olsr_con)->etx / distance; */
-		f = (*olsr_con)->etx * 5.0 / distance;
-		if ( f < 0.3 ) f = 0.3;
-		mov_add( olsr_node->mov_vec, tmp_mov_vec, 1/f-1);
-
-		olsr_con = &(*olsr_con)->next_olsr_con;
-
-	}
-
-	/* move it */
-	mov_add( olsr_node->pos_vec, olsr_node->mov_vec, 0.1 );
-	s3d_translate( olsr_node->obj_id, olsr_node->pos_vec[0], olsr_node->pos_vec[1], olsr_node->pos_vec[2] );
-
-	olsr_con = &olsr_node->olsr_con;
-	while ( (*olsr_con) != NULL ) {
-
-		s3d_pop_vertex( (*olsr_con)->obj_id, 6 );
-		s3d_pop_polygon( (*olsr_con)->obj_id, 2 );
-
-		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0]+ ZeroPosition[0], olsr_node->pos_vec[1]+ ZeroPosition[1], olsr_node->pos_vec[2]+ ZeroPosition[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0]+0.2+ ZeroPosition[0], olsr_node->pos_vec[1]+ ZeroPosition[1], olsr_node->pos_vec[2]+ ZeroPosition[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, olsr_node->pos_vec[0]-0.2+ ZeroPosition[0], olsr_node->pos_vec[1]+ ZeroPosition[1], olsr_node->pos_vec[2]+ ZeroPosition[2] );
-
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->olsr_node->pos_vec[0]+ ZeroPosition[0], (*olsr_con)->olsr_node->pos_vec[1]+ ZeroPosition[1], (*olsr_con)->olsr_node->pos_vec[2]+ ZeroPosition[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->olsr_node->pos_vec[0]+ ZeroPosition[0], (*olsr_con)->olsr_node->pos_vec[1]+0.2+ ZeroPosition[1], (*olsr_con)->olsr_node->pos_vec[2] + ZeroPosition[2]);
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->olsr_node->pos_vec[0]+ ZeroPosition[0], (*olsr_con)->olsr_node->pos_vec[1]-0.2+ ZeroPosition[1], (*olsr_con)->olsr_node->pos_vec[2] + ZeroPosition[2]);
-
-		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0);
-		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0);
-
-		olsr_con = &(*olsr_con)->next_olsr_con;
-
-	}
-
 	handle_olsr_node( olsr_node->left );
 	handle_olsr_node( olsr_node->right );
 
 }
+
+
+
+/***
+ *
+ * calculate movement vector of all olsr nodes
+ *
+ ***/
+
+void calc_olsr_node_mov( void ) {
+
+	float f, distance;
+	float tmp_mov_vec[3];
+	struct olsr_con **olsr_con = &Con_begin;
+
+	while ( (*olsr_con) != NULL ) {
+
+		distance = dirt( (*olsr_con)->left_olsr_node->pos_vec, (*olsr_con)->right_olsr_node->pos_vec, tmp_mov_vec );
+		f = ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 * distance;
+		if ( f < 0.3 ) f = 0.3;
+
+		mov_add( (*olsr_con)->left_olsr_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
+		mov_add( (*olsr_con)->right_olsr_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
+
+		olsr_con = &(*olsr_con)->next_olsr_con;
+
+	}
+
+}
+
+
+
+/***
+ *
+ * move all olsr nodes and their connections
+ *
+ ***/
+
+void move_olsr_nodes( void ) {
+
+	float z[3]={0,0,0};
+	float distance;
+	struct olsr_con **olsr_con = &Con_begin;
+
+	while ( (*olsr_con) != NULL ) {
+
+		/* move left olsr node if it has not been moved yet */
+		if ( !( ( (*olsr_con)->left_olsr_node->mov_vec[0] == 0 ) && ( (*olsr_con)->left_olsr_node->mov_vec[1] == 0 ) && ( (*olsr_con)->left_olsr_node->mov_vec[2] == 0 ) ) ) {
+
+			if ( ( distance = dist( (*olsr_con)->left_olsr_node->mov_vec, z ) ) > 10.0 ) {
+				mov_add( (*olsr_con)->left_olsr_node->pos_vec, (*olsr_con)->left_olsr_node->mov_vec, 1.0 / ( (float ) distance ) );
+			} else {
+				mov_add( (*olsr_con)->left_olsr_node->pos_vec, (*olsr_con)->left_olsr_node->mov_vec, 0.1 );
+			}
+
+			s3d_translate( (*olsr_con)->left_olsr_node->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0], (*olsr_con)->left_olsr_node->pos_vec[1], (*olsr_con)->left_olsr_node->pos_vec[2] );
+
+			/* reset movement vector */
+			(*olsr_con)->left_olsr_node->mov_vec[0] = (*olsr_con)->left_olsr_node->mov_vec[1] = (*olsr_con)->left_olsr_node->mov_vec[2] = 0.0;
+
+		}
+
+		/* move right olsr node if it has not been moved yet */
+		if ( !( ( (*olsr_con)->right_olsr_node->mov_vec[0] == 0 ) && ( (*olsr_con)->right_olsr_node->mov_vec[1] == 0 ) && ( (*olsr_con)->right_olsr_node->mov_vec[2] == 0 ) ) ) {
+
+			if ( ( distance = dist( (*olsr_con)->right_olsr_node->mov_vec, z ) ) > 10.0 ) {
+				mov_add( (*olsr_con)->right_olsr_node->pos_vec, (*olsr_con)->right_olsr_node->mov_vec, 1.0 / ( (float ) distance ) );
+			} else {
+				mov_add( (*olsr_con)->right_olsr_node->pos_vec, (*olsr_con)->right_olsr_node->mov_vec, 0.1 );
+			}
+
+			s3d_translate( (*olsr_con)->right_olsr_node->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0], (*olsr_con)->right_olsr_node->pos_vec[1], (*olsr_con)->right_olsr_node->pos_vec[2] );
+
+			/* reset movement vector */
+			(*olsr_con)->right_olsr_node->mov_vec[0] = (*olsr_con)->right_olsr_node->mov_vec[1] = (*olsr_con)->right_olsr_node->mov_vec[2] = 0.0;
+
+		}
+
+		/* move connection between left and right olsr node */
+		s3d_pop_vertex( (*olsr_con)->obj_id, 6 );
+		s3d_pop_polygon( (*olsr_con)->obj_id, 2 );
+
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] + 0.2 + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] - 0.2 + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
+
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]- 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
+
+		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
+		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );
+
+		olsr_con = &(*olsr_con)->next_olsr_con;
+
+	}
+
+}
+
+
+
 
 void mainloop()
 {
@@ -249,8 +311,14 @@ void mainloop()
 // 		node[i].mov[2]=0.0;
 // 	}
 
+	// calculate new movement vector
+	calc_olsr_node_mov();
+
 	// prepare nodes
-	handle_olsr_node( Root );
+	handle_olsr_node( Olsr_root );
+
+	// move it
+	move_olsr_nodes();
 
 	/*	for (i=0;i<max;i++)*/
 	/*	{*/
@@ -346,7 +414,7 @@ void keypress(struct s3d_evt *event) {
  *
  ***/
 
-void object_click(struct s3d_evt *evt) 
+void object_click(struct s3d_evt *evt)
 {
 	int oid;
 	oid=(int)*((unsigned long *)evt->buf);
@@ -417,7 +485,7 @@ void lst_initialize() {
  *
  * add a link object_id to olsr_node, to get ip adress and coordinates per object_id
  *                 id => object_id, returned from s3d_clone or s3d_new_object
- *  **olsr_node => pointer to pointer of current olsr_node 
+ *  **olsr_node => pointer to pointer of current olsr_node
  *
  ***/
 
@@ -442,7 +510,7 @@ void lst_add(int id,struct olsr_node **olsr_node) {
  *void move_lst_ptr(int *id)
  * remove element from obj2ip linked list
  * id => object_id, returned from s3d_clone or s3d_new_object
- *	
+ *
  ***/
 
 void lst_del(int id) {
@@ -463,9 +531,9 @@ void lst_del(int id) {
  *
  * move the List_ptr one positon ahead the searched element
  *	*id => pointer of object_id , returned from s3d_clone or s3d_new_object
- * 
+ *
  ***/
- 
+
 void move_lst_ptr(int *id) {
 	printf("obj2ip: move for %d\n",*id);
 	/* head to point at end or id lass then first element in linked list*/
@@ -491,7 +559,7 @@ void move_lst_ptr(int *id) {
 				List_ptr = List_ptr->prev;
 				printf("obj2ip: move <-- %d\n",List_ptr->id);
 			}
-			List_ptr = List_ptr->prev->prev; 
+			List_ptr = List_ptr->prev->prev;
 		}
 		printf("obj2ip: found id %d--> %d <--%d\n",List_ptr->id,List_ptr->next->id,List_ptr->next->next->id);
 	}
@@ -501,9 +569,9 @@ void move_lst_ptr(int *id) {
  *
  * search a object_id in linked list and return pointer on struct olsr_node
  *	id => object_id , returned from s3d_clone or s3d_new_object
- * 
+ *
  ***/
- 
+
 struct olsr_node **lst_search(int id) {
 	move_lst_ptr(&id);
 	if(id != List_ptr->next->id)
