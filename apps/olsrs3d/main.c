@@ -9,7 +9,6 @@
 
 int Debug = 0;
 
-
 char Olsr_host[256];   /* ip or hostname of olsr node with running dot_draw plugin */
 
 struct olsr_con *Con_begin = NULL;   /* begin of connection list */
@@ -476,7 +475,7 @@ void lst_initialize() {
 	if(Obj_to_ip_head == NULL || Obj_to_ip_end == NULL)
 		out_of_mem();
 	Obj_to_ip_head->id = 0;
-	Obj_to_ip_end->id = -1;
+	Obj_to_ip_end->id = (int) NULL;
 	Obj_to_ip_head->prev = Obj_to_ip_end->prev = Obj_to_ip_head;
 	Obj_to_ip_head->next = Obj_to_ip_end->next = Obj_to_ip_end;
 	List_ptr = Obj_to_ip_head;
@@ -536,31 +535,33 @@ void lst_del(int id) {
 void move_lst_ptr(int *id) {
 	/* printf("obj2ip: move for %d\n",*id); */
 	/* head to point at end or id lass then first element in linked list*/
- 	if(Obj_to_ip_head->next->id == -1 || *id < Obj_to_ip_head->next->id)
+ 	if(Obj_to_ip_head->next->id == NULL || *id < Obj_to_ip_head->next->id)
 		List_ptr = Obj_to_ip_head;
  	/* id is greather then last element in linked list */
 	else if(*id > Obj_to_ip_end->prev->id)
 		List_ptr = Obj_to_ip_end->prev;
 	else {
 		printf("obj2ip: ok i search deeper ;-) for id=%d\n",*id);
-		if(*id < (int)(Obj_to_ip_end->prev->id - Obj_to_ip_head->next->id) / 2) {
+		if((*id - (int) Obj_to_ip_head->next->id) <= ((int)(Obj_to_ip_end->prev->id)-*id)) {
 			List_ptr = Obj_to_ip_head->next;
-			printf("obj2ip: start at head id %d < %d (last-first)/2\n",*id,(Obj_to_ip_end->prev->id - Obj_to_ip_head->next->id) / 2);
+			printf("obj2ip: start at head id %d - %d <= %d - %d \n",*id,Obj_to_ip_head->next->id,*id,Obj_to_ip_end->prev->id);
 			while(*id > List_ptr->next->id) {
+				printf("obj2ip: %d > %d move to ",*id,List_ptr->next->id);
 				List_ptr = List_ptr->next;
-				/* printf("obj2ip: move --> %d\n",List_ptr->next->id); */
+				printf("%d\n",List_ptr->id);
 			}
 		} else {
 			List_ptr = Obj_to_ip_end->prev;
-			printf("obj2ip: start at end id %d > %d (last-first)/2\n",*id,(Obj_to_ip_end->prev->id - Obj_to_ip_head->next->id) / 2);
+			printf("obj2ip: start at end id %d - %d > %d - %d \n",*id,Obj_to_ip_head->next->id,Obj_to_ip_end->prev->id,*id);
 			//do List_ptr = List_ptr->prev; while(*id > List_ptr->prev->id);
 			while(*id < List_ptr->prev->id) {
+				printf("obj2ip: %d < %d move to ",*id,List_ptr->prev->id);
 				List_ptr = List_ptr->prev;
-				/* printf("obj2ip: move <-- %d\n",List_ptr->id); */
+				printf("%d\n",List_ptr->id);
 			}
 			List_ptr = List_ptr->prev->prev;
 		}
-		printf("obj2ip: found id %d--> %d <--%d\n",List_ptr->id,List_ptr->next->id,List_ptr->next->next->id);
+		printf("obj2ip: found id to insert/delete between %d--> .. <--%d\n",List_ptr->id,List_ptr->next->next->id);
 	}
 }
 
@@ -624,7 +625,6 @@ int main( int argc, char *argv[] ) {
 
 	/* set extern int optind = 0 for parse_args in io.c */
 	optind = 0;
-
 	process_init(Olsr_host);
 	if (!net_init(Olsr_host))
 	{
