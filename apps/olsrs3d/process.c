@@ -1,6 +1,7 @@
-#include <stdio.h> /* NULL */
-#include <string.h> /* strlen(), memmove() */
-#include <stdlib.h> /* rand(), malloc(), realloc(), free(), strtof() */
+#include <stdio.h> 	/* NULL */
+#include <string.h> 	/* strlen(), memmove() */
+#include <stdlib.h> 	/* rand(), malloc(), realloc(), free(), strtof() */
+#include <math.h>		/* sin(), cos() */
 #include <s3d.h>
 #include "olsrs3d.h"
 char lbuf[MAXLINESIZE];
@@ -160,7 +161,7 @@ int resize_adj()
 
 void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
-	int i;   /* inc var */
+	/* int i;    inc var */
 	int result;   /* result of strcmp */
 
 	while ( (*olsr_node) != NULL ) {
@@ -193,10 +194,26 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
 		if ( Debug ) printf( "new olsr node: %s\n", (*olsr_node)->ip );
 
-		for ( i=0; i<3; i++ ) {
-			(*olsr_node)->pos_vec[i] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
-			(*olsr_node)->mov_vec[i] = 0.0;
-		}
+// 		for ( i=0; i<3; i++ ) {
+
+// 			alpha = ( ( 360.0 * rand() ) / ( ( float ) i ) );
+// 			radius=((n_item*10)/(M_PI*4));
+// 			if (n_item<5)
+// 				radius=((50)/(M_PI*4));
+// 			else
+// 				radius=((n_item*10)/(M_PI*4));
+// 			px=posx-sin(alpha*M_PI/180.0)*radius;
+// 			pz=posy;
+// 			pz=posz-cos(alpha*M_PI/180.0)*radius;
+			
+// 			(*olsr_node)->pos_vec[i] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
+			(*olsr_node)->pos_vec[0] = ( ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0 ) - sin( ( ( 360.0 * rand() ) / 100.0 ) * M_PI / 180.0 ) * ( 20.0 / ( M_PI * 4 ) );
+			(*olsr_node)->pos_vec[1] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
+			(*olsr_node)->pos_vec[2] = (*olsr_node)->pos_vec[1] - cos( ( ( 360.0 * rand() ) / 100.0 ) * M_PI / 180.0 ) * ( 20.0 / ( M_PI * 4 ) );
+// 			printf( "vec1: %f, vec2: %f, vec3: %f\n", (*olsr_node)->pos_vec[0], (*olsr_node)->pos_vec[1], (*olsr_node)->pos_vec[2] );
+			(*olsr_node)->mov_vec[0] = (*olsr_node)->mov_vec[1] = (*olsr_node)->mov_vec[2] = 0.0;
+			
+// 		}
 
 		(*olsr_node)->obj_id = -1;
 		(*olsr_node)->desc_id = -1;

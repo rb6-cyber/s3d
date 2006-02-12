@@ -224,16 +224,6 @@ void calc_olsr_node_mov( void ) {
 			mov_add( (*olsr_con)->left_olsr_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
 			mov_add( (*olsr_con)->right_olsr_node->mov_vec, tmp_mov_vec, - ( 1 / f - 1 ) );
 
-			if ( strcmp( (*olsr_con)->left_olsr_node->ip, "104.131.131.1" ) == 0 ) {
-
-				printf( "con_to: %s, own_etx: %f, other_etx: %f, vec: %f,%f,%f\n", (*olsr_con)->right_olsr_node->ip, (*olsr_con)->left_etx, (*olsr_con)->right_etx, (*olsr_con)->left_olsr_node->mov_vec[0], (*olsr_con)->left_olsr_node->mov_vec[1], (*olsr_con)->left_olsr_node->mov_vec[2] );
-			
-			} else if ( strcmp( (*olsr_con)->right_olsr_node->ip, "104.131.131.1" ) == 0 ) {
-
-				printf( "con_to: %s, own_etx: %f, other_etx: %f, vec: %f,%f,%f\n", (*olsr_con)->left_olsr_node->ip, (*olsr_con)->right_etx, (*olsr_con)->left_etx, (*olsr_con)->right_olsr_node->mov_vec[0], (*olsr_con)->right_olsr_node->mov_vec[1], (*olsr_con)->right_olsr_node->mov_vec[2] );
-
-			}
-
 // 		}
 
 		olsr_con = &(*olsr_con)->next_olsr_con;
@@ -328,7 +318,7 @@ void mainloop()
 
 	// calculate new movement vector
 	calc_olsr_node_mov();
-	printf( "calc ended !\n" );
+
 	// prepare nodes
 	handle_olsr_node( Olsr_root );
 
