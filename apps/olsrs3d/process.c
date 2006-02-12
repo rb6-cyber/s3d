@@ -63,6 +63,7 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 		(*olsr_con)->left_olsr_node = con_from;
 		(*olsr_con)->right_olsr_node = con_to;
 		(*olsr_con)->left_etx = etx;
+		(*olsr_con)->right_etx = 0.0;
 
 		(*olsr_con)->next_olsr_con = NULL;
 

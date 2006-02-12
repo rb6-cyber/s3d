@@ -2,7 +2,7 @@
 #include <s3d.h>
 #include <unistd.h>	/* sleep() */
 #include <string.h>	/* strncpy() */
-#include <math.h>	/* sqrt() */
+#include <math.h>		/* sqrt() */
 #include <getopt.h>	/* getopt() */
 #include "olsrs3d.h"
 #define SPEED		10.0
@@ -215,12 +215,26 @@ void calc_olsr_node_mov( void ) {
 
 	while ( (*olsr_con) != NULL ) {
 
-		distance = dirt( (*olsr_con)->left_olsr_node->pos_vec, (*olsr_con)->right_olsr_node->pos_vec, tmp_mov_vec );
-		f = ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 * distance;
-		if ( f < 0.3 ) f = 0.3;
+// 		if ( ( (*olsr_con)->left_etx != 0.0 ) && ( (*olsr_con)->right_etx != 0.0  ) ) {
 
-		mov_add( (*olsr_con)->left_olsr_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
-		mov_add( (*olsr_con)->right_olsr_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
+			distance = dirt( (*olsr_con)->left_olsr_node->pos_vec, (*olsr_con)->right_olsr_node->pos_vec, tmp_mov_vec );
+			f = ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) * 5.0 / 2.0 ) / distance;
+			if ( f < 0.3 ) f = 0.3;
+
+			mov_add( (*olsr_con)->left_olsr_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
+			mov_add( (*olsr_con)->right_olsr_node->mov_vec, tmp_mov_vec, - ( 1 / f - 1 ) );
+
+			if ( strcmp( (*olsr_con)->left_olsr_node->ip, "104.131.131.1" ) == 0 ) {
+
+				printf( "con_to: %s, own_etx: %f, other_etx: %f, vec: %f,%f,%f\n", (*olsr_con)->right_olsr_node->ip, (*olsr_con)->left_etx, (*olsr_con)->right_etx, (*olsr_con)->left_olsr_node->mov_vec[0], (*olsr_con)->left_olsr_node->mov_vec[1], (*olsr_con)->left_olsr_node->mov_vec[2] );
+			
+			} else if ( strcmp( (*olsr_con)->right_olsr_node->ip, "104.131.131.1" ) == 0 ) {
+
+				printf( "con_to: %s, own_etx: %f, other_etx: %f, vec: %f,%f,%f\n", (*olsr_con)->left_olsr_node->ip, (*olsr_con)->right_etx, (*olsr_con)->left_etx, (*olsr_con)->right_olsr_node->mov_vec[0], (*olsr_con)->right_olsr_node->mov_vec[1], (*olsr_con)->right_olsr_node->mov_vec[2] );
+
+			}
+
+// 		}
 
 		olsr_con = &(*olsr_con)->next_olsr_con;
 
@@ -314,7 +328,7 @@ void mainloop()
 
 	// calculate new movement vector
 	calc_olsr_node_mov();
-
+	printf( "calc ended !\n" );
 	// prepare nodes
 	handle_olsr_node( Olsr_root );
 
@@ -530,7 +544,7 @@ void lst_del(int id) {
  ***/
 
 void move_lst_ptr(int *id) {
-	printf("obj2ip: move for %d\n",*id);
+	/* printf("obj2ip: move for %d\n",*id); */
 	/* head to point at end or id lass then first element in linked list*/
  	if(Obj_to_ip_head->next->id == -1 || *id < Obj_to_ip_head->next->id)
 		List_ptr = Obj_to_ip_head;
@@ -544,7 +558,7 @@ void move_lst_ptr(int *id) {
 			printf("obj2ip: start at head id %d < %d (last-first)/2\n",*id,(Obj_to_ip_end->prev->id - Obj_to_ip_head->next->id) / 2);
 			while(*id > List_ptr->next->id) {
 				List_ptr = List_ptr->next;
-				printf("obj2ip: move --> %d\n",List_ptr->next->id);
+				/* printf("obj2ip: move --> %d\n",List_ptr->next->id); */
 			}
 		} else {
 			List_ptr = Obj_to_ip_end->prev;
@@ -552,7 +566,7 @@ void move_lst_ptr(int *id) {
 			//do List_ptr = List_ptr->prev; while(*id > List_ptr->prev->id);
 			while(*id < List_ptr->prev->id) {
 				List_ptr = List_ptr->prev;
-				printf("obj2ip: move <-- %d\n",List_ptr->id);
+				/* printf("obj2ip: move <-- %d\n",List_ptr->id); */
 			}
 			List_ptr = List_ptr->prev->prev;
 		}
