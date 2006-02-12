@@ -368,7 +368,7 @@ void mainloop()
 /*				s3d_pop_polygon(o,2);*/
 // 				s3d_push_vertex(o,node[i].pos[0],	 node[i].pos[1],node[i].pos[2]);
 // 				s3d_push_vertex(o,node[i].pos[0]+0.2,node[i].pos[1],node[i].pos[2]);
-// 				s3d_push_vertex(o,node[i].pos[0]-0.2,node[i].pos[1],node[i].pos[2]);
+// 				s3d_push_vertex(o,node[i].pos[0]-->id0.2,node[i].pos[1],node[i].pos[2]);
 
 // 				s3d_push_vertex(o,node[j].pos[0],	 node[j].pos[1],node[j].pos[2]);
 // 				s3d_push_vertex(o,node[j].pos[0],node[j].pos[1]+0.2,node[j].pos[2]);
@@ -408,8 +408,10 @@ void keypress(struct s3d_evt *event) {
 	int key;
 	key=*((unsigned short *)event->buf);
 	/* ESC */
-	if(key = 27)
+	if(key == 27)
 		stop();
+	if(key == 49)
+		lst_out();
 }
 
 /***
@@ -426,6 +428,9 @@ void object_click(struct s3d_evt *evt)
 	ZeroPosition[0] = 0;
 	ZeroPosition[1] = 50;
 	ZeroPosition[2] = 40;*/
+	struct olsr_node *olsr_node;
+	olsr_node = *lst_search(oid);
+	printf("obj2ip: search return %s\n",olsr_node->ip);
 }
 
 /***
@@ -475,7 +480,7 @@ void lst_initialize() {
 	if(Obj_to_ip_head == NULL || Obj_to_ip_end == NULL)
 		out_of_mem();
 	Obj_to_ip_head->id = 0;
-	Obj_to_ip_end->id = (int) NULL;
+	Obj_to_ip_end->id = 0;
 	Obj_to_ip_head->prev = Obj_to_ip_end->prev = Obj_to_ip_head;
 	Obj_to_ip_head->next = Obj_to_ip_end->next = Obj_to_ip_end;
 	List_ptr = Obj_to_ip_head;
@@ -497,11 +502,11 @@ void lst_add(int id,struct olsr_node **olsr_node) {
 	new->id = id;
 	new->olsr_node = *olsr_node;
 	move_lst_ptr(&id);
-	printf("obj2ip: add object %d between %d .. %d ip %s to list\n",new->id,List_ptr->id,List_ptr->next->id,new->olsr_node->ip);
 	new->prev = List_ptr;
 	new->next = List_ptr->next;
 	List_ptr->next->prev = new;
 	List_ptr->next = new;
+	printf("obj2ip: add object %d between %d .. %d ip %s to list\n",new->id,new->prev->id,new->next->id,new->olsr_node->ip);
 }
 
 /***
@@ -514,13 +519,13 @@ void lst_add(int id,struct olsr_node **olsr_node) {
 void lst_del(int id) {
 	struct Obj_to_ip *del;
 	move_lst_ptr(&id);
-	if(id != List_ptr->next->id)
+	if(id != List_ptr->id)
 		printf("obj2ip: remove id %d failed move_lst_ptr return id %d\n",id,List_ptr->next->id);
 	else {
-		printf("obj2ip: remove object %d ip %s from list\n",List_ptr->next->id,List_ptr->next->olsr_node->ip);
 		del = List_ptr->next;
 		List_ptr->next = List_ptr->next->next;
 		List_ptr->next->prev = List_ptr;
+		printf("obj2ip: remove object %d --> %d <-- %d ip %s from list\n",List_ptr->prev->id,del->id,List_ptr->next->id,del->olsr_node->ip);
 		free(del);
 	}
 }
@@ -535,7 +540,7 @@ void lst_del(int id) {
 void move_lst_ptr(int *id) {
 	/* printf("obj2ip: move for %d\n",*id); */
 	/* head to point at end or id lass then first element in linked list*/
- 	if(Obj_to_ip_head->next->id == NULL || *id < Obj_to_ip_head->next->id)
+	if(Obj_to_ip_head->next == Obj_to_ip_head || *id < Obj_to_ip_head->next->id)
 		List_ptr = Obj_to_ip_head;
  	/* id is greather then last element in linked list */
 	else if(*id > Obj_to_ip_end->prev->id)
@@ -543,25 +548,25 @@ void move_lst_ptr(int *id) {
 	else {
 		printf("obj2ip: ok i search deeper ;-) for id=%d\n",*id);
 		if((*id - (int) Obj_to_ip_head->next->id) <= ((int)(Obj_to_ip_end->prev->id)-*id)) {
-			List_ptr = Obj_to_ip_head->next;
-			printf("obj2ip: start at head id %d - %d <= %d - %d \n",*id,Obj_to_ip_head->next->id,*id,Obj_to_ip_end->prev->id);
-			while(*id > List_ptr->next->id) {
-				printf("obj2ip: %d > %d move to ",*id,List_ptr->next->id);
+			List_ptr = Obj_to_ip_head;
+			printf("obj2ip: start at head id %d - %d <= %d - %d \n",*id,Obj_to_ip_head->next->id,Obj_to_ip_end->prev->id,*id);
+			while(*id >= List_ptr->next->id) {
+				printf("obj2ip: %d > %d move to ",*id,List_ptr->id);
 				List_ptr = List_ptr->next;
 				printf("%d\n",List_ptr->id);
 			}
 		} else {
-			List_ptr = Obj_to_ip_end->prev;
+			List_ptr = Obj_to_ip_end;
 			printf("obj2ip: start at end id %d - %d > %d - %d \n",*id,Obj_to_ip_head->next->id,Obj_to_ip_end->prev->id,*id);
 			//do List_ptr = List_ptr->prev; while(*id > List_ptr->prev->id);
 			while(*id < List_ptr->prev->id) {
-				printf("obj2ip: %d < %d move to ",*id,List_ptr->prev->id);
+				printf("obj2ip: %d < %d move to ",*id,List_ptr->id);
 				List_ptr = List_ptr->prev;
 				printf("%d\n",List_ptr->id);
 			}
-			List_ptr = List_ptr->prev->prev;
+			List_ptr = List_ptr->prev;
 		}
-		printf("obj2ip: found id to insert/delete between %d--> .. <--%d\n",List_ptr->id,List_ptr->next->next->id);
+		printf("obj2ip: found id to insert between %d--> .. <--%d to search/delete %d--> .. <--%d\n",List_ptr->id,List_ptr->next->id,List_ptr->prev->id,List_ptr->next->next->id);
 	}
 }
 
@@ -580,11 +585,22 @@ void move_lst_ptr(int *id) {
 
 struct olsr_node **lst_search(int id) {
 	move_lst_ptr(&id);
-	if(id != List_ptr->next->id)
+	if(id != List_ptr->id)
 		printf("obj2ip: search id....id not found\n");
 	else
-		printf("obj2ip: search found objekt_id=%d objekt_ip=%s\n",id,List_ptr->next->olsr_node->ip);
-	return(&List_ptr->next->olsr_node);
+		printf("obj2ip: search found objekt_id=%d objekt_ip=%s\n",List_ptr->id,List_ptr->olsr_node->ip);
+	return(&List_ptr->olsr_node);
+}
+
+void lst_out() {
+	struct Obj_to_ip *ptr;
+	ptr = Obj_to_ip_head;
+	while(ptr != ptr->next) {
+		printf("List--------------------------\n");
+		printf("id-> %d\n",ptr->id);
+		ptr = ptr->next;
+	}
+	printf("List--------------------------\n");
 }
 
 int main( int argc, char *argv[] ) {
