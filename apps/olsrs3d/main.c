@@ -522,9 +522,9 @@ void lst_del(int id) {
 	if(id != List_ptr->id)
 		printf("obj2ip: remove id %d failed move_lst_ptr return id %d\n",id,List_ptr->next->id);
 	else {
-		del = List_ptr->next;
-		List_ptr->next = List_ptr->next->next;
-		List_ptr->next->prev = List_ptr;
+		del = List_ptr;
+		List_ptr->next->prev = List_ptr->prev;
+		List_ptr->prev->next = List_ptr->next;
 		printf("obj2ip: remove object %d --> %d <-- %d ip %s from list\n",List_ptr->prev->id,del->id,List_ptr->next->id,del->olsr_node->ip);
 		free(del);
 	}
@@ -566,7 +566,7 @@ void move_lst_ptr(int *id) {
 			}
 			List_ptr = List_ptr->prev;
 		}
-		printf("obj2ip: found id to insert between %d--> .. <--%d to search/delete %d--> .. <--%d\n",List_ptr->id,List_ptr->next->id,List_ptr->prev->id,List_ptr->next->next->id);
+		printf("obj2ip: found id to insert between %d--> .. <--%d to search/delete %d--> .. <--%d\n",List_ptr->id,List_ptr->next->next->id,List_ptr->prev->id,List_ptr->next->id);
 	}
 }
 
