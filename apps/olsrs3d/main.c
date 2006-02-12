@@ -26,7 +26,6 @@ float left=-1.0;
 float CamPosition[2][3];   /* CamPosition[trans|rot][x-z] */
 float ZeroPosition[3] = {0,0,0};   /* current position zero position */
 int ZeroPoint;   /* object zeropoint */
-int Follow_id = 0;
 
 
 
@@ -389,12 +388,6 @@ void mainloop()
 	return;
 }
 
-int follow_node() {
-	if(Follow_id == 0)
-		return(0);
-	
-}
-
 void stop()
 {
 	s3d_quit();
@@ -424,21 +417,12 @@ void keypress(struct s3d_evt *event) {
 
 void object_click(struct s3d_evt *evt)
 {
-	struct olsr_node *F_node;
 	int oid;
 	oid=(int)*((unsigned long *)evt->buf);
-	if (Follow_id != 0 && oid == Follow_id) {
-		Follow_id == 0;
-		/* set world to start point */
-	} else {
-		F_node = *lst_search(oid);
-		printf("%s",F_node->ip);
-	}
 	/*s3d_translate(ZeroPoint,0,50,40);
 	ZeroPosition[0] = 0;
 	ZeroPosition[1] = 50;
 	ZeroPosition[2] = 40;*/
-
 }
 
 /***
