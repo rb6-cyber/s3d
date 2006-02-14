@@ -274,7 +274,8 @@ void calc_olsr_node_mov( void ) {
 
 void move_olsr_nodes( void ) {
 
-	float z[3]={0,0,0};
+	float null_vec[3] = {0,0,0};
+	float tmp_mov_vec[3];
 	float distance;
 	struct olsr_con **olsr_con = &Con_begin;
 
@@ -283,7 +284,11 @@ void move_olsr_nodes( void ) {
 		/* move left olsr node if it has not been moved yet */
 		if ( !( ( (*olsr_con)->left_olsr_node->mov_vec[0] == 0 ) && ( (*olsr_con)->left_olsr_node->mov_vec[1] == 0 ) && ( (*olsr_con)->left_olsr_node->mov_vec[2] == 0 ) ) ) {
 
-			if ( ( distance = dist( (*olsr_con)->left_olsr_node->mov_vec, z ) ) > 10.0 ) {
+			distance = dirt( (*olsr_con)->left_olsr_node->pos_vec, null_vec, tmp_mov_vec );
+			mov_add( (*olsr_con)->left_olsr_node->mov_vec, tmp_mov_vec, distance / 100 ); /* move a little bit to point zero */
+			mov_add( (*olsr_con)->left_olsr_node->mov_vec, tmp_mov_vec, 1 ); /* move a little bit to point zero */
+
+			if ( ( distance = dist( (*olsr_con)->left_olsr_node->mov_vec, null_vec ) ) > 10.0 ) {
 				mov_add( (*olsr_con)->left_olsr_node->pos_vec, (*olsr_con)->left_olsr_node->mov_vec, 1.0 / ( (float ) distance ) );
 			} else {
 				mov_add( (*olsr_con)->left_olsr_node->pos_vec, (*olsr_con)->left_olsr_node->mov_vec, 0.1 );
@@ -299,7 +304,11 @@ void move_olsr_nodes( void ) {
 		/* move right olsr node if it has not been moved yet */
 		if ( !( ( (*olsr_con)->right_olsr_node->mov_vec[0] == 0 ) && ( (*olsr_con)->right_olsr_node->mov_vec[1] == 0 ) && ( (*olsr_con)->right_olsr_node->mov_vec[2] == 0 ) ) ) {
 
-			if ( ( distance = dist( (*olsr_con)->right_olsr_node->mov_vec, z ) ) > 10.0 ) {
+			distance = dirt( (*olsr_con)->right_olsr_node->pos_vec, null_vec, tmp_mov_vec );
+			mov_add( (*olsr_con)->right_olsr_node->mov_vec, tmp_mov_vec, distance / 100 ); /* move a little bit to point zero */
+			mov_add( (*olsr_con)->right_olsr_node->mov_vec, tmp_mov_vec, 1 ); /* move a little bit to point zero */
+
+			if ( ( distance = dist( (*olsr_con)->right_olsr_node->mov_vec, null_vec ) ) > 10.0 ) {
 				mov_add( (*olsr_con)->right_olsr_node->pos_vec, (*olsr_con)->right_olsr_node->mov_vec, 1.0 / ( (float ) distance ) );
 			} else {
 				mov_add( (*olsr_con)->right_olsr_node->pos_vec, (*olsr_con)->right_olsr_node->mov_vec, 0.1 );
