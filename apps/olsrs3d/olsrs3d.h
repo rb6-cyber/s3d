@@ -6,7 +6,7 @@ struct t_node {
 };
 
 
-/* linked list for the connections */
+/* linked list for the all connections */
 struct olsr_con {
 
 	struct olsr_con *next_olsr_con;   /* pointer to next connection */
@@ -15,6 +15,15 @@ struct olsr_con {
 	float left_etx;   /* etx of left olsr node */
 	float right_etx;   /* etx of right olsr node */
 	int obj_id;   /* id of connection object in s3d */
+
+};
+
+
+/* linked list for the connections of each olsr node */
+struct olsr_con_list {
+
+	struct olsr_con_list *next_olsr_con_list;   /* pointer to next connection */
+	struct olsr_con *olsr_con;   /* pointer to the connection */
 
 };
 
@@ -31,9 +40,10 @@ struct olsr_node {
 	float mov_vec[3];   /* move vector */
 	int obj_id;   /* id of node object in s3d */
 	int desc_id;   /* id of node description object in s3d */
-	struct olsr_con *olsr_con;   /* pointer to first connection */
+	struct olsr_con_list *olsr_con_list;   /* pointer to first connection */
 
 };
+
 
 struct Obj_to_ip {
 	int id;

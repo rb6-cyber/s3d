@@ -151,6 +151,8 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	float f, distance;
 	float tmp_mov_vec[3];
 	struct olsr_con **olsr_con;
+	struct Obj_to_ip *Obj_to_ip_curr;
+	struct olsr_con_list *olsr_con_list;
 
 	/* no more nodes left */
 	if ( olsr_node == NULL ) return;
@@ -193,6 +195,37 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 	}
 
+	/* drift away from unrelated nodes */
+	Obj_to_ip_curr = Obj_to_ip_head->next;
+	while ( Obj_to_ip_curr != Obj_to_ip_end ) {
+
+		/* myself ... */
+// 		if ( strncmp( Obj_to_ip_curr->olsr_node->ip, olsr_node->ip, NAMEMAX ) == 0 ) continue;
+
+		olsr_con_list = olsr_node->olsr_con_list;
+		while ( olsr_con_list != NULL ) {
+
+			/* nodes are related */
+			if ( ( strncmp( olsr_con_list->olsr_con->left_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) || ( strncmp( olsr_con_list->olsr_con->right_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) ) break;
+
+			olsr_con_list = olsr_con_list->next_olsr_con_list;
+
+		}
+
+		/* nodes are not related - so drift */
+		if ( olsr_con_list == NULL ) {
+
+			distance = dirt( olsr_node->pos_vec, Obj_to_ip_curr->olsr_node->pos_vec, tmp_mov_vec );
+			if ( distance < 0.1 ) distance = 0.1;
+			mov_add( olsr_node->mov_vec, tmp_mov_vec,-100 / ( distance * distance ) );
+			mov_add( Obj_to_ip_curr->olsr_node->mov_vec, tmp_mov_vec, 100 / ( distance * distance ) );
+
+		}
+
+		Obj_to_ip_curr = Obj_to_ip_curr->next;
+
+	}
+
 	handle_olsr_node( olsr_node->left );
 	handle_olsr_node( olsr_node->right );
 
@@ -214,16 +247,16 @@ void calc_olsr_node_mov( void ) {
 
 	while ( (*olsr_con) != NULL ) {
 
-// 		if ( ( (*olsr_con)->left_etx != 0.0 ) && ( (*olsr_con)->right_etx != 0.0  ) ) {
+		if ( ( (*olsr_con)->left_etx != 0.0 ) && ( (*olsr_con)->right_etx != 0.0  ) ) {
 
 			distance = dirt( (*olsr_con)->left_olsr_node->pos_vec, (*olsr_con)->right_olsr_node->pos_vec, tmp_mov_vec );
-			f = ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) * 5.0 / 2.0 ) / distance;
+			f = ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 ) / distance;
 			if ( f < 0.3 ) f = 0.3;
 
 			mov_add( (*olsr_con)->left_olsr_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
 			mov_add( (*olsr_con)->right_olsr_node->mov_vec, tmp_mov_vec, - ( 1 / f - 1 ) );
 
-// 		}
+		}
 
 		olsr_con = &(*olsr_con)->next_olsr_con;
 

@@ -1,7 +1,6 @@
 #include <stdio.h> 	/* NULL */
 #include <string.h> 	/* strlen(), memmove() */
 #include <stdlib.h> 	/* rand(), malloc(), realloc(), free(), strtof() */
-#include <math.h>		/* sin(), cos() */
 #include <s3d.h>
 #include "olsrs3d.h"
 char lbuf[MAXLINESIZE];
@@ -28,7 +27,6 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 
 		/* connection already exists */
 		if ( ( strncmp( (*olsr_con)->left_olsr_node->ip, con_from->ip, NAMEMAX ) == 0 ) && ( strncmp( (*olsr_con)->right_olsr_node->ip, con_to->ip, NAMEMAX ) == 0 ) ) {
-
 			(*olsr_con)->left_etx = etx;
 			break;
 
@@ -61,12 +59,30 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
 		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );
 
+		/* add olsr node to new olsr connection in order to access the nodes from the connection list */
 		(*olsr_con)->left_olsr_node = con_from;
 		(*olsr_con)->right_olsr_node = con_to;
+
 		(*olsr_con)->left_etx = etx;
 		(*olsr_con)->right_etx = 0.0;
 
 		(*olsr_con)->next_olsr_con = NULL;
+
+		/* add new olsr connection to olsr nodes in order to access the connection from the olsr node */
+
+		struct olsr_con_list **olsr_con_list = &(*olsr_con)->left_olsr_node->olsr_con_list;
+		while ( (*olsr_con_list) != NULL ) olsr_con_list = &(*olsr_con_list)->next_olsr_con_list;
+		(*olsr_con_list) = malloc( sizeof( struct olsr_con_list ) );
+		if ( (*olsr_con_list) == NULL ) out_of_mem();
+		(*olsr_con_list)->olsr_con = (*olsr_con);
+		(*olsr_con_list)->next_olsr_con_list = NULL;
+
+		olsr_con_list = &(*olsr_con)->right_olsr_node->olsr_con_list;
+		while ( (*olsr_con_list) != NULL ) olsr_con_list = &(*olsr_con_list)->next_olsr_con_list;
+		(*olsr_con_list) = malloc( sizeof( struct olsr_con_list ) );
+		if ( (*olsr_con_list) == NULL ) out_of_mem();
+		(*olsr_con_list)->olsr_con = (*olsr_con);
+		(*olsr_con_list)->next_olsr_con_list = NULL;
 
 	}
 
@@ -161,7 +177,6 @@ int resize_adj()
 
 void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
-	/* int i;    inc var */
 	int result;   /* result of strcmp */
 
 	while ( (*olsr_node) != NULL ) {
@@ -188,36 +203,20 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
 		(*olsr_node)->left = NULL;
 		(*olsr_node)->right = NULL;
-		strncpy((*olsr_node)->ip,ip,NAMEMAX);
+		strncpy( (*olsr_node)->ip, ip, NAMEMAX );
 		(*olsr_node)->inet_gw = 0;
 		(*olsr_node)->inet_gw_modified = 1;
 
 		if ( Debug ) printf( "new olsr node: %s\n", (*olsr_node)->ip );
 
-// 		for ( i=0; i<3; i++ ) {
-
-// 			alpha = ( ( 360.0 * rand() ) / ( ( float ) i ) );
-// 			radius=((n_item*10)/(M_PI*4));
-// 			if (n_item<5)
-// 				radius=((50)/(M_PI*4));
-// 			else
-// 				radius=((n_item*10)/(M_PI*4));
-// 			px=posx-sin(alpha*M_PI/180.0)*radius;
-// 			pz=posy;
-// 			pz=posz-cos(alpha*M_PI/180.0)*radius;
-			
-// 			(*olsr_node)->pos_vec[i] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
-			(*olsr_node)->pos_vec[0] = ( ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0 ) - sin( ( ( 360.0 * rand() ) / 100.0 ) * M_PI / 180.0 ) * ( 20.0 / ( M_PI * 4 ) );
-			(*olsr_node)->pos_vec[1] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
-			(*olsr_node)->pos_vec[2] = (*olsr_node)->pos_vec[1] - cos( ( ( 360.0 * rand() ) / 100.0 ) * M_PI / 180.0 ) * ( 20.0 / ( M_PI * 4 ) );
-// 			printf( "vec1: %f, vec2: %f, vec3: %f\n", (*olsr_node)->pos_vec[0], (*olsr_node)->pos_vec[1], (*olsr_node)->pos_vec[2] );
-			(*olsr_node)->mov_vec[0] = (*olsr_node)->mov_vec[1] = (*olsr_node)->mov_vec[2] = 0.0;
-			
-// 		}
+		(*olsr_node)->pos_vec[0] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
+		(*olsr_node)->pos_vec[1] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
+		(*olsr_node)->pos_vec[2] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
+		(*olsr_node)->mov_vec[0] = (*olsr_node)->mov_vec[1] = (*olsr_node)->mov_vec[2] = 0.0;
 
 		(*olsr_node)->obj_id = -1;
 		(*olsr_node)->desc_id = -1;
-		(*olsr_node)->olsr_con = NULL;
+		(*olsr_node)->olsr_con_list = NULL;
 
 		return (*olsr_node);
 
@@ -370,11 +369,11 @@ int parse_line(int n)
 	if (dn>=6)
 	{
 /*		printf("######link from [%s] to [%s], label [%s]\n",data[0],data[1],data[2]);*/
-		// announced network via HNA
-		if ( strcmp( data[2], "HNA" ) == 0 ) {
+		/* announced network via HNA */
+		if ( strncmp( data[2], "HNA", NAMEMAX ) == 0 ) {
 
-			// connection to internet
-			if ( strcmp( data[1], "0.0.0.0/0.0.0.0" ) == 0 ) {
+			/* connection to internet */
+			if ( strncmp( data[1], "0.0.0.0/0.0.0.0", NAMEMAX ) == 0 ) {
 
 				olsr_node1 = get_olsr_node( &Olsr_root, data[0] );
 
@@ -390,7 +389,7 @@ int parse_line(int n)
 
 			/* TODO: other HNA hast to be done */
 
-		// normal node
+		/* normal node */
 		} else {
 // 			n1=get_node_num(data[0]);
 // 			n2=get_node_num(data[1]);
