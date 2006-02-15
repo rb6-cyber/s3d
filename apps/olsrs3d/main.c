@@ -25,7 +25,7 @@ float left=-1.0;
 float CamPosition[2][3];   /* CamPosition[trans|rot][x-z] */
 float ZeroPosition[3] = {0,0,0};   /* current position zero position */
 int ZeroPoint;   /* object zeropoint */
-
+int ColorSwitch = 1;
 
 
 
@@ -334,26 +334,36 @@ void move_olsr_nodes( void ) {
 		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
 		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]- 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
 
-		etx = ( ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 ) - 10.0 ) * 10.0;
-// 		if ( strncmp( (*olsr_con)->left_olsr_node->ip, "104.0.23.1", NAMEMAX ) == 0 ) printf("%s: %f, %s: %f, etx: %f\n",(*olsr_con)->left_olsr_node->ip, (*olsr_con)->left_etx, (*olsr_con)->right_olsr_node->ip, (*olsr_con)->right_etx, etx);
-		if ( ( etx >= 1.0 ) && ( etx < 2.0 ) ) {
-			s3d_push_material( (*olsr_con)->obj_id,
-						   0.0,1.0,0.0,
-						   0.0,1.0,0.0,
-						   0.0,1.0,0.0);
-
-		} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
-			s3d_push_material( (*olsr_con)->obj_id,
-						   1.0,1.0,0.0,
-						   1.0,1.0,0.0,
-						   1.0,1.0,0.0);
-
+		if(ColorSwitch) {
+			float rgb;
+			etx = ( ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 ) - 10.0 ) * 10.0;
+	// 		if ( strncmp( (*olsr_con)->left_olsr_node->ip, "104.0.23.1", NAMEMAX ) == 0 ) printf("%s: %f, %s: %f, etx: %f\n",(*olsr_con)->left_olsr_node->ip, (*olsr_con)->left_etx, (*olsr_con)->right_olsr_node->ip, (*olsr_con)->right_etx, etx);
+			if ( ( etx >= 1.0 ) && ( etx < 2.0 ) ) {
+				rgb = etx - 1.0;
+				s3d_push_material( (*olsr_con)->obj_id,
+							rgb,1.0,0.0,
+							rgb,1.0,0.0,
+							rgb,1.0,0.0);
+	
+			} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
+				rgb = 3.0 - etx;
+				s3d_push_material( (*olsr_con)->obj_id,
+							1.0,rgb,0.0,
+							1.0,rgb,0.0,
+							1.0,rgb,0.0);
+	
+			} else {
+				s3d_push_material( (*olsr_con)->obj_id,
+							1.0,0.0,0.0,
+							1.0,0.0,0.0,
+							1.0,0.0,0.0);
+	
+			}
 		} else {
 			s3d_push_material( (*olsr_con)->obj_id,
-						   1.0,0.0,0.0,
-						   1.0,0.0,0.0,
-						   1.0,0.0,0.0);
-
+						1.0,1.0,1.0,
+						1.0,1.0,1.0,
+						1.0,1.0,1.0);
 		}
 
 		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
@@ -364,7 +374,6 @@ void move_olsr_nodes( void ) {
 	}
 
 }
-
 
 
 
@@ -477,6 +486,9 @@ void keypress(struct s3d_evt *event) {
 		stop();
 	if(key == 49)
 		lst_out();
+	if(key == 99)
+		if(ColorSwitch) ColorSwitch = 0;
+		else ColorSwitch = 1;
 }
 
 /***
