@@ -63,8 +63,18 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 		(*olsr_con)->left_olsr_node = con_from;
 		(*olsr_con)->right_olsr_node = con_to;
 
-		(*olsr_con)->left_etx = etx;
-		(*olsr_con)->right_etx = 0.0;
+		/* HNA */
+		if ( etx == -1000.00 ) {
+
+			(*olsr_con)->left_etx = etx;
+			(*olsr_con)->right_etx = etx;
+
+		} else {
+
+			(*olsr_con)->left_etx = etx;
+			(*olsr_con)->right_etx = 0.0;
+
+		}
 
 		(*olsr_con)->next_olsr_con = NULL;
 
@@ -203,8 +213,8 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 		(*olsr_node)->left = NULL;
 		(*olsr_node)->right = NULL;
 		strncpy( (*olsr_node)->ip, ip, NAMEMAX );
-		(*olsr_node)->inet_gw = 0;
-		(*olsr_node)->inet_gw_modified = 1;
+		(*olsr_node)->node_type = 0;
+		(*olsr_node)->node_type_modified = 1;
 
 		if ( Debug ) printf( "new olsr node: %s\n", (*olsr_node)->ip );
 
@@ -376,17 +386,33 @@ int parse_line(int n)
 
 				olsr_node1 = get_olsr_node( &Olsr_root, data[0] );
 
-				if ( olsr_node1->inet_gw == 0 ) {
+				if ( olsr_node1->node_type != 1 ) {
 
-					olsr_node1->inet_gw = 1;
-					olsr_node1->inet_gw_modified = 1;
+					olsr_node1->node_type = 1;
+					olsr_node1->node_type_modified = 1;
 					if ( Debug ) printf( "new internet: %s\n", olsr_node1->ip );
 
 				}
 
+			/* normal HNA */
+			} else {
+
+				olsr_node1 = get_olsr_node( &Olsr_root, data[0] );
+				olsr_node2 = get_olsr_node( &Olsr_root, data[1] );
+
+				if ( olsr_node2->node_type != 2 ) {
+
+					olsr_node2->node_type = 2;
+					olsr_node2->node_type_modified = 1;
+					if ( Debug ) printf( "new hna network: %s\n", olsr_node2->ip );
+
+				}
+
+				add_olsr_con( olsr_node1, olsr_node2, -1000.00 );
+
 			}
 
-			/* TODO: other HNA hast to be done */
+
 
 		/* normal node */
 		} else {

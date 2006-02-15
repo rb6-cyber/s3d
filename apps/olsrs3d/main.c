@@ -17,7 +17,7 @@ struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end, *List_ptr;   /* needed pointer
 
 int node_count=-1;
 int alpha=0;
-int Olsr_node_obj,Olsr_node_inet_obj,mesh;
+int Olsr_node_obj, Olsr_node_inet_obj, Olsr_node_hna_net, mesh;
 float asp=1.0;
 float bottom=-1.0;
 float left=-1.0;
@@ -25,7 +25,7 @@ float left=-1.0;
 float CamPosition[2][3];   /* CamPosition[trans|rot][x-z] */
 float ZeroPosition[3] = {0,0,0};   /* current position zero position */
 int ZeroPoint;   /* object zeropoint */
-int ColorSwitch = 0;
+int ColorSwitch = 0;   /* enable/disable colored olsr connections */
 
 
 
@@ -158,7 +158,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	if ( olsr_node == NULL ) return;
 
 	/* olsr node shape has been modified */
-	if ( olsr_node->inet_gw_modified ) {
+	if ( olsr_node->node_type_modified ) {
 
 		/* delete old shape */
 		if ( olsr_node->obj_id != -1 ) {
@@ -170,9 +170,12 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 		if ( olsr_node->desc_id != -1 ) s3d_del_object( olsr_node->desc_id );
 
 		/* create new shape */
-		if ( olsr_node->inet_gw ) {
+		if ( olsr_node->node_type == 1 ) {
 			/* olsr node offers internet access */
 			olsr_node->obj_id = s3d_clone( Olsr_node_inet_obj );
+		} else if ( olsr_node->node_type == 2 ) {
+			/* olsr node offers internet access */
+			olsr_node->obj_id = s3d_clone( Olsr_node_hna_net );
 		} else {
 			/* normal olsr node */
 			olsr_node->obj_id = s3d_clone( Olsr_node_obj );
@@ -191,7 +194,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 		s3d_translate( olsr_node->desc_id, -f/2,-2,0 );
 		s3d_flags_on( olsr_node->desc_id, S3D_OF_VISIBLE );
 
-		olsr_node->inet_gw_modified = 0;
+		olsr_node->node_type_modified = 0;
 
 	}
 
@@ -200,29 +203,31 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	while ( Obj_to_ip_curr != Obj_to_ip_end ) {
 
 		/* myself ... */
-// 		if ( strncmp( Obj_to_ip_curr->olsr_node->ip, olsr_node->ip, NAMEMAX ) == 0 ) continue;
+// 		if ( strncmp( Obj_to_ip_curr->olsr_node->ip, olsr_node->ip, NAMEMAX ) != 0 ) {
 
-		olsr_con_list = olsr_node->olsr_con_list;
-		while ( olsr_con_list != NULL ) {
+			olsr_con_list = olsr_node->olsr_con_list;
+			while ( olsr_con_list != NULL ) {
 
-			/* nodes are related */
-			if ( ( strncmp( olsr_con_list->olsr_con->left_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) || ( strncmp( olsr_con_list->olsr_con->right_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) ) break;
+				/* nodes are related */
+				if ( ( strncmp( olsr_con_list->olsr_con->left_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) || ( strncmp( olsr_con_list->olsr_con->right_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) ) break;
 
-			olsr_con_list = olsr_con_list->next_olsr_con_list;
+				olsr_con_list = olsr_con_list->next_olsr_con_list;
 
-		}
+			}
 
-		/* nodes are not related - so drift */
-		if ( olsr_con_list == NULL ) {
+			/* nodes are not related - so drift */
+			if ( olsr_con_list == NULL ) {
 
-			distance = dirt( olsr_node->pos_vec, Obj_to_ip_curr->olsr_node->pos_vec, tmp_mov_vec );
-			if ( distance < 0.1 ) distance = 0.1;
-			mov_add( olsr_node->mov_vec, tmp_mov_vec,-100 / ( distance * distance ) );
-			mov_add( Obj_to_ip_curr->olsr_node->mov_vec, tmp_mov_vec, 100 / ( distance * distance ) );
+				distance = dirt( olsr_node->pos_vec, Obj_to_ip_curr->olsr_node->pos_vec, tmp_mov_vec );
+				if ( distance < 0.1 ) distance = 0.1;
+				mov_add( olsr_node->mov_vec, tmp_mov_vec,-100 / ( distance * distance ) );
+				mov_add( Obj_to_ip_curr->olsr_node->mov_vec, tmp_mov_vec, 100 / ( distance * distance ) );
 
-		}
+			}
 
-		Obj_to_ip_curr = Obj_to_ip_curr->next;
+			Obj_to_ip_curr = Obj_to_ip_curr->next;
+
+// 		}
 
 	}
 
@@ -276,7 +281,7 @@ void move_olsr_nodes( void ) {
 
 	float null_vec[3] = {0,0,0};
 	float tmp_mov_vec[3];
-	float distance, etx;
+	float distance, etx, rgb;
 	struct olsr_con **olsr_con = &Con_begin;
 
 	while ( (*olsr_con) != NULL ) {
@@ -334,36 +339,54 @@ void move_olsr_nodes( void ) {
 		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
 		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]- 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
 
-		if(ColorSwitch) {
-			float rgb;
-			etx = ( ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 ) - 10.0 ) * 10.0;
-	// 		if ( strncmp( (*olsr_con)->left_olsr_node->ip, "104.0.23.1", NAMEMAX ) == 0 ) printf("%s: %f, %s: %f, etx: %f\n",(*olsr_con)->left_olsr_node->ip, (*olsr_con)->left_etx, (*olsr_con)->right_olsr_node->ip, (*olsr_con)->right_etx, etx);
-			if ( ( etx >= 1.0 ) && ( etx < 2.0 ) ) {
-				rgb = etx - 1.0;
+		if ( ColorSwitch ) {
+
+			/* HNA */
+			if ( (*olsr_con)->left_etx == -1000.00 ) {
+
 				s3d_push_material( (*olsr_con)->obj_id,
-							rgb,1.0,0.0,
-							rgb,1.0,0.0,
-							rgb,1.0,0.0);
-	
-			} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
-				rgb = 3.0 - etx;
-				s3d_push_material( (*olsr_con)->obj_id,
-							1.0,rgb,0.0,
-							1.0,rgb,0.0,
-							1.0,rgb,0.0);
-	
+							   0.0,0.0,1.0,
+							   0.0,0.0,1.0,
+							   0.0,0.0,1.0);
+
 			} else {
-				s3d_push_material( (*olsr_con)->obj_id,
-							1.0,0.0,0.0,
-							1.0,0.0,0.0,
-							1.0,0.0,0.0);
-	
+
+				etx = ( ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 ) - 10.0 ) * 10.0;
+
+				if ( ( etx >= 1.0 ) && ( etx < 2.0 ) ) {
+
+					rgb = etx - 1.0;
+					s3d_push_material( (*olsr_con)->obj_id,
+								rgb,1.0,0.0,
+								rgb,1.0,0.0,
+								rgb,1.0,0.0);
+
+				} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
+
+					rgb = 3.0 - etx;
+					s3d_push_material( (*olsr_con)->obj_id,
+								1.0,rgb,0.0,
+								1.0,rgb,0.0,
+								1.0,rgb,0.0);
+
+				} else {
+
+					s3d_push_material( (*olsr_con)->obj_id,
+								1.0,0.0,0.0,
+								1.0,0.0,0.0,
+								1.0,0.0,0.0);
+
+				}
+
 			}
+
 		} else {
+
 			s3d_push_material( (*olsr_con)->obj_id,
 						1.0,1.0,1.0,
 						1.0,1.0,1.0,
 						1.0,1.0,1.0);
+
 		}
 
 		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
@@ -730,8 +753,9 @@ int main( int argc, char *argv[] ) {
 			s3d_set_callback(S3D_EVENT_QUIT,stop);
 			if (s3d_select_font("vera"))
 				printf("font not found\n");
-			Olsr_node_obj=s3d_import_3ds_file("accesspoint.3ds");
-			Olsr_node_inet_obj=s3d_import_3ds_file("accesspoint_inet.3ds");
+			Olsr_node_obj = s3d_import_3ds_file( "accesspoint.3ds" );
+			Olsr_node_inet_obj = s3d_import_3ds_file( "accesspoint_inet.3ds" );
+			Olsr_node_hna_net = s3d_import_3ds_file( "internet.3ds" );
 			mesh=s3d_import_3ds_file("meshnode.3ds");
 			s3d_link(mesh,0);
 			s3d_scale(mesh,0.15);

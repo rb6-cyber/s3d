@@ -34,8 +34,8 @@ struct olsr_node {
 	struct olsr_node *left;
 	struct olsr_node *right;
 	char ip[NAMEMAX];   /* host ip */
-	int inet_gw;   /* internet gateway flag */
-	int inet_gw_modified;   /* internet gateway modified flag */
+	int node_type;   /* normal = 0, internet gateway = 1, via hna announced network = 2 */
+	int node_type_modified;   /* node_type modified flag */
 	float pos_vec[3];   /* position vector in 3d "space" */
 	float mov_vec[3];   /* move vector */
 	int obj_id;   /* id of node object in s3d */
@@ -65,6 +65,7 @@ extern float 	*adj;
 extern int	*adj_obj;
 extern int	Olsr_node_obj;
 extern int	Olsr_node_inet_obj;
+extern int	Olsr_node_hna_net;
 extern int	node_count;
 extern float 	bottom,left;
 
