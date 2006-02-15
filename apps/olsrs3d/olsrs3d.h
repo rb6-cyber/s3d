@@ -68,6 +68,7 @@ extern int	Olsr_node_inet_obj;
 extern int	Olsr_node_hna_net;
 extern int	node_count;
 extern float 	bottom,left;
+extern int ZeroPoint;
 
 struct t_node 	*node;
 #define MAXLINESIZE 1000 /* lines in a digraph just shouldn't get that longer ... */
