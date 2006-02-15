@@ -69,7 +69,6 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 		(*olsr_con)->next_olsr_con = NULL;
 
 		/* add new olsr connection to olsr nodes in order to access the connection from the olsr node */
-
 		struct olsr_con_list **olsr_con_list = &(*olsr_con)->left_olsr_node->olsr_con_list;
 		while ( (*olsr_con_list) != NULL ) olsr_con_list = &(*olsr_con_list)->next_olsr_con_list;
 		(*olsr_con_list) = malloc( sizeof( struct olsr_con_list ) );

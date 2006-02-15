@@ -250,7 +250,7 @@ void calc_olsr_node_mov( void ) {
 		if ( ( (*olsr_con)->left_etx != 0.0 ) && ( (*olsr_con)->right_etx != 0.0  ) ) {
 
 			distance = dirt( (*olsr_con)->left_olsr_node->pos_vec, (*olsr_con)->right_olsr_node->pos_vec, tmp_mov_vec );
-			f = ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 ) / distance;
+			f = ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 4.0 ) / distance;
 			if ( f < 0.3 ) f = 0.3;
 
 			mov_add( (*olsr_con)->left_olsr_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
@@ -276,7 +276,7 @@ void move_olsr_nodes( void ) {
 
 	float null_vec[3] = {0,0,0};
 	float tmp_mov_vec[3];
-	float distance;
+	float distance, etx;
 	struct olsr_con **olsr_con = &Con_begin;
 
 	while ( (*olsr_con) != NULL ) {
@@ -324,6 +324,7 @@ void move_olsr_nodes( void ) {
 		/* move connection between left and right olsr node */
 		s3d_pop_vertex( (*olsr_con)->obj_id, 6 );
 		s3d_pop_polygon( (*olsr_con)->obj_id, 2 );
+		s3d_pop_material( (*olsr_con)->obj_id, 1 );
 
 		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
 		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] + 0.2 + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
@@ -332,6 +333,28 @@ void move_olsr_nodes( void ) {
 		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
 		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
 		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]- 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
+
+		etx = ( ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 ) - 10.0 ) * 10.0;
+// 		if ( strncmp( (*olsr_con)->left_olsr_node->ip, "104.0.23.1", NAMEMAX ) == 0 ) printf("%s: %f, %s: %f, etx: %f\n",(*olsr_con)->left_olsr_node->ip, (*olsr_con)->left_etx, (*olsr_con)->right_olsr_node->ip, (*olsr_con)->right_etx, etx);
+		if ( ( etx >= 1.0 ) && ( etx < 2.0 ) ) {
+			s3d_push_material( (*olsr_con)->obj_id,
+						   0.0,1.0,0.0,
+						   0.0,1.0,0.0,
+						   0.0,1.0,0.0);
+
+		} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
+			s3d_push_material( (*olsr_con)->obj_id,
+						   1.0,1.0,0.0,
+						   1.0,1.0,0.0,
+						   1.0,1.0,0.0);
+
+		} else {
+			s3d_push_material( (*olsr_con)->obj_id,
+						   1.0,0.0,0.0,
+						   1.0,0.0,0.0,
+						   1.0,0.0,0.0);
+
+		}
 
 		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
 		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );
