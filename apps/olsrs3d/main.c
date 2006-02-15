@@ -25,8 +25,10 @@ float left=-1.0;
 float CamPosition[2][3];   /* CamPosition[trans|rot][x-z] */
 float ZeroPosition[3] = {0,0,0};   /* current position zero position */
 int ZeroPoint;   /* object zeropoint */
+int Zp_rotate = 0;
 int ColorSwitch = 0;   /* enable/disable colored olsr connections */
-
+int RotateSwitch = 0;
+int RotateSpeed = 2;
 
 
 /***
@@ -483,6 +485,10 @@ void mainloop()
 		}
 	alpha=(alpha+5)%360;
 	s3d_rotate(mesh,0,alpha,0);
+	if(RotateSwitch) {
+		Zp_rotate = (Zp_rotate+RotateSpeed)%360;
+		s3d_rotate(ZeroPoint,0,Zp_rotate,0);
+	}
 	usleep(100000);
 /*	sleep(1);*/
 	return;
@@ -502,16 +508,33 @@ void stop()
  ***/
 
 void keypress(struct s3d_evt *event) {
+	
 	int key;
 	key=*((unsigned short *)event->buf);
-	/* ESC */
-	if(key == 27)
-		stop();
-	if(key == 49)
-		lst_out();
-	if(key == 99)
-		if(ColorSwitch) ColorSwitch = 0;
-		else ColorSwitch = 1;
+	switch(key) {
+		case 27: /* esc */
+			stop();
+			break;
+			case 15: /* strg + o */
+			lst_out(); /* output ob2ip list */
+			break;
+		case 99: /* c*/
+			if(ColorSwitch) ColorSwitch = 0;
+			else ColorSwitch = 1;
+			break;
+		case 114: /* r */
+			if(RotateSwitch) RotateSwitch = 0;
+			else RotateSwitch = 1;
+			break;
+		case 43: /* + */
+			if(RotateSwitch && RotateSpeed < 10)
+				RotateSpeed++;
+			break;
+		case 45: /* - */
+			if(RotateSwitch && RotateSpeed > 1)
+				RotateSpeed--;
+			break;
+	}
 }
 
 /***
