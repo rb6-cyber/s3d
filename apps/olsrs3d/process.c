@@ -58,7 +58,8 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 
 		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
 		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );
-
+		s3d_link( (*olsr_con)->obj_id,  ZeroPoint );
+		
 		/* add olsr node to new olsr connection in order to access the nodes from the connection list */
 		(*olsr_con)->left_olsr_node = con_from;
 		(*olsr_con)->right_olsr_node = con_to;
