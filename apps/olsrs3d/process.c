@@ -59,7 +59,7 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
 		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );
 		s3d_link( (*olsr_con)->obj_id,  ZeroPoint );
-		
+
 		/* add olsr node to new olsr connection in order to access the nodes from the connection list */
 		(*olsr_con)->left_olsr_node = con_from;
 		(*olsr_con)->right_olsr_node = con_to;
@@ -295,7 +295,7 @@ int commit_input()
 	float 	*swap_adj;
 	int  	*swap_adj_obj;
 	char	nc_str[20];
-	printf("committing input ... \n");
+// 	printf("committing input ... \n");
 
 	/* remove old adjacent objects ... */
 // 	for (i=0;i<max;i++)
@@ -345,109 +345,238 @@ int commit_input()
 // 	}
 	return(0);
 }
-int parse_line(int n)
-{
-	char *data[3];   // in this order: ip_from, ip_to, label
+// int parse_line( int lbuf_index ) {
+//
+// // 	int line_length;
+// 	char *lbuf_ptr;
+// // 	char *data[3];   // in this order: ip_from, ip_to, label
+// 	char *lbuf_ptr, *con_from, *con_to, *etx;
+// 	char *con_from;
+// 	char *con_to;
+// 	char *etx;
+//
+// 	struct olsr_node *olsr_node1;   // pointer to olsr nodes
+// 	struct olsr_node *olsr_node2;
+//
+// // 	line_length = strlen( lbuf[lbuf_index] );
+// 	lbuf_ptr = &lbuf[lbuf_index];
+//
+// 	int i,dn,n1,n2;
+// 	float f;
+// // 	data[0]=data[1]=data[2]=NULL;
+// 	/*lbuf[n]='\0';  we don't need this one anyway */
+//
+// 	dn=0;
+// 	while ( (*lbuf_ptr) != '\0' ) {
+//
+// 		switch ( (*lbuf_ptr) ) {
+// // 			printf( "%c", (*lbuf_ptr) );
+// 			case '"':
+// 				if (dn<6)
+// 				{
+// 					if ( !(dn%2) ) { /* starts */
+// 						switch ( dn ) {
+// 							case 0:
+// 								con_from = lbuf_ptr;
+// 								break;
+// 							case 2:
+// 								con_to = lbuf_ptr;
+// 								break;
+// 							case 4:
+// 								etx = lbuf_ptr;
+// 								break;
+// 						}
+// // 						*data[(dn/2)] = (*lbuf_ptr);
+// 					} else { /* ends */
+// 						(*lbuf_ptr) = '\0'; /* string terminator!! */
+// 					}
+// 				}
+// 				dn++;
+//
+// 				break;
+// // 			case '}':
+// // 				if (!(dn%2))	/* we don't end the input inside of strings ... this won't happen anyway, I guess */
+// // 					commit_input();
+// // 				break;
+// 		}
+// 		lbuf_ptr++;
+// 	}
+// 	if (dn>=6)
+// 	{
+// /*		printf("######link from [%s] to [%s], label [%s]\n",data[0],data[1],data[2]);*/
+// 		/* announced network via HNA */
+// 		if ( strncmp( etx, "HNA", NAMEMAX ) == 0 ) {
+//
+// 			/* connection to internet */
+// 			if ( strncmp( con_to, "0.0.0.0/0.0.0.0", NAMEMAX ) == 0 ) {
+//
+// 				olsr_node1 = get_olsr_node( &Olsr_root, con_from );
+//
+// 				if ( olsr_node1->node_type != 1 ) {
+//
+// 					olsr_node1->node_type = 1;
+// 					olsr_node1->node_type_modified = 1;
+// 					if ( Debug ) printf( "new internet: %s\n", olsr_node1->ip );
+//
+// 				}
+//
+// 			/* normal HNA */
+// 			} else {
+//
+// 				olsr_node1 = get_olsr_node( &Olsr_root, con_from );
+// 				olsr_node2 = get_olsr_node( &Olsr_root, con_to );
+//
+// 				if ( olsr_node2->node_type != 2 ) {
+//
+// 					olsr_node2->node_type = 2;
+// 					olsr_node2->node_type_modified = 1;
+// 					if ( Debug ) printf( "new hna network: %s\n", olsr_node2->ip );
+//
+// 				}
+//
+// 				add_olsr_con( olsr_node1, olsr_node2, -1000.00 );
+//
+// 			}
+//
+//
+//
+// 		/* normal node */
+// 		} else {
+// // 			n1=get_node_num(data[0]);
+// // 			n2=get_node_num(data[1]);
+// 			olsr_node1 = get_olsr_node( &Olsr_root, con_from );
+// 			olsr_node2 = get_olsr_node( &Olsr_root, con_to );
+// 			f=10.0+strtod(etx,NULL)/10.0;
+// /*		printf("######link from %d to %d, %f, %d\n",n1,n2,f, f>=10);*/
+// 			if (f>=5) /* just to prevent ascii to float converting inconsistency ... */
+// // 				add_adj(n1,n2,f);
+// 				add_olsr_con( olsr_node1, olsr_node2, f );
+// 		}
+// 	}
+// 	return(0);
+// }
+// int process_main()
+// {
+// 	int i,l;
+// 	i=0;
+// 	l=strlen(lbuf);
+// 	while (i<l)
+// 	{
+// 		if ((lbuf[i])=='\n')
+// 		{
+// 			parse_line(i);
+// 			memmove(lbuf,lbuf+i+1,MAXLINESIZE-i-1);
+// 			process_main(); /* well, we don't have to do this the recursive way here, but who cares ... */
+// 			return(0);
+// 		}
+// 		i++;
+// 	}
+// 	return(0);
+// }
+
+int process_main() {
+
+	int index = 0, dn = 0;
+	int buf_len = strlen( lbuf );
+	float f;
+	char *lbuf_ptr, *con_from, *con_to, *etx;
 	struct olsr_node *olsr_node1;   // pointer to olsr nodes
 	struct olsr_node *olsr_node2;
-	int i,dn,n1,n2;
-	float f;
-	data[0]=data[1]=data[2]=NULL;
-	lbuf[n]='\0'; /* we don't need this one anyway */
-	i=dn=0;
-	while (i<n)
-	{
-		switch (lbuf[i])
-		{
-			case '"':
-				if (dn<6)
-				{
-					if (!(dn%2)) /* starts */
-						data[(dn/2)]=lbuf+i+1;
-					else /* ends */
-						lbuf[i]='\0'; /* string terminator!! */
-				}
-				dn++;
-				break;
-			case '}':
-				if (!(dn%2))	/* we don't end the input inside of strings ... this won't happen anyway, I guess */
-					commit_input();
-				break;
-		}
-		i++;
-	}
-	if (dn>=6)
-	{
-/*		printf("######link from [%s] to [%s], label [%s]\n",data[0],data[1],data[2]);*/
-		/* announced network via HNA */
-		if ( strncmp( data[2], "HNA", NAMEMAX ) == 0 ) {
 
-			/* connection to internet */
-			if ( strncmp( data[1], "0.0.0.0/0.0.0.0", NAMEMAX ) == 0 ) {
+	while ( ( index < buf_len ) && ( index < MAXLINESIZE ) ) {
 
-				olsr_node1 = get_olsr_node( &Olsr_root, data[0] );
+		if ( ( lbuf[index] != '{' ) && ( lbuf[index] != '}' )  && ( lbuf[index] != '\n' ) ) {
 
-				if ( olsr_node1->node_type != 1 ) {
+			lbuf_ptr = &lbuf[index];
+			dn = 0;
 
-					olsr_node1->node_type = 1;
-					olsr_node1->node_type_modified = 1;
-					if ( Debug ) printf( "new internet: %s\n", olsr_node1->ip );
+			while ( (*lbuf_ptr) != '\0' ) {
+
+				if ( (*lbuf_ptr) == '"' ) {
+
+					switch ( dn ) {
+
+						case 0:
+							con_from = lbuf_ptr;
+							break;
+						case 2:
+							con_to = lbuf_ptr;
+							break;
+						case 4:
+							etx = lbuf_ptr;
+							break;
+						default:   /* ends */
+							(*lbuf_ptr) = '\0';   /* string terminator!! */
+					}
+
+					if ( ++dn >= 6 ) break;
 
 				}
 
-			/* normal HNA */
-			} else {
+				lbuf_ptr++;
 
-				olsr_node1 = get_olsr_node( &Olsr_root, data[0] );
-				olsr_node2 = get_olsr_node( &Olsr_root, data[1] );
+				if ( dn >= 6 ) {
 
-				if ( olsr_node2->node_type != 2 ) {
+					/* announced network via HNA */
+					if ( strncmp( etx, "HNA", NAMEMAX ) == 0 ) {
 
-					olsr_node2->node_type = 2;
-					olsr_node2->node_type_modified = 1;
-					if ( Debug ) printf( "new hna network: %s\n", olsr_node2->ip );
+						/* connection to internet */
+						if ( strncmp( con_to, "0.0.0.0/0.0.0.0", NAMEMAX ) == 0 ) {
+
+							olsr_node1 = get_olsr_node( &Olsr_root, con_from );
+
+							if ( olsr_node1->node_type != 1 ) {
+
+								olsr_node1->node_type = 1;
+								olsr_node1->node_type_modified = 1;
+								if ( Debug ) printf( "new internet: %s\n", olsr_node1->ip );
+
+							}
+
+							/* normal HNA */
+						} else {
+
+							olsr_node1 = get_olsr_node( &Olsr_root, con_from );
+							olsr_node2 = get_olsr_node( &Olsr_root, con_to );
+
+							if ( olsr_node2->node_type != 2 ) {
+
+								olsr_node2->node_type = 2;
+								olsr_node2->node_type_modified = 1;
+								if ( Debug ) printf( "new hna network: %s\n", olsr_node2->ip );
+
+							}
+
+							add_olsr_con( olsr_node1, olsr_node2, -1000.00 );
+
+						}
+
+					/* normal node */
+					} else {
+
+						olsr_node1 = get_olsr_node( &Olsr_root, con_from );
+						olsr_node2 = get_olsr_node( &Olsr_root, con_to );
+						f=10.0+strtod(etx,NULL)/10.0;
+						if (f>=5) add_olsr_con( olsr_node1, olsr_node2, f );   /* just to prevent ascii to float converting inconsistency ... */
+
+					}
 
 				}
-
-				add_olsr_con( olsr_node1, olsr_node2, -1000.00 );
 
 			}
 
+		}
+
+		index++;
+
+	}
+
+	memmove( lbuf, lbuf + index + 1, index + 1 );
+	return(0);
+
+}
 
 
-		/* normal node */
-		} else {
-// 			n1=get_node_num(data[0]);
-// 			n2=get_node_num(data[1]);
-			olsr_node1 = get_olsr_node( &Olsr_root, data[0] );
-			olsr_node2 = get_olsr_node( &Olsr_root, data[1] );
-			f=10.0+strtod(data[2],NULL)/10.0;
-/*		printf("######link from %d to %d, %f, %d\n",n1,n2,f, f>=10);*/
-			if (f>=5) /* just to prevent ascii to float converting inconsistency ... */
-// 				add_adj(n1,n2,f);
-				add_olsr_con( olsr_node1, olsr_node2, f );
-		}
-	}
-	return(0);
-}
-int process_main()
-{
-	int i,l;
-	i=0;
-	l=strlen(lbuf);
-	while (i<l)
-	{
-		if ((lbuf[i])=='\n')
-		{
-			parse_line(i);
-			memmove(lbuf,lbuf+i+1,MAXLINESIZE-i-1);
-			process_main(); /* well, we don't have to do this the recursive way here, but who cares ... */
-			return(0);
-		}
-		i++;
-	}
-	return(0);
-}
 int process_init()
 {
 	lbuf[0]='\0';
