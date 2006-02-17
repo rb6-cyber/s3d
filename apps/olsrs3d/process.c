@@ -476,102 +476,103 @@ int commit_input()
 
 int process_main() {
 
-	int index = 0, dn = 0;
-	int buf_len = strlen( lbuf );
+	int dn;
 	float f;
 	char *lbuf_ptr, *con_from, *con_to, *etx;
 	struct olsr_node *olsr_node1;   // pointer to olsr nodes
 	struct olsr_node *olsr_node2;
 
-	while ( ( index < buf_len ) && ( index < MAXLINESIZE ) ) {
+	lbuf_ptr = lbuf;
 
-		if ( ( lbuf[index] != '{' ) && ( lbuf[index] != '}' )  && ( lbuf[index] != '\n' ) ) {
+	while ( (*lbuf_ptr) != '\0' ) {
 
-			lbuf_ptr = &lbuf[index];
+// 		printf( "%c",(*lbuf_ptr) );
+
+		if ( (*lbuf_ptr) == '\n' ) {
+
+			con_from = con_to = etx = NULL;
 			dn = 0;
 
-			while ( (*lbuf_ptr) != '\0' ) {
+		}
 
-				if ( (*lbuf_ptr) == '"' ) {
+		if ( (*lbuf_ptr) == '"' ) {
 
-					switch ( dn ) {
+			switch ( dn ) {
 
-						case 0:
-							con_from = lbuf_ptr;
-							break;
-						case 2:
-							con_to = lbuf_ptr;
-							break;
-						case 4:
-							etx = lbuf_ptr;
-							break;
-						default:   /* ends */
-							(*lbuf_ptr) = '\0';   /* string terminator!! */
-					}
+				case 0:
+					con_from = ++lbuf_ptr;
+					break;
+				case 2:
+					con_to = ++lbuf_ptr;
+					break;
+				case 4:
+					etx = ++lbuf_ptr;
+					break;
+				default:
+					(*lbuf_ptr) = '\0';   /* string terminator!! */
+					break;
 
-					if ( ++dn >= 6 ) break;
+			}
 
-				}
+			if ( ++dn == 6 ) {
 
-				lbuf_ptr++;
+// 				printf( "con_from: %s, con_to: %s, etx: %s\n", con_from, con_to, etx );
 
-				if ( dn >= 6 ) {
+				/* announced network via HNA */
+				if ( strncmp( etx, "HNA", NAMEMAX ) == 0 ) {
 
-					/* announced network via HNA */
-					if ( strncmp( etx, "HNA", NAMEMAX ) == 0 ) {
+					/* connection to internet */
+					if ( strncmp( con_to, "0.0.0.0/0.0.0.0", NAMEMAX ) == 0 ) {
 
-						/* connection to internet */
-						if ( strncmp( con_to, "0.0.0.0/0.0.0.0", NAMEMAX ) == 0 ) {
+						olsr_node1 = get_olsr_node( &Olsr_root, con_from );
 
-							olsr_node1 = get_olsr_node( &Olsr_root, con_from );
+						if ( olsr_node1->node_type != 1 ) {
 
-							if ( olsr_node1->node_type != 1 ) {
-
-								olsr_node1->node_type = 1;
-								olsr_node1->node_type_modified = 1;
-								if ( Debug ) printf( "new internet: %s\n", olsr_node1->ip );
-
-							}
-
-							/* normal HNA */
-						} else {
-
-							olsr_node1 = get_olsr_node( &Olsr_root, con_from );
-							olsr_node2 = get_olsr_node( &Olsr_root, con_to );
-
-							if ( olsr_node2->node_type != 2 ) {
-
-								olsr_node2->node_type = 2;
-								olsr_node2->node_type_modified = 1;
-								if ( Debug ) printf( "new hna network: %s\n", olsr_node2->ip );
-
-							}
-
-							add_olsr_con( olsr_node1, olsr_node2, -1000.00 );
+							olsr_node1->node_type = 1;
+							olsr_node1->node_type_modified = 1;
+							if ( Debug ) printf( "new internet: %s\n", olsr_node1->ip );
 
 						}
 
-					/* normal node */
+					/* normal HNA */
 					} else {
 
 						olsr_node1 = get_olsr_node( &Olsr_root, con_from );
 						olsr_node2 = get_olsr_node( &Olsr_root, con_to );
-						f=10.0+strtod(etx,NULL)/10.0;
-						if (f>=5) add_olsr_con( olsr_node1, olsr_node2, f );   /* just to prevent ascii to float converting inconsistency ... */
+
+						if ( olsr_node2->node_type != 2 ) {
+
+							olsr_node2->node_type = 2;
+							olsr_node2->node_type_modified = 1;
+							if ( Debug ) printf( "new hna network: %s\n", olsr_node2->ip );
+
+						}
+
+						add_olsr_con( olsr_node1, olsr_node2, -1000.00 );
 
 					}
 
+				/* normal node */
+				} else {
+
+					olsr_node1 = get_olsr_node( &Olsr_root, con_from );
+					olsr_node2 = get_olsr_node( &Olsr_root, con_to );
+					f=10.0+strtod(etx,NULL)/10.0;
+					if (f>=5) add_olsr_con( olsr_node1, olsr_node2, f );   /* just to prevent ascii to float converting inconsistency ... */
+
 				}
+
+				con_from = con_to = etx = NULL;
+				dn = 0;
 
 			}
 
 		}
 
-		index++;
+		lbuf_ptr++;
 
 	}
 
-	memmove( lbuf, lbuf + index + 1, index + 1 );
 	return(0);
 
 }

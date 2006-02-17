@@ -4,6 +4,7 @@
 #include <string.h>	/* strncpy() */
 #include <math.h>		/* sqrt() */
 #include <getopt.h>	/* getopt() */
+#include <stdlib.h>	/* exit() */
 #include "olsrs3d.h"
 #define SPEED		10.0
 
@@ -553,7 +554,7 @@ void object_click(struct s3d_evt *evt)
 	ZeroPosition[2] = 40;*/
 	struct olsr_node *olsr_node;
 	olsr_node = *lst_search(oid);
-	printf("obj2ip: search return %s\n",olsr_node->ip);
+	/* printf("obj2ip: search return %s\n",olsr_node->ip); */
 }
 
 /***
@@ -588,7 +589,7 @@ void object_info(struct s3d_evt *hrmz)
 		s3d_translate(mesh,(-left)*3.0-1.8,bottom*3.0+0.8,-3.0);
 		s3d_flags_on(mesh,S3D_OF_VISIBLE);
 	}
-	printf("%f %f %f\n",inf->trans_x,inf->trans_y,inf->trans_z);
+	/* printf("%f %f %f\n",inf->trans_x,inf->trans_y,inf->trans_z); */
 }
 
 /***
@@ -643,7 +644,7 @@ void lst_del(int id) {
 	struct Obj_to_ip *del;
 	move_lst_ptr(&id);
 	if(id != List_ptr->id)
-		printf("obj2ip: remove id %d failed move_lst_ptr return id %d\n",id,List_ptr->next->id);
+		/* printf("obj2ip: remove id %d failed move_lst_ptr return id %d\n",id,List_ptr->next->id); */
 	else {
 		del = List_ptr;
 		List_ptr->next->prev = List_ptr->prev;
@@ -720,11 +721,11 @@ void lst_out() {
 	struct Obj_to_ip *ptr;
 	ptr = Obj_to_ip_head;
 	while(ptr != ptr->next) {
-		printf("List--------------------------\n");
+		/* printf("List--------------------------\n"); */
 		printf("id-> %d\n",ptr->id);
 		ptr = ptr->next;
 	}
-	printf("List--------------------------\n");
+	/* printf("List--------------------------\n"); */
 }
 
 int main( int argc, char *argv[] ) {

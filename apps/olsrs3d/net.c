@@ -14,7 +14,7 @@
 char buf[MAXDATASIZE];
 
 
-int sockfd, numbytes;  
+int sockfd, numbytes;
 int net_init(char *host)
 {
     struct hostent *he;
@@ -46,7 +46,7 @@ int net_init(char *host)
 int net_main()
 {
     if ((numbytes=recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
-		if (errno==EAGAIN) 
+		if (errno==EAGAIN)
 			return(0); /* well, that's okay ... */
         perror("recv");
         return(-1);
@@ -57,7 +57,8 @@ int net_main()
 		return(-1);
 	}
     buf[numbytes] = '\0';
-	strncat(lbuf,buf,MAXLINESIZE);
+// 	strncat(lbuf,buf,MAXLINESIZE);
+	strncpy(lbuf,buf,MAXLINESIZE);
 	process_main();
 	return(1);
 }
@@ -66,6 +67,6 @@ int net_quit()
     close(sockfd);
 
     return 0;
-} 
+}
 
 
