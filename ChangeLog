@@ -1,4 +1,6 @@
 2006-02-17	Simon Wunderlich - <dotslash@packetmixer.de>	
+	- gintl() and gints() added in 3dsread.c, hopefully
+	  improving endianess compatibility
 	- moved dot_mcp to apps
 	- abadoning my own tries and the glu-tesselator 
 	  for triangulating the fonts and using public

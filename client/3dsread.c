@@ -199,7 +199,23 @@ static float *calc_normals(float *vertex_buf, int vertexnum, unsigned long *poly
 	free(v_t_buf);
 	return(nbuf);
 }
-
+/* get the intergers in the right order */
+unsigned short gints(char *ptr)
+{
+	register unsigned short i;
+	i= ((unsigned char )ptr[0]);
+	i+=((unsigned char )ptr[1])*0x100;
+	return i;
+}
+unsigned long gintl(char *ptr)
+{
+	register unsigned long i;
+	i= ((unsigned char )ptr[0]);
+	i+=((unsigned char )ptr[1])*0x100;
+	i+=((unsigned char )ptr[2])*0x10000;
+	i+=((unsigned char )ptr[3])*0x1000000;
+	return i;
+}
 /*  imports a 3ds file as ONE object, even it virtually contains more. */
 /*  it returns the object id ... */
 int s3d_import_3ds(char *buf)
@@ -226,10 +242,10 @@ int s3d_import_3ds(char *buf)
 	ptr=buf;
 	while (((ptr)>=buf) && ((ptr)<(buf+filesize)))
 	{
-		cid=*((unsigned short *) (ptr));
-		clen=*((unsigned long *) (ptr+2));
+		cid=gints(ptr);
+		clen=gintl(ptr+2);
 		
-		dprintf (VLOW,"[pos %x]: \t%04x [len:%d]",(ptr-buf),cid,(clen-6));
+		dprintf (LOW,"[pos %x]: \t%04x [len:%d]",(ptr-buf),cid,(clen-6));
 		if ((ptr==buf) && (cid!=0x4d4d))
 		{
 			errs("3d_import_3ds()","file doesn't start with 0x4d4d, maybe file corrupt?");
@@ -266,7 +282,7 @@ int s3d_import_3ds(char *buf)
 			  mesh_end=ptr+(clen-6);
 			  break;
 		  case 0x4110: 
-			  vertexnum=*((unsigned short *) ptr);
+			  vertexnum=gints(ptr);
 			  ptr+=sizeof(unsigned short);
 			  dprintf(VLOW,"-- vertices list!! number of vertices: %d",vertexnum);
 			  vertex_buf=malloc(sizeof(float)*3*vertexnum);
@@ -282,19 +298,20 @@ int s3d_import_3ds(char *buf)
 			  v+=vertexnum;  /*  for the correct vertex offset */
 			break;
 		  case 0x4120:
-			polynum=*((unsigned short *) ptr);
+			polynum=gints(ptr);
 			ptr+=sizeof(unsigned short);
-			dprintf(VLOW,"-- polygon list!! number of polygons: %d",polynum);
+			dprintf(LOW,"-- polygon list!! number of polygons: %d",polynum);
 			poly_buf=malloc(sizeof(unsigned long)*4*polynum);
 			if (poly_buf==NULL) break;
 		    for (j=0; j<polynum; j++)
 			{
-				poly_buf[j*4+0]=htonl(vertex_offset+*((unsigned short *)ptr+0)); 
-				poly_buf[j*4+1]=htonl(vertex_offset+*((unsigned short *)ptr+1));
-				poly_buf[j*4+2]=htonl(vertex_offset+*((unsigned short *)ptr+2));
+				poly_buf[j*4+0]=htonl(vertex_offset+gints(ptr+0)); 
+				poly_buf[j*4+1]=htonl(vertex_offset+gints(ptr+2));
+				poly_buf[j*4+2]=htonl(vertex_offset+gints(ptr+4));
 				poly_buf[j*4+3]=htonl(col_obj);  /*  we should have a default material .... */
 				ptr+=sizeof(unsigned short)*4;
 		    }
+			dprintf(LOW,"done");
 			break;
 		  case 0x4130:
 			ptr2=(char *)ptr+(clen-6);  /*  backup our endpointer ... */
@@ -309,14 +326,13 @@ int s3d_import_3ds(char *buf)
 				errds(MED,"s3d_import_3ds()","couldn't find material %s",ostr);
 				col_obj=0;
 			}
-			nfaces=*((unsigned short *)ptr);
+			nfaces=gints(ptr);
 			ptr+=2;
 			for (i=0;i<nfaces;i++)
 			{
-				j=*((unsigned short *)ptr+i);
-			 /* 	dprintf(LOW, "trying to change material of poly %d",j); */
+				j=gints(ptr+2*i);
 				if (j>=0 && j<polynum)
-					poly_buf[*((unsigned short *)ptr+i)*4+3]=htonl(col_obj); 
+					poly_buf[gints(ptr+2*i)*4+3]=htonl(col_obj); 
 				else {
 					errds(MED,"s3d_import_3ds()","polygon %d out of range!",j);
 				}
@@ -326,6 +342,11 @@ int s3d_import_3ds(char *buf)
 		  case 0x4150:
 			dprintf(VLOW,"-- smoothing group information (length %d [%d])", clen,clen/4);
 			smooth_list=(unsigned long *)ptr;
+			for (j=0;j<(clen/4);j++)
+			{
+				smooth_list[j]=gintl(ptr+j*4);
+			}
+
 			ptr=(char *)ptr+(clen-6);
 			break;
 		  case 0x4160:
