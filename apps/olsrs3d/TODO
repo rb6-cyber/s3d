@@ -2,3 +2,12 @@
 	rotate text in cam-direction
 	search for vertices (text input?)
 	show link times
+	add 3ds files for cubes, linksys wrt, internet node, hna node
+	add color mode without red & green colors
+	focus clicked node
+	move all 3 axes
+	performance improvements !!!
+	position nodes via gps data if available
+	show route between node x and y after selecting them
+	detailed info about a node ( cpu, ram, etc)
+	resolve ips to names via nameservice plugin
