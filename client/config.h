@@ -4,3 +4,4 @@
 /*  our level of debug messages */
 #define DEBUG			LOW	 /*  standard debug level */
 #define SHM_MAX_IDLE	200	/* maximum wait for server timeout */
+#define	SEI_SS			200	/* seidel algorithm maximum point number */

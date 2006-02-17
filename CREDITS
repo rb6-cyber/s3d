@@ -2,6 +2,10 @@ server/cull.c
 	- culling code adapted from Ruud van Gaal
 client/freetype.c
 	- tesselation things come from the OpenGL redbook
+client/sei_*.c
+	Implementation of the fast polygon triangulation algorithm
+	by R.Seidel (1991),  implementation by Narkhede A. and 
+	Manocha D. 	(1994)
 apps/s3dvt/s3dvt.c
 	- much of the code comes from glterm by <helly@gmx.net>
 example/miu3ds/*

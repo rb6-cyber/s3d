@@ -35,7 +35,7 @@ static void normal(float *p0, float *p1, float *p2, float *r)
 		r[1]=n[1]/len;
 		r[2]=n[2]/len;
 	} else {
-		errds(LOW,"normal()","couldn't calc normal");
+		dprintf(VLOW,"normal(): couldn't calc normal");
 		r[0]=r[1]=r[2]=0.0F;
 	}
 }

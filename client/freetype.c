@@ -5,7 +5,6 @@
 #include <netinet/in.h>  /*  htonl(), htons() */
 #include "ft2build.h"
 #include FT_FREETYPE_H
-#include <GL/glu.h>  /*  gluTess* */
 #ifndef CALLBACK 
 #define CALLBACK
 #endif
@@ -17,137 +16,27 @@ static int memory_font_size=0;	 /*  and it's size, to reduce load times. */
 static int ft_init=0;
 static int face_init=0;
 
-static GLUtesselator *tobj;
 static int v_off; 	 /*  the vertex number offset, to have the right vertex numbers for each character */
 static int f_oid;	 /*  the oid of our font string */
-static int algo;	 /*  how the order of the vertex points should be interpreted (in the tesselator callbacks) */
-static GLdouble *point;	 /*  the point of the outline points */
-static int *pk,pn;		 /*  the index buffer and it's size */
 static int ch;
 struct t_buf tess_buf[256];
 
-int _s3d_init_tessbuf();
-int _s3d_clear_tessbuf();
-int _s3d_add_tessbuf(unsigned short a);
-int _s3d_draw_tessbuf(int oid,unsigned short a,int *voff, float *xoff);
-/*  callbacks */
-static void CALLBACK cb_vertex(GLdouble *v)
-{
-/* 	dprintf(LOW,"point is at %010p, while v is %010p, vertex nr. %d",point,v,v_off+(v-point)/3); */
-	pk[pn]=v_off+(v-point)/3;
-	pn++;
-}
-/*  taken from tess.c/ redbook source code */
-static void CALLBACK cb_combine (GLdouble coords[3], 
-                     GLdouble *vertex_data[4],
-                     GLfloat weight[4], GLdouble **dataOut )
-{
-   GLdouble *vertex;
-   int i;
 
-   vertex = (GLdouble *) malloc(6 * sizeof(GLdouble));
 
-   vertex[0] = coords[0];
-   vertex[1] = coords[1];
-   vertex[2] = coords[2];
-   for (i = 3; i < 7; i++)
-      vertex[i] = weight[0] * vertex_data[0][i] 
-                  + weight[1] * vertex_data[1][i]
-                  + weight[2] * vertex_data[2][i] 
-                  + weight[3] * vertex_data[3][i];
-   dprintf(LOW,"combining ...");
-   *dataOut = vertex;
-}
-
-static void CALLBACK cb_error(GLenum errorCode)
-{
-   const GLubyte *estring;
-
-   estring = gluErrorString(errorCode);
-   errds(HIGH,"cb_error()","Tessellation Error: %s\n", estring);
-/*    exit(0); */
-}
-static void CALLBACK cb_begin(GLenum which)
-{
-	algo=which;
-	pn=0;
-}
-static void CALLBACK cb_end(GLenum which)
-{
-   int i;
-   int poff=tess_buf[ch].pn;
-   switch (algo)
-   {
-		case GL_TRIANGLES:
-			tess_buf[ch].pn+=pn/3;
-			tess_buf[ch].pbuf=realloc(tess_buf[ch].pbuf,tess_buf[ch].pn*sizeof(unsigned long)*4);
-			for (i=0;i<(pn/3);i++)
-			{
-				tess_buf[ch].pbuf[(poff+i)*4]=	pk[i*3];
-				tess_buf[ch].pbuf[(poff+i)*4+1]=pk[i*3+1];
-				tess_buf[ch].pbuf[(poff+i)*4+2]=pk[i*3+2];
-				tess_buf[ch].pbuf[(poff+i)*4+3]=0;
-/* 				s3d_push_polygon(f_oid,pk[i*3],pk[i*3+1],pk[i*3+2],0); */
-			}
-			break;
-		case GL_TRIANGLE_FAN:
-			tess_buf[ch].pn+=pn-2;
-			tess_buf[ch].pbuf=realloc(tess_buf[ch].pbuf,tess_buf[ch].pn*sizeof(unsigned long)*4);
-/* 			for (i=1;i<(pn-1);i++) */
-			for (i=0;i<(pn-2);i++)
-			{
-				tess_buf[ch].pbuf[(poff+i)*4]=	pk[0];
-				tess_buf[ch].pbuf[(poff+i)*4+1]=pk[i+1];
-				tess_buf[ch].pbuf[(poff+i)*4+2]=pk[i+2];
-				tess_buf[ch].pbuf[(poff+i)*4+3]=0;
-/* 				s3d_push_polygon(f_oid,pk[0],pk[i],pk[i+1],0); */
-			}	
-			break;
-		case GL_TRIANGLE_STRIP:
-			tess_buf[ch].pn+=pn-2;
-			tess_buf[ch].pbuf=realloc(tess_buf[ch].pbuf,tess_buf[ch].pn*sizeof(unsigned long)*4);
-		   	for (i=0;i<(pn-2);i++)
-		   	{
-				if (i%2)
-				{
-					tess_buf[ch].pbuf[(poff+i)*4]=	pk[i];
-					tess_buf[ch].pbuf[(poff+i)*4+1]=pk[i+2];
-					tess_buf[ch].pbuf[(poff+i)*4+2]=pk[i+1];
-					tess_buf[ch].pbuf[(poff+i)*4+3]=0;
-/* 					s3d_push_polygon(f_oid,pk[i],pk[i+2],pk[i+1],0); */
-				} else {
-					tess_buf[ch].pbuf[(poff+i)*4]=	pk[i];
-					tess_buf[ch].pbuf[(poff+i)*4+1]=pk[i+1];
-					tess_buf[ch].pbuf[(poff+i)*4+2]=pk[i+2];
-					tess_buf[ch].pbuf[(poff+i)*4+3]=0;
-/* 					s3d_push_polygon(f_oid,pk[i],pk[i+1],pk[i+2],0); */
-				}
-		   }
-		   break;
-		default: 
-		    errds(MED,"cb_end()","tesselation method not supported");
-   }
-/*    dprintf(LOW,"character [%c]: %d + %d polys",ch,poff,tess_buf[ch].pn-poff); */
-}
-
-/*  that's about the callback functions, now the init for the tesselator */
-/*  and the truetype part ... */
+/*  initialize truetype and tess_buf ... */
 int s3d_ft_init()
 {
 	int error= FT_Init_FreeType( &library);
+	int i;
 	if (error)
 		return (-1);
-   tobj = gluNewTess();
-      gluTessProperty(tobj, GLU_TESS_WINDING_RULE,
-                   GLU_TESS_WINDING_POSITIVE);
-   gluTessCallback(tobj, GLU_TESS_VERTEX,	(GLvoid (*) ())cb_vertex);
-   gluTessCallback(tobj, GLU_TESS_BEGIN,	(GLvoid (*) ())cb_begin);
-   gluTessCallback(tobj, GLU_TESS_END,		(GLvoid (*) ())cb_end);
-   gluTessCallback(tobj, GLU_TESS_ERROR,	(GLvoid (*) ())cb_error);
-   gluTessCallback(tobj, GLU_TESS_COMBINE,  (GLvoid (*) ())cb_combine);
-   _s3d_init_tessbuf();
+    ft_init=1;
+	for (i=0; i<256;i++)
+	{
+		tess_buf[i].vbuf=NULL;
+		tess_buf[i].pbuf=NULL;
+	}
 
-   ft_init=1;
 	return(0);
 }
 
@@ -177,16 +66,6 @@ int s3d_ft_load_font()
 	}
 	return(0);
 }
-int _s3d_init_tessbuf()
-{
-	int i;
-	for (i=0; i<256;i++)
-	{
-		tess_buf[i].vbuf=NULL;
-		tess_buf[i].pbuf=NULL;
-	}
-	return(0);
-}
 
 int _s3d_clear_tessbuf()
 {
@@ -198,62 +77,22 @@ int _s3d_clear_tessbuf()
 	}
 	return(0);
 }
-/*  tessaltes a character and adds it to the buffer */
+
+/* renders a character with seidels algorithm and stores it in the tess_buf for later
+ * usage */
 int _s3d_add_tessbuf(unsigned short a)
 {
 	float norm;
-	int j,c;
-	if (FT_Load_Char(face,a,	FT_LOAD_NO_BITMAP|FT_LOAD_NO_SCALE))
-	{
-		errds(VHIGH,"s3d_add_tessbuf():FT_Load_Char()","can't load character");
-		return(-1);
-	} 
-	norm=1.0/face->glyph->metrics.vertAdvance;
-	ch=a;
-	v_off=0;
-	if (face->glyph->outline.n_points)
-	{
-		j=0;
-		tess_buf[a].vn=face->glyph->outline.n_points;
-		tess_buf[a].vbuf=malloc(sizeof(float)*face->glyph->outline.n_points*3);
-		point=(GLdouble *)malloc(sizeof(GLdouble)*face->glyph->outline.n_points*3);
-		pk=(int *)malloc(sizeof(int)*face->glyph->outline.n_points); 
-			 /*  our list which is to be filled with the array of vertex-indices for each  */
-			 /*  convex polygon .... */
-		gluTessBeginPolygon(tobj, NULL);
-		for (c=0;c<face->glyph->outline.n_contours;c++)
-		{
-      		gluTessBeginContour(tobj);
-			while (j<(face->glyph->outline.contours[c]+1))
-			{
-				point[j*3]=(GLdouble)(face->glyph->outline.points[j].x)*norm;
-				point[j*3+1]=(GLdouble)face->glyph->outline.points[j].y*norm;
-				point[j*3+2]=0.0;
-				tess_buf[a].vbuf[j*3]=point[j*3];
-				tess_buf[a].vbuf[j*3+1]=point[j*3+1];
-				tess_buf[a].vbuf[j*3+2]=point[j*3+2];
+	int i,j,k,c,start;
+	int np,pos,diff,cpos,mpos;
+	double vertices[SEI_SS+1][2];
+	int triangles[SEI_SS*2][3]; /* more than enough ... */
+	int ncontours,ncon;
+	int cntr[SEI_SS];
+	char used[SEI_SS];
+	int map[SEI_SS+1];
+	
 
-/* 				s3d_push_vertex(f_oid,point[j*3],point[j*3+1],point[j*3+2]); */
-       	 		gluTessVertex(tobj, &point[j*3],&point[j*3]);
-				j++;
-			}
-      		gluTessEndContour(tobj);
-		}
-   		gluTessEndPolygon(tobj);
-		
-/* 		v_off+=face->glyph->outline.n_points; */
-		free(pk);
-		free(point);
-	}
-	tess_buf[a].xoff=1.0*face->glyph->metrics.horiAdvance*norm;
-	return(0);
-}
-/*  tesselates a character and adds it to the buffer, without glu */
-int _s3d_add_tessbuf_new(unsigned short a)
-{
-	float norm;
-	int j,c,start;
-	struct tessp_t *tessp;
 	if (FT_Load_Char(face,a,	FT_LOAD_NO_BITMAP|FT_LOAD_NO_SCALE))
 	{
 		errds(VHIGH,"s3d_add_tessbuf():FT_Load_Char()","can't load character");
@@ -262,37 +101,107 @@ int _s3d_add_tessbuf_new(unsigned short a)
 	norm=1.0/face->glyph->metrics.vertAdvance;
 	ch=a;
 	v_off=0;
-	if (face->glyph->outline.n_points)
+	if ((face->glyph->outline.n_points>0) && (face->glyph->outline.n_points<SEI_SS))
 	{
-		j=0;
 		tess_buf[a].vn=face->glyph->outline.n_points;
 		tess_buf[a].vbuf=malloc(sizeof(float)*face->glyph->outline.n_points*3);
-		tess_buf[a].pbuf=malloc(sizeof(unsigned long)*face->glyph->outline.n_points*4); /* should be enough ... */
-		tessp=malloc(sizeof(struct tessp_t)*tess_buf[a].vn);
 		
-			 /*  our list which is to be filled with the array of vertex-indices for each  */
-			 /*  convex polygon .... */
-		for (c=0;c<face->glyph->outline.n_contours;c++)
+		j=0;
+		ncontours=face->glyph->outline.n_contours;
+		for (c=0;c<ncontours;c++)
 		{
 			start=j; 	/* first point */
-			while (j<(face->glyph->outline.contours[c]+1))
+			i=0;
+			ncon=face->glyph->outline.contours[c]; /* position of the end of ths contour */
+			cntr[c]=ncon-j+1;
+			while (j<(ncon+1))
 			{
-				tess_buf[a].vbuf[j*3]=face->glyph->outline.points[j].x*norm;
-				tess_buf[a].vbuf[j*3+1]=face->glyph->outline.points[j].y*norm;
-				tess_buf[a].vbuf[j*3+2]=0.0;
-				tessp[j].prev=j-1;
-				tessp[j].next=j+1;
-				tessp[j].done=0;
+				/* vertices have reverse order in seidels algorithm, outer contours go anticlockwise, inner contours clockwise */
+				pos=ncon-i;
+				tess_buf[a].vbuf[pos*3]		=vertices[pos+1][0]=face->glyph->outline.points[j].x*norm;
+				tess_buf[a].vbuf[pos*3+1]	=vertices[pos+1][1]=face->glyph->outline.points[j].y*norm;
+				map[pos+1]=pos;
+				tess_buf[a].vbuf[pos*3+2]	=0;
 				j++;
+				i++;
 			}
-			tessp[j-1].next=start;	/* last one */
-			tessp[start].prev=j-1;  /* first one */
 		}
-		_s3d_tesselate(tessp,&tess_buf[a]);
+		k=0; /* polygon counter */
+		/* iterate while there are untriangulated outlines left. this is neccesary
+		 * because seidel will only operate on ONE outline at once (number of holes is not 
+		 * limited though) */
+		tess_buf[a].pbuf=malloc(sizeof(unsigned long)*4*(face->glyph->outline.n_points+2*face->glyph->outline.n_contours)); 
+		do {
+			np=sei_triangulate_polygon(ncontours, cntr, vertices, triangles);
+			dprintf(VLOW,"[F]ound %d polygons",np);
+			memset(used,0,ncontours);
+			for (i=0;i<np;i++)
+			{
+				tess_buf[a].pbuf[k*4]=  map[triangles[i][0]];
+				tess_buf[a].pbuf[k*4+1]=map[triangles[i][1]];
+				tess_buf[a].pbuf[k*4+2]=map[triangles[i][2]];
+				tess_buf[a].pbuf[k*4+3]=0;
+				dprintf(VLOW,"TRIANG: %d %d %d = %d %d %d",	triangles[i][0],triangles[i][1],triangles[i][2], 
+															map[triangles[i][0]], map[triangles[i][1]], map[triangles[i][2]]);
+				for (j=0;j<3;j++)
+				{
+					cpos=1;
+					for (c=0;c<ncontours;c++)
+					{
+						cpos+=cntr[c];
+						if (triangles[i][j]<cpos)
+						{
+							dprintf(VLOW,"point %d in contour line %d (cpos = %d) used",triangles[i][j],c,cpos);
+							used[c]=1;
+							break;
+						}
+					}
+				}
+				k++;
+			}
+			j=1;
+			for (c=0;c<ncontours;c++)
+			{
+				j&=used[c];
+			}
+			if (j) 
+				dprintf(VLOW,"all contours used");
+			else 
+			{
+				dprintf(VLOW,"not all contours used, restarting");
+				diff=0;
+				ncon=0; /* number of actually unused contours */
+				cpos=1; /* position of source vertices */
+				mpos=1; /* position of dest vertices */
+				for (c=0;c<ncontours;c++)
+				{
+					if (!used[c])
+					{
+					  /* not used, move it to new end */
+						dprintf(VLOW,"contour %d (%d) not used!!",c,cntr[c]);
+						cntr[ncon]=cntr[c];
+						ncon++;
+						if (cpos!=mpos)
+						{
+							for (i=0;i<cntr[c];i++)
+							{
+								vertices[mpos+i][0]=vertices[cpos+i][0];
+								vertices[mpos+i][1]=vertices[cpos+i][1];
+								map[mpos+i]=map[cpos+i];
+							}
+						}
+					}
+					cpos+=cntr[c];
+				}
+			}
+			ncontours=ncon;
+		} while (!j);
+		tess_buf[a].pn=k;
 	}
 	tess_buf[a].xoff=1.0*face->glyph->metrics.horiAdvance*norm;
 	return(0);
 }
+
 int _s3d_draw_tessbuf(int oid,unsigned short a,int *voff, float *xoff)
 {
 	float *vbuf;
@@ -404,7 +313,7 @@ int s3d_draw_string( char *str,float *xlen)
 }
 int s3d_ft_quit()
 {
-	gluDeleteTess(tobj);
+	_s3d_clear_tessbuf();
 	FT_Done_FreeType(library);
 	ft_init=0;
 	return(0);
