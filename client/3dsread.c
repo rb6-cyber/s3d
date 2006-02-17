@@ -10,7 +10,7 @@
 int s3d_import_3ds_file(char *fname)
 {
 	char *buf;
-	s3d_open_file(fname,&buf);
+	if (s3d_open_file(fname,&buf)==-1) return(-1);
 	return(s3d_import_3ds(buf));
 	
 }
@@ -245,7 +245,7 @@ int s3d_import_3ds(char *buf)
 		cid=gints(ptr);
 		clen=gintl(ptr+2);
 		
-		dprintf (LOW,"[pos %x]: \t%04x [len:%d]",(ptr-buf),cid,(clen-6));
+		dprintf (VLOW,"[pos %x]: \t%04x [len:%d]",(ptr-buf),cid,(clen-6));
 		if ((ptr==buf) && (cid!=0x4d4d))
 		{
 			errs("3d_import_3ds()","file doesn't start with 0x4d4d, maybe file corrupt?");
@@ -300,7 +300,7 @@ int s3d_import_3ds(char *buf)
 		  case 0x4120:
 			polynum=gints(ptr);
 			ptr+=sizeof(unsigned short);
-			dprintf(LOW,"-- polygon list!! number of polygons: %d",polynum);
+			dprintf(VLOW,"-- polygon list!! number of polygons: %d",polynum);
 			poly_buf=malloc(sizeof(unsigned long)*4*polynum);
 			if (poly_buf==NULL) break;
 		    for (j=0; j<polynum; j++)
@@ -311,7 +311,6 @@ int s3d_import_3ds(char *buf)
 				poly_buf[j*4+3]=htonl(col_obj);  /*  we should have a default material .... */
 				ptr+=sizeof(unsigned short)*4;
 		    }
-			dprintf(LOW,"done");
 			break;
 		  case 0x4130:
 			ptr2=(char *)ptr+(clen-6);  /*  backup our endpointer ... */
