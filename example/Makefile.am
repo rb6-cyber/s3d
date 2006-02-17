@@ -1,9 +1,8 @@
-noinst_PROGRAMS=	3dsloader dot_mcp filebrowser hudtest katze \
+noinst_PROGRAMS=	3dsloader filebrowser hudtest katze \
 			radius_test s3d_startapp s3dclock snowman \
 			strtest texturetest
 			
 3dsloader_SOURCES=	3dsloader.c
-dot_mcp_SOURCES=	dot_mcp.c
 filebrowser_SOURCES=	filebrowser.c
 hudtest_SOURCES=	hudtest.c
 katze_SOURCES=		katze.c

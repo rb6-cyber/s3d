@@ -1,4 +1,5 @@
-2006-02-17	Simon Wunderlich - <dotslash@packetmixer.de>
+2006-02-17	Simon Wunderlich - <dotslash@packetmixer.de>	
+	- moved dot_mcp to apps
 	- abadoning my own tries and the glu-tesselator 
 	  for triangulating the fonts and using public
 	  domain code for seidels algorithm by Narkhede A. and
