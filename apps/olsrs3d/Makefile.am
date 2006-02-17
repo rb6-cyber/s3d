@@ -14,6 +14,9 @@ olsrs3d_LDADD=		${top_builddir}/client/libs3d.la
 
 EXTRA_DIST =  \
 	accesspoint.3ds \
+	accesspoint_inet.3ds \
+	internet.3ds \
+	meshnode.3ds \
 	sphere.3ds \
-	meshnode.3ds
+	output.sample
 
