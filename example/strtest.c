@@ -18,8 +18,7 @@ int main (int argc, char **argv)
 	if (!s3d_init(&argc,&argv,"clock"))	
 	{
 		s3d_select_font("vera");
-		o=s3d_draw_string("The lazy fox is bored enough to jump over everything it sees. weird, isn't it?!",NULL); 
-/*		o=s3d_draw_string("i",NULL);*/
+		o=s3d_draw_string("The lazy fox is bored enough to jump over everything it sees. weird, isn't it?!",NULL);  
 		s3d_flags_on(o,S3D_OF_VISIBLE);
 
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK,	(s3d_cb)stop);

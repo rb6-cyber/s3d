@@ -188,8 +188,7 @@ static int make_new_monotone_poly(mcur, v0, v1)
   vp0->nextfree++;
   vp1->nextfree++;
 
-  errds(VLOW,"sei:make_poly()",": mcur = %d, (v0, v1) = (%d, %d)", 			
-	  mcur, v0, v1);
+  errds(VLOW,"sei:make_poly()",": mcur = %d, (v0, v1) = (%d, %d)", mcur, v0, v1);
   errds(VLOW,"sei:make_poly()","next posns = (p, q) = (%d, %d)", p, q);
 
   mon[mcur] = p;

@@ -98,6 +98,8 @@ int _s3d_add_tessbuf(unsigned short a)
 		errds(VHIGH,"s3d_add_tessbuf():FT_Load_Char()","can't load character");
 		return(-1);
 	} 
+	if (a=='%') return(-1);
+	dprintf(LOW,"triangulating character %c",a);
 	norm=1.0/face->glyph->metrics.vertAdvance;
 	ch=a;
 	v_off=0;
@@ -132,8 +134,11 @@ int _s3d_add_tessbuf(unsigned short a)
 		 * limited though) */
 		tess_buf[a].pbuf=malloc(sizeof(unsigned long)*4*(face->glyph->outline.n_points+2*face->glyph->outline.n_contours)); 
 		do {
+			dprintf(LOW,"triangulating %d contours", ncontours);
+			for (i=0;i<ncontours;i++)
+				dprintf(LOW,"[%d]: %d points ", i, cntr[i]);
 			np=sei_triangulate_polygon(ncontours, cntr, vertices, triangles);
-			dprintf(VLOW,"[F]ound %d polygons",np);
+			dprintf(LOW,"[F]ound %d polygons",np);
 			memset(used,0,ncontours);
 			for (i=0;i<np;i++)
 			{
@@ -141,7 +146,7 @@ int _s3d_add_tessbuf(unsigned short a)
 				tess_buf[a].pbuf[k*4+1]=map[triangles[i][1]];
 				tess_buf[a].pbuf[k*4+2]=map[triangles[i][2]];
 				tess_buf[a].pbuf[k*4+3]=0;
-				dprintf(VLOW,"TRIANG: %d %d %d = %d %d %d",	triangles[i][0],triangles[i][1],triangles[i][2], 
+				dprintf(LOW,"TRIANG: %d %d %d = %d %d %d",	triangles[i][0],triangles[i][1],triangles[i][2], 
 															map[triangles[i][0]], map[triangles[i][1]], map[triangles[i][2]]);
 				for (j=0;j<3;j++)
 				{
@@ -151,7 +156,7 @@ int _s3d_add_tessbuf(unsigned short a)
 						cpos+=cntr[c];
 						if (triangles[i][j]<cpos)
 						{
-							dprintf(VLOW,"point %d in contour line %d (cpos = %d) used",triangles[i][j],c,cpos);
+/*							dprintf(LOW,"point %d in contour line %d (cpos = %d) used",triangles[i][j],c,cpos);*/
 							used[c]=1;
 							break;
 						}
@@ -165,10 +170,10 @@ int _s3d_add_tessbuf(unsigned short a)
 				j&=used[c];
 			}
 			if (j) 
-				dprintf(VLOW,"all contours used");
+				dprintf(LOW,"all contours used");
 			else 
 			{
-				dprintf(VLOW,"not all contours used, restarting");
+				dprintf(LOW,"not all contours used, restarting");
 				diff=0;
 				ncon=0; /* number of actually unused contours */
 				cpos=1; /* position of source vertices */
@@ -178,7 +183,7 @@ int _s3d_add_tessbuf(unsigned short a)
 					if (!used[c])
 					{
 					  /* not used, move it to new end */
-						dprintf(VLOW,"contour %d (%d) not used!!",c,cntr[c]);
+						dprintf(LOW,"contour %d (%d) not used!!",c,cntr[c]);
 						cntr[ncon]=cntr[c];
 						ncon++;
 						if (cpos!=mpos)
@@ -239,7 +244,7 @@ int _s3d_draw_tessbuf(int oid,unsigned short a,int *voff, float *xoff)
 		pbuf[i*4+3]=htonl(pbuf[i*4+3]);
 
 	}
-	dprintf(HIGH,"commiting %d vertices, %d polygons",tess_buf[a].vn,tess_buf[a].pn);
+	dprintf(VLOW,"commiting %d vertices, %d polygons",tess_buf[a].vn,tess_buf[a].pn);
 	s3d_push_vertices(oid,vbuf,tess_buf[a].vn);
 	s3d_push_polygons(oid,pbuf,tess_buf[a].pn);
 	*xoff+=tess_buf[a].xoff;  /*  xoffset */
