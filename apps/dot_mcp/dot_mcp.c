@@ -351,10 +351,10 @@ int main (int argc, char **argv)
 					1,1,1,0.2,
 					1,1,1,0.2,
 					1,1,1,0.2);*/
-		min_but=s3d_import_3ds_file("objs/cubeyholes.3ds");
-		rotate=s3d_import_3ds_file("objs/rotate.3ds");
-		close_but=s3d_import_3ds_file("objs/spikeybla.3ds");
-		sphere=s3d_import_3ds_file("objs/ringsystem.3ds");
+		min_but=s3d_import_3ds_file("cubeyholes.3ds");
+		rotate=s3d_import_3ds_file("rotate.3ds");
+		close_but=s3d_import_3ds_file("spikeybla.3ds");
+		sphere=s3d_import_3ds_file("ringsystem.3ds");
 		s3d_mainloop(mainloop);
 		s3d_quit();
 	}

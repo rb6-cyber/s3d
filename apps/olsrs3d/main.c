@@ -206,7 +206,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	while ( Obj_to_ip_curr != Obj_to_ip_end ) {
 
 		/* myself ... */
-// 		if ( strncmp( Obj_to_ip_curr->olsr_node->ip, olsr_node->ip, NAMEMAX ) != 0 ) {
+/* 		if ( strncmp( Obj_to_ip_curr->olsr_node->ip, olsr_node->ip, NAMEMAX ) != 0 ) {*/
 
 			olsr_con_list = olsr_node->olsr_con_list;
 			while ( olsr_con_list != NULL ) {
@@ -230,7 +230,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 			Obj_to_ip_curr = Obj_to_ip_curr->next;
 
-// 		}
+/* 		} */
 
 	}
 
@@ -408,76 +408,76 @@ void mainloop()
 	int i,j,o,r;
 	float d,gd,f,m[3];
 	float z[3]={0,0,0};
-// 	for (i=0;i<max;i++)
-// 	{
-// 		node[i].mov[0]=
-// 		node[i].mov[1]=
-// 		node[i].mov[2]=0.0;
-// 	}
+/* 	for (i=0;i<max;i++)
+ 	{
+ 		node[i].mov[0]=
+ 		node[i].mov[1]=
+ 		node[i].mov[2]=0.0;
+ 	} */
 
-	// calculate new movement vector
+	/* calculate new movement vector */
 	calc_olsr_node_mov();
 
-	// prepare nodes
+	/* prepare nodes */
 	handle_olsr_node( Olsr_root );
 
-	// move it
+	/* move it */
 	move_olsr_nodes();
 
-	/*	for (i=0;i<max;i++)*/
-	/*	{*/
-	/*		for (j=i+1;j<max;j++)*/
-	/*		{*/
-	/*			if (i!=j)*/
-	/*			{*/
-	/*				gd=adj[i*max+j];*/
-	/*				d=dirt(node[i].pos,node[j].pos,m);*/
-	/*				if (gd==0.0)*/	/* points are not connected */
-	/*				{*/
-/*					printf("distance between i and j: %f\n",d);*/
-	/*					if (d<0.1) d=0.1;*/
-	/*					mov_add(node[j].mov,m,100/(d*d));*/
-	/*					mov_add(node[i].mov,m,-100/(d*d));*/
-	/*				} else {*/ /* connected!! */
+	/*	for (i=0;i<max;i++)
+		{
+			for (j=i+1;j<max;j++)
+			{
+				if (i!=j)
+				{
+					gd=adj[i*max+j];
+					d=dirt(node[i].pos,node[j].pos,m);
+					if (gd==0.0)*/	/* points are not connected 
+					{
+					printf("distance between i and j: %f\n",d);
+						if (d<0.1) d=0.1;
+						mov_add(node[j].mov,m,100/(d*d));
+						mov_add(node[i].mov,m,-100/(d*d));
+					} else { / * connected!! * /
 
-	/*					f=(gd)/d;*/
-	/*					if (f<0.3) f=0.3;*/
-	/*					mov_add(node[i].mov,m,1/f-1);*/
-	/*					mov_add(node[j].mov,m,-(1/f-1));*/
-/*					printf("distance between %d and %d: %f / %f = %f\n",i,j,gd,d,f);*/
-	/*				}*/
-	/*			}*/
-	/*		}*/
-	/*		d=dirt(node[i].pos,z,m);*/
-/*		mov_add(node[i].mov,m,d/100); * move a little bit to point zero */
-/*		mov_add(node[i].mov,m,1); * move a little bit to point zero */
-/*	}
-	/* move it!! */
-// 	for (i=0;i<max;i++)
-// 	{
-/*		printf("applying move vector for point %d: %f:%f:%f\n",i,node[i].mov[0],node[i].mov[1],node[i].mov[2]);*/
-// 		if ((d=dist(node[i].mov,z))>10.0)
-// 			mov_add(node[i].pos,node[i].mov,1.0/((float )d)); /* normalize */
-// 		else
-// 			mov_add(node[i].pos,node[i].mov,0.1);
-// 		s3d_translate(node[i].obj,node[i].pos[0],node[i].pos[1],node[i].pos[2]);
-// 		for (j=i+1;j<max;j++)
-// 			if ((o=adj_obj[max*i+j])!=-1)
-// 			{
-// 				s3d_pop_vertex(o,6);
-/*				s3d_pop_polygon(o,2);*/
-// 				s3d_push_vertex(o,node[i].pos[0],	 node[i].pos[1],node[i].pos[2]);
-// 				s3d_push_vertex(o,node[i].pos[0]+0.2,node[i].pos[1],node[i].pos[2]);
-// 				s3d_push_vertex(o,node[i].pos[0]-->id0.2,node[i].pos[1],node[i].pos[2]);
+						f=(gd)/d;
+						if (f<0.3) f=0.3;
+						mov_add(node[i].mov,m,1/f-1);
+						mov_add(node[j].mov,m,-(1/f-1));
+					printf("distance between %d and %d: %f / %f = %f\n",i,j,gd,d,f);
+					}
+				}
+			}
+			d=dirt(node[i].pos,z,m);
+		mov_add(node[i].mov,m,d/100); * move a little bit to point zero 
+		mov_add(node[i].mov,m,1); * move a little bit to point zero 
+	}
+	/ * move it!! * /
+ 	for (i=0;i<max;i++)
+ 	{
+/ *		printf("applying move vector for point %d: %f:%f:%f\n",i,node[i].mov[0],node[i].mov[1],node[i].mov[2]); * /
+ 		if ((d=dist(node[i].mov,z))>10.0)
+ 			mov_add(node[i].pos,node[i].mov,1.0/((float )d)); / * normalize * /
+ 		else
+ 			mov_add(node[i].pos,node[i].mov,0.1);
+ 		s3d_translate(node[i].obj,node[i].pos[0],node[i].pos[1],node[i].pos[2]);
+ 		for (j=i+1;j<max;j++)
+ 			if ((o=adj_obj[max*i+j])!=-1)
+ 			{
+ 				s3d_pop_vertex(o,6);
+/ *				s3d_pop_polygon(o,2);* /
+ 				s3d_push_vertex(o,node[i].pos[0],	 node[i].pos[1],node[i].pos[2]);
+ 				s3d_push_vertex(o,node[i].pos[0]+0.2,node[i].pos[1],node[i].pos[2]);
+ 				s3d_push_vertex(o,node[i].pos[0]-->id0.2,node[i].pos[1],node[i].pos[2]);
+				
+ 				s3d_push_vertex(o,node[j].pos[0],	 node[j].pos[1],node[j].pos[2]);
+ 				s3d_push_vertex(o,node[j].pos[0],node[j].pos[1]+0.2,node[j].pos[2]);
+ 				s3d_push_vertex(o,node[j].pos[0],node[j].pos[1]-0.2,node[j].pos[2]);
 
-// 				s3d_push_vertex(o,node[j].pos[0],	 node[j].pos[1],node[j].pos[2]);
-// 				s3d_push_vertex(o,node[j].pos[0],node[j].pos[1]+0.2,node[j].pos[2]);
-// 				s3d_push_vertex(o,node[j].pos[0],node[j].pos[1]-0.2,node[j].pos[2]);
-
-/*				s3d_push_polygon(o,0,4,5,0);
-				s3d_push_polygon(o,3,1,2,0);*/
-// 			}
-// 	}
+/ *				s3d_push_polygon(o,0,4,5,0);
+				s3d_push_polygon(o,3,1,2,0);* /
+ 			}
+ 	} */
 	while (0!=(r=net_main()))
 		if (r==-1)
 		{
@@ -644,8 +644,9 @@ void lst_del(int id) {
 	struct Obj_to_ip *del;
 	move_lst_ptr(&id);
 	if(id != List_ptr->id)
+	{
 		/* printf("obj2ip: remove id %d failed move_lst_ptr return id %d\n",id,List_ptr->next->id); */
-	else {
+	} else {
 		del = List_ptr;
 		List_ptr->next->prev = List_ptr->prev;
 		List_ptr->prev->next = List_ptr->next;
@@ -681,8 +682,8 @@ void move_lst_ptr(int *id) {
 			}
 		} else {
 			List_ptr = Obj_to_ip_end;
-			/* printf("obj2ip: start at end id %d - %d > %d - %d \n",*id,Obj_to_ip_head->next->id,Obj_to_ip_end->prev->id,*id); */
-			//do List_ptr = List_ptr->prev; while(*id > List_ptr->prev->id);
+			/* printf("obj2ip: start at end id %d - %d > %d - %d \n",*id,Obj_to_ip_head->next->id,Obj_to_ip_end->prev->id,*id);  */
+			/*  do List_ptr = List_ptr->prev; while(*id > List_ptr->prev->id); */
 			while(*id < List_ptr->prev->id) {
 				/* printf("obj2ip: %d < %d move to ",*id,List_ptr->id); */
 				List_ptr = List_ptr->prev;
