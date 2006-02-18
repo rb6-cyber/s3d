@@ -1,4 +1,5 @@
 2006-02-18	Simon Wunderlich - <dotslash@packetmixer.de>	
+	- fixed 0.0 size application problem
 	- removed c++ styles in olsrs3d
 2006-02-17	Simon Wunderlich - <dotslash@packetmixer.de>	
 	- gintl() and gints() added in 3dsread.c, hopefully

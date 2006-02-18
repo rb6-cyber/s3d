@@ -15,7 +15,7 @@ void mainloop()
 }
 int main (int argc, char **argv)
 {
-	if (!s3d_init(&argc,&argv,"clock"))	
+	if (!s3d_init(&argc,&argv,"strtest"))	
 	{
 		s3d_select_font("vera");
 		o=s3d_draw_string("The lazy fox is bored enough to jump over everything it sees. weird, isn't it?!",NULL);  

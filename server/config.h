@@ -19,7 +19,7 @@
 /*  which subsystem do we use for rendering and ? */
 
 /* GLUT is the GL utility library which you obtain at 
- * http: //  freeglut.sourceforge.net/  
+ * http://freeglut.sourceforge.net/  
  */
 #define G_GLUT	1
 /* SDL is a framework for simple media access which contains

@@ -23,12 +23,11 @@ float bottom=-1.0;
 float left=-1.0;
 float zoom=5.0;
 int n_app=0;
-int sphere;
 int rot_flag=0;
 struct app *focus=NULL;
 float focus_r=0;
 float alpha=0;
-unsigned int min_but,rotate,close_but;
+unsigned int min_but,rotate,close_but,sphere;
 
 void place_apps();
 
@@ -48,7 +47,7 @@ void set_focus(struct app *a)
 			s3d_translate(	focus->title,-focus->textw-1.2,0.0,0);
 			s3d_translate(	focus->close_but,bsize*focus->textw/2,1.2,0);
 			s3d_link(		focus->close_but,focus->sphere);
-			s3d_link(		focus->oid,0);
+			s3d_link(		focus->oid,0); 
 		}
 	focus=a;
 	if (a==NULL)
@@ -223,12 +222,12 @@ void app_init(struct app *a)
 	a->title=s3d_draw_string(a->name,&a->textw);
 
 	a->close_but=s3d_clone(close_but);
-	s3d_translate(	a->close_but,bsize*a->textw/2,1.2,0);
+	s3d_translate(	a->close_but,bsize*a->textw/2.0,1.2f,0.0f);
 	s3d_link(		a->close_but,a->sphere);
   	s3d_flags_on(	a->close_but,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 
 
-	s3d_translate(	a->title,-a->textw-1.2,0.0,0);
+	s3d_translate(	a->title,-a->textw-1.2f,0.0f,0.0f);
 	s3d_link(		a->title,a->close_but);
    	s3d_flags_on(	a->title,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	
@@ -355,6 +354,7 @@ int main (int argc, char **argv)
 		rotate=s3d_import_3ds_file("rotate.3ds");
 		close_but=s3d_import_3ds_file("spikeybla.3ds");
 		sphere=s3d_import_3ds_file("ringsystem.3ds");
+		printf("min_but: %d, rotate: %d, close_but: %d, sphere: %d",min_but,rotate,close,sphere);
 		s3d_mainloop(mainloop);
 		s3d_quit();
 	}

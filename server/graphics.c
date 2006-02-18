@@ -136,24 +136,27 @@ int render_by_mcp()
 			{
 				if (o->oflags&OF_VIRTUAL)  /*  we have an app here. */
 				{
-					cull_get_planes(); 
-					mySetMatrix(o->m);
-					x.x=x.y=x.z=0.0f;
-					myTransformV(&x);
-					k=cull_sphere_in_frustum(&x,o->r);
-/*					dprintf(HIGH,"mcp-object %d is in %s frustum",i,k?"":"not");*/
-					if (k)
+					if (o->r!=0.0)
 					{
-						if (select_mode==1)
-						{
-							dprintf(MED,"object %d in culling frustrum!",i);
-							glLoadName(i);
-						}
-						render_virtual_object(o);
-					} else {
-						if (select_mode==1)
-						{
-							dprintf(MED,"object %d not in culling frustrum!",i);
+						cull_get_planes(); 
+						mySetMatrix(o->m);
+						x.x=x.y=x.z=0.0f;
+						myTransformV(&x);
+						k=cull_sphere_in_frustum(&x,o->r);
+						dprintf(VLOW,"mcp-object %d is in %s frustum",i,k?"":"not");
+						if (k)
+							{
+							if (select_mode==1)
+							{
+								dprintf(MED,"object %d in culling frustrum!",i);
+								glLoadName(i);
+							}
+							render_virtual_object(o);
+						} else {
+							if (select_mode==1)
+							{
+								dprintf(MED,"object %d not in culling frustrum!",i);
+							}
 						}
 					}
 				} else if ((o->oflags&OF_CLONE) && (p->object[o->n_vertex]->oflags&OF_VIRTUAL))
@@ -310,7 +313,7 @@ void graphics_main()
 	glRotatef(-cam.rotate.y, 0.0,1.0,0.0);
 	glTranslatef(-cam.translate.x,-cam.translate.y,-cam.translate.z);*/
 
-/* 	glPushMatrix();  / *  save the cam * / */
+ 	glPushMatrix();  /*  save the cam */ 
 		glLightfv(GL_LIGHT0,GL_POSITION,pos);
 		render_by_mcp();
 		glPushMatrix();
@@ -320,7 +323,9 @@ void graphics_main()
 			glMaterialfv(GL_FRONT,GL_DIFFUSE,wire_diff);
 			glutWireTorus(100,100,40,40);
 		glPopMatrix();
-/* 	glPopMatrix();  / *  restore the cam * / */
+ 	glPopMatrix();  /*  restore the cam */ 
+	glLoadIdentity();
+	glMultMatrixf(m);
 
 	glFlush();
 	switch (frame_mode)

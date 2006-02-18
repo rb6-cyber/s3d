@@ -2,6 +2,7 @@
 #include <stdlib.h>		 /*  malloc(),realloc(),free() */
 #include <string.h>		 /*  memcpy() */
 #include <GL/glut.h> 	 /*  glutwirecube */
+#define _ISOC99_SOURCE
 #include <math.h>		 /*  sin(),cos() */
 
 #define MAXLOOP	10
@@ -853,6 +854,7 @@ int obj_translate(struct t_process *p, uint32_t oid, float *transv)
 			obj->translate.x=*transv;
 			obj->translate.y=*(transv+1);
 			obj->translate.z=*(transv+2);
+			dprintf(VLOW,"[translate|pid %d] %d: %3.3f %3.3f %3.3f",p->id,oid,obj->translate.x,obj->translate.y,obj->translate.z);
 			obj_pos_update(p,oid);
 		}
 	}
@@ -879,6 +881,7 @@ int obj_rotate(struct t_process *p, uint32_t oid, float *rotv)
 			if (f<0.0)		f+=(float)((int)-f/360)*360;
 			if (f>360.0)	f+=(float)((int)f/360)*-360;
 			obj->rotate.z=f;
+			dprintf(VLOW,"[rotate|pid %d] %d: %3.3f %3.3f %3.3f",p->id,oid,obj->rotate.x,obj->rotate.y,obj->rotate.z);
 			obj_pos_update(p,oid);
 		}
 	}
@@ -891,7 +894,9 @@ int obj_scale(struct t_process *p, uint32_t oid, float scav)
 	if (obj_valid(p,oid,obj))
 	{
 		if ((p->id==MCP) || (!(obj->oflags&OF_SYSTEM)))
+		if (!isinf(scav) && !isnan(scav) && !((scav<1.0e-10) && (scav>-1.0e-10))) /* ignore very low values */
 		{
+			dprintf(VLOW,"[scale|pid %d] obj %d to %f",p->id,oid,scav);
 			obj->scale=scav;
 	/*		obj->scale.x=*scav;
 			obj->scale.y=*(scav+1);
@@ -1024,7 +1029,7 @@ void obj_check_biggest_object(struct t_process *p, uint32_t oid)
 				}
 			if (found)
 			{
-				dprintf(MED,"there is a new biggest object in [%d:\"\"]",p->id,p->name);
+				dprintf(VLOW,"there is a new biggest object in [%d:\"\"]",p->id,p->name);
 				mcp_o->r=r;  /*  save the new size */
 				mcp_rep_object(p->mcp_oid);	  /*  and tell the mcp */
 			}
@@ -1111,6 +1116,7 @@ void obj_pos_update(struct t_process *p, uint32_t oid)
 	int is_lnksrc;
 	struct t_obj 		*ao;
 	struct t_process	*ap;
+	dprintf(VLOW,"[obj_pos_upd|pid %d] %d",p->id, oid);
 	p->object[oid]->m_uptodate=0;
 	obj_recalc_tmat(p,oid);
 	if (p->id!=MCP) 
@@ -1128,6 +1134,7 @@ void obj_pos_update(struct t_process *p, uint32_t oid)
 				if (NULL!=(ap=get_proc_by_pid(ao->n_mat)))
 					obj_sys_update(ap,oid);	
 			event_cam_changed();
+			dprintf(VLOW,"[obj_pos_upd|pid %d] %d event_cam_changed",p->id,oid);
 		}
 	if (p->object[oid]->oflags&OF_LINK_SRC)
 	{
@@ -1137,6 +1144,7 @@ void obj_pos_update(struct t_process *p, uint32_t oid)
 				if ((p->object[i]->oflags&OF_LINK) && (p->object[i]->linkid==oid))
 				{
 					is_lnksrc=1;
+					dprintf(VLOW,"[obj_pos_upd|pid %d] % is pointing on %d -> update",p->id,i, oid);
 					obj_pos_update(p,i);
 				}
 		if (!is_lnksrc)	/* it's not! switch out the flag */
@@ -1381,7 +1389,7 @@ int obj_link(struct t_process *p, uint32_t oid_from, uint32_t oid_to)
 			errds(VHIGH,"obj_link()","can't link system-objects in non-mcp-apps!",oid_from,oid_to);
 			return(-1);
 		}
-/* 		dprintf(LOW,"linking object %d from pid %d to %d",oid_from,pid,oid_to); */
+ 		dprintf(LOW,"[link|pid %d] %d -> %d",p->id, oid_from,oid_to); 
 		o->oflags|=OF_LINK;
 		o->linkid=oid_to;
 		p->object[oid_to]->oflags|=OF_LINK_SRC;
