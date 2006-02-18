@@ -1,8 +1,6 @@
 client(portability?!):
 	shmat() return (char *) -1 or NULL?! data_ctos/data_stoc should
 	really not be 0x0
-	check 3dsreader binary stuff, gints/gintl, maybe there is some clean
-	function ....
 
 general:
 	start mcp with s3d

@@ -28,7 +28,7 @@ int rot_flag=0;
 struct app *focus=NULL;
 float focus_r=0;
 float alpha=0;
-unsigned int min_but,rotate,close_but,sphere,menu=-1;
+unsigned int min_but,rotate,close_but,sphere,reset,menu=-1;
 
 void place_apps();
 
@@ -44,7 +44,6 @@ void set_focus(struct app *a)
 
   			s3d_flags_on(focus->sphere,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 			s3d_flags_off(focus->min_but,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-			s3d_flags_off(rotate,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 			s3d_translate(	focus->title,-focus->textw-1.2,0.0,0);
 			s3d_translate(	focus->close_but,bsize*focus->textw/2,1.2,0);
 			s3d_link(		focus->close_but,focus->sphere);
@@ -55,15 +54,21 @@ void set_focus(struct app *a)
 	{
 		focus_r=n_app;
 		s3d_mcp_focus(-1);
+		s3d_flags_off(rotate,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		s3d_flags_off(reset,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		rot_flag=0;
 	} else {
 		/* set the new focus app up */
-		s3d_translate(	a->title,-a->textw-7.2,0.0,0);
+		s3d_translate(	a->title,-a->textw-9.6,0.0,0);
+		s3d_translate(	reset,-7.2,0.0,0);
 		s3d_translate(	rotate,-4.8,0.0,0);
 		s3d_translate(	a->min_but,-2.4,0.0,0);
 		s3d_link(		a->close_but,0);
 		s3d_link(		rotate,a->close_but);
+		s3d_link(		reset,a->close_but);
 		s3d_flags_on(	a->min_but,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 		s3d_flags_on(	rotate,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		s3d_flags_on(	reset,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 		s3d_flags_off(	a->sphere,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 		s3d_unlink(a->oid);
 		s3d_rotate(a->oid,		0,0,0);
@@ -132,7 +137,7 @@ void *del_app(int oid)
 		n_app--;
 		if (focus==a)
 		{
-			s3d_mcp_focus(-1);
+			set_focus(NULL);
 			focus=NULL;
 		}
 		free(a);
@@ -195,7 +200,6 @@ void mcp_object(struct s3d_evt *hrmz)
 			if (a==focus)
 			{
 				focus_r=a->r;
-/*				s3d_translate(a->min_but,0,a->r + 1.0,0);*/
 			} else {
 				s3d_scale(a->sphere,a->r);
 				s3d_scale(a->oid,1/a->r);
@@ -207,7 +211,6 @@ void mcp_object(struct s3d_evt *hrmz)
 void app_init(struct app *a)
 {
 	printf("building some window decorations on %d ['%s']\n",a->oid,a->name);
-/* 	a->r=s3d_get_radius(a->oid); */
 	printf("radius of object %d is %f\n",a->oid,a->r);
 	s3d_scale(a->oid,		1/a->r);
 
@@ -215,11 +218,6 @@ void app_init(struct app *a)
 	s3d_scale(		a->sphere,a->r);
 	s3d_link(		a->sphere,a->oid);
   	s3d_flags_on(	a->sphere,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-
-/*	s3d_translate(	a->min_but,0,2.0,0);
-	s3d_link(		a->min_but,a->sphere);
-   	s3d_flags_on(	a->min_but,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);*/
-
 
 	a->title=s3d_draw_string(a->name,&a->textw);
 
@@ -264,6 +262,11 @@ void object_click(struct s3d_evt *hrmz)
 	{
 		rot_flag=!rot_flag;
 		return;
+	}
+	if (oid==reset)
+	{
+		s3d_translate(0,0.0,0.0,5.0);
+		s3d_rotate(0,0,0,0);
 	}
 	while (a!=NULL)
 	{
@@ -357,12 +360,12 @@ int main (int argc, char **argv)
 					1,1,1,0.2);*/
 		min_but=s3d_import_3ds_file("objs/cubeyholes.3ds");
 		rotate=s3d_import_3ds_file("objs/rotate.3ds");
+		reset=s3d_import_3ds_file("objs/reset.3ds");
 		close_but=s3d_import_3ds_file("objs/spikeybla.3ds");
 		sphere=s3d_import_3ds_file("objs/ringsystem.3ds");
 		menu=menu_init();
 		s3d_link(menu,0);
 		s3d_scale(menu,bsize);
-		printf("min_but: %d, rotate: %d, close_but: %d, sphere: %d, menu: %d",min_but,rotate,close,sphere, menu);
 		place_apps();
 		s3d_mainloop(mainloop);
 		s3d_quit();

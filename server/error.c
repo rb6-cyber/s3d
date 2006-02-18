@@ -26,7 +26,7 @@ void errsf(char *func, char *msg) {
 	fprintf(stderr,"FATAL: %s: %s\n",func,msg);
 	exit(-1);
 }
-
+#ifdef DEBUG
 /*  printing error message */
 void errds(int relevance,char *func, const char *fmt, ...)
 {
@@ -41,7 +41,6 @@ void errds(int relevance,char *func, const char *fmt, ...)
 		fprintf(stderr,"error: %s:%s\n",func,(char *)&dbm);
 	}
 }
-#ifdef DEBUG
 /*  printing debug message */
 
 void dprintf(int relevance, const char *fmt, ...) {
@@ -57,8 +56,5 @@ void dprintf(int relevance, const char *fmt, ...) {
 		fprintf(stdout,"debug: %s\n",(char *)&dbm);
 	}
 }
-#else 
-void dprintf(int relevance, const char *fmt, ...) {
-		/* placeholder ... */
-}
+
 #endif

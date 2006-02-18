@@ -15,7 +15,11 @@
 #define	VHIGH	5
 /*  which is the minimum level of debugmessage we want to see? */
 #define DEBUG	LOW
-#define NO_DEBUG	1 /* we want no debugging !! */
+#ifndef DEBUG
+#define errds(...) /* nothing */
+#define dprintf(...) /* nothing */
+#endif
+
 /*  which subsystem do we use for rendering and ? */
 
 /* GLUT is the GL utility library which you obtain at 

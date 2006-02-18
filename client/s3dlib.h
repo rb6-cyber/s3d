@@ -79,3 +79,9 @@ struct tessp_t
 int _s3d_tesselate(struct tessp_t *t,struct t_buf *b);
 
 #include "config.h"
+#ifndef DEBUG
+#define dprintf(...) /* nothing */
+#define errdn(...) /* nothing */
+#define errds(...) /* nothing */
+#endif
+

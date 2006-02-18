@@ -228,8 +228,10 @@ void errn(char *func, int en);
 void errnf(char *func, int en);
 void errs(char *func, char *msg);
 void errsf(char *func, char *msg);
+#ifdef DEBUG
 void errds(int relevance,char *func, const char *fmt, ...);
 void dprintf(int relevance, const char *msg, ...);
+#endif
 /*  graphics.c */
 int graphics_quit(void);
 void graphics_main(void);

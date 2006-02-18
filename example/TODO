@@ -1,4 +1,0 @@
-check S3D_QUIT_event
-dot_mcp: 
-	dnjl:	error opening pty
-	check updating names

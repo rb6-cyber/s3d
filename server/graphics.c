@@ -316,6 +316,7 @@ void graphics_main()
  	glPushMatrix();  /*  save the cam */ 
 		glLightfv(GL_LIGHT0,GL_POSITION,pos);
 		render_by_mcp();
+#ifdef DEBUG
 		glPushMatrix();
 			glRotatef(90,1.0,0.0,0.0);	
 			glMaterialfv(GL_FRONT,GL_AMBIENT,wire_amb);
@@ -323,6 +324,7 @@ void graphics_main()
 			glMaterialfv(GL_FRONT,GL_DIFFUSE,wire_diff);
 			glutWireTorus(100,100,40,40);
 		glPopMatrix();
+#endif
  	glPopMatrix();  /*  restore the cam */ 
 	glLoadIdentity();
 	glMultMatrixf(m);

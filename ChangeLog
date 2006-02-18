@@ -1,4 +1,7 @@
 2006-02-18	Simon Wunderlich - <dotslash@packetmixer.de>	
+	- by commenting out DEBUG define, all debug messages
+	  will not even be [call]ed
+	- dot_mcp added view reset button, fixed rotate button 
 	- dot_mcp has now some "GO!!" menu
 	- 3dsread.c x-axis inversion fixed
 	- fixed 0.0 size application problem
