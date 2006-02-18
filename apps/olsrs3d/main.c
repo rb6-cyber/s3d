@@ -778,10 +778,10 @@ int main( int argc, char *argv[] ) {
 			s3d_set_callback(S3D_EVENT_QUIT,stop);
 			if (s3d_select_font("vera"))
 				printf("font not found\n");
-			Olsr_node_obj = s3d_import_3ds_file( "accesspoint.3ds" );
-			Olsr_node_inet_obj = s3d_import_3ds_file( "accesspoint_inet.3ds" );
-			Olsr_node_hna_net = s3d_import_3ds_file( "internet.3ds" );
-			mesh=s3d_import_3ds_file("meshnode.3ds");
+			Olsr_node_obj = s3d_import_3ds_file( "objs/accesspoint.3ds" );
+			Olsr_node_inet_obj = s3d_import_3ds_file( "objs/accesspoint_inet.3ds" );
+			Olsr_node_hna_net = s3d_import_3ds_file( "objs/internet.3ds" );
+			mesh=s3d_import_3ds_file("objs/meshnode.3ds");
 			s3d_link(mesh,0);
 			s3d_scale(mesh,0.15);
 			ZeroPoint = s3d_new_object();
