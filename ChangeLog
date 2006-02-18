@@ -1,4 +1,6 @@
 2006-02-18	Simon Wunderlich - <dotslash@packetmixer.de>	
+	- dot_mcp has now some "GO!!" menu
+	- 3dsread.c x-axis inversion fixed
 	- fixed 0.0 size application problem
 	- removed c++ styles in olsrs3d
 2006-02-17	Simon Wunderlich - <dotslash@packetmixer.de>	

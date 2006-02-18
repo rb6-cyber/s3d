@@ -1,4 +1,5 @@
 #include "s3d.h"
+#include "dot_mcp.h"
 #include <unistd.h>  /*  sleep() */
 #include <stdlib.h>  /*  free(), malloc() */
 #include <string.h>  /*  strncpy() */
@@ -27,7 +28,7 @@ int rot_flag=0;
 struct app *focus=NULL;
 float focus_r=0;
 float alpha=0;
-unsigned int min_but,rotate,close_but,sphere;
+unsigned int min_but,rotate,close_but,sphere,menu=-1;
 
 void place_apps();
 
@@ -151,7 +152,7 @@ void place_apps()
 	{
 		if (a->init)	
 		{
-			printf("placing app [%d,'%s'], oid %d, r=%f\n",j,a->name,a->oid,a->r); 
+/*			printf("placing app [%d,'%s'], oid %d, r=%f\n",j,a->name,a->oid,a->r); */
 			if (focus==a)
 			{
 				s3d_translate(a->close_but,(-left)*zoom-0.4,(-bottom)*zoom-0.4,-zoom);
@@ -165,6 +166,7 @@ void place_apps()
 		}
 		a=a->next;
 	}
+	s3d_translate(menu,	left*zoom+0.4,(-bottom)*zoom-0.4,-zoom);
 }
 void mcp_object(struct s3d_evt *hrmz)
 {
@@ -265,7 +267,6 @@ void object_click(struct s3d_evt *hrmz)
 	}
 	while (a!=NULL)
 	{
-		printf("O_o\n");
 		if (oid==a->close_but)
 		{
 			del_app(a->oid);
@@ -286,6 +287,7 @@ void object_click(struct s3d_evt *hrmz)
 		i++;
 		a=a->next;
 	}
+	menu_click(oid);
 }
 void object_info(struct s3d_evt *hrmz)
 {
@@ -293,15 +295,19 @@ void object_info(struct s3d_evt *hrmz)
 	inf=(struct s3d_obj_info *)hrmz->buf;
 	if (inf->object==0)
 	{
-		asp=inf->scale;
-		printf("screen aspect: %f\n",asp);
-		if (asp>1.0) /* wide screen */
+		if (asp!=inf->scale)
 		{
-			bottom=-1.0;
-			left=-asp;
-		} else {  /* high screen */
-			bottom=(-1.0/asp);
-			left=-1.0;
+			asp=inf->scale;
+			printf("screen aspect: %f\n",asp);
+			if (asp>1.0) /* wide screen */
+			{
+				bottom=-1.0;
+				left=-asp;
+			} else {  /* high screen */
+				bottom=(-1.0/asp);
+				left=-1.0;
+			}
+			place_apps(); /* replace apps */
 		}
 	}
 }
@@ -328,7 +334,6 @@ void mainloop()
 		if (alpha>360.0) alpha=0.0;
 	}
 	usleep(10000);
-	
 }
 
 int main (int argc, char **argv)
@@ -354,7 +359,11 @@ int main (int argc, char **argv)
 		rotate=s3d_import_3ds_file("rotate.3ds");
 		close_but=s3d_import_3ds_file("spikeybla.3ds");
 		sphere=s3d_import_3ds_file("ringsystem.3ds");
-		printf("min_but: %d, rotate: %d, close_but: %d, sphere: %d",min_but,rotate,close,sphere);
+		menu=menu_init();
+		s3d_link(menu,0);
+		s3d_scale(menu,bsize);
+		printf("min_but: %d, rotate: %d, close_but: %d, sphere: %d, menu: %d",min_but,rotate,close,sphere, menu);
+		place_apps();
 		s3d_mainloop(mainloop);
 		s3d_quit();
 	}

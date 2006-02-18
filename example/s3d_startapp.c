@@ -2,7 +2,7 @@
 #include <unistd.h> /* fork(), execl() */
 #include <stdio.h> /* printf() */
 #include <stdlib.h> /* exit() */
-#include <string.h> /* strlen() */
+#include <string.h> /* strlen(),strncpy(), strncat() */
 struct menu_entry {
 	char *icon, *name, *path;
 	int icon_oid, str_oid;
@@ -16,17 +16,21 @@ struct menu_entry menu[]={
 void object_click(struct s3d_evt *hrmz)
 {
 	unsigned int i, oid;
+	char exec[256];
 	oid=*((unsigned int *)hrmz->buf);
 	printf("%d got clicked\n",oid);
 	for (i=0;i<(sizeof(menu)/sizeof(struct menu_entry));i++)
 	{
 		if ((oid==menu[i].icon_oid) || (oid==menu[i].str_oid))
 		{
-			if (fork()==0)
+			strncpy(exec,menu[i].path,256);
+			strncat(exec,"&",256);
+			system(exec);
+/*			if (fork()==0)
 			{
 				execl(menu[i].path,NULL);
 				exit(0);
-			} 
+			} */
 		}
 	}
 }

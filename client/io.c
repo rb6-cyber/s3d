@@ -136,9 +136,9 @@ int s3d_init(int *argc, char ***argv, char *name)
 	_queue_init();
 #ifdef SIGNAL
     if (signal(SIGINT, (sig_t)sigint_handler) == SIG_ERR)
-		errn("s3d_init():signal()",errno);
+		errdn(LOW,"s3d_init():signal()",errno);
     if (signal(SIGTERM, (sig_t)sigint_handler) == SIG_ERR)
-		errn("s3d_init():signal()",errno);
+		errdn(LOW,"s3d_init():signal()",errno);
 
 #endif
 	return(0);

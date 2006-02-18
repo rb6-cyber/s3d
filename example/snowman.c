@@ -15,9 +15,9 @@ void mainloop()
 	s3d_rotate(oid_head,0,a,0);
 	s3d_rotate(oid_middle,0,a,0);
 	s3d_rotate(oid_foot,0,a,0);
-	s3d_translate(oid_head,		0,3.5+2*pos,0);
-	s3d_translate(oid_middle,	0,2+1.25*pos,0);
-	s3d_translate(oid_foot,		0,pos,0);
+	s3d_translate(oid_head,		0,1.5 +2.00*pos,0);
+	s3d_translate(oid_middle,	0,0   +1.25*pos,0);
+	s3d_translate(oid_foot,		0,-2  +1.00*pos,0);
 	usleep(10000);
 }
 int main(int argc, char **argv)

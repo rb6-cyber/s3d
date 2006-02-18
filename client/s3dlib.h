@@ -29,6 +29,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf);
 void dprintf(int relevance, const char *fmt, ...);
 void errn(char *func,int en);
 void errs(char *func, char *msg);
+void errdn(int relevance, char *func,int en); 
 void errds(int relevance,char *func, const char *fmt, ...);
 /*  fontselect.c */
 char *s3d_findfont(char *mask);

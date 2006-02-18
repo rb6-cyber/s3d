@@ -10,9 +10,22 @@
 int s3d_import_3ds_file(char *fname)
 {
 	char *buf;
-	if (s3d_open_file(fname,&buf)==-1) return(-1);
-	return(s3d_import_3ds(buf));
-	
+	char path[1024];
+	int i;
+	char *searchpath[4]=
+		{"./",
+		 "",
+		 "../",
+		 "../../"
+		 };
+	for (i=0;i<4;i++)
+	{
+		strncpy(path,searchpath[i],1024);
+		strncat(path,fname,1024);
+		if (s3d_open_file(path,&buf)!=-1)  /* found something */
+			return(s3d_import_3ds(buf));
+	}
+	return(-1); /* nothing in search path ... */
 }
 static void normal(float *p0, float *p1, float *p2, float *r)
 {
@@ -292,7 +305,7 @@ int s3d_import_3ds(char *buf)
 		 	  {
 				*(vertex_buf+j*3+0)=*((float *)ptr+0);
 				*(vertex_buf+j*3+1)=*((float *)ptr+2);
-				*(vertex_buf+j*3+2)=*((float *)ptr+1);
+				*(vertex_buf+j*3+2)=-*((float *)ptr+1);
 				ptr+=sizeof(float)*3;
 			  }
 			  v+=vertexnum;  /*  for the correct vertex offset */
