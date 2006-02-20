@@ -1,3 +1,6 @@
+2006-02-20  Simon Wunderlich - <dotslash@packetmixer.de>
+	- added mplayer patch: patch your mplayer, use -vo s3d on
+	  the commandline and watch your videos in s3d in 3d space - yay
 2006-02-18	Simon Wunderlich - <dotslash@packetmixer.de>	
 	- by commenting out DEBUG define, all debug messages
 	  will not even be [call]ed

@@ -1,0 +1,269 @@
+diff -Naur MPlayer-1.0pre7.old/configure MPlayer-1.0pre7/configure
+--- MPlayer-1.0pre7.old/configure	2005-04-13 13:46:35.000000000 +0200
++++ MPlayer-1.0pre7/configure	2005-05-22 18:12:56.586338408 +0200
+@@ -234,6 +234,7 @@
+   --disable-vidix        disable VIDIX [enable on x86 *nix]
+   --enable-gl            build with OpenGL render support [autodetect]
+   --enable-dga[=n]       build with DGA [n in {1, 2} ] support [autodetect]
++  --enable-s3d           build with s3d support [autodetect]
+   --enable-vesa          build with VESA support [autodetect]
+   --enable-svga          build with SVGAlib support [autodetect]
+   --enable-sdl           build with SDL render support [autodetect]
+@@ -1288,6 +1289,7 @@
+ _mencoder=yes
+ _x11=auto
+ _dga=auto	# 1 2 no auto
++_s3d=auto
+ _xv=auto
+ _xvmc=no  #auto when complete
+ _sdl=auto
+@@ -1444,6 +1446,8 @@
+   --disable-xvmc)       _xvmc=no        ;;
+   --enable-sdl)		_sdl=yes	;;
+   --disable-sdl)	_sdl=no		;;
++  --enable-s3d)		_s3d=yes	;;
++  --disable-s3d)	_s3d=no		;;
+   --enable-directx)     _directx=yes    ;;
+   --disable-directx)    _directx=no     ;;
+   --enable-win32waveout)  _win32waveout=yes ;;
+@@ -3798,6 +3802,27 @@
+ fi
+ echores "$_aa"
+ 
++echocheck "s3d"
++if test "$_s3d" = auto ; then
++  cat > $TMPC << EOF
++#include <s3d.h>
++int main(int argc, char **argv) { s3d_init( &argc, &argv, "mplayer_test"); s3d_quit(); return 0; }
++EOF
++  _s3d=no
++  cc_check -ls3d && _s3d=yes
++fi
++if test "$_s3d" = yes ; then
++  _def_s3d='#define HAVE_S3D 1'
++  _ld_s3d='-ls3d'
++  _vosrc="$_vosrc vo_s3d.c"
++  _vomodules="s3d $_vomodules"
++else
++  _def_aa='#undef HAVE_S3D'
++  _novomodules="s3d $_novomodules"
++fi
++echores "$_s3d"
++
++
+ 
+ echocheck "CACA"
+ if test "$_caca" = auto ; then
+@@ -6769,6 +6794,7 @@
+ SDL_LIB = $_ld_sdl
+ SVGA_LIB = $_ld_svga
+ AA_LIB = $_ld_aa
++S3D_LIB = $_ld_s3d
+ CACA_INC = $_inc_caca
+ CACA_LIB = $_ld_caca
+ 
+@@ -7484,6 +7510,7 @@
+ $_def_vesa
+ $_def_xdpms
+ $_def_aa
++$_def_s3d
+ $_def_caca
+ $_def_tga
+ $_def_toolame
+diff -Naur MPlayer-1.0pre7.old/libvo/video_out.c MPlayer-1.0pre7/libvo/video_out.c
+--- MPlayer-1.0pre7.old/libvo/video_out.c	2004-12-21 21:33:51.000000000 +0100
++++ MPlayer-1.0pre7/libvo/video_out.c	2005-05-22 18:09:59.288291808 +0200
+@@ -84,6 +84,7 @@
+ extern vo_functions_t video_out_png;
+ extern vo_functions_t video_out_ggi;
+ extern vo_functions_t video_out_aa;
++extern vo_functions_t video_out_s3d;
+ extern vo_functions_t video_out_caca;
+ extern vo_functions_t video_out_mpegpes;
+ extern vo_functions_t video_out_yuv4mpeg;
+@@ -192,6 +193,9 @@
+ #ifdef HAVE_AA
+ 	&video_out_aa,
+ #endif
++#ifdef HAVE_S3D
++	&video_out_s3d,
++#endif
+ #ifdef HAVE_CACA
+ 	&video_out_caca,
+ #endif
+diff -Naur MPlayer-1.0pre7.old/libvo/vo_s3d.c MPlayer-1.0pre7/libvo/vo_s3d.c
+--- MPlayer-1.0pre7.old/libvo/vo_s3d.c	1970-01-01 01:00:00.000000000 +0100
++++ MPlayer-1.0pre7/libvo/vo_s3d.c	2005-05-22 18:09:59.289291656 +0200
+@@ -0,0 +1,160 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <errno.h>
++#include <s3d.h>
++#include "config.h"
++#include "video_out.h"
++#include "video_out_internal.h"
++#include "mp_msg.h"
++
++static vo_info_t info = 
++{
++	"s3d video output",
++	"s3d",
++	"<dotslash@packetmixer.de>",
++	""
++};
++
++LIBVO_EXTERN( s3d )
++
++static uint32_t image_width, image_height;
++static int int_pause;
++static uint32_t oid;
++static char *data2;
++
++//static uint32_t
++static uint32_t draw_slice(uint8_t *image[], int stride[], int w,int h,int x,int y)
++{
++//	int x2,y2;
++//	unsigned char *data;
++	// ignoring stride, as I don't know what it is O_o
++    mp_msg (MSGT_VO, MSGL_INFO, "[s3d] calling stride: %dx%d image at %dx%d\n",w,h,x,y);
++/*	data=*image;
++	for (y2=x;y2<w;y2++)
++	for (x2=y;x2<h;x2++)
++	{
++		data2[(y2*image_width+x2)*4+0]=data[(y2*image_width+x2)*3+0];
++		data2[(y2*image_width+x2)*4+1]=data[(y2*image_width+x2)*3+1];
++		data2[(y2*image_width+x2)*4+2]=data[(y2*image_width+x2)*3+2];
++		data2[(y2*image_width+x2)*4+3]=255;
++	}
++	s3d_load_texture(oid,0,x,y,w,h,data2);
++	return(0);*/
++}
++
++static void draw_osd(void)
++{
++}
++
++static void
++flip_page(void)
++{
++}
++
++static uint32_t
++draw_frame(uint8_t *src[])
++{
++	uint32_t x,y;
++	unsigned char *data;
++	data=*src;
++	for (y=0;y<image_height;y++)
++		for (x=0;x<image_width;x++)
++		{
++			data2[(y*image_width+x)*4+0]=data[(y*image_width+x)*3+0];
++			data2[(y*image_width+x)*4+1]=data[(y*image_width+x)*3+1];
++			data2[(y*image_width+x)*4+2]=data[(y*image_width+x)*3+2];
++			data2[(y*image_width+x)*4+3]=255;
++		}
++	s3d_load_texture(oid,0,0,0,image_width,image_height,data2);
++	return VO_TRUE;
++}
++
++static uint32_t
++config(uint32_t width, uint32_t height, uint32_t d_width, uint32_t d_height, uint32_t fullscreen, char *title, uint32_t format)
++{
++	image_width = width;
++	image_height = height;
++	printf("config!!\n\n");
++	if (vo_config_count>0) 
++	{
++	} else {
++		free(data2);
++		s3d_pop_texture(oid,1);
++	}
++	s3d_scale(oid,(((float) d_width)/((float) d_height)),1.0,1.0);
++	data2=malloc(width*height*4);
++	memset(data2,128,width*height*4);
++	s3d_push_texture(oid,image_width,image_height);		
++   	mp_msg (MSGT_VO, MSGL_INFO,"[s3d] requesting a %d %d texture... \n",image_width,image_height);
++   	mp_msg (MSGT_VO, MSGL_INFO,"[s3d] wanted size is %d %d... \n",d_width,d_height);
++	s3d_pep_material_texture(oid,0,0);	// assign texture 0 to material 0
++	return 0;
++}
++
++static void
++uninit(void)
++{
++	if (data2!=NULL)
++		free(data2);
++	s3d_quit();
++}
++
++
++static void check_events(void)
++{
++}
++
++static uint32_t preinit(const char *arg)
++{
++	int argc=0;
++	char *arg1=NULL;
++	char **argv=&arg1;
++    mp_msg (MSGT_VO, MSGL_INFO, "[s3d] hello, i'm initing - darn it!\n");
++	if (s3d_init(&argc,&argv,"mplayer"))
++	{
++    	mp_msg (MSGT_VO, MSGL_WARN, "[s3d] sorry, can't reach server.\n");
++		return(ENOSYS);
++	}
++	s3d_push_vertex(oid,-3,-3,0);
++	s3d_push_vertex(oid, 3,-3,0);
++	s3d_push_vertex(oid, 3, 3,0);
++	s3d_push_vertex(oid,-3, 3,0);
++	s3d_push_material_a(oid,
++					0.8,	0.0,	0.0	,1.0,
++					1.0,	1.0,	1.0	,1.0,
++					0.8,	0.0,	0.0	,1.0);
++	s3d_push_polygon(oid,0,1,2,0);
++	s3d_pep_polygon_tex_coord(oid, 0.0,1.0, 
++								   1.0,1.0,
++								   1.0,0.0);
++	s3d_push_polygon(oid,0,2,3,0);
++	s3d_pep_polygon_tex_coord(oid, 0.0,1.0, 
++								   1.0,0.0,
++								   0.0,0.0);
++	s3d_flags_on(oid,S3D_OF_VISIBLE);
++    if(arg) 
++    {
++    	mp_msg (MSGT_VO, MSGL_WARN, "[s3d] what should I do with this arg? \n");
++		return ENOSYS;
++    }
++    return 0;
++}
++
++static uint32_t
++query_format(uint32_t format)
++{
++    if (format == IMGFMT_RGB24)
++        return VFCAP_CSP_SUPPORTED | VFCAP_CSP_SUPPORTED_BY_HW;
++    return 0;
++}
++static uint32_t control(uint32_t request, void *data, ...)
++{
++  switch (request) {
++  case VOCTRL_PAUSE: return (int_pause=1);
++  case VOCTRL_RESUME: return (int_pause=0);
++  case VOCTRL_QUERY_FORMAT:
++    return query_format(*((uint32_t*)data));
++  }
++  return VO_NOTIMPL;
++}
+diff -Naur MPlayer-1.0pre7.old/Makefile MPlayer-1.0pre7/Makefile
+--- MPlayer-1.0pre7.old/Makefile	2005-04-16 22:18:12.000000000 +0200
++++ MPlayer-1.0pre7/Makefile	2005-05-22 18:13:18.386024352 +0200
+@@ -30,7 +30,7 @@
+ OBJS_MENCODER = $(SRCS_MENCODER:.c=.o)
+ OBJS_MPLAYER = $(SRCS_MPLAYER:.c=.o)
+ 
+-VO_LIBS = $(AA_LIB) $(X_LIB) $(SDL_LIB) $(GGI_LIB) $(MP1E_LIB) $(MLIB_LIB) $(SVGA_LIB) $(DIRECTFB_LIB) $(CACA_LIB)
++VO_LIBS = $(AA_LIB) $(X_LIB) $(SDL_LIB) $(GGI_LIB) $(MP1E_LIB) $(MLIB_LIB) $(SVGA_LIB) $(DIRECTFB_LIB) $(CACA_LIB) $(S3D_LIB)
+ AO_LIBS = $(ARTS_LIB) $(ESD_LIB) $(JACK_LIB) $(NAS_LIB) $(SGIAUDIO_LIB) $(POLYP_LIB)
+ CODEC_LIBS = $(AV_LIB) $(FAME_LIB) $(MAD_LIB) $(VORBIS_LIB) $(THEORA_LIB) $(FAAD_LIB) $(LIBLZO_LIB) $(DECORE_LIB) $(XVID_LIB) $(DTS_LIB) $(PNG_LIB) $(Z_LIB) $(JPEG_LIB) $(ALSA_LIB) $(XMMS_LIB) $(X264_LIB)
+ COMMON_LIBS = libmpcodecs/libmpcodecs.a $(W32_LIB) $(DS_LIB) libaf/libaf.a libmpdemux/libmpdemux.a input/libinput.a postproc/libswscale.a osdep/libosdep.a $(DVDREAD_LIB) $(CODEC_LIBS) $(FREETYPE_LIB) $(TERMCAP_LIB) $(CDPARANOIA_LIB) $(MPLAYER_NETWORK_LIB) $(WIN32_LIB) $(GIF_LIB) $(MACOSX_FRAMEWORKS) $(SMBSUPPORT_LIB) $(FRIBIDI_LIB) $(FONTCONFIG_LIB) $(ENCA_LIB)
