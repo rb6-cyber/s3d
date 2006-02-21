@@ -94,8 +94,8 @@ check_env() {
 	if [ ! -f $SRCDIR/Makefile.am ]; then
 		error "$SRCDIR/Makefile.am missing."
 	fi
-	if [ ! -f $SRCDIR/configure.in ]; then
-		error "$SRCDIR/configure.in missing."
+	if [ ! -f $SRCDIR/configure.ac ]; then
+		error "$SRCDIR/configure.ac missing."
 	fi
 
 	require_tool aclocal
