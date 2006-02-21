@@ -12,8 +12,8 @@ snowman_SOURCES=	snowman.c
 strtest_SOURCES=	strtest.c
 texturetest_SOURCES=	texturetest.c
 
-CPPFLAGS=		-I${top_srcdir}/server -I${top_srcdir}/client
-LIBS=			${top_builddir}/client/libs3d.la
+CPPFLAGS=		-I$(top_srcdir)/server -I$(top_srcdir)/client
+LIBS=			$(top_builddir)/client/libs3d.la
 
 EXTRA_DIST=	\
 	TODO
