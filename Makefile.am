@@ -5,4 +5,4 @@ else
 MAYBE_EXAMPLES=
 endif
 
-SUBDIRS=server client apps $(MAYBE_EXAMPLES)
+SUBDIRS=server client apps $(MAYBE_EXAMPLES) objs

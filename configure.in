@@ -139,7 +139,8 @@ AC_CONFIG_FILES([
 	apps/s3dgps/Makefile
 	apps/s3dvt/Makefile
 	apps/dot_mcp/Makefile
-	example/Makefile])
+	example/Makefile
+	objs/Makefile])
 AC_OUTPUT
 
 echo "

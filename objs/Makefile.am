@@ -1,0 +1,43 @@
+objsdir=	$(pkgdatadir)/objs
+objs_DATA = \
+	internet.3ds \
+	katze_tail.3ds \
+	sec_p.3ds \
+	arrow.3ds \
+	xyz.3ds \
+	geometry.3ds \
+	rotate.3ds \
+	lil_p.3ds \
+	go_button.3ds \
+	wtf.3ds \
+	meshnode.3ds \
+	clock_bg.3ds \
+	katze_leg.3ds \
+	weirdball.3ds \
+	cubey.3ds \
+	accesspoint.3ds \
+	folder.3ds \
+	snow_foot.3ds \
+	materials.3ds \
+	dot.3ds \
+	sphere.3ds \
+	abs2.3ds \
+	notes.3ds \
+	dotdot.3ds \
+	miu.3ds \
+	duno.3ds \
+	abs.3ds \
+	accesspoint_inet.3ds \
+	katze_body.3ds \
+	comp.3ds \
+	new_sphere.3ds \
+	cubeyholes.3ds \
+	snow_body.3ds \
+	ringsystem.3ds \
+	snow_head.3ds \
+	bigsphere.3ds \
+	star.3ds \
+	cube.3ds \
+	big_p.3ds \
+	spikeybla.3ds
+
