@@ -190,7 +190,7 @@ void mcp_object(struct s3d_evt *hrmz)
 		place_apps();
 		printf("..%s\n",a->name);
 	} else {
-		printf("updating app %d\n",a->oid);
+/*		printf("updating app %d\n",a->oid);*/
 		a->trans_x=mo->trans_x;
 		a->trans_y=mo->trans_y;
 		a->trans_z=mo->trans_z;
