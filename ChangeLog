@@ -1,3 +1,8 @@
+2006-02-22  Simon Wunderlich - <dotslash@packetmixer.de>
+	- only select the nearest hit when clicking, not all on the line
+	- fopen errors are not that important when looking through the
+	  search path ...
+	- SIGNAL -> WITH_SIGNALS
 2006-02-20  Simon Wunderlich - <dotslash@packetmixer.de>
 	- added mplayer patch: patch your mplayer, use -vo s3d on
 	  the commandline and watch your videos in s3d in 3d space - yay

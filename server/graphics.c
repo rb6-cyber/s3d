@@ -7,6 +7,7 @@
 #include <SDL.h>	 /*  SDL_GL_SwapBuffers */
 #endif
 #include <math.h>		 /*  sin(),cos() */
+#define INFINITY 1<<30
 /*  this file handles graphics routines */
 /*  local prototypes ... */
 void render_virtual_object(struct t_obj *o);
@@ -195,6 +196,8 @@ int graphics_pick_obj(int x, int y)
 	int i,j;
 	GLint viewport[4];
 	GLfloat xpos,ypos;
+	float big,z1;
+	int found;
 	uint32_t mcp_o,o;
 	struct t_process *p=get_proc_by_pid(MCP);
 	GLuint select_buf[SBSIZE],*ptr,names,hits;
@@ -235,40 +238,51 @@ int graphics_pick_obj(int x, int y)
 	render_by_mcp();
 	glFlush();
 	hits=glRenderMode(GL_RENDER);
-	dprintf(LOW,"had %d hits",hits);
-	ptr=select_buf;
-	for (i=0;i<hits;i++)
+	if (hits>0)
 	{
-		names=*ptr;
-		dprintf(LOW,"number of names for hit = %d", names); ptr++;
-	    dprintf(LOW,"  z1 is %g;", (float) *ptr/0x7fffffff); ptr++;
-	    dprintf(LOW," z2 is %g", (float) *ptr/0x7fffffff); ptr++;
+		big=INFINITY;
+		dprintf(LOW,"had %d hits",hits);
+		ptr=select_buf;
 		mcp_o=o=-1;
-		for (j=0;j<names;j++)
+		/* check all the hits, only select the nearest ... */
+		for (i=0;i<hits;i++)
 		{
-			switch (j)
+			names=*ptr;
+			dprintf(LOW,"number of names for hit = %d", names); ptr++;
+			z1=*ptr/0x7fffffff;
+		    dprintf(LOW," z1 is %g;", (float) *ptr/0x7fffffff); ptr++;
+		    dprintf(LOW," z2 is %g", (float) *ptr/0x7fffffff); ptr++;
+			mcp_o=o=-1;
+			for (j=0;j<names;j++)
 			{
-				case 0:mcp_o=	*ptr;break;
-				case 1:o=		*ptr;break;
+				if (z1<big)
+				{
+					switch (j)
+					{
+						case 0:mcp_o=	*ptr;break;
+						case 1:o=		*ptr;break;
+					}
+				}
+				ptr++;
 			}
-			ptr++;
 		}
 		dprintf(MED,"mcp_o= %d, o= %d",mcp_o,o);
+		ptr=select_buf;
 		if (mcp_o==-1) /* it's an mcp object */
 		{
 			dprintf(MED,"clicked on mcp-object no. %d",o);
 			event_obj_click(p,o);
 		} else 
 		if ((names>1) && ((mcp_o>=0)&&(mcp_o<p->n_obj)))
-		{
+		{ /* it's an usual object */
 			dprintf(LOW,"clicked on mcp-object %d, object %d",mcp_o,o);
 			if (p->object[mcp_o]!=NULL)  /*  that shouldn't happen anyways ... */
 			{
-				obj_debug(get_proc_by_pid(p->object[mcp_o]->n_mat),o);
+				obj_debug(get_proc_by_pid(p->object[mcp_o]->n_mat),o); 
 				event_obj_click(get_proc_by_pid(p->object[mcp_o]->n_mat),o);
 			}
-		}
  	}
+	}
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
