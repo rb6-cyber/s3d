@@ -134,7 +134,7 @@ int s3d_init(int *argc, char ***argv, char *name)
 
 	 /*  TODO: we should wait for the INIT-event here before proceeding. */
 	_queue_init();
-#ifdef SIGNAL
+#ifdef WITH_SIGNALS
     if (signal(SIGINT, (sig_t)sigint_handler) == SIG_ERR)
 		errdn(LOW,"s3d_init():signal()",errno);
     if (signal(SIGTERM, (sig_t)sigint_handler) == SIG_ERR)
@@ -192,11 +192,11 @@ int s3d_open_file(char *fname, char **pointer)
 	{ errn("s3d_open_file():fseek()",errno); return(0);}*/
 
 	if ((fp = fopen(fname, "rt")) == NULL)
-	{ errn("s3d_open_file():fopen()",errno); return(-1);}
+	{ errdn(VLOW,"s3d_open_file():fopen()",errno); return(-1);}
 	if (fstat(fileno(fp),&bf))
-	{ errn("s3d_open_file():fopen()",errno); return(-1);}
+	{ errdn(VLOW,"s3d_open_file():fopen()",errno); return(-1);}
 	filesize=bf.st_size;
-	dprintf(LOW, "opening %s, filesize is %d",fname, filesize);
+	dprintf(VLOW, "opening %s, filesize is %d",fname, filesize);
 	if ((buf=malloc(filesize))==NULL)
 	{
 		errn("s3d_open_3ds_file():malloc()",errno);
