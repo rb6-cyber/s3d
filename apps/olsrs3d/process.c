@@ -500,9 +500,7 @@ int commit_input()
  }
 */
 int process_main() {
-	static int cnt = 0;
-	cnt++;
-	printf("%d. call process_main\n",cnt);
+
 	int dn;
 	float f;
 	char *lbuf_ptr, *con_from, *con_to, *etx;
@@ -583,9 +581,7 @@ int process_main() {
 				} else {
 
 					olsr_node1 = get_olsr_node( &Olsr_root, con_from );
-					printf("before %s Line %d\n",__FILE__,__LINE__);
 					olsr_node2 = get_olsr_node( &Olsr_root, con_to );
-					printf("behind %s Line %d\n",__FILE__,__LINE__);
 					f=10.0+strtod(etx,NULL)/10.0;
 					if (f>=5) add_olsr_con( olsr_node1, olsr_node2, f );   /* just to prevent ascii to float converting inconsistency ... */
 
@@ -601,7 +597,7 @@ int process_main() {
 		lbuf_ptr++;
 
 	}
-	printf("exit %d. call process_main\n",cnt);
+
 	return(0);
 
 }
