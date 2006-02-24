@@ -22,6 +22,7 @@ int		*adj_obj,*new_adj_obj;
 int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float etx ) {
 
 	struct olsr_con **olsr_con = &Con_begin;
+	struct olsr_con *prev_olsr_con = NULL;   /* previous olsr connection */
 
 	while ( (*olsr_con) != NULL ) {
 
@@ -36,6 +37,9 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 			break;
 
 		}
+
+		/* save previous olsr connection for later use */
+		prev_olsr_con = (*olsr_con);
 
 		olsr_con = &(*olsr_con)->next_olsr_con;
 
@@ -78,6 +82,7 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 		}
 
 		(*olsr_con)->next_olsr_con = NULL;
+		(*olsr_con)->prev_olsr_con = prev_olsr_con;
 
 		/* add new olsr connection to olsr nodes in order to access the connection from the olsr node */
 		struct olsr_con_list **olsr_con_list = &(*olsr_con)->left_olsr_node->olsr_con_list;
@@ -188,13 +193,20 @@ int resize_adj()
 void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
 	int result;   /* result of strcmp */
+	struct olsr_node *top_olsr_node = NULL;   /* parent olsr node */
 
 	while ( (*olsr_node) != NULL ) {
 
 		result = strncmp( (*olsr_node)->ip, ip, NAMEMAX );
 
 		/* we found the node */
-		if ( result == 0 ) return (*olsr_node);
+		if ( result == 0 ) {
+			(*olsr_node)->last_seen = 20;
+			return (*olsr_node);
+		}
+
+		/* save parent olsr node for later use */
+		top_olsr_node = (*olsr_node);
 
 		/* the searched node must be in the subtree */
 		if ( result < 0 ) {
@@ -211,11 +223,16 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 		(*olsr_node) = malloc( sizeof( struct olsr_node ) );
 		if ( (*olsr_node) == NULL ) out_of_mem();
 
+		(*olsr_node)->top = top_olsr_node;
 		(*olsr_node)->left = NULL;
 		(*olsr_node)->right = NULL;
+
 		strncpy( (*olsr_node)->ip, ip, NAMEMAX );
+
 		(*olsr_node)->node_type = 0;
 		(*olsr_node)->node_type_modified = 1;
+
+		(*olsr_node)->last_seen = 20;
 
 		if ( Debug ) printf( "new olsr node: %s\n", (*olsr_node)->ip );
 
@@ -433,7 +450,7 @@ int commit_input()
  				olsr_node2 = get_olsr_node( &Olsr_root, con_to );
 
  				if ( olsr_node2->node_type != 2 ) {
-						
+
  					olsr_node2->node_type = 2;
  					olsr_node2->node_type_modified = 1;
  					if ( Debug ) printf( "new hna network: %s\n", olsr_node2->ip );
@@ -494,7 +511,7 @@ int process_main() {
 
 	while ( (*lbuf_ptr) != '\0' ) {
 
-/* 		printf( "%c",(*lbuf_ptr) ); */
+		/* printf( "%c",(*lbuf_ptr) ); */
 
 		if ( (*lbuf_ptr) == '\n' ) {
 

@@ -10,6 +10,7 @@ struct t_node {
 struct olsr_con {
 
 	struct olsr_con *next_olsr_con;   /* pointer to next connection */
+	struct olsr_con *prev_olsr_con;   /* pointer to previous connection */
 	struct olsr_node *left_olsr_node;   /* pointer to left end point of the connection */
 	struct olsr_node *right_olsr_node;   /* pointer to right end point of the connection */
 	float left_etx;   /* etx of left olsr node */
@@ -31,11 +32,13 @@ struct olsr_con_list {
 /* we contruct a binary tree to handle the nodes */
 struct olsr_node {
 
+	struct olsr_node *top;
 	struct olsr_node *left;
 	struct olsr_node *right;
 	char ip[NAMEMAX];   /* host ip */
 	int node_type;   /* normal = 0, internet gateway = 1, via hna announced network = 2 */
 	int node_type_modified;   /* node_type modified flag */
+	int last_seen;   /* last seen counter */
 	float pos_vec[3];   /* position vector in 3d "space" */
 	float mov_vec[3];   /* move vector */
 	int obj_id;   /* id of node object in s3d */

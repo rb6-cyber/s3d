@@ -59,6 +59,7 @@ int net_main()
     buf[numbytes] = '\0';
 /* 	strncat(lbuf,buf,MAXLINESIZE); */
 	strncpy(lbuf,buf,MAXLINESIZE);
+	printf("nach strncpy\n");
 	process_main();
 	return(1);
 }

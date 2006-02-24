@@ -151,91 +151,207 @@ void mov_add(float mov[], float p[], float fac)
 
 void handle_olsr_node( struct olsr_node *olsr_node ) {
 
+	int result;   /* result of strcmp */
 	float f, distance;
 	float tmp_mov_vec[3];
+	struct olsr_node *top_olsr_node = NULL;   /* parent olsr node */
+	struct olsr_node **tmp_olsr_node;
 	struct olsr_con **olsr_con;
 	struct Obj_to_ip *Obj_to_ip_curr;
-	struct olsr_con_list *olsr_con_list;
+	struct olsr_con_list *olsr_con_list, *prev_olsr_con_list = NULL;
 
 	/* no more nodes left */
 	if ( olsr_node == NULL ) return;
 
-	/* olsr node shape has been modified */
-	if ( olsr_node->node_type_modified ) {
+	/* olsr node vanished */
+	olsr_node->last_seen--;
+	if ( olsr_node->last_seen == 0 ) {
 
-		/* delete old shape */
-		if ( olsr_node->obj_id != -1 ) {
-			/* remove element from ob2ip list */
-			lst_del( olsr_node->obj_id );
-			s3d_del_object( olsr_node->obj_id );
+		if ( Debug ) printf( "olsr node vanished: %s\n", olsr_node->ip );
+
+		/* reassign olsr childnodes if available */
+		if ( ( ( olsr_node->left != NULL ) || ( olsr_node->right != NULL ) ) && ( olsr_node->top != NULL ) ) {
+
+			/* find out to which side to attach to */
+			result = strncmp( olsr_node->ip, olsr_node->top->ip, NAMEMAX );
+
+			if ( result < 0 ) {
+
+				if ( olsr_node->left != NULL ) {
+					olsr_node->top->right = olsr_node->left;
+					olsr_node->left->top = olsr_node->top;
+				} else {
+					olsr_node->top->right = olsr_node->right;
+					olsr_node->right->top = olsr_node->top;
+				}
+
+			} else {
+
+				if ( olsr_node->left != NULL ) {
+					olsr_node->top->left = olsr_node->left;
+					olsr_node->left->top = olsr_node->top;
+				} else {
+					olsr_node->top->left = olsr_node->right;
+					olsr_node->right->top = olsr_node->top;
+				}
+
+			}
+
+			/* olsr node has two childnodes and we have to reassign both */
+			if ( ( olsr_node->left != NULL ) && ( olsr_node->right != NULL ) ) {
+
+				tmp_olsr_node = &olsr_node->left;
+
+				while ( (*tmp_olsr_node) != NULL ) {
+
+					result = strncmp( (*tmp_olsr_node)->ip, olsr_node->right->ip, NAMEMAX );
+
+					/* we found the node - should not happen ! */
+					if ( result == 0 ) break;
+
+					/* save parent olsr node for later use */
+					top_olsr_node = (*tmp_olsr_node);
+
+					/* the searched node must be in the subtree */
+					if ( result < 0 ) {
+						tmp_olsr_node = &(*tmp_olsr_node)->right;
+					} else {
+						tmp_olsr_node = &(*tmp_olsr_node)->left;
+					}
+
+				}
+
+				tmp_olsr_node = &olsr_node->right;
+				olsr_node->right->top = top_olsr_node;
+
+			}
+
 		}
 
-		if ( olsr_node->desc_id != -1 ) s3d_del_object( olsr_node->desc_id );
+		if ( olsr_node->top != NULL ) {
 
-		/* create new shape */
-		if ( olsr_node->node_type == 1 ) {
-			/* olsr node offers internet access */
-			olsr_node->obj_id = s3d_clone( Olsr_node_inet_obj );
-		} else if ( olsr_node->node_type == 2 ) {
-			/* olsr node offers internet access */
-			olsr_node->obj_id = s3d_clone( Olsr_node_hna_net );
+			/* delete shape */
+			if ( olsr_node->obj_id != -1 ) {
+				/* remove element from ob2ip list */
+				lst_del( olsr_node->obj_id );
+				s3d_del_object( olsr_node->obj_id );
+			}
+
+			if ( olsr_node->desc_id != -1 ) s3d_del_object( olsr_node->desc_id );
+
+			/* free memory space */
+			free( olsr_node );
+			olsr_node = NULL;
+
 		} else {
-			/* normal olsr node */
-			olsr_node->obj_id = s3d_clone( Olsr_node_obj );
+
+			if ( Debug ) printf( "root olsr node can't be deleted: %s\n", olsr_node->ip );
+
 		}
 
-		s3d_flags_on( olsr_node->obj_id, S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	} else {
 
-		/* link newly created object to ZeroPoint */
-		s3d_link( olsr_node->obj_id, ZeroPoint );
-		/* add object_id and olsr_node to linked list */
-		lst_add(olsr_node->obj_id,&olsr_node);
+		/* olsr node shape has been modified */
+		if ( olsr_node->node_type_modified ) {
 
-		/* create olsr node text and attach (link) it to the node */
-		olsr_node->desc_id = s3d_draw_string( olsr_node->ip, &f );
-		s3d_link( olsr_node->desc_id, olsr_node->obj_id );
-		s3d_translate( olsr_node->desc_id, -f/2,-2,0 );
-		s3d_flags_on( olsr_node->desc_id, S3D_OF_VISIBLE );
-
-		olsr_node->node_type_modified = 0;
-
-	}
-
-	/* drift away from unrelated nodes */
-	Obj_to_ip_curr = Obj_to_ip_head->next;
-	while ( Obj_to_ip_curr != Obj_to_ip_end ) {
-
-		/* myself ... */
-/* 		if ( strncmp( Obj_to_ip_curr->olsr_node->ip, olsr_node->ip, NAMEMAX ) != 0 ) {*/
-
-			olsr_con_list = olsr_node->olsr_con_list;
-			while ( olsr_con_list != NULL ) {
-
-				/* nodes are related */
-				if ( ( strncmp( olsr_con_list->olsr_con->left_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) || ( strncmp( olsr_con_list->olsr_con->right_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) ) break;
-
-				olsr_con_list = olsr_con_list->next_olsr_con_list;
-
+			/* delete old shape */
+			if ( olsr_node->obj_id != -1 ) {
+				/* remove element from ob2ip list */
+				lst_del( olsr_node->obj_id );
+				s3d_del_object( olsr_node->obj_id );
 			}
 
-			/* nodes are not related - so drift */
-			if ( olsr_con_list == NULL ) {
+			if ( olsr_node->desc_id != -1 ) s3d_del_object( olsr_node->desc_id );
 
-				distance = dirt( olsr_node->pos_vec, Obj_to_ip_curr->olsr_node->pos_vec, tmp_mov_vec );
-				if ( distance < 0.1 ) distance = 0.1;
-				mov_add( olsr_node->mov_vec, tmp_mov_vec,-100 / ( distance * distance ) );
-				mov_add( Obj_to_ip_curr->olsr_node->mov_vec, tmp_mov_vec, 100 / ( distance * distance ) );
-
+			/* create new shape */
+			if ( olsr_node->node_type == 1 ) {
+				/* olsr node offers internet access */
+				olsr_node->obj_id = s3d_clone( Olsr_node_inet_obj );
+			} else if ( olsr_node->node_type == 2 ) {
+				/* via hna announced network */
+				olsr_node->obj_id = s3d_clone( Olsr_node_hna_net );
+			} else {
+				/* normal olsr node */
+				olsr_node->obj_id = s3d_clone( Olsr_node_obj );
 			}
 
-			Obj_to_ip_curr = Obj_to_ip_curr->next;
+			s3d_flags_on( olsr_node->obj_id, S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 
-/* 		} */
+			/* link newly created object to ZeroPoint */
+			s3d_link( olsr_node->obj_id, ZeroPoint );
+			/* add object_id and olsr_node to linked list */
+			lst_add(olsr_node->obj_id,&olsr_node);
+
+			/* create olsr node text and attach (link) it to the node */
+			olsr_node->desc_id = s3d_draw_string( olsr_node->ip, &f );
+			s3d_link( olsr_node->desc_id, olsr_node->obj_id );
+			s3d_translate( olsr_node->desc_id, -f/2,-2,0 );
+			s3d_flags_on( olsr_node->desc_id, S3D_OF_VISIBLE );
+
+			olsr_node->node_type_modified = 0;
+
+		}
+
+		/* drift away from unrelated nodes */
+		Obj_to_ip_curr = Obj_to_ip_head->next;
+		while ( Obj_to_ip_curr != Obj_to_ip_end ) {
+
+			/* myself ... */
+/* 			if ( strncmp( Obj_to_ip_curr->olsr_node->ip, olsr_node->ip, NAMEMAX ) != 0 ) {*/
+
+				olsr_con_list = olsr_node->olsr_con_list;
+				while ( olsr_con_list != NULL ) {
+
+					/* nodes are related */
+					if ( ( olsr_con_list->olsr_con->left_olsr_node != NULL ) && ( olsr_con_list->olsr_con->right_olsr_node != NULL ) ) {
+
+						if ( ( strncmp( olsr_con_list->olsr_con->left_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) || ( strncmp( olsr_con_list->olsr_con->right_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) ) break;
+
+						prev_olsr_con_list = olsr_con_list;
+
+					/* deleted node */
+					} else {
+
+						s3d_pop_vertex( olsr_con_list->olsr_con->obj_id, 6 );
+						s3d_pop_polygon( olsr_con_list->olsr_con->obj_id, 2 );
+						s3d_pop_material( olsr_con_list->olsr_con->obj_id, 1 );
+
+						/* delete connection list entry */
+						prev_olsr_con_list->next_olsr_con_list = olsr_con_list->next_olsr_con_list;
+
+						/* delete connection */
+						if ( olsr_con_list->olsr_con->prev_olsr_con != NULL ) olsr_con_list->olsr_con->prev_olsr_con->next_olsr_con = olsr_con_list->olsr_con->next_olsr_con;
+						if ( olsr_con_list->olsr_con->next_olsr_con != NULL ) olsr_con_list->olsr_con->next_olsr_con->prev_olsr_con = olsr_con_list->olsr_con->prev_olsr_con;
+
+						free( olsr_con_list->olsr_con );
+						free( olsr_con_list );
+
+					}
+
+					olsr_con_list = olsr_con_list->next_olsr_con_list;
+
+				}
+
+				/* nodes are not related - so drift */
+				if ( olsr_con_list == NULL ) {
+
+					distance = dirt( olsr_node->pos_vec, Obj_to_ip_curr->olsr_node->pos_vec, tmp_mov_vec );
+					if ( distance < 0.1 ) distance = 0.1;
+					mov_add( olsr_node->mov_vec, tmp_mov_vec,-100 / ( distance * distance ) );
+					mov_add( Obj_to_ip_curr->olsr_node->mov_vec, tmp_mov_vec, 100 / ( distance * distance ) );
+
+				}
+
+				Obj_to_ip_curr = Obj_to_ip_curr->next;
+
+/* 			} */
+
+		}
+
+		handle_olsr_node( olsr_node->left );
+		handle_olsr_node( olsr_node->right );
 
 	}
-
-	handle_olsr_node( olsr_node->left );
-	handle_olsr_node( olsr_node->right );
 
 }
 
@@ -432,7 +548,7 @@ void mainloop()
 				{
 					gd=adj[i*max+j];
 					d=dirt(node[i].pos,node[j].pos,m);
-					if (gd==0.0)*/	/* points are not connected 
+					if (gd==0.0)*/	/* points are not connected
 					{
 					printf("distance between i and j: %f\n",d);
 						if (d<0.1) d=0.1;
@@ -449,8 +565,8 @@ void mainloop()
 				}
 			}
 			d=dirt(node[i].pos,z,m);
-		mov_add(node[i].mov,m,d/100); * move a little bit to point zero 
-		mov_add(node[i].mov,m,1); * move a little bit to point zero 
+		mov_add(node[i].mov,m,d/100); * move a little bit to point zero
+		mov_add(node[i].mov,m,1); * move a little bit to point zero
 	}
 	/ * move it!! * /
  	for (i=0;i<max;i++)
@@ -469,7 +585,7 @@ void mainloop()
  				s3d_push_vertex(o,node[i].pos[0],	 node[i].pos[1],node[i].pos[2]);
  				s3d_push_vertex(o,node[i].pos[0]+0.2,node[i].pos[1],node[i].pos[2]);
  				s3d_push_vertex(o,node[i].pos[0]-->id0.2,node[i].pos[1],node[i].pos[2]);
-				
+
  				s3d_push_vertex(o,node[j].pos[0],	 node[j].pos[1],node[j].pos[2]);
  				s3d_push_vertex(o,node[j].pos[0],node[j].pos[1]+0.2,node[j].pos[2]);
  				s3d_push_vertex(o,node[j].pos[0],node[j].pos[1]-0.2,node[j].pos[2]);
@@ -478,12 +594,15 @@ void mainloop()
 				s3d_push_polygon(o,3,1,2,0);* /
  			}
  	} */
-	while (0!=(r=net_main()))
+
+	while (0!=(r=net_main())) {
 		if (r==-1)
 		{
 			s3d_quit();
 			break;
 		}
+	}
+
 	alpha=(alpha+5)%360;
 	s3d_rotate(mesh,0,alpha,0);
 	if(RotateSwitch) {
