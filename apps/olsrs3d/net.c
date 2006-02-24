@@ -45,21 +45,20 @@ int net_init(char *host)
 }
 int net_main()
 {
-    if ((numbytes=recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
+	if ((numbytes=recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
 		if (errno==EAGAIN)
 			return(0); /* well, that's okay ... */
-        perror("recv");
-        return(-1);
-    }
+		perror("recv");
+		return(-1);
+	}
 	if (numbytes==0)
 	{
 		printf("connection reset\n");
 		return(-1);
 	}
-    buf[numbytes] = '\0';
-/* 	strncat(lbuf,buf,MAXLINESIZE); */
+	buf[numbytes] = '\0';
+ 	/*strncat(lbuf,buf,MAXLINESIZE);*/
 	strncpy(lbuf,buf,MAXLINESIZE);
-	printf("nach strncpy\n");
 	process_main();
 	return(1);
 }
