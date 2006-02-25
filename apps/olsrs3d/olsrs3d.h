@@ -63,15 +63,19 @@ extern struct olsr_con *Con_begin;   /* begin of connection list */
 extern struct olsr_node *Olsr_root;   /* top of olsr node tree */
 extern struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end,*List_ptr;   /* struct list */
 
-extern int 	max, new_max;
-extern float 	*adj;
-extern int	*adj_obj;
 extern int	Olsr_node_obj;
 extern int	Olsr_node_inet_obj;
 extern int	Olsr_node_hna_net;
+
+extern int Byte_count;
+extern int ZeroPoint;
+
+extern int 	max, new_max;
+extern float 	*adj;
+extern int	*adj_obj;
 extern int	node_count;
 extern float 	bottom,left;
-extern int ZeroPoint;
+
 
 struct t_node 	*node;
 #define MAXLINESIZE 1000 /* lines in a digraph just shouldn't get that longer ... */

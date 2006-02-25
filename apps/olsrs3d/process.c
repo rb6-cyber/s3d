@@ -503,11 +503,15 @@ int process_main() {
 
 	int dn;
 	float f;
-	char *lbuf_ptr, *con_from, *con_to, *etx;
+	char *lbuf_ptr, *last_cr_ptr, *con_from, *con_from_end, *con_to, *con_to_end, *etx, *etx_end;
 	struct olsr_node *olsr_node1;   /* pointer to olsr nodes */
 	struct olsr_node *olsr_node2;
-	
+
 	lbuf_ptr = lbuf;
+	last_cr_ptr = NULL;
+
+	con_from = con_from_end = con_to = con_to_end = etx = etx_end = NULL;
+	dn = 0;
 
 	while ( (*lbuf_ptr) != '\0' ) {
 
@@ -515,7 +519,8 @@ int process_main() {
 
 		if ( (*lbuf_ptr) == '\n' ) {
 
-			con_from = con_to = etx = NULL;
+			last_cr_ptr = lbuf_ptr;
+			con_from = con_from_end = con_to = con_to_end = etx = etx_end = NULL;
 			dn = 0;
 
 		}
@@ -527,21 +532,30 @@ int process_main() {
 				case 0:
 					con_from = ++lbuf_ptr;
 					break;
+				case 1:
+					con_from_end = lbuf_ptr;
+					break;
 				case 2:
 					con_to = ++lbuf_ptr;
+					break;
+				case 3:
+					con_to_end = lbuf_ptr;
 					break;
 				case 4:
 					etx = ++lbuf_ptr;
 					break;
-				default:
-					(*lbuf_ptr) = '\0';   /* string terminator!! */
+				case 5:
+					etx_end = lbuf_ptr;
 					break;
 
 			}
 
 			if ( ++dn == 6 ) {
 
-/* 				printf( "con_from: %s, con_to: %s, etx: %s\n", con_from, con_to, etx ); */
+				/* terminate strings - but not before 6 '"' */
+				(*con_from_end) = (*con_to_end) = (*etx_end) = '\0';
+
+// 				printf( "dn: %i, con_from: %s, con_to: %s, etx: %s\n", dn, con_from, con_to, etx );
 
 				/* announced network via HNA */
 				if ( strncmp( etx, "HNA", NAMEMAX ) == 0 ) {
@@ -587,8 +601,9 @@ int process_main() {
 
 				}
 
-				con_from = con_to = etx = NULL;
+				con_from = con_from_end = con_to = con_to_end = etx = etx_end = NULL;
 				dn = 0;
+				last_cr_ptr = lbuf_ptr;
 
 			}
 
@@ -597,6 +612,8 @@ int process_main() {
 		lbuf_ptr++;
 
 	}
+
+	if ( last_cr_ptr != NULL ) memmove( lbuf, ++last_cr_ptr, strlen( last_cr_ptr) );
 
 	return(0);
 

@@ -43,26 +43,35 @@ int net_init(char *host)
 	fcntl(sockfd,F_SETFL, O_NONBLOCK);
 	return(0);
 }
-int net_main()
-{
+
+int net_main() {
+
 	if ((numbytes=recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
 		if (errno==EAGAIN)
 			return(0); /* well, that's okay ... */
 		perror("recv");
 		return(-1);
 	}
-	if (numbytes==0)
-	{
+
+	if (numbytes==0) {
 		printf("connection reset\n");
 		return(-1);
 	}
+
 	buf[numbytes] = '\0';
- 	/*strncat(lbuf,buf,MAXLINESIZE);*/
-	strncpy(lbuf,buf,MAXLINESIZE);
-	printf("nach strncpy\n");
+ 	strncat(lbuf,buf,MAXLINESIZE);
+// 	printf( "lbuf: %s\n", lbuf );
+
 	process_main();
-	return(1);
+
+	if ( Byte_count += numbytes > 1000 ) {
+		return(0);   /* continue mainloop */
+	} else {
+		return(1);   /* continue reading data from socket */
+	}
+
 }
+
 int net_quit()
 {
     close(sockfd);

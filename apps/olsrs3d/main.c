@@ -16,6 +16,8 @@ struct olsr_con *Con_begin = NULL;   /* begin of connection list */
 struct olsr_node *Olsr_root = NULL;   /* top of olsr node tree */
 struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end, *List_ptr;   /* needed pointer for linked list */
 
+int Byte_count;
+
 int node_count=-1;
 int alpha=0;
 int Olsr_node_obj, Olsr_node_inet_obj, Olsr_node_hna_net, mesh;
@@ -519,17 +521,11 @@ void move_olsr_nodes( void ) {
 
 
 
-void mainloop()
-{
-	int i,j,o,r;
-	float d,gd,f,m[3];
-	float z[3]={0,0,0};
-/* 	for (i=0;i<max;i++)
- 	{
- 		node[i].mov[0]=
- 		node[i].mov[1]=
- 		node[i].mov[2]=0.0;
- 	} */
+void mainloop() {
+
+	int net_result;   /* result of function net_main */
+
+	Byte_count = 0;
 
 	/* calculate new movement vector */
 	calc_olsr_node_mov();
@@ -540,64 +536,8 @@ void mainloop()
 	/* move it */
 	move_olsr_nodes();
 
-	/*	for (i=0;i<max;i++)
-		{
-			for (j=i+1;j<max;j++)
-			{
-				if (i!=j)
-				{
-					gd=adj[i*max+j];
-					d=dirt(node[i].pos,node[j].pos,m);
-					if (gd==0.0)*/	/* points are not connected
-					{
-					printf("distance between i and j: %f\n",d);
-						if (d<0.1) d=0.1;
-						mov_add(node[j].mov,m,100/(d*d));
-						mov_add(node[i].mov,m,-100/(d*d));
-					} else { / * connected!! * /
-
-						f=(gd)/d;
-						if (f<0.3) f=0.3;
-						mov_add(node[i].mov,m,1/f-1);
-						mov_add(node[j].mov,m,-(1/f-1));
-					printf("distance between %d and %d: %f / %f = %f\n",i,j,gd,d,f);
-					}
-				}
-			}
-			d=dirt(node[i].pos,z,m);
-		mov_add(node[i].mov,m,d/100); * move a little bit to point zero
-		mov_add(node[i].mov,m,1); * move a little bit to point zero
-	}
-	/ * move it!! * /
- 	for (i=0;i<max;i++)
- 	{
-/ *		printf("applying move vector for point %d: %f:%f:%f\n",i,node[i].mov[0],node[i].mov[1],node[i].mov[2]); * /
- 		if ((d=dist(node[i].mov,z))>10.0)
- 			mov_add(node[i].pos,node[i].mov,1.0/((float )d)); / * normalize * /
- 		else
- 			mov_add(node[i].pos,node[i].mov,0.1);
- 		s3d_translate(node[i].obj,node[i].pos[0],node[i].pos[1],node[i].pos[2]);
- 		for (j=i+1;j<max;j++)
- 			if ((o=adj_obj[max*i+j])!=-1)
- 			{
- 				s3d_pop_vertex(o,6);
-/ *				s3d_pop_polygon(o,2);* /
- 				s3d_push_vertex(o,node[i].pos[0],	 node[i].pos[1],node[i].pos[2]);
- 				s3d_push_vertex(o,node[i].pos[0]+0.2,node[i].pos[1],node[i].pos[2]);
- 				s3d_push_vertex(o,node[i].pos[0]-->id0.2,node[i].pos[1],node[i].pos[2]);
-
- 				s3d_push_vertex(o,node[j].pos[0],	 node[j].pos[1],node[j].pos[2]);
- 				s3d_push_vertex(o,node[j].pos[0],node[j].pos[1]+0.2,node[j].pos[2]);
- 				s3d_push_vertex(o,node[j].pos[0],node[j].pos[1]-0.2,node[j].pos[2]);
-
-/ *				s3d_push_polygon(o,0,4,5,0);
-				s3d_push_polygon(o,3,1,2,0);* /
- 			}
- 	} */
-
-	while (0!=(r=net_main())) {
-		if (r==-1)
-		{
+	while ( 0!= ( net_result = net_main() ) ) {
+		if ( net_result == -1 ) {
 			s3d_quit();
 			break;
 		}
@@ -612,6 +552,7 @@ void mainloop()
 	usleep(100000);
 /*	sleep(1);*/
 	return;
+
 }
 
 void stop()
