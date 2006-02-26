@@ -53,6 +53,7 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 
 		/* create connection object */
 		(*olsr_con)->obj_id = s3d_new_object();
+		(*olsr_con)->visible = 1;
 		s3d_push_material( (*olsr_con)->obj_id,
 				  1.0,1.0,1.0,
 				  1.0,1.0,1.0,
@@ -206,6 +207,15 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
 			/* former invisble (deleted) node */
 			if ( (*olsr_node)->visible == 0 ) {
+				struct olsr_con_list *olsr_con_list;
+				
+				olsr_con_list = (*olsr_node)->olsr_con_list;
+				
+				while(olsr_con_list != NULL) {
+					olsr_con_list->olsr_con->visible = 1;
+					olsr_con_list = olsr_con_list->next_olsr_con_list;	
+				}
+				
 				(*olsr_node)->visible = 1;
 				if ( Debug ) printf( "new olsr node: %s\n", (*olsr_node)->ip );
 			}
@@ -596,8 +606,8 @@ int process_main() {
 							if ( Debug ) printf( "new hna network: %s\n", olsr_node2->ip );
 
 						}
-
-						add_olsr_con( olsr_node1, olsr_node2, -1000.00 );
+						if(olsr_node1->visible && olsr_node2->visible)
+							add_olsr_con( olsr_node1, olsr_node2, -1000.00 );
 
 					}
 
@@ -607,7 +617,8 @@ int process_main() {
 					olsr_node1 = get_olsr_node( &Olsr_root, con_from );
 					olsr_node2 = get_olsr_node( &Olsr_root, con_to );
 					f=10.0+strtod(etx,NULL)/10.0;
-					if (f>=5) add_olsr_con( olsr_node1, olsr_node2, f );   /* just to prevent ascii to float converting inconsistency ... */
+					if (f>=5 && olsr_node1->visible && olsr_node2->visible)
+						add_olsr_con( olsr_node1, olsr_node2, f );   /* just to prevent ascii to float converting inconsistency ... */
 
 				}
 

@@ -178,6 +178,13 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 			/* remove element from ob2ip list */
 			lst_del( olsr_node->obj_id );
 			s3d_del_object( olsr_node->obj_id );
+	
+			olsr_con_list = olsr_node->olsr_con_list;
+				while( olsr_con_list != NULL) {
+					olsr_con_list->olsr_con->visible = 0;
+					s3d_del_object(olsr_con_list->olsr_con->obj_id);
+					olsr_con_list = olsr_con_list->next_olsr_con_list;
+			}
 		}
 
 		if ( olsr_node->desc_id != -1 ) s3d_del_object( olsr_node->desc_id );
@@ -339,7 +346,7 @@ void move_olsr_nodes( void ) {
 	while ( (*olsr_con) != NULL ) {
 
 		/* move left olsr node if it has not been moved yet */
-		if ( !( ( (*olsr_con)->left_olsr_node->mov_vec[0] == 0 ) && ( (*olsr_con)->left_olsr_node->mov_vec[1] == 0 ) && ( (*olsr_con)->left_olsr_node->mov_vec[2] == 0 ) ) ) {
+		if ( !( ( (*olsr_con)->left_olsr_node->mov_vec[0] == 0 ) && ( (*olsr_con)->left_olsr_node->mov_vec[1] == 0 ) && ( (*olsr_con)->left_olsr_node->mov_vec[2] == 0 ) )  && (*olsr_con)->left_olsr_node->visible) {
 
 			distance = dirt( (*olsr_con)->left_olsr_node->pos_vec, null_vec, tmp_mov_vec );
 			mov_add( (*olsr_con)->left_olsr_node->mov_vec, tmp_mov_vec, distance / 100 ); /* move a little bit to point zero */
@@ -359,7 +366,7 @@ void move_olsr_nodes( void ) {
 		}
 
 		/* move right olsr node if it has not been moved yet */
-		if ( !( ( (*olsr_con)->right_olsr_node->mov_vec[0] == 0 ) && ( (*olsr_con)->right_olsr_node->mov_vec[1] == 0 ) && ( (*olsr_con)->right_olsr_node->mov_vec[2] == 0 ) ) ) {
+		if ( !( ( (*olsr_con)->right_olsr_node->mov_vec[0] == 0 ) && ( (*olsr_con)->right_olsr_node->mov_vec[1] == 0 ) && ( (*olsr_con)->right_olsr_node->mov_vec[2] == 0 ) ) && (*olsr_con)->right_olsr_node->visible) {
 
 			distance = dirt( (*olsr_con)->right_olsr_node->pos_vec, null_vec, tmp_mov_vec );
 			mov_add( (*olsr_con)->right_olsr_node->mov_vec, tmp_mov_vec, distance / 100 ); /* move a little bit to point zero */
@@ -378,72 +385,73 @@ void move_olsr_nodes( void ) {
 
 		}
 
-		/* move connection between left and right olsr node */
-		s3d_pop_vertex( (*olsr_con)->obj_id, 6 );
-		s3d_pop_polygon( (*olsr_con)->obj_id, 2 );
-		s3d_pop_material( (*olsr_con)->obj_id, 1 );
-
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] + 0.2 + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] - 0.2 + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
-
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]- 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
-
-		if ( ColorSwitch ) {
-
-			/* HNA */
-			if ( (*olsr_con)->left_etx == -1000.00 ) {
-
-				s3d_push_material( (*olsr_con)->obj_id,
-							   0.0,0.0,1.0,
-							   0.0,0.0,1.0,
-							   0.0,0.0,1.0);
-
-			} else {
-
-				etx = ( ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 ) - 10.0 ) * 10.0;
-
-				if ( ( etx >= 1.0 ) && ( etx < 2.0 ) ) {
-
-					rgb = etx - 1.0;
+		if( (*olsr_con)->visible) {
+			/* move connection between left and right olsr node */
+			s3d_pop_vertex( (*olsr_con)->obj_id, 6 );
+			s3d_pop_polygon( (*olsr_con)->obj_id, 2 );
+			s3d_pop_material( (*olsr_con)->obj_id, 1 );
+	
+			s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
+			s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] + 0.2 + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
+			s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] - 0.2 + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
+	
+			s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
+			s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
+			s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]- 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
+	
+			if ( ColorSwitch ) {
+	
+				/* HNA */
+				if ( (*olsr_con)->left_etx == -1000.00 ) {
+	
 					s3d_push_material( (*olsr_con)->obj_id,
-								rgb,1.0,0.0,
-								rgb,1.0,0.0,
-								rgb,1.0,0.0);
-
-				} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
-
-					rgb = 3.0 - etx;
-					s3d_push_material( (*olsr_con)->obj_id,
-								1.0,rgb,0.0,
-								1.0,rgb,0.0,
-								1.0,rgb,0.0);
-
+								   0.0,0.0,1.0,
+								   0.0,0.0,1.0,
+								   0.0,0.0,1.0);
+	
 				} else {
-
-					s3d_push_material( (*olsr_con)->obj_id,
-								1.0,0.0,0.0,
-								1.0,0.0,0.0,
-								1.0,0.0,0.0);
-
+	
+					etx = ( ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 ) - 10.0 ) * 10.0;
+	
+					if ( ( etx >= 1.0 ) && ( etx < 2.0 ) ) {
+	
+						rgb = etx - 1.0;
+						s3d_push_material( (*olsr_con)->obj_id,
+									rgb,1.0,0.0,
+									rgb,1.0,0.0,
+									rgb,1.0,0.0);
+	
+					} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
+	
+						rgb = 3.0 - etx;
+						s3d_push_material( (*olsr_con)->obj_id,
+									1.0,rgb,0.0,
+									1.0,rgb,0.0,
+									1.0,rgb,0.0);
+	
+					} else {
+	
+						s3d_push_material( (*olsr_con)->obj_id,
+									1.0,0.0,0.0,
+									1.0,0.0,0.0,
+									1.0,0.0,0.0);
+	
+					}
+	
 				}
-
+	
+			} else {
+	
+				s3d_push_material( (*olsr_con)->obj_id,
+							1.0,1.0,1.0,
+							1.0,1.0,1.0,
+							1.0,1.0,1.0);
+	
 			}
-
-		} else {
-
-			s3d_push_material( (*olsr_con)->obj_id,
-						1.0,1.0,1.0,
-						1.0,1.0,1.0,
-						1.0,1.0,1.0);
-
+	
+			s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
+			s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );
 		}
-
-		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
-		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );
-
 		olsr_con = &(*olsr_con)->next_olsr_con;
 
 	}
