@@ -171,85 +171,16 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 		if ( Debug ) printf( "olsr node vanished: %s\n", olsr_node->ip );
 
-		/* reassign olsr childnodes if available */
-		if ( ( ( olsr_node->left != NULL ) || ( olsr_node->right != NULL ) ) && ( olsr_node->top != NULL ) ) {
+		olsr_node->visible = 0;
 
-			/* find out to which side to attach to */
-			result = strncmp( olsr_node->ip, olsr_node->top->ip, NAMEMAX );
-
-			if ( result < 0 ) {
-
-				if ( olsr_node->left != NULL ) {
-					olsr_node->top->right = olsr_node->left;
-					olsr_node->left->top = olsr_node->top;
-				} else {
-					olsr_node->top->right = olsr_node->right;
-					olsr_node->right->top = olsr_node->top;
-				}
-
-			} else {
-
-				if ( olsr_node->left != NULL ) {
-					olsr_node->top->left = olsr_node->left;
-					olsr_node->left->top = olsr_node->top;
-				} else {
-					olsr_node->top->left = olsr_node->right;
-					olsr_node->right->top = olsr_node->top;
-				}
-
-			}
-
-			/* olsr node has two childnodes and we have to reassign both */
-			if ( ( olsr_node->left != NULL ) && ( olsr_node->right != NULL ) ) {
-
-				tmp_olsr_node = &olsr_node->left;
-
-				while ( (*tmp_olsr_node) != NULL ) {
-
-					result = strncmp( (*tmp_olsr_node)->ip, olsr_node->right->ip, NAMEMAX );
-
-					/* we found the node - should not happen ! */
-					if ( result == 0 ) break;
-
-					/* save parent olsr node for later use */
-					top_olsr_node = (*tmp_olsr_node);
-
-					/* the searched node must be in the subtree */
-					if ( result < 0 ) {
-						tmp_olsr_node = &(*tmp_olsr_node)->right;
-					} else {
-						tmp_olsr_node = &(*tmp_olsr_node)->left;
-					}
-
-				}
-
-				tmp_olsr_node = &olsr_node->right;
-				olsr_node->right->top = top_olsr_node;
-
-			}
-
+		/* delete shape */
+		if ( olsr_node->obj_id != -1 ) {
+			/* remove element from ob2ip list */
+			lst_del( olsr_node->obj_id );
+			s3d_del_object( olsr_node->obj_id );
 		}
 
-		if ( olsr_node->top != NULL ) {
-
-			/* delete shape */
-			if ( olsr_node->obj_id != -1 ) {
-				/* remove element from ob2ip list */
-				lst_del( olsr_node->obj_id );
-				s3d_del_object( olsr_node->obj_id );
-			}
-
-			if ( olsr_node->desc_id != -1 ) s3d_del_object( olsr_node->desc_id );
-
-			/* free memory space */
-			free( olsr_node );
-			olsr_node = NULL;
-
-		} else {
-
-			if ( Debug ) printf( "root olsr node can't be deleted: %s\n", olsr_node->ip );
-
-		}
+		if ( olsr_node->desc_id != -1 ) s3d_del_object( olsr_node->desc_id );
 
 	} else {
 
@@ -305,28 +236,28 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 				while ( olsr_con_list != NULL ) {
 
 					/* nodes are related */
-					if ( ( olsr_con_list->olsr_con->left_olsr_node != NULL ) && ( olsr_con_list->olsr_con->right_olsr_node != NULL ) ) {
+					if ( ( olsr_con_list->olsr_con->left_olsr_node->visible == 1 ) && ( olsr_con_list->olsr_con->right_olsr_node->visible == 1 ) ) {
 
 						if ( ( strncmp( olsr_con_list->olsr_con->left_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) || ( strncmp( olsr_con_list->olsr_con->right_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) ) break;
 
 						prev_olsr_con_list = olsr_con_list;
 
-					/* deleted node */
+					/* invisble (deleted) node */
 					} else {
 
-						s3d_pop_vertex( olsr_con_list->olsr_con->obj_id, 6 );
-						s3d_pop_polygon( olsr_con_list->olsr_con->obj_id, 2 );
-						s3d_pop_material( olsr_con_list->olsr_con->obj_id, 1 );
-
-						/* delete connection list entry */
-						prev_olsr_con_list->next_olsr_con_list = olsr_con_list->next_olsr_con_list;
-
-						/* delete connection */
-						if ( olsr_con_list->olsr_con->prev_olsr_con != NULL ) olsr_con_list->olsr_con->prev_olsr_con->next_olsr_con = olsr_con_list->olsr_con->next_olsr_con;
-						if ( olsr_con_list->olsr_con->next_olsr_con != NULL ) olsr_con_list->olsr_con->next_olsr_con->prev_olsr_con = olsr_con_list->olsr_con->prev_olsr_con;
-
-						free( olsr_con_list->olsr_con );
-						free( olsr_con_list );
+// 						s3d_pop_vertex( olsr_con_list->olsr_con->obj_id, 6 );
+// 						s3d_pop_polygon( olsr_con_list->olsr_con->obj_id, 2 );
+// 						s3d_pop_material( olsr_con_list->olsr_con->obj_id, 1 );
+//
+// 						/* delete connection list entry */
+// 						prev_olsr_con_list->next_olsr_con_list = olsr_con_list->next_olsr_con_list;
+//
+// 						/* delete connection */
+// 						if ( olsr_con_list->olsr_con->prev_olsr_con != NULL ) olsr_con_list->olsr_con->prev_olsr_con->next_olsr_con = olsr_con_list->olsr_con->next_olsr_con;
+// 						if ( olsr_con_list->olsr_con->next_olsr_con != NULL ) olsr_con_list->olsr_con->next_olsr_con->prev_olsr_con = olsr_con_list->olsr_con->prev_olsr_con;
+//
+// 						free( olsr_con_list->olsr_con );
+// 						free( olsr_con_list );
 
 					}
 
@@ -350,10 +281,10 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 		}
 
-		handle_olsr_node( olsr_node->left );
-		handle_olsr_node( olsr_node->right );
-
 	}
+
+	handle_olsr_node( olsr_node->left );
+	handle_olsr_node( olsr_node->right );
 
 }
 
@@ -525,8 +456,6 @@ void mainloop() {
 
 	int net_result;   /* result of function net_main */
 
-	Byte_count = 0;
-
 	/* calculate new movement vector */
 	calc_olsr_node_mov();
 
@@ -536,7 +465,9 @@ void mainloop() {
 	/* move it */
 	move_olsr_nodes();
 
-	while ( 0!= ( net_result = net_main() ) ) {
+	/* read data from socket */
+	Byte_count = 0;
+	while ( ( net_result = net_main() ) != 0 ) {
 		if ( net_result == -1 ) {
 			s3d_quit();
 			break;

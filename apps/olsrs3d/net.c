@@ -60,11 +60,10 @@ int net_main() {
 
 	buf[numbytes] = '\0';
  	strncat(lbuf,buf,MAXLINESIZE);
-// 	printf( "lbuf: %s\n", lbuf );
 
 	process_main();
 
-	if ( Byte_count += numbytes > 1000 ) {
+	if ( ( Byte_count += numbytes ) > 1000 ) {
 		return(0);   /* continue mainloop */
 	} else {
 		return(1);   /* continue reading data from socket */

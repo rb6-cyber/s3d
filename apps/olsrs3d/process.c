@@ -201,8 +201,17 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
 		/* we found the node */
 		if ( result == 0 ) {
-			(*olsr_node)->last_seen = 20;
+
+			(*olsr_node)->last_seen = 50;
+
+			/* former invisble (deleted) node */
+			if ( (*olsr_node)->visible == 0 ) {
+				(*olsr_node)->visible = 1;
+				if ( Debug ) printf( "new olsr node: %s\n", (*olsr_node)->ip );
+			}
+
 			return (*olsr_node);
+
 		}
 
 		/* save parent olsr node for later use */
@@ -232,7 +241,8 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 		(*olsr_node)->node_type = 0;
 		(*olsr_node)->node_type_modified = 1;
 
-		(*olsr_node)->last_seen = 20;
+		(*olsr_node)->last_seen = 50;
+		(*olsr_node)->visible = 1;
 
 		if ( Debug ) printf( "new olsr node: %s\n", (*olsr_node)->ip );
 
@@ -530,19 +540,19 @@ int process_main() {
 			switch ( dn ) {
 
 				case 0:
-					con_from = ++lbuf_ptr;
+					con_from = lbuf_ptr + 1;
 					break;
 				case 1:
 					con_from_end = lbuf_ptr;
 					break;
 				case 2:
-					con_to = ++lbuf_ptr;
+					con_to = lbuf_ptr + 1;
 					break;
 				case 3:
 					con_to_end = lbuf_ptr;
 					break;
 				case 4:
-					etx = ++lbuf_ptr;
+					etx = lbuf_ptr + 1;
 					break;
 				case 5:
 					etx_end = lbuf_ptr;
@@ -552,10 +562,10 @@ int process_main() {
 
 			if ( ++dn == 6 ) {
 
-				/* terminate strings - but not before 6 '"' */
+				/* terminate strings - but not before 6 times '"' */
 				(*con_from_end) = (*con_to_end) = (*etx_end) = '\0';
 
-// 				printf( "dn: %i, con_from: %s, con_to: %s, etx: %s\n", dn, con_from, con_to, etx );
+// 				printf( "con_from: %s, con_to: %s, etx: %s\n", con_from, con_to, etx );
 
 				/* announced network via HNA */
 				if ( strncmp( etx, "HNA", NAMEMAX ) == 0 ) {

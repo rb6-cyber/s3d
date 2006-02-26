@@ -39,6 +39,7 @@ struct olsr_node {
 	int node_type;   /* normal = 0, internet gateway = 1, via hna announced network = 2 */
 	int node_type_modified;   /* node_type modified flag */
 	int last_seen;   /* last seen counter */
+	int visible;   /* is this node visible or vanished */
 	float pos_vec[3];   /* position vector in 3d "space" */
 	float mov_vec[3];   /* move vector */
 	int obj_id;   /* id of node object in s3d */
