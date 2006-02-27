@@ -225,13 +225,14 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 			if ( olsr_con_list->olsr_con->prev_olsr_con != NULL ) olsr_con_list->olsr_con->prev_olsr_con->next_olsr_con = olsr_con_list->olsr_con->next_olsr_con;
 			if ( olsr_con_list->olsr_con->next_olsr_con != NULL ) olsr_con_list->olsr_con->next_olsr_con->prev_olsr_con = olsr_con_list->olsr_con->prev_olsr_con;
 
+			struct olsr_con_list *rm = olsr_con_list;
 			olsr_con_list = olsr_con_list->next_olsr_con_list;
-
-			free( olsr_con_list->olsr_con );
-			free( olsr_con_list );
+			free( rm->olsr_con );
+			free( rm );
+			
 
 		}
-
+		
 		olsr_node->olsr_con_list = NULL;
 
 	} else if (olsr_node->visible) {
