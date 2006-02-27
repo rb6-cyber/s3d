@@ -15,7 +15,6 @@ struct olsr_con {
 	struct olsr_node *right_olsr_node;   /* pointer to right end point of the connection */
 	float left_etx;   /* etx of left olsr node */
 	float right_etx;   /* etx of right olsr node */
-	int visible;   /* is this connection visible or vanished */
 	int obj_id;   /* id of connection object in s3d */
 
 };

@@ -166,8 +166,9 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	if ( olsr_node == NULL ) return;
 
 	/* olsr node vanished */
-	olsr_node->last_seen--;
-	if ( olsr_node->last_seen == 0 ) {
+	if(olsr_node->last_seen > 0)
+		olsr_node->last_seen--;
+	if ( olsr_node->last_seen == 0 && olsr_node->visible) {
 
 		if ( Debug ) printf( "olsr node vanished: %s\n", olsr_node->ip );
 
@@ -180,16 +181,33 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 			s3d_del_object( olsr_node->obj_id );
 	
 			olsr_con_list = olsr_node->olsr_con_list;
-				while( olsr_con_list != NULL) {
-					olsr_con_list->olsr_con->visible = 0;
-					s3d_del_object(olsr_con_list->olsr_con->obj_id);
-					olsr_con_list = olsr_con_list->next_olsr_con_list;
+
+			while( olsr_con_list != NULL) {
+				printf("start remove\n");
+				printf("remove %d\n",olsr_con_list->olsr_con->obj_id);
+				s3d_del_object(olsr_con_list->olsr_con->obj_id);
+
+				if( olsr_con_list->olsr_con->left_olsr_node == olsr_node)
+					free(olsr_con_list->olsr_con->right_olsr_node->olsr_con_list);
+				else
+					free(olsr_con_list->olsr_con->left_olsr_node->olsr_con_list);
+
+				/* delete connection list entry */
+				// prev_olsr_con_list->next_olsr_con_list = olsr_con_list->next_olsr_con_list;
+				
+				/* delete connection */
+				if ( olsr_con_list->olsr_con->prev_olsr_con != NULL ) olsr_con_list->olsr_con->prev_olsr_con->next_olsr_con = olsr_con_list->olsr_con->next_olsr_con;
+				if ( olsr_con_list->olsr_con->next_olsr_con != NULL ) olsr_con_list->olsr_con->next_olsr_con->prev_olsr_con = olsr_con_list->olsr_con->prev_olsr_con;
+				free( olsr_con_list->olsr_con );
+				free( olsr_con_list );
+				olsr_con_list = olsr_con_list->next_olsr_con_list;
 			}
+			
 		}
 
 		if ( olsr_node->desc_id != -1 ) s3d_del_object( olsr_node->desc_id );
 
-	} else {
+	} else if (olsr_node->visible) {
 
 		/* olsr node shape has been modified */
 		if ( olsr_node->node_type_modified ) {
@@ -250,24 +268,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 						prev_olsr_con_list = olsr_con_list;
 
 					/* invisble (deleted) node */
-					} else {
-
-// 						s3d_pop_vertex( olsr_con_list->olsr_con->obj_id, 6 );
-// 						s3d_pop_polygon( olsr_con_list->olsr_con->obj_id, 2 );
-// 						s3d_pop_material( olsr_con_list->olsr_con->obj_id, 1 );
-//
-// 						/* delete connection list entry */
-// 						prev_olsr_con_list->next_olsr_con_list = olsr_con_list->next_olsr_con_list;
-//
-// 						/* delete connection */
-// 						if ( olsr_con_list->olsr_con->prev_olsr_con != NULL ) olsr_con_list->olsr_con->prev_olsr_con->next_olsr_con = olsr_con_list->olsr_con->next_olsr_con;
-// 						if ( olsr_con_list->olsr_con->next_olsr_con != NULL ) olsr_con_list->olsr_con->next_olsr_con->prev_olsr_con = olsr_con_list->olsr_con->prev_olsr_con;
-//
-// 						free( olsr_con_list->olsr_con );
-// 						free( olsr_con_list );
-
 					}
-
 					olsr_con_list = olsr_con_list->next_olsr_con_list;
 
 				}
@@ -385,73 +386,73 @@ void move_olsr_nodes( void ) {
 
 		}
 
-		if( (*olsr_con)->visible) {
-			/* move connection between left and right olsr node */
-			s3d_pop_vertex( (*olsr_con)->obj_id, 6 );
-			s3d_pop_polygon( (*olsr_con)->obj_id, 2 );
-			s3d_pop_material( (*olsr_con)->obj_id, 1 );
+
+		/* move connection between left and right olsr node */
+		s3d_pop_vertex( (*olsr_con)->obj_id, 6 );
+		s3d_pop_polygon( (*olsr_con)->obj_id, 2 );
+		s3d_pop_material( (*olsr_con)->obj_id, 1 );
+
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] + 0.2 + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] - 0.2 + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
+
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]- 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
+
+		if ( ColorSwitch ) {
 	
-			s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
-			s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] + 0.2 + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
-			s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] - 0.2 + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
-	
-			s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
-			s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
-			s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]- 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
-	
-			if ( ColorSwitch ) {
-	
-				/* HNA */
-				if ( (*olsr_con)->left_etx == -1000.00 ) {
-	
-					s3d_push_material( (*olsr_con)->obj_id,
-								   0.0,0.0,1.0,
-								   0.0,0.0,1.0,
-								   0.0,0.0,1.0);
-	
-				} else {
-	
-					etx = ( ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 ) - 10.0 ) * 10.0;
-	
-					if ( ( etx >= 1.0 ) && ( etx < 2.0 ) ) {
-	
-						rgb = etx - 1.0;
-						s3d_push_material( (*olsr_con)->obj_id,
-									rgb,1.0,0.0,
-									rgb,1.0,0.0,
-									rgb,1.0,0.0);
-	
-					} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
-	
-						rgb = 3.0 - etx;
-						s3d_push_material( (*olsr_con)->obj_id,
-									1.0,rgb,0.0,
-									1.0,rgb,0.0,
-									1.0,rgb,0.0);
-	
-					} else {
-	
-						s3d_push_material( (*olsr_con)->obj_id,
-									1.0,0.0,0.0,
-									1.0,0.0,0.0,
-									1.0,0.0,0.0);
-	
-					}
-	
-				}
+			/* HNA */
+			if ( (*olsr_con)->left_etx == -1000.00 ) {
+
+				s3d_push_material( (*olsr_con)->obj_id,
+							   0.0,0.0,1.0,
+							   0.0,0.0,1.0,
+							   0.0,0.0,1.0);
 	
 			} else {
-	
-				s3d_push_material( (*olsr_con)->obj_id,
-							1.0,1.0,1.0,
-							1.0,1.0,1.0,
-							1.0,1.0,1.0);
-	
+
+				etx = ( ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 ) - 10.0 ) * 10.0;
+
+				if ( ( etx >= 1.0 ) && ( etx < 2.0 ) ) {
+
+					rgb = etx - 1.0;
+					s3d_push_material( (*olsr_con)->obj_id,
+								rgb,1.0,0.0,
+								rgb,1.0,0.0,
+								rgb,1.0,0.0);
+
+				} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
+
+					rgb = 3.0 - etx;
+					s3d_push_material( (*olsr_con)->obj_id,
+								1.0,rgb,0.0,
+								1.0,rgb,0.0,
+								1.0,rgb,0.0);
+
+				} else {
+
+					s3d_push_material( (*olsr_con)->obj_id,
+								1.0,0.0,0.0,
+								1.0,0.0,0.0,
+								1.0,0.0,0.0);
+
+				}
+
 			}
+
+		} else {
+
+			s3d_push_material( (*olsr_con)->obj_id,
+						1.0,1.0,1.0,
+						1.0,1.0,1.0,
+						1.0,1.0,1.0);
 	
-			s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
-			s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );
 		}
+	
+		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
+		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );
+
 		olsr_con = &(*olsr_con)->next_olsr_con;
 
 	}
