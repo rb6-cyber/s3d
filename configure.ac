@@ -27,7 +27,7 @@ dnl Checks for library functions.
 AC_PROG_GCC_TRADITIONAL
 AC_FUNC_SETVBUF_REVERSED
 AC_TYPE_SIGNAL
-AC_CHECK_FUNCS(select socket strerror strtod strtol)
+AC_CHECK_FUNCS([select socket strerror strtod strtol shmget signal]) # XXX: the previous test should have established the existence of signal() already. just be safe here.
 
 WARNS=""
 CFLAGS="$CFLAGS $X_CFLAGS"
@@ -133,6 +133,23 @@ HAVE_PTHREAD
 
 AC_ARG_WITH([examples], AS_HELP_STRING([--with-examples], [build examples]), [with_examples=$withval], [with_examples=yes])
 AM_CONDITIONAL([BUILD_EXAMPLES], [test x$with_examples = xyes])
+
+###
+### This part just defined some things in config.h
+### XXX: we should provide configure option to disable these parts, or don't use conditional
+###      compiles on those symbols (and instead just code parts that either get or don't get 
+###      linked in.
+
+if test x${ac_cv_func_socket} = xyes; then
+	AC_DEFINE([TCP], 1, [Define if TCP/IP network code should be compiled])
+fi
+if test x${ac_cv_func_shmget} = xyes; then
+	AC_DEFINE([SHM], 1, [Define if shared memory networking code should be compiled])
+fi
+if test x${ac_cv_func_signal} = xyes; then
+	# XXX: win32? we need to figure out if those actually exist on cygwin.
+	AC_DEFINE([SIGS], 1, [Define if signal code should be compiled])
+fi
 
 AC_CONFIG_HEADER(config.h)
 AC_CONFIG_FILES([
