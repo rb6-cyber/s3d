@@ -194,7 +194,6 @@ int resize_adj()
 void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
 	int result;   /* result of strcmp */
-	struct olsr_node *top_olsr_node = NULL;   /* parent olsr node */
 
 	while ( (*olsr_node) != NULL ) {
 
@@ -207,25 +206,15 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 
 			/* former invisble (deleted) node */
 			if ( (*olsr_node)->visible == 0 ) {
-				struct olsr_con_list *olsr_con_list;
-				
-				olsr_con_list = (*olsr_node)->olsr_con_list;
-				
-				while(olsr_con_list != NULL) {
-					olsr_con_list->olsr_con->visible = 1;
-					olsr_con_list = olsr_con_list->next_olsr_con_list;	
-				}
-				
+
 				(*olsr_node)->visible = 1;
 				if ( Debug ) printf( "new olsr node: %s\n", (*olsr_node)->ip );
+
 			}
 
 			return (*olsr_node);
 
 		}
-
-		/* save parent olsr node for later use */
-		top_olsr_node = (*olsr_node);
 
 		/* the searched node must be in the subtree */
 		if ( result < 0 ) {
@@ -242,7 +231,6 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 		(*olsr_node) = malloc( sizeof( struct olsr_node ) );
 		if ( (*olsr_node) == NULL ) out_of_mem();
 
-		(*olsr_node)->top = top_olsr_node;
 		(*olsr_node)->left = NULL;
 		(*olsr_node)->right = NULL;
 
@@ -617,8 +605,7 @@ int process_main() {
 					olsr_node1 = get_olsr_node( &Olsr_root, con_from );
 					olsr_node2 = get_olsr_node( &Olsr_root, con_to );
 					f=10.0+strtod(etx,NULL)/10.0;
-					if (f>=5 && olsr_node1->visible && olsr_node2->visible)
-						add_olsr_con( olsr_node1, olsr_node2, f );   /* just to prevent ascii to float converting inconsistency ... */
+					if ( f >= 5 ) add_olsr_con( olsr_node1, olsr_node2, f );   /* just to prevent ascii to float converting inconsistency ... */
 
 				}
 

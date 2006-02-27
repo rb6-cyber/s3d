@@ -33,7 +33,6 @@ struct olsr_con_list {
 /* we contruct a binary tree to handle the nodes */
 struct olsr_node {
 
-	struct olsr_node *top;
 	struct olsr_node *left;
 	struct olsr_node *right;
 	char ip[NAMEMAX];   /* host ip */
