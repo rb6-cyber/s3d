@@ -183,8 +183,8 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 			olsr_con_list = olsr_node->olsr_con_list;
 
 			while( olsr_con_list != NULL) {
-				printf("start remove\n");
-				printf("remove %d\n",olsr_con_list->olsr_con->obj_id);
+				// printf("start remove\n");
+				// printf("remove %d\n",olsr_con_list->olsr_con->obj_id);
 				s3d_del_object(olsr_con_list->olsr_con->obj_id);
 
 				if( olsr_con_list->olsr_con->left_olsr_node == olsr_node)
