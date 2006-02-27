@@ -21,12 +21,12 @@
  * This file is part of the s3d API, the API of s3d (the 3d network display server).
  * See http://s3d.berlios.de/ for more updates.
  * 
- * the s3d API is free software; you can redistribute it and/or modify
+ * The s3d API is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
  * 
- * s3d API is distributed in the hope that it will be useful,
+ * The s3d API is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
