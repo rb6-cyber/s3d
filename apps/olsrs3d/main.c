@@ -1,7 +1,9 @@
 /*
  * main.c
  *
- * Copyright (C) 2006 Marek Lindner <lindner_marek@yahoo.de>, Andreas Langer <andreas_lbg@gmx.de>
+ * Copyright (C) 2005-2006 Simon Wunderlich <dotslash@packetmixer.de>
+ *                         Marek Lindner <lindner_marek@yahoo.de>
+ *                         Andreas Langer <andreas_lbg@gmx.de>
  * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of olsrs3d, an olsr topology visualizer for s3d.
