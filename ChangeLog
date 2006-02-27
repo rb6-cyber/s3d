@@ -1,4 +1,5 @@
 2006-02-27  Simon Wunderlich - <dotslash@packetmixer.de>
+	- added GPL/LGPL copyright notes (phew -.-)
 	- implemented object search path as : delimited list
 	- INFINITY define into #ifndef
 	- splitting README and INSTALL
