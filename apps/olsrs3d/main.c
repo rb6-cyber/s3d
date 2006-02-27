@@ -160,15 +160,15 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	struct olsr_node **tmp_olsr_node;
 	struct olsr_con **olsr_con;
 	struct Obj_to_ip *Obj_to_ip_curr;
-	struct olsr_con_list *olsr_con_list, *prev_olsr_con_list = NULL;
+	struct olsr_con_list *olsr_con_list, *prev_olsr_con_list, *other_node_con_list;
 
 	/* no more nodes left */
 	if ( olsr_node == NULL ) return;
 
 	/* olsr node vanished */
-	if(olsr_node->last_seen > 0)
-		olsr_node->last_seen--;
-	if ( olsr_node->last_seen == 0 && olsr_node->visible) {
+	if ( olsr_node->last_seen > 0 ) olsr_node->last_seen--;
+
+	if ( olsr_node->last_seen == 0 && olsr_node->visible ) {
 
 		if ( Debug ) printf( "olsr node vanished: %s\n", olsr_node->ip );
 
@@ -176,59 +176,63 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 		/* delete shape */
 		if ( olsr_node->obj_id != -1 ) {
+
 			/* remove element from ob2ip list */
 			lst_del( olsr_node->obj_id );
-
+			/* remove object from s3d server */
 			s3d_del_object( olsr_node->obj_id );
+
 			olsr_node->obj_id = -1;
-			olsr_con_list = olsr_node->olsr_con_list;
 
-			while( olsr_con_list != NULL) {
-				
-				struct olsr_con_list *con_list;
-				int con_id = olsr_con_list->olsr_con->obj_id;
-				
-				s3d_del_object(olsr_con_list->olsr_con->obj_id);
-				olsr_con_list->olsr_con->obj_id = -1;
-				
-				if( olsr_con_list->olsr_con->left_olsr_node == olsr_node) {
-					
-					con_list = olsr_con_list->olsr_con->right_olsr_node->olsr_con_list;
-					while(con_list != NULL) {
-						if(con_list->olsr_con->obj_id == con_id)		
-							break;
-						prev_olsr_con_list = con_list;
-						con_list = con_list->next_olsr_con_list;	
-					}
-					
-				} else {
-					
-					con_list = olsr_con_list->olsr_con->right_olsr_node->olsr_con_list;
-					while(con_list != NULL) {
-						if(con_list->olsr_con->obj_id == con_id)		
-							break;
-						prev_olsr_con_list = con_list;
-						con_list = con_list->next_olsr_con_list;	
-					}
-					
-				}
-
-				if( con_list != NULL ) {
-					prev_olsr_con_list->next_olsr_con_list = olsr_con_list->next_olsr_con_list;
-					free(con_list);
-				}
-								
-				/* delete connection */
-				if ( olsr_con_list->olsr_con->prev_olsr_con != NULL ) olsr_con_list->olsr_con->prev_olsr_con->next_olsr_con = olsr_con_list->olsr_con->next_olsr_con;
-				if ( olsr_con_list->olsr_con->next_olsr_con != NULL ) olsr_con_list->olsr_con->next_olsr_con->prev_olsr_con = olsr_con_list->olsr_con->prev_olsr_con;
-				free( olsr_con_list->olsr_con );
-				free( olsr_con_list );
-				olsr_con_list = olsr_con_list->next_olsr_con_list;
-			}
-			
 		}
-		olsr_node->olsr_con_list = NULL;
+
 		if ( olsr_node->desc_id != -1 ) s3d_del_object( olsr_node->desc_id );
+
+		/* delete olsr connections of this node */
+		olsr_con_list = olsr_node->olsr_con_list;
+
+		while ( olsr_con_list != NULL ) {
+
+			/* get connection list of 'other' node */
+			if ( olsr_con_list->olsr_con->left_olsr_node == olsr_node ) {
+				other_node_con_list = olsr_con_list->olsr_con->right_olsr_node->olsr_con_list;
+			} else {
+				other_node_con_list = olsr_con_list->olsr_con->right_olsr_node->olsr_con_list;
+			}
+
+			/* find this connection in 'other' nodes connection list ... */
+			prev_olsr_con_list = NULL;
+
+			while ( other_node_con_list != NULL ) {
+
+				if( other_node_con_list->olsr_con->obj_id == olsr_con_list->olsr_con->obj_id ) break;
+
+				prev_olsr_con_list = other_node_con_list;
+				other_node_con_list = other_node_con_list->next_olsr_con_list;
+
+			}
+
+			/* and delete it ! */
+			if ( other_node_con_list != NULL ) {
+				prev_olsr_con_list->next_olsr_con_list = other_node_con_list->next_olsr_con_list;
+				free( other_node_con_list );
+			}
+
+			s3d_del_object( olsr_con_list->olsr_con->obj_id );
+			olsr_con_list->olsr_con->obj_id = -1;
+
+			/* delete connection */
+			if ( olsr_con_list->olsr_con->prev_olsr_con != NULL ) olsr_con_list->olsr_con->prev_olsr_con->next_olsr_con = olsr_con_list->olsr_con->next_olsr_con;
+			if ( olsr_con_list->olsr_con->next_olsr_con != NULL ) olsr_con_list->olsr_con->next_olsr_con->prev_olsr_con = olsr_con_list->olsr_con->prev_olsr_con;
+
+			free( olsr_con_list->olsr_con );
+			free( olsr_con_list );
+
+			olsr_con_list = olsr_con_list->next_olsr_con_list;
+
+		}
+
+		olsr_node->olsr_con_list = NULL;
 
 	} else if (olsr_node->visible) {
 
@@ -424,7 +428,7 @@ void move_olsr_nodes( void ) {
 		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]- 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
 
 		if ( ColorSwitch ) {
-	
+
 			/* HNA */
 			if ( (*olsr_con)->left_etx == -1000.00 ) {
 
@@ -432,7 +436,7 @@ void move_olsr_nodes( void ) {
 							   0.0,0.0,1.0,
 							   0.0,0.0,1.0,
 							   0.0,0.0,1.0);
-	
+
 			} else {
 
 				etx = ( ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 ) - 10.0 ) * 10.0;
@@ -470,9 +474,9 @@ void move_olsr_nodes( void ) {
 						1.0,1.0,1.0,
 						1.0,1.0,1.0,
 						1.0,1.0,1.0);
-	
+
 		}
-	
+
 		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
 		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );
 
