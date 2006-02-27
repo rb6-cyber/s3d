@@ -71,7 +71,8 @@ char *s3d_findfont(char *mask)
 							if (good==NULL)
 								good=malloc(256);
 							strncpy(good,flist[fnum],255);
-							strncat(good,fname,255);
+							good[256]=0; 									/* just in case */
+							strncat(good,fname,255-strlen(good));
 							if ((strlen(mask)+4)==strlen(fname))
 							{
 								return(good);

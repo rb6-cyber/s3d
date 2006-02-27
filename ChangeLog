@@ -1,3 +1,7 @@
+2006-02-27  Simon Wunderlich - <dotslash@packetmixer.de>
+	- INFINITY define into #ifndef
+	- splitting README and INSTALL
+	- security check for strncat and strncpy functions
 2006-02-22  Simon Wunderlich - <dotslash@packetmixer.de>
 	- only select the nearest hit when clicking, not all on the line
 	- fopen errors are not that important when looking through the

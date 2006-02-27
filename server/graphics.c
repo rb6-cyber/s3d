@@ -7,7 +7,9 @@
 #include <SDL.h>	 /*  SDL_GL_SwapBuffers */
 #endif
 #include <math.h>		 /*  sin(),cos() */
+#ifndef INFINITY
 #define INFINITY 1<<30
+#endif
 /*  this file handles graphics routines */
 /*  local prototypes ... */
 void render_virtual_object(struct t_obj *o);
