@@ -30,7 +30,7 @@ int display_dir(char *dir, int depth, int  posx, int posy, int posz)
 	char *ext;
 	char *nstr;
 	float alpha,al,radius,f;
-	char ndir[M_DIR];  /* unsafe, I know ... */
+	char ndir[M_DIR+1];
 	if (n_item)
 	{
 		printf("freeing %d old items\n",n_item);
@@ -64,8 +64,9 @@ int display_dir(char *dir, int depth, int  posx, int posy, int posz)
 			else {
 				ext=strrchr(nstr,'.');
 			    strncpy(ndir,dir,M_DIR);
-			    strncat(ndir,"/",M_DIR);
-		    	strncat(ndir,namelist[n]->d_name,M_DIR);
+				ndir[M_DIR]=0;		/* just in case */
+			    strncat(ndir,"/",M_DIR-strlen(ndir));
+		    	strncat(ndir,namelist[n]->d_name,M_DIR-strlen(ndir));
 /* 				printf("displaying %s\n",ndir); */
 			    if ((namelist[n]->d_type==DT_DIR) ||
 					((namelist[n]->d_type==DT_UNKNOWN) && (opendir(ndir)!=NULL)))

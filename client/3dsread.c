@@ -9,22 +9,35 @@
 /*  just a helper function for reading from file instead of memory. */
 int s3d_import_3ds_file(char *fname)
 {
-	char *buf;
+	char *buf,*ptr,*next;
+	char searchpath[1024];
 	char path[1024];
-	int i;
-	char *searchpath[4]=
-		{"./",
-		 "",
-		 "../",
-		 "../../"
-		 };
-	for (i=0;i<4;i++)
+#ifndef OBJSDIR
+#define OBJSDIR 	"./:../:../../"
+#endif
+	
+	strncpy(searchpath,OBJSDIR,1023);
+	searchpath[1023]=0;							/* just in case */
+	next=ptr=searchpath;
+	while (next!=NULL)
 	{
-		strncpy(path,searchpath[i],1024);
-		strncat(path,fname,1024);
-		if (s3d_open_file(path,&buf)!=-1)  /* found something */
-			return(s3d_import_3ds(buf));
+		next=NULL;
+		if (next=strchr(ptr,':'))
+		{
+			*next=0; 							/* clear the delimiter */
+			next+=1;							/* move to the beginner of the next dir */
+		}
+		if ((strlen(ptr)+strlen(fname))<1024) 	/* only try if this fits */
+		{
+			strcpy(path,ptr); 					/* can use "unsafe" functions because size was verified above */
+			strcat(path,fname);
+			if (s3d_open_file(path,&buf)!=-1)  /* found something */
+				return(s3d_import_3ds(buf));
+		}
+		if (next!=NULL)
+			ptr=next;							/* move pointer to the next position */
 	}
+	errds(LOW,"s3d_import_3ds_file()","Could not open %s", fname);
 	return(-1); /* nothing in search path ... */
 }
 static void normal(float *p0, float *p1, float *p2, float *r)

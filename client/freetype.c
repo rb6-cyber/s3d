@@ -72,8 +72,8 @@ int _s3d_clear_tessbuf()
 	int i;
 	for (i=0; i<256;i++)
 	{
-		if (tess_buf[i].vbuf) free(tess_buf[i].vbuf);
-		if (tess_buf[i].pbuf) free(tess_buf[i].pbuf);
+		if (tess_buf[i].vbuf!=NULL) free(tess_buf[i].vbuf);
+		if (tess_buf[i].pbuf!=NULL) free(tess_buf[i].pbuf);
 	}
 	return(0);
 }

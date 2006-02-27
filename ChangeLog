@@ -1,4 +1,5 @@
 2006-02-27  Simon Wunderlich - <dotslash@packetmixer.de>
+	- implemented object search path as : delimited list
 	- INFINITY define into #ifndef
 	- splitting README and INSTALL
 	- security check for strncat and strncpy functions
