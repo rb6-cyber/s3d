@@ -41,7 +41,7 @@ DEVEL_LDFLAGS=
 # XXX: switch default and help string for releases.
 AC_ARG_ENABLE([devel], AS_HELP_STRING([--disable-debug],[Disables debugging flags]), [enable_debug=$enableval], [enable_debug=yes])
 if test x$enable_debug = xyes; then
-	DEVEL_CFLAGS="$DEVEL_CFLAGS -ggdb"
+	DEVEL_CFLAGS="$DEVEL_CFLAGS -Wall -pedantic -ansi -ggdb"
 	DEVEL_LDFLAGS="$DEVEL_LDFLAGS -ggdb"
 fi
 
@@ -72,6 +72,12 @@ AC_SUBST(GLUT_LIBS)
 
 SDL_VERSION=1.2.7
 AM_PATH_SDL($SDL_VERSION, [HAVE_SDL="x"], [])
+if test "x${HAVE_glut}" != "x"; then
+	AC_DEFINE([G_GLUT], 1, [Use GLUT])
+fi
+if test "x${HAVE_SDL}" != "x"; then
+	AC_DEFINE([G_SDL], 1, [Use SDL])
+fi
 if test "x${HAVE_glut}${HAVE_SDL}" = "x"; then
 	AC_MSG_ERROR([No OpenGL Framework found. Try installing GLUT or SDL, or both])
 fi
