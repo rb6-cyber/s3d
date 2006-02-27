@@ -1,3 +1,28 @@
+/*
+ * process.c
+ *
+ * Copyright (C) 2006 Marek Lindner <lindner_marek@yahoo.de>, Andreas Langer <andreas_lbg@gmx.de>
+ *
+ * This file is part of olsrs3d, an olsr topology visualizer for s3d.
+ * See http://s3d.berlios.de/ for more updates.
+ *
+ * olsrs3d is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * olsrs3d is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with s3d; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
+
 #include <stdio.h> 	/* NULL */
 #include <string.h> 	/* strlen(), memmove() */
 #include <stdlib.h> 	/* rand(), malloc(), realloc(), free(), strtof() */
@@ -206,8 +231,16 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 			/* former invisble (deleted) node */
 			if ( (*olsr_node)->visible == 0 ) {
 
+				(*olsr_node)->node_type = 0;
+				(*olsr_node)->node_type_modified = 1;
+
 				(*olsr_node)->visible = 1;
+
+				(*olsr_node)->mov_vec[0] = (*olsr_node)->mov_vec[1] = (*olsr_node)->mov_vec[2] = 0.0;
+
 				if ( Debug ) printf( "new olsr node: %s\n", (*olsr_node)->ip );
+
+				Olsr_node_count++;
 
 			}
 
@@ -242,6 +275,8 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 		(*olsr_node)->visible = 1;
 
 		if ( Debug ) printf( "new olsr node: %s\n", (*olsr_node)->ip );
+
+		Olsr_node_count++;
 
 		(*olsr_node)->pos_vec[0] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
 		(*olsr_node)->pos_vec[1] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;

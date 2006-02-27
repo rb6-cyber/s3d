@@ -1,3 +1,28 @@
+/*
+ * main.c
+ *
+ * Copyright (C) 2006 Marek Lindner <lindner_marek@yahoo.de>, Andreas Langer <andreas_lbg@gmx.de>
+ *
+ * This file is part of olsrs3d, an olsr topology visualizer for s3d.
+ * See http://s3d.berlios.de/ for more updates.
+ *
+ * olsrs3d is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * olsrs3d is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with s3d; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
+
 #include <stdio.h>
 #include <s3d.h>
 #include <unistd.h>	/* sleep() */
@@ -16,6 +41,8 @@ struct olsr_con *Con_begin = NULL;   /* begin of connection list */
 struct olsr_node *Olsr_root = NULL;   /* top of olsr node tree */
 struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end, *List_ptr;   /* needed pointer for linked list */
 
+int Olsr_node_count = 0, Last_olsr_node_count = -1;
+int Olsr_node_count_obj = -1;
 int Byte_count;
 
 int node_count=-1;
@@ -160,7 +187,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	struct olsr_node **tmp_olsr_node;
 	struct olsr_con **olsr_con;
 	struct Obj_to_ip *Obj_to_ip_curr;
-	struct olsr_con_list *olsr_con_list, *prev_olsr_con_list, *other_node_con_list;
+	struct olsr_con_list *olsr_con_list, *prev_olsr_con_list, *other_node_con_list, *tmp_olsr_con_list;
 
 	/* no more nodes left */
 	if ( olsr_node == NULL ) return;
@@ -171,6 +198,8 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	if ( olsr_node->last_seen == 0 && olsr_node->visible ) {
 
 		if ( Debug ) printf( "olsr node vanished: %s\n", olsr_node->ip );
+
+		Olsr_node_count--;
 
 		olsr_node->visible = 0;
 
@@ -186,7 +215,12 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 		}
 
-		if ( olsr_node->desc_id != -1 ) s3d_del_object( olsr_node->desc_id );
+		if ( olsr_node->desc_id != -1 ) {
+
+			s3d_del_object( olsr_node->desc_id );
+			olsr_node->desc_id = -1;
+
+		}
 
 		/* delete olsr connections of this node */
 		olsr_con_list = olsr_node->olsr_con_list;
@@ -197,7 +231,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 			if ( olsr_con_list->olsr_con->left_olsr_node == olsr_node ) {
 				other_node_con_list = olsr_con_list->olsr_con->right_olsr_node->olsr_con_list;
 			} else {
-				other_node_con_list = olsr_con_list->olsr_con->right_olsr_node->olsr_con_list;
+				other_node_con_list = olsr_con_list->olsr_con->left_olsr_node->olsr_con_list;
 			}
 
 			/* find this connection in 'other' nodes connection list ... */
@@ -214,25 +248,25 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 			/* and delete it ! */
 			if ( other_node_con_list != NULL ) {
-				prev_olsr_con_list->next_olsr_con_list = other_node_con_list->next_olsr_con_list;
+				if ( prev_olsr_con_list != NULL ) prev_olsr_con_list->next_olsr_con_list = other_node_con_list->next_olsr_con_list;
 				free( other_node_con_list );
 			}
 
 			s3d_del_object( olsr_con_list->olsr_con->obj_id );
-			olsr_con_list->olsr_con->obj_id = -1;
 
 			/* delete connection */
 			if ( olsr_con_list->olsr_con->prev_olsr_con != NULL ) olsr_con_list->olsr_con->prev_olsr_con->next_olsr_con = olsr_con_list->olsr_con->next_olsr_con;
 			if ( olsr_con_list->olsr_con->next_olsr_con != NULL ) olsr_con_list->olsr_con->next_olsr_con->prev_olsr_con = olsr_con_list->olsr_con->prev_olsr_con;
 
-			struct olsr_con_list *rm = olsr_con_list;
+			tmp_olsr_con_list = olsr_con_list;
+
 			olsr_con_list = olsr_con_list->next_olsr_con_list;
-			free( rm->olsr_con );
-			free( rm );
-			
+
+			free( tmp_olsr_con_list->olsr_con );
+			free( tmp_olsr_con_list );
 
 		}
-		
+
 		olsr_node->olsr_con_list = NULL;
 
 	} else if (olsr_node->visible) {
@@ -293,10 +327,10 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 						if ( ( strncmp( olsr_con_list->olsr_con->left_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) || ( strncmp( olsr_con_list->olsr_con->right_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) ) break;
 
-						prev_olsr_con_list = olsr_con_list;
+// 						if ( ( olsr_con_list->olsr_con->left_olsr_node == Obj_to_ip_curr->olsr_node ) || (  olsr_con_list->olsr_con->right_olsr_node == Obj_to_ip_curr->olsr_node ) ) break;
 
-					/* invisble (deleted) node */
 					}
+
 					olsr_con_list = olsr_con_list->next_olsr_con_list;
 
 				}
@@ -492,6 +526,7 @@ void move_olsr_nodes( void ) {
 void mainloop() {
 
 	int net_result;   /* result of function net_main */
+	char nc_str[20];
 
 	/* calculate new movement vector */
 	calc_olsr_node_mov();
@@ -501,6 +536,21 @@ void mainloop() {
 
 	/* move it */
 	move_olsr_nodes();
+
+	/* if we have more or less nodes now - redraw node count */
+	if ( Olsr_node_count != Last_olsr_node_count ) {
+
+		if ( Olsr_node_count_obj != -1 ) s3d_del_object( Olsr_node_count_obj );
+		snprintf( nc_str, 20, "node count: %d", Olsr_node_count );
+		Olsr_node_count_obj = s3d_draw_string( nc_str, NULL );
+		s3d_link( Olsr_node_count_obj, 0 );
+		s3d_flags_on( Olsr_node_count_obj, S3D_OF_VISIBLE );
+		s3d_scale( Olsr_node_count_obj, 0.2 );
+		s3d_translate( Olsr_node_count_obj, left*3.0, -bottom*3.0-0.2, -3.0 );
+
+		Last_olsr_node_count = Olsr_node_count;
+
+	}
 
 	/* read data from socket */
 	Byte_count = 0;
@@ -512,7 +562,7 @@ void mainloop() {
 	}
 
 	alpha=(alpha+5)%360;
-	s3d_rotate(mesh,0,alpha,0);
+// 	s3d_rotate(mesh,0,alpha,0);
 	if(RotateSwitch) {
 		Zp_rotate = (Zp_rotate+RotateSpeed)%360;
 		s3d_rotate(ZeroPoint,0,Zp_rotate,0);
@@ -809,9 +859,9 @@ int main( int argc, char *argv[] ) {
 			Olsr_node_obj = s3d_import_3ds_file( "objs/accesspoint.3ds" );
 			Olsr_node_inet_obj = s3d_import_3ds_file( "objs/accesspoint_inet.3ds" );
 			Olsr_node_hna_net = s3d_import_3ds_file( "objs/internet.3ds" );
-			mesh=s3d_import_3ds_file("objs/meshnode.3ds");
-			s3d_link(mesh,0);
-			s3d_scale(mesh,0.15);
+// 			mesh=s3d_import_3ds_file("objs/meshnode.3ds");
+// 			s3d_link(mesh,0);
+// 			s3d_scale(mesh,0.15);
 			ZeroPoint = s3d_new_object();
 			s3d_mainloop(mainloop);
 			s3d_quit();
