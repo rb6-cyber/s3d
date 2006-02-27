@@ -178,23 +178,46 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 		if ( olsr_node->obj_id != -1 ) {
 			/* remove element from ob2ip list */
 			lst_del( olsr_node->obj_id );
+
 			s3d_del_object( olsr_node->obj_id );
-	
+			olsr_node->obj_id = -1;
 			olsr_con_list = olsr_node->olsr_con_list;
 
 			while( olsr_con_list != NULL) {
-				// printf("start remove\n");
-				// printf("remove %d\n",olsr_con_list->olsr_con->obj_id);
-				s3d_del_object(olsr_con_list->olsr_con->obj_id);
-
-				if( olsr_con_list->olsr_con->left_olsr_node == olsr_node)
-					free(olsr_con_list->olsr_con->right_olsr_node->olsr_con_list);
-				else
-					free(olsr_con_list->olsr_con->left_olsr_node->olsr_con_list);
-
-				/* delete connection list entry */
-				// prev_olsr_con_list->next_olsr_con_list = olsr_con_list->next_olsr_con_list;
 				
+				struct olsr_con_list *con_list;
+				int con_id = olsr_con_list->olsr_con->obj_id;
+				
+				s3d_del_object(olsr_con_list->olsr_con->obj_id);
+				olsr_con_list->olsr_con->obj_id = -1;
+				
+				if( olsr_con_list->olsr_con->left_olsr_node == olsr_node) {
+					
+					con_list = olsr_con_list->olsr_con->right_olsr_node->olsr_con_list;
+					while(con_list != NULL) {
+						if(con_list->olsr_con->obj_id == con_id)		
+							break;
+						prev_olsr_con_list = con_list;
+						con_list = con_list->next_olsr_con_list;	
+					}
+					
+				} else {
+					
+					con_list = olsr_con_list->olsr_con->right_olsr_node->olsr_con_list;
+					while(con_list != NULL) {
+						if(con_list->olsr_con->obj_id == con_id)		
+							break;
+						prev_olsr_con_list = con_list;
+						con_list = con_list->next_olsr_con_list;	
+					}
+					
+				}
+
+				if( con_list != NULL ) {
+					prev_olsr_con_list->next_olsr_con_list = olsr_con_list->next_olsr_con_list;
+					free(con_list);
+				}
+								
 				/* delete connection */
 				if ( olsr_con_list->olsr_con->prev_olsr_con != NULL ) olsr_con_list->olsr_con->prev_olsr_con->next_olsr_con = olsr_con_list->olsr_con->next_olsr_con;
 				if ( olsr_con_list->olsr_con->next_olsr_con != NULL ) olsr_con_list->olsr_con->next_olsr_con->prev_olsr_con = olsr_con_list->olsr_con->prev_olsr_con;
@@ -204,7 +227,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 			}
 			
 		}
-
+		olsr_node->olsr_con_list = NULL;
 		if ( olsr_node->desc_id != -1 ) s3d_del_object( olsr_node->desc_id );
 
 	} else if (olsr_node->visible) {

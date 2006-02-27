@@ -53,7 +53,6 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 
 		/* create connection object */
 		(*olsr_con)->obj_id = s3d_new_object();
-		(*olsr_con)->visible = 1;
 		s3d_push_material( (*olsr_con)->obj_id,
 				  1.0,1.0,1.0,
 				  1.0,1.0,1.0,
