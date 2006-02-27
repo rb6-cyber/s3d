@@ -1,3 +1,4 @@
+look for strncat foobar :)
 client(portability?!):
 	shmat() return (char *) -1 or NULL?! data_ctos/data_stoc should
 	really not be 0x0
