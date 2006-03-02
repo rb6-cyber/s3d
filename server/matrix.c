@@ -20,7 +20,6 @@
  * along with s3d; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-i
 
 /*  this file gives some simple matrix functionality for things I was unable */
 /*  to do with OpenGL */
