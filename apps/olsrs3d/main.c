@@ -597,10 +597,10 @@ void keypress(struct s3d_evt *event) {
 		case 27: /* esc */
 			stop();
 			break;
-			case 15: /* strg + o */
+		case 15: /* strg + o */
 			lst_out(); /* output ob2ip list */
 			break;
-		case 99: /* c*/
+		case 99: /* c */
 			if(ColorSwitch) ColorSwitch = 0;
 			else ColorSwitch = 1;
 			break;
@@ -616,6 +616,9 @@ void keypress(struct s3d_evt *event) {
 			if(RotateSwitch && RotateSpeed > 1)
 				RotateSpeed--;
 			break;
+		case 16: /* strg + p */
+			s3d_translate(0,0.0,0.0,0.0);
+			break;
 	}
 }
 
@@ -628,6 +631,7 @@ void keypress(struct s3d_evt *event) {
 void object_click(struct s3d_evt *evt)
 {
 	int oid;
+	float distance,tmp_vector[3];
 	oid=(int)*((unsigned long *)evt->buf);
 	/*s3d_translate(ZeroPoint,0,50,40);
 	ZeroPosition[0] = 0;
@@ -636,6 +640,10 @@ void object_click(struct s3d_evt *evt)
 	struct olsr_node *olsr_node;
 	olsr_node = *lst_search(oid);
 	/* printf("obj2ip: search return %s\n",olsr_node->ip); */
+
+	distance = dirt(olsr_node->pos_vec,CamPosition[0],tmp_vector);
+	mov_add(ZeroPosition,tmp_vector,1.0);	
+	s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
 }
 
 /***
@@ -670,7 +678,7 @@ void object_info(struct s3d_evt *hrmz)
 		s3d_translate(mesh,(-left)*3.0-1.8,bottom*3.0+0.8,-3.0);
 		s3d_flags_on(mesh,S3D_OF_VISIBLE);
 	}
-	/* printf("%f %f %f\n",inf->trans_x,inf->trans_y,inf->trans_z); */
+	// printf("%f %f %f\n",inf->trans_x,inf->trans_y,inf->trans_z);
 }
 
 /***
