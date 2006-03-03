@@ -26,13 +26,9 @@
 
 
 #define NAMEMAX		128
+#define MAXLINESIZE 1000 /* lines in a digraph just shouldn't get that longer ... */
+#define MAXDATASIZE 100 /* max number of bytes we can get at once  */
 
-
-// struct t_node {
-// 	float pos[3], mov[3];
-// 	char name[NAMEMAX];
-// 	int obj,s_obj;
-// };
 
 
 /* linked list for the all connections */
@@ -49,10 +45,10 @@ struct olsr_con {
 };
 
 
-/* linked list for the connections of each olsr node */
-struct olsr_con_list {
+/* linked list for the neighbours of each olsr node */
+struct olsr_neigh_list {
 
-	struct olsr_con_list *next_olsr_con_list;   /* pointer to next connection */
+	struct olsr_neigh_list *next_olsr_neigh_list;   /* pointer to next neighbour */
 	struct olsr_con *olsr_con;   /* pointer to the connection */
 
 };
@@ -72,7 +68,7 @@ struct olsr_node {
 	float mov_vec[3];   /* move vector */
 	int obj_id;   /* id of node object in s3d */
 	int desc_id;   /* id of node description object in s3d */
-	struct olsr_con_list *olsr_con_list;   /* pointer to first connection */
+	struct olsr_neigh_list *olsr_neigh_list;   /* pointer to first neighbour */
 
 };
 
@@ -106,23 +102,9 @@ extern int ZeroPoint;
 
 extern float Bottom, Left;
 
-// extern float bottom,left;
-//
-// extern int 	max, new_max;
-// extern float 	*adj;
-// extern int	*adj_obj;
-// extern int	node_count;
-// extern float Bottom, Left;
-
-
-// struct t_node 	*node;
-#define MAXLINESIZE 1000 /* lines in a digraph just shouldn't get that longer ... */
-#define MAXDATASIZE 100 /* max number of bytes we can get at once  */
 extern char lbuf[MAXLINESIZE];
 /* process */
-// int process_init();
 int process_main();
-// int process_quit();
 /* net */
 int net_init(char *host);
 int net_main();

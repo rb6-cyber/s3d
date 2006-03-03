@@ -45,11 +45,11 @@ struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end, *List_ptr;   /* needed pointer
 
 int Olsr_node_count = 0, Last_olsr_node_count = -1;
 int Olsr_node_count_obj = -1;
+
 int Byte_count;
 
-// int node_count=-1;
-// int alpha=0;
 int Olsr_node_obj, Olsr_node_inet_obj, Olsr_node_hna_net;
+
 float Asp = 1.0;
 float Bottom = -1.0;
 float Left = -1.0;
@@ -174,7 +174,7 @@ void mov_add(float mov[], float p[], float fac)
 
 /***
  *
- * check whether is a new / modified node and handle it accordingly
+ * check whether is a new / modified / vanished node and handle it accordingly
  *
  *   *olsr_node =>   pointer to current olsr_node
  *
@@ -185,11 +185,10 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	int result;   /* result of strcmp */
 	float f, distance;
 	float tmp_mov_vec[3];
-	struct olsr_node *top_olsr_node = NULL;   /* parent olsr node */
-	struct olsr_node **tmp_olsr_node;
+	struct olsr_node *other_node;
 	struct olsr_con **olsr_con;
 	struct Obj_to_ip *Obj_to_ip_curr;
-	struct olsr_con_list *olsr_con_list, *prev_olsr_con_list, *other_node_con_list, *tmp_olsr_con_list;
+	struct olsr_neigh_list *olsr_neigh_list, *prev_olsr_neigh_list, *other_node_neigh_list, *tmp_olsr_neigh_list;
 
 	/* no more nodes left */
 	if ( olsr_node == NULL ) return;
@@ -225,51 +224,61 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 		}
 
 		/* delete olsr connections of this node */
-		olsr_con_list = olsr_node->olsr_con_list;
+		olsr_neigh_list = olsr_node->olsr_neigh_list;
 
-		while ( olsr_con_list != NULL ) {
+		while ( olsr_neigh_list != NULL ) {
 
 			/* get connection list of 'other' node */
-			if ( olsr_con_list->olsr_con->left_olsr_node == olsr_node ) {
-				other_node_con_list = olsr_con_list->olsr_con->right_olsr_node->olsr_con_list;
+			if ( olsr_neigh_list->olsr_con->left_olsr_node == olsr_node ) {
+				other_node = olsr_neigh_list->olsr_con->right_olsr_node;
 			} else {
-				other_node_con_list = olsr_con_list->olsr_con->left_olsr_node->olsr_con_list;
+				other_node = olsr_neigh_list->olsr_con->left_olsr_node;
 			}
 
 			/* find this connection in 'other' nodes connection list ... */
-			prev_olsr_con_list = NULL;
+			prev_olsr_neigh_list = NULL;
+			other_node_neigh_list = other_node->olsr_neigh_list;
 
-			while ( other_node_con_list != NULL ) {
+			while ( other_node_neigh_list != NULL ) {
 
-				if( other_node_con_list->olsr_con->obj_id == olsr_con_list->olsr_con->obj_id ) break;
+				if ( other_node_neigh_list->olsr_con->obj_id == olsr_neigh_list->olsr_con->obj_id ) {
 
-				prev_olsr_con_list = other_node_con_list;
-				other_node_con_list = other_node_con_list->next_olsr_con_list;
+					/* and delete it ! */
+					if ( prev_olsr_neigh_list != NULL ) {
+						/* is first, any or last element in the list */
+						prev_olsr_neigh_list->next_olsr_neigh_list = other_node_neigh_list->next_olsr_neigh_list;
+					} else {
+						/* the only element in the list */
+						other_node->olsr_neigh_list = NULL;
+					}
+
+					free( other_node_neigh_list );
+
+					break;
+
+				}
+
+				prev_olsr_neigh_list = other_node_neigh_list;
+				other_node_neigh_list = other_node_neigh_list->next_olsr_neigh_list;
 
 			}
 
-			/* and delete it ! */
-			if ( other_node_con_list != NULL ) {
-				if ( prev_olsr_con_list != NULL ) prev_olsr_con_list->next_olsr_con_list = other_node_con_list->next_olsr_con_list;
-				free( other_node_con_list );
-			}
-
-			s3d_del_object( olsr_con_list->olsr_con->obj_id );
+			s3d_del_object( olsr_neigh_list->olsr_con->obj_id );
 
 			/* delete connection */
-			if ( olsr_con_list->olsr_con->prev_olsr_con != NULL ) olsr_con_list->olsr_con->prev_olsr_con->next_olsr_con = olsr_con_list->olsr_con->next_olsr_con;
-			if ( olsr_con_list->olsr_con->next_olsr_con != NULL ) olsr_con_list->olsr_con->next_olsr_con->prev_olsr_con = olsr_con_list->olsr_con->prev_olsr_con;
+			if ( olsr_neigh_list->olsr_con->prev_olsr_con != NULL ) olsr_neigh_list->olsr_con->prev_olsr_con->next_olsr_con = olsr_neigh_list->olsr_con->next_olsr_con;
+			if ( olsr_neigh_list->olsr_con->next_olsr_con != NULL ) olsr_neigh_list->olsr_con->next_olsr_con->prev_olsr_con = olsr_neigh_list->olsr_con->prev_olsr_con;
 
-			tmp_olsr_con_list = olsr_con_list;
+			tmp_olsr_neigh_list = olsr_neigh_list;
 
-			olsr_con_list = olsr_con_list->next_olsr_con_list;
+			olsr_neigh_list = olsr_neigh_list->next_olsr_neigh_list;
 
-			free( tmp_olsr_con_list->olsr_con );
-			free( tmp_olsr_con_list );
+			free( tmp_olsr_neigh_list->olsr_con );
+			free( tmp_olsr_neigh_list );
 
 		}
 
-		olsr_node->olsr_con_list = NULL;
+		olsr_node->olsr_neigh_list = NULL;
 
 	} else if (olsr_node->visible) {
 
@@ -321,24 +330,24 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 			/* myself ... */
 /* 			if ( strncmp( Obj_to_ip_curr->olsr_node->ip, olsr_node->ip, NAMEMAX ) != 0 ) {*/
 
-				olsr_con_list = olsr_node->olsr_con_list;
-				while ( olsr_con_list != NULL ) {
+				olsr_neigh_list = olsr_node->olsr_neigh_list;
+				while ( olsr_neigh_list != NULL ) {
 
 					/* nodes are related */
-					if ( ( olsr_con_list->olsr_con->left_olsr_node->visible == 1 ) && ( olsr_con_list->olsr_con->right_olsr_node->visible == 1 ) ) {
+					if ( ( olsr_neigh_list->olsr_con->left_olsr_node->visible == 1 ) && ( olsr_neigh_list->olsr_con->right_olsr_node->visible == 1 ) ) {
 
-						if ( ( strncmp( olsr_con_list->olsr_con->left_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) || ( strncmp( olsr_con_list->olsr_con->right_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) ) break;
+						if ( ( strncmp( olsr_neigh_list->olsr_con->left_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) || ( strncmp( olsr_neigh_list->olsr_con->right_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) ) break;
 
-// 						if ( ( olsr_con_list->olsr_con->left_olsr_node == Obj_to_ip_curr->olsr_node ) || (  olsr_con_list->olsr_con->right_olsr_node == Obj_to_ip_curr->olsr_node ) ) break;
+						/* if ( ( olsr_con_list->olsr_con->left_olsr_node == Obj_to_ip_curr->olsr_node ) || (  olsr_con_list->olsr_con->right_olsr_node == Obj_to_ip_curr->olsr_node ) ) break; */
 
 					}
 
-					olsr_con_list = olsr_con_list->next_olsr_con_list;
+					olsr_neigh_list = olsr_neigh_list->next_olsr_neigh_list;
 
 				}
 
 				/* nodes are not related - so drift */
-				if ( olsr_con_list == NULL ) {
+				if ( olsr_neigh_list == NULL ) {
 
 					distance = dirt( olsr_node->pos_vec, Obj_to_ip_curr->olsr_node->pos_vec, tmp_mov_vec );
 					if ( distance < 0.1 ) distance = 0.1;
@@ -563,8 +572,6 @@ void mainloop() {
 		}
 	}
 
-// 	alpha=(alpha+5)%360;
-// 	s3d_rotate(mesh,0,alpha,0);
 	if(RotateSwitch) {
 		Zp_rotate = (Zp_rotate+RotateSpeed)%360;
 		s3d_rotate(ZeroPoint,0,Zp_rotate,0);
@@ -575,12 +582,16 @@ void mainloop() {
 
 }
 
-void stop()
-{
+
+
+void stop() {
+
 	s3d_quit();
 	net_quit();
-// 	process_quit();
+
 }
+
+
 
 /***
  *
@@ -641,7 +652,7 @@ void object_click(struct s3d_evt *evt)
 	/* printf("obj2ip: search return %s\n",olsr_node->ip); */
 
 	distance = dirt(olsr_node->pos_vec,CamPosition[0],tmp_vector);
-	mov_add(ZeroPosition,tmp_vector,1.0);	
+	mov_add(ZeroPosition,tmp_vector,1.0);
 	s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
 }
 
@@ -674,10 +685,9 @@ void object_info(struct s3d_evt *hrmz)
 			Left=-1.0;
 
 		}
-// 		s3d_translate(mesh,(-Left)*3.0-1.8,Bottom*3.0+0.8,-3.0);
-// 		s3d_flags_on(mesh,S3D_OF_VISIBLE);
+
 	}
-	// printf("%f %f %f\n",inf->trans_x,inf->trans_y,inf->trans_z);
+	/* printf("%f %f %f\n",inf->trans_x,inf->trans_y,inf->trans_z); */
 }
 
 /***
@@ -845,8 +855,10 @@ int main( int argc, char *argv[] ) {
 	}
 
 	if ( Debug ) printf( "debug mode enabled ...\n" );
+
 	/* initialize obj2ip linked list */
 	lst_initialize();
+
 	/* delete olsrs3d options */
 	while ( ( optind < argc ) && ( argv[optind][0] != '-' ) ) optind++;   /* optind may point to ip addr of '-H' */
 	optind--;
@@ -856,7 +868,7 @@ int main( int argc, char *argv[] ) {
 
 	/* set extern int optind = 0 for parse_args in io.c */
 	optind = 0;
-// 	process_init(Olsr_host);
+
 	if (!net_init(Olsr_host))
 	{
 		if (!s3d_init(&argc,&argv,"olsrs3d"))
@@ -870,14 +882,10 @@ int main( int argc, char *argv[] ) {
 			Olsr_node_obj = s3d_import_3ds_file( "objs/accesspoint.3ds" );
 			Olsr_node_inet_obj = s3d_import_3ds_file( "objs/accesspoint_inet.3ds" );
 			Olsr_node_hna_net = s3d_import_3ds_file( "objs/internet.3ds" );
-// 			mesh=s3d_import_3ds_file("objs/meshnode.3ds");
-// 			s3d_link(mesh,0);
-// 			s3d_scale(mesh,0.15);
 			ZeroPoint = s3d_new_object();
 			s3d_mainloop(mainloop);
 			s3d_quit();
 			net_quit();
-// 			process_quit();
 		}
 	}
 	return(0);
