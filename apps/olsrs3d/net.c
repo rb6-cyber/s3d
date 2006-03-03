@@ -29,7 +29,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
-#include <string.h>
+#include <string.h> 	/* strlen(), memmove(), strncpy(), strncat() */
 #include <netdb.h>
 #include <sys/types.h>
 #include <netinet/in.h>
@@ -86,7 +86,28 @@ int net_main() {
 	}
 
 	buf[numbytes] = '\0';
- 	strncat(lbuf,buf,MAXLINESIZE);
+
+	/* check for potential buffer overflow */
+	if ( ( strlen( lbuf ) + strlen( buf ) ) < MAXLINESIZE ) {
+
+		strncat( lbuf, buf, MAXLINESIZE );
+
+	} else {
+
+		/* hope that carriage return is now in buf */
+		if ( strlen( lbuf ) < MAXLINESIZE ) {
+
+			if ( Debug ) printf( "WARNING: lbuf almost filled without *any* carriage return within that data !\nAppending truncated buf to lbuf to prevent buffer overflow.\n" );
+			strncat( lbuf, buf, MAXLINESIZE - strlen( lbuf ) );
+
+		} else {
+
+			if ( Debug ) printf( "ERROR: lbuf filled without *any* carriage return within that data !\nClearing lbuf to prevent buffer overflow.\n" );
+			strncpy( lbuf, buf, MAXLINESIZE );
+
+		}
+
+	}
 
 	process_main();
 

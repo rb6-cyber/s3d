@@ -27,7 +27,7 @@
 
 #include <stdio.h> 	/* NULL */
 #include <string.h> 	/* strlen(), memmove() */
-#include <stdlib.h> 	/* rand(), malloc(), realloc(), free(), strtof() */
+#include <stdlib.h> 	/* rand(), malloc(), realloc(), free() */
 #include <s3d.h>
 #include "olsrs3d.h"
 
@@ -336,13 +336,16 @@ int process_main() {
 
 	}
 
-	if ( last_cr_ptr != NULL ) 
-	{
+	if ( last_cr_ptr != NULL ) memmove( lbuf, ++last_cr_ptr, strlen( last_cr_ptr) );
+
+	/* TODO: check this changes as they crash olsrs3d
+	if ( last_cr_ptr != NULL )
+	{*/
 		/* memmove( lbuf, ++last_cr_ptr, strlen( last_cr_ptr) ); */
 		/* TODO: please check this process.c:339: warning: operation on `last_cr_ptr' may be undefined, i've changed it like this: */
-		last_cr_ptr++;
+		/*last_cr_ptr++;
 		memmove( lbuf, last_cr_ptr, strlen( last_cr_ptr) );
-	}
+	}*/
 
 	return(0);
 

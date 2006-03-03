@@ -241,7 +241,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 			while ( other_node_neigh_list != NULL ) {
 
-				if ( other_node_neigh_list->olsr_con->obj_id == olsr_neigh_list->olsr_con->obj_id ) {
+				if ( other_node_neigh_list->olsr_con == olsr_neigh_list->olsr_con ) {
 
 					/* and delete it ! */
 					if ( prev_olsr_neigh_list != NULL ) {
@@ -280,7 +280,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 		olsr_node->olsr_neigh_list = NULL;
 
-	} else if (olsr_node->visible) {
+	} else if ( olsr_node->visible ) {
 
 		/* olsr node shape has been modified */
 		if ( olsr_node->node_type_modified ) {
@@ -328,7 +328,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 		while ( Obj_to_ip_curr != Obj_to_ip_end ) {
 
 			/* myself ... */
-/* 			if ( strncmp( Obj_to_ip_curr->olsr_node->ip, olsr_node->ip, NAMEMAX ) != 0 ) {*/
+			if ( olsr_node != Obj_to_ip_curr->olsr_node ) {
 
 				olsr_neigh_list = olsr_node->olsr_neigh_list;
 				while ( olsr_neigh_list != NULL ) {
@@ -336,9 +336,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 					/* nodes are related */
 					if ( ( olsr_neigh_list->olsr_con->left_olsr_node->visible == 1 ) && ( olsr_neigh_list->olsr_con->right_olsr_node->visible == 1 ) ) {
 
-						if ( ( strncmp( olsr_neigh_list->olsr_con->left_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) || ( strncmp( olsr_neigh_list->olsr_con->right_olsr_node->ip, Obj_to_ip_curr->olsr_node->ip, NAMEMAX ) == 0 ) ) break;
-
-						/* if ( ( olsr_con_list->olsr_con->left_olsr_node == Obj_to_ip_curr->olsr_node ) || (  olsr_con_list->olsr_con->right_olsr_node == Obj_to_ip_curr->olsr_node ) ) break; */
+						if ( ( olsr_neigh_list->olsr_con->left_olsr_node == Obj_to_ip_curr->olsr_node ) || (  olsr_neigh_list->olsr_con->right_olsr_node == Obj_to_ip_curr->olsr_node ) ) break;
 
 					}
 
@@ -356,9 +354,9 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 				}
 
-				Obj_to_ip_curr = Obj_to_ip_curr->next;
+			}
 
-/* 			} */
+			Obj_to_ip_curr = Obj_to_ip_curr->next;
 
 		}
 
@@ -381,22 +379,22 @@ void calc_olsr_node_mov( void ) {
 
 	float f, distance;
 	float tmp_mov_vec[3];
-	struct olsr_con **olsr_con = &Con_begin;
+	struct olsr_con *olsr_con = Con_begin;
 
-	while ( (*olsr_con) != NULL ) {
+	while ( olsr_con != NULL ) {
 
-		if ( ( (*olsr_con)->left_etx != 0.0 ) && ( (*olsr_con)->right_etx != 0.0  ) ) {
+		if ( ( olsr_con->left_etx != 0.0 ) && ( olsr_con->right_etx != 0.0  ) ) {
 
-			distance = dirt( (*olsr_con)->left_olsr_node->pos_vec, (*olsr_con)->right_olsr_node->pos_vec, tmp_mov_vec );
-			f = ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 4.0 ) / distance;
+			distance = dirt( olsr_con->left_olsr_node->pos_vec, olsr_con->right_olsr_node->pos_vec, tmp_mov_vec );
+			f = ( ( olsr_con->left_etx + olsr_con->right_etx ) / 4.0 ) / distance;
 			if ( f < 0.3 ) f = 0.3;
 
-			mov_add( (*olsr_con)->left_olsr_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
-			mov_add( (*olsr_con)->right_olsr_node->mov_vec, tmp_mov_vec, - ( 1 / f - 1 ) );
+			mov_add( olsr_con->left_olsr_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
+			mov_add( olsr_con->right_olsr_node->mov_vec, tmp_mov_vec, - ( 1 / f - 1 ) );
 
 		}
 
-		olsr_con = &(*olsr_con)->next_olsr_con;
+		olsr_con = olsr_con->next_olsr_con;
 
 	}
 
@@ -414,83 +412,117 @@ void move_olsr_nodes( void ) {
 
 	float null_vec[3] = {0,0,0};
 	float tmp_mov_vec[3];
-	float distance, etx, rgb;
-	struct olsr_con **olsr_con = &Con_begin;
+	float distance, factor, etx, rgb;
+	struct olsr_con *olsr_con = Con_begin;
 
-	while ( (*olsr_con) != NULL ) {
+	while ( olsr_con != NULL ) {
 
 		/* move left olsr node if it has not been moved yet */
-		if ( !( ( (*olsr_con)->left_olsr_node->mov_vec[0] == 0 ) && ( (*olsr_con)->left_olsr_node->mov_vec[1] == 0 ) && ( (*olsr_con)->left_olsr_node->mov_vec[2] == 0 ) )  && (*olsr_con)->left_olsr_node->visible) {
+		if ( !( ( olsr_con->left_olsr_node->mov_vec[0] == 0 ) && ( olsr_con->left_olsr_node->mov_vec[1] == 0 ) && ( olsr_con->left_olsr_node->mov_vec[2] == 0 ) ) && olsr_con->left_olsr_node->visible ) {
 
-			distance = dirt( (*olsr_con)->left_olsr_node->pos_vec, null_vec, tmp_mov_vec );
-			mov_add( (*olsr_con)->left_olsr_node->mov_vec, tmp_mov_vec, distance / 100 ); /* move a little bit to point zero */
-			mov_add( (*olsr_con)->left_olsr_node->mov_vec, tmp_mov_vec, 1 ); /* move a little bit to point zero */
+// 			if ( ( dist( olsr_con->left_olsr_node->mov_vec, olsr_con->left_olsr_node->pos_vec ) > 10.0 ) || ( dist( olsr_con->left_olsr_node->pos_vec, null_vec ) < 15.0 ) ) {
 
-			if ( ( distance = dist( (*olsr_con)->left_olsr_node->mov_vec, null_vec ) ) > 10.0 ) {
-				mov_add( (*olsr_con)->left_olsr_node->pos_vec, (*olsr_con)->left_olsr_node->mov_vec, 1.0 / ( (float ) distance ) );
-			} else {
-				mov_add( (*olsr_con)->left_olsr_node->pos_vec, (*olsr_con)->left_olsr_node->mov_vec, 0.1 );
+				distance = dirt( olsr_con->left_olsr_node->pos_vec, null_vec, tmp_mov_vec );
+				mov_add( olsr_con->left_olsr_node->mov_vec, tmp_mov_vec, distance / 100 ); /* move a little bit to point zero */
+				mov_add( olsr_con->left_olsr_node->mov_vec, tmp_mov_vec, 1 ); /* move a little bit to point zero */
+
+				if ( ( distance = dist( olsr_con->left_olsr_node->mov_vec, null_vec ) ) > 10.0 ) {
+					factor = 1.0 / ( (float ) distance );
+				} else {
+					factor = 0.1;
+				}
+
+				olsr_con->left_olsr_node->mov_vec[0] *= factor;
+				olsr_con->left_olsr_node->mov_vec[1] *= factor;
+				olsr_con->left_olsr_node->mov_vec[2] *= factor;
+
+				tmp_mov_vec[0] = olsr_con->left_olsr_node->pos_vec[0];
+				tmp_mov_vec[1] = olsr_con->left_olsr_node->pos_vec[1];
+				tmp_mov_vec[2] = olsr_con->left_olsr_node->pos_vec[2];
+
+				mov_add( tmp_mov_vec, olsr_con->left_olsr_node->mov_vec, 1.0 );
+
+				if ( ( dist( tmp_mov_vec, olsr_con->left_olsr_node->pos_vec ) > 0.75 ) || ( dist( tmp_mov_vec, null_vec ) < 2.0 ) ) {
+
+				mov_add( olsr_con->left_olsr_node->pos_vec, olsr_con->left_olsr_node->mov_vec, 1.0 );
+				s3d_translate( olsr_con->left_olsr_node->obj_id, olsr_con->left_olsr_node->pos_vec[0], olsr_con->left_olsr_node->pos_vec[1], olsr_con->left_olsr_node->pos_vec[2] );
+
 			}
 
-			s3d_translate( (*olsr_con)->left_olsr_node->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0], (*olsr_con)->left_olsr_node->pos_vec[1], (*olsr_con)->left_olsr_node->pos_vec[2] );
-
 			/* reset movement vector */
-			(*olsr_con)->left_olsr_node->mov_vec[0] = (*olsr_con)->left_olsr_node->mov_vec[1] = (*olsr_con)->left_olsr_node->mov_vec[2] = 0.0;
+			olsr_con->left_olsr_node->mov_vec[0] = olsr_con->left_olsr_node->mov_vec[1] = olsr_con->left_olsr_node->mov_vec[2] = 0.0;
 
 		}
 
 		/* move right olsr node if it has not been moved yet */
-		if ( !( ( (*olsr_con)->right_olsr_node->mov_vec[0] == 0 ) && ( (*olsr_con)->right_olsr_node->mov_vec[1] == 0 ) && ( (*olsr_con)->right_olsr_node->mov_vec[2] == 0 ) ) && (*olsr_con)->right_olsr_node->visible) {
+		if ( !( ( olsr_con->right_olsr_node->mov_vec[0] == 0 ) && ( olsr_con->right_olsr_node->mov_vec[1] == 0 ) && ( olsr_con->right_olsr_node->mov_vec[2] == 0 ) ) && olsr_con->right_olsr_node->visible ) {
 
-			distance = dirt( (*olsr_con)->right_olsr_node->pos_vec, null_vec, tmp_mov_vec );
-			mov_add( (*olsr_con)->right_olsr_node->mov_vec, tmp_mov_vec, distance / 100 ); /* move a little bit to point zero */
-			mov_add( (*olsr_con)->right_olsr_node->mov_vec, tmp_mov_vec, 1 ); /* move a little bit to point zero */
+// 			if ( ( dist( olsr_con->right_olsr_node->mov_vec, olsr_con->right_olsr_node->pos_vec )> 10.0 ) || ( dist( olsr_con->right_olsr_node->pos_vec, null_vec ) < 15.0 ) ) {
 
-			if ( ( distance = dist( (*olsr_con)->right_olsr_node->mov_vec, null_vec ) ) > 10.0 ) {
-				mov_add( (*olsr_con)->right_olsr_node->pos_vec, (*olsr_con)->right_olsr_node->mov_vec, 1.0 / ( (float ) distance ) );
-			} else {
-				mov_add( (*olsr_con)->right_olsr_node->pos_vec, (*olsr_con)->right_olsr_node->mov_vec, 0.1 );
-			}
+				distance = dirt( olsr_con->right_olsr_node->pos_vec, null_vec, tmp_mov_vec );
+				mov_add( olsr_con->right_olsr_node->mov_vec, tmp_mov_vec, distance / 100 ); /* move a little bit to point zero */
+				mov_add( olsr_con->right_olsr_node->mov_vec, tmp_mov_vec, 1 ); /* move a little bit to point zero */
 
-			s3d_translate( (*olsr_con)->right_olsr_node->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0], (*olsr_con)->right_olsr_node->pos_vec[1], (*olsr_con)->right_olsr_node->pos_vec[2] );
+				if ( ( distance = dist( olsr_con->right_olsr_node->mov_vec, null_vec ) ) > 10.0 ) {
+					factor = 1.0 / ( (float ) distance );
+				} else {
+					factor = 0.1;
+				}
+
+				olsr_con->right_olsr_node->mov_vec[0] *= factor;
+				olsr_con->right_olsr_node->mov_vec[1] *= factor;
+				olsr_con->right_olsr_node->mov_vec[2] *= factor;
+
+				tmp_mov_vec[0] = olsr_con->right_olsr_node->pos_vec[0];
+				tmp_mov_vec[1] = olsr_con->right_olsr_node->pos_vec[1];
+				tmp_mov_vec[2] = olsr_con->right_olsr_node->pos_vec[2];
+
+				mov_add( tmp_mov_vec, olsr_con->right_olsr_node->mov_vec, 1.0 );
+
+				if ( ( dist( tmp_mov_vec, olsr_con->right_olsr_node->pos_vec )> 0.75 ) || ( dist( tmp_mov_vec, null_vec ) < 2.0 ) ) {
+
+					mov_add( olsr_con->right_olsr_node->pos_vec, olsr_con->right_olsr_node->mov_vec, 1.0 );
+					s3d_translate( olsr_con->right_olsr_node->obj_id, olsr_con->right_olsr_node->pos_vec[0], olsr_con->right_olsr_node->pos_vec[1], olsr_con->right_olsr_node->pos_vec[2] );
+
+				}
 
 			/* reset movement vector */
-			(*olsr_con)->right_olsr_node->mov_vec[0] = (*olsr_con)->right_olsr_node->mov_vec[1] = (*olsr_con)->right_olsr_node->mov_vec[2] = 0.0;
+			olsr_con->right_olsr_node->mov_vec[0] = olsr_con->right_olsr_node->mov_vec[1] = olsr_con->right_olsr_node->mov_vec[2] = 0.0;
 
 		}
 
 
 		/* move connection between left and right olsr node */
-		s3d_pop_vertex( (*olsr_con)->obj_id, 6 );
-		s3d_pop_polygon( (*olsr_con)->obj_id, 2 );
-		s3d_pop_material( (*olsr_con)->obj_id, 1 );
+		s3d_pop_vertex( olsr_con->obj_id, 6 );
+		s3d_pop_polygon( olsr_con->obj_id, 2 );
+		s3d_pop_material( olsr_con->obj_id, 1 );
 
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] + 0.2 + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0] - 0.2 + ZeroPosition[0], (*olsr_con)->left_olsr_node->pos_vec[1] + ZeroPosition[1], (*olsr_con)->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
+		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] + ZeroPosition[0], olsr_con->left_olsr_node->pos_vec[1] + ZeroPosition[1], olsr_con->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
+		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] + 0.2 + ZeroPosition[0], olsr_con->left_olsr_node->pos_vec[1] + ZeroPosition[1], olsr_con->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
+		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] - 0.2 + ZeroPosition[0], olsr_con->left_olsr_node->pos_vec[1] + ZeroPosition[1], olsr_con->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
 
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]+ 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
-		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0] + ZeroPosition[0], (*olsr_con)->right_olsr_node->pos_vec[1]- 0.2 + ZeroPosition[1], (*olsr_con)->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
+		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] + ZeroPosition[0], olsr_con->right_olsr_node->pos_vec[1]+ ZeroPosition[1], olsr_con->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
+		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] + ZeroPosition[0], olsr_con->right_olsr_node->pos_vec[1]+ 0.2 + ZeroPosition[1], olsr_con->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
+		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] + ZeroPosition[0], olsr_con->right_olsr_node->pos_vec[1]- 0.2 + ZeroPosition[1], olsr_con->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
 
 		if ( ColorSwitch ) {
 
 			/* HNA */
-			if ( (*olsr_con)->left_etx == -1000.00 ) {
+			if ( olsr_con->left_etx == -1000.00 ) {
 
-				s3d_push_material( (*olsr_con)->obj_id,
+				s3d_push_material( olsr_con->obj_id,
 							   0.0,0.0,1.0,
 							   0.0,0.0,1.0,
 							   0.0,0.0,1.0);
 
 			} else {
 
-				etx = ( ( ( (*olsr_con)->left_etx + (*olsr_con)->right_etx ) / 2.0 ) - 10.0 ) * 10.0;
+				etx = ( ( ( olsr_con->left_etx + olsr_con->right_etx ) / 2.0 ) - 10.0 ) * 10.0;
 
 				if ( ( etx >= 1.0 ) && ( etx < 2.0 ) ) {
 
 					rgb = etx - 1.0;
-					s3d_push_material( (*olsr_con)->obj_id,
+					s3d_push_material( olsr_con->obj_id,
 								rgb,1.0,0.0,
 								rgb,1.0,0.0,
 								rgb,1.0,0.0);
@@ -498,14 +530,14 @@ void move_olsr_nodes( void ) {
 				} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
 
 					rgb = 3.0 - etx;
-					s3d_push_material( (*olsr_con)->obj_id,
+					s3d_push_material( olsr_con->obj_id,
 								1.0,rgb,0.0,
 								1.0,rgb,0.0,
 								1.0,rgb,0.0);
 
 				} else {
 
-					s3d_push_material( (*olsr_con)->obj_id,
+					s3d_push_material( olsr_con->obj_id,
 								1.0,0.0,0.0,
 								1.0,0.0,0.0,
 								1.0,0.0,0.0);
@@ -516,17 +548,17 @@ void move_olsr_nodes( void ) {
 
 		} else {
 
-			s3d_push_material( (*olsr_con)->obj_id,
+			s3d_push_material( olsr_con->obj_id,
 						1.0,1.0,1.0,
 						1.0,1.0,1.0,
 						1.0,1.0,1.0);
 
 		}
 
-		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
-		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );
+		s3d_push_polygon( olsr_con->obj_id, 0,4,5,0 );
+		s3d_push_polygon( olsr_con->obj_id, 3,1,2,0 );
 
-		olsr_con = &(*olsr_con)->next_olsr_con;
+		olsr_con = olsr_con->next_olsr_con;
 
 	}
 
