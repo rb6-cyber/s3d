@@ -161,6 +161,7 @@ AC_CONFIG_FILES([
 	apps/s3d_x11gate/Makefile
 	apps/s3dgps/Makefile
 	apps/s3dvt/Makefile
+	apps/s3dfm/Makefile
 	apps/dot_mcp/Makefile
 	example/Makefile
 	objs/Makefile])

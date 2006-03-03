@@ -39,6 +39,7 @@
 
 #include <sei_triangulate.h>
 #include <math.h>
+#include <string.h> /* memset() */
 
 #define CROSS_SINE(v0, v1) ((v0).x * (v1).y - (v1).x * (v0).y)
 #define LENGTH(v0) (sqrt((v0).x * (v0).x + (v0).y * (v0).y))
@@ -130,6 +131,8 @@ static int get_vertex_positions(v0, v1, ip, iq)
   double angle, temp;
   int tp, tq;
 
+  tp = tq = 0;
+  
   vp0 = &vert[v0];
   vp1 = &vert[v1];
   
@@ -319,9 +322,9 @@ static int traverse_polygon(mcur, trnum, from, dir)
      int dir;
 {
   trap_t *t = &tr[trnum];
-  int howsplit, mnew;
-  int v0, v1, v0next, v1next;
-  int retval, tmp;
+  int mnew;
+  int v0, v1;
+  int retval = -1;
   int do_switch = FALSE;
 
   if ((trnum <= 0) || visited[trnum])

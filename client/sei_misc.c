@@ -53,12 +53,11 @@ int generate_random_ordering(n)
      int n;
 {
   struct timeval tval;
-  struct timezone tzone;
   register int i;
   int m, st[SEGSIZE], *p;
   
   choose_idx = 1;
-  gettimeofday(&tval, &tzone);
+  gettimeofday(&tval, NULL);
   srand48(tval.tv_sec);
 
   for (i = 0; i <= n; i++)
