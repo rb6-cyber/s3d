@@ -49,7 +49,7 @@ extern int 				con_type;
 int _s3d_sigio=0;
 void sigpipe_handler(int sig, int code)  /*  ... ? */
 {
-	errs("sigpip_handler()","there is a broken pipe somewhere");
+	errs("sigpipe_handler()","there is a broken pipe somewhere");
 }
 void sigio_handler(int sig, int code)  /*  ... ? */
 {
@@ -57,7 +57,8 @@ void sigio_handler(int sig, int code)  /*  ... ? */
 }
 void sigint_handler(int sig, int code)  /*  ... ? */
 {
-	s3d_quit();
+	/*s3d_quit();*/ /* TODO: sometimes no clean quit ?!*/
+	exit(-1);
 }
 
 #endif
