@@ -46,7 +46,8 @@ int s3d_import_3ds_file(char *fname)
 	while (next!=NULL)
 	{
 		next=NULL;
-		if (next=strchr(ptr,':'))
+		
+		if (NULL!=(next=strchr(ptr,':')))
 		{
 			*next=0; 							/* clear the delimiter */
 			next+=1;							/* move to the beginner of the next dir */

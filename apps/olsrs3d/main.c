@@ -182,11 +182,11 @@ void mov_add(float mov[], float p[], float fac)
 
 void handle_olsr_node( struct olsr_node *olsr_node ) {
 
-	int result;   /* result of strcmp */
+/*	int result;    * result of strcmp */
 	float f, distance;
 	float tmp_mov_vec[3];
 	struct olsr_node *other_node;
-	struct olsr_con **olsr_con;
+/*	struct olsr_con **olsr_con;*/
 	struct Obj_to_ip *Obj_to_ip_curr;
 	struct olsr_neigh_list *olsr_neigh_list, *prev_olsr_neigh_list, *other_node_neigh_list, *tmp_olsr_neigh_list;
 

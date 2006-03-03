@@ -126,7 +126,7 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 		(*olsr_neigh_list)->next_olsr_neigh_list = NULL;
 
 	}
-
+	return(0);
 }
 
 
@@ -217,7 +217,7 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 		return (*olsr_node);
 
 	}
-
+	return(0);
 }
 
 
@@ -336,7 +336,13 @@ int process_main() {
 
 	}
 
-	if ( last_cr_ptr != NULL ) memmove( lbuf, ++last_cr_ptr, strlen( last_cr_ptr) );
+	if ( last_cr_ptr != NULL ) 
+	{
+		/* memmove( lbuf, ++last_cr_ptr, strlen( last_cr_ptr) ); */
+		/* TODO: please check this process.c:339: warning: operation on `last_cr_ptr' may be undefined, i've changed it like this: */
+		last_cr_ptr++;
+		memmove( lbuf, last_cr_ptr, strlen( last_cr_ptr) );
+	}
 
 	return(0);
 

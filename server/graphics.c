@@ -222,7 +222,6 @@ int graphics_pick_obj(int x, int y)
 	GLint viewport[4];
 	GLfloat xpos,ypos;
 	float big,z1;
-	int found;
 	uint32_t mcp_o,o;
 	struct t_process *p=get_proc_by_pid(MCP);
 	GLuint select_buf[SBSIZE],*ptr,names,hits;
@@ -268,7 +267,7 @@ int graphics_pick_obj(int x, int y)
 		big=INFINITY;
 		dprintf(LOW,"had %d hits",hits);
 		ptr=select_buf;
-		mcp_o=o=-1;
+		mcp_o=o=names=-1;
 		/* check all the hits, only select the nearest ... */
 		for (i=0;i<hits;i++)
 		{

@@ -57,13 +57,12 @@ struct t_item root;
 
 int display_dir(struct t_item *dir)
 {
-	int n,i;
-	float  px,py,pz;
-	char *ext;
-	char *nstr;
+	int i;
+	float  px,pz;
 	float dss; /* dirstep size */
 	int dirn, dirc,dps;
 	int icon;
+	px=pz=0.0;
 	if (dir->disp)
 		return(-1); /* already displayed ... */ 
 
@@ -122,6 +121,7 @@ int display_dir(struct t_item *dir)
         }
 	}
 	dir->disp=1;
+	return(0);
 }
 void get_path(struct t_item *dir, char *path)
 {
@@ -139,7 +139,6 @@ int parse_dir(struct t_item *dir)
 	struct dirent **namelist;
 	int n,i;
 	char *ext,*nstr;
-	float alpha,al,radius,f;
 	char path[M_DIR];
 	char ndir[M_DIR];  
 	if (dir->n_item>0) /* refusing */
@@ -202,7 +201,7 @@ struct t_item *finditem(struct t_item *t, int oid)
 	struct t_item *f;
 	if (t->icon==oid)
 		return(t);
-	if (t->type=T_FOLDER)
+	if (t->type==T_FOLDER)
 		for (i=0;i<t->n_item;i++)
 			if ((f=finditem(&(t->list[i]),oid))!=NULL)
 				return(f);
@@ -246,7 +245,7 @@ void rescale(struct t_item *f)
 
 void object_click(struct s3d_evt *evt)
 {
-	int i,oid;
+	int oid;
 	struct t_item *f;
 	oid=(int)*((unsigned long *)evt->buf);
 	printf("! clicked object %d\n",oid);
@@ -268,7 +267,6 @@ void mainloop()
 int main (int argc, char **argv)
 {
 	int i;
-	struct t_item dummy;
 	if (!s3d_init(&argc,&argv,"filebrowser"))	
 	{
 		i=0;

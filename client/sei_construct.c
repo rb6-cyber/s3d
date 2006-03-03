@@ -39,6 +39,7 @@
 
 #include <sei_triangulate.h>
 #include <math.h>
+#include <string.h> /* memset() */
 
 
 node_t qs[QSIZE];		/* Query structure */
@@ -385,6 +386,7 @@ int locate_endpoint(v, vo, r)
       errs("sei:locate_endpoint()","Haggu!!!! (whatever)");
       break;
     }
+  return(-1);
 }
 
 
@@ -433,16 +435,20 @@ static int merge_trapezoids(segnum, tfirst, tlast, side)
 	      /* Change the upper neighbours of the lower trapezoids */
 	      
 	      if ((tr[t].d0 = tr[tnext].d0) > 0)
-		if (tr[tr[t].d0].u0 == tnext)
-		  tr[tr[t].d0].u0 = t;
-		else if (tr[tr[t].d0].u1 == tnext)
-		  tr[tr[t].d0].u1 = t;
+		  {
+			if (tr[tr[t].d0].u0 == tnext)
+			  tr[tr[t].d0].u0 = t;
+			else if (tr[tr[t].d0].u1 == tnext)
+			  tr[tr[t].d0].u1 = t;
+		  }
 	      
 	      if ((tr[t].d1 = tr[tnext].d1) > 0)
-		if (tr[tr[t].d1].u0 == tnext)
-		  tr[tr[t].d1].u0 = t;
-		else if (tr[tr[t].d1].u1 == tnext)
-		  tr[tr[t].d1].u1 = t;
+		  {
+			if (tr[tr[t].d1].u0 == tnext)
+			  tr[tr[t].d1].u0 = t;
+			else if (tr[tr[t].d1].u1 == tnext)
+			  tr[tr[t].d1].u1 = t;
+		  }
 	      
 	      tr[t].lo = tr[tnext].lo;
 	      tr[tnext].state = ST_INVALID; /* invalidate the lower */
@@ -470,13 +476,13 @@ static int add_segment(segnum)
      int segnum;
 {
   segment_t s;
-  segment_t *so = &seg[segnum];
-  int tu, tl, sk, tfirst, tlast, tnext;
-  int tfirstr, tlastr, tfirstl, tlastl;
-  int i1, i2, t, t1, t2, tn;
+  int tu, tl, sk, tfirst, tlast;
+  int tfirstr = 0, tlastr = 0, tfirstl, tlastl;
+  int i1, i2, t, tn;
   point_t tpt;
   int tritop = 0, tribot = 0, is_swapped = 0;
   int tmptriseg;
+  int tmpseg = 1;
 
   s = seg[segnum];
   if (_greater_than(&s.v1, &s.v0)) /* Get higher vertex in v0 */
@@ -833,12 +839,11 @@ static int add_segment(segnum)
 	  if (FP_EQUAL(tr[t].lo.y, tr[tlast].lo.y) && 
 	      FP_EQUAL(tr[t].lo.x, tr[tlast].lo.x) && tribot)
 	    {		/* bottom forms a triangle */
-	      int tmpseg;
 
 	      if (is_swapped)	
-		tmptriseg = seg[segnum].prev;
+			tmptriseg = seg[segnum].prev;
 	      else
-		tmptriseg = seg[segnum].next;
+			tmptriseg = seg[segnum].next;
 
 	      if ((tmpseg > 0) && is_left_of(tmpseg, &s.v0))
 		{
@@ -880,7 +885,7 @@ static int add_segment(segnum)
       
       else
 	{
-	  int tmpseg = tr[tr[t].d0].rseg;
+	  tmpseg = tr[tr[t].d0].rseg;
 	  double y0, yt;
 	  point_t tmppt;
 	  int tnext, i_d0, i_d1;

@@ -79,8 +79,6 @@ int generate_random_ordering(n)
 /* segments in S */
 int choose_segment()
 {
-  int i;
-
   errds(VLOW,"sei:choose_segment()","%d", permute[choose_idx]);
   return permute[choose_idx++];
 }

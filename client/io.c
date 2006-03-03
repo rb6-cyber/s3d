@@ -61,7 +61,7 @@ void sigint_handler(int sig, int code)  /*  ... ? */
 }
 
 #endif
-int s3d_usage()
+void s3d_usage()
 {
 	printf("s3d-parameters:\n");
 	printf(" --s3d-url <url>: skip S3D enviroment and connect to this url\n");

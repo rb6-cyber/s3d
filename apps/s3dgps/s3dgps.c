@@ -30,7 +30,7 @@
 #include <stdlib.h>	/* malloc(), free() */
 #include <string.h> /* strlen() */
 #include <math.h>	/* sin(),cos(), M_PI */
-#include <simage.h>
+#include <simage.h> /* simage things */
 
 #define PIXELFACT	2817.947378
 #define PIXELFACTN	281794.7378
@@ -101,7 +101,7 @@ void				 calc_position(float lng, float lat, float *x, float *y, float *z)
 /* recodes the image if it's not in rgba format */
 unsigned char *recode_image(unsigned char *data, int nc, int w, int h)
 {
-	unsigned char *new_block;
+	unsigned char *new_block=NULL;
 	int x,y;
 	switch (nc)
 	{
@@ -153,7 +153,7 @@ int 				 load_mapimage(char *path,float lng, float lat, int scale)
 	float x,y,z;
 	double wr,hr,er;
 	unsigned char *data;
-	int oid;
+	int oid=-1;
 	if (simage_check_supported(path))
 	{
 		printf("file %s can be loaded!!\n",path);
@@ -260,7 +260,7 @@ static void update(struct gps_data_t *gpsdata, char *message)
 void parse_mapkoords()
 {
 	FILE *fp;
-	char buf[BFS],*ptr,*sptr,*filename,c;
+	char buf[BFS],*ptr,*sptr,*filename=NULL,c;
 	char path[BFS];
 	char *prefix="/home/dotslash/.s3dgps/";
 	int len;
@@ -268,6 +268,8 @@ void parse_mapkoords()
 	double lng,lat;
 	int i;
 	long scale;
+	lng=lat=0;
+	scale=0;
 	
 	strncpy(path,prefix,BFS);
 	strncpy(path+strlen(path),"map_koord.txt",BFS);

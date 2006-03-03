@@ -30,7 +30,7 @@ struct s3d_evt {
 };
 
 typedef void (*s3d_cb)(struct s3d_evt *);
-int s3d_usage();
+void s3d_usage();
 int s3d_init(int *argc, char ***argv, char *name);
 int s3d_quit();
 int s3d_mainloop(void (*f)());

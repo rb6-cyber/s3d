@@ -39,6 +39,7 @@
 
 #include <sei_triangulate.h>
 #include <sys/time.h>
+#include <string.h> /* memset() */
 
 
 static int initialise(n)
