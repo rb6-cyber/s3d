@@ -21,10 +21,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+
 #include "s3d.h"
 #include "s3dlib.h"
 #include <stdint.h> /* uint32_t */
 #include <string.h>	/* memcpy() */
+#ifdef SHM
 int shm_write(struct buf_t *rb,char *buf, int n)
 {
 	int wrap=0;
@@ -100,4 +102,4 @@ int shm_read(struct buf_t *rb,char *buf, int n)
 	if (rb->start>=rb->bufsize) rb->start-=rb->bufsize;
 	return(mn);
 }
-
+#endif

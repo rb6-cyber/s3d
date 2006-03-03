@@ -21,6 +21,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+
 #include "s3d.h"
 #include "s3dlib.h"
 #include <stdlib.h> /* malloc() */
@@ -30,6 +31,7 @@
 #include <netinet/in.h>	/* ntohs() */
 #include <errno.h> /* errno */
 #include <unistd.h>	/* usleep() */
+#ifdef SHM
 
 #define SHM_SIZE 		sizeof(key_t)*2  		/* space for the keys */
 #define SHM_MAXLOOP		10000
@@ -195,3 +197,4 @@ int _shm_net_receive()
 	}
 	return(found);
 }
+#endif

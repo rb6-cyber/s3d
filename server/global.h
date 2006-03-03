@@ -186,6 +186,11 @@ struct t_obj_info
 	float r;
 	char name[NAME_MAX]; 
 };
+enum {
+	zero,
+	FRAME_GLUT,
+	FRAME_SDL
+};
 /*  main.c */
 int init(void);
 int quit(void);

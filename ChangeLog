@@ -1,4 +1,6 @@
 2006-03-03  Simon Wunderlich - <dotslash@packetmixer.de>
+	- using values from config.h, user does not have to edit server/config.h
+	  or clients/config.h anymore to fit his/her needs
 	- Finally, Font triangulating is stable (at least it seems so ;)
 2006-02-27  Simon Wunderlich - <dotslash@packetmixer.de>
 	- added GPL/LGPL copyright notes (phew -.-)

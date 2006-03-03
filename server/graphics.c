@@ -49,10 +49,10 @@ int graphics_init ()
 	switch (frame_mode)
 	{
 #ifdef G_SDL
-		case G_SDL:graphics_init_sdl();break;
+		case FRAME_SDL:graphics_init_sdl();break;
 #endif
 #ifdef G_GLUT
-		case G_GLUT:graphics_init_glut();break;
+		case FRAME_GLUT:graphics_init_glut();break;
 #endif
 		default: return(-1);
 	}
@@ -371,13 +371,13 @@ void graphics_main()
 	switch (frame_mode)
 	{
 #ifdef G_GLUT
-		case G_GLUT:glutSwapBuffers();break;
+		case FRAME_GLUT:glutSwapBuffers();break;
 #endif
 #ifdef G_SDL
-    	case G_SDL:SDL_GL_SwapBuffers();break;
+    	case FRAME_SDL:SDL_GL_SwapBuffers();break;
 #endif
 #ifdef G_GLX
-		case G_GLX:...
+		case FRAME_GLX:...
 #endif
 	}
 }

@@ -72,10 +72,10 @@ int init()
 	if (!frame_mode)  /*  turn default frame_mode on */
 	{
 #ifdef G_GLUT
-		frame_mode=G_GLUT;
+		frame_mode=FRAME_GLUT;
 #else
 #ifdef G_SDL
-		frame_mode=G_SDL;
+		frame_mode=FRAME_SDL;
 #endif
 #endif
 	}
@@ -129,14 +129,14 @@ int process_args(int argc, char **argv)
 				case 0:break;
 				case 'g':
 #ifdef G_GLUT
-					frame_mode=G_GLUT;
+					frame_mode=FRAME_GLUT;
 #else
 					errs("process_args()","sorry, GLUT is not available");
 #endif
 					break;
 				case 's':
 #ifdef G_SDL
-					frame_mode=G_SDL;
+					frame_mode=FRAME_SDL;
 #else
 					errs("process_args()","sorry, SDL is not available");
 #endif					
@@ -165,7 +165,7 @@ int main(int argc, char **argv) {
 	switch (frame_mode)
 	{
 #ifdef G_GLUT
-		case G_GLUT:glutMainLoop();break;
+		case FRAME_GLUT:glutMainLoop();break;
 #endif
 		default:mainloop();
 	}

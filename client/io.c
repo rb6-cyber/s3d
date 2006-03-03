@@ -34,7 +34,7 @@
 #include <sys/socket.h>  /*  socket() */
 #include <getopt.h>		 /*  getopt() */
 #include <fcntl.h>		 /*  fcntl() */
-#ifdef WITH_SIGNALS
+#ifdef SIGS
 #include <signal.h>		 /*  signal.h, SIG_PIPE */
 #endif
 #include <netinet/in.h>  /*  htons(),htonl() */
@@ -45,7 +45,7 @@
 static char				*url=NULL;
 extern int 				con_type;
 /*  this file is the client-lib-implementation which holds the function to connect and control the server. */
-#ifdef WITH_SIGNALS
+#ifdef SIGS
 int _s3d_sigio=0;
 void sigpipe_handler(int sig, int code)  /*  ... ? */
 {
@@ -158,7 +158,7 @@ int s3d_init(int *argc, char ***argv, char *name)
 
 	 /*  TODO: we should wait for the INIT-event here before proceeding. */
 	_queue_init();
-#ifdef WITH_SIGNALS
+#ifdef SIGS
     if (signal(SIGINT, (sig_t)sigint_handler) == SIG_ERR)
 		errdn(LOW,"s3d_init():signal()",errno);
     if (signal(SIGTERM, (sig_t)sigint_handler) == SIG_ERR)
@@ -174,8 +174,12 @@ int s3d_quit()
 	net_send(S3D_P_C_QUIT,NULL,0);
 	switch (con_type)
 	{
+#ifdef TCP
 		case CON_TCP:_tcp_quit();break;
+#endif
+#ifdef SHM
 		case CON_SHM:_shm_quit();break;
+#endif
 	}
 	con_type=CON_NULL;
 	_queue_quit();

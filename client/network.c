@@ -29,11 +29,13 @@
 #include <unistd.h>		 /*  read(), write() */
 #include <errno.h>		 /*  errno */
 #include <netinet/in.h>  /*  htons(),htonl() */
-#ifdef WITH_SIGNALS
+#ifdef SIGS
 extern int _s3d_sigio;
 #endif
 int con_type=CON_NULL;
+#ifdef TCP
 static int _s3d_net_receive();
+#endif
 
 int net_send(unsigned char opcode, char *buf, unsigned short length)
 {
@@ -46,34 +48,45 @@ int net_send(unsigned char opcode, char *buf, unsigned short length)
 	memcpy(buff+3,buf,length);
 	switch (con_type)
 	{
+#ifdef SHM
 		case CON_SHM:shm_writen(buff,length+3);break;
+#endif
+#ifdef TCP		
 		case CON_TCP:tcp_writen(buff,length+3);break;
+#endif
 	}
 	return(0);
 }
 /* handler for socket based connection types */
+#ifdef TCP
 int _s3d_net_receive()
 {
 	return(_s3d_tcp_net_receive());
+	return(0);
 }
+#endif
 int s3d_net_check()
 {
 	switch (con_type)
 	{
+#ifdef TCP
 		case CON_TCP:
-#ifdef WITH_SIGNALS
+#ifdef SIGS
 		if (_s3d_sigio)
 		{
 #endif
 			while (_s3d_net_receive());
-#ifdef WITH_SIGNALS
+#ifdef SIGS
 			_s3d_sigio=0;
 		}	
 #endif
 			break;
+#endif
+#ifdef SHM
 		case CON_SHM:
 			while(_shm_net_receive());
 			break;
+#endif
 	}
 	return(0);
 }
@@ -81,7 +94,9 @@ int s3d_net_init(char *urlc)
 {
 	char				*s,*sv,*port=NULL;
 	char				*first_slash=NULL;
+#ifdef TCP
 	int					 pn=0;
+#endif
 	int					 tcp,shm;
 	tcp=shm=1; /* everything is possible, yet */
 	
@@ -124,11 +139,14 @@ int s3d_net_init(char *urlc)
 			shm=0;
 		}
 	}
+#ifdef SHM
 	if (shm)
 	{
 		if (!strncmp(port, "shm",3))
 			if (!_shm_init(sv)) return(con_type=CON_SHM);
 	}
+#endif
+#ifdef TCP
 	if (tcp)
 	{
 		pn=6066;
@@ -142,5 +160,6 @@ int s3d_net_init(char *urlc)
 		}
 		if (!_tcp_init(sv,pn)) return(con_type=CON_TCP);
 	}
+#endif
 	return(CON_NULL);
 }

@@ -23,6 +23,7 @@
 
 
 #include <stdint.h>
+#include "../config.h"
 #define VLOW	1
 #define	LOW		2
 #define MED		3
@@ -67,13 +68,16 @@ int _queue_quit();
 int s3d_net_check();
 int net_send(unsigned char opcode, char *buf, unsigned short length);
 int s3d_net_init(char *urlc);
+#ifdef TCP
 /* tcp.c */
 int _tcp_init();
 int _tcp_quit();
 int _s3d_tcp_net_receive();
 int tcp_writen(char *str,int s);
 int tcp_readn(char *str,int s);
+#endif
 /* shm_ringbuf.c */
+#ifdef SHM
 struct buf_t
 {
 	uint32_t start,end,bufsize;	/* start/end of the data */
@@ -86,6 +90,7 @@ int _shm_quit();
 int _shm_net_receive();
 int shm_writen(char *str,int s);
 int shm_readn(char *str,int s);
+#endif
 /* freetype.c */
 struct t_buf
 {

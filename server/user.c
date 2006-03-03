@@ -31,10 +31,10 @@ int user_init() {
 	switch (frame_mode)
 	{
 #ifdef G_GLUT
-		case G_GLUT:user_init_glut();break;
+		case FRAME_GLUT:user_init_glut();break;
 #endif
 #ifdef G_SDL
-    	case G_SDL:user_init_sdl();break;
+    	case FRAME_SDL:user_init_sdl();break;
 #endif
 		default:return(-1);
 	}
@@ -45,10 +45,10 @@ int user_main() {
 	switch (frame_mode)
 	{
 #ifdef G_GLUT
-		case G_GLUT:return(0);  /*  glut uses callback functions */
+		case FRAME_GLUT:return(0);  /*  glut uses callback functions */
 #endif
 #ifdef G_SDL
-    	case G_SDL:user_main_sdl();
+    	case FRAME_SDL:user_main_sdl();
 #endif
 		default:return(0);
 	}
