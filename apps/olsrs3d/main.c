@@ -1,10 +1,9 @@
 /*
  * main.c
  *
- * Copyright (C) 2005-2006 Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *                         Marek Lindner <lindner_marek@yahoo.de>
  *                         Andreas Langer <andreas_lbg@gmx.de>
- * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of olsrs3d, an olsr topology visualizer for s3d.
  * See http://s3d.berlios.de/ for more updates.
@@ -48,12 +47,12 @@ int Olsr_node_count = 0, Last_olsr_node_count = -1;
 int Olsr_node_count_obj = -1;
 int Byte_count;
 
-int node_count=-1;
-int alpha=0;
-int Olsr_node_obj, Olsr_node_inet_obj, Olsr_node_hna_net, mesh;
-float asp=1.0;
-float bottom=-1.0;
-float left=-1.0;
+// int node_count=-1;
+// int alpha=0;
+int Olsr_node_obj, Olsr_node_inet_obj, Olsr_node_hna_net;
+float Asp = 1.0;
+float Bottom = -1.0;
+float Left = -1.0;
 
 float CamPosition[2][3];   /* CamPosition[trans|rot][x-z] */
 float ZeroPosition[3] = {0,0,0};   /* current position zero position */
@@ -549,7 +548,7 @@ void mainloop() {
 		s3d_link( Olsr_node_count_obj, 0 );
 		s3d_flags_on( Olsr_node_count_obj, S3D_OF_VISIBLE );
 		s3d_scale( Olsr_node_count_obj, 0.2 );
-		s3d_translate( Olsr_node_count_obj, left*3.0, -bottom*3.0-0.2, -3.0 );
+		s3d_translate( Olsr_node_count_obj, Left*3.0, -Bottom*3.0-0.2, -3.0 );
 
 		Last_olsr_node_count = Olsr_node_count;
 
@@ -564,7 +563,7 @@ void mainloop() {
 		}
 	}
 
-	alpha=(alpha+5)%360;
+// 	alpha=(alpha+5)%360;
 // 	s3d_rotate(mesh,0,alpha,0);
 	if(RotateSwitch) {
 		Zp_rotate = (Zp_rotate+RotateSpeed)%360;
@@ -580,7 +579,7 @@ void stop()
 {
 	s3d_quit();
 	net_quit();
-	process_quit();
+// 	process_quit();
 }
 
 /***
@@ -665,18 +664,18 @@ void object_info(struct s3d_evt *hrmz)
 		CamPosition[1][0] = inf->rot_x;
 		CamPosition[1][1] = inf->rot_y;
 		CamPosition[1][2] = inf->rot_z;
-		asp=inf->scale;
-		if (asp>1.0) /* wide screen */
+		Asp=inf->scale;
+		if (Asp>1.0) /* wide screen */
 		{
-			bottom=-1.0;
-			left=-asp;
+			Bottom=-1.0;
+			Left=-Asp;
 		} else {  /* high screen */
-			bottom=(-1.0/asp);
-			left=-1.0;
+			Bottom=(-1.0/Asp);
+			Left=-1.0;
 
 		}
-		s3d_translate(mesh,(-left)*3.0-1.8,bottom*3.0+0.8,-3.0);
-		s3d_flags_on(mesh,S3D_OF_VISIBLE);
+// 		s3d_translate(mesh,(-Left)*3.0-1.8,Bottom*3.0+0.8,-3.0);
+// 		s3d_flags_on(mesh,S3D_OF_VISIBLE);
 	}
 	// printf("%f %f %f\n",inf->trans_x,inf->trans_y,inf->trans_z);
 }
@@ -822,6 +821,7 @@ int main( int argc, char *argv[] ) {
 
 	int optchar;
 	strncpy( Olsr_host, "127.0.0.1", 256 );
+	lbuf[0] = '\0';   /* init lbuf */
 
 	while ( ( optchar = getopt ( argc, argv, "dhH:" ) ) != -1 ) {
 
@@ -856,7 +856,7 @@ int main( int argc, char *argv[] ) {
 
 	/* set extern int optind = 0 for parse_args in io.c */
 	optind = 0;
-	process_init(Olsr_host);
+// 	process_init(Olsr_host);
 	if (!net_init(Olsr_host))
 	{
 		if (!s3d_init(&argc,&argv,"olsrs3d"))
@@ -877,7 +877,7 @@ int main( int argc, char *argv[] ) {
 			s3d_mainloop(mainloop);
 			s3d_quit();
 			net_quit();
-			process_quit();
+// 			process_quit();
 		}
 	}
 	return(0);

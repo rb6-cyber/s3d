@@ -1,10 +1,9 @@
 /*
  * process.c
  *
- * Copyright (C) 2005-2006 Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *                         Marek Lindner <lindner_marek@yahoo.de>
  *                         Andreas Langer <andreas_lbg@gmx.de>
- * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of olsrs3d, an olsr topology visualizer for s3d.
  * See http://s3d.berlios.de/ for more updates.
@@ -31,10 +30,13 @@
 #include <stdlib.h> 	/* rand(), malloc(), realloc(), free(), strtof() */
 #include <s3d.h>
 #include "olsrs3d.h"
+
 char lbuf[MAXLINESIZE];
-int max,new_max;
-float 	*adj,*new_adj;
-int		*adj_obj,*new_adj_obj;
+
+
+// int max,new_max;
+// float 	*adj,*new_adj;
+// int		*adj_obj,*new_adj_obj;
 
 
 /***
@@ -142,18 +144,18 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
  *   l    =>   length ? ETX ?
  *
  ***/
-
+/*
 int add_adj(int n1, int n2, float l)
 {
 	int o,i,j;
 	i=n1<n2?n1:n2;
 	j=n1>n2?n1:n2;
 	if ((n1<max) && (n2<max))
-		/* connection already exists */
+		/ * connection already exists * /
 		o=adj_obj[i*max+j];
 	else o=-1;
 	if (o==-1)
-	{ /* need to generate new object .. */
+	{ / * need to generate new object .. * /
 		o=s3d_new_object();
 		s3d_push_material(o,1.0,1.0,1.0,
 							1.0,1.0,1.0,
@@ -162,14 +164,14 @@ int add_adj(int n1, int n2, float l)
 		s3d_push_polygon(o,0,4,5,0);
 		s3d_push_polygon(o,3,1,2,0);
 
-/*		printf("new adjacent object %d between %d and %d\n",o,i,j);*/
+/ *		printf("new adjacent object %d between %d and %d\n",o,i,j);* /
 	}
 	new_adj_obj[i*new_max+j]=o;
 	new_adj[i*new_max+j]=l;
 	new_adj[j*new_max+i]=l;
 
 	return(0);
-}
+}*/
 
 
 
@@ -178,7 +180,7 @@ int add_adj(int n1, int n2, float l)
  * redo all connections between nodes ?
  *
  ***/
-
+/*
 int resize_adj()
 {
 	int i,ind;
@@ -187,24 +189,24 @@ int resize_adj()
 
 	if (new_max>1)
 	{
-		/* leave out one ? */
+		/ * leave out one ? * /
 		for (i=(new_max-2);i>=0;i--)
 		{
 			memmove(new_adj+new_max*i,new_adj+(new_max-1)*i,sizeof(float)*(new_max-1));
 			memmove(new_adj_obj+new_max*i,new_adj_obj+(new_max-1)*i,sizeof(float)*(new_max-1));
-			ind=i*new_max+(new_max-1);				/* the right edge */
+			ind=i*new_max+(new_max-1);				/ * the right edge * /
 			new_adj[ind]=0.0f;
 			new_adj_obj[ind]=-1;
-			ind=(new_max-1)*new_max+i;				/* the bottom edge */
+			ind=(new_max-1)*new_max+i;				/ * the bottom edge * /
 			new_adj[ind]=0.0f;
 			new_adj_obj[ind]=-1;
 		}
 	}
-	new_adj[new_max*new_max-1]=0.0f;			/* the right bottom corner */
-	new_adj_obj[new_max*new_max-1]=-1;			/* the right bottom corner */
+	new_adj[new_max*new_max-1]=0.0f;			/ * the right bottom corner * /
+	new_adj_obj[new_max*new_max-1]=-1;			/ * the right bottom corner * /
 	return(0);
 }
-
+*/
 
 
 /***
@@ -307,35 +309,35 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
  *   return node id
  *
  ***/
-
+/*
 int get_node_num(char *str)
 {
-	int i,j;   /* inc vars */
-	float f;   /* where does it get its value from ? */
+	int i,j;   / * inc vars * /
+	float f;   / * where does it get its value from ? * /
 
 	for (i=0;i<new_max;i++)
 	{
 		if (strncmp(node[i].name,str,NAMEMAX)==0)
 		{
-			return(i); /* return the index */
+			return(i); / * return the index * /
 		}
 	}
 
-	/* i==new_max now */
+	/ * i==new_max now * /
 	new_max++;
 
 	node=realloc(node,sizeof(struct t_node)*new_max);
 
-	/* create new node */
+	/ * create new node * /
 	strncpy(node[i].name,str,NAMEMAX);
 	node[i].obj=s3d_clone(Olsr_node_obj);
 	s3d_flags_on(node[i].obj,S3D_OF_VISIBLE);
 
-	/* create node text and attach (link) it to the node */
+	/ * create node text and attach (link) it to the node * /
 	node[i].s_obj=s3d_draw_string(str,&f);
 	s3d_link(node[i].s_obj, node[i].obj);
 	s3d_translate(node[i].s_obj,-f/2,-2,0);
-	/*s3d_rotate(node[i].s_obj,0,180,0);*/
+	/ *s3d_rotate(node[i].s_obj,0,180,0);* /
 	s3d_flags_on(node[i].s_obj,S3D_OF_VISIBLE);
 
 	printf("new %s [%d], Olsr_node_obj nr. %d - %d\n",str,i,node[i].obj,node[i].s_obj);
@@ -349,24 +351,24 @@ int get_node_num(char *str)
 	resize_adj();
 
 	return(i);
-}
+}*/
 
-int commit_input()
+/*int commit_input()
 {
 	int 	i,j;
 	float 	*swap_adj;
 	int  	*swap_adj_obj;
 	char	nc_str[20];
-/* 	printf("committing input ... \n");
+	printf("committing input ... \n");
 
-	/ * remove old adjacent objects ... * /
+     / * remove old adjacent objects ... * /
  	for (i=0;i<max;i++)
  		for (j=i+1;j<max;j++)
  			if (adj_obj[i*max+j]!=-1)
  				if (new_adj_obj[i*new_max+j]==-1)
  				{
-   / *				printf("old link does not exist anymore ...\n");* /
- 					/ * this link does not exist anymore ... * /
+ 				printf("old link does not exist anymore ...\n");
+ 					/ * this link does not exist anymore ...
  					s3d_del_object(adj_obj[i*max+j]);
  				}
 	/ * swap the matrices * /
@@ -375,11 +377,11 @@ int commit_input()
 
  	adj=new_adj;
  	adj_obj=new_adj_obj;
-	*/
 
 
-	/* if we have more nodes redraw node count */
-	/* what if we have less nodes ?? */
+
+	/ * if we have more nodes redraw node count * /
+	/ * what if we have less nodes ?? * /
 	if (new_max>max)
 	{
 		swap_adj=realloc(swap_adj,sizeof(float)*new_max*new_max);
@@ -394,23 +396,25 @@ int commit_input()
 
 	}
 
-/*
+
  	new_adj=swap_adj;
  	new_adj_obj=swap_adj_obj;
- 	*/
-	/* setting new maxsize */
+
+	/ * setting new maxsize * /
 	max=new_max;
-	/* resetting the input-matrices*/
-	/*
+	/ * resetting the input-matrices * /
+
  	for (i=0;i<max;i++)
  	for (j=0;j<max;j++)
  	{
  		new_adj[i*max+j]=0.0;
  		new_adj_obj[i*max+j]=-1;
  	}
- 	*/
+
 	return(0);
 }
+
+*/
 /*
  int parse_line( int lbuf_index ) {
 
@@ -665,7 +669,7 @@ int process_main() {
 }
 
 
-int process_init()
+/* int process_init()
 {
 	lbuf[0]='\0';
 	max=new_max=0;
@@ -684,3 +688,4 @@ int process_quit()
 	if (new_adj_obj!=NULL) 	free(new_adj_obj);
 	return(0);
 }
+*/

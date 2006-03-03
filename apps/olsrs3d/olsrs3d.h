@@ -1,10 +1,9 @@
 /*
  * olsrs3d.h
  *
- * Copyright (C) 2005-2006 Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *                         Marek Lindner <lindner_marek@yahoo.de>
  *                         Andreas Langer <andreas_lbg@gmx.de>
- * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of olsrs3d, an olsr topology visualizer for s3d.
  * See http://s3d.berlios.de/ for more updates.
@@ -27,11 +26,13 @@
 
 
 #define NAMEMAX		128
-struct t_node {
-	float pos[3], mov[3];
-	char name[NAMEMAX];
-	int obj,s_obj;
-};
+
+
+// struct t_node {
+// 	float pos[3], mov[3];
+// 	char name[NAMEMAX];
+// 	int obj,s_obj;
+// };
 
 
 /* linked list for the all connections */
@@ -98,26 +99,30 @@ extern int	Olsr_node_hna_net;
 extern int Olsr_node_count_obj;
 extern int Olsr_node_count;
 extern int Last_olsr_node_count;
+
 extern int Byte_count;
+
 extern int ZeroPoint;
 
-extern float bottom,left;
+extern float Bottom, Left;
 
-extern int 	max, new_max;
-extern float 	*adj;
-extern int	*adj_obj;
-extern int	node_count;
-extern float 	bottom,left;
+// extern float bottom,left;
+//
+// extern int 	max, new_max;
+// extern float 	*adj;
+// extern int	*adj_obj;
+// extern int	node_count;
+// extern float Bottom, Left;
 
 
-struct t_node 	*node;
+// struct t_node 	*node;
 #define MAXLINESIZE 1000 /* lines in a digraph just shouldn't get that longer ... */
 #define MAXDATASIZE 100 /* max number of bytes we can get at once  */
 extern char lbuf[MAXLINESIZE];
 /* process */
-int process_init();
+// int process_init();
 int process_main();
-int process_quit();
+// int process_quit();
 /* net */
 int net_init(char *host);
 int net_main();
