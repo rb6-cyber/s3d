@@ -25,8 +25,10 @@
 /*  this file should render truetype fonts as objects */
 #include "s3d.h"
 #include "s3dlib.h"
-#include <stdlib.h>    /*  malloc(), free() */
-#include <netinet/in.h>  /*  htonl(), htons() */
+#include "sei_interface.h"	/* sei_triangulate_polygon() */
+#include <stdlib.h>    		/*  malloc(), free() */
+#include <netinet/in.h>  	/*  htonl(), htons() */
+#include <math.h>			/*  atan2() */
 #include "ft2build.h"
 #include FT_FREETYPE_H
 #ifndef CALLBACK 
@@ -102,19 +104,23 @@ int _s3d_clear_tessbuf()
 	return(0);
 }
 
+
 /* renders a character with seidels algorithm and stores it in the tess_buf for later
  * usage */
 int _s3d_add_tessbuf(unsigned short a)
 {
-	float norm;
-	int i,j,k,c,start;
-	int np,pos,diff,cpos,mpos;
-	double vertices[SEI_SS+1][2];
+	float norm,ar,xa,ya;
+	int i,j,k,c,n,start,outl,s,e;
+	int np,pos;
 	int triangles[SEI_SS*2][3]; /* more than enough ... */
 	int ncontours,ncon;
 	int cntr[SEI_SS];
-	char used[SEI_SS];
-	int map[SEI_SS+1];
+	int ncntr[SEI_SS];
+	int csta[SEI_SS],ncsta[SEI_SS];
+	int perm[SEI_SS];
+	float area[SEI_SS];
+	double vertices[SEI_SS+1][2];
+	double nvertices[SEI_SS+1][2];
 	
 
 	if (FT_Load_Char(face,a,	FT_LOAD_NO_BITMAP|FT_LOAD_NO_SCALE))
@@ -122,8 +128,7 @@ int _s3d_add_tessbuf(unsigned short a)
 		errds(VHIGH,"s3d_add_tessbuf():FT_Load_Char()","can't load character");
 		return(-1);
 	} 
-	if (a=='%') return(-1);
-	dprintf(LOW,"triangulating character %c",a);
+	dprintf(VLOW,"[T]riangulating character %c",a);
 	norm=1.0/face->glyph->metrics.vertAdvance;
 	ch=a;
 	v_off=0;
@@ -139,92 +144,123 @@ int _s3d_add_tessbuf(unsigned short a)
 			start=j; 	/* first point */
 			i=0;
 			ncon=face->glyph->outline.contours[c]; /* position of the end of ths contour */
-			cntr[c]=ncon-j+1;
+			cntr[c]=ncon-j+1;					   /* how many points do we have here? */
+			csta[c]=j+1;
+			ar=0.0f;
 			while (j<(ncon+1))
 			{
 				/* vertices have reverse order in seidels algorithm, outer contours go anticlockwise, inner contours clockwise */
+				/* calculate the area */
+				k=((j+2-csta[c])%(cntr[c]))+csta[c]-1;
+				ar-=face->glyph->outline.points[j].x * face->glyph->outline.points[k].y;
+				ar+=face->glyph->outline.points[k].x * face->glyph->outline.points[j].y;
+
 				pos=ncon-i;
-				tess_buf[a].vbuf[pos*3]		=vertices[pos+1][0]=face->glyph->outline.points[j].x*norm;
-				tess_buf[a].vbuf[pos*3+1]	=vertices[pos+1][1]=face->glyph->outline.points[j].y*norm;
-				map[pos+1]=pos;
-				tess_buf[a].vbuf[pos*3+2]	=0;
+				vertices[pos+1][0]=face->glyph->outline.points[j].x*norm;
+				vertices[pos+1][1]=face->glyph->outline.points[j].y*norm;
 				j++;
 				i++;
 			}
+			ar=0.5f*norm*norm*ar;
+			dprintf(VLOW,"contour %d has area of %3.3f, cntr is %d, contour starts at %d, ncon %d",c,ar,cntr[c], csta[c], ncon);
+			area[c]=ar; /* save the area */
 		}
-		k=0; /* polygon counter */
-		/* iterate while there are untriangulated outlines left. this is neccesary
-		 * because seidel will only operate on ONE outline at once (number of holes is not 
-		 * limited though) */
+		/* now as we have the areas and sizes of the contours, we need to order our contours so that 
+		 * the outlines and their holes are grouped together */
+		n=ncontours;
+		for (i=0;i<n;i++)
+			perm[i]=i; /* initialise permutation */
+		while (n!=0)
+		{
+			outl=-1;
+			/* find an outline */
+			for (i=0;i<n;i++)
+				if (area[perm[i]]>0)
+				{
+					outl=i; /* found. that was easy ;) */
+					break;
+				}
+			if (outl==-1)
+			{
+				dprintf(HIGH,"hole without outline found, exiting ... %c",a);
+				return(-1);
+			}
+			for (i=0;i<n;i++)
+			{
+				if (area[perm[i]]<0)
+				{
+					/* test for a hole inside by taking one (the first) point of the hole and doing the test */
+					xa=vertices[csta[perm[i]]][0];
+					ya=vertices[csta[perm[i]]][1];
+					s=csta[perm[outl]];							/* start point of outline */
+					e=(csta[perm[outl]]+cntr[perm[outl]])-1;		/* end point */
+					ar=0;
+					for (j=s;j<e;j++)
+					{ /* for all points of the outline, sum: */
+						ar+=atan2((vertices[j+1][1]-ya)*(vertices[j][0]-xa)-(vertices[j+1][0]-xa)*(vertices[j][1]-ya),
+								  (vertices[j+1][0]-xa)*(vertices[j][0]-xa)+(vertices[j+1][1]-ya)*(vertices[j][1]-ya));
+					}
+					/* dont forget the start/end-point connection*/
+					ar+=atan2((vertices[s][1]-ya)*(vertices[e][0]-xa)-(vertices[s][0]-xa)*(vertices[e][1]-ya),
+							  (vertices[s][0]-xa)*(vertices[e][0]-xa)+(vertices[s][1]-ya)*(vertices[e][1]-ya));
+					if (fabsf(ar)>1)						/* if ar = 0.0, it's outside, elseway it's a multiple of pi. this check should be
+															 * very generous to roundoff errors */
+					{
+						dprintf(VLOW,"hole %d (%d) in %d (%d): interior angle sum %f (n=%d)",i,perm[i],outl, perm[outl],ar,n);
+						j=perm[n-1];	/* swap our hole to the end */
+						perm[n-1]=perm[i];
+						perm[i]=j;
+						if (outl==n-1)
+							outl=i;		/* outline got swapped */
+						n--;			/* we don't care for the hole at the end anymore as it's found */
+						i--;			/* check again for the just-swapped value in the next
+										 * loop iteration */
+					}
+				}
+			}
+			/* all the holes should be behind n-i, if so, so we swap our outline to the end now */
+			j=perm[n-1];	/* swap our hole to the end */
+			perm[n-1]=perm[outl];
+			perm[outl]=j;
+			n--;			/* we don't care for the hole at the end anymore as it's found */
+		}
+		/* finished the permutation, now apply the new order .... */
+		n=1;
+		for (c=0;c<ncontours;c++)
+		{
+			ncsta[c]=n-1;
+			for (j=csta[perm[c]];j<(csta[perm[c]]+cntr[perm[c]]);j++)
+			{
+				nvertices[n][0]=vertices[j][0];
+				nvertices[n][1]=vertices[j][1];
+				tess_buf[a].vbuf[(n-1)*3]	=nvertices[n][0];
+				tess_buf[a].vbuf[(n-1)*3+1]	=nvertices[n][1];
+				tess_buf[a].vbuf[(n-1)*3+2]	=0;
+				n++;
+			}
+			ncntr[c]=cntr[perm[c]];
+		}
+		n=0;
 		tess_buf[a].pbuf=malloc(sizeof(unsigned long)*4*(face->glyph->outline.n_points+2*face->glyph->outline.n_contours)); 
-		do {
-			dprintf(LOW,"triangulating %d contours", ncontours);
-			for (i=0;i<ncontours;i++)
-				dprintf(LOW,"[%d]: %d points ", i, cntr[i]);
-			np=sei_triangulate_polygon(ncontours, cntr, vertices, triangles);
-			dprintf(LOW,"[F]ound %d polygons",np);
-			memset(used,0,ncontours);
-			for (i=0;i<np;i++)
+		k=0;
+		for (c=ncontours-1;c>=0;c--)
+		{
+			n++;				 /* count out and inlines ... */
+			if (area[perm[c]]>0) /* outline? start! */
 			{
-				tess_buf[a].pbuf[k*4]=  map[triangles[i][0]];
-				tess_buf[a].pbuf[k*4+1]=map[triangles[i][1]];
-				tess_buf[a].pbuf[k*4+2]=map[triangles[i][2]];
-				tess_buf[a].pbuf[k*4+3]=0;
-				dprintf(LOW,"TRIANG: %d %d %d = %d %d %d",	triangles[i][0],triangles[i][1],triangles[i][2], 
-															map[triangles[i][0]], map[triangles[i][1]], map[triangles[i][2]]);
-				for (j=0;j<3;j++)
+				dprintf(VLOW,"[T]riangulation from outline %d (%d contours, area = %f)",perm[c],n,area[perm[c]]);
+				np=sei_triangulate_polygon(n, ncntr+c, nvertices+(ncsta[c]), triangles);
+				for (i=0;i<np;i++)
 				{
-					cpos=1;
-					for (c=0;c<ncontours;c++)
-					{
-						cpos+=cntr[c];
-						if (triangles[i][j]<cpos)
-						{
-/*							dprintf(LOW,"point %d in contour line %d (cpos = %d) used",triangles[i][j],c,cpos);*/
-							used[c]=1;
-							break;
-						}
-					}
+					tess_buf[a].pbuf[k*4]=  triangles[i][0]+ncsta[c]-1;
+					tess_buf[a].pbuf[k*4+1]=triangles[i][1]+ncsta[c]-1;
+					tess_buf[a].pbuf[k*4+2]=triangles[i][2]+ncsta[c]-1;
+					tess_buf[a].pbuf[k*4+3]=0;
+					k++;
 				}
-				k++;
+				n=0;
 			}
-			j=1;
-			for (c=0;c<ncontours;c++)
-			{
-				j&=used[c];
-			}
-			if (j) 
-				dprintf(LOW,"all contours used");
-			else 
-			{
-				dprintf(LOW,"not all contours used, restarting");
-				diff=0;
-				ncon=0; /* number of actually unused contours */
-				cpos=1; /* position of source vertices */
-				mpos=1; /* position of dest vertices */
-				for (c=0;c<ncontours;c++)
-				{
-					if (!used[c])
-					{
-					  /* not used, move it to new end */
-						dprintf(LOW,"contour %d (%d) not used!!",c,cntr[c]);
-						cntr[ncon]=cntr[c];
-						ncon++;
-						if (cpos!=mpos)
-						{
-							for (i=0;i<cntr[c];i++)
-							{
-								vertices[mpos+i][0]=vertices[cpos+i][0];
-								vertices[mpos+i][1]=vertices[cpos+i][1];
-								map[mpos+i]=map[cpos+i];
-							}
-						}
-					}
-					cpos+=cntr[c];
-				}
-			}
-			ncontours=ncon;
-		} while (!j);
+		}
 		tess_buf[a].pn=k;
 	}
 	tess_buf[a].xoff=1.0*face->glyph->metrics.horiAdvance*norm;
