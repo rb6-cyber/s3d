@@ -55,19 +55,16 @@ int event_key_pressed(uint16_t key)
 /*  tell the client something about us */
 int event_init(struct t_process *p)
 {
-	char s[strlen(S3D_SERVER_NAME)+3];
-	s[0]=S3D_SERVER_MAJOR;
-	s[1]=S3D_SERVER_MINOR;
-	s[2]=S3D_SERVER_PATCH;
-	strcpy(s+3,S3D_SERVER_NAME);  /*  should be safe as we allocated with it's length	 */
-	prot_com_out(p,S3D_P_S_INIT, (uint8_t *)s, strlen(S3D_SERVER_NAME)+3);
+	char s[NAME_MAX+3];
+	sprintf(s,"%c%c%c%s", S3D_SERVER_MAJOR, S3D_SERVER_MINOR, S3D_SERVER_PATCH, S3D_SERVER_NAME); /* thanks award */
+	prot_com_out(p,S3D_P_S_INIT, (uint8_t *)s, strlen(S3D_SERVER_NAME)+4);
 	return(0);
 }
 /*  this lets a process quit gracefully ... */
 int event_quit(struct t_process *p)
 {
 	prot_com_out(p, S3D_P_S_QUIT, NULL,0);
-	dprintf(HIGH,"sending pid %d  QUIT signal",p->id);
+	dprintf(HIGH,"sending pid %d  QUIT signal",p->id); 
 	process_del(p->id);
 	return(0);
 }
