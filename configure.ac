@@ -87,7 +87,7 @@ AM_CONDITIONAL([BUILD_GLUT], test x"${HAVE_glut}" != x)
 
 dnl ##################################### CLIENT #######################################
 
-PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.3.0, [:], [AC_MSG_ERROR([Please install fontconfig (version 2.3.0 or higher)])])
+PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.1.0, [:], [AC_MSG_ERROR([Please install fontconfig (version 2.1.0 or higher)])])
 PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.5.0, [:], [AC_MSG_ERROR([Please install freetype2 (version 9.5.0 or higher)])])
 
 dnl if test "x${HAVE_glut}" = "x"; then
