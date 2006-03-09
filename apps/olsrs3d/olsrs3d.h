@@ -104,15 +104,17 @@ extern float Bottom, Left;
 
 extern char lbuf[MAXLINESIZE];
 /* process */
+void lst_initialize();
+void lst_add(int id,struct olsr_node **olsr_node);
+void lst_del(int id);
+struct olsr_node **lst_search(int id);
+void lst_out();
+void move_lst_ptr(int *id);
 int process_main();
 /* net */
 int net_init(char *host);
 int net_main();
 int net_quit();
-/* main obj2ip list*/
+/* main */
 void out_of_mem( void );
-void lst_add(int id,struct olsr_node **olsr_node);
-void lst_del(int id);
-void lst_out();
-void move_lst_ptr(int *id);
 struct olsr_node **lst_search(int id);

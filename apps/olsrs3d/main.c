@@ -384,7 +384,7 @@ void calc_olsr_node_mov( void ) {
 		if ( ( olsr_con->left_etx != 0.0 ) && ( olsr_con->right_etx != 0.0  ) ) {
 
 			distance = dirt( olsr_con->left_olsr_node->pos_vec, olsr_con->right_olsr_node->pos_vec, tmp_mov_vec );
-			f = ( ( olsr_con->left_etx + olsr_con->right_etx ) / 4.0 ) / distance;
+			f = (( olsr_con->left_etx + olsr_con->right_etx ) / 4.0 ) / distance;
 			if ( f < 0.3 ) f = 0.3;
 
 			mov_add( olsr_con->left_olsr_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
@@ -440,12 +440,12 @@ void move_olsr_nodes( void ) {
 
 				mov_add( tmp_mov_vec, olsr_con->left_olsr_node->mov_vec, 1.0 );
 
-				if ( ( dist( tmp_mov_vec, olsr_con->left_olsr_node->pos_vec ) > 0.75 ) || ( dist( tmp_mov_vec, null_vec ) < 2.0 ) ) {
+				/*if ( ( dist( tmp_mov_vec, olsr_con->left_olsr_node->pos_vec ) > 0.75 ) || ( dist( tmp_mov_vec, null_vec ) < 2.0 ) ) {*/
 
 				mov_add( olsr_con->left_olsr_node->pos_vec, olsr_con->left_olsr_node->mov_vec, 1.0 );
 				s3d_translate( olsr_con->left_olsr_node->obj_id, olsr_con->left_olsr_node->pos_vec[0], olsr_con->left_olsr_node->pos_vec[1], olsr_con->left_olsr_node->pos_vec[2] );
 
-			}
+			/*}*/
 
 			/* reset movement vector */
 			olsr_con->left_olsr_node->mov_vec[0] = olsr_con->left_olsr_node->mov_vec[1] = olsr_con->left_olsr_node->mov_vec[2] = 0.0;
@@ -477,12 +477,12 @@ void move_olsr_nodes( void ) {
 
 				mov_add( tmp_mov_vec, olsr_con->right_olsr_node->mov_vec, 1.0 );
 
-				if ( ( dist( tmp_mov_vec, olsr_con->right_olsr_node->pos_vec )> 0.75 ) || ( dist( tmp_mov_vec, null_vec ) < 2.0 ) ) {
+				/*if ( ( dist( tmp_mov_vec, olsr_con->right_olsr_node->pos_vec )> 0.75 ) || ( dist( tmp_mov_vec, null_vec ) < 2.0 ) ) {*/
 
 					mov_add( olsr_con->right_olsr_node->pos_vec, olsr_con->right_olsr_node->mov_vec, 1.0 );
 					s3d_translate( olsr_con->right_olsr_node->obj_id, olsr_con->right_olsr_node->pos_vec[0], olsr_con->right_olsr_node->pos_vec[1], olsr_con->right_olsr_node->pos_vec[2] );
 
-				}
+				/*}*/
 
 			/* reset movement vector */
 			olsr_con->right_olsr_node->mov_vec[0] = olsr_con->right_olsr_node->mov_vec[1] = olsr_con->right_olsr_node->mov_vec[2] = 0.0;
@@ -718,143 +718,6 @@ void object_info(struct s3d_evt *hrmz)
 
 	}
 	/* printf("%f %f %f\n",inf->trans_x,inf->trans_y,inf->trans_z); */
-}
-
-/***
- *
- * initialize the struct for a linked list obj2ip
- *
- ***/
-
-void lst_initialize() {
-	Obj_to_ip_head = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
-	Obj_to_ip_end = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
-	if(Obj_to_ip_head == NULL || Obj_to_ip_end == NULL)
-		out_of_mem();
-	Obj_to_ip_head->id = 0;
-	Obj_to_ip_end->id = 0;
-	Obj_to_ip_head->prev = Obj_to_ip_end->prev = Obj_to_ip_head;
-	Obj_to_ip_head->next = Obj_to_ip_end->next = Obj_to_ip_end;
-	List_ptr = Obj_to_ip_head;
-}
-
-/***
- *
- * add a link object_id to olsr_node, to get ip adress and coordinates per object_id
- *                 id => object_id, returned from s3d_clone or s3d_new_object
- *  **olsr_node => pointer to pointer of current olsr_node
- *
- ***/
-
-void lst_add(int id,struct olsr_node **olsr_node) {
-	struct Obj_to_ip *new;
-	new = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
-	if(new == NULL)
-		out_of_mem();
-	new->id = id;
-	new->olsr_node = *olsr_node;
-	move_lst_ptr(&id);
-	new->prev = List_ptr;
-	new->next = List_ptr->next;
-	List_ptr->next->prev = new;
-	List_ptr->next = new;
-	/* printf("obj2ip: add object %d between %d .. %d ip %s to list\n",new->id,new->prev->id,new->next->id,new->olsr_node->ip); */
-}
-
-/***
- *void move_lst_ptr(int *id)
- * remove element from obj2ip linked list
- * id => object_id, returned from s3d_clone or s3d_new_object
- *
- ***/
-
-void lst_del(int id) {
-	struct Obj_to_ip *del;
-	move_lst_ptr(&id);
-	if(id != List_ptr->id)
-	{
-		/* printf("obj2ip: remove id %d failed move_lst_ptr return id %d\n",id,List_ptr->next->id); */
-	} else {
-		del = List_ptr;
-		List_ptr->next->prev = List_ptr->prev;
-		List_ptr->prev->next = List_ptr->next;
-		/* printf("obj2ip: remove object %d --> %d <-- %d ip %s from list\n",List_ptr->prev->id,del->id,List_ptr->next->id,del->olsr_node->ip); */
-		free(del);
-	}
-}
-
-/***
- *
- * move the List_ptr one positon ahead the searched element
- *	*id => pointer of object_id , returned from s3d_clone or s3d_new_object
- *
- ***/
-
-void move_lst_ptr(int *id) {
-	/* printf("obj2ip: move for %d\n",*id); */
-	/* head to point at end or id lass then first element in linked list*/
-	if(Obj_to_ip_head->next == Obj_to_ip_head || *id < Obj_to_ip_head->next->id)
-		List_ptr = Obj_to_ip_head;
- 	/* id is greather then last element in linked list */
-	else if(*id > Obj_to_ip_end->prev->id)
-		List_ptr = Obj_to_ip_end->prev;
-	else {
-		/* printf("obj2ip: ok i search deeper ;-) for id=%d\n",*id); */
-		if((*id - (int) Obj_to_ip_head->next->id) <= ((int)(Obj_to_ip_end->prev->id)-*id)) {
-			List_ptr = Obj_to_ip_head;
-			/* printf("obj2ip: start at head id %d - %d <= %d - %d \n",*id,Obj_to_ip_head->next->id,Obj_to_ip_end->prev->id,*id); */
-			while(*id >= List_ptr->next->id) {
-				/* printf("obj2ip: %d > %d move to ",*id,List_ptr->id); */
-				List_ptr = List_ptr->next;
-				/* printf("%d\n",List_ptr->id); */
-			}
-		} else {
-			List_ptr = Obj_to_ip_end;
-			/* printf("obj2ip: start at end id %d - %d > %d - %d \n",*id,Obj_to_ip_head->next->id,Obj_to_ip_end->prev->id,*id);  */
-			/*  do List_ptr = List_ptr->prev; while(*id > List_ptr->prev->id); */
-			while(*id < List_ptr->prev->id) {
-				/* printf("obj2ip: %d < %d move to ",*id,List_ptr->id); */
-				List_ptr = List_ptr->prev;
-				/* printf("%d\n",List_ptr->id); */
-			}
-			List_ptr = List_ptr->prev;
-		}
-		/* printf("obj2ip: found id to insert between %d--> .. <--%d to search/delete %d--> .. <--%d\n",List_ptr->id,List_ptr->next->next->id,List_ptr->prev->id,List_ptr->next->id); */
-	}
-}
-
-/***
- *
- * search a object_id in linked list and return pointer on struct olsr_node
- *	id => object_id , returned from s3d_clone or s3d_new_object
- *
- * <example>
- *     struct olsr_node *olsr_node;
- *     olsr_node = *lst_search(oid);
- *     printf("obj2ip: search return %s\n",olsr_node->ip);
- * </example>
- *
- ***/
-
-struct olsr_node **lst_search(int id) {
-	move_lst_ptr(&id);
-	/* TODO: return NULL when no node found */
-	/* if(id != List_ptr->id) */
-		/* printf("obj2ip: search id....id not found\n"); */
-	/* else */
-		/* printf("obj2ip: search found objekt_id=%d objekt_ip=%s\n",List_ptr->id,List_ptr->olsr_node->ip); */
-	return(&List_ptr->olsr_node);
-}
-
-void lst_out() {
-	struct Obj_to_ip *ptr;
-	ptr = Obj_to_ip_head;
-	while(ptr != ptr->next) {
-		/* printf("List--------------------------\n"); */
-		printf("id-> %d\n",ptr->id);
-		ptr = ptr->next;
-	}
-	/* printf("List--------------------------\n"); */
 }
 
 int main( int argc, char *argv[] ) {
