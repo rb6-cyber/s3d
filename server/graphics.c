@@ -24,7 +24,9 @@
 #include "global.h"
 #include <stdlib.h>		 /*  malloc() */
 #include <string.h>		 /*  memcpy() */
+#ifdef G_GLUT
 #include <GL/glut.h> 	 /*  glutWireTorus() -  to be removed later */ 
+#endif
 #include <GL/gl.h>		 /*  GLint */
 #ifdef G_SDL
 #include <SDL.h>	 /*  SDL_GL_SwapBuffers */
@@ -355,13 +357,16 @@ void graphics_main()
 		glLightfv(GL_LIGHT0,GL_POSITION,pos);
 		render_by_mcp();
 #ifdef DEBUG
+#ifdef G_GLUT
 		glPushMatrix();
 			glRotatef(90,1.0,0.0,0.0);	
 			glMaterialfv(GL_FRONT,GL_AMBIENT,wire_amb);
 			glMaterialfv(GL_FRONT,GL_SPECULAR,wire_spec);
 			glMaterialfv(GL_FRONT,GL_DIFFUSE,wire_diff);
+			
 			glutWireTorus(100,100,40,40);
 		glPopMatrix();
+#endif
 #endif
  	glPopMatrix();  /*  restore the cam */ 
 	glLoadIdentity();
