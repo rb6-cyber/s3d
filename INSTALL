@@ -49,7 +49,7 @@ for you.
 after that, go
 
 $ cd server
-$ ./s3d
+$ ./s3d --no-rc
 
 fire up the server. if you're lucky, a window appears.now the s3d is listening 
 on port 6066. 
@@ -71,10 +71,16 @@ there are a few other examples, just play around
 ### 3 Installing
 
 You can use the install target to install s3d into the selected prefix. 
-Currently, you have to install s3d, otherwise the examples will not get built.
 
 $ make install
 
 Depending on the selected prefix, you may need to become superuser first.
 
+### 3.1 The RC
 
+You can automatically fire up the mcp or anything you want with s3d and 
+have it closed when s3d goes down or vice versa:
+
+just create a shellscript at position /etc/s3drc or ~/.s3drc, for example
+have it starting the mcp. Don't forget to toggle it executable (chmod 755 
+or so).

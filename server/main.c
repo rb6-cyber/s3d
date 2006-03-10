@@ -37,7 +37,13 @@
 #endif
 #include <errno.h>		 /*  errno() */
 int frame_mode=0;
+int kidpid=0;
+int norc=0;
 int running;
+static char *rc=NULL;
+static char *homerc="~/.s3drc";
+static char *etcrc ="/etc/s3drc";
+char **s3drc[]={&rc,&homerc,&etcrc};
 
 static void mainloop(void);
 #ifdef SIGS
@@ -47,7 +53,55 @@ void sigint_handler(int sig)
 	dprintf(HIGH,"oh my gosh there is a sigint/term signal! running away ...");
 	quit();
 }
+void sigchld_handler(int sig)
+{
+	if (kidpid!=0)
+	{
+		kidpid=0;
+	    dprintf(HIGH,"how cruel, my kid died!!");
+		quit();
+	}
+}
 #endif
+int rc_init()
+{
+	int ret,i;
+	if (signal(SIGCHLD, sigchld_handler) == SIG_ERR);
+	kidpid=fork();
+	running=1;
+	if (kidpid==-1)
+	{
+		errsf("rc_init()","*sobsob*, can't fork");
+		exit(1);
+	}
+	if (kidpid==0)
+	{
+		sleep(1); /* giving the father lots of time to set his signal handler
+					 and all his sockets up */
+		dprintf(VHIGH,"hello, i'm the kid and will start the rc file now!");
+		for (i=0;i<(sizeof(s3drc)/sizeof(char **));i++)
+		{
+			if ((*s3drc[i])!=NULL)
+			{
+				dprintf(LOW,"[RC] launching %s",*s3drc[i]);
+				ret=system(*s3drc[i]);
+				dprintf(LOW,"[RC] system() said %d",ret);
+				if (ret<128) 
+				{
+					dprintf(LOW,"[RC] system() did well, I guess.");
+					exit(0);
+				}
+			} 
+		}
+		errs("rc_init()", "no usuable rc script found.");
+		errsf("rc_init()","You don't have an rc-script? create one (~/.s3drc) or use --no-rc !");
+		exit(1);
+	} else {
+		/* father just returns */
+	}		
+	return(0);
+
+}
 /*  the mainloop, should be handling all signals */
 static void mainloop(void) 
 {
@@ -69,6 +123,8 @@ void one_time()
 /*  this initalizes all components.  */
 int init() 
 {
+	if (!norc)
+		rc_init();
 	if (!frame_mode)  /*  turn default frame_mode on */
 	{
 #ifdef G_GLUT
@@ -101,10 +157,19 @@ int init()
 /*  things to be cleaned up  */
 int quit()
 {
-	user_quit();
-	network_quit();
-	graphics_quit();
-	process_quit();
+	if (running!=0)
+	{
+		user_quit();
+		network_quit();
+		graphics_quit();
+		process_quit();
+		if (kidpid!=0)
+		{ /* our kid is most probably still alive. kill it!! */
+			dprintf(HIGH,"kill all the kids!!");
+			kill(kidpid,SIGTERM);
+			kidpid=0;
+		}
+	}
 	running=0;
 	dprintf(VHIGH,"byebye, s3d quitting ...");
 	exit(0);
@@ -120,6 +185,8 @@ int process_args(int argc, char **argv)
 		{"help",0,0,'h'},
 		{"use-glut",0,0,'g'},
 		{"use-sdl",0,0,'s'},
+		{"rc",1,0,'r'},
+		{"no-rc",0,0,'n'},
 		{0,0,0,0}
 	};
 	while (-1!=(c=getopt_long(argc,argv,"?hgs",long_options,&lopt_idx)))
@@ -141,6 +208,15 @@ int process_args(int argc, char **argv)
 					errs("process_args()","sorry, SDL is not available");
 #endif					
 					break;
+				case 'r':
+					dprintf(VHIGH,"using rc file: %s",optarg);
+					rc=optarg;
+					break;
+				case 'n':
+					dprintf(VHIGH,"Using no rc file!");
+					norc=1;
+					break;
+
 				case '?':
 				case 'h':
 					dprintf(VHIGH,"usage: %s [options]",argv[0]);

@@ -24,6 +24,7 @@
 
 #include "global.h"
 #include "proto.h"
+#include <stdio.h>		/* sprintf() */
 #ifdef WIN32 
 #include <winsock2.h>
 #else

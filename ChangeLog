@@ -1,3 +1,6 @@
+2006-03-10  Simon Wunderlich - <dotslash@packetmixer.de>
+	- added rc functionality: use /etc/s3drc or ~/.s3drc to
+	  automatically fire up your mcp or anything you want.
 2006-03-07  Simon Wunderlich - <dotslash@packetmixer.de>
 	- fixed -O2 problem
 2006-03-03  Simon Wunderlich - <dotslash@packetmixer.de>
