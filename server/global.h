@@ -192,6 +192,7 @@ enum {
 	FRAME_SDL
 };
 /*  main.c */
+int rc_init(void);
 int init(void);
 int quit(void);
 void one_time(void);

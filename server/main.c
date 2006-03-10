@@ -63,8 +63,9 @@ void sigchld_handler(int sig)
 	}
 }
 #endif
-int rc_init()
+int rc_init(void)
 {
+#ifdef SIGS
 	int ret,i;
 	if (signal(SIGCHLD, sigchld_handler) == SIG_ERR);
 	kidpid=fork();
@@ -98,9 +99,9 @@ int rc_init()
 		exit(1);
 	} else {
 		/* father just returns */
-	}		
+	}	
+#endif
 	return(0);
-
 }
 /*  the mainloop, should be handling all signals */
 static void mainloop(void) 
@@ -123,8 +124,12 @@ void one_time()
 /*  this initalizes all components.  */
 int init() 
 {
+#ifdef SIGS
 	if (!norc)
 		rc_init();
+#else
+	dprintf(VHIGH,"rc-files won't work without signals :(");
+#endif
 	if (!frame_mode)  /*  turn default frame_mode on */
 	{
 #ifdef G_GLUT
