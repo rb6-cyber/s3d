@@ -194,7 +194,7 @@ int process_args(int argc, char **argv)
 		{"no-rc",0,0,'n'},
 		{0,0,0,0}
 	};
-	while (-1!=(c=getopt_long(argc,argv,"?hgs",long_options,&lopt_idx)))
+	while (-1!=(c=getopt_long(argc,argv,"?hgsrn",long_options,&lopt_idx)))
 	{
 		switch (c)
 		{
@@ -203,14 +203,14 @@ int process_args(int argc, char **argv)
 #ifdef G_GLUT
 					frame_mode=FRAME_GLUT;
 #else
-					errs("process_args()","sorry, GLUT is not available");
+					errsf("process_args()","sorry, GLUT is not available");
 #endif
 					break;
 				case 's':
 #ifdef G_SDL
 					frame_mode=FRAME_SDL;
 #else
-					errs("process_args()","sorry, SDL is not available");
+					errsf("process_args()","sorry, SDL is not available");
 #endif					
 					break;
 				case 'r':
