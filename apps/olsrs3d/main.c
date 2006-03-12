@@ -494,15 +494,15 @@ void move_olsr_nodes( void ) {
 		s3d_pop_vertex( olsr_con->obj_id, 6 );
 		s3d_pop_polygon( olsr_con->obj_id, 2 );
 		s3d_pop_material( olsr_con->obj_id, 1 );
+		
+		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] , olsr_con->left_olsr_node->pos_vec[1] , olsr_con->left_olsr_node->pos_vec[2] );
+		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] + 0.2 , olsr_con->left_olsr_node->pos_vec[1] , olsr_con->left_olsr_node->pos_vec[2] );
+		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] - 0.2 , olsr_con->left_olsr_node->pos_vec[1] , olsr_con->left_olsr_node->pos_vec[2] );
 
-		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] + ZeroPosition[0], olsr_con->left_olsr_node->pos_vec[1] + ZeroPosition[1], olsr_con->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
-		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] + 0.2 + ZeroPosition[0], olsr_con->left_olsr_node->pos_vec[1] + ZeroPosition[1], olsr_con->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
-		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] - 0.2 + ZeroPosition[0], olsr_con->left_olsr_node->pos_vec[1] + ZeroPosition[1], olsr_con->left_olsr_node->pos_vec[2] + ZeroPosition[2] );
-
-		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] + ZeroPosition[0], olsr_con->right_olsr_node->pos_vec[1]+ ZeroPosition[1], olsr_con->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
-		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] + ZeroPosition[0], olsr_con->right_olsr_node->pos_vec[1]+ 0.2 + ZeroPosition[1], olsr_con->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
-		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] + ZeroPosition[0], olsr_con->right_olsr_node->pos_vec[1]- 0.2 + ZeroPosition[1], olsr_con->right_olsr_node->pos_vec[2] + ZeroPosition[2] );
-
+		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] , olsr_con->right_olsr_node->pos_vec[1] , olsr_con->right_olsr_node->pos_vec[2] );
+		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] , olsr_con->right_olsr_node->pos_vec[1]+ 0.2 , olsr_con->right_olsr_node->pos_vec[2] );
+		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] , olsr_con->right_olsr_node->pos_vec[1]- 0.2 , olsr_con->right_olsr_node->pos_vec[2] );
+		
 		if ( ColorSwitch ) {
 
 			/* HNA */
@@ -657,7 +657,16 @@ void keypress(struct s3d_evt *event) {
 				RotateSpeed--;
 			break;
 		case 16: /* strg + p */
-			s3d_translate(0,0.0,0.0,0.0);
+			s3d_translate(ZeroPoint,0.0,0.0,0.0);
+			ZeroPosition[0] = ZeroPosition[1] = ZeroPosition[2] = 0.0; 
+			break;
+		case 101: /* arrow up */
+			ZeroPosition[1]++;
+			s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
+			break;
+		case 103: /* arrow down */
+			ZeroPosition[1]--;
+			s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
 			break;
 	}
 }
@@ -673,17 +682,14 @@ void object_click(struct s3d_evt *evt)
 	int oid;
 	float distance,tmp_vector[3];
 	oid=(int)*((unsigned long *)evt->buf);
-	/*s3d_translate(ZeroPoint,0,50,40);
-	ZeroPosition[0] = 0;
-	ZeroPosition[1] = 50;
-	ZeroPosition[2] = 40;*/
 	struct olsr_node *olsr_node;
 	olsr_node = *lst_search(oid);
 	/* printf("obj2ip: search return %s\n",olsr_node->ip); */
-
-	distance = dirt(olsr_node->pos_vec,CamPosition[0],tmp_vector);
+	/*
+	distance = dirt(CamPosition[0],olsr_node->pos_vec,tmp_vector);
 	mov_add(ZeroPosition,tmp_vector,1.0);
-	s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
+	s3d_translate(ZeroPoint,ZeroPosition[0] * -1,ZeroPosition[1] * -1,ZeroPosition[2] * -1);
+	*/
 }
 
 /***
