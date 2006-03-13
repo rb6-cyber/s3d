@@ -46,7 +46,7 @@ struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end, *List_ptr;   /* needed pointer
 int Olsr_node_count = 0, Last_olsr_node_count = -1;
 int Olsr_node_count_obj = -1;
 
-int Byte_count;
+int Net_read_count;
 
 int Olsr_node_obj, Olsr_node_inet_obj, Olsr_node_hna_net;
 
@@ -386,6 +386,7 @@ void calc_olsr_node_mov( void ) {
 			distance = dirt( olsr_con->left_olsr_node->pos_vec, olsr_con->right_olsr_node->pos_vec, tmp_mov_vec );
 			f = (( olsr_con->left_etx + olsr_con->right_etx ) / 4.0 ) / distance;
 			if ( f < 0.3 ) f = 0.3;
+// 			if ( f < 0.9 ) f = 0.9;
 
 			mov_add( olsr_con->left_olsr_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
 			mov_add( olsr_con->right_olsr_node->mov_vec, tmp_mov_vec, - ( 1 / f - 1 ) );
@@ -410,7 +411,7 @@ void move_olsr_nodes( void ) {
 
 	float null_vec[3] = {0,0,0};
 	float tmp_mov_vec[3];
-	float distance, factor, etx, rgb;
+	float distance, factor, etx, rgb, rgb2;
 	struct olsr_con *olsr_con = Con_begin;
 
 	while ( olsr_con != NULL ) {
@@ -494,7 +495,7 @@ void move_olsr_nodes( void ) {
 		s3d_pop_vertex( olsr_con->obj_id, 6 );
 		s3d_pop_polygon( olsr_con->obj_id, 2 );
 		s3d_pop_material( olsr_con->obj_id, 1 );
-		
+
 		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] , olsr_con->left_olsr_node->pos_vec[1] , olsr_con->left_olsr_node->pos_vec[2] );
 		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] + 0.2 , olsr_con->left_olsr_node->pos_vec[1] , olsr_con->left_olsr_node->pos_vec[2] );
 		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] - 0.2 , olsr_con->left_olsr_node->pos_vec[1] , olsr_con->left_olsr_node->pos_vec[2] );
@@ -502,7 +503,7 @@ void move_olsr_nodes( void ) {
 		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] , olsr_con->right_olsr_node->pos_vec[1] , olsr_con->right_olsr_node->pos_vec[2] );
 		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] , olsr_con->right_olsr_node->pos_vec[1]+ 0.2 , olsr_con->right_olsr_node->pos_vec[2] );
 		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] , olsr_con->right_olsr_node->pos_vec[1]- 0.2 , olsr_con->right_olsr_node->pos_vec[2] );
-		
+
 		if ( ColorSwitch ) {
 
 			/* HNA */
@@ -517,28 +518,59 @@ void move_olsr_nodes( void ) {
 
 				etx = ( ( ( olsr_con->left_etx + olsr_con->right_etx ) / 2.0 ) - 10.0 ) * 10.0;
 
-				if ( ( etx >= 1.0 ) && ( etx < 2.0 ) ) {
+				/* very good link - bright blue */
+				if ( ( etx >= 1.0 ) && ( etx < 1.5 ) ) {
 
-					rgb = etx - 1.0;
 					s3d_push_material( olsr_con->obj_id,
-								rgb,1.0,0.0,
-								rgb,1.0,0.0,
-								rgb,1.0,0.0);
+							0.5,1.0,1.0,
+							0.5,1.0,1.0,
+							0.5,1.0,1.0);
 
+				/* good link - bright yellow */
+				} else if ( ( etx >= 1.5 ) && ( etx < 2.0 ) ) {
+
+					rgb = 2.0 - etx;
+					s3d_push_material( olsr_con->obj_id,
+							1.0,1.0,rgb,
+							1.0,1.0,rgb,
+							1.0,1.0,rgb);
+
+				/* not so good link - orange */
 				} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
 
-					rgb = 3.0 - etx;
+					rgb = 1.5 - ( etx / 2.0 );
 					s3d_push_material( olsr_con->obj_id,
-								1.0,rgb,0.0,
-								1.0,rgb,0.0,
-								1.0,rgb,0.0);
+							1.0,rgb,0.0,
+							1.0,rgb,0.0,
+							1.0,rgb,0.0);
 
+				/* bad link (almost dead) - brown */
+				} else if ( ( etx >= 3.0 ) && ( etx < 5.0 ) ) {
+
+					rgb = 1.75 - ( etx / 4.0 );
+					rgb2 = 1.25 - ( etx / 4.0 );
+					s3d_push_material( olsr_con->obj_id,
+							rgb,rgb2,0.0,
+							rgb,rgb2,0.0,
+							rgb,rgb2,0.0);
+
+				/* zombie link - grey */
+				} else if ( ( etx >= 5.0 ) && ( etx < 1000.0 ) ) {
+
+					rgb = 1000.0 / ( 1500.0 + etx );
+
+					s3d_push_material( olsr_con->obj_id,
+							rgb,rgb,rgb,
+							rgb,rgb,rgb,
+							rgb,rgb,rgb);
+
+				/* wtf - dark grey */
 				} else {
 
 					s3d_push_material( olsr_con->obj_id,
-								1.0,0.0,0.0,
-								1.0,0.0,0.0,
-								1.0,0.0,0.0);
+							0.6,0.6,0.6,
+							0.6,0.6,0.6,
+							0.6,0.6,0.6);
 
 				}
 
@@ -594,7 +626,7 @@ void mainloop() {
 	}
 
 	/* read data from socket */
-	Byte_count = 0;
+	Net_read_count = 0;
 	while ( ( net_result = net_main() ) != 0 ) {
 		if ( net_result == -1 ) {
 			s3d_quit();
@@ -658,7 +690,7 @@ void keypress(struct s3d_evt *event) {
 			break;
 		case 16: /* strg + p */
 			s3d_translate(ZeroPoint,0.0,0.0,0.0);
-			ZeroPosition[0] = ZeroPosition[1] = ZeroPosition[2] = 0.0; 
+			ZeroPosition[0] = ZeroPosition[1] = ZeroPosition[2] = 0.0;
 			break;
 		case 101: /* arrow up */
 			ZeroPosition[1]++;

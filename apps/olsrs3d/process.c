@@ -442,7 +442,7 @@ int process_main() {
 							if ( Debug ) printf( "new hna network: %s\n", olsr_node2->ip );
 
 						}
-						if(olsr_node1->visible && olsr_node2->visible)
+						if ( olsr_node1->visible && olsr_node2->visible )
 							add_olsr_con( olsr_node1, olsr_node2, -1000.00 );
 
 					}
@@ -469,16 +469,7 @@ int process_main() {
 
 	}
 
-	if ( last_cr_ptr != NULL ) memmove( lbuf, last_cr_ptr + 1, strlen( last_cr_ptr));
-
-	/* TODO: check this changes as they crash olsrs3d
-	if ( last_cr_ptr != NULL )
-	{*/
-		/* memmove( lbuf, ++last_cr_ptr, strlen( last_cr_ptr) ); */
-		/* TODO: please check this process.c:339: warning: operation on `last_cr_ptr' may be undefined, i've changed it like this: */
-		/*last_cr_ptr++;
-		memmove( lbuf, last_cr_ptr, strlen( last_cr_ptr) );
-	}*/
+	if ( last_cr_ptr != NULL ) memmove( lbuf, last_cr_ptr + 1, strlen( last_cr_ptr ) );
 
 	return(0);
 

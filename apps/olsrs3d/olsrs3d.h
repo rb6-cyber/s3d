@@ -96,7 +96,7 @@ extern int Olsr_node_count_obj;
 extern int Olsr_node_count;
 extern int Last_olsr_node_count;
 
-extern int Byte_count;
+extern int Net_read_count;
 
 extern int ZeroPoint;
 
