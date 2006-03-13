@@ -41,7 +41,7 @@ struct olsr_con {
 	float left_etx;   /* etx of left olsr node */
 	float right_etx;   /* etx of right olsr node */
 	int obj_id;   /* id of connection object in s3d */
-
+	int color;
 };
 
 
