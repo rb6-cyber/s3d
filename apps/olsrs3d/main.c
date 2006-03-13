@@ -45,7 +45,7 @@ struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end, *List_ptr;   /* needed pointer
 
 int Olsr_node_count = 0, Last_olsr_node_count = -1;
 int Olsr_node_count_obj = -1;
-
+int Olsr_ip_label_obj = -1;
 int Net_read_count;
 
 int Olsr_node_obj, Olsr_node_inet_obj, Olsr_node_hna_net;
@@ -61,7 +61,7 @@ int Zp_rotate = 0;
 int ColorSwitch = 0;   /* enable/disable colored olsr connections */
 int RotateSwitch = 0;
 int RotateSpeed = 2;
-
+float factor = 0.5;	/* factor in calc_olsr_node_mov */
 
 /***
  *
@@ -375,8 +375,9 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 void calc_olsr_node_mov( void ) {
 
-	float f, distance;
+	float distance;
 	float tmp_mov_vec[3];
+	float f;
 	struct olsr_con *olsr_con = Con_begin;
 
 	while ( olsr_con != NULL ) {
@@ -384,8 +385,8 @@ void calc_olsr_node_mov( void ) {
 		if ( ( olsr_con->left_etx != 0.0 ) && ( olsr_con->right_etx != 0.0  ) ) {
 
 			distance = dirt( olsr_con->left_olsr_node->pos_vec, olsr_con->right_olsr_node->pos_vec, tmp_mov_vec );
-			f = (( olsr_con->left_etx + olsr_con->right_etx ) / 4.0 ) / distance;
-			if ( f < 0.3 ) f = 0.3;
+			f = (( olsr_con->left_etx + olsr_con->right_etx ) / 4.0) / distance;
+			if ( f < factor ) f = factor;
 // 			if ( f < 0.9 ) f = 0.9;
 
 			mov_add( olsr_con->left_olsr_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
@@ -700,6 +701,16 @@ void keypress(struct s3d_evt *event) {
 			ZeroPosition[1]--;
 			s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
 			break;
+		case 104: /* page up / change factor in calc_olsr_node_mov */
+			if(factor < 0.9)
+				factor += 0.1;
+			printf("factor = %f\n",factor);
+			break;
+		case 105: /* page down / change factor in calc_olsr_node_mov */
+			if(factor > 0.3)
+				factor -= 0.1;
+			printf("factor = %f\n",factor);
+			break;
 	}
 }
 
@@ -713,6 +724,7 @@ void object_click(struct s3d_evt *evt)
 {
 	int oid;
 	float distance,tmp_vector[3];
+	char ip_str[50];
 	oid=(int)*((unsigned long *)evt->buf);
 	struct olsr_node *olsr_node;
 	olsr_node = *lst_search(oid);
@@ -722,6 +734,14 @@ void object_click(struct s3d_evt *evt)
 	mov_add(ZeroPosition,tmp_vector,1.0);
 	s3d_translate(ZeroPoint,ZeroPosition[0] * -1,ZeroPosition[1] * -1,ZeroPosition[2] * -1);
 	*/
+	if ( Olsr_ip_label_obj != -1 ) s3d_del_object( Olsr_ip_label_obj );
+	/*Olsr_ip_label_obj = s3d_clone(olsr_node->desc_id);*/
+	snprintf( ip_str, 50, "ip: %s", olsr_node->ip );
+	Olsr_ip_label_obj = s3d_draw_string( ip_str, NULL );
+	s3d_link( Olsr_ip_label_obj, 0 );
+	s3d_flags_on( Olsr_ip_label_obj, S3D_OF_VISIBLE );
+	s3d_scale( Olsr_ip_label_obj, 0.2 );
+	s3d_translate( Olsr_ip_label_obj, Left*3.0, -Bottom*3.0-0.6, -3.0 );
 }
 
 /***

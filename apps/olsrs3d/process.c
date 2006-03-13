@@ -46,7 +46,6 @@ char lbuf[MAXLINESIZE];
  ***/
 
 int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float etx ) {
-
 	struct olsr_con **olsr_con = &Con_begin;
 	struct olsr_con *prev_olsr_con = NULL;   /* previous olsr connection */
 
@@ -452,9 +451,10 @@ int process_main() {
 
 					olsr_node1 = get_olsr_node( &Olsr_root, con_from );
 					olsr_node2 = get_olsr_node( &Olsr_root, con_to );
-					f=10.0+strtod(etx,NULL)/10.0;
-					if ( f >= 5 ) add_olsr_con( olsr_node1, olsr_node2, f );   /* just to prevent ascii to float converting inconsistency ... */
-
+					f = strtod(etx,NULL); 
+					if ( f < 1 )
+						f = 999;
+					add_olsr_con( olsr_node1, olsr_node2, f );   /* just to prevent ascii to float converting inconsistency ... */
 				}
 
 				con_from = con_from_end = con_to = con_to_end = etx = etx_end = NULL;
