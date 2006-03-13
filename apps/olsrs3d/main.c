@@ -506,47 +506,79 @@ void move_olsr_nodes( void ) {
 				} else if ( ( etx >= 1.5 ) && ( etx < 2.0 ) ) {
 
 					rgb = 2.0 - etx;
-					s3d_pep_material( olsr_con->obj_id,
-							1.0,1.0,rgb,
-							1.0,1.0,rgb,
-							1.0,1.0,rgb);
+					if( olsr_con->color != 3 || (olsr_con->color == 3 && olsr_con->rgb[2] !=  (int) rintf(rgb * 10))) {
+						s3d_pep_material( olsr_con->obj_id,
+								1.0,1.0,rgb,
+								1.0,1.0,rgb,
+								1.0,1.0,rgb);
+						olsr_con->color = 3;
+						
+						olsr_con->rgb[0] = 1;
+						olsr_con->rgb[1] = 1;
+						olsr_con->rgb[2] = (int) rintf(rgb * 10);
+					}
 
 				/* not so good link - orange */
 				} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
 
 					rgb = 1.5 - ( etx / 2.0 );
-					s3d_pep_material( olsr_con->obj_id,
-							1.0,rgb,0.0,
-							1.0,rgb,0.0,
-							1.0,rgb,0.0);
+					if( olsr_con->color != 4 || (olsr_con->color == 4 && olsr_con->rgb[1] !=  (int) rintf(rgb * 10))) {
+						s3d_pep_material( olsr_con->obj_id,
+								1.0,rgb,0.0,
+								1.0,rgb,0.0,
+								1.0,rgb,0.0);
+						olsr_con->color = 4;
+						
+						olsr_con->rgb[0] = 1;
+						olsr_con->rgb[1] = (int) rintf(rgb * 10);
+						olsr_con->rgb[2] = 0;
+					}
 
 				/* bad link (almost dead) - brown */
 				} else if ( ( etx >= 3.0 ) && ( etx < 5.0 ) ) {
 
 					rgb = 1.75 - ( etx / 4.0 );
 					rgb2 = 1.25 - ( etx / 4.0 );
-					s3d_pep_material( olsr_con->obj_id,
-							rgb,rgb2,0.0,
-							rgb,rgb2,0.0,
-							rgb,rgb2,0.0);
+					if( olsr_con->color != 5 || (olsr_con->color == 5 && olsr_con->rgb[0] !=  (int) rintf(rgb * 10)) 
+											|| (olsr_con->color == 5 && olsr_con->rgb[1] !=  (int) rintf(rgb2 * 10)) ) {
+						s3d_pep_material( olsr_con->obj_id,
+								rgb,rgb2,0.0,
+								rgb,rgb2,0.0,
+								rgb,rgb2,0.0);
+						olsr_con->color = 5;
+						
+						olsr_con->rgb[0] = (int) rintf(rgb * 10);
+						olsr_con->rgb[1] = (int) rintf(rgb2 * 10);
+						olsr_con->rgb[2] = 0;
+					}
 
 				/* zombie link - grey */
 				} else if ( ( etx >= 5.0 ) && ( etx < 1000.0 ) ) {
 
 					rgb = 1000.0 / ( 1500.0 + etx );
-
-					s3d_pep_material( olsr_con->obj_id,
-							rgb,rgb,rgb,
-							rgb,rgb,rgb,
-							rgb,rgb,rgb);
+					if( olsr_con->color != 6 || (olsr_con->color == 6 && olsr_con->rgb[0] !=  (int) rintf(rgb * 10)) 
+											|| (olsr_con->color == 6 && olsr_con->rgb[1] !=  (int) rintf(rgb * 10))
+											|| (olsr_con->color == 6 && olsr_con->rgb[2] !=  (int) rintf(rgb * 10)) ) {
+						s3d_pep_material( olsr_con->obj_id,
+								rgb,rgb,rgb,
+								rgb,rgb,rgb,
+								rgb,rgb,rgb);
+						olsr_con->color = 6;
+						
+						olsr_con->rgb[0] = (int) rintf(rgb * 10);
+						olsr_con->rgb[1] = (int) rintf(rgb * 10);
+						olsr_con->rgb[2] =(int)  rintf(rgb * 10);
+					}
 
 				/* wtf - dark grey */
 				} else {
-
-					s3d_pep_material( olsr_con->obj_id,
-							0.3,0.3,0.3,
-							0.3,0.3,0.3,
-							0.3,0.3,0.3);
+					if(olsr_con->color != 7) {
+						s3d_pep_material( olsr_con->obj_id,
+								0.3,0.3,0.3,
+								0.3,0.3,0.3,
+								0.3,0.3,0.3);
+						olsr_con->color = 7;
+					}
 
 				}
 
