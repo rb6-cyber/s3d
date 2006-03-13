@@ -667,49 +667,47 @@ void keypress(struct s3d_evt *event) {
 	int key;
 	key=*((unsigned short *)event->buf);
 	switch(key) {
-		case 27: /* esc */
+		case 27: /* esc -> close olsr */
 			stop();
 			break;
 		case 15: /* strg + o */
 			lst_out(); /* output ob2ip list */
 			break;
-		case 99: /* c */
+		case 99: /* c -> color on off*/
 			if(ColorSwitch) ColorSwitch = 0;
 			else ColorSwitch = 1;
 			break;
-		case 114: /* r */
+		case 114: /* r -> rotate start/stop*/
 			if(RotateSwitch) RotateSwitch = 0;
 			else RotateSwitch = 1;
 			break;
-		case 43: /* + */
+		case 43: /* + -> rotate speed increase*/
 			if(RotateSwitch && RotateSpeed < 10)
 				RotateSpeed++;
 			break;
-		case 45: /* - */
+		case 45: /* - -> rotate speed decrease*/
 			if(RotateSwitch && RotateSpeed > 1)
 				RotateSpeed--;
 			break;
-		case 16: /* strg + p */
+		case 16: /* strg + p / reset nodes ( zeroPoint to 0,0,0 ) */
 			s3d_translate(ZeroPoint,0.0,0.0,0.0);
 			ZeroPosition[0] = ZeroPosition[1] = ZeroPosition[2] = 0.0;
 			break;
-		case 101: /* arrow up */
+		case 101: /* arrow up / move nodes up */
 			ZeroPosition[1]++;
 			s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
 			break;
-		case 103: /* arrow down */
+		case 103: /* arrow down / move nodes down */
 			ZeroPosition[1]--;
 			s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
 			break;
 		case 104: /* page up / change factor in calc_olsr_node_mov */
 			if(factor < 0.9)
 				factor += 0.1;
-			printf("factor = %f\n",factor);
 			break;
 		case 105: /* page down / change factor in calc_olsr_node_mov */
 			if(factor > 0.3)
 				factor -= 0.1;
-			printf("factor = %f\n",factor);
 			break;
 	}
 }
