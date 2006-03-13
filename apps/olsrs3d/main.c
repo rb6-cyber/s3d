@@ -479,10 +479,13 @@ void move_olsr_nodes( void ) {
 			/* HNA */
 			if ( olsr_con->left_etx == -1000.00 ) {
 
-				s3d_pep_material( olsr_con->obj_id,
-							   0.0,0.0,1.0,
-							   0.0,0.0,1.0,
-							   0.0,0.0,1.0);
+				if(olsr_con->color != 1) {
+					s3d_pep_material( olsr_con->obj_id,
+								   0.0,0.0,1.0,
+								   0.0,0.0,1.0,
+								   0.0,0.0,1.0);
+					olsr_con->color = 1;
+				}
 
 			} else {
 
@@ -491,10 +494,13 @@ void move_olsr_nodes( void ) {
 				/* very good link - bright blue */
 				if ( ( etx >= 1.0 ) && ( etx < 1.5 ) ) {
 
-					s3d_pep_material( olsr_con->obj_id,
-							0.5,1.0,1.0,
-							0.5,1.0,1.0,
-							0.5,1.0,1.0);
+					if(olsr_con->color != 2) {
+						s3d_pep_material( olsr_con->obj_id,
+								0.5,1.0,1.0,
+								0.5,1.0,1.0,
+								0.5,1.0,1.0);
+						olsr_con->color = 2;
+					}
 
 				/* good link - bright yellow */
 				} else if ( ( etx >= 1.5 ) && ( etx < 2.0 ) ) {
@@ -548,10 +554,13 @@ void move_olsr_nodes( void ) {
 
 		} else {
 
-			s3d_pep_material( olsr_con->obj_id,
-						1.0,1.0,1.0,
-						1.0,1.0,1.0,
-						1.0,1.0,1.0);
+			if(olsr_con->color != 0) {
+				s3d_pep_material( olsr_con->obj_id,
+							1.0,1.0,1.0,
+							1.0,1.0,1.0,
+							1.0,1.0,1.0);
+				olsr_con->color = 0;
+			}
 
 		}
 
@@ -642,7 +651,7 @@ void keypress(struct s3d_evt *event) {
 		case 15: /* strg + o */
 			lst_out(); /* output ob2ip list */
 			break;
-		case 99: /* c -> color on off*/
+		case 99: /* c -> color on/off */
 			if(ColorSwitch) ColorSwitch = 0;
 			else ColorSwitch = 1;
 			break;
@@ -658,23 +667,23 @@ void keypress(struct s3d_evt *event) {
 			if(RotateSwitch && RotateSpeed > 1)
 				RotateSpeed--;
 			break;
-		case 16: /* strg + p / reset nodes ( zeroPoint to 0,0,0 ) */
+		case 16: /* strg + p -> reset nodes ( zeroPoint to 0,0,0 ) */
 			s3d_translate(ZeroPoint,0.0,0.0,0.0);
 			ZeroPosition[0] = ZeroPosition[1] = ZeroPosition[2] = 0.0;
 			break;
-		case 101: /* arrow up / move nodes up */
+		case 101: /* arrow up -> move nodes up */
 			ZeroPosition[1]++;
 			s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
 			break;
-		case 103: /* arrow down / move nodes down */
+		case 103: /* arrow down -> move nodes down */
 			ZeroPosition[1]--;
 			s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
 			break;
-		case 104: /* page up / change factor in calc_olsr_node_mov */
+		case 104: /* page up -> change factor in calc_olsr_node_mov */
 			if(factor < 0.9)
 				factor += 0.1;
 			break;
-		case 105: /* page down / change factor in calc_olsr_node_mov */
+		case 105: /* page down -> change factor in calc_olsr_node_mov */
 			if(factor > 0.3)
 				factor -= 0.1;
 			break;
