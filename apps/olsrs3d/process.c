@@ -78,6 +78,7 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 
 		/* create connection object */
 		(*olsr_con)->obj_id = s3d_new_object();
+		(*olsr_con)->color = 0;
 		s3d_push_material( (*olsr_con)->obj_id,
 				  1.0,1.0,1.0,
 				  1.0,1.0,1.0,
@@ -454,7 +455,7 @@ int process_main() {
 					f = strtod(etx,NULL); 
 					if ( f < 1 )
 						f = 999;
-					add_olsr_con( olsr_node1, olsr_node2, f );   /* just to prevent ascii to float converting inconsistency ... */
+					add_olsr_con( olsr_node1, olsr_node2, f );
 				}
 
 				con_from = con_from_end = con_to = con_to_end = etx = etx_end = NULL;
