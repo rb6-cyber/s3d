@@ -517,7 +517,7 @@ void move_olsr_nodes( void ) {
 
 			} else {
 
-				etx = ( ( ( olsr_con->left_etx + olsr_con->right_etx ) / 2.0 ) - 10.0 ) * 10.0;
+				etx = ( olsr_con->left_etx + olsr_con->right_etx ) / 2.0;
 
 				/* very good link - bright blue */
 				if ( ( etx >= 1.0 ) && ( etx < 1.5 ) ) {
@@ -569,9 +569,9 @@ void move_olsr_nodes( void ) {
 				} else {
 
 					s3d_push_material( olsr_con->obj_id,
-							0.6,0.6,0.6,
-							0.6,0.6,0.6,
-							0.6,0.6,0.6);
+							0.3,0.3,0.3,
+							0.3,0.3,0.3,
+							0.3,0.3,0.3);
 
 				}
 
