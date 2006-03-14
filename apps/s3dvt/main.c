@@ -34,7 +34,7 @@
 #include <pthread.h>	 /*  pthread_create() */
 #include <s3d.h>		 /*  s3d_* */
 #include <time.h>	/* nanosleep() */
-static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
+static struct timespec t={0,10*1000*1000}; /* 10 mili seconds */
 
 
 static int pid;
