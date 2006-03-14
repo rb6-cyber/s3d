@@ -30,6 +30,12 @@
 #include <stdio.h>  /*  printf() */
 #include <math.h>	/* sin(), cos() */
 #define bsize 	0.2
+struct tver
+{
+	float x,y,z;
+};
+struct tver campos, camrot;
+
 struct app {
 	unsigned int oid,oid_c;
 	float r;
@@ -41,7 +47,7 @@ struct app {
 	int sphere;
 	struct app *next;
 };
-
+int ego_mode=0;
 float asp=1.0;
 struct app *apps=NULL;
 float bottom=-1.0;
@@ -322,6 +328,15 @@ void object_info(struct s3d_evt *hrmz)
 	inf=(struct s3d_obj_info *)hrmz->buf;
 	if (inf->object==0)
 	{
+		campos.x=inf->trans_x;
+		campos.y=inf->trans_y;
+		campos.z=inf->trans_z;
+		printf("campos update: %f, %f, %f\n",campos.x,campos.y,campos.z);
+		camrot.x=inf->rot_x;
+		camrot.y=inf->rot_y;
+		camrot.z=inf->rot_z;
+		printf("camrot update: %f, %f, %f\n",camrot.x,camrot.y,camrot.z);
+
 		if (asp!=inf->scale)
 		{
 			asp=inf->scale;
@@ -362,6 +377,32 @@ void mainloop()
 	}
 	usleep(10000);
 }
+void keypress(struct s3d_evt *event)
+{
+	int key;
+	float xdif=0,ydif=0;
+	key=*((unsigned short *)event->buf);
+	switch (key)
+	{
+		case 1:  ego_mode=(ego_mode+1)%2;
+				 printf("ego mode %d\n",ego_mode);
+				 break;
+		case 'w':ydif=-1;break;
+		case 'a':xdif=-1;break;
+		case 's':ydif= 1;break;
+		case 'd':xdif= 1;break;
+		default:
+			printf("unknown/not handled key %d\n", key);
+	}
+	if (ego_mode)
+	{
+		campos.x+=ydif*sin((camrot.y*M_PI)/180);
+		campos.z+=ydif*cos((camrot.y*M_PI)/180);
+		campos.x+=xdif*cos((-camrot.y*M_PI)/180);
+		campos.z+=xdif*sin((-camrot.y*M_PI)/180);
+		s3d_translate(	0,campos.x,0,campos.z);
+	}
+}
 
 int main (int argc, char **argv)
 {
@@ -372,6 +413,7 @@ int main (int argc, char **argv)
 		s3d_set_callback(S3D_EVENT_QUIT,stop);
 		s3d_set_callback(S3D_MCP_DEL_OBJECT,mcp_del_object);
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
+		s3d_set_callback(S3D_EVENT_KEY,keypress);
 
 		if (s3d_select_font("vera"))
 		{

@@ -36,9 +36,10 @@ struct menu_entry {
 static int go=-1;
 static int act;
 static struct menu_entry menu[]={
-		{"objs/comp.3ds","filebrowser","./filebrowser",	0,0},
 		{"objs/comp.3ds","terminal","s3dvt",				0,0},
-		{"objs/comp.3ds","clock","s3dclock",				0,0}
+		{"objs/comp.3ds","olsrs3d","olsrs3d",				0,0},
+		{"objs/comp.3ds","s3d_x11gate","s3d_x11gate",		0,0},
+		{"objs/comp.3ds","logout","LOGOUT",					0,0}, 
 };
 void menu_click(int oid)
 {
@@ -68,8 +69,14 @@ void menu_click(int oid)
 		{
 			if ((oid==menu[i].icon_oid) || (oid==menu[i].str_oid))
 			{
+				if (0==strncmp(menu[i].path,"LOGOUT",6))
+				{
+					s3d_quit();
+					return;
+				}
 				strncpy(exec,menu[i].path,256);
 				strncat(exec,"> /dev/null 2>&1 &",256); /* ignoring output, starting in background */
+				printf("executing [%s]\n",exec);
 				system(exec);
 				return;
 			}

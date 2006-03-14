@@ -1,5 +1,3 @@
-general:
-	* use nanosleep(), not usleep()
 dot_mcp:
 	* sane paths for applications
 	* logout button for use with rc-file
