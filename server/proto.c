@@ -144,6 +144,19 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 					obj_push_poly(p,oid, (uint32_t *)cptr, num);
 				}
 				break;
+			case S3D_P_C_PUSH_LINE:
+				if (length>4)
+				{
+					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
+					num=(length-4)/(4*3);
+ 					dprintf(LOW,"received %d new lines for object oid...%d", num, oid); 
+					for (i=0;i<(num*3);i++)
+						*((uint32_t *)cptr+i)=
+								ntohl(*((uint32_t *)cptr+i));
+					 /*  convert index names */
+					obj_push_line(p,oid, (uint32_t *)cptr, num);
+				}
+				break;
 			case S3D_P_C_PUSH_TEX:
 				if (length>4)
 				{
@@ -184,6 +197,16 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 					obj_pep_mat(p,oid, (float *)cptr, num);
 				}
 				break;
+			case S3D_P_C_PEP_VERTEX:
+				if (length>4)
+				{
+					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
+					num=(length-4)/(4*3);
+ 					dprintf(LOW,"pepping %d new vertices for object oid...%d", num, oid); 
+					obj_pep_vertex(p,oid, (float  *)cptr, num);
+				}
+				break;
+
 			case S3D_P_C_PEP_MAT_TEX:
 				if (length>4)
 				{
@@ -193,6 +216,19 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 					obj_pep_mat_tex(p,oid, (uint32_t *)cptr, num);
 				}
 				break;
+			case S3D_P_C_PEP_LINE:
+				if (length>4)
+				{
+					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
+					num=(length-4)/(4*3);
+ 					dprintf(LOW,"pepping %d new lines for object oid...%d", num, oid); 
+					for (i=0;i<(num*3);i++)
+						*((uint32_t *)cptr+i)=
+								ntohl(*((uint32_t *)cptr+i));
+					obj_pep_line(p,oid, (uint32_t *)cptr, num);
+				}
+				break;
+
 			case S3D_P_C_LOAD_POLY_NORMAL:
 				if (length>8)
 				{
@@ -256,6 +292,16 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 					obj_del_poly(p,oid,num);
 				}	
 				break;
+			case S3D_P_C_DEL_LINE:
+				if (length==8)
+				{
+					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
+					num=ntohl(*((uint32_t *)cptr));		cptr+=4;
+ 					dprintf(LOW,"deleting %d lines for object oid...%d", num, oid); 
+					obj_del_line(p,oid,num);
+				}	
+				break;
+
 			case S3D_P_C_DEL_MAT:
 				if (length==8)
 				{

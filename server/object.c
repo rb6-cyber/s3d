@@ -240,6 +240,46 @@ int obj_push_poly(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
 	}
 	return(0);
 }
+/*  its always the same ... this time we push some lines on the stack */
+int obj_push_line(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
+{
+	uint32_t i,m;
+	struct t_line *p_line;
+	struct t_obj *obj;
+	uint32_t *px;
+	if (obj_valid(p,oid,obj))
+	{
+		if (obj->oflags&OF_NODATA)
+		{
+			errds(MED,"obj_push_line()","error: no data on object allowed!");
+			return(-1);
+		}
+
+		m=obj->n_line;	 /*  saving the first number of lines */
+		px=x; 				 /*  movable pointer for x, later */
+		if (NULL!=(p_line=realloc(obj->p_line,sizeof(struct t_line) * ( n + (obj->n_line)))))
+		{
+			if (obj->dplist)
+			{
+				dprintf(VLOW,"freeing display list %d to get new data",obj->dplist);
+				glDeleteLists(obj->dplist,1);
+				obj->dplist=0;
+			}
+			obj->p_line=p_line;
+			for (i=0;i<n;i++)
+			{
+				obj->p_line[m+i].v[0]=*(px++);
+				obj->p_line[m+i].v[1]=*(px++);
+				obj->p_line[m+i].mat=*(px++);
+			}
+			obj->n_line+=n;
+		}
+	} else 
+	{
+		return(-1);
+	}
+	return(0);
+}
 /* creates n new textures on the texture stack, of object oid, with (w,h)
  * given through *x */
 int obj_push_tex(struct t_process *p, uint32_t oid, uint16_t *x, uint32_t n)
@@ -408,8 +448,8 @@ int obj_pep_mat(struct t_process *p, uint32_t oid, float *x, uint32_t n)
 	float *px;
 	if (obj_valid(p,oid,obj))
 	{
-		m=obj->n_mat;	 /*  saving the first number of vertices */
-		if (m<n)	 /*  saving the first number of polys */
+		m=obj->n_mat;	 /*  saving the first number of materials */
+		if (m<n)	
 			n=m;  /*  when more mats than available should be pepped,  */
 				 /*  just pep the first m mats */
 		px=x; 				 /*  movable pointer for x, later */
@@ -439,6 +479,115 @@ int obj_pep_mat(struct t_process *p, uint32_t oid, float *x, uint32_t n)
 			obj->p_mat[i].diff_g=*(px++);
 			obj->p_mat[i].diff_b=*(px++);
 			obj->p_mat[i].diff_a=*(px++);
+		}
+	} else 
+	{
+		return(-1);
+	}
+	return(0);
+}
+/*  overwrite n latest lines with some other lines */
+int obj_pep_line(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
+{
+	uint32_t i,m;
+	struct t_obj *obj;
+	uint32_t *px;
+	if (obj_valid(p,oid,obj))
+	{
+		m=obj->n_line;	 /*  saving the first number of lines */
+		if (m<n)	
+			n=m;  /*  when more lines than available should be pepped,  */
+				 /*  just pep the first m lines */
+		px=x; 				 /*  movable pointer for x, later */
+		if (obj->oflags&OF_NODATA)
+		{
+			errds(MED,"obj_pep_line()","error: no data on object allowed!");
+			return(-1);
+		}
+		if (obj->dplist)
+		{
+			dprintf(VLOW,"freeing display list %d to get new data",obj->dplist);
+			glDeleteLists(obj->dplist,1);
+			obj->dplist=0;
+		}
+		dprintf(MED,"pepping lines %d to %d",(m-n),m);
+		for (i=(m-n);i<m;i++)
+		{
+			obj->p_line[i].v[0]=*(px++);
+			obj->p_line[i].v[1]=*(px++);
+			obj->p_line[i].mat=*(px++);
+		}
+	} else 
+	{
+		return(-1);
+	}
+	return(0);
+}
+
+
+/*  overwrite n latest vertices with some other vertices */
+int obj_pep_vertex(struct t_process *p, uint32_t oid, float *x, uint32_t n)
+{
+	uint32_t i,m;
+	float r;
+	struct t_vertex *a;
+	struct t_obj *obj;
+	float *px;
+	int is_clnsrc;
+	if (obj_valid(p,oid,obj))
+	{
+		m=obj->n_vertex;	 /*  saving the first number of vertices */
+		if (m<n)	 
+			n=m;  /*  when more mats than available should be pepped,  */
+				 /*  just pep the first m mats */
+		px=x; 				 /*  movable pointer for x, later */
+		if (obj->oflags&OF_NODATA)
+		{
+			errds(MED,"obj_pep_vertices()","error: no data on object allowed!");
+			return(-1);
+		}
+		if (obj->dplist)
+		{
+			dprintf(VLOW,"freeing display list %d to get new data",obj->dplist);
+			glDeleteLists(obj->dplist,1);
+			obj->dplist=0;
+		}
+		dprintf(MED,"pepping vertices %d to %d",(m-n),m);
+		for (i=(m-n);i<m;i++)
+		{
+			obj->p_vertex[m+i].x=*(px++);
+			obj->p_vertex[m+i].y=*(px++);
+			obj->p_vertex[m+i].z=*(px++);
+			a=&obj->p_vertex[m+i];
+			r=obj->scale * sqrt(	
+					(a->x * a->x ) + 
+					(a->y * a->y ) +
+					(a->z * a->z ));
+			if (r> obj->r) obj->r=r;
+		}
+		if (p->id!=MCP)
+		{
+		/* this is doing live update which is quite okay, but we need
+		 * to check for biggest update and clonesources ... */
+			obj_check_biggest_object(p,oid);
+		}
+		if (p->object[oid]->oflags&OF_CLONE_SRC)
+		{
+			is_clnsrc=0;
+			for (i=0;i<p->n_obj;i++)
+			{
+				if (p->object[i]!=NULL)
+				{
+					if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->n_vertex==oid))
+					{ /* if it's pointing to our object ... */
+						is_clnsrc=1;
+						p->object[i]->r=obj->r*(p->object[i]->r/obj->scale); /* give it the new radius too! */
+						obj_check_biggest_object(p,i);
+					}
+				}
+			}
+			if (!is_clnsrc)
+				p->object[oid]->oflags&=~OF_CLONE_SRC;
 		}
 	} else 
 	{
@@ -803,6 +952,45 @@ int obj_del_poly(struct t_process *p, uint32_t oid, uint32_t n)
 		return(-1);
 	return(0);
 }
+/*  deletes the last n lines of the stack. if n>=n_line, delete all lines */
+int obj_del_line(struct t_process *p, uint32_t oid, uint32_t n)
+{
+	uint32_t m;
+	struct t_line *p_line;
+	struct t_obj *obj;
+	if (obj_valid(p,oid,obj))
+	{
+		if (obj->oflags&OF_NODATA)
+		{
+			errds(MED,"obj_del_line()","error: can't delete line in this object!");
+			return(-1);
+		}
+
+		dprintf(VLOW,"deleting %d lines of pid %d/ oid %d",n,p->id,oid);
+		m=obj->n_line;	 /*  saving the first number of line  */
+		if (n>=m) 
+		{
+			if (m>0)
+				free(obj->p_line);
+			obj->n_line=0;
+			obj->p_line=NULL;
+		}
+		else if (n>0)
+		if (NULL!=(p_line=realloc(obj->p_line,sizeof(struct t_line) * ( m - n))))
+		{
+			if (obj->dplist)
+			{
+				dprintf(VLOW,"freeing display list %d to get new data",obj->dplist);
+				glDeleteLists(obj->dplist,1);
+				obj->dplist=0;
+			}
+			obj->p_line=p_line;
+			obj->n_line-=n;
+		}
+	} else 
+		return(-1);
+	return(0);
+}
 /*  delete texture object */
 int obj_del_tex(struct t_process *p, uint32_t oid, uint32_t n)
 {
@@ -820,7 +1008,7 @@ int obj_del_tex(struct t_process *p, uint32_t oid, uint32_t n)
 		}
 
 		dprintf(VLOW,"deleting %d textures of pid %d/ oid %d",n,p->id,oid);
-		m=obj->n_tex;	 /*  saving the first number of poly  */
+		m=obj->n_tex;	 /*  saving the first number of textures  */
 		if (n>=m) 
 		{
 			for (i=0;i<m;i++)

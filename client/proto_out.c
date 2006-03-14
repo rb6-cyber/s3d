@@ -228,6 +228,19 @@ int s3d_push_polygon(int object, int v1, int v2, int v3, int material)
 	net_send(S3D_P_C_PUSH_POLY,buf,len);
 	return(0);
 }
+int s3d_push_line(int object, int v1, int v2, int material)
+{
+	char				buf[4+3*4],*ptr;
+	int					len=4+3*4;
+	ptr=buf;
+	*((uint32_t *)ptr)=htonl(object);			ptr+=sizeof(uint32_t);		  /*  object id */
+	*((uint32_t *)ptr)=htonl(v1);				ptr+=sizeof(uint32_t);
+	*((uint32_t *)ptr)=htonl(v2);				ptr+=sizeof(uint32_t);
+	*((uint32_t *)ptr)=htonl(material);			ptr+=sizeof(uint32_t);
+
+	net_send(S3D_P_C_PUSH_LINE,buf,len);
+	return(0);
+}
 
 /*  this is the polygon array version */
 /*  assumes to have a list of polys which consists of v1,v2,v3,material */
@@ -250,6 +263,28 @@ int s3d_push_polygons(int object, unsigned long *pbuf, unsigned short n)
 			flen=(len-i*stepl);
 		memcpy(ptr,(char *)pbuf+i*stepl,flen);
 		net_send(S3D_P_C_PUSH_POLY,buf,flen+4);
+	}
+	return(0);
+}
+int s3d_push_lines(int object, unsigned long *lbuf, unsigned short n)
+{
+	char				buf[MF_LEN+4],*ptr;
+	int					f,i,len=n*4*3;
+	int					flen,stepl;
+	if (n<1)
+		return(-1);
+	stepl=((int)((MF_LEN-4)/(4*3)))*(4*3);
+	f=len/(MF_LEN-4)+1;  /*  how many fragments? */
+	for (i=0;i<f;i++)
+	{
+		ptr=buf;
+		*((uint32_t *)ptr)=htonl(object);			ptr+=sizeof(uint32_t);		  /*  object id */
+		if (len-i*stepl>stepl)
+			flen=stepl;
+		else
+			flen=(len-i*stepl);
+		memcpy(ptr,(char *)lbuf+i*stepl,flen);
+		net_send(S3D_P_C_PUSH_LINE,buf,flen+4);
 	}
 	return(0);
 }
@@ -316,6 +351,16 @@ int s3d_pop_polygon(int object, unsigned long n)
 	buf[0]=htonl(object);
 	buf[1]=htonl(n);
 	net_send(S3D_P_C_DEL_POLY,(char *)buf,4*2);
+	return(0);
+	
+}
+/*  delete n lines */
+int s3d_pop_line(int object, unsigned long n)
+{
+	uint32_t		buf[2];
+	buf[0]=htonl(object);
+	buf[1]=htonl(n);
+	net_send(S3D_P_C_DEL_LINE,(char *)buf,4*2);
 	return(0);
 	
 }
@@ -415,6 +460,66 @@ int s3d_pep_polygon_normals(int object, float *nbuf,unsigned short n)
 	*((uint32_t *)buf)=htonl(object);
 	memcpy(buf+4,nbuf,9*n*sizeof(float));
 	net_send(S3D_P_C_PEP_POLY_NORMAL,(char *)buf,n*9*sizeof(float)+4);
+	return(0);
+	
+}
+/*  replaces the last vertex. */
+int s3d_pep_vertex(int object, float x, float y, float z)
+{
+	char				buf[4+3*4],*ptr;
+	int					len=4+3*4;
+
+	ptr=buf;
+	*((uint32_t *)ptr)=htonl(object);	ptr+=sizeof(uint32_t);		  /*  object id */
+	*((float *)ptr)=x;					ptr+=sizeof(float);
+	*((float *)ptr)=y;					ptr+=sizeof(float);
+	*((float *)ptr)=z;					ptr+=sizeof(float);
+	net_send(S3D_P_C_PEP_VERTEX, buf, len);
+	return(0);
+}
+/* replaces the last line */
+int s3d_pep_line(int object, int v1, int v2, int material)
+{
+	char				buf[4+3*4],*ptr;
+	int					len=4+3*4;
+	ptr=buf;
+	*((uint32_t *)ptr)=htonl(object);			ptr+=sizeof(uint32_t);		  /*  object id */
+	*((uint32_t *)ptr)=htonl(v1);				ptr+=sizeof(uint32_t);
+	*((uint32_t *)ptr)=htonl(v2);				ptr+=sizeof(uint32_t);
+	*((uint32_t *)ptr)=htonl(material);			ptr+=sizeof(uint32_t);
+
+	net_send(S3D_P_C_PEP_LINE,buf,len);
+	return(0);
+}
+
+
+/*  replaces the last n lines. */
+int s3d_pep_lines(int object, unsigned long *lbuf,unsigned short n)
+{
+	unsigned char buf[MF_LEN+4];
+	if ((n*3*4+4)>MF_LEN) 
+	{
+		errds(MED,"s3d_pep_vertices()","too much data");
+		return(-1);  /*  impossible */
+	}
+	*((uint32_t *)buf)=htonl(object);
+	memcpy(buf+4,lbuf,3*4*n);
+	net_send(S3D_P_C_PEP_LINE, (char *)buf,n*3*4+4);
+	return(0);
+	
+}
+/*  replaces the last n vertices. */
+int s3d_pep_vertices(int object, float *vbuf,unsigned short n)
+{
+	unsigned char buf[MF_LEN+4];
+	if ((n*3*sizeof(float)+4)>MF_LEN) 
+	{
+		errds(MED,"s3d_pep_polygon_normals()","too much data");
+		return(-1);  /*  impossible */
+	}
+	*((uint32_t *)buf)=htonl(object);
+	memcpy(buf+4,vbuf,3*n*sizeof(float));
+	net_send(S3D_P_C_PEP_VERTEX,(char *)buf,n*3*sizeof(float)+4);
 	return(0);
 	
 }

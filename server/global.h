@@ -81,6 +81,11 @@ struct t_poly
 	uint32_t mat;  				 /*  material index */
 	struct t_texc tc[3];		 /*  texture coords */
 };
+struct t_line
+{
+	uint32_t v[2];
+	uint32_t mat;
+};
 /*  material of surfaces, as it's usual in the OpenGL standard */
 struct t_mat
 {
@@ -128,7 +133,7 @@ struct t_obj
 #define OF_3DPOINTER	0xB0000000
 
 #define OF_MASK			0x00FFFFFF
-		uint32_t n_vertex, n_mat, n_poly, n_tex;
+		uint32_t n_vertex, n_mat, n_poly, n_tex, n_line;
 					 /*  if OF_VIRTUAL is set, n_mat contains the pid */
 					 /*  if OF_CLONE is set, n_vertex contains the original oid */
 					 /*  I know this is dirty, but it would a waste of data if I don't do so ... */
@@ -138,6 +143,7 @@ struct t_obj
 		struct t_vertex *p_vertex;
 		struct t_mat	*p_mat;
 		struct t_poly	*p_poly;
+		struct t_line   *p_line;
 		struct t_tex	*p_tex;
 		struct t_vertex translate,rotate;
 		float 			scale;
@@ -308,18 +314,22 @@ int obj_del				(struct t_process *p, uint32_t oid);
 int obj_push_vertex		(struct t_process *p, uint32_t oid, float *x, uint32_t n);
 int obj_push_mat		(struct t_process *p, uint32_t oid, float *x, uint32_t n);
 int obj_push_poly		(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n);
+int obj_push_line		(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n);
 int obj_push_tex		(struct t_process *p, uint32_t oid, uint16_t *x, uint32_t n);
 int obj_pep_poly_normal	(struct t_process *p, uint32_t oid, float *x, uint32_t n);
 int obj_pep_poly_texc	(struct t_process *p, uint32_t oid, float *x, uint32_t  n);
-int obj_pep_mat			(struct t_process *p, uint32_t oid,float *x, uint32_t n);
+int obj_pep_mat			(struct t_process *p, uint32_t oid, float *x, uint32_t n);
 int obj_pep_mat_tex		(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n);
+int obj_pep_vertex		(struct t_process *p, uint32_t oid, float *x, uint32_t n);
+int obj_pep_line		(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n);
 int obj_load_poly_normal(struct t_process *p, uint32_t oid, float *x, uint32_t start, uint32_t n);
 int obj_load_poly_texc	(struct t_process *p, uint32_t oid, float *x, uint32_t start, uint32_t n);
-int obj_load_mat		(struct t_process *p, uint32_t oid,float *x, uint32_t start, uint32_t n);
+int obj_load_mat		(struct t_process *p, uint32_t oid, float *x, uint32_t start, uint32_t n);
 int obj_load_tex		(struct t_process *p, uint32_t oid, uint32_t tex, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *pixbuf);
 int obj_del_vertex		(struct t_process *p, uint32_t oid, uint32_t n);
 int obj_del_mat			(struct t_process *p, uint32_t oid, uint32_t n);
 int obj_del_poly		(struct t_process *p, uint32_t oid, uint32_t n);
+int obj_del_line		(struct t_process *p, uint32_t oid, uint32_t n);
 int obj_del_tex			(struct t_process *p, uint32_t oid, uint32_t n);
 int obj_toggle_flags	(struct t_process *p, uint32_t oid, uint8_t type, uint32_t flags);
 int obj_translate		(struct t_process *p, uint32_t oid, float *transv);

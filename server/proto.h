@@ -54,6 +54,9 @@
 			 /*  if 8b: */
 			 /*  4b:		oid from */
 			 /*  4b:		oid to */
+#define S3D_P_C_PUSH_LINE		7
+			 /*  4b: 		object id */
+			 /*  n*3d		from vertex, to vertex, color */
 #define S3D_P_C_PUSH_VERTEX		8
 			 /*  4b:		object id */
 			 /*  n*3f:	vertexes, each with x,y,z in float */
@@ -85,10 +88,20 @@
 			 /*  n*6f		poly texture coordinates (3* u/v for each vertex of the poly) */
 #define S3D_P_C_PEP_MAT			18
 			 /*  4b:		object id */
-			 /*  3*4f:	material elements [amb,spec,diff with r,g,b,a] */
+			 /*  3*4f:		material elements [amb,spec,diff with r,g,b,a] */
 #define S3D_P_C_PEP_MAT_TEX		19
 			 /*  4b:		object id */
 			 /*  4b:		texture index references */
+#define S3D_P_C_PEP_VERTEX		20
+			 /*  4b:		object id */
+			 /*  n*3f:	vertexes, each with x,y,z in float */
+#define S3D_P_C_PEP_LINE		21
+			 /* 4b:			object id */
+			 /* n*3u:		line information (from,to,color)*/
+#define S3D_P_C_DEL_LINE		22
+			 /*  4b:		object id */
+			 /*  4b:		number */
+
 
 #define S3D_P_C_LOAD_POLY_NORMAL	24
 			 /*  4b:		object id */
