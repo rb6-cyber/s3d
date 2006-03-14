@@ -1,4 +1,6 @@
 2006-03-14  Simon Wunderlich - <dotslash@packetmixer.de>
+	- added push/pep/pop-line and pep-vertex
+	- dot_mcp now has egoshooter-mode (w,a,s,d)
 	- added some Documentation entries
 2006-03-10  Simon Wunderlich - <dotslash@packetmixer.de>
 	- added rc functionality: use /etc/s3drc or ~/.s3drc to

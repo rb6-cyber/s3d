@@ -331,11 +331,9 @@ void object_info(struct s3d_evt *hrmz)
 		campos.x=inf->trans_x;
 		campos.y=inf->trans_y;
 		campos.z=inf->trans_z;
-		printf("campos update: %f, %f, %f\n",campos.x,campos.y,campos.z);
 		camrot.x=inf->rot_x;
 		camrot.y=inf->rot_y;
 		camrot.z=inf->rot_z;
-		printf("camrot update: %f, %f, %f\n",camrot.x,camrot.y,camrot.z);
 
 		if (asp!=inf->scale)
 		{
