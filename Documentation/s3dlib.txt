@@ -3,6 +3,11 @@
 |       libs3d documentation                                                  |
  \___________________________________________________________________________/
 
+14.03.06: PLEASE NOTE
+
+- This Document is slightly outdated, I would like to create a HTML/man page for this
+  -> see OPEN_PROBLEMS
+
 this is just a plain raw text documentatio of the libs3d api. maybe i'll do 
 some docbook version later :) please beware: anything may change anytime,
 as i'm sometimes in the mood of changing deep internal things. 

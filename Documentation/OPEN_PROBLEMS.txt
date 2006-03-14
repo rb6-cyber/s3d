@@ -18,3 +18,10 @@ ALPHA SORTING
 Alpha polygons are blended in the order as they are drawn by opengl-calls,
 not in their z-order. Is there any easy way to do so?
 
+DOCUMENTATION
+-------------
+
+I'd like to convert the old s3dlib.txt in some new format so we can export this 
+into man, html, latex (pdf,ps) etc ...
+Can you recommend any System? Doxygen? Docbook? I've fiddled with doxygen,
+but it slightly confused me ...
