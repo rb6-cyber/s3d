@@ -37,7 +37,7 @@ int s3d_import_3ds_file(char *fname)
 	char searchpath[1024];
 	char path[1024];
 #ifndef OBJSDIR
-#define OBJSDIR 	"./:../:../../:"
+#define OBJSDIR 	"./:../:../../:/usr/local/share/s3d/:/usr/share/s3d/"
 #endif
 	
 	strncpy(searchpath,OBJSDIR,1023);
