@@ -416,7 +416,7 @@ void move_olsr_nodes( void ) {
 
 	float null_vec[3] = {0,0,0};
 	float tmp_mov_vec[3];
-	float distance, etx, rgb, rgb2;
+	float distance, etx, rgb;
 	struct olsr_con *olsr_con = Con_begin;
 
 	while ( olsr_con != NULL ) {
@@ -506,68 +506,57 @@ void move_olsr_nodes( void ) {
 				} else if ( ( etx >= 1.5 ) && ( etx < 2.0 ) ) {
 
 					rgb = 2.0 - etx;
-					if( olsr_con->color != 3 || (olsr_con->color == 3 && olsr_con->rgb[2] !=  (int) rintf(rgb * 10))) {
+					if( olsr_con->color != 3 || (olsr_con->color == 3 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10))) {
 						s3d_pep_material( olsr_con->obj_id,
 								1.0,1.0,rgb,
 								1.0,1.0,rgb,
 								1.0,1.0,rgb);
 						olsr_con->color = 3;
 						
-						olsr_con->rgb[0] = 1;
-						olsr_con->rgb[1] = 1;
-						olsr_con->rgb[2] = (int) rintf(rgb * 10);
+						olsr_con->rgb =  rgb;
 					}
 
 				/* not so good link - orange */
 				} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
 
 					rgb = 1.5 - ( etx / 2.0 );
-					if( olsr_con->color != 4 || (olsr_con->color == 4 && olsr_con->rgb[1] !=  (int) rintf(rgb * 10))) {
+					if( olsr_con->color != 4 || (olsr_con->color == 4 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10))) {
 						s3d_pep_material( olsr_con->obj_id,
 								1.0,rgb,0.0,
 								1.0,rgb,0.0,
 								1.0,rgb,0.0);
 						olsr_con->color = 4;
 						
-						olsr_con->rgb[0] = 1;
-						olsr_con->rgb[1] = (int) rintf(rgb * 10);
-						olsr_con->rgb[2] = 0;
+						olsr_con->rgb = rgb;
 					}
 
 				/* bad link (almost dead) - brown */
 				} else if ( ( etx >= 3.0 ) && ( etx < 5.0 ) ) {
 
 					rgb = 1.75 - ( etx / 4.0 );
-					rgb2 = 1.25 - ( etx / 4.0 );
-					if( olsr_con->color != 5 || (olsr_con->color == 5 && olsr_con->rgb[0] !=  (int) rintf(rgb * 10)) 
-											|| (olsr_con->color == 5 && olsr_con->rgb[1] !=  (int) rintf(rgb2 * 10)) ) {
+					if( olsr_con->color != 5 || (olsr_con->color == 5 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10)) 
+											|| (olsr_con->color == 5 && (int) rintf((olsr_con->rgb - 0.5) * 10) !=  (int) rintf((rgb - 0.5) * 10)) ) {
 						s3d_pep_material( olsr_con->obj_id,
-								rgb,rgb2,0.0,
-								rgb,rgb2,0.0,
-								rgb,rgb2,0.0);
+								rgb,rgb - 0.5,0.0,
+								rgb,rgb - 0.5,0.0,
+								rgb,rgb - 0.5,0.0);
 						olsr_con->color = 5;
 						
-						olsr_con->rgb[0] = (int) rintf(rgb * 10);
-						olsr_con->rgb[1] = (int) rintf(rgb2 * 10);
-						olsr_con->rgb[2] = 0;
+						olsr_con->rgb = rgb;
 					}
 
 				/* zombie link - grey */
 				} else if ( ( etx >= 5.0 ) && ( etx < 1000.0 ) ) {
 
 					rgb = 1000.0 / ( 1500.0 + etx );
-					if( olsr_con->color != 6 || (olsr_con->color == 6 && olsr_con->rgb[0] !=  (int) rintf(rgb * 10)) 
-											|| (olsr_con->color == 6 && olsr_con->rgb[1] !=  (int) rintf(rgb * 10))
-											|| (olsr_con->color == 6 && olsr_con->rgb[2] !=  (int) rintf(rgb * 10)) ) {
+					if( olsr_con->color != 6 || (olsr_con->color == 6 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10)) ) {
 						s3d_pep_material( olsr_con->obj_id,
 								rgb,rgb,rgb,
 								rgb,rgb,rgb,
 								rgb,rgb,rgb);
 						olsr_con->color = 6;
 						
-						olsr_con->rgb[0] = (int) rintf(rgb * 10);
-						olsr_con->rgb[1] = (int) rintf(rgb * 10);
-						olsr_con->rgb[2] =(int)  rintf(rgb * 10);
+						olsr_con->rgb = rgb;
 					}
 
 				/* wtf - dark grey */
