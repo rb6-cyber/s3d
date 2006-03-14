@@ -1,8 +1,21 @@
+general:
+	* use nanosleep(), not usleep()
+dot_mcp:
+	* sane paths for applications
+	* logout button for use with rc-file
 client(portability?!):
 	shmat() return (char *) -1 or NULL?! data_ctos/data_stoc should
 	really not be 0x0
+	3ds reader won't work on linux ppc, probably lots of memory leaks
+server:
+	* server: implemenet mouse movement
+	* endless loop in proccess_args() (getopts) on linux ppc
 
 autotools:
+    * checking g77 is useless
+	* Apple todo: won't find -lX11 (for s3d_x11gate) while compiling
+	* OBJECTPATH for finding the object?
+	* check for automake>1.9, to prevent weird errors
     * weird:
 	...
 	checking for cos in -lm... yes
@@ -16,6 +29,4 @@ autotools:
 	configure: creating ./config.status
 	...
 
-    * checking g77 is useless
-	* Apple todo: won't find -lX11 (for s3d_x11gate) while compiling
-	* OBJECTPATH for finding the object?
+
