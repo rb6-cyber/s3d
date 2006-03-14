@@ -27,13 +27,15 @@
 
 #include <stdio.h>
 #include <s3d.h>
-#include <unistd.h>	/* sleep() */
+#include <time.h>	      /* nanosleep() */
 #include <string.h>	/* strncpy() */
 #include <math.h>		/* sqrt() */
 #include <getopt.h>	/* getopt() */
 #include <stdlib.h>	/* exit() */
 #include "olsrs3d.h"
 #define SPEED		10.0
+
+static struct timespec sleep_time = { 0, 100 * 1000 * 1000 };   /* 100 mili seconds */
 
 int Debug = 0;
 
@@ -464,7 +466,7 @@ void move_olsr_nodes( void ) {
 
 		/* move connection between left and right olsr node */
 		s3d_pop_vertex( olsr_con->obj_id, 6 );
-		s3d_pop_polygon( olsr_con->obj_id, 2 );
+		s3d_pop_line( olsr_con->obj_id, 2 );
 
 		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] , olsr_con->left_olsr_node->pos_vec[1] , olsr_con->left_olsr_node->pos_vec[2] );
 		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] + 0.2 , olsr_con->left_olsr_node->pos_vec[1] , olsr_con->left_olsr_node->pos_vec[2] );
@@ -512,7 +514,7 @@ void move_olsr_nodes( void ) {
 								1.0,1.0,rgb,
 								1.0,1.0,rgb);
 						olsr_con->color = 3;
-						
+
 						olsr_con->rgb =  rgb;
 					}
 
@@ -526,7 +528,7 @@ void move_olsr_nodes( void ) {
 								1.0,rgb,0.0,
 								1.0,rgb,0.0);
 						olsr_con->color = 4;
-						
+
 						olsr_con->rgb = rgb;
 					}
 
@@ -534,14 +536,15 @@ void move_olsr_nodes( void ) {
 				} else if ( ( etx >= 3.0 ) && ( etx < 5.0 ) ) {
 
 					rgb = 1.75 - ( etx / 4.0 );
-					if( olsr_con->color != 5 || (olsr_con->color == 5 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10)) 
-											|| (olsr_con->color == 5 && (int) rintf((olsr_con->rgb - 0.5) * 10) !=  (int) rintf((rgb - 0.5) * 10)) ) {
+
+					if( olsr_con->color != 5 || (olsr_con->color == 5 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10)) ) {
+
 						s3d_pep_material( olsr_con->obj_id,
 								rgb,rgb - 0.5,0.0,
 								rgb,rgb - 0.5,0.0,
 								rgb,rgb - 0.5,0.0);
 						olsr_con->color = 5;
-						
+
 						olsr_con->rgb = rgb;
 					}
 
@@ -549,13 +552,15 @@ void move_olsr_nodes( void ) {
 				} else if ( ( etx >= 5.0 ) && ( etx < 1000.0 ) ) {
 
 					rgb = 1000.0 / ( 1500.0 + etx );
+
 					if( olsr_con->color != 6 || (olsr_con->color == 6 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10)) ) {
+
 						s3d_pep_material( olsr_con->obj_id,
 								rgb,rgb,rgb,
 								rgb,rgb,rgb,
 								rgb,rgb,rgb);
 						olsr_con->color = 6;
-						
+
 						olsr_con->rgb = rgb;
 					}
 
@@ -585,8 +590,8 @@ void move_olsr_nodes( void ) {
 
 		}
 
-		s3d_push_polygon( olsr_con->obj_id, 0,4,5,0 );
-		s3d_push_polygon( olsr_con->obj_id, 3,1,2,0 );
+		s3d_push_line( olsr_con->obj_id, 2,3,0 );
+		s3d_push_line( olsr_con->obj_id, 0,1,0 );
 
 		olsr_con = olsr_con->next_olsr_con;
 
@@ -638,8 +643,9 @@ void mainloop() {
 		Zp_rotate = (Zp_rotate+RotateSpeed)%360;
 		s3d_rotate(ZeroPoint,0,Zp_rotate,0);
 	}
-	usleep(100000);
-/*	sleep(1);*/
+
+	nanosleep( &sleep_time, NULL );
+
 	return;
 
 }

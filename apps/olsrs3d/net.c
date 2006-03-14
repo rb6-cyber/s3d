@@ -27,7 +27,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>	/* usleep() */
+#include <unistd.h>	/* close() */
 #include <errno.h>
 #include <string.h> 	/* strlen(), memmove(), strncpy(), strncat() */
 #include <netdb.h>
@@ -114,7 +114,6 @@ int net_main() {
 	if ( ++Net_read_count > 5 ) {
 		return(0);   /* continue mainloop */
 	} else {
-		/* usleep(5000); */
 		return(1);   /* continue reading data from socket */
 	}
 

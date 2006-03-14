@@ -46,6 +46,7 @@ char lbuf[MAXLINESIZE];
  ***/
 
 int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float etx ) {
+
 	struct olsr_con **olsr_con = &Con_begin;
 	struct olsr_con *prev_olsr_con = NULL;   /* previous olsr connection */
 
@@ -78,6 +79,7 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 
 		/* create connection object */
 		(*olsr_con)->obj_id = s3d_new_object();
+
 		(*olsr_con)->color = 0;
 		s3d_push_material( (*olsr_con)->obj_id,
 				  1.0,1.0,1.0,
@@ -126,7 +128,9 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 		(*olsr_neigh_list)->next_olsr_neigh_list = NULL;
 
 	}
+
 	return(0);
+
 }
 
 
@@ -452,7 +456,7 @@ int process_main() {
 
 					olsr_node1 = get_olsr_node( &Olsr_root, con_from );
 					olsr_node2 = get_olsr_node( &Olsr_root, con_to );
-					f = strtod(etx,NULL); 
+					f = strtod(etx,NULL);
 					if ( f < 1 )
 						f = 999;
 					add_olsr_con( olsr_node1, olsr_node2, f );
