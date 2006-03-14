@@ -67,6 +67,7 @@ int s3d_pop_polygon(int object, unsigned long n);
 int s3d_pop_material(int object, unsigned long n);
 int s3d_pop_texture(int object, unsigned long n);
 int s3d_pop_polygon(int object, unsigned long n);
+int s3d_pop_line(int object, unsigned long n);
 int s3d_pep_polygon_normals(int object, float *nbuf,unsigned short n);
 int s3d_pep_polygon_tex_coord(int object, float x1, float y1, float x2, float y2, float x3, float y3);
 int s3d_pep_polygon_tex_coords(int object, float *tbuf,unsigned short n);
