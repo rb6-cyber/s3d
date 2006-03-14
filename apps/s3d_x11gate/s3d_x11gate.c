@@ -25,12 +25,14 @@
 #include <s3d.h>		 /*  s3d_*() */
 #include <stdlib.h> 	 /*  getenv() */
 #include <stdio.h>		 /*  printf() */
-#include <unistd.h>		 /*  usleep() */
 #include <X11/Xlib.h>	 /*  Ximage, Display, X*() */
 #include <X11/Xutil.h>	 /*  XDestroyImage() */
 #define XK_MISCELLANY
 #include <X11/keysymdef.h>	 /* keysyms */
 #include <X11/extensions/XTest.h>	/* keyboard/mouse input via s3d */
+#include <time.h>	/* nanosleep() */
+static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
+
 int oid;
 XImage *image;
 Display *dpy=0;
@@ -120,7 +122,8 @@ void mainloop()
 		otex_image=swap_timg;
 	}
 	XDestroyImage(image);
-	usleep(100000);
+
+	nanosleep(&t,NULL); 
 }
 void keypress(struct s3d_evt *event)
 {

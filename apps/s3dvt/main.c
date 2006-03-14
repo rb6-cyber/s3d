@@ -33,6 +33,9 @@
 #include <sys/ioctl.h> 	 /*  ioctl() */
 #include <pthread.h>	 /*  pthread_create() */
 #include <s3d.h>		 /*  s3d_* */
+#include <time.h>	/* nanosleep() */
+static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
+
 
 static int pid;
 static int term_mode=0;
@@ -405,6 +408,8 @@ int i=0;
 void mainloop()
 {
 	usleep(10000);
+	nanosleep(&t,NULL); 
+
 	if ((i+=2)>100)
 	{
 		if (i%2)

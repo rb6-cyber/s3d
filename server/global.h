@@ -27,9 +27,6 @@
 #ifdef SHM
 	#include <sys/shm.h> /* key_t */
 #endif
-#ifdef WIN32  /*  sohn wars */
-#define usleep(x)	sleep(x/1000)  /*  sohn wars */
-#endif   /*  sohn wars */
 /*  variables and defines */
 extern int frame_mode; 	 /*  GLUT, SDL, ... ? */
 extern int running;		 /*  server running flag */

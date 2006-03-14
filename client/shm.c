@@ -24,13 +24,13 @@
 
 #include "s3d.h"
 #include "s3dlib.h"
-#include <stdlib.h> /* malloc() */
+#include <stdlib.h> 	/* malloc() */
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <netinet/in.h>	/* ntohs() */
-#include <errno.h> /* errno */
-#include <unistd.h>	/* usleep() */
+#include <errno.h> 		/* errno */
+#include <time.h>		/* nanosleep() */
 #ifdef SHM
 
 #define SHM_SIZE 		sizeof(key_t)*2  		/* space for the keys */
@@ -40,6 +40,7 @@
 static struct buf_t *data_in,*data_out;
 static int shmid_in, shmid_out;
 static int shm_idle=0;
+struct timespec t={0,1*1000}; /* 1 micro second */
 /* char ftoken[]="/tmp/.s3d_shm";*/
 
 int _shm_init(char *ftoken)
@@ -133,7 +134,7 @@ int shm_writen(char *str, int s)
 			return(-1);
 		}
 		if (wait>10)
-			usleep(1);
+			nanosleep(&t,NULL); 
 	}
 	return(s - no_left);
 }
@@ -156,7 +157,7 @@ int shm_readn(char *str,int s)
 			return(-1);
 		}
 		if (wait>10)
-			usleep(1);
+			nanosleep(&t,NULL); 
 	}
 	return(s - no_left);
 }

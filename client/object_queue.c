@@ -26,7 +26,8 @@
 #include "s3dlib.h"
 #include "proto.h"	 
 #include <stdlib.h>	 /*  malloc(),free(), realloc() */
-#include <unistd.h>	 /*  usleep() */
+#include <time.h>		 /* nanosleep() */
+
 /*  objects are requested before beeing used for having fast  */
 /*  access when needed. this also makes things more asynchronous, */
 /*  therefore faster (I hope). */
@@ -80,6 +81,7 @@ int _queue_new_object(unsigned int oid)
 	queue[queue_size-1]=oid;
 	return(0);
 }
+static struct timespec t={0,10*1000}; /* 10 micro seconds */
 /*  an object is requested!! give one out: */
 unsigned int _queue_want_object()
 {
@@ -104,7 +106,7 @@ unsigned int _queue_want_object()
 		requested++;
 	}
 	s3d_net_check();
-	usleep(10);
+	nanosleep(&t,NULL); 
 	} while(i++<TIMEOUT);
 
 	errds(LOW,"_queue_want_object()","timeout is reached. server is extremly slow/laggy or dead");	

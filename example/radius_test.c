@@ -23,7 +23,9 @@
 
 #include <s3d.h>
 #include <stdio.h>  /*  NULL */
-#include <unistd.h>  /* usleep() */
+#include <time.h>	/* nanosleep() */
+static struct timespec t={0,10*1000*1000}; /* 10 mili seconds */
+
 #include <math.h>	/* sin(), cos() */
 int item1, item2, item3;
 int i=0;
@@ -50,7 +52,7 @@ void mainloop()
 	
 
 	i++;
-	usleep(100000);
+	nanosleep(&t,NULL); 
 }
 int main (int argc, char **argv)
 {

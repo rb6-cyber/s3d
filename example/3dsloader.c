@@ -25,14 +25,15 @@
 
 
 #include <s3d.h>
-#include <stdio.h>  /*  NULL */
-#include <unistd.h>  /* usleep() */
+#include <stdio.h>  /* NULL */
+#include <time.h>	/* nanosleep() */
+static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
 int i,oid;
 void mainloop()
 {
 	s3d_rotate(oid,0,i,0);
 	i++;
-	usleep(100000);
+	nanosleep(&t,NULL); 
 }
 void object_click(struct s3d_evt *evt)
 {

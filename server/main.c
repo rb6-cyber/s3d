@@ -23,8 +23,9 @@
 
 
 #include "global.h" 		 /*  contains the prototypes of all modules */
-#include <unistd.h> 	 /*  usleep() */
-#include <stdlib.h>		 /*  exit() */
+#include <time.h>		 /* nanosleep() */
+#include <stdlib.h>		 /* exit() */
+#include <unistd.h>		 /* sleep(), fork() */
 #ifdef G_GLUT
 #include <GL/glut.h> 	 /*  glutMainLoop() */
 #endif
@@ -114,9 +115,11 @@ static void mainloop(void)
 
 /*  things which should be done each time in main loop go here! this is */
 /*  just for the case we use a function for the mainloop like we do for glut... */
+
+struct timespec t={0,10*1000*1000}; /* 10 mili seconds */
 void one_time() 
 {
-	usleep(10000);
+	nanosleep(&t,NULL); 
 	user_main();
 	network_main(); 
 	graphics_main();

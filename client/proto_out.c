@@ -32,7 +32,6 @@
 #include <stdlib.h>		 /*  getenv(),atoi(), malloc() */
 #ifdef WIN32
 	#define uint32_t unsigned long  /*  sohn */
-	#define usleep(x) sleep(x/1000)  /*  sohn wars */
 #else
 	#include <netdb.h>		 /*  gethostbyname()  */
 #endif

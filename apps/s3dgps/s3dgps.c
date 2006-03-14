@@ -25,12 +25,15 @@
 #include <s3d.h>
 #include <gps.h> 	/* gps_*() */
 #include <stdio.h> 	/* printf() */
-#include <unistd.h>	/* sleep() */
 #include <errno.h>  /* errno */
 #include <stdlib.h>	/* malloc(), free() */
 #include <string.h> /* strlen() */
 #include <math.h>	/* sin(),cos(), M_PI */
 #include <simage.h> /* simage things */
+
+#include <time.h>	/* nanosleep() */
+static struct timespec t={0,33*1000*1000}; /* 30 fps */
+
 
 #define PIXELFACT	2817.947378
 #define PIXELFACTN	281794.7378
@@ -84,7 +87,7 @@ void mainloop()
 	show_position(dgps);
 	frame++;
 
-	usleep(1000000/30);
+	nanosleep(&t,NULL); 
 }
 
 /* a bad 2d-calculation right now ... */

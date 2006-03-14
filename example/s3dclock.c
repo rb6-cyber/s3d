@@ -24,9 +24,9 @@
 
 #include <s3d.h>
 #include <stdio.h>  /*  NULL, sprintf() */
-#include <unistd.h>  /* usleep() */
-#include <time.h>	 /*  struct tm, time_t...  */
+#include <time.h>	 /*  nanosleep(), struct tm, time_t...  */
 #include <string.h>  /*  strlen() */
+static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
 int big_p,lil_p,bg,sec_p;
 int str_oid=-1, o_str_oid;
 struct tm *mytime;
@@ -58,7 +58,7 @@ void mainloop()
 			s3d_del_object(o_str_oid);
 	}
 /* 	printf("now it's %s\n",time_str); */
-	usleep(100000);
+	nanosleep(&t,NULL); 
 
 }
 int main (int argc, char **argv)

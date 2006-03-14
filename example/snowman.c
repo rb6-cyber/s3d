@@ -22,8 +22,10 @@
  */
 
 #include <s3d.h>
-#include <unistd.h> /* usleep()*/
 #include <math.h>	/* sin() */
+#include <time.h>	/* nanosleep() */
+static struct timespec t={0,10*1000*1000}; /* 10 mili seconds */
+
 int a;
 int oid_head;
 int oid_middle;
@@ -41,7 +43,7 @@ void mainloop()
 	s3d_translate(oid_head,		0,1.5 +2.00*pos,0);
 	s3d_translate(oid_middle,	0,0   +1.25*pos,0);
 	s3d_translate(oid_foot,		0,-2  +1.00*pos,0);
-	usleep(10000);
+	nanosleep(&t,NULL); 
 }
 int main(int argc, char **argv)
 {

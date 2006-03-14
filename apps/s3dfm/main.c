@@ -24,11 +24,13 @@
 
 #include <s3d.h>
 #include <stdio.h> 	 /*  printf() */
-#include <unistd.h>  /*  usleep() */
 #include <dirent.h>  /*  dirent */
 #include <stdlib.h>	 /*  malloc() */
 #include <string.h>  /*  strlen(), strncmp(), strrchr() */
 #include <math.h>	 /*  sin(),cos() */
+#include <time.h>	/* nanosleep() */
+static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
+
 
 #define SH			0.4 /* height of the step */
 
@@ -262,7 +264,7 @@ void object_click(struct s3d_evt *evt)
 }
 void mainloop()
 {
-	usleep(10000);
+	nanosleep(&t,NULL); 
 }
 int main (int argc, char **argv)
 {

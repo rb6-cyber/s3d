@@ -25,8 +25,10 @@
 
 
 #include <s3d.h>
-#include <unistd.h> /* usleep()*/
 #include <math.h>	/* sin() */
+#include <time.h>	/* nanosleep() */
+static struct timespec t={0,10*1000*1000}; /* 10 mili seconds */
+
 int a;
 int rot_point,body,legfr,legbr,legfl,legbl,tail;
 
@@ -42,7 +44,7 @@ void mainloop()
 
 	s3d_rotate(tail,0,30,110+pos);
 	s3d_rotate(rot_point,0,-a,0);
-	usleep(10000);
+	nanosleep(&t,NULL); 
 }
 int main(int argc, char **argv)
 {

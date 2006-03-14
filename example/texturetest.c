@@ -24,14 +24,16 @@
 
 #include <s3d.h>
 #include <stdio.h>  /*  NULL */
-#include <unistd.h>  /* usleep() */
 #include <stdlib.h>  /* malloc(),free() */
+#include <time.h>	/* nanosleep() */
+static struct timespec t={0,10*1000*1000}; /* 10 mili seconds */
+
 int i,oid;
 void mainloop()
 {
 	i=(i+1)%360;
 	s3d_rotate(oid,0,i,0);
-	usleep(10000);
+	nanosleep(&t,NULL); 
 }
 #define MAXX	300
 #define MAXY	300
