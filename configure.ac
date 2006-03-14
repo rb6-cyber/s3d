@@ -1,10 +1,12 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(server/main.c)
+AC_PREREQ(2.5)
+AC_INIT([s3d], [0.1])
+AC_CONFIG_SRCDIR(server/main.c)
 
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
-AM_INIT_AUTOMAKE([s3d], [0.1])
+AM_INIT_AUTOMAKE([dist-bzip2])
 
 dnl Checks for programs.
 AC_PROG_CC
@@ -164,7 +166,8 @@ AC_CONFIG_FILES([
 	apps/s3dfm/Makefile
 	apps/dot_mcp/Makefile
 	example/Makefile
-	objs/Makefile])
+	objs/Makefile
+	Documentation/Makefile])
 AC_OUTPUT
 
 echo "
