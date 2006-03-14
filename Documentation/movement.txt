@@ -1,0 +1,8 @@
+this is not the final version for movement, but ...
+
+- hold middle mouse button (or left+right at once if you have middle-mousebutton-emulation) and move
+  your mouse to move around the world
+- hold right mouse button and move mouse to rotate the mouse (look around)
+- left mouse button is for clicking :)
+- presse f1 to get in ego-shooter mode :D you can use w,a,s,d for movement now. f1 again to deactivate.
+  this only works with dot_mcp, the others above work out-of-the box within the server.
