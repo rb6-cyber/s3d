@@ -11,3 +11,4 @@ libs3d_la_CPPFLAGS=	-I${top_srcdir}/server
 libs3d_la_CFLAGS=	@FONTCONFIG_CFLAGS@ @FREETYPE_CFLAGS@ 
 libs3d_la_LIBADD=	@FONTCONFIG_LIBS@ @FREETYPE_LIBS@ 
 
+EXTRA_DIST=		lgpl.txt
