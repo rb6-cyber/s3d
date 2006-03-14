@@ -8,7 +8,8 @@ client(portability?!):
 	really not be 0x0
 	3ds reader won't work on linux ppc, probably lots of memory leaks
 server:
-	* server: implemenet mouse movement
+	* implement mouse movement
+	* implement lines
 	* endless loop in proccess_args() (getopts) on linux ppc
 
 autotools:
