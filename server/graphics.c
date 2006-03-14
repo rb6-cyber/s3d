@@ -360,6 +360,7 @@ void graphics_main()
 #ifdef G_GLUT
 		glPushMatrix();
 			glRotatef(90,1.0,0.0,0.0);	
+			/* set some evilish green color */
 			glMaterialfv(GL_FRONT,GL_AMBIENT,wire_amb);
 			glMaterialfv(GL_FRONT,GL_SPECULAR,wire_spec);
 			glMaterialfv(GL_FRONT,GL_DIFFUSE,wire_diff);

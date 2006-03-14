@@ -552,13 +552,13 @@ int obj_pep_vertex(struct t_process *p, uint32_t oid, float *x, uint32_t n)
 			glDeleteLists(obj->dplist,1);
 			obj->dplist=0;
 		}
-		dprintf(MED,"pepping vertices %d to %d",(m-n),m);
+		dprintf(MED,"pepping vertices %d to %d",(m-n),m-1);
 		for (i=(m-n);i<m;i++)
 		{
-			obj->p_vertex[m+i].x=*(px++);
-			obj->p_vertex[m+i].y=*(px++);
-			obj->p_vertex[m+i].z=*(px++);
-			a=&obj->p_vertex[m+i];
+			obj->p_vertex[i].x=*(px++);
+			obj->p_vertex[i].y=*(px++);
+			obj->p_vertex[i].z=*(px++);
+			a=&obj->p_vertex[i];
 			r=obj->scale * sqrt(	
 					(a->x * a->x ) + 
 					(a->y * a->y ) +
@@ -1570,6 +1570,51 @@ int obj_render(struct t_process *p,uint32_t oid)
 		}
 		if (tex!=NULL)
 			glBindTexture( GL_TEXTURE_2D, 0);  /*  switch back to standard texture */
+
+		for (pn=0;pn<obj->n_line; pn++)
+		{
+			mat= obj->p_line[pn].mat;
+			if (mat!=omat) {
+				tex=NULL;
+				if (mat< obj->n_mat) {
+					m=&obj->p_mat[mat];
+					/* dont need to care about textures ...  it's rather impossible
+					 * to get some textures on a line. at least it would look ugly ;)*/
+					matgl[0]=m->amb_r/2;		
+					matgl[1]=m->amb_g/2;		
+					matgl[2]=m->amb_b/2;
+					matgl[3]=m->amb_a;
+		 /* 			glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,matgl); */
+					glMaterialfv(GL_FRONT,GL_AMBIENT,matgl);
+					matgl[0]=m->diff_r/2;
+					matgl[1]=m->diff_g/2;
+					matgl[2]=m->diff_b/2;
+					matgl[3]=m->diff_a;
+		 /* 			glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,matgl); */
+					glMaterialfv(GL_FRONT,GL_DIFFUSE,matgl);
+					matgl[0]=m->spec_r/2;
+					matgl[1]=m->spec_g/2;
+					matgl[2]=m->spec_b/2;
+					matgl[3]=m->spec_a;
+		 /* 			glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,matgl); */
+					glMaterialfv(GL_FRONT,GL_SPECULAR,matgl);
+				} else {
+					dprintf(MED,"something is wrong with line %d! material: [%d,%d]",pn, mat,obj->n_mat);
+					if (obj->dplist) glEndList();
+					glEnd();
+					glPopMatrix();
+					return(-1);
+				}
+			}
+			omat=mat;		 /*  saving old material */
+			glBegin(GL_LINES);
+			for (i=0; i<2; i++)
+				{
+					v= obj->p_line[pn].v[i];  /*  ... get the vertices ... */
+					glVertex3f(obj->p_vertex[v].x, obj->p_vertex[v].y, obj->p_vertex[v].z);  /*  ...and draw them */
+				}
+			glEnd();
+		}
 		if (obj->dplist) glEndList();
 	}
 	glPopMatrix();
