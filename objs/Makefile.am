@@ -1,5 +1,5 @@
 objsdir=	$(pkgdatadir)/objs
-objs_DATA = \
+dist_objs_DATA = \
 	internet.3ds \
 	katze_tail.3ds \
 	sec_p.3ds \
