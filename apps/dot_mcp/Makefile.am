@@ -1,7 +1,7 @@
 bin_PROGRAMS=	dot_mcp
 
 dot_mcpincludedir = $(pkgincludedir)/dot_mcp
-dot_mcpinclude_HEADERS =  
+dot_mcpinclude_HEADERS =  dot_mcp.h
 
 dot_mcp_SOURCES =  \
 	main.c menu.c
