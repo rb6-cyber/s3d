@@ -51,6 +51,7 @@ int event_key_pressed(uint16_t key)
 	k=htons(key);
 	if (obj_valid(get_proc_by_pid(MCP),focus_oid,o))
 		prot_com_out(get_proc_by_pid(o->n_mat), S3D_P_S_KEY, (uint8_t *)&k, 2);
+	prot_com_out(get_proc_by_pid(MCP),S3D_P_S_KEY,(uint8_t *)&k, 2); /* mcp always gets a copy */
 	return(0);
 }
 /*  tell the client something about us */

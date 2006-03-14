@@ -72,7 +72,7 @@ int graphics_init ()
 	glDisable(GL_DITHER);
 	glEnable(GL_NORMALIZE);
 	glDisable(GL_AUTO_NORMAL);
-    glLineWidth(2.0);
+    glLineWidth(1.0);
 /* 	glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shin); */
 	glMaterialfv(GL_FRONT,GL_SHININESS,shin);
 /*	cam.translate.x=0;
