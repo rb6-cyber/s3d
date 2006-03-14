@@ -76,11 +76,3 @@ $ make install
 
 Depending on the selected prefix, you may need to become superuser first.
 
-### 3.1 The RC
-
-You can automatically fire up the mcp or anything you want with s3d and 
-have it closed when s3d goes down or vice versa:
-
-just create a shellscript at position /etc/s3drc or ~/.s3drc, for example
-have it starting the mcp. Don't forget to toggle it executable (chmod 755 
-or so).

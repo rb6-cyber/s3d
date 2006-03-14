@@ -1,0 +1,12 @@
+I hope this gives some useful Information for Icon designer:
+
+- We currently only support 3ds file format.
+- All Icons coordinates should be within [-1,-1,-1], [1,1,1]
+  so we always have the same size. Its no problem
+  to scale them bigger or smaller in s3d.
+- Textures are (not yet) supported.
+- Alpha blending works somehow, but not very well (see OPEN_PROBLEMS)
+- Please keep Polygon number low ... if possible, under 50,
+  but always under 100. Icons should not bloat the User workspace.
+
+
