@@ -91,7 +91,7 @@ float vector_dot_product( float vector1[], float vector2[] ) {
 
 /***
  *
- * calculate angle between 2 vectors => http://en.wikipedia.org/wiki/Vector_%28spatial%29#Cross_product
+ * calculate angle between 2 vectors => http://en.wikipedia.org/wiki/Vector_%28spatial%29#Dot_product
  *
  *   vector1   =>   given vector1
  *   vector2   =>   given vector2

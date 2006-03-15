@@ -185,7 +185,7 @@ void mov_add(float mov[], float p[], float fac)
 void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 	float distance, angle;
-	float tmp_mov_vec[3], desc_norm_vec[3] = {0,-1,0};
+	float tmp_mov_vec[3], desc_norm_vec[3] = {0,0,-1};
 	struct olsr_node *other_node;
 	struct Obj_to_ip *Obj_to_ip_curr;
 	struct olsr_neigh_list *olsr_neigh_list, *prev_olsr_neigh_list, *other_node_neigh_list, *tmp_olsr_neigh_list;
@@ -324,9 +324,14 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 		}
 
 		vector_substract( olsr_node->pos_vec, CamPosition[0], tmp_mov_vec );
-		angle = vector_angle( desc_norm_vec, tmp_mov_vec );
-		s3d_rotate( olsr_node->desc_id, 0, angle * 180 / M_PI, 0 );
-		s3d_translate( olsr_node->desc_id, 0 ,-2, cos(angle*M_PI/180)*olsr_node->desc_length/2 );
+		tmp_mov_vec[1]=0; /* we are not interested in the y value */
+		angle = 180.0/M_PI * vector_angle( desc_norm_vec, tmp_mov_vec );
+		if (tmp_mov_vec[0]>0)
+			angle=180-angle;
+		else
+			angle=180+angle;
+		s3d_rotate( olsr_node->desc_id, 0, angle , 0 );
+		s3d_translate( olsr_node->desc_id, -cos(angle*M_PI/180)*olsr_node->desc_length/2 ,-1.5, sin(angle*M_PI/180)*olsr_node->desc_length/2 );
 // 		printf( "olsr node (%s) angle: %f\n", olsr_node->ip, angle * 180 / M_PI );
 
 		/* drift away from unrelated nodes */
