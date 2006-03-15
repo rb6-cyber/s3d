@@ -39,7 +39,6 @@ void mainloop()
 #define MAXY	300
 int main (int argc, char **argv)
 {
-	int oid;
 	unsigned int x,y;
 	unsigned char *data;
 						

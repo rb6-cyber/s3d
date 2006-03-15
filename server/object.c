@@ -510,7 +510,7 @@ int obj_pep_line(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
 			glDeleteLists(obj->dplist,1);
 			obj->dplist=0;
 		}
-		dprintf(MED,"pepping lines %d to %d",(m-n),m);
+		dprintf(VLOW,"pepping lines %d to %d",(m-n),m);
 		for (i=(m-n);i<m;i++)
 		{
 			obj->p_line[i].v[0]=*(px++);

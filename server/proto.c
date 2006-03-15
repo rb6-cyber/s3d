@@ -149,7 +149,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 				{
 					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
 					num=(length-4)/(4*3);
- 					dprintf(LOW,"received %d new lines for object oid...%d", num, oid); 
+ 					dprintf(VLOW,"received %d new lines for object oid...%d", num, oid); 
 					for (i=0;i<(num*3);i++)
 						*((uint32_t *)cptr+i)=
 								ntohl(*((uint32_t *)cptr+i));
@@ -221,7 +221,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 				{
 					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
 					num=(length-4)/(4*3);
- 					dprintf(LOW,"pepping %d new lines for object oid...%d", num, oid); 
+ 					dprintf(VLOW,"pepping %d new lines for object oid...%d", num, oid); 
 					for (i=0;i<(num*3);i++)
 						*((uint32_t *)cptr+i)=
 								ntohl(*((uint32_t *)cptr+i));
@@ -297,7 +297,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 				{
 					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
 					num=ntohl(*((uint32_t *)cptr));		cptr+=4;
- 					dprintf(LOW,"deleting %d lines for object oid...%d", num, oid); 
+ 					dprintf(VLOW,"deleting %d lines for object oid...%d", num, oid); 
 					obj_del_line(p,oid,num);
 				}	
 				break;

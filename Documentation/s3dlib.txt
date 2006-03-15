@@ -314,7 +314,8 @@ _______________________________________________________________________________
 
 int s3d_rotate(int object, float x, float y, float z);
 
-rotate an object around the x, y and z-axis respectively. 
+rotate an object around the x, y and z-axis respectively. x,y,z may have values
+between [0,360].
 
 _______________________________________________________________________________
 
