@@ -273,15 +273,20 @@ example:
 
 _______________________________________________________________________________
 
-int s3d_draw_string( char *str,int len);
+int s3d_draw_string( char *str,float *len);
 
-renders the string str with the length len in truetype format with the height 1
+renders the string str with len in truetype format with the height 1, returns
+the length of the string rendered in *len (or set len=NULL to disable this)
 
 example:
 	
 	char str="hello world!";
+	float len;
 	s3d_select_font("vera");
-	s3d_draw_string(str,strlen(str));
+	s3d_draw_string(str,len);
+
+	/* not interested in the length? do that:
+	 * s3d_draw_string(str,NULL); */
 
 _______________________________________________________________________________
 
