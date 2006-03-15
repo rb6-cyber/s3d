@@ -1,3 +1,7 @@
+2006-03-15  Andreas Kohn - <andreas@syndrom23.de>
+	- some configure.ac changes to fix glut/sdl detection code
+	- some autoconf magic to fix pthread detection for esoteric arch's.
+	- a big hammer to prevent fortran checks
 2006-03-14  Simon Wunderlich - <dotslash@packetmixer.de>
 	- added push/pep/pop-line and pep-vertex
 	- dot_mcp now has egoshooter-mode (w,a,s,d)

@@ -10,21 +10,10 @@ server:
 	* endless loop in proccess_args() (getopts) on linux ppc
 
 autotools:
-    * checking g77 is useless
 	* Apple todo: won't find -lX11 (for s3d_x11gate) while compiling
 	* OBJECTPATH for finding the object?
-	* check for automake>1.9, to prevent weird errors
-    * weird:
-	...
-	checking for cos in -lm... yes
-	./configure: line 22348: MDL_HAVE_OPENGL: command not found
-	checking for library containing glutInit... -lglut
-	...
-
-	...
-	checking for main in -lXtst... yes
-	./configure: line 23397: HAVE_PTHREAD: command not found
-	configure: creating ./config.status
-	...
-
+	* We should perhaps check for the correct versions of
+	  autotools to avoid some confusion about some warnings.
+	  At the time of writing, supported are:
+	   automake 1.9, autoconf 2.59, libtool 1.5
 
