@@ -25,7 +25,7 @@
 #include "global.h"
 #include <stdlib.h>		 /*  malloc(),realloc(),free() */
 #include <string.h>		 /*  memcpy() */
-#include <GL/glut.h> 	 /*  glutwirecube */
+#include <GL/gl.h>		 /*  gl*, GL* */
 #define _ISOC99_SOURCE
 #include <math.h>		 /*  sin(),cos() */
 
