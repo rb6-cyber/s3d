@@ -8,6 +8,17 @@ AC_CANONICAL_TARGET
 
 AM_INIT_AUTOMAKE([dist-bzip2])
 
+# XXXHACK: lame attempt to avoid fortran in libtool and elsewhere
+tagnames=`echo $tagnames | sed s,F77,,g | sed s,FC,,g` # for AC_PROG_LIBTOOL
+# we could skip the test here, as we don't USE F77/FC anywhere, but, the user may
+# have a reason. 
+if test x${F77} = x; then
+	F77=nonexistent
+fi
+if test x${FC} = x; then
+	FC=nonexistent
+fi
+
 dnl Checks for programs.
 AC_PROG_CC
 AC_PROG_INSTALL
@@ -16,6 +27,7 @@ AC_PROG_MAKE_SET
 AC_PATH_X
 AC_PATH_XTRA
 AC_PROG_LIBTOOL
+
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS(fcntl.h sys/ioctl.h sys/time.h unistd.h)
