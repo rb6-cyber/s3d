@@ -9,6 +9,6 @@ pkginclude_HEADERS=	config.h s3d.h s3dlib.h sei_triangulate.h sei_interface.h
 
 libs3d_la_CPPFLAGS=	-I${top_srcdir}/server
 libs3d_la_CFLAGS=	@FONTCONFIG_CFLAGS@ @FREETYPE_CFLAGS@ 
-libs3d_la_LIBADD=	@FONTCONFIG_LIBS@ @FREETYPE_LIBS@ 
+libs3d_la_LIBADD=	@FONTCONFIG_LIBS@ @FREETYPE_LIBS@ @LIBM@
 
 EXTRA_DIST=		lgpl.txt
