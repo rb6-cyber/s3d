@@ -184,8 +184,8 @@ void mov_add(float mov[], float p[], float fac)
 
 void handle_olsr_node( struct olsr_node *olsr_node ) {
 
-	float f, distance;
-	float tmp_mov_vec[3];
+	float distance, angle;
+	float tmp_mov_vec[3], desc_norm_vec[3] = {0,-1,0};
 	struct olsr_node *other_node;
 	struct Obj_to_ip *Obj_to_ip_curr;
 	struct olsr_neigh_list *olsr_neigh_list, *prev_olsr_neigh_list, *other_node_neigh_list, *tmp_olsr_neigh_list;
@@ -314,14 +314,20 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 			lst_add(olsr_node->obj_id,&olsr_node);
 
 			/* create olsr node text and attach (link) it to the node */
-			olsr_node->desc_id = s3d_draw_string( olsr_node->ip, &f );
+			olsr_node->desc_id = s3d_draw_string( olsr_node->ip, &olsr_node->desc_length );
 			s3d_link( olsr_node->desc_id, olsr_node->obj_id );
-			s3d_translate( olsr_node->desc_id, -f/2,-2,0 );
+			s3d_translate( olsr_node->desc_id, - olsr_node->desc_length / 2, -2, 0 );
 			s3d_flags_on( olsr_node->desc_id, S3D_OF_VISIBLE );
 
 			olsr_node->node_type_modified = 0;
 
 		}
+
+		vector_substract( olsr_node->pos_vec, CamPosition[0], tmp_mov_vec );
+		angle = vector_angle( desc_norm_vec, tmp_mov_vec );
+		s3d_rotate( olsr_node->desc_id, 0, angle * 180 / M_PI, 0 );
+		s3d_translate( olsr_node->desc_id, 0 ,-2, cos(angle*M_PI/180)*olsr_node->desc_length/2 );
+// 		printf( "olsr node (%s) angle: %f\n", olsr_node->ip, angle * 180 / M_PI );
 
 		/* drift away from unrelated nodes */
 		Obj_to_ip_curr = Obj_to_ip_head->next;
@@ -387,7 +393,7 @@ void calc_olsr_node_mov( void ) {
 		if ( ( olsr_con->left_etx != 0.0 ) && ( olsr_con->right_etx != 0.0  ) ) {
 
 			distance = dirt( olsr_con->left_olsr_node->pos_vec, olsr_con->right_olsr_node->pos_vec, tmp_mov_vec );
-			f = (( olsr_con->left_etx + olsr_con->right_etx ) / 4.0) / distance;
+			f = ( ( olsr_con->left_etx + olsr_con->right_etx ) / 4.0 ) / distance;
 
 			/***
 			 * drift factor - 0.0 < factor < 1.0 ( best results: 0.3 < factor < 0.9
@@ -469,12 +475,11 @@ void move_olsr_nodes( void ) {
 		s3d_pop_line( olsr_con->obj_id, 2 );
 
 		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] , olsr_con->left_olsr_node->pos_vec[1] , olsr_con->left_olsr_node->pos_vec[2] );
-		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] + 0.2 , olsr_con->left_olsr_node->pos_vec[1] , olsr_con->left_olsr_node->pos_vec[2] );
-		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] - 0.2 , olsr_con->left_olsr_node->pos_vec[1] , olsr_con->left_olsr_node->pos_vec[2] );
+		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] , olsr_con->left_olsr_node->pos_vec[1] + 0.2 , olsr_con->left_olsr_node->pos_vec[2] );
 
 		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] , olsr_con->right_olsr_node->pos_vec[1] , olsr_con->right_olsr_node->pos_vec[2] );
-		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] , olsr_con->right_olsr_node->pos_vec[1]+ 0.2 , olsr_con->right_olsr_node->pos_vec[2] );
-		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] , olsr_con->right_olsr_node->pos_vec[1]- 0.2 , olsr_con->right_olsr_node->pos_vec[2] );
+		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] , olsr_con->left_olsr_node->pos_vec[1] - 0.2 , olsr_con->left_olsr_node->pos_vec[2] );
+
 
 		if ( ColorSwitch ) {
 
@@ -822,6 +827,7 @@ int main( int argc, char *argv[] ) {
 
 	/* set extern int optind = 0 for parse_args in io.c */
 	optind = 0;
+
 
 	if (!net_init(Olsr_host))
 	{

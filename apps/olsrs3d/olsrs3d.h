@@ -43,7 +43,7 @@ struct olsr_con {
 	int obj_id;   /* id of connection object in s3d */
 	int color;
 	float rgb;
-	
+
 };
 
 
@@ -70,6 +70,7 @@ struct olsr_node {
 	float mov_vec[3];   /* move vector */
 	int obj_id;   /* id of node object in s3d */
 	int desc_id;   /* id of node description object in s3d */
+	float desc_length;   /* length of node description object in s3d */
 	struct olsr_neigh_list *olsr_neigh_list;   /* pointer to first neighbour */
 
 };
@@ -120,3 +121,10 @@ int net_quit();
 /* main */
 void out_of_mem( void );
 struct olsr_node **lst_search(int id);
+
+/* vector */
+float vector_length( float vector[] );
+void vector_substract( float vector1[], float vector2[], float result_vector[] );
+float vector_dot_product( float vector1[], float vector2[] );
+float vector_angle( float vector1[], float vector2[] );
+
