@@ -144,7 +144,7 @@ while [ $# -gt 0 ]; do
 			;;
 		--help|-h)
 			usage -v
-			return 0
+			exit 1
 			;;
 		--quiet|-q)
 			quiet=1
