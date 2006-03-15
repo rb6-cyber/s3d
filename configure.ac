@@ -73,9 +73,9 @@ AC_SUBST(LIBM)
 
 MDL_HAVE_OPENGL
 AC_SEARCH_LIBS(glutInit, glut, [
-HAVE_glut=x
+HAVE_glut="yes"
 GLUT_CFLAGS=
-GLUT_LIBS=-lglut
+GLUT_LIBS="-lglut"
 ], [
 HAVE_glut=
 GLUT_CFLAGS=
@@ -85,19 +85,19 @@ AC_SUBST(GLUT_CFLAGS)
 AC_SUBST(GLUT_LIBS)
 
 SDL_VERSION=1.2.7
-AM_PATH_SDL($SDL_VERSION, [HAVE_SDL="x"], [])
-if test "x${HAVE_glut}" != "x"; then
+AM_PATH_SDL($SDL_VERSION, [HAVE_SDL="yes"], [])
+if test "x${HAVE_glut}" = "xyes"; then
 	AC_DEFINE([G_GLUT], 1, [Use GLUT])
 fi
-if test "x${HAVE_SDL}" != "x"; then
+if test "x${HAVE_SDL}" = "xyes"; then
 	AC_DEFINE([G_SDL], 1, [Use SDL])
 fi
 if test "x${HAVE_glut}${HAVE_SDL}" = "x"; then
 	AC_MSG_ERROR([No OpenGL Framework found. Try installing GLUT or SDL, or both])
 fi
 
-AM_CONDITIONAL([BUILD_SDL], test x"${HAVE_SDL}" != x)
-AM_CONDITIONAL([BUILD_GLUT], test x"${HAVE_glut}" != x)
+AM_CONDITIONAL([BUILD_SDL], test x"${HAVE_SDL}" = xyes)
+AM_CONDITIONAL([BUILD_GLUT], test x"${HAVE_glut}" = xyes)
 
 dnl ##################################### CLIENT #######################################
 
