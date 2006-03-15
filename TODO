@@ -1,17 +1,11 @@
 dot_mcp:
 	* sane paths for applications
-	* logout button for use with rc-file
-client(portability?!):
-	shmat() return (char *) -1 or NULL?! data_ctos/data_stoc should
-	really not be 0x0
-	3ds reader won't work on linux ppc, probably lots of memory leaks
-server:
-	* implement mouse movement
-	* endless loop in proccess_args() (getopts) on linux ppc
-
 autotools:
-	* Apple todo: won't find -lX11 (for s3d_x11gate) while compiling
 	* OBJECTPATH for finding the object?
+
+	* Apple todo: won't find -lX11 (for s3d_x11gate) while compiling
+	* "-Wall -pedantic" default in CFLAGS? (if possible)
+	* --enable-debug not honored when CFLAGS is set?
 	* We should perhaps check for the correct versions of
 	  autotools to avoid some confusion about some warnings.
 	  At the time of writing, supported are:
