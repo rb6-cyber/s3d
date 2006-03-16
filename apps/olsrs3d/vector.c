@@ -1,5 +1,5 @@
 /*
- * net.c
+ * vector.c
  *
  * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *                         Marek Lindner <lindner_marek@yahoo.de>
@@ -43,7 +43,7 @@
  ***/
 
 float vector_length( float vector[] ) {
-// printf( "length = %f\n", sqrt( vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2] ) );
+
 	return ( sqrt( vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2] ) );
 
 }
@@ -65,7 +65,7 @@ void vector_substract( float vector1[], float vector2[], float result_vector[] )
 	result_vector[0] = vector2[0] - vector1[0];
 	result_vector[1] = vector2[1] - vector1[1];
 	result_vector[2] = vector2[2] - vector1[2];
-// 	printf( "vektor2 (%f,%f,%f) - vektor1 (%f,%f,%f) = result_vektor (%f,%f,%f)\n", vector2[0], vector2[1], vector2[2], vector1[0], vector1[1], vector1[2], result_vector[0], result_vector[1], result_vector[2] );
+
 }
 
 
@@ -82,7 +82,7 @@ void vector_substract( float vector1[], float vector2[], float result_vector[] )
  ***/
 
 float vector_dot_product( float vector1[], float vector2[] ) {
-// 	printf( "dot product = %f\n", vector1[0] * vector2[0] + vector1[1] * vector2[1] + vector1[2] * vector2[2] );
+
 	return ( vector1[0] * vector2[0] + vector1[1] * vector2[1] + vector1[2] * vector2[2] );
 
 }
@@ -96,12 +96,12 @@ float vector_dot_product( float vector1[], float vector2[] ) {
  *   vector1   =>   given vector1
  *   vector2   =>   given vector2
  *
- *   return angle
+ *   return angle (0-180 due to acos!)
  *
  ***/
 
 float vector_angle( float vector1[], float vector2[] ) {
-// 	printf( "angle = %f\n", ( vector_dot_product( vector1, vector2 ) / ( vector_length( vector1 ) * vector_length( vector2 ) ) ) );
+
 	return ( acos( vector_dot_product( vector1, vector2 ) / ( vector_length( vector1 ) * vector_length( vector2 ) ) ) );
 
 }
