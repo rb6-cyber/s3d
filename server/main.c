@@ -68,6 +68,7 @@ int rc_init(void)
 {
 #ifdef SIGS
 	int ret,i;
+	struct timespec t={0,200*1000*1000}; /* 200 mili seconds */
 	if (signal(SIGCHLD, sigchld_handler) == SIG_ERR);
 	kidpid=fork();
 	running=1;
@@ -78,8 +79,8 @@ int rc_init(void)
 	}
 	if (kidpid==0)
 	{
-		sleep(1); /* giving the father lots of time to set his signal handler
-					 and all his sockets up */
+		nanosleep(&t,NULL); 	/* giving the father lots of time to set his signal handler
+					 			 * and all his sockets up */
 		dprintf(VHIGH,"hello, i'm the kid and will start the rc file now!");
 		for (i=0;i<(sizeof(s3drc)/sizeof(char **));i++)
 		{
@@ -90,13 +91,21 @@ int rc_init(void)
 				dprintf(LOW,"[RC] system() said %d",ret);
 				if (ret<128) 
 				{
-					dprintf(LOW,"[RC] system() did well, I guess.");
+					dprintf(LOW,"[RC] system() did well, I guess. let's die clean now.");
 					exit(0);
 				}
 			} 
 		}
 		errs("rc_init()", "no usuable rc script found.");
-		errsf("rc_init()","You don't have an rc-script? create one (~/.s3drc) or use --no-rc !");
+		if (rc==NULL)
+		{
+			errs("rc_init()","You don't have an rc-script? Think about creating one (~/.s3drc), its handy :)");
+			errs("rc_init()","Starting anyway ...");
+			while (1) sleep(1);
+		} else {
+			errs("rc_init()","no usuable rc script found.");
+			errs("rc_init()","Check your rc-script!");
+		}
 		exit(1);
 	} else {
 		/* father just returns */
