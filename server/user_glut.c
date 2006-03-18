@@ -27,8 +27,8 @@
 /*  local prototypes */
 void keyboard(unsigned char key, int x, int y);
 void special(int skey, int x, int y);
-/* void mouse(int button, int state, int x, int y); */
 void mouse_motion(int x, int y);
+void passive_mouse_motion(int x, int y);
 extern int but;
 /*  init user input things for glut */
 int user_init_glut()
@@ -38,6 +38,7 @@ int user_init_glut()
 	glutSpecialFunc (special);
 	glutMouseFunc (user_mouse);
     glutMotionFunc(mouse_motion);
+	glutPassiveMotionFunc(passive_mouse_motion);
 	return(0);
 }
 
@@ -52,4 +53,8 @@ void special(int skey, int x, int y)
 void mouse_motion(int x, int y)
 {
 	user_mouse(but,2,x,y);
+}
+void passive_mouse_motion(int x, int y)
+{
+	user_mouse(-1,-1,x,y);
 }

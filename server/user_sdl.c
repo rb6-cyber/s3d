@@ -46,8 +46,10 @@ int user_main_sdl() {
 			 	case SDL_BUTTON_RIGHT:
 				case SDL_BUTTON_RMASK:
 			 		user_mouse(2,2,event.motion.x,event.motion.y);break;
-				case 0:break;
-					 /*  nno button ... */
+				case 0:
+					user_mouse(-1,-1,event.motion.x,event.motion.y);
+					break;
+					 /*  no button ... */
 				default:
 					dprintf(LOW,"don't know button %d", event.button.button);
 

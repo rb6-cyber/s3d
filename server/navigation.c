@@ -23,9 +23,10 @@
 
 
 #include "global.h"
-#include <math.h>
+#include <math.h> /* atan() */
 int alphax,alphay;
 float view_x,view_y,view_z;
+extern int winw,winh;
 void navi_right()
 {
 	navi_pos(1,0);
@@ -92,4 +93,30 @@ void navi_rot(int xdif, int ydif)
 	if (rv[1]>360) 	rv[1]-=360;
 	if (rv[1]<0) 	rv[1]+=360;
 	obj_rotate(get_proc_by_pid(MCP),0,rv);
+}
+void ptr_move(int x, int y)
+{
+	float tv[3],rv[3],xf,yf;
+	struct t_process *p;
+	int ptr;
+	if (winw>winh)
+	{
+		xf=winw/(float)winh;
+		yf=1;
+	} else {
+		xf=1;
+		yf=winh/(float)winw;
+	}
+	tv[0]=(2.0*x/((float)winw)-1.0)*xf;
+	tv[1]=(2.0*y/((float)winh)-1.0)*yf;
+	tv[2]=1;
+	rv[0]=180/M_PI*atan(tv[1]/2); /* TODO: is this really correct? O_o */
+	rv[1]=180/M_PI*atan(tv[0]/2);
+	rv[2]=0;
+	p=get_proc_by_pid(MCP);
+	if (-1!=(ptr=get_pointer(p)))
+	{
+		obj_translate(p,ptr,tv);	
+		obj_rotate(p,ptr,rv);	
+	}
 }

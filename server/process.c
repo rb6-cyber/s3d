@@ -95,19 +95,38 @@ int process_protinit(struct t_process *p, char *name)
 /* adds system objects to the app, like camera, pointers etc ... */
 int process_sys_init(struct t_process *p)
 {
-	int cam;
+	int cam,ptr;
+	struct t_obj *o;
 	cam=obj_new(p);
+	ptr=obj_new(p);
 	if (p->id==MCP)
 	{   /* this is only called once within process_init, later mcp's are
 		   will be registered as "real" apps first */
 		p->object[cam]->translate.z=5;
 		p->object[cam]->oflags=OF_CAM;
+		p->object[ptr]->translate.z=1;
+		p->object[ptr]->oflags=OF_POINTER|OF_LINK;
+		p->object[ptr]->linkid=cam;
 	} else {
-		/* TODO: ... get the cam position of the mcp, somehow */
+		/* TODO: ... get the cam and ptr position of the mcp, somehow */
 		p->object[cam]->oflags=OF_CAM;
+		
+		if (obj_valid(mcp_p,get_pointer(mcp_p),o)) /* get parent pointer, copy parent */
+		{
+			p->object[ptr]->rotate.x=o->rotate.x;
+			p->object[ptr]->rotate.y=o->rotate.y;
+			p->object[ptr]->rotate.z=o->rotate.z;
+			p->object[ptr]->translate.x=o->translate.x;
+			p->object[ptr]->translate.y=o->translate.y;
+			p->object[ptr]->translate.z=o->translate.z;
+		}
+		p->object[ptr]->oflags=OF_POINTER|OF_LINK;
+		p->object[ptr]->linkid=cam;
 	}
 	dprintf(MED,"process_sys_init(): added object cam0 %d",cam);
-	obj_pos_update(get_proc_by_pid(MCP),0);
+	dprintf(MED,"process_sys_init(): added object ptr0 %d",ptr);
+	obj_pos_update(get_proc_by_pid(MCP),cam);
+	obj_pos_update(get_proc_by_pid(MCP),ptr);
 /*	obj_recalc_tmat(p,0);*/
 	event_obj_info(p,0); /* tell the new program about the thing */
 

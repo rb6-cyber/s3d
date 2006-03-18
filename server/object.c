@@ -1326,29 +1326,58 @@ void obj_pos_update(struct t_process *p, uint32_t oid)
 	float v[3];
 	uint32_t i;
 	int is_lnksrc;
-	struct t_obj 		*ao;
+	struct t_obj 		*ao,*o;
 	struct t_process	*ap;
+	o=p->object[oid];
 	dprintf(VLOW,"[obj_pos_upd|pid %d] %d",p->id, oid);
-	p->object[oid]->m_uptodate=0;
+	o->m_uptodate=0;
 	obj_recalc_tmat(p,oid);
 	if (p->id!=MCP) 
 	{/*  mcp does not need that. */
 		 /*  save the matrixmode to reset it later on */
 		v[0]=v[1]=v[2]=0.0F;
-		mySetMatrix(p->object[oid]->m);
+		mySetMatrix(o->m);
 		myTransform3f(v);
 			 /*  and get it's destination point. phew */
-		p->object[oid]->or=sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+		o->or=sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 	} else 
-		if (p->object[oid]->oflags&OF_SYSTEM)
+		if (o->oflags&OF_SYSTEM) /* TODO: what will we do if $sys_object is linked to another? */
 		{ /* a system object changed position? let's update the focus'ed sys-objects */
 			if (obj_valid(p,focus_oid,ao))
 				if (NULL!=(ap=get_proc_by_pid(ao->n_mat)))
-					obj_sys_update(ap,oid);	
-			event_cam_changed();
-			dprintf(VLOW,"[obj_pos_upd|pid %d] %d event_cam_changed",p->id,oid);
+				{
+					if (OF_POINTER==(o->oflags&0xF0000000))
+					{ /* we dont have to do that much in this case ... */
+						if (obj_valid(ap,get_pointer(ap),ao)) /* we can redefine ao here -> ao = focused app's pointer*/
+						{
+							ao->rotate.x=o->rotate.x;
+							ao->rotate.y=o->rotate.y;
+							ao->rotate.z=o->rotate.z;
+							ao->translate.x=o->translate.x;
+							ao->translate.y=o->translate.y;
+							ao->translate.z=o->translate.z; /* just copy */
+						}
+						
+					} else 
+						obj_sys_update(ap,oid);	
+				}
+			switch (o->oflags&0xF0000000)
+			{
+				case OF_CAM:
+					event_cam_changed();
+					dprintf(LOW,"[obj_pos_upd|pid %d] %d event_cam_changed",p->id,oid);
+					break;
+				case OF_POINTER:
+					event_ptr_changed();
+					dprintf(LOW,"[obj_pos_upd|pid %d] %d event_ptr_changed",p->id,oid);
+					break;
+				default:
+					dprintf(LOW,"[obj_pos_upd|pid %d] %d unknown systen event",p->id,oid);
+					
+			}
+
 		}
-	if (p->object[oid]->oflags&OF_LINK_SRC)
+	if (o->oflags&OF_LINK_SRC)
 	{
 		is_lnksrc=0;
 		for (i=0;i<p->n_obj;i++)  /*  update objects which reference on us. (recursive) */
@@ -1361,7 +1390,7 @@ void obj_pos_update(struct t_process *p, uint32_t oid)
 				}
 		if (!is_lnksrc)	/* it's not! switch out the flag */
 		{
-			p->object[oid]->oflags&=~OF_LINK_SRC;
+			o->oflags&=~OF_LINK_SRC;
 			dprintf(VLOW,"obj_pos_update(): %d in process %d is no longer a link-source",oid,p->id);
 		}
 	}
@@ -1849,6 +1878,7 @@ int obj_del(struct t_process *p, uint32_t oid)
 	}
 	return(-1);
 }
+
 /*  this is the "direct" freeing function, without checking for perfomance */
 int obj_free(struct t_process *p,uint32_t oid)
 {
@@ -1892,4 +1922,18 @@ int obj_free(struct t_process *p,uint32_t oid)
 			p->object=realloc(p->object,sizeof(struct t_obj *)*(p->n_obj));
 		}
 	return(0);
+}
+/* get the object of the pointer (that's 1, usually */
+uint32_t get_pointer(struct t_process *p)
+{
+	uint32_t i;
+	for (i=0;i<p->n_obj;i++)
+	{
+
+		if (OF_POINTER==(p->object[i]->oflags&0xF0000000))
+		{
+			return(i);
+		}
+	}
+	return(-1);
 }

@@ -77,11 +77,26 @@ int event_cam_changed()
 	struct t_obj	 *o;
 	p=get_proc_by_pid(MCP);
 	event_obj_info(p,0);
-
-	if (obj_valid(get_proc_by_pid(MCP),focus_oid,o))
+	if (obj_valid(p,focus_oid,o))
 		event_obj_info(get_proc_by_pid(o->n_mat),0);
 	return(0);
 }
+/* same for the mouse movement! */
+int event_ptr_changed()
+{
+	struct t_process *p;
+	struct t_obj	 *o;
+	p=get_proc_by_pid(MCP);
+	dprintf(MED,"event_ptr_changed()");
+	event_obj_info(p,get_pointer(p));
+	if (obj_valid(p,focus_oid,o))
+	{
+		p=get_proc_by_pid(o->n_mat); /* focused program pointer*/
+		event_obj_info(p,get_pointer(p));
+	}
+	return(0);
+}
+
 /* this should replace the mcp_rep_object() function later ... */
 int event_obj_info(struct t_process *p, uint32_t oid)
 {
@@ -114,6 +129,10 @@ int event_obj_info(struct t_process *p, uint32_t oid)
 				mo.scale=(float)((float)winw)/winh; /* give aspect ratio to program */
 				strncpy(mo.name,"sys_camera0",NAME_MAX);
 				break;
+			case OF_POINTER:
+				strncpy(mo.name,"sys_pointer0",NAME_MAX);
+				break;
+
 		}
 		prot_com_out(p,S3D_P_S_OINFO,(uint8_t *)&mo,sizeof(struct t_obj_info));
 	}

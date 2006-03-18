@@ -237,6 +237,7 @@ int event_obj_info(struct t_process *p, uint32_t oid);
 int event_obj_click(struct t_process *p, uint32_t oid);
 int event_key_pressed(uint16_t key);
 int event_cam_changed(void);
+int event_ptr_changed(void);
 int event_init(struct t_process *p);
 int event_quit(struct t_process *p);
 int event_ping_in(struct t_process *p, uint32_t o);
@@ -292,7 +293,7 @@ void navi_rot_up(void);
 void navi_rot_down(void);
 void navi_pos(int xdif, int ydif);
 void navi_rot(int xdif, int ydif);
-
+void ptr_move(int x, int y);
 /*  process.c */
 struct t_process *process_add(void);
 int process_del(int id);
@@ -340,6 +341,7 @@ void obj_recalc_tmat	(struct t_process *p, uint32_t oid);
 void obj_size_update	(struct t_process *p, uint32_t oid);
 void obj_pos_update		(struct t_process *p, uint32_t oid);
 void obj_check_biggest_object(struct t_process *p, uint32_t oid);
+uint32_t get_pointer(struct t_process *p);
 /*  mcp.c */
 int mcp_rep_object(uint32_t mcp_oid);
 int mcp_del_object(uint32_t mcp_oid);

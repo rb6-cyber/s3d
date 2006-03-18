@@ -24,7 +24,6 @@
 
 #include "global.h"
 /*  this file reads user input */
-/*  this is done right now by SDL-polling */
 static int ox,oy;
 int but=-1;
 int user_init() {
@@ -117,6 +116,10 @@ void user_mouse(int button, int state, int x, int y)
 	}
 	ox=x;
 	oy=y;
+	if ((ox!=0xFFFFFF) && (oy!=0xFFFFFF))
+	{	/* mouse changed? */
+		ptr_move(x,y);
+	}
 	but=button;
 	if (state==1)  /*  mouse up */
 	{
