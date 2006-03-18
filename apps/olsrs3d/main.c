@@ -64,7 +64,7 @@ int Zp_rotate = 0;
 int ColorSwitch = 0;   /* enable/disable colored olsr connections */
 int RotateSwitch = 0;
 int RotateSpeed = 2;
-float factor = 0.5;	/* factor in calc_olsr_node_mov */
+float Factor = 0.5;	/* Factor in calc_olsr_node_mov */
 
 /***
  *
@@ -185,7 +185,7 @@ void mov_add(float mov[], float p[], float fac)
 
 void handle_olsr_node( struct olsr_node *olsr_node ) {
 
-	float distance, angle;
+	float distance, angle, angle_rad;
 	float tmp_mov_vec[3], desc_norm_vec[3] = {0,0,-1};
 	struct olsr_node *other_node;
 	struct Obj_to_ip *Obj_to_ip_curr;
@@ -323,18 +323,26 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 			olsr_node->node_type_modified = 0;
 
 		}
+
+
 		/* rotate node description so that they are always readable */
 		tmp_mov_vec[0] = CamPosition[0][0] - olsr_node->pos_vec[0];
 		tmp_mov_vec[1] = 0;   /* we are not interested in the y value */
 		tmp_mov_vec[2] = CamPosition[0][2] - olsr_node->pos_vec[2];
-	
+
+		angle = s3d_vector_angle( desc_norm_vec, tmp_mov_vec );
+
 		/* take care of inverse cosinus */
-		angle = ( tmp_mov_vec[0] > 0 ? 
-					180 - ( 180.0/M_PI * s3d_vector_angle( desc_norm_vec, tmp_mov_vec ) ) : 
-					180 + ( 180.0/M_PI * s3d_vector_angle( desc_norm_vec, tmp_mov_vec ) ) );
-																		
+		if ( tmp_mov_vec[0] > 0 ) {
+			angle_rad = 90.0/M_PI - angle;
+			angle = 180 - ( 180.0/M_PI * angle );
+		} else {
+			angle_rad = 90.0/M_PI + angle;
+			angle = 180 + ( 180.0/M_PI * angle );
+		}
+
 		s3d_rotate( olsr_node->desc_id, 0, angle , 0 );
-		s3d_translate( olsr_node->desc_id, -cos(angle*M_PI/180)*olsr_node->desc_length/2 ,-1.5, sin(angle*M_PI/180)*olsr_node->desc_length/2 );
+		s3d_translate( olsr_node->desc_id, -cos(angle_rad)*olsr_node->desc_length/2 ,-1.5, sin(angle_rad)*olsr_node->desc_length/2 );
 
 
 		/* drift away from unrelated nodes */
@@ -407,7 +415,7 @@ void calc_olsr_node_mov( void ) {
 			 * drift factor - 0.0 < factor < 1.0 ( best results: 0.3 < factor < 0.9
 			 * small factor: fast and strong drift to neighbours
 			 ***/
-			if ( f < factor ) f = factor;
+			if ( f < Factor ) f = Factor;
 
 			mov_add( olsr_con->left_olsr_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
 			mov_add( olsr_con->right_olsr_node->mov_vec, tmp_mov_vec, - ( 1 / f - 1 ) );
@@ -606,6 +614,8 @@ void move_olsr_nodes( void ) {
 
 		s3d_push_line( olsr_con->obj_id, 2,3,0 );
 		s3d_push_line( olsr_con->obj_id, 0,1,0 );
+		/*s3d_pep_line( olsr_con->obj_id, 2,3,0 );
+		s3d_pep_line( olsr_con->obj_id, 0,1,0 );*/
 
 		olsr_con = olsr_con->next_olsr_con;
 
@@ -721,12 +731,12 @@ void keypress(struct s3d_evt *event) {
 			s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
 			break;
 		case S3DK_PAGEUP: /* page up -> change factor in calc_olsr_node_mov */
-			if(factor < 0.9)
-				factor += 0.1;
+			if(Factor < 0.9)
+				Factor += 0.1;
 			break;
 		case S3DK_PAGEDOWN: /* page down -> change factor in calc_olsr_node_mov */
-			if(factor > 0.3)
-				factor -= 0.1;
+			if(Factor > 0.3)
+				Factor -= 0.1;
 			break;
 	}
 }

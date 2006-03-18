@@ -122,9 +122,3 @@ int net_quit();
 void out_of_mem( void );
 struct olsr_node **lst_search(int id);
 
-/* vector */
-float vector_length( float vector[] );
-void vector_substract( float vector1[], float vector2[], float result_vector[] );
-float vector_dot_product( float vector1[], float vector2[] );
-float vector_angle( float vector1[], float vector2[] );
-
