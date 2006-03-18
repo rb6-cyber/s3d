@@ -87,6 +87,18 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 				dprintf(VLOW,"S3D_P_S_KEY: key %d hit!!",*((uint16_t *)s3devt->buf));
 			}
 			break;
+		case S3D_P_S_MBUTTON:
+			if (length==2)
+			{
+				if (NULL!=(s3devt=malloc(sizeof(struct s3d_evt))))
+				{
+					s3devt->event=S3D_EVENT_MBUTTON;
+					s3devt->length=2;
+					s3devt->buf=buf;
+				}
+				dprintf(VLOW,"S3D_P_S_MBUTTON: mbutton %d, state %d !!",*((uint8_t *)s3devt->buf), *(1+(uint8_t *)s3devt->buf));
+			}
+			break;
 		case S3D_P_MCP_OBJECT:
 			if (length==sizeof(struct mcp_object))
 			{
@@ -102,10 +114,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 					buf[length-1]='\0';  /*  put a null byte at the end  */
 										 /*  for the not so careful users */
 					s3devt->buf=buf;
-					dprintf(MED,"S3D_P_MCP_OBEJCT: something is happening to object %d, name %s", 
-								mo->object,
-								mo->name
-								);
+					dprintf(VLOW,"S3D_P_MCP_OBEJCT: something is happening to object %d, name %s", 	mo->object, mo->name);
 
 				}
 			} else dprintf(MED,"wrong length for S3D_P_MCP_OBJECT length %d != %d",length,sizeof(struct mcp_object));

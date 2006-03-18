@@ -885,10 +885,10 @@ static int add_segment(segnum)
       
       else
 	{
-	  tmpseg = tr[tr[t].d0].rseg;
 	  double y0, yt;
 	  point_t tmppt;
 	  int tnext, i_d0, i_d1;
+	  tmpseg = tr[tr[t].d0].rseg;
 
 	  i_d0 = i_d1 = FALSE;
 	  if (FP_EQUAL(tr[t].lo.y, s.v0.y))

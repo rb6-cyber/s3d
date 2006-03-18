@@ -111,6 +111,7 @@ void s3d_process_stack();
 int s3d_mcp_focus(int object);
 #define S3D_EVENT_OBJ_CLICK		1
 #define S3D_EVENT_KEY			2
+#define S3D_EVENT_MBUTTON		3
 #define S3D_EVENT_NEW_OBJECT	16
 #define S3D_EVENT_OBJ_INFO		17
 
@@ -143,4 +144,7 @@ struct s3d_obj_info
 	float r;
 	char name[256]; 
 };
-
+struct s3d_but_info
+{
+	unsigned char button, state;
+};

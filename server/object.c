@@ -1356,6 +1356,7 @@ void obj_pos_update(struct t_process *p, uint32_t oid)
 							ao->translate.x=o->translate.x;
 							ao->translate.y=o->translate.y;
 							ao->translate.z=o->translate.z; /* just copy */
+							obj_pos_update(ap,get_pointer(ap));
 						}
 						
 					} else 
@@ -1365,11 +1366,9 @@ void obj_pos_update(struct t_process *p, uint32_t oid)
 			{
 				case OF_CAM:
 					event_cam_changed();
-					dprintf(LOW,"[obj_pos_upd|pid %d] %d event_cam_changed",p->id,oid);
 					break;
 				case OF_POINTER:
 					event_ptr_changed();
-					dprintf(LOW,"[obj_pos_upd|pid %d] %d event_ptr_changed",p->id,oid);
 					break;
 				default:
 					dprintf(LOW,"[obj_pos_upd|pid %d] %d unknown systen event",p->id,oid);
@@ -1658,9 +1657,15 @@ int obj_link(struct t_process *p, uint32_t oid_from, uint32_t oid_to)
 	{
 		if (oid_to==oid_from)
 		{
-			errds(VHIGH,"obj_link()","can't link to itself!!",oid_from,oid_to);
+			errds(VHIGH,"obj_link()","can't link to itself!!");
 			return(-1);
 		}
+		if (OF_POINTER==(o->oflags&0xF0000000))
+		{
+			errds(VHIGH,"obj_link()","may not change the link of a pointer");
+			return(-1);
+		}
+
 		while (o2->oflags&OF_LINK)
 		{
 			if (o2->linkid==oid_from)  /*  circular link!! we can't do that */
@@ -1672,7 +1677,7 @@ int obj_link(struct t_process *p, uint32_t oid_from, uint32_t oid_to)
 		}
 		if ((o->oflags&OF_SYSTEM) && (p->id==MCP))
 		{
-			errds(VHIGH,"obj_link()","can't link system-objects in non-mcp-apps!",oid_from,oid_to);
+			errds(VHIGH,"obj_link()","can't link system-objects in non-mcp-apps!");
 			return(-1);
 		}
  		dprintf(LOW,"[link|pid %d] %d -> %d",p->id, oid_from,oid_to); 
@@ -1690,6 +1695,11 @@ int obj_unlink(struct t_process *p, uint32_t oid)
 	struct t_obj *o;
 	if (obj_valid(p,oid,o))
 	{
+		if (OF_POINTER==(o->oflags&0xF0000000))
+		{
+			errds(VHIGH,"obj_link()","may not change the link of a pointer");
+			return(-1);
+		}
 		o->oflags&=~OF_LINK;
 		dprintf(VLOW,"removing link of object %d from pid %d",oid,p->id);
 		obj_pos_update(p,oid);

@@ -108,10 +108,10 @@ void ptr_move(int x, int y)
 		yf=winh/(float)winw;
 	}
 	tv[0]=(2.0*x/((float)winw)-1.0)*xf;
-	tv[1]=(2.0*y/((float)winh)-1.0)*yf;
-	tv[2]=1;
-	rv[0]=180/M_PI*atan(tv[1]/2); /* TODO: is this really correct? O_o */
-	rv[1]=180/M_PI*atan(tv[0]/2);
+	tv[1]=-(2.0*y/((float)winh)-1.0)*yf;
+	tv[2]=-1;
+	rv[0]=1.5*180/M_PI*atan(tv[1]/2); /* TODO: Hm, this is not really correct ... */
+	rv[1]=1.5*180/M_PI*-atan(tv[0]/2);
 	rv[2]=0;
 	p=get_proc_by_pid(MCP);
 	if (-1!=(ptr=get_pointer(p)))

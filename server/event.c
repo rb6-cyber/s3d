@@ -42,7 +42,7 @@ int event_obj_click(struct t_process *p, uint32_t oid)
 	prot_com_out(p,S3D_P_S_CLICK,(uint8_t *)&moid, 4);
 	return(0);
 }
-/*  this functions sends keystrok events to the focused program. */
+/*  this functions sends keystroke events to the focused program. */
 /*  maybe mcp-keystrokes should be catched here. */
 int event_key_pressed(uint16_t key)
 {
@@ -52,6 +52,19 @@ int event_key_pressed(uint16_t key)
 	if (obj_valid(get_proc_by_pid(MCP),focus_oid,o))
 		prot_com_out(get_proc_by_pid(o->n_mat), S3D_P_S_KEY, (uint8_t *)&k, 2);
 	prot_com_out(get_proc_by_pid(MCP),S3D_P_S_KEY,(uint8_t *)&k, 2); /* mcp always gets a copy */
+	return(0);
+}
+/* mouse button changes are sent to the client */
+int event_mbutton_clicked(uint8_t button, uint8_t state)
+{
+	struct t_obj *o;
+	uint8_t b[2];
+	b[0]=button;
+	b[1]=state;
+	dprintf(MED,"mouse button click event: %d %d",button,state);
+	if (obj_valid(get_proc_by_pid(MCP),focus_oid,o))
+		prot_com_out(get_proc_by_pid(o->n_mat), S3D_P_S_MBUTTON, (uint8_t *)&b, 2);
+	prot_com_out(get_proc_by_pid(MCP),S3D_P_S_MBUTTON,(uint8_t *)&b, 2); /* mcp always gets a copy */
 	return(0);
 }
 /*  tell the client something about us */
@@ -87,7 +100,6 @@ int event_ptr_changed()
 	struct t_process *p;
 	struct t_obj	 *o;
 	p=get_proc_by_pid(MCP);
-	dprintf(MED,"event_ptr_changed()");
 	event_obj_info(p,get_pointer(p));
 	if (obj_valid(p,focus_oid,o))
 	{

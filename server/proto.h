@@ -160,6 +160,9 @@
 			 /*  4b: oid */
 #define	S3D_P_S_KEY		4
 			 /*  2b: button */
+#define S3D_P_S_MBUTTON	5
+             /*  1b: button number */
+             /*  2b: butotn state */
 #define S3D_P_S_NEWOBJ	16
 			 /*  4b: oid */
 

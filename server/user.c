@@ -25,6 +25,7 @@
 #include "global.h"
 /*  this file reads user input */
 static int ox,oy;
+static int pressed;
 int but=-1;
 int user_init() {
 	switch (frame_mode)
@@ -37,6 +38,7 @@ int user_init() {
 #endif
 		default:return(-1);
 	}
+	pressed=0;
 	ox=oy=0xFFFFFF;
 	return(0);
 }
@@ -66,66 +68,67 @@ void user_key(unsigned short key,int state)
 }
 void user_mouse(int button, int state, int x, int y) 
 {
-	if (state==0)  /*  mouse_down ... */
+	switch (state)
 	{
-		switch (button)
-		{
-			case 0:
-				graphics_pick_obj(x,y);	
-				break;
-			case 1:
-				if ((ox!=0xFFFFFF) && (oy!=0xFFFFFF))
-					navi_pos(ox-x,oy-y);
-				break;
-			case 2:
-				if ((ox!=0xFFFFFF) && (oy!=0xFFFFFF))
-					navi_rot(ox-x,oy-y);
-				break;
-			case 3:
-				navi_fwd();
-				break;
-			case 4:
-				navi_back();
-				break;
-			default:
-				dprintf(VLOW,"button is ... %d", button);
-		}
-	} 
-	 /*  mouse still down */
-	if (state==2)
-	{
-		switch (button)
-		{
-			case 1:
-				if ((ox!=0xFFFFFF) && (oy!=0xFFFFFF))
-					navi_pos(ox-x,oy-y);
-				break;
-			case 2:
-				if ((ox!=0xFFFFFF) && (oy!=0xFFFFFF))
-					navi_rot(ox-x,oy-y);
-				break;
-			case 3:
-				navi_fwd();
-				break;
-			case 4:
-				navi_back();
-				break;
-			default:
-				dprintf(VLOW,"button is ... %d", button);
-		}
-	}
-	ox=x;
-	oy=y;
-	if ((ox!=0xFFFFFF) && (oy!=0xFFFFFF))
-	{	/* mouse changed? */
-		ptr_move(x,y);
+		case 0: /*  mouse_down ... */
+			switch (button)
+			{
+				case 0:
+					graphics_pick_obj(x,y);	
+					break;
+				case 1:
+					if ((ox!=0xFFFFFF) && (oy!=0xFFFFFF))
+						navi_pos(ox-x,oy-y);
+					break;
+				case 2:
+					if ((ox!=0xFFFFFF) && (oy!=0xFFFFFF))
+						navi_rot(ox-x,oy-y);
+					break;
+				case 3:
+					navi_fwd();
+					break;
+				case 4:
+					navi_back();
+					break;
+				default:
+					dprintf(VLOW,"button is ... %d", button);
+			}
+			ox=x;
+			oy=y;
+			event_mbutton_clicked(button,state);
+			break;
+		case 1:  /*  mouse up */
+			ox=oy=0xFFFFFF;
+			event_mbutton_clicked(button,state);
+	/*		dprintf(LOW,"state is: %d,button is %d",state,button);*/
+			break;
+		case 2:	 /*  mouse still down */
+			switch (button)
+			{
+				case 1:
+					if ((ox!=0xFFFFFF) && (oy!=0xFFFFFF))
+						navi_pos(ox-x,oy-y);
+					break;
+				case 2:
+					if ((ox!=0xFFFFFF) && (oy!=0xFFFFFF))
+						navi_rot(ox-x,oy-y);
+					break;
+				case 3:
+					navi_fwd();
+					break;
+				case 4:
+					navi_back();
+					break;
+				default:
+					dprintf(VLOW,"button is ... %d", button);
+			}
+			ox=x;
+			oy=y;
+			break;
 	}
 	but=button;
-	if (state==1)  /*  mouse up */
-	{
-		ox=oy=0xFFFFFF;
-/*		dprintf(LOW,"state is: %d,button is %d",state,button);*/
-	}
+	/* mouse changed? */
+	ptr_move(x,y);
 }
 int user_quit() {
 	return(0);

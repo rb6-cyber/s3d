@@ -104,7 +104,7 @@ int process_sys_init(struct t_process *p)
 		   will be registered as "real" apps first */
 		p->object[cam]->translate.z=5;
 		p->object[cam]->oflags=OF_CAM;
-		p->object[ptr]->translate.z=1;
+		p->object[ptr]->translate.z=-1;
 		p->object[ptr]->oflags=OF_POINTER|OF_LINK;
 		p->object[ptr]->linkid=cam;
 	} else {

@@ -4,6 +4,7 @@ MED:
  - stop networking grepping after some deadline to prevent DoS ...?
  - delete polygon normals when vertex got changed?!
  - endless loop in proccess_args() (getopts) on linux ppc
+ - recheck atan()s for mousemotion rotate values
 LOW:
  - checking for biggest object is not cool implemented
  - checking on clone sources is not very nice too ...

@@ -236,6 +236,7 @@ int prot_com_out(struct t_process *p, uint8_t opcode, uint8_t *buf, uint16_t len
 int event_obj_info(struct t_process *p, uint32_t oid);
 int event_obj_click(struct t_process *p, uint32_t oid);
 int event_key_pressed(uint16_t key);
+int event_mbutton_clicked(uint8_t button, uint8_t state);
 int event_cam_changed(void);
 int event_ptr_changed(void);
 int event_init(struct t_process *p);
