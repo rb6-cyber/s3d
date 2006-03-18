@@ -323,17 +323,16 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 		}
 
-
-		/* rotate node description so that they are always readable */
-		tmp_mov_vec[0] = CamPosition[0][0] - olsr_node->pos_vec[0];
-		tmp_mov_vec[1] = 0;   /* we are not interested in the y value */
-		tmp_mov_vec[2] = CamPosition[0][2] - olsr_node->pos_vec[2];
-
-		/* take care of inverse cosinus */
-		angle = ( tmp_mov_vec[0] > 0 ? 180 - ( 180.0/M_PI * vector_angle( desc_norm_vec, tmp_mov_vec ) ) : 180 + ( 180.0/M_PI * vector_angle( desc_norm_vec, tmp_mov_vec ) ) );
-
+		s3d_vector_substract( olsr_node->pos_vec, CamPosition[0], tmp_mov_vec );
+		tmp_mov_vec[1]=0; /* we are not interested in the y value */
+		angle = 180.0/M_PI * s3d_vector_angle( desc_norm_vec, tmp_mov_vec );
+		if (tmp_mov_vec[0]>0)
+			angle=180-angle;
+		else
+			angle=180+angle;
 		s3d_rotate( olsr_node->desc_id, 0, angle , 0 );
 		s3d_translate( olsr_node->desc_id, -cos(angle*M_PI/180)*olsr_node->desc_length/2 ,-1.5, sin(angle*M_PI/180)*olsr_node->desc_length/2 );
+/* 		printf( "olsr node (%s) angle: %f\n", olsr_node->ip, angle * 180 / M_PI );*/
 
 
 		/* drift away from unrelated nodes */

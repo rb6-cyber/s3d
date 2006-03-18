@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
+/* definitions */
 struct s3d_evt {
 	unsigned char event;
 	int length;
@@ -30,11 +30,53 @@ struct s3d_evt {
 };
 
 typedef void (*s3d_cb)(struct s3d_evt *);
+
+#define S3D_EVENT_OBJ_CLICK		1
+#define S3D_EVENT_KEY			2
+#define S3D_EVENT_MBUTTON		3
+#define S3D_EVENT_NEW_OBJECT	16
+#define S3D_EVENT_OBJ_INFO		17
+
+#define S3D_EVENT_QUIT			255
+
+/* TODO: don't keep _MCP_ events .. they're ugly */
+#define S3D_MCP_OBJECT			32
+#define S3D_MCP_DEL_OBJECT		33
+
+#define S3D_PORT				6066
+
+#define	S3D_OF_VISIBLE			0x00000001
+#define	S3D_OF_SELECTABLE		0x00000002
+#define S3D_OF_POINTABLE		0x00000004
+struct mcp_object 
+{
+	unsigned long object;
+	float trans_x,trans_y,trans_z;
+	float r;
+#define MCP_NEW_OBJECT	1
+	char name[256]; 
+};
+struct s3d_obj_info 
+{
+	unsigned long object;
+	unsigned long flags;
+	float trans_x,trans_y,trans_z;
+	float rot_x,rot_y,rot_z;
+	float scale;
+	float r;
+	char name[256]; 
+};
+struct s3d_but_info
+{
+	unsigned char button, state;
+};
+/* framework functions */
 void s3d_usage();
 int s3d_init(int *argc, char ***argv, char *name);
 int s3d_quit();
 int s3d_mainloop(void (*f)());
 
+/* object manipulations */
 int s3d_push_vertex(int object, float x, float y, float z);
 int s3d_push_vertices(int object, float *vbuf, unsigned short n);
 int s3d_push_material( int object, 
@@ -79,28 +121,41 @@ int s3d_pep_lines(int object, unsigned long *lbuf,unsigned short n);
 int s3d_load_polygon_normals(int object, float *nbuf,unsigned long start, unsigned short n);
 int s3d_load_polygon_tex_coords(int object, float *tbuf, unsigned long start, unsigned short n);
 int s3d_load_texture(int object, unsigned long tex, unsigned short xpos, unsigned short ypos, unsigned short w, unsigned short h, char *data);
+
 int s3d_new_object();
 int s3d_del_object(unsigned long oid);
+
 int s3d_clone(unsigned long oid);
 int s3d_clone_target(unsigned long oid, unsigned long toid);
+
 int s3d_link(unsigned long oid_from, unsigned long oid_to);
 int s3d_unlink(unsigned long oid);
-int s3d_import_3ds_file(char *fname);
-int s3d_import_3ds(char *buf);
-int s3d_open_file(char *fname, char **pointer);
-int s3d_select_font(char *mask);
-int s3d_draw_string( char *str, float *xlen);
+
 int s3d_flags_on(int object, unsigned long flags);
 int s3d_flags_off(int object, unsigned long flags);
 int s3d_translate(int object, float x, float y, float z);
 int s3d_rotate(int object, float x, float y, float z);
 int s3d_scale(int object, float s);
 
+/* high-level object creating */
+int s3d_import_3ds_file(char *fname);
+int s3d_import_3ds(char *buf);
+int s3d_open_file(char *fname, char **pointer);
+int s3d_select_font(char *mask);
+int s3d_draw_string( char *str, float *xlen);
+
+/* some vector calculation helpers */
+
+float s3d_vector_length( float vector[] );
+float s3d_vector_dot_product( float vector1[], float vector2[] );
+void s3d_vector_substract( float vector1[], float vector2[], float result_vector[] );
+float s3d_vector_angle( float vector1[], float vector2[] );
+
+/* event handlers */
 void s3d_push_event(struct s3d_evt *newevt);
 struct s3d_evt *s3d_pop_event();
 struct s3d_evt *s3d_find_event(unsigned char event);
 int s3d_delete_event(struct s3d_evt *devt);
-
 
 void s3d_set_callback(unsigned char event, s3d_cb func);
 void s3d_clear_callback(unsigned char event);
@@ -108,43 +163,6 @@ void s3d_ignore_callback(unsigned char event);
 s3d_cb s3d_get_callback(unsigned char event);
 void s3d_process_stack();
 
+/* mcp special */
 int s3d_mcp_focus(int object);
-#define S3D_EVENT_OBJ_CLICK		1
-#define S3D_EVENT_KEY			2
-#define S3D_EVENT_MBUTTON		3
-#define S3D_EVENT_NEW_OBJECT	16
-#define S3D_EVENT_OBJ_INFO		17
 
-#define S3D_EVENT_QUIT			255
-
-/* TODO: don't keep _MCP_ events .. they're ugly */
-#define S3D_MCP_OBJECT			32
-#define S3D_MCP_DEL_OBJECT		33
-
-#define S3D_PORT				6066
-
-#define	S3D_OF_VISIBLE			0x00000001
-#define	S3D_OF_SELECTABLE		0x00000002
-#define S3D_OF_POINTABLE		0x00000004
-struct mcp_object 
-{
-	unsigned long object;
-	float trans_x,trans_y,trans_z;
-	float r;
-#define MCP_NEW_OBJECT	1
-	char name[256]; 
-};
-struct s3d_obj_info 
-{
-	unsigned long object;
-	unsigned long flags;
-	float trans_x,trans_y,trans_z;
-	float rot_x,rot_y,rot_z;
-	float scale;
-	float r;
-	char name[256]; 
-};
-struct s3d_but_info
-{
-	unsigned char button, state;
-};

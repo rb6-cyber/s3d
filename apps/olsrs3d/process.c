@@ -49,6 +49,7 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 
 	struct olsr_con **olsr_con = &Con_begin;
 	struct olsr_con *prev_olsr_con = NULL;   /* previous olsr connection */
+	struct olsr_neigh_list **olsr_neigh_list;
 
 	while ( (*olsr_con) != NULL ) {
 
@@ -88,8 +89,8 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 
 		s3d_flags_on( (*olsr_con)->obj_id, S3D_OF_VISIBLE );
 
-// 		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
-// 		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );
+/* 		s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
+ 		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );*/
 		s3d_link( (*olsr_con)->obj_id,  ZeroPoint );
 
 		/* add olsr node to new olsr connection in order to access the nodes from the connection list */
@@ -113,7 +114,7 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 		(*olsr_con)->prev_olsr_con = prev_olsr_con;
 
 		/* add new olsr connection to olsr nodes in order to access the connection from the olsr node */
-		struct olsr_neigh_list **olsr_neigh_list = &(*olsr_con)->left_olsr_node->olsr_neigh_list;
+		olsr_neigh_list = &(*olsr_con)->left_olsr_node->olsr_neigh_list;
 		while ( (*olsr_neigh_list) != NULL ) olsr_neigh_list = &(*olsr_neigh_list)->next_olsr_neigh_list;
 		(*olsr_neigh_list) = malloc( sizeof( struct olsr_neigh_list ) );
 		if ( (*olsr_neigh_list) == NULL ) out_of_mem();

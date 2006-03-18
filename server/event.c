@@ -61,7 +61,6 @@ int event_mbutton_clicked(uint8_t button, uint8_t state)
 	uint8_t b[2];
 	b[0]=button;
 	b[1]=state;
-	dprintf(MED,"mouse button click event: %d %d",button,state);
 	if (obj_valid(get_proc_by_pid(MCP),focus_oid,o))
 		prot_com_out(get_proc_by_pid(o->n_mat), S3D_P_S_MBUTTON, (uint8_t *)&b, 2);
 	prot_com_out(get_proc_by_pid(MCP),S3D_P_S_MBUTTON,(uint8_t *)&b, 2); /* mcp always gets a copy */

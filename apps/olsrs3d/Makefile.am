@@ -5,7 +5,6 @@ olsrs3dinclude_HEADERS =  \
 	olsrs3d.h
 
 olsrs3d_SOURCES =  \
-	vector.c \
 	process.c \
 	main.c \
 	net.c

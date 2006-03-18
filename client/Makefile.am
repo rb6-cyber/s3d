@@ -3,7 +3,7 @@ lib_LTLIBRARIES=	libs3d.la
 libs3d_la_SOURCES=	3dsread.c callback.c error.c event.c fontselect.c \
 			freetype.c io.c network.c object_queue.c proto_in.c \
 			proto_out.c shm.c shm_ringbuf.c tcp.c \
-			sei_construct.c sei_misc.c sei_monotone.c sei_tri.c
+			sei_construct.c sei_misc.c sei_monotone.c sei_tri.c vector.c
 			
 pkginclude_HEADERS=	config.h s3d.h s3dlib.h sei_triangulate.h sei_interface.h
 
