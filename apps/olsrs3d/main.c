@@ -27,6 +27,7 @@
 
 #include <stdio.h>
 #include <s3d.h>
+#include <s3d_keysym.h>
 #include <time.h>	      /* nanosleep() */
 #include <string.h>	/* strncpy() */
 #include <math.h>		/* sqrt() */
@@ -685,25 +686,25 @@ void keypress(struct s3d_evt *event) {
 	int key;
 	key=*((unsigned short *)event->buf);
 	switch(key) {
-		case 27: /* esc -> close olsr */
+		case S3DK_ESCAPE: /* esc -> close olsr */
 			stop();
 			break;
 		case 15: /* strg + o */
 			lst_out(); /* output ob2ip list */
 			break;
-		case 99: /* c -> color on/off */
+		case 'c': /* c -> color on/off */
 			if(ColorSwitch) ColorSwitch = 0;
 			else ColorSwitch = 1;
 			break;
-		case 114: /* r -> rotate start/stop*/
+		case 'r': /* r -> rotate start/stop*/
 			if(RotateSwitch) RotateSwitch = 0;
 			else RotateSwitch = 1;
 			break;
-		case 43: /* + -> rotate speed increase*/
+		case '+': /* + -> rotate speed increase*/
 			if(RotateSwitch && RotateSpeed < 10)
 				RotateSpeed++;
 			break;
-		case 45: /* - -> rotate speed decrease*/
+		case '-': /* - -> rotate speed decrease*/
 			if(RotateSwitch && RotateSpeed > 1)
 				RotateSpeed--;
 			break;
@@ -711,19 +712,19 @@ void keypress(struct s3d_evt *event) {
 			s3d_translate(ZeroPoint,0.0,0.0,0.0);
 			ZeroPosition[0] = ZeroPosition[1] = ZeroPosition[2] = 0.0;
 			break;
-		case 101: /* arrow up -> move nodes up */
+		case S3DK_UP: /* arrow up -> move nodes up */
 			ZeroPosition[1]++;
 			s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
 			break;
-		case 103: /* arrow down -> move nodes down */
+		case S3DK_DOWN: /* arrow down -> move nodes down */
 			ZeroPosition[1]--;
 			s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
 			break;
-		case 104: /* page up -> change factor in calc_olsr_node_mov */
+		case S3DK_PAGEUP: /* page up -> change factor in calc_olsr_node_mov */
 			if(factor < 0.9)
 				factor += 0.1;
 			break;
-		case 105: /* page down -> change factor in calc_olsr_node_mov */
+		case S3DK_PAGEDOWN: /* page down -> change factor in calc_olsr_node_mov */
 			if(factor > 0.3)
 				factor -= 0.1;
 			break;
@@ -741,8 +742,8 @@ void object_click(struct s3d_evt *evt)
 	int oid;
 	/* float distance,tmp_vector[3]; */
 	char ip_str[50];
-	oid=(int)*((unsigned long *)evt->buf);
 	struct olsr_node *olsr_node;
+	oid=(int)*((unsigned long *)evt->buf);
 	olsr_node = *lst_search(oid);
 	/* printf("obj2ip: search return %s\n",olsr_node->ip); */
 	/*

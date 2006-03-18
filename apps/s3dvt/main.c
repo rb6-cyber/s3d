@@ -33,6 +33,7 @@
 #include <sys/ioctl.h> 	 /*  ioctl() */
 #include <pthread.h>	 /*  pthread_create() */
 #include <s3d.h>		 /*  s3d_* */
+#include <s3d_keysym.h>	 /*  key symbols */
 #include <time.h>	/* nanosleep() */
 static struct timespec t={0,10*1000*1000}; /* 10 mili seconds */
 
@@ -399,9 +400,91 @@ void keypress(struct s3d_evt *event)
 	int key;
 	key=*((unsigned short *)event->buf);
 /*	printf("received key: %d\n",key);*/
-	if (key==13) key=10;
-	if ((char)key)  /*  \0 is no good idea .. */
-		term_addchar((char)key);
+	switch (key)
+	{
+		case S3DK_F1:
+		case S3DK_F2:
+		case S3DK_F3:
+		case S3DK_F4:
+		case S3DK_F5:
+			term_addchar(0x1b);
+			term_addchar('[');
+			term_addchar('1');
+			term_addchar(key-S3DK_F1+'1');
+			break;
+		case S3DK_F6:
+		case S3DK_F7:
+		case S3DK_F8:
+			term_addchar(0x1b);
+			term_addchar('[');
+			term_addchar('1');
+			term_addchar((key-S3DK_F6)+'7');
+			break;
+		case S3DK_F9:
+		case S3DK_F10:
+			term_addchar(0x1b);
+			term_addchar('[');
+			term_addchar('2');
+			term_addchar((key-S3DK_F9)+'0');
+			break;
+		case S3DK_F11:
+		case S3DK_F12:
+			term_addchar(0x1b);
+			term_addchar('[');
+			term_addchar('2');
+			term_addchar((key-S3DK_F11)+'3');
+			break;
+		case S3DK_UP:
+			term_addchar(0x1b);
+			term_addchar('[');
+			term_addchar('A');
+			break;
+		case S3DK_DOWN:
+			term_addchar(0x1b);
+			term_addchar('[');
+			term_addchar('B');
+			break;
+		case S3DK_RIGHT:
+			term_addchar(0x1b);
+			term_addchar('[');
+			term_addchar('C');
+			break;
+		case S3DK_LEFT:
+			term_addchar(0x1b);
+			term_addchar('[');
+			term_addchar('D');
+			break;
+		case S3DK_PAGEUP:
+			term_addchar(0x1b);
+			term_addchar('[');
+			term_addchar('5');
+			term_addchar('~');
+			break;
+		case S3DK_PAGEDOWN:
+			term_addchar(0x1b);
+			term_addchar('[');
+			term_addchar('6');
+			term_addchar('~');
+			break;
+		case S3DK_HOME:
+			term_addchar(0x1b);
+			term_addchar('[');
+			term_addchar('7');
+			term_addchar('~');
+			break;
+		case S3DK_END:
+			term_addchar(0x1b);
+			term_addchar('[');
+			term_addchar('8');
+			term_addchar('~');
+			break;
+		case 13:
+			term_addchar(10);
+			break;
+		default:
+			if ((char)key)  /*  \0 is no good idea .. */
+				term_addchar((char)key);
+	}
 
 }
 int i=0;

@@ -1371,7 +1371,7 @@ void obj_pos_update(struct t_process *p, uint32_t oid)
 					event_ptr_changed();
 					break;
 				default:
-					dprintf(LOW,"[obj_pos_upd|pid %d] %d unknown systen event",p->id,oid);
+					dprintf(LOW,"[obj_pos_upd|pid %d] %d unknown system event",p->id,oid);
 					
 			}
 

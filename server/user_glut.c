@@ -45,8 +45,12 @@ int user_init_glut()
 
 void keyboard(unsigned char key, int x, int y)
 {
-	uint16_t mkey;
-	switch (key) /* handle special keys */
+	user_key(key,0);
+}
+void special(int skey, int x, int y)
+{
+	unsigned short mkey;
+	switch (skey) /* handle special keys */
 	{
 		case GLUT_KEY_F1:		mkey=S3DK_F1;	break;
 		case GLUT_KEY_F2:		mkey=S3DK_F2;	break;
@@ -69,14 +73,10 @@ void keyboard(unsigned char key, int x, int y)
 		case GLUT_KEY_HOME:		mkey=S3DK_HOME;break;
 		case GLUT_KEY_END: 		mkey=S3DK_END;break;
 		case GLUT_KEY_INSERT: 	mkey=S3DK_INSERT;break;
-
-		default: mkey=key;
+		default: 				mkey=skey; break;
 	}
+	dprintf(MED,"special(): %d -> %d",skey,mkey);
 	user_key(mkey,0);
-}
-void special(int skey, int x, int y)
-{
-	user_key(skey,0);
 }
 void mouse_motion(int x, int y)
 {

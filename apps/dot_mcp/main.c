@@ -22,7 +22,8 @@
  */
 
 
-#include "s3d.h"
+#include <s3d.h>
+#include <s3d_keysym.h>
 #include "dot_mcp.h"
 #include <unistd.h>  /*  sleep() */
 #include <stdlib.h>  /*  free(), malloc() */
@@ -382,7 +383,7 @@ void keypress(struct s3d_evt *event)
 	key=*((unsigned short *)event->buf);
 	switch (key)
 	{
-		case 1:  ego_mode=(ego_mode+1)%2;
+		case S3DK_F1:  ego_mode=(ego_mode+1)%2;
 				 printf("ego mode %d\n",ego_mode);
 				 break;
 		case 'w':ydif=-1;break;

@@ -60,10 +60,7 @@ void user_key(unsigned short key,int state)
 	if (state==0)  /*  down */
 	{
 		dprintf(LOW, "got key %d!!",key);
-		switch (key) {
-			default:
-				event_key_pressed(key);
-		}
+		event_key_pressed(key);
 	}
 }
 void user_mouse(int button, int state, int x, int y) 
