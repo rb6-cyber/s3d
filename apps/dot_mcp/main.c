@@ -423,10 +423,10 @@ int main (int argc, char **argv)
 					1,1,1,0.2,
 					1,1,1,0.2,
 					1,1,1,0.2);*/
-		min_but=s3d_import_3ds_file("objs/cubeyholes.3ds");
-		rotate=s3d_import_3ds_file("objs/rotate.3ds");
+		min_but=s3d_import_3ds_file("objs/btn_minimize.3ds");
+		rotate=s3d_import_3ds_file("objs/btn_rotate.3ds");
 		reset=s3d_import_3ds_file("objs/reset.3ds");
-		close_but=s3d_import_3ds_file("objs/spikeybla.3ds");
+		close_but=s3d_import_3ds_file("objs/btn_close.3ds");
 		sphere=s3d_import_3ds_file("objs/ringsystem.3ds");
 		menu=menu_init();
 		s3d_link(menu,0);
