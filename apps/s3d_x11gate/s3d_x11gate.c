@@ -103,7 +103,7 @@ void mainloop()
 				if (last_change!=y)
 				{	 /*  last change is already over, post it! */
 /*					printf("[%d to %d]",start_change,last_change);*/
-					s3d_load_texture(oid,0,0,start_change,width,last_change-start_change+1,tex_image+start_change*width*4);
+					s3d_load_texture(oid,0,0,start_change,width,last_change-start_change+1,(unsigned char *)tex_image+start_change*width*4);
 					start_change=-1;
 					last_change=-1;
 				}
@@ -113,7 +113,7 @@ void mainloop()
 		if (last_change!=-1)
 		{
 /*			printf("last one: [%d-%d]",start_change,last_change);*/
-			s3d_load_texture(oid,0,0,start_change,width,last_change-start_change,tex_image+start_change*width*4);
+			s3d_load_texture(oid,0,0,start_change,width,last_change-start_change,(unsigned char *)tex_image+start_change*width*4);
 		}
 /* 		s3d_load_texture(oid,0,0,0,width,height,tex_image); */
 		 /*  swap images */
@@ -206,7 +206,7 @@ int main(int argc, char **argv)
 									   0.0,0.0);
 		s3d_push_texture(oid,width,height);
 					 /*  push data on texture 0 position (0,0) */
-		s3d_pep_material_texture(oid,0,0);	 /*  assign texture 0 to material 0 */
+		s3d_pep_material_texture(oid,0);	 /*  assign texture 0 to material 0 */
 		s3d_flags_on(oid,S3D_OF_VISIBLE);
 		s3d_mainloop(mainloop);
 		free(img1);

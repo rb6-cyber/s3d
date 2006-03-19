@@ -72,10 +72,10 @@ int main (int argc, char **argv)
 				data[(y*MAXX+x)*4+3]=255;
 			}
 		s3d_push_texture(oid,MAXX,MAXY);		
-		s3d_load_texture(oid,0,0,0,MAXX,MAXY,(char *)data);
+		s3d_load_texture(oid,0,0,0,MAXX,MAXY,data);
 					 /*  push data on texture 0 position (0,0) */
 		free(data);
-		s3d_pep_material_texture(oid,0,0);	 /*  assign texture 0 to material 0 */
+		s3d_pep_material_texture(oid,0);	 /*  assign texture 0 to material 0 */
 		s3d_flags_on(oid,S3D_OF_VISIBLE);
 		i=0;
 		s3d_mainloop(mainloop);

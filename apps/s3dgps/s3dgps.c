@@ -193,9 +193,9 @@ int 				 load_mapimage(char *path,float lng, float lat, int scale)
 									   1.0,1.0,
 									   0.0,1.0);
 		s3d_push_texture(oid,w,h);		
-		s3d_load_texture(oid,0,0,0,w,h,(char *)data);
+		s3d_load_texture(oid,0,0,0,w,h,(unsigned char *)data);
 		free(data);
-		s3d_pep_material_texture(oid,0,0);	 /*  assign texture 0 to material 0 */
+		s3d_pep_material_texture(oid,0);	 /*  assign texture 0 to material 0 */
 	} else {
 		printf("can't load %s\n",path);
 	}
