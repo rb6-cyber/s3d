@@ -179,7 +179,8 @@ AC_CONFIG_FILES([
 	apps/dot_mcp/Makefile
 	example/Makefile
 	objs/Makefile
-	Documentation/Makefile])
+	Documentation/Makefile
+	Documentation/s3dapi/Makefile])
 AC_OUTPUT
 
 echo "

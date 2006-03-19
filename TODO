@@ -2,6 +2,8 @@ dot_mcp:
 	* sane paths for applications
 autotools:
 	* OBJECTPATH for finding the object?
+	* ./configure: line 23422: HAVE_PTHREAD: command not found < huh?
+	* ./configure: line 22373: MDL_HAVE_OPENGL: command not found
 
 	* Apple todo: won't find -lX11 (for s3d_x11gate) while compiling
 	* "-Wall -pedantic" default in CFLAGS? (if possible)
