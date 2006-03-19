@@ -81,24 +81,26 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 		/* create connection object */
 		(*olsr_con)->obj_id = s3d_new_object();
 
+		/* add olsr node to new olsr connection in order to access the nodes from the connection list */
+		(*olsr_con)->left_olsr_node = con_from;
+		(*olsr_con)->right_olsr_node = con_to;
+
+		/* add connection color */
 		(*olsr_con)->color = 0;
 		s3d_push_material( (*olsr_con)->obj_id,
 				  1.0,1.0,1.0,
 				  1.0,1.0,1.0,
 				  1.0,1.0,1.0);
 
-		/*s3d_push_line( (*olsr_con)->obj_id, 2,3,0 );
-		s3d_push_line( (*olsr_con)->obj_id, 0,1,0 );*/
+		/* add connection endpoints */
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0], (*olsr_con)->left_olsr_node->pos_vec[1], (*olsr_con)->left_olsr_node->pos_vec[2] );
+		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->right_olsr_node->pos_vec[0], (*olsr_con)->right_olsr_node->pos_vec[1], (*olsr_con)->right_olsr_node->pos_vec[2] );
+
+		s3d_push_line( (*olsr_con)->obj_id, 0,1,0 );
 
 		s3d_flags_on( (*olsr_con)->obj_id, S3D_OF_VISIBLE );
 
-		/*s3d_push_polygon( (*olsr_con)->obj_id, 0,4,5,0 );
-		s3d_push_polygon( (*olsr_con)->obj_id, 3,1,2,0 );*/
 		s3d_link( (*olsr_con)->obj_id,  ZeroPoint );
-
-		/* add olsr node to new olsr connection in order to access the nodes from the connection list */
-		(*olsr_con)->left_olsr_node = con_from;
-		(*olsr_con)->right_olsr_node = con_to;
 
 		/* HNA */
 		if ( etx == -1000.00 ) {

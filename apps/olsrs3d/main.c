@@ -438,7 +438,7 @@ void calc_olsr_node_mov( void ) {
 
 void move_olsr_nodes( void ) {
 
-	float null_vec[3] = {0,0,0};
+	float null_vec[3] = {0,0,0}, vertex_buf[6];
 	float tmp_mov_vec[3];
 	float distance, etx, rgb;
 	struct olsr_con *olsr_con = Con_begin;
@@ -453,7 +453,7 @@ void move_olsr_nodes( void ) {
 			mov_add( olsr_con->left_olsr_node->mov_vec, tmp_mov_vec, 1 ); /* move a little bit to point zero */
 
 			if ( ( distance = dist( olsr_con->left_olsr_node->mov_vec, null_vec ) ) > 10.0 ) {
-				mov_add( olsr_con->left_olsr_node->pos_vec, olsr_con->left_olsr_node->mov_vec, 1.0 / ( (float ) distance ) );
+				mov_add( olsr_con->left_olsr_node->pos_vec, olsr_con->left_olsr_node->mov_vec, 1.0 / ( ( float ) distance ) );
 			} else {
 				mov_add( olsr_con->left_olsr_node->pos_vec, olsr_con->left_olsr_node->mov_vec, 0.1 );
 			}
@@ -473,7 +473,7 @@ void move_olsr_nodes( void ) {
 			mov_add( olsr_con->right_olsr_node->mov_vec, tmp_mov_vec, 1 ); /* move a little bit to point zero */
 
 			if ( ( distance = dist( olsr_con->right_olsr_node->mov_vec, null_vec ) ) > 10.0 ) {
-				mov_add( olsr_con->right_olsr_node->pos_vec, olsr_con->right_olsr_node->mov_vec, 1.0 / ( (float ) distance ) );
+				mov_add( olsr_con->right_olsr_node->pos_vec, olsr_con->right_olsr_node->mov_vec, 1.0 / ( ( float ) distance ) );
 			} else {
 				mov_add( olsr_con->right_olsr_node->pos_vec, olsr_con->right_olsr_node->mov_vec, 0.1 );
 			}
@@ -487,14 +487,14 @@ void move_olsr_nodes( void ) {
 
 
 		/* move connection between left and right olsr node */
-		s3d_pop_vertex( olsr_con->obj_id, 6 );
-		s3d_pop_line( olsr_con->obj_id, 2 );
+		vertex_buf[0] = olsr_con->left_olsr_node->pos_vec[0];
+		vertex_buf[1] = olsr_con->left_olsr_node->pos_vec[1];
+		vertex_buf[2] = olsr_con->left_olsr_node->pos_vec[2];
+		vertex_buf[3] = olsr_con->right_olsr_node->pos_vec[0];
+		vertex_buf[4] = olsr_con->right_olsr_node->pos_vec[1];
+		vertex_buf[5] = olsr_con->right_olsr_node->pos_vec[2];
 
-		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] , olsr_con->left_olsr_node->pos_vec[1] , olsr_con->left_olsr_node->pos_vec[2] );
-		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] , olsr_con->left_olsr_node->pos_vec[1] + 0.2 , olsr_con->left_olsr_node->pos_vec[2] );
-
-		s3d_push_vertex( olsr_con->obj_id, olsr_con->right_olsr_node->pos_vec[0] , olsr_con->right_olsr_node->pos_vec[1] , olsr_con->right_olsr_node->pos_vec[2] );
-		s3d_push_vertex( olsr_con->obj_id, olsr_con->left_olsr_node->pos_vec[0] , olsr_con->left_olsr_node->pos_vec[1] - 0.2 , olsr_con->left_olsr_node->pos_vec[2] );
+		s3d_pep_vertices( olsr_con->obj_id, vertex_buf, 2 );
 
 
 		if ( ColorSwitch ) {
@@ -612,10 +612,6 @@ void move_olsr_nodes( void ) {
 
 		}
 
-		s3d_push_line( olsr_con->obj_id, 2,3,0 );
-		s3d_push_line( olsr_con->obj_id, 0,1,0 );
-		/*s3d_pep_line( olsr_con->obj_id, 2,3,0 );
-		s3d_pep_line( olsr_con->obj_id, 0,1,0 );*/
 
 		olsr_con = olsr_con->next_olsr_con;
 
