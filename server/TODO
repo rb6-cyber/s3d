@@ -14,7 +14,6 @@ VLOW:
 
  
 IDEAS:
- - how to define special keys? e.g. the GLUT way, the SDL way, the ANSI way ...
  - ipv6, unix socket support. 
  - put whole processes in display lists?!
 

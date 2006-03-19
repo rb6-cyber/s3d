@@ -41,5 +41,8 @@ dist_objs_DATA = \
 	big_p.3ds \
 	spikeybla.3ds \
 	btn_close.3ds \
-	btn_minimize.3ds
+	btn_minimize.3ds \
+	btn_rotate.3ds \
+	btn_maximize.3ds \
+	AUTHORS
 

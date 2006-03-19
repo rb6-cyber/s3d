@@ -1,0 +1,8 @@
+You can read this online on
+
+http://s3d.berlios.de/doc
+
+or compile it yourself, for example with
+
+docbook2html s3dapi.docbook
+

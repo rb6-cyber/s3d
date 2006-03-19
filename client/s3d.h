@@ -99,9 +99,9 @@ int s3d_pep_material_a( int object,
 
 int s3d_pep_materials_a(int object, float *mbuf, unsigned short n);
 int s3d_load_materials_a(int object, float *mbuf, unsigned long start, unsigned short n);
-int s3d_push_polygon(int object, int v1, int v2, int v3, int material);
+int s3d_push_polygon(int object, unsigned long v1, unsigned long v2, unsigned long v3, unsigned long material);
 int s3d_push_polygons(int object, unsigned long *pbuf, unsigned short n);
-int s3d_push_line(int object, int v1, int v2, int material);
+int s3d_push_line(int object, unsigned long v1, unsigned long v2, unsigned long material);
 int s3d_push_lines(int object, unsigned long *lbuf, unsigned short n);
 int s3d_push_texture(int object, unsigned short w, unsigned short h);
 int s3d_pop_vertex(int object, unsigned long n);
@@ -113,23 +113,23 @@ int s3d_pop_line(int object, unsigned long n);
 int s3d_pep_polygon_normals(int object, float *nbuf,unsigned short n);
 int s3d_pep_polygon_tex_coord(int object, float x1, float y1, float x2, float y2, float x3, float y3);
 int s3d_pep_polygon_tex_coords(int object, float *tbuf,unsigned short n);
-int s3d_pep_material_texture(int object, unsigned long mat, unsigned long tex);
+int s3d_pep_material_texture(int object, unsigned long tex);
 int s3d_pep_vertex(int object, float x, float y, float z);
 int s3d_pep_vertices(int object, float *vbuf,unsigned short n);
 int s3d_pep_line(int object, int v1, int v2, int material);
 int s3d_pep_lines(int object, unsigned long *lbuf,unsigned short n);
 int s3d_load_polygon_normals(int object, float *nbuf,unsigned long start, unsigned short n);
 int s3d_load_polygon_tex_coords(int object, float *tbuf, unsigned long start, unsigned short n);
-int s3d_load_texture(int object, unsigned long tex, unsigned short xpos, unsigned short ypos, unsigned short w, unsigned short h, char *data);
+int s3d_load_texture(int object, unsigned long tex, unsigned short xpos, unsigned short ypos, unsigned short w, unsigned short h, unsigned char *data);
 
 int s3d_new_object();
-int s3d_del_object(unsigned long oid);
+int s3d_del_object(int oid);
 
-int s3d_clone(unsigned long oid);
-int s3d_clone_target(unsigned long oid, unsigned long toid);
+int s3d_clone(int oid);
+int s3d_clone_target(int oid, int toid);
 
-int s3d_link(unsigned long oid_from, unsigned long oid_to);
-int s3d_unlink(unsigned long oid);
+int s3d_link(int oid_from, int oid_to);
+int s3d_unlink(int oid);
 
 int s3d_flags_on(int object, unsigned long flags);
 int s3d_flags_off(int object, unsigned long flags);

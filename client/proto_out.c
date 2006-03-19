@@ -43,7 +43,7 @@ int s3d_new_object()
 	return(_queue_want_object());  /*  TODO: well ... */
 }
 /*  clones an object */
-int s3d_clone(unsigned long oid)
+int s3d_clone(int oid)
 {
 	uint32_t res;
 	res=s3d_new_object();
@@ -52,7 +52,7 @@ int s3d_clone(unsigned long oid)
 }
 
 /*  changes the target of a clone-object */
-int s3d_clone_target(unsigned long oid, unsigned long toid)
+int s3d_clone_target(int oid, int toid)
 {
 	uint32_t buf[2];
 	buf[0]=htonl(oid);
@@ -62,7 +62,7 @@ int s3d_clone_target(unsigned long oid, unsigned long toid)
 	return oid;
 }
 /*  deletes an object */
-int s3d_del_object(unsigned long oid)
+int s3d_del_object(int oid)
 {
 	uint32_t res=htonl(oid);
 	net_send(S3D_P_C_DEL_OBJ,(char *)&res,4);
@@ -70,7 +70,7 @@ int s3d_del_object(unsigned long oid)
 }
 /*  creates a link from object oid_from to object oid_to in order to copy */
 /*  translations/rotations */
-int s3d_link(unsigned long oid_from, unsigned long oid_to)
+int s3d_link(int oid_from, int oid_to)
 {
 	uint32_t buf[2];
 	buf[0]=htonl(oid_from);
@@ -79,7 +79,7 @@ int s3d_link(unsigned long oid_from, unsigned long oid_to)
 	return(0);
 }
 /*  remove the link to another object */
-int s3d_unlink(unsigned long oid)
+int s3d_unlink(int oid)
 {
 	uint32_t buf;
 	buf=htonl(oid);
@@ -213,7 +213,7 @@ int s3d_push_materials_a(int object, float *mbuf, unsigned short n)
 /* 	free(buf); */
 	return(0);
 }
-int s3d_push_polygon(int object, int v1, int v2, int v3, int material)
+int s3d_push_polygon(int object, unsigned long v1, unsigned long v2, unsigned long v3, unsigned long material)
 {
 	char				buf[4+4*4],*ptr;
 	int					len=4+4*4;
@@ -227,7 +227,7 @@ int s3d_push_polygon(int object, int v1, int v2, int v3, int material)
 	net_send(S3D_P_C_PUSH_POLY,buf,len);
 	return(0);
 }
-int s3d_push_line(int object, int v1, int v2, int material)
+int s3d_push_line(int object, unsigned long v1, unsigned long v2, unsigned long material)
 {
 	char				buf[4+3*4],*ptr;
 	int					len=4+3*4;
@@ -632,7 +632,7 @@ int s3d_load_materials_a(int object, float *mbuf, unsigned long start, unsigned 
 	}
 	return(0);
 }
-int s3d_pep_material_texture(int object, unsigned long mat, unsigned long tex)
+int s3d_pep_material_texture(int object, unsigned long tex)
 {
 	char				buf[4*2],*ptr;
 	ptr=buf;
@@ -642,7 +642,7 @@ int s3d_pep_material_texture(int object, unsigned long mat, unsigned long tex)
 	return(0);
 }
 /*  load data (which has width w and height h) into object, texture tex at position (xpos,ypos) */
-int s3d_load_texture(int object, unsigned long tex, unsigned short xpos, unsigned short ypos, unsigned short w, unsigned short h, char *data)
+int s3d_load_texture(int object, unsigned long tex, unsigned short xpos, unsigned short ypos, unsigned short w, unsigned short h, unsigned char *data)
 {
 	char				buf[MF_LEN+4],*ptr;
 	int 				linestep,lines,i;
