@@ -1,0 +1,26 @@
+<bookinfo>
+<title>The s3d manual</title>
+<authorgroup>
+<author>
+<firstname>Simon</firstname>
+<surname>Wunderlich</surname>
+</author>
+</authorgroup>
+
+<date>03/19/2006</date>
+<releaseinfo>0.1</releaseinfo>
+
+<abstract>
+<para>
+This Manual is the programmers guide to the s3d API.
+</para>
+</abstract>
+
+<keywordset>
+<keyword>s3d</keyword>
+<keyword>API</keyword>
+<keyword>handbook</keyword>
+<keyword>guide</keyword>
+</keywordset>
+
+</bookinfo>
