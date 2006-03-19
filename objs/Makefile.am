@@ -39,5 +39,7 @@ dist_objs_DATA = \
 	star.3ds \
 	cube.3ds \
 	big_p.3ds \
-	spikeybla.3ds
+	spikeybla.3ds \
+	btn_close.3ds \
+	btn_minimize.3ds
 
