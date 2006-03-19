@@ -6,8 +6,8 @@ client/sei_*.c
 	Manocha D. 	(1994)
 apps/s3dvt/s3dvt.c
 	- much of the code comes from glterm by <helly@gmx.net>
-example/miu3ds/*
-	- objects things come from yd
+objs/AUTHORS
+	- see this file for the model artists
 
 	
 - some win32 addition come from rudi. <chru@hrz.tu-chemnitz.de>
