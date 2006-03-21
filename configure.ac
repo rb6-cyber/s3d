@@ -180,7 +180,7 @@ AC_CONFIG_FILES([
 	example/Makefile
 	objs/Makefile
 	Documentation/Makefile
-	Documentation/s3dapi/Makefile])
+	s3drc])
 AC_OUTPUT
 
 echo "
