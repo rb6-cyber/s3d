@@ -29,6 +29,7 @@
 #include <string.h> 	/* strlen(), memmove() */
 #include <stdlib.h> 	/* rand(), malloc(), realloc(), free() */
 #include <s3d.h>
+#include <math.h>       /* sqrt() */
 #include "olsrs3d.h"
 
 char lbuf[MAXLINESIZE];
@@ -56,11 +57,13 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 		/* connection already exists */
 		if ( ( strncmp( (*olsr_con)->left_olsr_node->ip, con_from->ip, NAMEMAX ) == 0 ) && ( strncmp( (*olsr_con)->right_olsr_node->ip, con_to->ip, NAMEMAX ) == 0 ) ) {
 			(*olsr_con)->left_etx = etx;
+			(*olsr_con)->left_etx_sqrt = sqrt( etx );
 			break;
 
 		} else if ( ( strncmp( (*olsr_con)->right_olsr_node->ip, con_from->ip, NAMEMAX ) == 0 ) && ( strncmp( (*olsr_con)->left_olsr_node->ip, con_to->ip, NAMEMAX ) == 0 ) ) {
 
 			(*olsr_con)->right_etx = etx;
+			(*olsr_con)->right_etx_sqrt = sqrt( etx );
 			break;
 
 		}
@@ -106,12 +109,16 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 		if ( etx == -1000.00 ) {
 
 			(*olsr_con)->left_etx = etx;
+			(*olsr_con)->left_etx_sqrt = 10.0;
 			(*olsr_con)->right_etx = etx;
+			(*olsr_con)->right_etx_sqrt = 10.0;
 
 		} else {
 
 			(*olsr_con)->left_etx = etx;
-			(*olsr_con)->right_etx = 0.0;
+			(*olsr_con)->left_etx_sqrt = sqrt( etx );
+			(*olsr_con)->right_etx = 999.0;
+			(*olsr_con)->right_etx_sqrt = sqrt( 999.0 );
 
 		}
 
@@ -463,8 +470,8 @@ int process_main() {
 					olsr_node1 = get_olsr_node( &Olsr_root, con_from );
 					olsr_node2 = get_olsr_node( &Olsr_root, con_to );
 					f = strtod(etx,NULL);
-					if ( f < 1 )
-						f = 999;
+					if ( f < 1.0 )
+						f = 999.0;
 					add_olsr_con( olsr_node1, olsr_node2, f );
 				}
 

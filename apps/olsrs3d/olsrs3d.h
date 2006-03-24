@@ -40,6 +40,8 @@ struct olsr_con {
 	struct olsr_node *right_olsr_node;   /* pointer to right end point of the connection */
 	float left_etx;   /* etx of left olsr node */
 	float right_etx;   /* etx of right olsr node */
+	float left_etx_sqrt;   /* sqrt of etx of left olsr node */
+	float right_etx_sqrt;   /* sqrt etx of right olsr node */
 	int obj_id;   /* id of connection object in s3d */
 	int color;
 	float rgb;
