@@ -31,6 +31,10 @@
 #include <s3d.h>
 #include <math.h>       /* sqrt() */
 #include "olsrs3d.h"
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 
 char lbuf[MAXLINESIZE];
 
@@ -379,7 +383,8 @@ int process_main() {
 	char *lbuf_ptr, *last_cr_ptr, *con_from, *con_from_end, *con_to, *con_to_end, *etx, *etx_end, *tmpChar;
 	struct olsr_node *olsr_node1;   /* pointer to olsr nodes */
 	struct olsr_node *olsr_node2;
-
+	in_addr_t address;
+	
 	lbuf_ptr = lbuf;
 	last_cr_ptr = NULL;
 
@@ -448,13 +453,18 @@ int process_main() {
 
 					/* normal HNA */
 					} else {
-						/*
+						
 						if( (tmpChar = strchr((char*)con_to, (int)'/')))
 						{
+							char *test;
 							tmpChar++;
-							printf("%s\n",tmpChar);
+							address = inet_addr(tmpChar);
+							printf("%d\n", (int)(rintf(log(address)/log(2))));
+							*tmpChar = '\0';
+							*test = sprintf("%d",(int)address);
+							strncat(con_to,test,NAMEMAX);
 						}
-						*/
+						
 						olsr_node1 = get_olsr_node( &Olsr_root, con_from );
 						olsr_node2 = get_olsr_node( &Olsr_root, con_to );
 

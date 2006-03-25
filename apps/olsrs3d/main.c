@@ -69,7 +69,7 @@ int Zp_rotate = 0;
 int ColorSwitch = 0;   /* enable/disable colored olsr connections */
 int RotateSwitch = 0;
 int RotateSpeed = 2;
-float Factor = 0.5;	/* Factor in calc_olsr_node_mov */
+float Factor = 0.6;	/* Factor in calc_olsr_node_mov */
 struct olsr_node *Olsr_node_pEtx;
 int Btn_close_id = -1;
 int Btn_close_obj;
