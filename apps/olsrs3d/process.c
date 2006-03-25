@@ -384,7 +384,8 @@ int process_main() {
 	struct olsr_node *olsr_node1;   /* pointer to olsr nodes */
 	struct olsr_node *olsr_node2;
 	in_addr_t address;
-	
+	char hna_name[NAMEMAX];
+
 	lbuf_ptr = lbuf;
 	last_cr_ptr = NULL;
 
@@ -453,18 +454,16 @@ int process_main() {
 
 					/* normal HNA */
 					} else {
-						
+
 						if( (tmpChar = strchr((char*)con_to, (int)'/')))
 						{
-							char *test;
 							tmpChar++;
 							address = inet_addr(tmpChar);
-							printf("%d\n", (int)(rintf(log(address)/log(2))));
-							*tmpChar = '\0';
-							*test = sprintf("%d",(int)address);
-							strncat(con_to,test,NAMEMAX);
+							sprintf(hna_name,"%d",(int)(rintf(log(address)/log(2))));
+							strncpy(tmpChar,hna_name,NAMEMAX);
+							printf("hna_name: %s <> con_to: %s\n", hna_name,con_to );
 						}
-						
+
 						olsr_node1 = get_olsr_node( &Olsr_root, con_from );
 						olsr_node2 = get_olsr_node( &Olsr_root, con_to );
 
