@@ -49,6 +49,7 @@ struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end, *List_ptr;   /* needed pointer
 int Olsr_node_count = 0, Last_olsr_node_count = -1;
 int Olsr_node_count_obj = -1;
 int Olsr_ip_label_obj = -1;
+
 int *Olsr_neighbour_label_obj = NULL;
 int Size;
 
@@ -68,7 +69,9 @@ int ColorSwitch = 0;   /* enable/disable colored olsr connections */
 int RotateSwitch = 0;
 int RotateSpeed = 2;
 float Factor = 0.5;	/* Factor in calc_olsr_node_mov */
-
+struct olsr_node *Olsr_node_pEtx;
+int Btn_close_id = -1;
+int Btn_close_obj;
 /***
  *
  * print usage info
@@ -658,6 +661,11 @@ void mainloop() {
 		}
 	}
 
+	if( Olsr_ip_label_obj != -1 )
+	{
+		print_etx();
+	}
+
 	if(RotateSwitch) {
 		Zp_rotate = (Zp_rotate+RotateSpeed)%360;
 		s3d_rotate(ZeroPoint,0,Zp_rotate,0);
@@ -693,9 +701,6 @@ void keypress(struct s3d_evt *event) {
 	switch(key) {
 		case S3DK_ESCAPE: /* esc -> close olsr */
 			stop();
-			break;
-		case 15: /* strg + o */
-			lst_out(); /* output ob2ip list */
 			break;
 		case 'c': /* c -> color on/off */
 			if(ColorSwitch) ColorSwitch = 0;
@@ -736,6 +741,14 @@ void keypress(struct s3d_evt *event) {
 	}
 }
 
+/*
+void mbutton_click(struct s3d_but_info *event)
+{
+	printf("%s",event->state);
+}
+*/
+
+
 /***
  *
  * eventhandler when object clicked
@@ -747,15 +760,35 @@ void object_click(struct s3d_evt *evt)
 	int oid;
 	/* float distance,tmp_vector[3]; */
 	char ip_str[50];
-	struct olsr_node *olsr_node;
 	float ln;
-	struct olsr_neigh_list *tmpNeighbour;
-	float p = 1.0;
-	int i;
 
 	oid=(int)*((unsigned long *)evt->buf);
-	olsr_node = *lst_search(oid);
 
+	if( oid == Btn_close_id )
+	{
+		int i;
+		s3d_del_object(Btn_close_id);
+		s3d_del_object(Olsr_ip_label_obj);
+		Btn_close_id = Olsr_ip_label_obj = -1;
+		for(i=0; i < Size; i++)
+			s3d_del_object( Olsr_neighbour_label_obj[i] );
+		free(Olsr_neighbour_label_obj);
+		Olsr_neighbour_label_obj = NULL;
+		return;
+	}
+	
+	Olsr_node_pEtx = *lst_search(oid);
+		
+	if( Btn_close_id == -1)
+	{
+		Btn_close_id = s3d_clone( Btn_close_obj );
+		s3d_link(Btn_close_id,0);
+		s3d_flags_on(Btn_close_id,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		s3d_scale( Btn_close_id, 0.1 );
+		s3d_translate( Btn_close_id,-Left*3.0-0.2, -Bottom*3.0-0.5, -3.0 );
+		
+	}
+	
 	/*
 	distance = dirt(CamPosition[0],olsr_node->pos_vec,tmp_vector);
 	mov_add(ZeroPosition,tmp_vector,1.0);
@@ -764,16 +797,16 @@ void object_click(struct s3d_evt *evt)
 
 	/* print clicked object ip and connections */
 	if ( Olsr_ip_label_obj != -1 ) s3d_del_object( Olsr_ip_label_obj );
-	snprintf( ip_str, 35, "ip: %s", olsr_node->ip );
+	snprintf( ip_str, 35, "ip: %s", Olsr_node_pEtx->ip );
 	Olsr_ip_label_obj = s3d_draw_string( ip_str, &ln );
 	s3d_link( Olsr_ip_label_obj, 0 );
 	s3d_flags_on( Olsr_ip_label_obj, S3D_OF_VISIBLE );
 	s3d_scale( Olsr_ip_label_obj, 0.2 );
 	s3d_translate( Olsr_ip_label_obj,-Left*3.0-(ln * 0.2), -Bottom*3.0-0.8, -3.0 );
-
+	
+	/*
 	if( Olsr_neighbour_label_obj != NULL )
 	{
-		/* int n = sizeof(Olsr_neighbour_label_obj) / sizeof(int);*/
 		for(i=0; i < Size; i++)
 		{
 			printf("remove %d\n",Olsr_neighbour_label_obj[i]);
@@ -811,7 +844,55 @@ void object_click(struct s3d_evt *evt)
 		p += 0.2;
 		printf("create %d\n",Olsr_neighbour_label_obj[i]);
 	}
+	*/
 }
+
+void print_etx()
+{
+	struct olsr_neigh_list *tmpNeighbour;
+	float p = 1.0;
+	int i;
+	if( Olsr_neighbour_label_obj != NULL )
+	{
+		/* int n = sizeof(Olsr_neighbour_label_obj) / sizeof(int);*/
+		for(i=0; i < Size; i++)
+			s3d_del_object( Olsr_neighbour_label_obj[i] );
+		free(Olsr_neighbour_label_obj);
+		Olsr_neighbour_label_obj = NULL;
+	}
+
+	tmpNeighbour = Olsr_node_pEtx->olsr_neigh_list;
+
+	Size = 0;
+	while(tmpNeighbour != NULL)
+	{
+		Size++;
+		tmpNeighbour = tmpNeighbour->next_olsr_neigh_list;
+	}
+
+	Olsr_neighbour_label_obj = malloc(Size*sizeof(int));
+	tmpNeighbour = Olsr_node_pEtx->olsr_neigh_list;
+
+	for(i = 0; i < Size ;i++)
+	{
+		char nIpStr[60];
+		float len;
+		float mEtx = ( tmpNeighbour->olsr_con->left_etx + tmpNeighbour->olsr_con->right_etx ) / 2;
+		if( mEtx != -1000 )
+			snprintf(nIpStr, 60, "%15s --> %4.2f",(strcmp(Olsr_node_pEtx->ip,tmpNeighbour->olsr_con->right_olsr_node->ip)?tmpNeighbour->olsr_con->right_olsr_node->ip:tmpNeighbour->olsr_con->left_olsr_node->ip),mEtx);
+		else
+			snprintf(nIpStr, 60, "%15s --> HNA",(strcmp(Olsr_node_pEtx->ip,tmpNeighbour->olsr_con->right_olsr_node->ip)?tmpNeighbour->olsr_con->right_olsr_node->ip:tmpNeighbour->olsr_con->left_olsr_node->ip));
+		Olsr_neighbour_label_obj[i] = s3d_draw_string( nIpStr, &len );
+		s3d_link(Olsr_neighbour_label_obj[i], 0);
+		s3d_flags_on(Olsr_neighbour_label_obj[i], S3D_OF_VISIBLE );
+		s3d_scale(Olsr_neighbour_label_obj[i], 0.2 );
+		s3d_translate(Olsr_neighbour_label_obj[i], -Left*3.0-(len * 0.2), -Bottom*3.0-p, -3.0 );
+		tmpNeighbour = tmpNeighbour->next_olsr_neigh_list;
+		p += 0.2;
+	}
+}
+
+
 
 /***
  *
@@ -898,11 +979,13 @@ int main( int argc, char *argv[] ) {
 			s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
 			s3d_set_callback(S3D_EVENT_KEY,keypress);
 			s3d_set_callback(S3D_EVENT_QUIT,stop);
+			/* s3d_set_callback(S3D_EVENT_MBUTTON,mbutton_click); */
 			if (s3d_select_font("vera"))
 				printf("font not found\n");
 			Olsr_node_obj = s3d_import_3ds_file( "objs/accesspoint.3ds" );
 			Olsr_node_inet_obj = s3d_import_3ds_file( "objs/accesspoint_inet.3ds" );
 			Olsr_node_hna_net = s3d_import_3ds_file( "objs/internet.3ds" );
+			Btn_close_obj = s3d_import_3ds_file("objs/btn_close.3ds");
 			ZeroPoint = s3d_new_object();
 			s3d_mainloop(mainloop);
 			s3d_quit();

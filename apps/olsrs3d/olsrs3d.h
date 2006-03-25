@@ -96,6 +96,8 @@ extern struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end,*List_ptr;   /* struct l
 extern int	Olsr_node_obj;
 extern int	Olsr_node_inet_obj;
 extern int	Olsr_node_hna_net;
+extern int	Btn_close_obj;
+extern int	Btn_close_id;
 
 extern int Olsr_node_count_obj;
 extern int Olsr_node_count;
@@ -123,4 +125,4 @@ int net_quit();
 /* main */
 void out_of_mem( void );
 struct olsr_node **lst_search(int id);
-
+void print_etx( void );
