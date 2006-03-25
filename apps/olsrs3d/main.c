@@ -62,6 +62,7 @@ float Bottom = -1.0;
 float Left = -1.0;
 
 float CamPosition[2][3];   /* CamPosition[trans|rot][x-z] */
+float CamPosition2[2][3];   /* CamPosition[trans|rot][x-z] */
 float ZeroPosition[3] = {0,0,0};   /* current position zero position */
 int ZeroPoint;   /* object zeropoint */
 int Zp_rotate = 0;
@@ -332,9 +333,9 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 
 
 		/* rotate node description so that they are always readable */
-		tmp_mov_vec[0] = CamPosition[0][0] - olsr_node->pos_vec[0];
+		tmp_mov_vec[0] = CamPosition2[0][0] - olsr_node->pos_vec[0];
 		tmp_mov_vec[1] = 0;   /* we are not interested in the y value */
-		tmp_mov_vec[2] = CamPosition[0][2] - olsr_node->pos_vec[2];
+		tmp_mov_vec[2] = CamPosition2[0][2] - olsr_node->pos_vec[2];
 
 		angle = s3d_vector_angle( desc_norm_vec, tmp_mov_vec );
 
@@ -671,6 +672,10 @@ void mainloop() {
 		Zp_rotate = (Zp_rotate+RotateSpeed)%360;
 		s3d_rotate(ZeroPoint,0,Zp_rotate,0);
 	}
+	CamPosition2[0][0]=  CamPosition[0][0]*cos(Zp_rotate*M_PI/180.0) - CamPosition[0][2] * sin (Zp_rotate*M_PI/180.0);
+	CamPosition2[0][1]=  CamPosition[0][1];
+	CamPosition2[0][2]=  CamPosition[0][0]*sin(Zp_rotate*M_PI/180.0) + CamPosition[0][2] * cos (Zp_rotate*M_PI/180.0);
+
 
 	nanosleep( &sleep_time, NULL );
 

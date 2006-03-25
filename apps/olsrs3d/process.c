@@ -376,7 +376,7 @@ int process_main() {
 
 	int dn;
 	float f;
-	char *lbuf_ptr, *last_cr_ptr, *con_from, *con_from_end, *con_to, *con_to_end, *etx, *etx_end;
+	char *lbuf_ptr, *last_cr_ptr, *con_from, *con_from_end, *con_to, *con_to_end, *etx, *etx_end, *tmpChar;
 	struct olsr_node *olsr_node1;   /* pointer to olsr nodes */
 	struct olsr_node *olsr_node2;
 
@@ -448,7 +448,13 @@ int process_main() {
 
 					/* normal HNA */
 					} else {
-
+						/*
+						if( (tmpChar = strchr((char*)con_to, (int)'/')))
+						{
+							tmpChar++;
+							printf("%s\n",tmpChar);
+						}
+						*/
 						olsr_node1 = get_olsr_node( &Olsr_root, con_from );
 						olsr_node2 = get_olsr_node( &Olsr_root, con_to );
 
