@@ -39,10 +39,11 @@ static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
 #define T_FOLDER	3
 #define T_GEOMETRY	4
 #define T_MUSIC		5
+#define	T_MOVIE		6
 
 #define M_DIR		512
 #define M_NAME		256
-int folder,geometry,mp3,duno,dot,dotdot;
+int folder,geometry,mp3,movie,duno,dot,dotdot;
 struct t_item {
 	int icon_oid, descr_oid, pie_oid;
 	char name[M_NAME];
@@ -107,6 +108,9 @@ int display_dir(char *dir, int depth, int  posx, int posy, int posz)
 							   item[n].type=T_GEOMETRY;
 					   else if (0==strncmp(ext,".mp3",strlen(ext)<4?strlen(ext):4))
 							   item[n].type=T_MUSIC;
+					   else if (0==strncmp(ext,".mpg",strlen(ext)<4?strlen(ext):4))
+							   item[n].type=T_MOVIE;
+
 				   }
 				}
 			}
@@ -118,6 +122,7 @@ int display_dir(char *dir, int depth, int  posx, int posy, int posz)
 									break;
 				case T_GEOMETRY:   	item[n].icon_oid=s3d_clone(geometry);break;
 				case T_MUSIC:	   	item[n].icon_oid=s3d_clone(mp3);break;
+				case T_MOVIE:		item[n].icon_oid=s3d_clone(movie);break;
 				default:   			printf("don't know type, defaulting to duno %d...\n",duno);
 									item[n].icon_oid=s3d_clone(duno);break;
 			}
@@ -175,6 +180,7 @@ int display_dir(char *dir, int depth, int  posx, int posy, int posz)
 void object_click(struct s3d_evt *evt)
 {
 	int i,oid;
+	char execstr[256];
 	oid=(int)*((unsigned long *)evt->buf);
 	printf("!!!!!!!!! clicked object %d\n",oid);
 	for (i=0;i<n_item;i++)
@@ -192,6 +198,20 @@ void object_click(struct s3d_evt *evt)
 						display_dir(".",0,0,0,0);
 						return;
 						break;
+				case T_GEOMETRY:
+						printf("loading geometry %s\n",item[i].name);
+						snprintf(execstr,256,"3dsloader \"%s\"&\n",item[i].name);
+						system(execstr);
+						return;
+						break;
+				case T_MOVIE:
+						printf("playing %s\n",item[i].name);
+						snprintf(execstr,256,"mplayer -vo s3d \"%s\"&\n",item[i].name);
+						system(execstr);
+						return;
+						break;
+
+						
 			}
 		}
 	}
@@ -210,6 +230,7 @@ int main (int argc, char **argv)
 		folder=s3d_import_3ds_file("objs/folder.3ds");
 		geometry=s3d_import_3ds_file("objs/geometry.3ds");
 		mp3=s3d_import_3ds_file("objs/notes.3ds");
+		movie=s3d_import_3ds_file("objs/notes.3ds");
 		duno=s3d_import_3ds_file("objs/duno.3ds");
 		dot=s3d_import_3ds_file("objs/dot.3ds");
 		dotdot=s3d_import_3ds_file("objs/dotdot.3ds");
