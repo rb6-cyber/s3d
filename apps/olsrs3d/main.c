@@ -627,7 +627,8 @@ void mainloop() {
 
 	int net_result;   /* result of function net_main */
 	char nc_str[20];
-
+	float strLen;
+	
 	/* calculate new movement vector */
 	calc_olsr_node_mov();
 
@@ -642,11 +643,11 @@ void mainloop() {
 
 		if ( Olsr_node_count_obj != -1 ) s3d_del_object( Olsr_node_count_obj );
 		snprintf( nc_str, 20, "node count: %d", Olsr_node_count );
-		Olsr_node_count_obj = s3d_draw_string( nc_str, NULL );
+		Olsr_node_count_obj = s3d_draw_string( nc_str, &strLen );
 		s3d_link( Olsr_node_count_obj, 0 );
 		s3d_flags_on( Olsr_node_count_obj, S3D_OF_VISIBLE );
 		s3d_scale( Olsr_node_count_obj, 0.2 );
-		s3d_translate( Olsr_node_count_obj, Left*3.0, -Bottom*3.0-0.2, -3.0 );
+		s3d_translate( Olsr_node_count_obj, -Left*3.0-(strLen * 0.2), -Bottom*3.0-0.5, -3.0 );
 
 		Last_olsr_node_count = Olsr_node_count;
 
@@ -784,8 +785,8 @@ void object_click(struct s3d_evt *evt)
 		Btn_close_id = s3d_clone( Btn_close_obj );
 		s3d_link(Btn_close_id,0);
 		s3d_flags_on(Btn_close_id,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-		s3d_scale( Btn_close_id, 0.1 );
-		s3d_translate( Btn_close_id,-Left*3.0-0.2, -Bottom*3.0-0.5, -3.0 );
+		s3d_scale( Btn_close_id, 0.05 );
+		s3d_translate( Btn_close_id,-Left*3.0-0.1, -Bottom*3.0-0.7, -3.0 );
 		
 	}
 	
@@ -802,7 +803,7 @@ void object_click(struct s3d_evt *evt)
 	s3d_link( Olsr_ip_label_obj, 0 );
 	s3d_flags_on( Olsr_ip_label_obj, S3D_OF_VISIBLE );
 	s3d_scale( Olsr_ip_label_obj, 0.2 );
-	s3d_translate( Olsr_ip_label_obj,-Left*3.0-(ln * 0.2), -Bottom*3.0-0.8, -3.0 );
+	s3d_translate( Olsr_ip_label_obj,-Left*3.0-(ln * 0.2), -Bottom*3.0-0.9, -3.0 );
 	
 	/*
 	if( Olsr_neighbour_label_obj != NULL )
@@ -850,7 +851,7 @@ void object_click(struct s3d_evt *evt)
 void print_etx()
 {
 	struct olsr_neigh_list *tmpNeighbour;
-	float p = 1.0;
+	float p = 1.1;
 	int i;
 	if( Olsr_neighbour_label_obj != NULL )
 	{
