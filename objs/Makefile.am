@@ -1,5 +1,6 @@
 objsdir=	$(pkgdatadir)/objs
 dist_objs_DATA = \
+	s3dstart.3ds \
 	internet.3ds \
 	katze_tail.3ds \
 	sec_p.3ds \
@@ -15,6 +16,7 @@ dist_objs_DATA = \
 	katze_leg.3ds \
 	weirdball.3ds \
 	cubey.3ds \
+	film.3ds \
 	accesspoint.3ds \
 	folder.3ds \
 	snow_foot.3ds \

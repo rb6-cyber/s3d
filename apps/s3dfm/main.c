@@ -46,6 +46,7 @@ static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
 int folder,geometry,mp3,duno,dot,dotdot,dirstep;
 struct t_item {
 	int icon, str;							/* object ids ...*/
+	int block;								/* oid of the block */
 	char name[M_NAME];						/* name (e.g. file name) */
 	struct t_item *parent;					/* parent item */
 	struct t_item *list;					/* list of items  (if it's a subdir)*/
@@ -56,7 +57,39 @@ struct t_item {
 	int disp;
 };
 struct t_item root;
+/* draw a block */
+int new_block(struct t_item *dir)
+{
+	float vertices[]=
+			{-1,0,-1,
+			 -1,0, 1,
+			  1,0, 1,
+			  1,0,-1,
+			 -1,1,-1,
+			 -1,1, 1,
+			  1,1, 1,
+			  1,1,-1};
 
+			 
+	dir->block=s3d_new_object();
+	s3d_push_vertices(dir->block,vertices,8);
+	s3d_push_material(dir->block,
+						1,1,1,
+						1,1,1,
+						1,1,1);
+	s3d_push_polygon(dir->block,4,5,6,0);
+	s3d_push_polygon(dir->block,4,6,7,0);
+
+	s3d_push_polygon(dir->block,0,4,5,0);
+	s3d_push_polygon(dir->block,0,5,1,0);
+	
+	s3d_push_polygon(dir->block,3,7,4,0);
+	s3d_push_polygon(dir->block,3,4,0,0);
+
+	s3d_push_polygon(dir->block,2,6,7,0);
+	s3d_push_polygon(dir->block,2,7,3,0);
+
+}
 int display_dir(struct t_item *dir)
 {
 	int i;
@@ -64,6 +97,10 @@ int display_dir(struct t_item *dir)
 	float dss; /* dirstep size */
 	int dirn, dirc,dps;
 	int icon;
+	float vertices[]={	-1,-1,0,
+						-1, 1,0,
+						 1, 1,0,
+						 1,-1,0};
 	px=pz=0.0;
 	if (dir->disp)
 		return(-1); /* already displayed ... */ 
@@ -75,52 +112,34 @@ int display_dir(struct t_item *dir)
 		if (dir->list[i].type==T_FOLDER)
 			dirn++;
 	}
-	dps=(dirn+3)/4; /* directories per side */
-	dirc=0;			/* no directories counted yet */
-	dss=1.0/(2.0*dps+1.0);
-	dir->scale=dss;
+	dps=ceil(sqrt(dir->n_item)); /* directories per line */
 	printf("having %d directories, %d per side. one is scaled down to %3.3f \n",dirn,dps,dss);
+	root.icon=s3d_new_object();
 	for (i=0;i<dir->n_item;i++)
 	{
-		if (dir->list[i].type==T_FOLDER)
+		dir->list[i].px=((float)(i%dps)+0.5)/((float)dps)-0.5;
+		dir->list[i].pz=((float)i/dps+0.5)/((float)dps)-0.5;
+		dir->list[i].block=s3d_new_object();
+		s3d_link(dir->list[i].block,dir->block);
+		s3d_push_vertices(dir->list[i].block,vertices,2);
+		switch (dir->list[i].type)
 		{
-			icon=dir->list[i].icon=s3d_clone(dirstep);
-			printf("processing %d [%s] icon %d\n",dirc,dir->list[i].name,icon);
-			s3d_scale(icon,dss);
-		    s3d_flags_on(icon,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-			s3d_link(icon,dir->icon);
-			/* castle style:
-			 * direcotires are clockwise oredered, starting from the lower left corner on the 
-			 * underlying dirstep */
-			switch (dirc/dps)
-			{
-				case 0:
-					px=-1.0+dss;
-					pz=-1.0+(dirc*2+0.5)*2*dss;
-					break;
-				case 1:
-					px=-1.0+((dirc-dps)*2+0.5)*2*dss;
-					pz=1.0-dss;
-					break;
-				case 2:
-					px=1.0-dss;
-					pz=1.0-((dirc-2*dps)*2+0.5)*2*dss;
-					break;
-				case 3:
-					px=1.0-((dirc-dps*3)*2+0.5)*2*dss;
-					pz=-1.0+dss;
-					break;
-			}
-			s3d_translate(icon, px,SH,pz);
-			dir->list[i].px=px;
-			dir->list[i].pz=pz;
-			dir->list[i].str=s3d_draw_string(dir->list[i].name,NULL);
-			s3d_translate(	dir->list[i].str, px,1.0+SH,pz);
-			s3d_link(		dir->list[i].str,icon);
-			s3d_flags_on(	dir->list[i].str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-			dirc++;
-			
-        }
+			case T_FOLDER:
+				s3d_push_material(dir->list[i].block,
+										1,1,0,
+										1,1,0,
+										1,1,0);
+				break;
+			default:
+				s3d_push_material(dir->list[i].block,
+										0,0,1,
+										0,0,1,
+										0,0,1);
+		};
+		s3d_push_polygon(dir->list[i].block,0,1,2,0);
+		s3d_push_polygon(dir->list[i].block,0,2,3,0);
+		s3d_scale(dir->list[i].block,1.0/((float)dps));
+		s3d_flags_on(dir->list[i].block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	}
 	dir->disp=1;
 	return(0);
@@ -290,8 +309,10 @@ int main (int argc, char **argv)
 		root.icon=s3d_clone(dirstep);
 		root.px=root.pz=0.0;
 		root.scale=1.0;
+		new_block(&root);
 		rescale(&root);
 	    s3d_flags_on(root.icon,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	    s3d_flags_on(root.block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 		parse_dir(&root);
 		display_dir(&root);
 		s3d_mainloop(mainloop);

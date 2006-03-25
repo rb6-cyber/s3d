@@ -1,6 +1,7 @@
-noinst_PROGRAMS=	3dsloader filebrowser hudtest katze \
+noinst_PROGRAMS=	hudtest katze \
 			ptrtest radius_test s3dclock snowman \
 			strtest texturetest linetest
+bin_PROGRAMS= filebrowser 3dsloader
 			
 3dsloader_SOURCES=	3dsloader.c
 filebrowser_SOURCES=	filebrowser.c

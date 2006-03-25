@@ -1,3 +1,6 @@
+general:
+	* svn add reset.3ds?!
+	* FULLSCREEN!
 dot_mcp:
 	* sane paths for applications
 autotools:

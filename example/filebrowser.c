@@ -230,7 +230,7 @@ int main (int argc, char **argv)
 		folder=s3d_import_3ds_file("objs/folder.3ds");
 		geometry=s3d_import_3ds_file("objs/geometry.3ds");
 		mp3=s3d_import_3ds_file("objs/notes.3ds");
-		movie=s3d_import_3ds_file("objs/notes.3ds");
+		movie=s3d_import_3ds_file("objs/film.3ds");
 		duno=s3d_import_3ds_file("objs/duno.3ds");
 		dot=s3d_import_3ds_file("objs/dot.3ds");
 		dotdot=s3d_import_3ds_file("objs/dotdot.3ds");

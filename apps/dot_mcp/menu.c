@@ -89,7 +89,7 @@ int menu_init ()
 	int i,menu_o;
 	menu_o=s3d_new_object();
 	act=0; /* menu deactived */
-	go=s3d_import_3ds_file("objs/go_button.3ds");
+	go=s3d_import_3ds_file("objs/s3dstart.3ds");
 	s3d_flags_on(go,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	s3d_link(go,menu_o);
 	for (i=0;i<(sizeof(menu)/sizeof(struct menu_entry));i++)
