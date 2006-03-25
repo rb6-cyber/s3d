@@ -57,13 +57,13 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 		/* connection already exists */
 		if ( ( strncmp( (*olsr_con)->left_olsr_node->ip, con_from->ip, NAMEMAX ) == 0 ) && ( strncmp( (*olsr_con)->right_olsr_node->ip, con_to->ip, NAMEMAX ) == 0 ) ) {
 			(*olsr_con)->left_etx = etx;
-			(*olsr_con)->left_etx_sqrt = sqrt( etx );
+			(*olsr_con)->left_etx_sqrt = (etx==-1000.00)? 10.0 : sqrt( etx ) ;
 			break;
 
 		} else if ( ( strncmp( (*olsr_con)->right_olsr_node->ip, con_from->ip, NAMEMAX ) == 0 ) && ( strncmp( (*olsr_con)->left_olsr_node->ip, con_to->ip, NAMEMAX ) == 0 ) ) {
 
 			(*olsr_con)->right_etx = etx;
-			(*olsr_con)->right_etx_sqrt = sqrt( etx );
+			(*olsr_con)->right_etx_sqrt = (etx==-1000.00)? 10.0 : sqrt( etx ) ;
 			break;
 
 		}
