@@ -25,6 +25,7 @@
 #include <s3d.h>
 #include <stdio.h>  /*  NULL*/
 #include <time.h>	/* nanosleep() */
+#include <math.h>	/* sin(), cos() */
 int i;
 int o;
 float bottom=-1.0;
@@ -32,7 +33,7 @@ float left=-1.0;
 float asp=1.0;
 float len=1.0;
 int alpha=0;
-static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
+static struct timespec t={0,10*1000*1000}; /* 100 mili seconds */
 void stop(struct s3d_evt *evt)
 {
 	s3d_quit();
@@ -40,8 +41,12 @@ void stop(struct s3d_evt *evt)
 
 void mainloop()
 {
-	alpha=(alpha+5)%360;
+	float a;
+	alpha=(alpha+1)%360;
 	s3d_rotate(o,alpha,0,0);
+	a=(((float)alpha)*M_PI/180);
+	s3d_translate(0,sin(a)*30,0,30+cos(a)*30);
+	s3d_rotate(0,sin(a)*30,alpha,0);
 	nanosleep(&t,NULL); 
 }
 void object_info(struct s3d_evt *hrmz)
@@ -74,7 +79,7 @@ void mbutton_press(struct s3d_evt *hrmz)
 	struct s3d_but_info *inf;
 	char s[256];
 	inf=(struct s3d_but_info *)hrmz->buf;
-	snprintf(s,256,"button %d, state %d", inf->button,inf->state);
+	snprintf(s,256,"please, watch your stomach! button %d, state %d", inf->button,inf->state);
 	printf("button %d, state %d\n", inf->button,inf->state);
 	s3d_del_object(o);
 	o=s3d_draw_string(s,&len);
@@ -87,7 +92,7 @@ void mbutton_press(struct s3d_evt *hrmz)
 int main (int argc, char **argv)
 {
 	i=0;
-	if (!s3d_init(&argc,&argv,"ptrtest"))	
+	if (!s3d_init(&argc,&argv,"ptr and cam test"))	
 	{
 		s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
 		s3d_set_callback(S3D_EVENT_MBUTTON,mbutton_press);

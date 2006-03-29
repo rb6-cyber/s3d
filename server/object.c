@@ -1059,16 +1059,33 @@ int obj_del_tex(struct t_process *p, uint32_t oid, uint32_t n)
 int obj_translate(struct t_process *p, uint32_t oid, float *transv)
 {
 	struct t_obj *obj;
+	struct t_process *mcp_p=get_proc_by_pid(MCP);
+	float v[3];
 	if (obj_valid(p,oid,obj))
 	{
-		if ((p->id==MCP) || (!(obj->oflags&OF_SYSTEM)))
+		dprintf(VLOW,"[translate|pid %d] %d: %3.3f %3.3f %3.3f",p->id,oid,obj->translate.x,obj->translate.y,obj->translate.z);
+		if ((p->id!=MCP) && (obj->oflags&OF_SYSTEM))
 		{
+			if (focus_oid==p->mcp_oid)
+			{
+				v[0]=transv[0];
+				v[1]=transv[1];
+				v[2]=transv[2];
+				mySetMatrix(mcp_p->object[p->mcp_oid]->m);
+				myTransform3f(v);
+/*				mySetMatrix(mcp_p->object[oid]->m);
+				myInvert();
+				myTransform3f(v);
+				dprintf(LOW,"%3.3f %3.3f %3.3f",v[0],v[1],v[2]);*/
+				obj_translate(mcp_p,oid,v);
+			} 
+		} else {
 			obj->translate.x=*transv;
 			obj->translate.y=*(transv+1);
 			obj->translate.z=*(transv+2);
-			dprintf(VLOW,"[translate|pid %d] %d: %3.3f %3.3f %3.3f",p->id,oid,obj->translate.x,obj->translate.y,obj->translate.z);
 			obj_pos_update(p,oid);
 		}
+
 	}
 	return(0);
 }
@@ -1076,11 +1093,22 @@ int obj_translate(struct t_process *p, uint32_t oid, float *transv)
 int obj_rotate(struct t_process *p, uint32_t oid, float *rotv)
 {
 	struct t_obj *obj;
+	struct t_process *mcp_p=get_proc_by_pid(MCP);
+	float v[3];
 	float f;
 	if (obj_valid(p,oid,obj))
 	{
-		if ((p->id==MCP) || (!(obj->oflags&OF_SYSTEM)))
+		dprintf(VLOW,"[rotate|pid %d] %d: %3.3f %3.3f %3.3f",p->id,oid,obj->rotate.x,obj->rotate.y,obj->rotate.z);
+		if ((p->id!=MCP) && (obj->oflags&OF_SYSTEM))
 		{
+			if (focus_oid==p->mcp_oid)
+			{
+				v[0]=obj->rotate.x + (rotv[0] - obj->rotate.x);
+				v[1]=obj->rotate.y + (rotv[1] - obj->rotate.y);
+				v[2]=obj->rotate.z + (rotv[2] - obj->rotate.z);
+				obj_rotate(mcp_p,oid,v);
+			}
+		} else {
 			f=*rotv;
 			if (f<0.0)		f+=(float)((int)-f/360)*360;
 			if (f>360.0)	f+=(float)((int)f/360)*-360;
@@ -1093,7 +1121,6 @@ int obj_rotate(struct t_process *p, uint32_t oid, float *rotv)
 			if (f<0.0)		f+=(float)((int)-f/360)*360;
 			if (f>360.0)	f+=(float)((int)f/360)*-360;
 			obj->rotate.z=f;
-			dprintf(VLOW,"[rotate|pid %d] %d: %3.3f %3.3f %3.3f",p->id,oid,obj->rotate.x,obj->rotate.y,obj->rotate.z);
 			obj_pos_update(p,oid);
 		}
 	}
@@ -1287,6 +1314,7 @@ void obj_sys_update(struct t_process *p, uint32_t oid)
 			o=mcp_p->object[o->linkid];
 		else o=NULL;
 	}
+	/* mov in the mcp space */
 	mySetMatrix(mcp_p->object[oid]->m);
 	v[0]=v[1]=v[2]=0.0;
 	myTransform3f(v);
@@ -1302,7 +1330,7 @@ void obj_sys_update(struct t_process *p, uint32_t oid)
 			o=mcp_p->object[o->linkid];
 		else o=NULL;
 	}
-
+	/* reverse in the application space */
 	mySetMatrix(mcp_p->object[p->mcp_oid]->m);
 	myInvert();
 	myTransform3f(v);
