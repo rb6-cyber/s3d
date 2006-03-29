@@ -104,6 +104,8 @@ extern int Olsr_node_count;
 extern int Last_olsr_node_count;
 
 extern int Net_read_count;
+extern int Output_block_counter;
+extern int Output_block_completed;
 
 extern int ZeroPoint;
 

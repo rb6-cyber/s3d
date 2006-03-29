@@ -174,7 +174,7 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 		/* we found the node */
 		if ( result == 0 ) {
 
-			(*olsr_node)->last_seen = 150;
+			(*olsr_node)->last_seen = Output_block_counter;
 
 			/* former invisble (deleted) node */
 			if ( (*olsr_node)->visible == 0 ) {
@@ -219,7 +219,7 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 		(*olsr_node)->node_type = 0;
 		(*olsr_node)->node_type_modified = 1;
 
-		(*olsr_node)->last_seen = 150;
+		(*olsr_node)->last_seen = Output_block_counter;
 		(*olsr_node)->visible = 1;
 
 		if ( Debug ) printf( "new olsr node: %s\n", (*olsr_node)->ip );
@@ -494,6 +494,10 @@ int process_main() {
 				last_cr_ptr = lbuf_ptr;
 
 			}
+
+		} else if ( ( (*lbuf_ptr) == '}' ) && ( (*(lbuf_ptr + 1)) == '\n' ) ) {
+
+			Output_block_completed = 1;
 
 		}
 

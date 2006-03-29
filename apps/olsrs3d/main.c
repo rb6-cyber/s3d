@@ -54,6 +54,8 @@ int *Olsr_neighbour_label_obj = NULL;
 int Size;
 
 int Net_read_count;
+int Output_block_counter = 0;
+int Output_block_completed = 0;
 
 int Olsr_node_obj, Olsr_node_inet_obj, Olsr_node_hna_net;
 
@@ -202,9 +204,7 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	if ( olsr_node == NULL ) return;
 
 	/* olsr node vanished */
-	if ( olsr_node->last_seen > 0 ) olsr_node->last_seen--;
-
-	if ( olsr_node->last_seen == 0 && olsr_node->visible ) {
+	if ( ( olsr_node->last_seen < Output_block_counter - 1 ) && ( olsr_node->visible ) ) {
 
 		if ( Debug ) printf( "olsr node vanished: %s\n", olsr_node->ip );
 
@@ -629,7 +629,7 @@ void mainloop() {
 	int net_result;   /* result of function net_main */
 	char nc_str[20];
 	float strLen;
-	
+
 	/* calculate new movement vector */
 	calc_olsr_node_mov();
 
@@ -651,6 +651,13 @@ void mainloop() {
 		s3d_translate( Olsr_node_count_obj, -Left*3.0-(strLen * 0.2), -Bottom*3.0-0.5, -3.0 );
 
 		Last_olsr_node_count = Olsr_node_count;
+
+	}
+
+	if ( Output_block_completed ) {
+
+		Output_block_counter++;
+		Output_block_completed = 0;
 
 	}
 
@@ -788,9 +795,9 @@ void object_click(struct s3d_evt *evt)
 		}
 		return;
 	}
-	
+
 	Olsr_node_pEtx = *lst_search(oid);
-		
+
 	if( Btn_close_id == -1)
 	{
 		Btn_close_id = s3d_clone( Btn_close_obj );
@@ -798,9 +805,9 @@ void object_click(struct s3d_evt *evt)
 		s3d_flags_on(Btn_close_id,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 		s3d_scale( Btn_close_id, 0.05 );
 		s3d_translate( Btn_close_id,-Left*3.0-0.125, -Bottom*3.0-0.7, -3.0 );
-		
+
 	}
-	
+
 	/*
 	distance = dirt(CamPosition[0],olsr_node->pos_vec,tmp_vector);
 	mov_add(ZeroPosition,tmp_vector,1.0);
@@ -815,7 +822,7 @@ void object_click(struct s3d_evt *evt)
 	s3d_flags_on( Olsr_ip_label_obj, S3D_OF_VISIBLE );
 	s3d_scale( Olsr_ip_label_obj, 0.2 );
 	s3d_translate( Olsr_ip_label_obj,-Left*3.0-(ln * 0.2)-0.15, -Bottom*3.0-1.0, -3.0 );
-	
+
 }
 
 void print_etx()
@@ -824,7 +831,7 @@ void print_etx()
 	float p = 1.2;
 	int i;
 	float len = 0.0, max_len=0.0;
-	
+
 	if( Olsr_neighbour_label_obj != NULL )
 	{
 		/* int n = sizeof(Olsr_neighbour_label_obj) / sizeof(int);*/
@@ -850,12 +857,12 @@ void print_etx()
 	{
 		char nIpStr[60];
 		float mEtx = ( tmpNeighbour->olsr_con->left_etx + tmpNeighbour->olsr_con->right_etx ) / 2;
-		
+
 		if( mEtx != -1000 )
 			snprintf(nIpStr, 60, "%15s --> %4.2f",(strcmp(Olsr_node_pEtx->ip,tmpNeighbour->olsr_con->right_olsr_node->ip)?tmpNeighbour->olsr_con->right_olsr_node->ip:tmpNeighbour->olsr_con->left_olsr_node->ip),mEtx);
 		else
 			snprintf(nIpStr, 60, "%15s --> HNA",(strcmp(Olsr_node_pEtx->ip,tmpNeighbour->olsr_con->right_olsr_node->ip)?tmpNeighbour->olsr_con->right_olsr_node->ip:tmpNeighbour->olsr_con->left_olsr_node->ip));
-		
+
 		Olsr_neighbour_label_obj[i] = s3d_draw_string( nIpStr, &len );
 		s3d_link(Olsr_neighbour_label_obj[i], 0);
 		s3d_flags_on(Olsr_neighbour_label_obj[i], S3D_OF_VISIBLE );
@@ -865,7 +872,7 @@ void print_etx()
 		p += 0.2;
 		max_len = (len > max_len)?len+0.15:max_len;
 	}
-	
+
 	if( Btn_close_id != -1)
 	{
 		if( Output_border[0] == -1 )
@@ -880,21 +887,21 @@ void print_etx()
 			}
 			s3d_push_vertex(Output_border[0], -Left*3.0-0.2,			-Bottom*3.0-0.7, -3.0);
 			s3d_push_vertex(Output_border[0], -Left*3.0-(max_len*0.2),	-Bottom*3.0-0.7, -3.0);
-	
+
 			s3d_push_vertex(Output_border[1], -Left*3.0-0.1,			-Bottom*3.0-0.8, -3.0);
 			s3d_push_vertex(Output_border[1], -Left*3.0-0.1,			-Bottom*3.0-p, 	-3.0);
-	
+
 			s3d_push_vertex(Output_border[2], -Left*3.0-0.1,			-Bottom*3.0-p, 	-3.0);
 			s3d_push_vertex(Output_border[2], -Left*3.0-(max_len*0.2),	-Bottom*3.0-p, 	-3.0);
-	
+
 			s3d_push_vertex(Output_border[3], -Left*3.0-(max_len*0.2),	-Bottom*3.0-0.7, -3.0);
 			s3d_push_vertex(Output_border[3], -Left*3.0-(max_len*0.2),	-Bottom*3.0-p, 	-3.0);
-	
+
 			s3d_push_line( Output_border[0], 0,1,0);
 			s3d_push_line( Output_border[1], 0,1,0);
 			s3d_push_line( Output_border[2], 0,1,0);
 			s3d_push_line( Output_border[3], 0,1,0);
-	
+
 			s3d_flags_on( Output_border[0], S3D_OF_VISIBLE);
 			s3d_flags_on( Output_border[1], S3D_OF_VISIBLE);
 			s3d_flags_on( Output_border[2], S3D_OF_VISIBLE);
@@ -911,13 +918,13 @@ void print_etx()
 			s3d_pop_vertex(Output_border[3], 2);
 			s3d_push_vertex(Output_border[0], -Left*3.0-0.2,				-Bottom*3.0-0.7, -3.0);
 			s3d_push_vertex(Output_border[0], -Left*3.0-(max_len*0.2),	-Bottom*3.0-0.7, -3.0);
-	
+
 			s3d_push_vertex(Output_border[1], -Left*3.0-0.1,				-Bottom*3.0-0.8, -3.0);
 			s3d_push_vertex(Output_border[1], -Left*3.0-0.1,				-Bottom*3.0-p,	 -3.0);
-	
+
 			s3d_push_vertex(Output_border[2], -Left*3.0-0.1,				-Bottom*3.0-p,	 -3.0);
 			s3d_push_vertex(Output_border[2], -Left*3.0-(max_len*0.2),	-Bottom*3.0-p,	 -3.0);
-	
+
 			s3d_push_vertex(Output_border[3], -Left*3.0-(max_len*0.2),	-Bottom*3.0-0.7, -3.0);
 			s3d_push_vertex(Output_border[3], -Left*3.0-(max_len*0.2),	-Bottom*3.0-p, 	 -3.0);
 		}
