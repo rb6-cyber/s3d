@@ -97,10 +97,11 @@ int display_dir(struct t_item *dir)
 	float dss; /* dirstep size */
 	int dirn, dirc,dps;
 	int icon;
-	float vertices[]={	-1,-1,0,
-						-1, 1,0,
-						 1, 1,0,
-						 1,-1,0};
+	float vertices[]={	-1,-0.5,0,
+						-1, 0.5,0,
+						 1, 0.5,0,
+						 1,-0.5,0};
+	float d;
 	px=pz=0.0;
 	if (dir->disp)
 		return(-1); /* already displayed ... */ 
@@ -113,32 +114,36 @@ int display_dir(struct t_item *dir)
 			dirn++;
 	}
 	dps=ceil(sqrt(dir->n_item)); /* directories per line */
-	printf("having %d directories, %d per side. one is scaled down to %3.3f \n",dirn,dps,dss);
+	printf("directories per line: %d\n",dps);
 	root.icon=s3d_new_object();
 	for (i=0;i<dir->n_item;i++)
 	{
-		dir->list[i].px=((float)(i%dps)+0.5)/((float)dps)-0.5;
-		dir->list[i].pz=((float)i/dps+0.5)/((float)dps)-0.5;
+		dir->list[i].px=((float)((int)i%dps)+0.5)/((float)dps)-0.5;
+		dir->list[i].pz=((float)((int)i/dps)+0.5)/((float)dps)-0.5;
 		dir->list[i].block=s3d_new_object();
 		s3d_link(dir->list[i].block,dir->block);
-		s3d_push_vertices(dir->list[i].block,vertices,2);
+		s3d_push_vertices(dir->list[i].block,vertices,4);
+		d=((int)i%2)*0.2;
 		switch (dir->list[i].type)
 		{
 			case T_FOLDER:
 				s3d_push_material(dir->list[i].block,
-										1,1,0,
-										1,1,0,
-										1,1,0);
+										1-d,1-d,0,
+										1-d,1-d,0,
+										1-d,1-d,0);
 				break;
 			default:
 				s3d_push_material(dir->list[i].block,
-										0,0,1,
-										0,0,1,
-										0,0,1);
+										0,0,1-d,
+										0,0,1-d,
+										0,0,1-d);
 		};
 		s3d_push_polygon(dir->list[i].block,0,1,2,0);
 		s3d_push_polygon(dir->list[i].block,0,2,3,0);
-		s3d_scale(dir->list[i].block,1.0/((float)dps));
+		s3d_scale(dir->list[i].block,(float)1.0/((float)dps));
+		printf("scaling factor is %f\n",(float)1.0/((float)dps));
+		printf("moving to %3.3f %3.3f 1.0\n",dir->list[i].px,dir->list[i].pz);
+		s3d_translate(dir->list[i].block,dir->list[i].px*2,dir->list[i].pz+0.5,1.0);
 		s3d_flags_on(dir->list[i].block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	}
 	dir->disp=1;
