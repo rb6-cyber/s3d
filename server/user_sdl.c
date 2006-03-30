@@ -26,11 +26,14 @@
 #include <SDL.h>
 /*  this file reads user input */
 /*  this is done right now by SDL-polling */
+
+extern int SDLFlags;
 int user_init_sdl() {
 	return(0);
 }
 int user_main_sdl() {
   SDL_Event 	event;
+  SDL_Surface *GLwin = NULL;
   while (SDL_PollEvent(&event)) 
   {
 	switch (event.type)
@@ -91,8 +94,11 @@ int user_main_sdl() {
 		case SDL_ACTIVEEVENT:		dprintf(VLOW,"SDL_ACTIVEEVENT");break;
 		case SDL_KEYUP:				dprintf(VLOW,"SDL_KEYUP");break;
 		case SDL_SYSWMEVENT:		dprintf(VLOW,"SDL_SYSWMEVENT");break;
-		case SDL_VIDEORESIZE:		dprintf(VLOW,"SDL_VIDEORESIZE");break;
-		case SDL_VIDEOEXPOSE:		dprintf(VLOW,"SDL_VIDEOEXPOSE");break;
+		case SDL_VIDEORESIZE:		if ((GLwin = SDL_SetVideoMode(event.resize.w,event.resize.h,16,SDLFlags))==NULL) 
+										errsf("SDL_SetVideoMode()",SDL_GetError());
+									graphics_reshape(event.resize.w,event.resize.h);
+									break;
+		case SDL_VIDEOEXPOSE:		dprintf(LOW,"SDL_VIDEOEXPOSE");break;
 		case SDL_USEREVENT:			dprintf(VLOW,"SDL_USEREVENT");break;
 		case SDL_JOYAXISMOTION:		dprintf(VLOW,"SDL_JOYAXISMOTION");break;
 		case SDL_JOYBALLMOTION:		dprintf(VLOW,"SDL_JOYBALLMOTION");break;

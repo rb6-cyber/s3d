@@ -373,14 +373,19 @@ void graphics_main()
 	glLoadIdentity();
 	glMultMatrixf(m);
 
-	glFlush();
 	switch (frame_mode)
 	{
 #ifdef G_GLUT
-		case FRAME_GLUT:glutSwapBuffers();break;
+		case FRAME_GLUT:
+				glFlush();
+				glutSwapBuffers();
+				break;
 #endif
 #ifdef G_SDL
-    	case FRAME_SDL:SDL_GL_SwapBuffers();break;
+    	case FRAME_SDL:
+				/* SDL will glFlush itself */
+				SDL_GL_SwapBuffers(); 
+				break;
 #endif
 #ifdef G_GLX
 		case FRAME_GLX:...

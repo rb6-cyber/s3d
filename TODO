@@ -1,6 +1,4 @@
 general:
-	* put s3d.h into ${PREFIX}/include/, not ${PREFIX}/include/s3d/
-	* svn add reset.3ds?!
 	* FULLSCREEN!
 dot_mcp:
 	* sane paths for applications

@@ -1,4 +1,5 @@
 HIGH:
+ - properly buffer incoming network traffic!!
 MED:
  - culling for selection-mode - do it with line-culling, not plane-culling!
  - stop networking grepping after some deadline to prevent DoS ...?

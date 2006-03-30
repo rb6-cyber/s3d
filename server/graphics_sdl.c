@@ -26,16 +26,15 @@
 #include <SDL_opengl.h>
 #include <SDL.h>
 
+int SDLFlags = 0;					 /*  some flags for SDL */
 int graphics_init_sdl()
 {
     SDL_Surface *GLwin = NULL;
     SDL_VideoInfo *VideoInfo;
-    int SDLFlags = 0;				 /*  nothing */
     int rgb_size[3]; 				 /*  for SDL_GL attributes */
 	dprintf(MED,"Using SDL driver ...");
 	
-    SDLFlags = SDL_OPENGL;
-    SDLFlags |= SDL_GL_DOUBLEBUFFER;
+    SDLFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE | SDL_RESIZABLE;
     if (SDL_Init(SDL_INIT_VIDEO) < 0)  		
 			errsf("SDL_Init()",SDL_GetError());
     if ((VideoInfo = (SDL_VideoInfo *)SDL_GetVideoInfo())==NULL)
