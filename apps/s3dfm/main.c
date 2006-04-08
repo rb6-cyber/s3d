@@ -29,7 +29,7 @@
 #include <string.h>  /*  strlen(), strncmp(), strrchr() */
 #include <math.h>	 /*  sin(),cos() */
 #include <time.h>	/* nanosleep() */
-static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
+static struct timespec t={0,10*1000*1000}; /* 10 mili seconds */
 
 
 #define SH			0.4 /* height of the step */
@@ -44,6 +44,8 @@ static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
 #define M_DIR		512
 #define M_NAME		256
 int folder,geometry,mp3,duno,dot,dotdot;
+float dpx,dpy,dpz,dscale;
+float px, py, pz, scale;
 struct t_item {
 	int icon, str;							/* object ids ...*/
 	int block;								/* oid of the block */
@@ -98,13 +100,13 @@ int new_block(struct t_item *dir)
 }
 /* orders the directory objects on top of its parent objects 
  * to be called after adding or removing things ...*/
-int placeontop(struct t_item *dir)
+void placeontop(struct t_item *dir)
 {
 	int i,j;
 	printf("placeontop dir %s, %d\n",dir->name,dir->dirs_opened);
 	switch (dir->dirs_opened)
 	{
-		case 0: return(0);
+		case 0: return;
 		case 1:
 			for (i=0;i<dir->n_item;i++)
 			{
@@ -283,7 +285,6 @@ struct t_item *finditem(struct t_item *t, int oid)
 				return(f);
 	return(NULL);
 }
-float px, py, pz;
 /* gets the scale by multiplying scales */
 
 float get_scale(struct t_item *f)
@@ -308,19 +309,13 @@ float get_scale(struct t_item *f)
 #define SCALE 	1
 void rescale(struct t_item *f)
 {
-	float scale=1.0;
 	px=0.0;
 	py=0.0;
 	pz=0.0;
 	printf("[Z]ooming to %s\n",f->name);
-	if (f->parent!=NULL)
-	{
-		scale=get_scale(f);
-	}
+	scale=get_scale(f);
 	printf("[R]escaling to %f\n",scale);
 	printf("px: %f py:%f pz: %f\n",px,py,pz);
-	s3d_translate(root.block,px*SCALE,-3.0+SCALE*py,pz*SCALE);
-	s3d_scale(root.block,scale*SCALE);
 }
 
 void object_click(struct s3d_evt *evt)
@@ -328,7 +323,6 @@ void object_click(struct s3d_evt *evt)
 	int oid;
 	struct t_item *f;
 	oid=(int)*((unsigned long *)evt->buf);
-	printf("! clicked object %d\n",oid);
 	if (NULL!=(f=finditem(&root,oid)))
 	{
 		if (f->type==T_FOLDER)
@@ -343,13 +337,24 @@ void object_click(struct s3d_evt *evt)
 		printf("[C]ould not find :/\n");
 	}
 }
+#define ZOOMS 	5
 void mainloop()
 {
+	dpx=(px+dpx*ZOOMS)/(ZOOMS+1);
+	dpy=(py+dpy*ZOOMS)/(ZOOMS+1);
+	dpz=(pz+dpz*ZOOMS)/(ZOOMS+1);
+	dscale=(scale+dscale*ZOOMS)/(ZOOMS+1);
+	s3d_translate(root.block,dpx*SCALE,-3.0+SCALE*dpy,dpz*SCALE);
+	s3d_scale(root.block,dscale*SCALE);
+
 	nanosleep(&t,NULL); 
 }
 int main (int argc, char **argv)
 {
 	int i;
+	px=py=pz=0.0;
+	dpx=dpy=dpz=0.0;
+	dscale=scale=1.0;
 	if (!s3d_init(&argc,&argv,"filebrowser"))	
 	{
 		i=0;
