@@ -392,6 +392,8 @@ int process_main() {
 	con_from = con_from_end = con_to = con_to_end = etx = etx_end = NULL;
 	dn = 0;
 
+	/*printf("---lbuf-start---\n%s\n---lbuf-end---\n",lbuf);*/
+
 	while ( (*lbuf_ptr) != '\0' ) {
 
 		/* printf( "%c",(*lbuf_ptr) ); */
@@ -454,15 +456,16 @@ int process_main() {
 
 					/* normal HNA */
 					} else {
-
+						/* printf("before: %s\n",con_to); */
 						if( (tmpChar = strchr((char*)con_to, (int)'/')))
 						{
 							tmpChar++;
 							address = (int)-inet_network(tmpChar);
 							sprintf(hna_name,"%d",(int)(32 - ceil(log(address)/log(2))));
-							strncpy(tmpChar,hna_name,NAMEMAX);
+							strcpy(tmpChar,hna_name);
 						}
-
+						/* printf("after: %s\n",con_to); */
+						/* fflush(NULL); */
 						olsr_node1 = get_olsr_node( &Olsr_root, con_from );
 						olsr_node2 = get_olsr_node( &Olsr_root, con_to );
 
@@ -488,11 +491,11 @@ int process_main() {
 						f = 999.0;
 					add_olsr_con( olsr_node1, olsr_node2, f );
 				}
-
+/*
 				con_from = con_from_end = con_to = con_to_end = etx = etx_end = NULL;
 				dn = 0;
 				last_cr_ptr = lbuf_ptr;
-
+*/
 			}
 
 		} else if ( ( (*lbuf_ptr) == '}' ) && ( (*(lbuf_ptr + 1)) == '\n' ) ) {
@@ -506,7 +509,7 @@ int process_main() {
 	}
 
 	if ( last_cr_ptr != NULL ) memmove( lbuf, last_cr_ptr + 1, strlen( last_cr_ptr ) );
-
+	/*printf("---memmove-lbuf-start---\n%s\n---memmove-lbuf-end---\n",lbuf);*/
 	return(0);
 
 }
