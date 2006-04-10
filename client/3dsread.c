@@ -26,7 +26,6 @@
 #include "s3dlib.h"
 #include <stdlib.h> 	 /*  exit(), malloc() */
 #include <math.h>		 /*  sqrt() */
-#include <netinet/in.h>  /*  htonl() */
 #include <string.h> 	 /*  strncpy() */
 #include <errno.h> 		 /*  errno */
 #define MAXSTRN		20
@@ -140,7 +139,7 @@ static int smooth(float *vbuf,int voff, unsigned long *pbuf, float *pnbuf, float
 	{
 		for (j=0;j<3;j++)
 		{
-			k=ntohl(pbuf[i*4+j])-voff;
+			k=pbuf[i*4+j]-voff;
 			if (v_t_buf[k].g!=g)  /*  not added in this group yet */
 			{
 				for (n=0;n<3;n++)
@@ -159,7 +158,7 @@ static int smooth(float *vbuf,int voff, unsigned long *pbuf, float *pnbuf, float
 	{
 		for (j=0;j<3;j++)
 		{
-			k=ntohl(pbuf[i*4+j])-voff;
+			k=pbuf[i*4+j]-voff;
 			if (v_t_buf[k].num>1)  /*  if more than 1, normalize. */
 			{
 				len=sqrt(v_t_buf[k].n[0]*v_t_buf[k].n[0]+v_t_buf[k].n[1]*v_t_buf[k].n[1]+v_t_buf[k].n[2]*v_t_buf[k].n[2]);
@@ -217,7 +216,7 @@ static float *calc_normals(float *vertex_buf, int vertexnum, unsigned long *poly
 		}
 		for (j=0;j<3;j++)
 		{
-			v[j]=ntohl(poly_buf[i*4+j])-voff;
+			v[j]=poly_buf[i*4+j]-voff;
 			if (v[j]>=vertexnum)  /*  bad input */
 			{
 				errds(VHIGH,"calc_normals()","bad input, polygon vertex index out of range");
@@ -356,10 +355,10 @@ int s3d_import_3ds(char *buf)
 			if (poly_buf==NULL) break;
 		    for (j=0; j<polynum; j++)
 			{
-				poly_buf[j*4+0]=htonl(vertex_offset+gints(ptr+0)); 
-				poly_buf[j*4+1]=htonl(vertex_offset+gints(ptr+2));
-				poly_buf[j*4+2]=htonl(vertex_offset+gints(ptr+4));
-				poly_buf[j*4+3]=htonl(col_obj);  /*  we should have a default material .... */
+				poly_buf[j*4+0]=vertex_offset+gints(ptr+0); 
+				poly_buf[j*4+1]=vertex_offset+gints(ptr+2);
+				poly_buf[j*4+2]=vertex_offset+gints(ptr+4);
+				poly_buf[j*4+3]=col_obj;  /*  we should have a default material .... */
 				ptr+=sizeof(unsigned short)*4;
 		    }
 			break;
@@ -382,7 +381,7 @@ int s3d_import_3ds(char *buf)
 			{
 				j=gints(ptr+2*i);
 				if (j>=0 && j<polynum)
-					poly_buf[gints(ptr+2*i)*4+3]=htonl(col_obj); 
+					poly_buf[gints(ptr+2*i)*4+3]=col_obj; 
 				else {
 					errds(MED,"s3d_import_3ds()","polygon %d out of range!",j);
 				}

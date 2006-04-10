@@ -27,7 +27,6 @@
 #include "s3dlib.h"
 #include "sei_interface.h"	/* sei_triangulate_polygon() */
 #include <stdlib.h>    		/*  malloc(), free() */
-#include <netinet/in.h>  	/*  htonl(), htons() */
 #include <math.h>			/*  atan2() */
 #include "ft2build.h"
 #include FT_FREETYPE_H
@@ -298,11 +297,6 @@ int _s3d_draw_tessbuf(int oid,unsigned short a,int *voff, float *xoff)
 						pbuf[i*4+1],
 						pbuf[i*4+2],
 						pbuf[i*4+3],*voff);*/
-		pbuf[i*4]=htonl(pbuf[i*4]);
-		pbuf[i*4+1]=htonl(pbuf[i*4+1]);
-		pbuf[i*4+2]=htonl(pbuf[i*4+2]);
-		pbuf[i*4+3]=htonl(pbuf[i*4+3]);
-
 	}
 	dprintf(VLOW,"commiting %d vertices, %d polygons",tess_buf[a].vn,tess_buf[a].pn);
 	s3d_push_vertices(oid,vbuf,tess_buf[a].vn);

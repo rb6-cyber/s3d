@@ -104,6 +104,7 @@ int s3d_push_polygons(int object, unsigned long *pbuf, unsigned short n);
 int s3d_push_line(int object, unsigned long v1, unsigned long v2, unsigned long material);
 int s3d_push_lines(int object, unsigned long *lbuf, unsigned short n);
 int s3d_push_texture(int object, unsigned short w, unsigned short h);
+int s3d_push_textures(int object, unsigned short *tbuf, unsigned short n);
 int s3d_pop_vertex(int object, unsigned long n);
 int s3d_pop_polygon(int object, unsigned long n);
 int s3d_pop_material(int object, unsigned long n);

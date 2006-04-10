@@ -245,45 +245,53 @@ int s3d_push_line(int object, unsigned long v1, unsigned long v2, unsigned long 
 /*  assumes to have a list of polys which consists of v1,v2,v3,material */
 int s3d_push_polygons(int object, unsigned long *pbuf, unsigned short n)
 {
-	char				buf[MF_LEN+4],*ptr;
-	int					f,i,len=n*4*4;
+	unsigned long		buf[(MF_LEN+4)/4];
+	unsigned long		*s,*d;
+	int					f,i,j,len=n*4*4;
 	int					flen,stepl;
 	if (n<1)
 		return(-1);
 	stepl=((int)((MF_LEN-4)/(4*4)))*(4*4);
 	f=len/(MF_LEN-4)+1;  /*  how many fragments? */
+
+	buf[0]=htonl(object);
+	d=buf+1;
 	for (i=0;i<f;i++)
 	{
-		ptr=buf;
-		*((uint32_t *)ptr)=htonl(object);			ptr+=sizeof(uint32_t);		  /*  object id */
-		if (len-i*stepl>stepl)
-			flen=stepl;
-		else
-			flen=(len-i*stepl);
-		memcpy(ptr,(char *)pbuf+i*stepl,flen);
-		net_send(S3D_P_C_PUSH_POLY,buf,flen+4);
+		if (len-i*stepl>stepl)			flen=stepl;
+		else							flen=(len-i*stepl);
+
+		s=pbuf+i*stepl/4;
+		for (j=0;j<flen/4;j++)
+			d[j]=htonl(s[j]);
+		net_send(S3D_P_C_PUSH_POLY,(char *)buf,flen+4);
 	}
 	return(0);
 }
 int s3d_push_lines(int object, unsigned long *lbuf, unsigned short n)
 {
-	char				buf[MF_LEN+4],*ptr;
-	int					f,i,len=n*4*3;
+	unsigned long		buf[(MF_LEN+4)/4];
+	unsigned long		*s,*d;
+	int					f,i,j,len=n*4*3;
 	int					flen,stepl;
 	if (n<1)
 		return(-1);
 	stepl=((int)((MF_LEN-4)/(4*3)))*(4*3);
 	f=len/(MF_LEN-4)+1;  /*  how many fragments? */
+
+	buf[0]=htonl(object);
+	d=buf+1;
+
 	for (i=0;i<f;i++)
 	{
-		ptr=buf;
-		*((uint32_t *)ptr)=htonl(object);			ptr+=sizeof(uint32_t);		  /*  object id */
-		if (len-i*stepl>stepl)
-			flen=stepl;
-		else
-			flen=(len-i*stepl);
-		memcpy(ptr,(char *)lbuf+i*stepl,flen);
-		net_send(S3D_P_C_PUSH_LINE,buf,flen+4);
+		if (len-i*stepl>stepl)			flen=stepl;
+		else							flen=(len-i*stepl);
+
+		s=lbuf+i*stepl/4;
+		for (j=0;j<flen/4;j++)
+			d[j]=htonl(s[j]);
+
+		net_send(S3D_P_C_PUSH_LINE,(char *)buf,flen+4);
 	}
 	return(0);
 }
@@ -299,25 +307,30 @@ int s3d_push_texture(int object, unsigned short w, unsigned short h)
 	net_send(S3D_P_C_PUSH_TEX,buf,len);
 	return(0);
 }
-int s3d_push_textures(int object, unsigned long *pbuf, unsigned short n)
+int s3d_push_textures(int object, unsigned short *tbuf, unsigned short n)
 {
-	char				buf[MF_LEN+4],*ptr;
-	int					f,i,len=n*2*2;
+	unsigned short		buf[(MF_LEN+4)/2];
+	unsigned short		*s,*d;
+
+	int					f,i,j,len=n*2*2;
 	int					flen,stepl;
 	if (n<1)
 		return(-1);
 	stepl=((int)((MF_LEN-4)/(2*2)))*(2*2);
 	f=len/(MF_LEN-4)+1;  /*  how many fragments? */
+
+	*((unsigned long *)buf)=htonl(object);
+	d=buf+2;
+
 	for (i=0;i<f;i++)
 	{
-		ptr=buf;
-		*((uint32_t *)ptr)=htonl(object);			ptr+=sizeof(uint32_t);		  /*  object id */
-		if (len-i*stepl>stepl)
-			flen=stepl;
-		else
-			flen=(len-i*stepl);
-		memcpy(ptr,(char *)pbuf+i*stepl,flen);
-		net_send(S3D_P_C_PUSH_POLY,buf,flen+4);
+		if (len-i*stepl>stepl)			flen=stepl;
+		else							flen=(len-i*stepl);
+
+		s=tbuf+i*stepl/2;
+		for (j=0;j<flen/2;j++)
+			d[j]=htons(s[j]);
+		net_send(S3D_P_C_PUSH_POLY,(char *)buf,flen+4);
 	}
 	return(0);
 }
@@ -495,14 +508,16 @@ int s3d_pep_line(int object, int v1, int v2, int material)
 /*  replaces the last n lines. */
 int s3d_pep_lines(int object, unsigned long *lbuf,unsigned short n)
 {
-	unsigned char buf[MF_LEN+4];
+	unsigned long 	buf[MF_LEN+4];
+	int				i;
 	if ((n*3*4+4)>MF_LEN) 
 	{
-		errds(MED,"s3d_pep_vertices()","too much data");
+		errds(MED,"s3d_pep_lines()","too much data");
 		return(-1);  /*  impossible */
 	}
-	*((uint32_t *)buf)=htonl(object);
-	memcpy(buf+4,lbuf,3*4*n);
+	buf[0]=htonl(object);
+	for (i=0;i<3*n;i++)
+		buf[i+1]=htonl(lbuf[0]);
 	net_send(S3D_P_C_PEP_LINE, (char *)buf,n*3*4+4);
 	return(0);
 	
