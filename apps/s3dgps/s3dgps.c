@@ -24,6 +24,9 @@
 
 #include <s3d.h>
 #include <gps.h> 	/* gps_*() */
+#ifdef NMEA_CHANNELS
+#define GPS_NEW
+#endif
 #include <stdio.h> 	/* printf() */
 #include <errno.h>  /* errno */
 #include <stdlib.h>	/* malloc(), free() */
@@ -210,7 +213,7 @@ void load_icons()
 }
 void show_gpsdata(struct gps_data_t *dgps)
 {
-	if (!dgps->online) 
+/*	if (!dgps->online) 
 		printf("WARNING: no connection to gps device\n");
 	printf("[%d] lat/long: [%f|%f], altitude %f\n",frame,dgps->latitude,dgps->longitude,dgps->altitude);
 	printf("speed [kph]: %f",dgps->speed/KNOTS_TO_KPH);
@@ -227,13 +230,24 @@ void show_gpsdata(struct gps_data_t *dgps)
 		case MODE_NO_FIX:	printf("mode: no fix\n");break;
 		case MODE_2D:		printf("mode: 2d fix\n");break;
 		case MODE_3D:		printf("mode: 3d fix\n");break;
-	}
+	}*/
 }
 int lastfix=0;
 void show_position(struct gps_data_t *dgps)
 {
 	int fix=1;
 	float x,y,z,p;
+#ifdef GPS_NEW
+	if (!dgps->online) 
+		fix=0;
+	switch (dgps->fix.mode)
+	{
+		case MODE_NOT_SEEN:	fix=0;break;
+		case MODE_NO_FIX:	fix=0;break;
+	}
+	if (fix) {
+		calc_position(dgps->fix.longitude,dgps->fix.latitude,&x,&y,&z);
+#else
 	if (!dgps->online) 
 		fix=0;
 	switch (dgps->mode)
@@ -243,6 +257,7 @@ void show_position(struct gps_data_t *dgps)
 	}
 	if (fix) {
 		calc_position(dgps->longitude,dgps->latitude,&x,&y,&z);
+#endif
 /*		calc_position(dgps->latitude,dgps->longitude,&x,&y,&z);*/
 		p=sin(M_PI*((2*frame)%180)/180.0);
 /*		if (p<0.0) p*=-1.0;*/
