@@ -29,7 +29,7 @@
 #include <string.h>  /*  strlen(), strncmp(), strrchr() */
 #include <math.h>	 /*  sin(),cos() */
 #include <time.h>	/* nanosleep() */
-static struct timespec t={0,10*1000*1000}; /* 10 mili seconds */
+static struct timespec t={0,33*1000*1000}; /* 30 fps */
 
 
 #define SH			0.4 /* height of the step */
@@ -158,7 +158,7 @@ void placeontop(struct t_item *dir)
 	}
 }
 /* places the string at the left side of the cube */
-int place_str(struct t_item *dir)
+void place_str(struct t_item *dir)
 {
 
 	s3d_rotate(dir->str,0,90,0);
@@ -401,9 +401,11 @@ void mainloop()
 	dpy=(py+dpy*ZOOMS)/(ZOOMS+1);
 	dpz=(pz+dpz*ZOOMS)/(ZOOMS+1);
 	dscale=(scale+dscale*ZOOMS)/(ZOOMS+1);
-	s3d_translate(root.block,dpx*SCALE,-1.2+SCALE*dpy,dpz*SCALE);
-	s3d_scale(root.block,dscale*SCALE);
-
+	if ((fabs(dscale-scale)/scale)>0.01)
+	{
+		s3d_translate(root.block,dpx*SCALE,-1.2+SCALE*dpy,dpz*SCALE);
+		s3d_scale(root.block,dscale*SCALE);
+	}
 	nanosleep(&t,NULL); 
 }
 int main (int argc, char **argv)
@@ -435,8 +437,8 @@ int main (int argc, char **argv)
 		root.str=s3d_draw_string(root.name,&root.len);
 		if (root.len<2) root.len=2;
 		parse_dir(&root);
-		rescale(&root);
 		display_dir(&root);
+		rescale(&root);
 		s3d_mainloop(mainloop);
 		s3d_quit();
 	}
