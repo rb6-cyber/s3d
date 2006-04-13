@@ -386,10 +386,10 @@ void keypress(struct s3d_evt *event)
 		case S3DK_F1:  ego_mode=(ego_mode+1)%2;
 				 printf("ego mode %d\n",ego_mode);
 				 break;
-		case 'w':ydif=-1;break;
-		case 'a':xdif=-1;break;
-		case 's':ydif= 1;break;
-		case 'd':xdif= 1;break;
+		case 'w':ydif=-2;break;
+		case 'a':xdif=-2;break;
+		case 's':ydif= 2;break;
+		case 'd':xdif= 2;break;
 		default:
 			printf("unknown/not handled key %d\n", key);
 	}
@@ -399,7 +399,8 @@ void keypress(struct s3d_evt *event)
 		campos.z+=ydif*cos((camrot.y*M_PI)/180);
 		campos.x+=xdif*cos((-camrot.y*M_PI)/180);
 		campos.z+=xdif*sin((-camrot.y*M_PI)/180);
-		s3d_translate(	0,campos.x,0,campos.z);
+		campos.y+=ydif*sin((-camrot.x*M_PI)/180);
+		s3d_translate(	0,campos.x,campos.y,campos.z);
 	}
 }
 
