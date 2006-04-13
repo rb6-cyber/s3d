@@ -75,6 +75,8 @@ float Factor = 0.6;	/* Factor in calc_olsr_node_mov */
 struct olsr_node *Olsr_node_pEtx;
 int Btn_close_id = -1;
 int Btn_close_obj;
+int cam_go=0;
+
 /***
  *
  * print usage info
@@ -683,7 +685,15 @@ void mainloop() {
 	CamPosition2[0][1]=  CamPosition[0][1];
 	CamPosition2[0][2]=  CamPosition[0][0]*sin(Zp_rotate*M_PI/180.0) + CamPosition[0][2] * cos (Zp_rotate*M_PI/180.0);
 
-
+	if (cam_go)
+	{ /* move a little bit closer ... */
+		CamPosition[0][0]=(CamPosition[0][0]*9+Olsr_node_pEtx->pos_vec[0])/10;
+		CamPosition[0][1]=(CamPosition[0][1]*9+Olsr_node_pEtx->pos_vec[1])/10;
+		CamPosition[0][2]=(CamPosition[0][2]*9+Olsr_node_pEtx->pos_vec[2])/10;
+		s3d_translate(0,CamPosition[0][0],CamPosition[0][1],CamPosition[0][2]);
+		if (dist(CamPosition[0],Olsr_node_pEtx->pos_vec)<5) /* close enough? stop! */
+				cam_go=0;
+	}
 	nanosleep( &sleep_time, NULL );
 
 	return;
@@ -813,6 +823,7 @@ void object_click(struct s3d_evt *evt)
 	mov_add(ZeroPosition,tmp_vector,1.0);
 	s3d_translate(ZeroPoint,ZeroPosition[0] * -1,ZeroPosition[1] * -1,ZeroPosition[2] * -1);
 	*/
+	cam_go=1;
 
 	/* print clicked object ip and connections */
 	if ( Olsr_ip_label_obj != -1 ) s3d_del_object( Olsr_ip_label_obj );
