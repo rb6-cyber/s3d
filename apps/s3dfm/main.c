@@ -51,6 +51,7 @@ struct t_item {
 	int block;								/* oid of the block */
 	int dirs_opened;						/* how many directories are on the block */
 	char name[M_NAME];						/* name (e.g. file name) */
+	float len;
 	struct t_item *parent;					/* parent item */
 	struct t_item *list;					/* list of items  (if it's a subdir)*/
 	float px,pz;
@@ -62,27 +63,42 @@ struct t_item root;
 /* draw a block */
 int new_block(struct t_item *dir)
 {
+#define S 1.001
 	float vertices[]=
-			{-1,0,-1,
-			 -1,0, 1,
-			  1,0, 1,
-			  1,0,-1,
-			 -1,1,-1,
-			 -1,1, 1,
-			  1,1, 1,
-			  1,1,-1};
-
-			 
+			{-S,0,-S,
+			 -S,0, S,
+			  S,0, S,
+			  S,0,-S,
+			 -S,S,-S,
+			 -S,S, S,
+			  S,S, S,
+			  S,S,-S,
+			 -1,0, 0.8,
+			 -1,1, 0.8,
+			  1,1, 0.8,
+			  1,0, 0.8,
+			 };
+#undef S
+	struct t_item *d;
+	float f;	 
 	dir->block=s3d_new_object();
-	s3d_push_vertices(dir->block,vertices,8);
+	s3d_push_vertices(dir->block,vertices,12);
 	s3d_push_material(dir->block,
-						1,1,1,
-						1,1,1,
-						1,1,1);
+						0.5,0.5,0.5,
+						0.5,0.5,0.5,
+						0.5,0.5,0.5
+					);
+	d=dir;
+	f=0;
+	while (d->parent!=NULL)
+	{
+		f=(f+1)/4;
+		d=d->parent;
+	}
 	s3d_push_material(dir->block,
-						0.5,1,0.5,
-						0.5,1,0.5,
-						0.5,1,0.5);
+						0.5+f/2,0.5+f,0.6,
+						0.5+f/2,0.5+f,0.6,
+						0.5+f/2,0.5+f,0.6);
 
 	s3d_push_polygon(dir->block,4,5,6,1);
 	s3d_push_polygon(dir->block,4,6,7,1);
@@ -95,6 +111,10 @@ int new_block(struct t_item *dir)
 
 	s3d_push_polygon(dir->block,2,6,7,0);
 	s3d_push_polygon(dir->block,2,7,3,0);
+	
+	s3d_push_polygon(dir->block,8,9,10,0);
+	s3d_push_polygon(dir->block,8,10,11,0);
+
 	return(0);
 
 }
@@ -137,21 +157,45 @@ void placeontop(struct t_item *dir)
 			}
 	}
 }
+/* places the string at the left side of the cube */
+int place_str(struct t_item *dir)
+{
+
+	s3d_rotate(dir->str,0,90,0);
+	s3d_translate(dir->str,1.1,0.3,1);
+	s3d_scale(dir->str,(float)1.8/(dir->len));
+	s3d_scale(dir->str,(float)1.8/(dir->len));
+	s3d_link(dir->str,dir->block);
+	s3d_flags_on(dir->str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+}
 int display_dir(struct t_item *dir)
 {
 	int i;
 	float  px,pz;
 	int dirn, dps;
+	float len;
 	float vertices[]={	-1,-0.5,0,
 						-1, 0.5,0,
 						 1, 0.5,0,
-						 1,-0.5,0};
+						 1,-0.5,0,
+						-1,-0.5,-1,
+						-1, 0.5,-1,
+						 1, 0.5,-1,
+						 1,-0.5,-1};
+	unsigned long polys[]={
+				1,3,0,0,				2,3,1,0,
+				5,6,2,0,				1,5,2,0,
+				2,6,7,0,				2,7,3,0,
+				0,3,7,0,				0,7,4,0,
+				5,1,0,0,				5,0,4,0	
+				};
 	float d;
 	px=pz=0.0;
 	if (dir->disp)
 		return(-1); /* already displayed ... */ 
 	s3d_del_object(dir->block);
 	new_block(dir);
+	place_str(dir);
 	if (dir->parent!=NULL)
 		dir->parent->dirs_opened++;
 	dir->dirs_opened=0;
@@ -169,36 +213,49 @@ int display_dir(struct t_item *dir)
 		dir->list[i].px=((float)((int)i%dps)+0.5)/((float)dps)-0.5;
 		dir->list[i].pz=((float)((int)i/dps)+0.5)/((float)dps)-0.5;
 		dir->list[i].block=s3d_new_object();
-		s3d_link(dir->list[i].block,dir->block);
-		s3d_push_vertices(dir->list[i].block,vertices,4);
-		d=((int)i%2)*0.2;
+		printf("[L]inking %d against %d\n",dir->list[i].block,dir->block);
+		s3d_push_vertices(dir->list[i].block,vertices,8);
+		d=((int)(((i+(dps+1)%2*(i/dps)))%2))*0.2;
 		switch (dir->list[i].type)
 		{
 			case T_FOLDER:
 				s3d_push_material(dir->list[i].block,
-										1-d,1-d,0,
-										1-d,1-d,0,
-										1-d,1-d,0);
+										0.4-d,0.4-d,0,
+										0.4-d,0.4-d,0,
+										0.4-d,0.4-d,0);
 				break;
 			default:
 				s3d_push_material(dir->list[i].block,
-										0,0,1-d,
-										0,0,1-d,
-										0,0,1-d);
+										0,0,0.5-d,
+										0,0,0.5-d,
+										0,0,0.5-d);
 		};
-		s3d_push_polygon(dir->list[i].block,0,1,2,0);
-		s3d_push_polygon(dir->list[i].block,0,2,3,0);
+		s3d_push_polygons(dir->list[i].block,polys,10);
+/*		s3d_push_polygon(dir->list[i].block,0,1,2,0);
+		s3d_push_polygon(dir->list[i].block,0,2,3,0);*/
 		s3d_scale(dir->list[i].block,(float)1.0/((float)dps));
+		dir->list[i].str=s3d_draw_string(dir->list[i].name,&len);
+		if (len<2) len=2;
+		dir->list[i].len=len;
+		s3d_scale(dir->list[i].str,(float)1.8/(((float)dps)*len));
+
 		s3d_translate(dir->list[i].block,dir->list[i].px*2,dir->list[i].pz+0.5,1.0);
+		s3d_translate(dir->list[i].str,dir->list[i].px*2-0.9/(float)dps,dir->list[i].pz-0.4/(float)dps+0.5,1.01);
+		s3d_link(dir->list[i].block,dir->block);
+		s3d_link(dir->list[i].str,dir->block);
 	}
 	dir->disp=1;
 	if (dir->parent!=NULL)
 	{
 		s3d_link(dir->block,dir->parent->block);
+		printf("[L] parent: linking against %d\n",dir->parent->block);
 		placeontop(dir->parent);
 	}
 	for (i=0;i<dir->n_item;i++)
+	{
 		s3d_flags_on(dir->list[i].block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		s3d_flags_on(dir->list[i].str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	}
     s3d_flags_on(dir->block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	return(0);
 }
@@ -277,8 +334,8 @@ struct t_item *finditem(struct t_item *t, int oid)
 {
 	int i;
 	struct t_item *f;
-	if (t->block==oid)
-		return(t);
+	if (t->block==oid)		return(t);
+	if (t->str==oid)		return(t);
 	if (t->type==T_FOLDER)
 		for (i=0;i<t->n_item;i++)
 			if ((f=finditem(&(t->list[i]),oid))!=NULL)
@@ -337,14 +394,14 @@ void object_click(struct s3d_evt *evt)
 		printf("[C]ould not find :/\n");
 	}
 }
-#define ZOOMS 	5
+#define ZOOMS 	10
 void mainloop()
 {
 	dpx=(px+dpx*ZOOMS)/(ZOOMS+1);
 	dpy=(py+dpy*ZOOMS)/(ZOOMS+1);
 	dpz=(pz+dpz*ZOOMS)/(ZOOMS+1);
 	dscale=(scale+dscale*ZOOMS)/(ZOOMS+1);
-	s3d_translate(root.block,dpx*SCALE,-3.0+SCALE*dpy,dpz*SCALE);
+	s3d_translate(root.block,dpx*SCALE,-1.2+SCALE*dpy,dpz*SCALE);
 	s3d_scale(root.block,dscale*SCALE);
 
 	nanosleep(&t,NULL); 
@@ -371,9 +428,12 @@ int main (int argc, char **argv)
 		/* set up file system representation */
 		strncpy(root.name,"/",M_NAME);
 		root.parent=NULL;
+		root.block=-1;
 		root.type=T_FOLDER;
 		root.px=root.pz=0.0;
 		root.dirs_opened=0;
+		root.str=s3d_draw_string(root.name,&root.len);
+		if (root.len<2) root.len=2;
 		parse_dir(&root);
 		rescale(&root);
 		display_dir(&root);

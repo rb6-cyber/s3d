@@ -78,7 +78,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 				break;
 			case S3D_P_C_NEW_OBJ:
 				oid=htonl(obj_new(p));
-/* 				dprintf(LOW,"pid %d registering new object %d",pid,oid); */
+/* 				dprintf(LOW,"pid %d registering new object %d",p->id,ntohl(oid)); */
 				prot_com_out(p,S3D_P_S_NEWOBJ,(uint8_t *)&oid, 4);
 				break;
 			case S3D_P_C_DEL_OBJ:

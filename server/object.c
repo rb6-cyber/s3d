@@ -1853,66 +1853,70 @@ int obj_del(struct t_process *p, uint32_t oid)
 	uint32_t i;
 	uint32_t mcp_oid=-1;
 	mcp_p=get_proc_by_pid(MCP);
-	if ((p->id==MCP) && (obj_valid(p,oid,o)))
+	if (obj_valid(p,oid,o))
 	{
-		if (o->oflags&OF_VIRTUAL)  /*  only delete if virtual */
+		if (p->id==MCP) 
 		{
-			dprintf(HIGH,"the mcp wants %d to be closed",o->n_mat);
-			event_quit(get_proc_by_pid(o->n_mat));
-			return(0);
-		}
+			if (o->oflags&OF_VIRTUAL)  /*  only delete if virtual */
+			{
+				dprintf(HIGH,"the mcp wants %d to be closed",o->n_mat);
+				event_quit(get_proc_by_pid(o->n_mat));
+				return(0);
+			}
+		} else 
+			mcp_oid=p->mcp_oid;
 		if (o->oflags&OF_SYSTEM)
 		{
 			dprintf(HIGH,"can't delete system object!");
 			return(0);
 		}
-	} else 
-		mcp_oid=p->mcp_oid;
-	if (obj_valid(p,oid,o))
-	{
-		obj_free(p,oid);
-		if ((p->id!=MCP) && (p->biggest_obj==oid))
-		{  /*  if object was the biggest object, find a new one. */
-			mr=-1;
-			p->biggest_obj=-1;
-			for (i=0;i<p->n_obj;i++)
-				if (p->object[i]!=NULL)
-				{
-					r=p->object[i]->r+p->object[i]->or;
-					if (r>mr)
+
+		if (obj_valid(p,oid,o))
+		{
+			obj_free(p,oid);
+			if ((p->id!=MCP) && (p->biggest_obj==oid))
+			{  /*  if object was the biggest object, find a new one. */
+				mr=-1;
+				p->biggest_obj=-1;
+				for (i=0;i<p->n_obj;i++)
+					if (p->object[i]!=NULL)
 					{
-						if (!(p->object[i]->oflags&OF_SYSTEM)) 
+						r=p->object[i]->r+p->object[i]->or;
+						if (r>mr)
 						{
-							p->biggest_obj=i;
-							mr=r;
+							if (!(p->object[i]->oflags&OF_SYSTEM)) 
+							{
+								p->biggest_obj=i;
+								mr=r;
+							}
 						}
 					}
-				}
-			mcp_p->object[mcp_oid]->r=mr;
-			dprintf(MED,"new biggest object is :%d (size: %f)",p->biggest_obj,mr);
+				mcp_p->object[mcp_oid]->r=mr;
+				dprintf(MED,"new biggest object is :%d (size: %f)",p->biggest_obj,mr);
+			}
+			/*  check if someone depended on this object as clone.... */
+			if (o->oflags&OF_CLONE_SRC)
+				for (i=0;i<p->n_obj;i++)
+					if (p->object[i]!=NULL)
+						if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->n_vertex==oid))  /*  it's linking to our object! */
+						{
+							p->object[i]->oflags&=~OF_CLONE;  	 /*  disable clone flag */
+							p->object[i]->n_vertex=0; 			 /*  and "clone reference" to 0 */
+							p->object[i]->r=0.0F;				 /*  empty object, so radius is zero! */
+							if (p->id!=MCP) obj_check_biggest_object(p,i);
+						}
+			/* check if we were a link source for anyone ... */
+			if (o->oflags&OF_LINK_SRC)
+				for (i=0;i<p->n_obj;i++)
+					if (p->object[i]!=NULL)
+						if ((p->object[i]->oflags&OF_LINK) && (p->object[i]->linkid==oid))
+						{
+								p->object[i]->linkid=-1;			 /*  lost our link target! */
+							if (mcp_oid>-1)
+								obj_pos_update(p,i);
+						}
+			return(0);
 		}
-		/*  check if someone depended on this object as clone.... */
-		if (o->oflags&OF_CLONE_SRC)
-			for (i=0;i<p->n_obj;i++)
-				if (p->object[i]!=NULL)
-					if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->n_vertex==oid))  /*  it's linking to our object! */
-					{
-						p->object[i]->oflags&=~OF_CLONE;  	 /*  disable clone flag */
-						p->object[i]->n_vertex=0; 			 /*  and "clone reference" to 0 */
-						p->object[i]->r=0.0F;				 /*  empty object, so radius is zero! */
-						if (p->id!=MCP) obj_check_biggest_object(p,i);
-					}
-		/* check if we were a link source for anyone ... */
-		if (o->oflags&OF_LINK_SRC)
-			for (i=0;i<p->n_obj;i++)
-				if (p->object[i]!=NULL)
-					if ((p->object[i]->oflags&OF_LINK) && (p->object[i]->linkid==oid))
-					{
-						p->object[i]->linkid=-1;			 /*  lost our link target! */
-						if (mcp_oid>-1)
-							obj_pos_update(p,i);
-					}
-		return(0);
 	}
 	return(-1);
 }

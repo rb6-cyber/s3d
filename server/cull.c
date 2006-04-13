@@ -109,7 +109,7 @@ int cull_sphere_in_frustum(struct t_vertex *center, float radius)
 {
 	int i;
 	struct t_plane *p;
-	
+	return(1);
 	for(i=0;i<6;i++)
 	{
 		p=&frustumPlane[i];
