@@ -385,6 +385,7 @@ int process_main() {
 	struct olsr_node *olsr_node2;
 	int address;
 	char hna_name[NAMEMAX];
+	char hna_node[NAMEMAX];
 
 	lbuf_ptr = lbuf;
 	last_cr_ptr = NULL;
@@ -456,18 +457,17 @@ int process_main() {
 
 					/* normal HNA */
 					} else {
-						/* printf("before: %s\n",con_to); */
-						if( (tmpChar = strchr((char*)con_to, (int)'/')))
+						memmove(hna_node,con_to,NAMEMAX);
+						if( (tmpChar = strchr(hna_node, (int)'/')))
 						{
 							tmpChar++;
 							address = (int)-inet_network(tmpChar);
 							sprintf(hna_name,"%d",(int)(32 - ceil(log(address)/log(2))));
 							strcpy(tmpChar,hna_name);
 						}
-						/* printf("after: %s\n",con_to); */
-						/* fflush(NULL); */
+
 						olsr_node1 = get_olsr_node( &Olsr_root, con_from );
-						olsr_node2 = get_olsr_node( &Olsr_root, con_to );
+						olsr_node2 = get_olsr_node( &Olsr_root, hna_node );
 
 						if ( olsr_node2->node_type != 2 ) {
 
@@ -491,11 +491,13 @@ int process_main() {
 						f = 999.0;
 					add_olsr_con( olsr_node1, olsr_node2, f );
 				}
-/*
+				/* remove zerobyte */
+				(*con_from_end) = (*con_to_end) = (*etx_end) = '"';
+
 				con_from = con_from_end = con_to = con_to_end = etx = etx_end = NULL;
 				dn = 0;
 				last_cr_ptr = lbuf_ptr;
-*/
+
 			}
 
 		} else if ( ( (*lbuf_ptr) == '}' ) && ( (*(lbuf_ptr + 1)) == '\n' ) ) {
