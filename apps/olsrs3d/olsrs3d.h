@@ -29,6 +29,8 @@
 #define MAXLINESIZE 1000 /* lines in a digraph just shouldn't get that longer ... */
 #define MAXDATASIZE 100 /* max number of bytes we can get at once  */
 
+#define max(x,y)((x)>(y)?(x):(y))
+#define min(x,y)((x)<(y)?(x):(y))
 
 
 /* linked list for the all connections */
@@ -98,20 +100,18 @@ extern int	Olsr_node_inet_obj;
 extern int	Olsr_node_hna_net;
 extern int	Btn_close_obj;
 extern int	Btn_close_id;
-
 extern int Olsr_node_count_obj;
 extern int Olsr_node_count;
 extern int Last_olsr_node_count;
-
 extern int Net_read_count;
 extern int Output_block_counter;
 extern int Output_block_completed;
-
 extern int ZeroPoint;
-
+extern float CamPosition[2][3];
 extern float Bottom, Left;
-
 extern char lbuf[MAXLINESIZE];
+extern int Move_cam_target;
+
 /* process */
 void lst_initialize();
 void lst_add(int id,struct olsr_node **olsr_node);
@@ -128,3 +128,4 @@ int net_quit();
 void out_of_mem( void );
 struct olsr_node **lst_search(int id);
 void print_etx( void );
+float dist(float p1[], float p2[]);
