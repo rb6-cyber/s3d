@@ -193,7 +193,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 				{
 					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
 					num=(length-4)/(4*12);
-					dprintf(LOW,"PEP_MAT[%d]: %d materials for object oid...%d", length, num, oid);
+					dprintf(VLOW,"PEP_MAT[%d]: %d materials for object oid...%d", length, num, oid);
 					obj_pep_mat(p,oid, (float *)cptr, num);
 				}
 				break;

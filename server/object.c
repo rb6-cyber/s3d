@@ -1668,18 +1668,25 @@ void link_delete(struct t_process *p, uint32_t oid)
 	struct t_obj *o,*o2;
 	if (obj_valid(p,oid,o))
 	{
-		dprintf(LOW,"link_delete(): [%d] unlinking %d from %d",p->id, oid, o->linkid);
+		dprintf(VLOW,"link_delete(): [%d] unlinking %d from %d",p->id, oid, o->linkid);
 		if (o->linkid!=-1) 
 		{
-			if (obj_valid(p,o->linkid,o2))
-				if (o2->lsub==oid)
-				{/* parent is having oid as it's first link in chain */
-					o2->lsub=o->lnext; 
-				}
 			if (o->lprev!=-1)
 				if (obj_valid(p,o->lprev,o2))
 				{ /* we have a previous pointer linking to us */
 					o2->lnext=o->lnext; /* might also be -1 */
+				}
+			if (obj_valid(p,o->linkid,o2))
+			{
+				if (o2->lsub==oid)
+				{/* parent is having oid as it's first link in chain */
+					o2->lsub=o->lnext; 
+				}
+			}
+			if (o->lnext!=-1)
+				if (obj_valid(p,o->lnext,o2))
+				{ /* fixing next's previous pointer */
+					o2->lprev=o->lprev;
 				}
 		}
 		o->lnext=-1;
@@ -1694,7 +1701,7 @@ void link_insert(struct t_process *p, uint32_t oid, uint32_t target)
 	struct t_obj *o,*ot,*o2;
 	if (obj_valid(p,oid,o) && obj_valid(p,target,ot))
 	{
-		dprintf(LOW,"link_insert(): [%d] linking %d to %d",p->id, oid, target);
+		dprintf(VLOW,"link_insert(): [%d] linking %d to %d",p->id, oid, target);
 		o->oflags|=OF_LINK;
 		o->linkid=target;
 		o->lnext=ot->lsub; /* we have a new "first" element */
