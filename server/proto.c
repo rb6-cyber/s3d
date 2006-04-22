@@ -202,7 +202,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 				{
 					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
 					num=(length-4)/(4*3);
- 					dprintf(LOW,"pepping %d new vertices for object oid...%d", num, oid); 
+ 					dprintf(VLOW,"pepping %d new vertices for object oid...%d", num, oid); 
 					obj_pep_vertex(p,oid, (float  *)cptr, num);
 				}
 				break;

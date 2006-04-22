@@ -464,7 +464,7 @@ int obj_pep_mat(struct t_process *p, uint32_t oid, float *x, uint32_t n)
 			glDeleteLists(obj->dplist,1);
 			obj->dplist=0;
 		}
-		dprintf(MED,"pepping mats %d to %d",(m-n),m);
+		dprintf(VLOW,"pepping mats %d to %d",(m-n),m);
 		for (i=(m-n);i<m;i++)
 		{
 			obj->p_mat[i].amb_r=*(px++);
@@ -552,7 +552,7 @@ int obj_pep_vertex(struct t_process *p, uint32_t oid, float *x, uint32_t n)
 			glDeleteLists(obj->dplist,1);
 			obj->dplist=0;
 		}
-		dprintf(MED,"pepping vertices %d to %d",(m-n),m-1);
+		dprintf(VLOW,"pepping vertices %d to %d",(m-n),m-1);
 		for (i=(m-n);i<m;i++)
 		{
 			obj->p_vertex[i].x=*(px++);
@@ -1083,7 +1083,7 @@ int obj_translate(struct t_process *p, uint32_t oid, float *transv)
 			obj->translate.x=*transv;
 			obj->translate.y=*(transv+1);
 			obj->translate.z=*(transv+2);
-			obj_pos_update(p,oid);
+			obj_pos_update(p,oid,oid);
 		}
 
 	}
@@ -1121,7 +1121,7 @@ int obj_rotate(struct t_process *p, uint32_t oid, float *rotv)
 			if (f<0.0)		f+=(float)((int)-f/360)*360;
 			if (f>360.0)	f+=(float)((int)f/360)*-360;
 			obj->rotate.z=f;
-			obj_pos_update(p,oid);
+			obj_pos_update(p,oid,oid);
 		}
 	}
 	return(0);
@@ -1141,7 +1141,7 @@ int obj_scale(struct t_process *p, uint32_t oid, float scav)
 			obj->scale.y=*(scav+1);
 			obj->scale.z=*(scav+2);*/
 			obj_size_update(p,oid);
-			obj_pos_update(p,oid);
+			obj_pos_update(p,oid,oid);
 		}
 	}
 	return(0);
@@ -1346,18 +1346,16 @@ void obj_sys_update(struct t_process *p, uint32_t oid)
 	p->object[oid]->scale=ss/sa;
 
 /*	obj_debug(p,oid);*/
-	obj_pos_update(p,oid); /* now also update the matrix and the objects linking to our sys-object ... */
+	obj_pos_update(p,oid,oid); /* now also update the matrix and the objects linking to our sys-object ... */
 }
 /*  recalculate the position of an object. this assumes that oid is valid. */
-void obj_pos_update(struct t_process *p, uint32_t oid)
+void obj_pos_update(struct t_process *p, uint32_t oid, uint32_t first_oid)
 {
 	float v[3];
-	uint32_t i;
-	int is_lnksrc;
 	struct t_obj 		*ao,*o;
 	struct t_process	*ap;
 	o=p->object[oid];
-	dprintf(VLOW,"[obj_pos_upd|pid %d] %d",p->id, oid);
+	dprintf(VLOW,"[obj_pos_upd|pid %d] %d",p->id, oid,first_oid);
 	o->m_uptodate=0;
 	obj_recalc_tmat(p,oid);
 	if (p->id!=MCP) 
@@ -1384,11 +1382,11 @@ void obj_pos_update(struct t_process *p, uint32_t oid)
 							ao->translate.x=o->translate.x;
 							ao->translate.y=o->translate.y;
 							ao->translate.z=o->translate.z; /* just copy */
-							obj_pos_update(ap,get_pointer(ap));
+							obj_pos_update(ap,get_pointer(ap),get_pointer(ap));
 						}
-						
-					} else 
+					} else {
 						obj_sys_update(ap,oid);	
+					}
 				}
 			switch (o->oflags&0xF0000000)
 			{
@@ -1404,23 +1402,10 @@ void obj_pos_update(struct t_process *p, uint32_t oid)
 			}
 
 		}
-	if (o->oflags&OF_LINK_SRC)
-	{
-		is_lnksrc=0;
-		for (i=0;i<p->n_obj;i++)  /*  update objects which reference on us. (recursive) */
-			if (p->object[i]!=NULL)
-				if ((p->object[i]->oflags&OF_LINK) && (p->object[i]->linkid==oid))
-				{
-					is_lnksrc=1;
-					dprintf(VLOW,"[obj_pos_upd|pid %d] % is pointing on %d -> update",p->id,i, oid);
-					obj_pos_update(p,i);
-				}
-		if (!is_lnksrc)	/* it's not! switch out the flag */
-		{
-			o->oflags&=~OF_LINK_SRC;
-			dprintf(VLOW,"obj_pos_update(): %d in process %d is no longer a link-source",oid,p->id);
-		}
-	}
+	/* if it's the root (oid==first_oid), only go down */
+	
+	if (o->lsub!=-1)						obj_pos_update(p,o->lsub,first_oid);
+	if ((o->lnext!=-1) && (oid!=first_oid))	obj_pos_update(p,o->lnext,first_oid); 
 	if (p->id!=MCP)
 		obj_check_biggest_object(p,oid);
 }
@@ -1676,6 +1661,51 @@ int obj_render(struct t_process *p,uint32_t oid)
 	glPopMatrix();
 	return(0);
 }
+
+/* remove the oid out of the link chain */
+void link_delete(struct t_process *p, uint32_t oid)
+{
+	struct t_obj *o,*o2;
+	if (obj_valid(p,oid,o))
+	{
+		dprintf(LOW,"link_delete(): [%d] unlinking %d from %d",p->id, oid, o->linkid);
+		if (o->linkid!=-1) 
+		{
+			if (obj_valid(p,o->linkid,o2))
+				if (o2->lsub==oid)
+				{/* parent is having oid as it's first link in chain */
+					o2->lsub=o->lnext; 
+				}
+			if (o->lprev!=-1)
+				if (obj_valid(p,o->lprev,o2))
+				{ /* we have a previous pointer linking to us */
+					o2->lnext=o->lnext; /* might also be -1 */
+				}
+		}
+		o->lnext=-1;
+		o->lprev=-1;
+		o->linkid=-1;
+		o->oflags&=~OF_LINK;
+	}
+}
+/* add an element into the link chain */
+void link_insert(struct t_process *p, uint32_t oid, uint32_t target)
+{
+	struct t_obj *o,*ot,*o2;
+	if (obj_valid(p,oid,o) && obj_valid(p,target,ot))
+	{
+		dprintf(LOW,"link_insert(): [%d] linking %d to %d",p->id, oid, target);
+		o->oflags|=OF_LINK;
+		o->linkid=target;
+		o->lnext=ot->lsub; /* we have a new "first" element */
+		if (o->lnext!=-1) if (obj_valid(p,o->lnext,o2))  /* if we already had an element
+														  in the chain, create the backlink */
+		{
+			o2->lprev=oid;
+		}
+		ot->lsub=oid;
+	}
+}
 /*  creates a link from object from an object to another  */
 /*  to have a translation or anything move with other things */
 int obj_link(struct t_process *p, uint32_t oid_from, uint32_t oid_to)
@@ -1708,11 +1738,15 @@ int obj_link(struct t_process *p, uint32_t oid_from, uint32_t oid_to)
 			errds(VHIGH,"obj_link()","can't link system-objects in non-mcp-apps!");
 			return(-1);
 		}
- 		dprintf(LOW,"[link|pid %d] %d -> %d",p->id, oid_from,oid_to); 
-		o->oflags|=OF_LINK;
-		o->linkid=oid_to;
-		p->object[oid_to]->oflags|=OF_LINK_SRC;
-		obj_pos_update(p,oid_from);
+ 		dprintf(VLOW,"[link|pid %d] %d -> %d",p->id, oid_from,oid_to); 
+		if (oid_to!=o->linkid) /* only if something changed ... */
+		{
+			if (o->linkid!=-1)
+				link_delete(p,oid_from);
+			link_insert(p,oid_from,oid_to);
+			p->object[oid_to]->oflags|=OF_LINK_SRC;
+			obj_pos_update(p,oid_from,oid_from);
+		}
 		return(0);
 	}
 	return(-1);
@@ -1728,9 +1762,10 @@ int obj_unlink(struct t_process *p, uint32_t oid)
 			errds(VHIGH,"obj_link()","may not change the link of a pointer");
 			return(-1);
 		}
-		o->oflags&=~OF_LINK;
+		link_delete(p,oid);
 		dprintf(VLOW,"removing link of object %d from pid %d",oid,p->id);
-		obj_pos_update(p,oid);
+
+		obj_pos_update(p,oid,oid);
 		return(0);
 	}
 	return(-1);
@@ -1743,6 +1778,9 @@ int obj_new(struct t_process *p)
 	obj=malloc(sizeof(struct t_obj));  /*  get an object and define it with our data */
 	memset(obj,0,sizeof(struct t_obj));
 	obj->linkid=-1;
+	obj->lsub=-1;
+	obj->lnext=-1;
+	obj->lprev=-1;
 	obj->rotate.x=obj->rotate.y=obj->rotate.z=0.0F;
 	obj->translate.x=obj->translate.y=obj->translate.z=0.0F;
 	obj->scale=1.0F;
@@ -1855,6 +1893,13 @@ int obj_del(struct t_process *p, uint32_t oid)
 	mcp_p=get_proc_by_pid(MCP);
 	if (obj_valid(p,oid,o))
 	{
+		if (o->oflags&OF_SYSTEM)
+		{
+			dprintf(HIGH,"can't delete system object!");
+			return(0);
+		}
+
+
 		if (p->id==MCP) 
 		{
 			if (o->oflags&OF_VIRTUAL)  /*  only delete if virtual */
@@ -1865,11 +1910,6 @@ int obj_del(struct t_process *p, uint32_t oid)
 			}
 		} else 
 			mcp_oid=p->mcp_oid;
-		if (o->oflags&OF_SYSTEM)
-		{
-			dprintf(HIGH,"can't delete system object!");
-			return(0);
-		}
 
 		if (obj_valid(p,oid,o))
 		{
@@ -1905,16 +1945,6 @@ int obj_del(struct t_process *p, uint32_t oid)
 							p->object[i]->r=0.0F;				 /*  empty object, so radius is zero! */
 							if (p->id!=MCP) obj_check_biggest_object(p,i);
 						}
-			/* check if we were a link source for anyone ... */
-			if (o->oflags&OF_LINK_SRC)
-				for (i=0;i<p->n_obj;i++)
-					if (p->object[i]!=NULL)
-						if ((p->object[i]->oflags&OF_LINK) && (p->object[i]->linkid==oid))
-						{
-								p->object[i]->linkid=-1;			 /*  lost our link target! */
-							if (mcp_oid>-1)
-								obj_pos_update(p,i);
-						}
 			return(0);
 		}
 	}
@@ -1927,42 +1957,57 @@ int obj_free(struct t_process *p,uint32_t oid)
 	uint32_t i;
 	GLuint t;
 	struct t_obj *o=p->object[oid];
-		dprintf(HIGH,"deleting object %d of process %d",oid,p->id);
-		if (!(o->oflags&OF_NODATA))
-		{
-			if (o->n_vertex>0) free(o->p_vertex);
-			if (o->n_poly>0) free(o->p_poly);
-			if (o->n_mat>0) free(o->p_mat);
-			for (i=0;i<o->n_tex;i++)
-			{
-				if (o->p_tex[i].buf!=NULL)
-					free(o->p_tex[i].buf);
-				if (o->p_tex[i].gl_texnum)
-				{
-					t=o->p_tex[i].gl_texnum;
-					glDeleteTextures(1,&t);
-				}
-			}
-			if (o->n_tex>0) free(o->p_tex);
+	dprintf(HIGH,"deleting object %d of process %d",oid,p->id);
 
-		}
-		if (o->dplist)
+	/* clearing links */
+	if (o->linkid!=-1)		link_delete(p,oid);
+	while (o->lsub!=-1)		
+	{
+		i=o->lsub;
+		link_delete(p,o->lsub);
+		if (i==o->lsub) 
 		{
-			if (!(o->oflags&(OF_CLONE|OF_SYSTEM))) 
+			dprintf(HIGH,"something is wrong!!");
+			o=NULL; /* segfault */
+			o->lsub=-1;
+		}
+	}
+
+	if (!(o->oflags&OF_NODATA))
+	{
+		if (o->n_vertex>0) free(o->p_vertex);
+		if (o->n_poly>0) free(o->p_poly);
+		if (o->n_mat>0) free(o->p_mat);
+		for (i=0;i<o->n_tex;i++)
+		{
+			if (o->p_tex[i].buf!=NULL)
+				free(o->p_tex[i].buf);
+			if (o->p_tex[i].gl_texnum)
 			{
-				dprintf(VLOW,"freeing display list %d",o->dplist);
-				glDeleteLists(o->dplist,1);
+				t=o->p_tex[i].gl_texnum;
+				glDeleteTextures(1,&t);
 			}
 		}
-		free(o);
-		p->object[oid]=NULL;
-		if (oid==(p->n_obj-1))
+		if (o->n_tex>0) free(o->p_tex);
+
+	}
+	if (o->dplist)
+	{
+		if (!(o->oflags&(OF_CLONE|OF_SYSTEM))) 
 		{
-			i=oid;
-			while ((i!=-1) && (p->object[i]==NULL)) i--;
-			p->n_obj=i+1;
-			p->object=realloc(p->object,sizeof(struct t_obj *)*(p->n_obj));
+			dprintf(VLOW,"freeing display list %d",o->dplist);
+			glDeleteLists(o->dplist,1);
 		}
+	}
+	free(o);
+	p->object[oid]=NULL;
+	if (oid==(p->n_obj-1))
+	{
+		i=oid;
+		while ((i!=-1) && (p->object[i]==NULL)) i--;
+		p->n_obj=i+1;
+		p->object=realloc(p->object,sizeof(struct t_obj *)*(p->n_obj));
+	}
 	return(0);
 }
 /* get the object of the pointer (that's 1, usually */

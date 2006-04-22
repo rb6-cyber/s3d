@@ -136,6 +136,7 @@ struct t_obj
 					 /*  I know this is dirty, but it would a waste of data if I don't do so ... */
 		uint32_t dplist;	 /*  opengl display list number */
 		uint32_t linkid;	 /*  linking target, -1 if there is none */
+		uint32_t lsub,lnext,lprev;
 		 /*  pointer to our objects; */
 		struct t_vertex *p_vertex;
 		struct t_mat	*p_mat;
@@ -340,9 +341,11 @@ void obj_get_maximum	(struct t_process *p, struct t_obj *obj);
 void into_position		(struct t_process *p, struct t_obj *obj, int depth);
 void obj_recalc_tmat	(struct t_process *p, uint32_t oid);
 void obj_size_update	(struct t_process *p, uint32_t oid);
-void obj_pos_update		(struct t_process *p, uint32_t oid);
+void obj_pos_update(struct t_process *p, uint32_t oid, uint32_t first_oid);
 void obj_check_biggest_object(struct t_process *p, uint32_t oid);
 uint32_t get_pointer(struct t_process *p);
+void link_delete(struct t_process *p, uint32_t oid);
+void link_insert(struct t_process *p, uint32_t oid, uint32_t target);
 /*  mcp.c */
 int mcp_rep_object(uint32_t mcp_oid);
 int mcp_del_object(uint32_t mcp_oid);

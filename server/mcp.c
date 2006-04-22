@@ -108,7 +108,7 @@ int mcp_focus(int oid)
 		if (o->oflags&OF_VIRTUAL)
 		{
 			focus_oid=oid;
-			obj_pos_update(p,0);
+			obj_pos_update(p,0,0);
 		}
 	return(0);
 }

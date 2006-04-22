@@ -105,8 +105,8 @@ int process_sys_init(struct t_process *p)
 		p->object[cam]->translate.z=5;
 		p->object[cam]->oflags=OF_CAM;
 		p->object[ptr]->translate.z=-1;
-		p->object[ptr]->oflags=OF_POINTER|OF_LINK;
-		p->object[ptr]->linkid=cam;
+		p->object[ptr]->oflags=OF_POINTER;
+		link_insert(p,ptr,cam);
 	} else {
 		/* TODO: ... get the cam and ptr position of the mcp, somehow */
 		p->object[cam]->oflags=OF_CAM;
@@ -120,13 +120,13 @@ int process_sys_init(struct t_process *p)
 			p->object[ptr]->translate.y=o->translate.y;
 			p->object[ptr]->translate.z=o->translate.z;
 		}
-		p->object[ptr]->oflags=OF_POINTER|OF_LINK;
-		p->object[ptr]->linkid=cam;
+		p->object[ptr]->oflags=OF_POINTER;
+		link_insert(p,ptr,cam);
 	}
 	dprintf(MED,"process_sys_init(): added object cam0 %d",cam);
 	dprintf(MED,"process_sys_init(): added object ptr0 %d",ptr);
-	obj_pos_update(get_proc_by_pid(MCP),cam);
-	obj_pos_update(get_proc_by_pid(MCP),ptr);
+	obj_pos_update(get_proc_by_pid(MCP),cam,cam);
+	obj_pos_update(get_proc_by_pid(MCP),ptr,ptr);
 /*	obj_recalc_tmat(p,0);*/
 	event_obj_info(p,0); /* tell the new program about the thing */
 
@@ -211,8 +211,6 @@ static int p_del(struct t_process *p)
 						mcp_p->object[j]->n_vertex=0; 			 /*  and "clone reference" to 0 */
 						mcp_p->object[j]->r=0.0F;				 /*  empty object, so radius is zero! */
 					}
-					if ((mcp_p->object[j]->linkid==p->mcp_oid))
-						mcp_p->object[j]->linkid=-1;			 /*  lost our link target! */
 				}
 			obj_free(mcp_p,p->mcp_oid); 	 /*  free the mcp-app-object. */
 			mcp_del_object(p->mcp_oid); 	 /*  tell MCP that it's object is beeing deleted. */
