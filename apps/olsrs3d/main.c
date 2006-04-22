@@ -90,6 +90,7 @@ struct s3d_object **obj;
 
 int move_cam_to = -1;
 int oid_focus = -1;
+float returnPoint[2][3];
 
 /***
  *
@@ -713,6 +714,34 @@ void mainloop() {
 			move_cam_to = -1;
 		}
 	}
+	
+	/* move back to returnPoint */
+	if(move_cam_to == -2)
+	{
+		oid_focus = -1;
+		for( i=0; i<3; i++)
+		{
+			CamPosition[0][i]=(CamPosition[0][i]*4+returnPoint[0][i])/5;
+
+			target = returnPoint[1][i];
+			current = CamPosition[1][i];
+
+			if( returnPoint[1][i] - CamPosition[1][i] > 180 )
+				target = returnPoint[1][i] - 360;
+			if( returnPoint[1][i] - CamPosition[1][i] < -180 )
+				current = CamPosition[1][i] - 360;
+			CamPosition[1][i]=(CamPosition[1][i]*4+target)/5;
+		}
+		s3d_translate(0,CamPosition[0][0],CamPosition[0][1],CamPosition[0][2]);
+		s3d_rotate(0,CamPosition[1][0],CamPosition[1][1],CamPosition[1][2]);
+
+		if (dist(CamPosition[0],returnPoint[0])<0.2)
+		{
+			s3d_translate(0,returnPoint[0][0],returnPoint[0][1],returnPoint[0][2]);
+			s3d_rotate(0,returnPoint[1][0],returnPoint[1][1],returnPoint[1][2]);
+			move_cam_to = -1;
+		}
+	}
 
 	rotate_cursor();
 
@@ -759,7 +788,7 @@ void stop() {
  ***/
 
 void keypress(struct s3d_evt *event) {
-	int key;
+	int key,i;
 	key=*((unsigned short *)event->buf);
 
 	if(oid_focus != obj[obj_term]->oid)
@@ -777,6 +806,11 @@ void keypress(struct s3d_evt *event) {
 				else RotateSwitch = 1;
 				break;
 			case 't': /* t -> move to terminal*/
+				for(i=0;i<3;i++)
+				{
+					returnPoint[0][i] = CamPosition[0][i];
+					returnPoint[1][i] = CamPosition[1][i];
+				}
 				move_cam_to = obj[obj_term]->oid;
 				break;
 			case '+': /* + -> rotate speed increase*/
@@ -814,7 +848,7 @@ void keypress(struct s3d_evt *event) {
 		if ( key == S3DK_ESCAPE )
 		{
 			oid_focus = -1;
-			move_cam_to = -1;
+			move_cam_to = -2;
 		}
 	}
 }
