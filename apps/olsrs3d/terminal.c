@@ -18,8 +18,10 @@ int obj_cnt=0;
 int obj_max = 0;
 
 struct s3d_object **obj = NULL;
+struct olsr_node *search_node;
 
 int create_rectangle(struct rectangle *rect,float mat[]);
+int find_olsr_node( char *ip );
 
 int create_rectangle(struct rectangle *rect,float mat[])
 {
@@ -124,23 +126,61 @@ void write_terminal(int key)
 	float tmp;
 	static int str_id = -1;
 
-	if(key == 8)
+	if(key != 13)
 	{
-		if(ln > 0)
-			s[ln-1] = '\0';
+		if(key == 8)
+		{
+			if(ln > 0)
+				s[ln-1] = '\0';
+		} else {
+			if(ln < 20)
+				s[ln] = key;
+		}
+		if(str_id != -1)
+			s3d_del_object(str_id);
+		str_id = s3d_draw_string( s, &draw_length );
+		s3d_flags_on( str_id, S3D_OF_VISIBLE );
+		s3d_pep_material(str_id,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+		s3d_scale( str_id, 0.4 );
+		s3d_translate( str_id,9,4,-0.45);
+		s3d_rotate(str_id,0,180,0);
+		s3d_link( str_id, obj[obj_term]->oid );
+		tmp = obj[obj_cursor]->pos[0] - (draw_length*0.43);
+		s3d_translate( obj[obj_cursor]->oid , tmp, obj[obj_cursor]->pos[1], obj[obj_cursor]->pos[2]);
 	} else {
-		if(ln < 20)
-			s[ln] = key;
+		if(!find_olsr_node(s))
+		{
+			printf("no node found\n");
+		} else {
+			move_cam_to = search_node->obj_id;	
+		}
 	}
-	if(str_id != -1)
-		s3d_del_object(str_id);
-	str_id = s3d_draw_string( s, &draw_length );
-	s3d_flags_on( str_id, S3D_OF_VISIBLE );
-	s3d_pep_material(str_id,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-	s3d_scale( str_id, 0.4 );
-	s3d_translate( str_id,9,4,-0.45);
-	s3d_rotate(str_id,0,180,0);
-	s3d_link( str_id, obj[obj_term]->oid );
-	tmp = obj[obj_cursor]->pos[0] - (draw_length*0.43);
-	s3d_translate( obj[obj_cursor]->oid , tmp, obj[obj_cursor]->pos[1], obj[obj_cursor]->pos[2]);
+}
+
+int find_olsr_node( char *ip )
+{
+	int result;
+	search_node = Olsr_root;
+	
+	while ( search_node != NULL )
+	{
+
+		result = strncmp( search_node->ip, ip, NAMEMAX );
+
+		/* we found the node */
+		if ( result == 0 ) 
+			break;
+
+		/* the searched node must be in the subtree */
+		if ( result < 0 )
+			search_node = search_node->right;
+		else
+			search_node = search_node->left;
+	}
+	
+	if( search_node != NULL )
+	{
+		return(1);
+	}
+	return(0);
 }

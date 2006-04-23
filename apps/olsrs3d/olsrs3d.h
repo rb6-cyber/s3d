@@ -111,6 +111,7 @@ extern float CamPosition[2][3];
 extern float Bottom, Left;
 extern char lbuf[MAXLINESIZE];
 extern int Move_cam_target;
+extern int move_cam_to;
 
 /* process */
 void lst_initialize();

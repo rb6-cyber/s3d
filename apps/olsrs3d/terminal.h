@@ -22,6 +22,7 @@ extern int obj_term;
 extern int obj_cursor;
 extern int obj_cursor_mp;
 extern struct s3d_object **obj;
+extern struct olsr_node *search_node;
 
 void create_cursor();
 void create_terminal();

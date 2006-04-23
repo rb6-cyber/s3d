@@ -82,12 +82,12 @@ int Btn_close_obj;
 float Title_len;
 int cam_go=0;
 
-/* object vars */
+/* object vars
 int obj_term;
 int obj_cursor;
-extern int obj_cursor_mp;
+int obj_cursor_mp;
 struct s3d_object **obj;
-
+*/
 int move_cam_to = -1;
 int oid_focus = -1;
 float returnPoint[2][3];
@@ -713,6 +713,34 @@ void mainloop() {
 			s3d_rotate(0,obj[obj_term]->rot[0],(obj[obj_term]->rot[1]),obj[obj_term]->rot[2]);
 			move_cam_to = -1;
 		}
+	} else if ( move_cam_to != -2 && move_cam_to != -1 ) {
+		oid_focus = -1;
+		for( i=0; i<3; i++)
+		{
+			if( i==2 )
+				CamPosition[0][i]=(CamPosition[0][i]*4+(search_node->pos_vec[i]+10))/5;
+			else if ( i == 1 )
+				CamPosition[0][i]=(CamPosition[0][i]*4+(search_node->pos_vec[i])+2)/5;
+			else
+				CamPosition[0][i]=(CamPosition[0][i]*4+search_node->pos_vec[i])/5;
+			target = 0.0;
+			current = CamPosition[1][i];
+
+			if( 0 - CamPosition[1][i] > 180 )
+				target = 0 - 360;
+			if( 0 - CamPosition[1][i] < -180 )
+				current = CamPosition[1][i] - 360;
+			CamPosition[1][i]=(CamPosition[1][i]*4+target)/5;
+		}
+		s3d_translate(0,CamPosition[0][0],CamPosition[0][1],CamPosition[0][2]);
+		s3d_rotate(0,CamPosition[1][0],CamPosition[1][1],CamPosition[1][2]);
+
+/*		if (dist(CamPosition[0],search_node->pos_vec) < 6)
+		{
+			s3d_translate(0,search_node->pos_vec[0],search_node->pos_vec[1],(search_node->pos_vec[2]+5));
+			s3d_rotate(0,0,0,0);
+			move_cam_to = -1;
+		}*/
 	}
 	
 	/* move back to returnPoint */
