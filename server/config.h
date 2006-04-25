@@ -40,7 +40,7 @@
 #define HIGH	4
 #define	VHIGH	5
 /*  which is the minimum level of debugmessage we want to see? */
-#define DEBUG	VHIGH
+#define DEBUG	LOW
 #ifndef DEBUG
 #define errds(...) /* nothing */
 #define dprintf(...) /* nothing */

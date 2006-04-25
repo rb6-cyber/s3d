@@ -107,7 +107,7 @@ void graphics_reshape( int w, int h)
 void render_virtual_object(struct t_obj *o)
 {
 	struct t_process *ap;
-	struct t_vertex x;
+	struct t_vertex x,y;
 	uint32_t j,k;
 	t_mtrx m;
 
@@ -130,7 +130,13 @@ void render_virtual_object(struct t_obj *o)
 					x.x=x.y=x.z=0.0f;
 					mySetMatrix(ap->object[j]->m); /* get into position ... */
 					myTransformV(&x);
-					k=cull_sphere_in_frustum(&x,ap->object[j]->r);
+					y.x=1.0;y.y=y.z=0.0f;
+					myTransformV(&y);
+					y.x-=x.x;
+					y.y-=x.y;
+					y.z-=x.z;
+
+					k=cull_sphere_in_frustum(&x,ap->object[j]->r * sqrt(y.x*y.x + y.y*y.y + y.z*y.z));
 					if (k)
 					{
 /*						dprintf(HIGH,"object %d is in %s frustum",j,k?"":"not");*/
@@ -153,7 +159,7 @@ int render_by_mcp()
 	struct t_process *p=get_proc_by_pid(MCP);
 	uint32_t i;
 	struct t_obj *o;
-	struct t_vertex x;
+	struct t_vertex x,y;
 	int k;
 	for (i=0;i<p->n_obj;i++)
 	{
@@ -170,7 +176,13 @@ int render_by_mcp()
 						mySetMatrix(o->m);
 						x.x=x.y=x.z=0.0f;
 						myTransformV(&x);
-						k=cull_sphere_in_frustum(&x,o->r);
+						y.x=1.0;y.y=y.z=0.0f;
+						myTransformV(&y);
+						y.x-=x.x;
+						y.y-=x.y;
+						y.z-=x.z;
+
+						k=cull_sphere_in_frustum(&x,o->r * sqrt(y.x*y.x + y.y*y.y + y.z*y.z));
 						dprintf(VLOW,"mcp-object %d is in %s frustum",i,k?"":"not");
 						if (k)
 							{
