@@ -115,18 +115,19 @@ int s3d_init(int *argc, char ***argv, char *name)
 	char 				*s;
 	char 				 urlc[256];		 /*  this should be enough for an url */
 	char 				 buf[258]; 		 /*  server buffer */
-	int 				 i;
+/*	int 				 i;*/
 	 /*  null the callback table */
-	for (i=0;i<MAX_CB;i++)
+/*	for (i=0;i<MAX_CB;i++)
 	{
 		s3d_cb_list[i]=NULL;
-	}
+	}*/
 	/* ignore some things ... */
+	/*
 	s3d_ignore_callback(S3D_EVENT_KEY);
 	s3d_ignore_callback(S3D_EVENT_OBJ_CLICK);
 	s3d_ignore_callback(S3D_EVENT_OBJ_INFO);
 	s3d_ignore_callback(S3D_EVENT_NEW_OBJECT);
-
+*/
 	if (NULL!=(s=getenv("S3D")))
 	{
 		dprintf(VLOW,"at least we have the enviroment variable ... %s",s);
