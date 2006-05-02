@@ -71,7 +71,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 				if (length>NAME_MAX) i=NAME_MAX; else i=length;
 				strncpy(name,(char *)buf,i);
 				dprintf(LOW,"[%d]\"%s\" logged in", p->id,name);
-				if (process_protinit(p,name))
+				if (NULL==(p=process_protinit(p,name)))
 					event_quit(p);  /*  couldn't get process */
 				else
 					event_init(p);
@@ -175,7 +175,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 				{
 					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
 					num=(length-4)/(9*4);
-					dprintf(MED,"PEP_POLY_NORMAL[%d]: oid %d, %f polys",length,oid, (length-4)/(9.0*4.0));
+					dprintf(VLOW,"PEP_POLY_NORMAL[%d]: oid %d, %f polys",length,oid, (length-4)/(9.0*4.0));
 					obj_pep_poly_normal(p,oid, (float *)cptr, num);
 				}
 				break;
@@ -184,7 +184,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 				{
 					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
 					num=(length-4)/(6*4);
-					dprintf(MED,"PEP_POLY_TEXC[%d]: oid %d, %f polys",length,oid, (length-4)/(6.0*4.0));
+					dprintf(VLOW,"PEP_POLY_TEXC[%d]: oid %d, %f polys",length,oid, (length-4)/(6.0*4.0));
 					obj_pep_poly_texc(p,oid, (float *)cptr, num);
 				}
 				break;

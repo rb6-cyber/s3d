@@ -78,7 +78,7 @@ int event_init(struct t_process *p)
 int event_quit(struct t_process *p)
 {
 	prot_com_out(p, S3D_P_S_QUIT, NULL,0);
-	dprintf(HIGH,"sending pid %d  QUIT signal",p->id); 
+	dprintf(HIGH,"sending pid %d QUIT signal",p->id); 
 	process_del(p->id);
 	return(0);
 }

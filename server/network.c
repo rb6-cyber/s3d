@@ -84,8 +84,8 @@ int network_main()
 #ifdef TCP
 #ifdef SIGS
 	if (sigio==1)  /*  as long as there is no locking/threadsafety, do like this ... */
-#endif
 	{
+#endif
 		tcp_pollport();	/*  this polls for new processes */
 		while (tcp_pollproc());  /*  if there is new data, loop please. this is for testing now, and should be combined with timing later .. */
 #ifdef SIGS

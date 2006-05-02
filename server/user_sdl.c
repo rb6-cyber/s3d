@@ -88,7 +88,7 @@ int user_main_sdl() {
 			break;
 		case SDL_QUIT:
 			dprintf(HIGH,"SDL_QUIT");
-			running=0;
+			quit();
 			break;
 		 /*  these events are not processed right now ... */
 		case SDL_ACTIVEEVENT:		dprintf(VLOW,"SDL_ACTIVEEVENT");break;

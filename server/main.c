@@ -144,11 +144,11 @@ int init()
 #endif
 	if (!frame_mode)  /*  turn default frame_mode on */
 	{
-#ifdef G_GLUT
-		frame_mode=FRAME_GLUT;
-#else
 #ifdef G_SDL
 		frame_mode=FRAME_SDL;
+#else
+#ifdef G_GLUT
+		frame_mode=FRAME_GLUT;
 #endif
 #endif
 	}
@@ -258,7 +258,9 @@ int main(int argc, char **argv) {
 	switch (frame_mode)
 	{
 #ifdef G_GLUT
-		case FRAME_GLUT:glutMainLoop();break;
+		case FRAME_GLUT:glutMainLoop();
+				dprintf(VHIGH,"glutMainLoop(); is done ...");
+				break;
 #endif
 		default:mainloop();
 	}

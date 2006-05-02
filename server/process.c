@@ -35,14 +35,14 @@ static int process_list_rm(int pid);
 int process_sys_init(struct t_process *p);
 
 /* protocol request for process initialization */
-int process_protinit(struct t_process *p, char *name)
+struct t_process *process_protinit(struct t_process *p, char *name)
 {
 	int con_type;
 	uint32_t mcp_oid;
 	if ((strncmp(name,"sys_",4)==0))
 	{ /* we don't like "sys_"-apps, kicking this */
 		errds(VHIGH,"process_protinit()","appnames starting with 'sys_' not allowed.");
-		return(-1);
+		return(NULL);
 	}
 	if ((p->id!=MCP) && (strncmp(name,"mcp",3)==0))
 	{
@@ -62,10 +62,10 @@ int process_protinit(struct t_process *p, char *name)
 			procs_p[MCP].con_type=con_type;
 			mcp_init();
 			process_list_rm(p->id); /* remove old process, but don't kill connection */
-			return(0);
+			return(&procs_p[MCP]);
 		} else {
 			dprintf(LOW,"the place for the mcp is already taken ...");
-			return(-1);
+			return(NULL);
 		}
 	} else {
 		strncpy(p->name, name, NAME_MAX);
@@ -90,7 +90,7 @@ int process_protinit(struct t_process *p, char *name)
 			dprintf(LOW,"couldn't add object to mcp ...");
 		}
 	}
-	return(0);
+	return(p);
 }
 /* adds system objects to the app, like camera, pointers etc ... */
 int process_sys_init(struct t_process *p)
@@ -146,6 +146,7 @@ struct t_process *process_add()
 		mcp_p=&procs_p[0];*/
 	new_p->object = NULL;
 	new_p->n_obj  = 0;
+	new_p->netin  = 0;
 	new_p->mcp_oid = -1;
 	new_p->biggest_obj=-1;
 	new_p->con_type=CON_NULL;	/* this is to be changed by the caller */
@@ -251,9 +252,12 @@ int process_init()
 int process_quit()
 {
 	int i;
+	dprintf(HIGH,"telling %d processes to go away",procs_n);
 	for (i=(procs_n-1);i>=0;i--)
-	{
-		process_del(procs_p[i].id);
+	{ 
+		dprintf(HIGH,"[QUIT] for %d",i);
+		event_quit(&procs_p[i]);
+/*		process_del(procs_p[i].id);*/
 	}
 	free(procs_p);
 	return(0);
