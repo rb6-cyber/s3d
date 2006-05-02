@@ -65,7 +65,7 @@ struct t_process *process_protinit(struct t_process *p, char *name)
 			return(&procs_p[MCP]);
 		} else {
 			dprintf(LOW,"the place for the mcp is already taken ...");
-			return(NULL);
+			return(p);
 		}
 	} else {
 		strncpy(p->name, name, NAME_MAX);
