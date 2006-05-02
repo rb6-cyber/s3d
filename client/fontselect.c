@@ -69,12 +69,12 @@ char *s3d_findfont(char *mask)
 
 	dpy = XOpenDisplay(disp);  /*  Open display and check for success */
 	if (dpy == NULL) 
-	  errds(VHIGH, "s3d_findfont()","unable to open display %s\n", XDisplayName (disp));
+	  errds(VHIGH, "s3d_findfont()","unable to open display %s", XDisplayName (disp));
 	else 
 	{
 		if (!(flist = XGetFontPath (dpy, &fnum)))
 		{
-		    errds(VHIGH, "s3d_findfont():XGetFontPath()","unable to get font path.\n");
+		    errds(VHIGH, "s3d_findfont():XGetFontPath()","unable to get font path.");
 		}
 		else 
 		while (fnum--)

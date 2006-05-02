@@ -56,7 +56,7 @@ int _shm_init(char *ftoken)
 		errn("shm_init():ftok()",errno);
 		return(1);
 	}
-	dprintf(MED,"init key is 0x%08x\n",key);
+	dprintf(MED,"init key is 0x%08x",key);
 	
 	/* connect to the segment: */
 	if ((shmid = shmget(key, SHM_SIZE, 0644 )) == -1) {
@@ -70,10 +70,10 @@ int _shm_init(char *ftoken)
 		errn("shm_init():shmat()",errno);
 		return(1);
 	}
-	dprintf(MED,"right now, next_keys are: %08x, %08x\n",next_key[0],next_key[1]);
+	dprintf(MED,"right now, next_keys are: %08x, %08x",next_key[0],next_key[1]);
 	while ((0==(key_in=next_key[1])) || (0==(key_out=next_key[0])));
 	next_key[0]=next_key[1]=0;
-	dprintf(MED,"right now, next_keys are: %08x, %08x\n",key_in,key_out);
+	dprintf(MED,"right now, next_keys are: %08x, %08x",key_in,key_out);
 	/* as we have the new key, we  can detach here now. */
 	if (shmdt(next_key) == -1) { 
 		errn("shm_init():shmdt()",errno);
