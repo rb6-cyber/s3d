@@ -218,6 +218,7 @@ void place_apps()
 {
 	struct app *a=apps;
 	int j=0;
+	float u[3],v[3],ya,xa;
 	while (a!=NULL)
 	{
 		if (a->init)	
@@ -237,6 +238,13 @@ void place_apps()
 		a=a->next;
 	}
 	s3d_translate(menu,	left*zoom+0.4,(-bottom)*zoom-0.4,-zoom);
+	
+	v[0]=0;				v[1]=0;					v[2]=1;
+	u[0]=left*zoom+0.4; u[1]=0;					u[2]=-zoom;
+	ya=s3d_vector_angle(v,u);
+	u[0]=0; 			u[1]=(-bottom)*zoom;	u[2]=-zoom;
+	xa=s3d_vector_angle(v,u);
+	s3d_rotate(menu, 0 ,30,0); 
 }
 void mcp_object(struct s3d_evt *hrmz)
 {
@@ -440,12 +448,12 @@ void keypress(struct s3d_evt *event)
 
 int main (int argc, char **argv)
 {
-		s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
-		s3d_set_callback(S3D_MCP_OBJECT,mcp_object);
-		s3d_set_callback(S3D_EVENT_QUIT,stop);
-		s3d_set_callback(S3D_MCP_DEL_OBJECT,mcp_del_object);
-		s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
-		s3d_set_callback(S3D_EVENT_KEY,keypress);
+	s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
+	s3d_set_callback(S3D_MCP_OBJECT,mcp_object);
+	s3d_set_callback(S3D_EVENT_QUIT,stop);
+	s3d_set_callback(S3D_MCP_DEL_OBJECT,mcp_del_object);
+	s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
+	s3d_set_callback(S3D_EVENT_KEY,keypress);
 
 	if (!s3d_init(&argc,&argv,"mcp"))	
 	{
@@ -455,11 +463,6 @@ int main (int argc, char **argv)
 		{
 			printf("font not found\n");
 		}
-/*		sphere=s3d_import_3ds_file("objs/sphere.3ds");*/
-/*		s3d_pep_material_a(sphere,
-					1,1,1,0.2,
-					1,1,1,0.2,
-					1,1,1,0.2);*/
 		min_but=s3d_import_3ds_file("objs/btn_minimize.3ds");
 		rotate=s3d_import_3ds_file("objs/btn_rotate.3ds");
 		reset=s3d_import_3ds_file("objs/reset.3ds");
