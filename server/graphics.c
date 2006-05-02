@@ -24,9 +24,11 @@
 #include "global.h"
 #include <stdlib.h>		 /*  malloc() */
 #include <string.h>		 /*  memcpy() */
+/*
 #ifdef G_GLUT
-#include <GL/glut.h> 	 /*  glutWireTorus() -  to be removed later */ 
+#include <GL/glut.h> 	 *  glutWireTorus() -  to be removed later *
 #endif
+*/
 #include <GL/gl.h>		 /*  GLint */
 #ifdef G_SDL
 #include <SDL.h>	 /*  SDL_GL_SwapBuffers */
@@ -339,10 +341,11 @@ void graphics_main()
 	GLfloat light0_diff[]={0.5,0.5,0.5,1.0};
 	GLfloat light0_amb[]={1.0,1.0,1.0,1.0};
 	
+/*
 	GLfloat wire_amb[]={0.1,0.3,0.1,0.5};
 	GLfloat wire_diff[]={0.1,0.3,0.1,0.5};
 	GLfloat wire_spec[]={1.0,1.0,1.0,0.5};
-
+*/
 	select_mode=0;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  /*  clear screen */
 	 /*  set up the cam ... */
@@ -368,11 +371,12 @@ void graphics_main()
  	glPushMatrix();  /*  save the cam */ 
 		glLightfv(GL_LIGHT0,GL_POSITION,pos);
 		render_by_mcp();
+/*
 #ifdef DEBUG
 #ifdef G_GLUT
 		glPushMatrix();
 			glRotatef(90,1.0,0.0,0.0);	
-			/* set some evilish green color */
+			/ * set some evilish green color * /
 			glMaterialfv(GL_FRONT,GL_AMBIENT,wire_amb);
 			glMaterialfv(GL_FRONT,GL_SPECULAR,wire_spec);
 			glMaterialfv(GL_FRONT,GL_DIFFUSE,wire_diff);
@@ -380,7 +384,7 @@ void graphics_main()
 			glutWireTorus(100,100,40,40);
 		glPopMatrix();
 #endif
-#endif
+#endif*/
  	glPopMatrix();  /*  restore the cam */ 
 	glLoadIdentity();
 	glMultMatrixf(m);

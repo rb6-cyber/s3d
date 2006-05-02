@@ -3,6 +3,7 @@ general:
 dot_mcp:
 	* sane paths for applications
 autotools:
+	* install ${PREFIX}/include/s3d.h as symlink to ${PREFIX}/include/s3d/s3d.h
 	* OBJECTPATH for finding the object?
 	* ./configure: line 23422: HAVE_PTHREAD: command not found < huh?
 	* ./configure: line 22373: MDL_HAVE_OPENGL: command not found

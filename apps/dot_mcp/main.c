@@ -63,6 +63,40 @@ unsigned int min_but,rotate,close_but,sphere,reset,menu=-1;
 
 void place_apps();
 
+#define SIDES	60
+#define RINGS	60
+int greentorus()
+{
+	int o,i,j;
+	float R,r,a;
+	float v[SIDES*RINGS*3];
+	unsigned long l[SIDES*RINGS*6];
+	o=s3d_new_object();
+	R=100; /* outer radius */
+	r=100; /* inner radius */
+	a=M_PI/180;
+	for (i=0;i<RINGS;i++)
+	for (j=0;j<SIDES;j++)
+	{
+		v[i*SIDES*3+ j*3 +0]=(R+r*cos(a*((float)j*360.0/SIDES)))* cos(a*((float)i*360.0/RINGS));
+		v[i*SIDES*3+ j*3 +1]= r*sin(a* ((float)j*360.0/SIDES));
+		v[i*SIDES*3+ j*3 +2]=(R+r*cos(a*((float)j*360.0/SIDES)))* sin(a*((float)i*360.0/RINGS));
+		
+		l[i*SIDES*6+ j*6 +0]=i*SIDES+ j;
+		l[i*SIDES*6+ j*6 +1]=i*SIDES+ (j+1)%SIDES;
+		l[i*SIDES*6+ j*6 +2]=0;
+		l[i*SIDES*6+ j*6 +3]=i*SIDES+ j;
+		l[i*SIDES*6+ j*6 +4]=((i+1)%RINGS)*SIDES+ j;
+		l[i*SIDES*6+ j*6 +5]=0;
+	}
+	s3d_push_material_a(o, 0.2,0.6,0.2,0.5,
+						   1  ,1  ,1  ,0.5,
+						   0.2,0.6,0.2,0.5);
+	s3d_push_vertices(o,v,RINGS*SIDES);
+	s3d_push_lines(o,l,RINGS*SIDES*2);
+	s3d_flags_on(o,S3D_OF_VISIBLE);
+	return(o);
+}
 void set_focus(struct app *a)
 {
 	if (focus!=a)
@@ -406,14 +440,16 @@ void keypress(struct s3d_evt *event)
 
 int main (int argc, char **argv)
 {
-	if (!s3d_init(&argc,&argv,"mcp"))	
-	{
 		s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
 		s3d_set_callback(S3D_MCP_OBJECT,mcp_object);
 		s3d_set_callback(S3D_EVENT_QUIT,stop);
 		s3d_set_callback(S3D_MCP_DEL_OBJECT,mcp_del_object);
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
 		s3d_set_callback(S3D_EVENT_KEY,keypress);
+
+	if (!s3d_init(&argc,&argv,"mcp"))	
+	{
+		greentorus(); /* just call ... */
 
 		if (s3d_select_font("vera"))
 		{
