@@ -198,7 +198,7 @@ enum {
 /*  main.c */
 int rc_init(void);
 int init(void);
-int quit(void);
+void quit(void);
 void one_time(void);
 /*  network.c */
 void sigpipe_handler(int);
@@ -301,7 +301,7 @@ struct t_process *process_add(void);
 int process_del(int id);
 int process_init(void);
 int process_quit(void);
-int process_protinit(struct t_process *p, char *name);
+struct t_process *process_protinit(struct t_process *p, char *name);
 struct t_process *get_proc_by_pid(int pid);
 /*  object.c */
 int obj_debug			(struct t_process *p, uint32_t oid);

@@ -146,7 +146,7 @@ struct t_process *process_add()
 		mcp_p=&procs_p[0];*/
 	new_p->object = NULL;
 	new_p->n_obj  = 0;
-	new_p->netin  = 0;
+/*	new_p->netin  = 0;*/
 	new_p->mcp_oid = -1;
 	new_p->biggest_obj=-1;
 	new_p->con_type=CON_NULL;	/* this is to be changed by the caller */

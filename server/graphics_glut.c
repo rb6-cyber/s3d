@@ -41,6 +41,8 @@ int graphics_init_glut()
 	glutInitWindowSize (X_RES, Y_RES);
 	glutCreateWindow("grmbl");
     glutIdleFunc(one_time);
+	if (0!=(atexit(quit)))
+		dprintf(MED,"Error in setting Exit function ...");
 	glutDisplayFunc(graphics_main);
 	glutReshapeFunc(graphics_reshape);
 	return(0);

@@ -172,7 +172,7 @@ int init()
 }
 
 /*  things to be cleaned up  */
-int quit()
+void quit()
 {
 	if (running!=0)
 	{
@@ -190,7 +190,6 @@ int quit()
 	running=0;
 	dprintf(VHIGH,"byebye, s3d quitting ...");
 	exit(0);
-	return(0);
 }
 /*  processing arguments from the commandline */
 int process_args(int argc, char **argv)
@@ -259,7 +258,6 @@ int main(int argc, char **argv) {
 	{
 #ifdef G_GLUT
 		case FRAME_GLUT:glutMainLoop();
-				dprintf(VHIGH,"glutMainLoop(); is done ...");
 				break;
 #endif
 		default:mainloop();
