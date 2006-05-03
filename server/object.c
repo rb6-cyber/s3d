@@ -229,7 +229,11 @@ int obj_push_poly(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
 				obj->p_poly[m+i].v[2]=*(px++);
 				obj->p_poly[m+i].mat=*(px++);
 				obj->p_poly[m+i].n[0].x=obj->p_poly[m+i].n[0].y=obj->p_poly[m+i].n[0].z=0;
+				obj->p_poly[m+i].n[1].x=obj->p_poly[m+i].n[1].y=obj->p_poly[m+i].n[1].z=0;
+				obj->p_poly[m+i].n[2].x=obj->p_poly[m+i].n[2].y=obj->p_poly[m+i].n[2].z=0;
 				obj->p_poly[m+i].tc[0].x=obj->p_poly[m+i].n[0].y=obj->p_poly[m+i].n[0].z=0;
+				obj->p_poly[m+i].tc[1].x=obj->p_poly[m+i].n[1].y=obj->p_poly[m+i].n[1].z=0;
+				obj->p_poly[m+i].tc[2].x=obj->p_poly[m+i].n[2].y=obj->p_poly[m+i].n[2].z=0;
 		 /* 		obj->p_poly[m+i].n=NULL;		/ *  no normals yet * / */
 			}
 			obj->n_poly+=n;
@@ -271,6 +275,8 @@ int obj_push_line(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
 				obj->p_line[m+i].v[0]=*(px++);
 				obj->p_line[m+i].v[1]=*(px++);
 				obj->p_line[m+i].mat=*(px++);
+				obj->p_line[m+i].n[0].x=obj->p_line[m+i].n[0].y=obj->p_line[m+i].n[0].z=0;
+				obj->p_line[m+i].n[1].x=obj->p_line[m+i].n[1].y=obj->p_line[m+i].n[1].z=0;
 			}
 			obj->n_line+=n;
 		}
@@ -1409,7 +1415,6 @@ void obj_pos_update(struct t_process *p, uint32_t oid, uint32_t first_oid)
 	if (p->id!=MCP)
 		obj_check_biggest_object(p,oid);
 }
-
 /*  calculates the normal for one polygon, if not present. */
 int calc_normal(struct t_obj *obj, uint32_t pn)
 {
@@ -1426,8 +1431,10 @@ int calc_normal(struct t_obj *obj, uint32_t pn)
 		else return(-1);
 	}
 	 /*  check for already set normal */
-	if ((obj->p_poly[pn].n[0].x+obj->p_poly[pn].n[0].x+obj->p_poly[pn].n[0].x)==0)  /*  normal already defined? */
-	{
+	if ((obj->p_poly[pn].n[0].x*obj->p_poly[pn].n[0].x+
+		 obj->p_poly[pn].n[0].y*obj->p_poly[pn].n[0].y+
+		 obj->p_poly[pn].n[0].z*obj->p_poly[pn].n[0].z)==0)  
+	{/*  normal already defined? */
 		a.x=v[1]->x-v[0]->x;
 		a.y=v[1]->y-v[0]->y;
 		a.z=v[1]->z-v[0]->z;
@@ -1456,6 +1463,57 @@ int calc_normal(struct t_obj *obj, uint32_t pn)
 	}
 	return(0);
 }
+
+/* checks if a normal is set for a line object, or set some default oif not */
+int check_line_normal(struct t_obj *obj, uint32_t pn)
+{
+	struct t_vertex *v[2],n;
+	float len;
+	int i,vp;
+	for (i=0;i<2;i++)  /*  set and check */
+	{
+		vp= obj->p_line[pn].v[i];  /*  ... get the vertices ... */
+		if (vp<obj->n_vertex)
+			v[i]=&(obj->p_vertex[vp]);
+		else return(-1);
+	}
+	if ((obj->p_line[pn].n[0].x*obj->p_line[pn].n[0].x+
+		 obj->p_line[pn].n[0].y*obj->p_line[pn].n[0].y+
+		 obj->p_line[pn].n[0].z*obj->p_line[pn].n[0].z)==0)  
+	{ /* guess we have nothing set yet, so set something */
+			/*
+		n.x=v[1]->x-v[0]->x;
+		n.y=v[1]->y-v[0]->y;
+		n.z=v[1]->z-v[0]->z;
+		len=sqrt(n.x*n.x+n.y*n.y+n.z*n.z);
+		if (len==0.0F)
+		{  * no length? no good ...*
+			len=1.0;
+			n.z=1.0;
+			n.y=0.0;
+			n.x=0.0;
+		}
+		n.x=n.x/len;
+		n.y=n.y/len;
+		n.z=n.z/len;
+		obj->p_line[pn].n[0].x=n.x;
+		obj->p_line[pn].n[0].y=n.y;
+		obj->p_line[pn].n[0].z=n.z;
+		obj->p_line[pn].n[1].x=-n.x;
+		obj->p_line[pn].n[1].y=-n.y;
+		obj->p_line[pn].n[1].z=-n.z;*/
+		for (i=0;i<2;i++)
+		{
+			obj->p_line[pn].n[0].x=0;
+			obj->p_line[pn].n[0].y=0;
+			obj->p_line[pn].n[0].z=1;
+		}
+	}
+	return(0);
+
+}
+
+/* activate/bind texture for object */
 static struct t_tex *get_texture(struct t_obj *obj,struct t_mat *m)
 {
 	GLuint t;
@@ -1528,14 +1586,10 @@ int obj_render(struct t_process *p,uint32_t oid)
 	glPushMatrix();
 	glMultMatrixf(obj->m);
 /*	into_position(p,obj,0);*/
-	if (obj->oflags&OF_SYSTEM)
-		return(-1); /* can't render system objects */
-	if (obj->oflags&OF_CLONE)
-		obj=p->object[obj->n_vertex];
-	if (obj->dplist)
-	{
-		glCallList(obj->dplist);
-	} else {
+	if (obj->oflags&OF_SYSTEM)		return(-1); 					/* can't render system objects */
+	if (obj->oflags&OF_CLONE)		obj=p->object[obj->n_vertex]; 	/* it's a clone - draw the clone! */
+	if (obj->dplist)				glCallList(obj->dplist);		/* we have done that before, call the GLList */
+	else {
 		obj->dplist=glGenLists(1);
 		if (obj->dplist)	glNewList(obj->dplist,GL_COMPILE_AND_EXECUTE);
 		 else 				dprintf(LOW,"couldn't get a new list :/");
@@ -1545,8 +1599,7 @@ int obj_render(struct t_process *p,uint32_t oid)
 			if (calc_normal(obj,pn))
 			{
 				dprintf(HIGH,"something is wrong with polygon %d!",pn);
-				if (obj->dplist) glEndList();
-				glPopMatrix();
+				if (obj->dplist) glEndList();	glPopMatrix(); /* clean up GL-stuff */
 				return(-1);
 			}
 	 /* 		glNormal3f(-n.x,-n.y,-n.z); */
@@ -1555,9 +1608,8 @@ int obj_render(struct t_process *p,uint32_t oid)
 				tex=NULL;
 				if (mat< obj->n_mat) {
 					m=&obj->p_mat[mat];
-					if (m->tex!=-1)
-						tex=get_texture(obj,m);
-					if (tex==NULL)
+					if (m->tex!=-1)		tex=get_texture(obj,m);
+					if (tex==NULL)		/* still NULL? then it couldn't get the texture. */
 					{
 /*						dprintf(VLOW,"no texture, using standard material...");*/
 						glBindTexture( GL_TEXTURE_2D,0);
@@ -1582,9 +1634,7 @@ int obj_render(struct t_process *p,uint32_t oid)
 					}
 				} else {
 					dprintf(MED,"something is wrong with polygon %d! material: [%d,%d]",pn, mat,obj->n_mat);
-					if (obj->dplist) glEndList();
-					glEnd();
-					glPopMatrix();
+					if (obj->dplist) glEndList();	glEnd();	glPopMatrix();
 					return(-1);
 				}
 			}
@@ -1609,11 +1659,10 @@ int obj_render(struct t_process *p,uint32_t oid)
 				}
 			glEnd();
 		}
-		if (tex!=NULL)
-			glBindTexture( GL_TEXTURE_2D, 0);  /*  switch back to standard texture */
-
+		if (tex!=NULL)			glBindTexture( GL_TEXTURE_2D, 0);  /*  switch back to standard texture */
 		for (pn=0;pn<obj->n_line; pn++)
 		{
+			check_line_normal(obj,pn);
 			mat= obj->p_line[pn].mat;
 			if (mat!=omat) {
 				tex=NULL;
@@ -1651,6 +1700,9 @@ int obj_render(struct t_process *p,uint32_t oid)
 			glBegin(GL_LINES);
 			for (i=0; i<2; i++)
 				{
+					on=&(obj->p_line[pn].n[i]);
+					glNormal3f(-on->x,-on->y,-on->z);
+
 					v= obj->p_line[pn].v[i];  /*  ... get the vertices ... */
 					glVertex3f(obj->p_vertex[v].x, obj->p_vertex[v].y, obj->p_vertex[v].z);  /*  ...and draw them */
 				}

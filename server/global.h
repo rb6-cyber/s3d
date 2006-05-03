@@ -81,6 +81,7 @@ struct t_poly
 struct t_line
 {
 	uint32_t v[2];
+	struct t_vertex n[2];		 /* normal vectors */
 	uint32_t mat;
 };
 /*  material of surfaces, as it's usual in the OpenGL standard */

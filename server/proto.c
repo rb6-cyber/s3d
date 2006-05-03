@@ -44,6 +44,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 	uint8_t 	command;
 	int 	i;
 	char 	name[NAME_MAX];
+	struct t_process *np;
 	uint8_t	*buf,*cptr=NULL;
 	uint16_t length;
 	uint16_t num;
@@ -71,10 +72,10 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 				if (length>NAME_MAX) i=NAME_MAX; else i=length;
 				strncpy(name,(char *)buf,i);
 				dprintf(LOW,"[%d]\"%s\" logged in", p->id,name);
-				if (p==process_protinit(p,name))
+				if (NULL==(np=process_protinit(p,name)))
 					event_quit(p);  /*  couldn't get process */
 				else
-					event_init(p);
+					event_init(np);
 				break;
 			case S3D_P_C_NEW_OBJ:
 				oid=htonl(obj_new(p));
