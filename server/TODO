@@ -1,7 +1,6 @@
 HIGH:
  - properly buffer incoming network traffic!!
 MED:
- - pep_line_normals
  - culling for selection-mode - do it with line-culling, not plane-culling!
  - stop networking grepping after some deadline to prevent DoS ...?
  - delete polygon normals when vertex got changed?!

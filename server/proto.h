@@ -82,7 +82,7 @@
 			 /*  4b:		number */
 #define S3D_P_C_PEP_POLY_NORMAL	16
 			 /*  4b:		object id */
-			 /*  n*9f:	normals (3* x/y/z for each vertex of the poly) */
+			 /*  n*9f:		normals (3* x/y/z for each vertex of the poly) */
 #define S3D_P_C_PEP_POLY_TEXC	17
 			 /*  4b:		object id */
 			 /*  n*6f		poly texture coordinates (3* u/v for each vertex of the poly) */
@@ -101,8 +101,9 @@
 #define S3D_P_C_DEL_LINE		22
 			 /*  4b:		object id */
 			 /*  4b:		number */
-
-
+#define S3D_P_C_PEP_LINE_NORMAL	23
+			 /*  4b:		object id */
+			 /*  n*6f:		normals (2* x/y/z for each vertex of the line) */
 #define S3D_P_C_LOAD_POLY_NORMAL	24
 			 /*  4b:		object id */
 			 /*  4b:		position */
@@ -123,6 +124,11 @@
 #define S3D_P_C_LOAD_MAT_TEX	29
 			 /*  4b:		object id */
 			 /*  4b:		texture index references */
+#define S3D_P_C_LOAD_LINE_NORMAL 30
+			 /*  4b:		object id */
+			 /*  4b:		position */
+			 /*  n*6f:		normals (2* x/y/z for each vertex of the line) */
+
 
 #define S3D_P_C_TOGGLE_FLAGS 	32
 			 /*  4b:		object id */

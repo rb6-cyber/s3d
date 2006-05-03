@@ -180,6 +180,15 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 					obj_pep_poly_normal(p,oid, (float *)cptr, num);
 				}
 				break;
+			case S3D_P_C_PEP_LINE_NORMAL:
+				if (length>4)
+				{
+					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
+					num=(length-4)/(6*4);
+					dprintf(HIGH,"PEP_LINE_NORMAL[%d]: oid %d, %.1f lines",length,oid, (length-4)/(6.0*4.0));
+					obj_pep_line_normal(p,oid, (float *)cptr, num);
+				}
+				break;
 			case S3D_P_C_PEP_POLY_TEXC:
 				if (length>4)
 				{
@@ -229,7 +238,16 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 					obj_pep_line(p,oid, (uint32_t *)cptr, num);
 				}
 				break;
-
+			case S3D_P_C_LOAD_LINE_NORMAL:
+				if (length>8)
+				{
+					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
+					toid=ntohl(*((uint32_t *)cptr));		cptr+=4;
+					num=(length-8)/(6*4);
+					dprintf(MED,"LOAD_POLY_NORMAL[%d]: oid %d, %.2f lines",length,oid, (length-8)/(6.0*4.0));
+					obj_load_line_normal(p,oid, (float *)cptr, toid, num);
+				}
+				break;
 			case S3D_P_C_LOAD_POLY_NORMAL:
 				if (length>8)
 				{

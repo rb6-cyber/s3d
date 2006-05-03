@@ -49,6 +49,10 @@ int user_main_sdl() {
 			 	case SDL_BUTTON_RIGHT:
 				case SDL_BUTTON_RMASK:
 			 		user_mouse(2,2,event.motion.x,event.motion.y);break;
+/*				case SDL_BUTTON_WHEELUP:
+			 		user_mouse(3,2,event.motion.x,event.motion.y);break;
+				case SDL_BUTTON_WHEELDOWN:
+			 		user_mouse(4,2,event.motion.x,event.motion.y);break;*/
 				case 0:
 					user_mouse(-1,-1,event.motion.x,event.motion.y);
 					break;
@@ -67,7 +71,12 @@ int user_main_sdl() {
 			 		user_mouse(1,0,event.motion.x,event.motion.y);break;
 			 	case SDL_BUTTON_RIGHT:
 			 		user_mouse(2,0,event.motion.x,event.motion.y);break;
-
+				case SDL_BUTTON_WHEELUP:
+			 		user_mouse(3,0,event.motion.x,event.motion.y);break;
+				case SDL_BUTTON_WHEELDOWN:
+			 		user_mouse(4,0,event.motion.x,event.motion.y);break;
+				default:
+					dprintf(LOW,"don't know button %d", event.button.button);
 			 }
 			 break;
 		case SDL_MOUSEBUTTONUP:
@@ -79,7 +88,12 @@ int user_main_sdl() {
 			 		user_mouse(1,1,event.motion.x,event.motion.y);break;
 			 	case SDL_BUTTON_RIGHT:
 			 		user_mouse(2,1,event.motion.x,event.motion.y);break;
-
+				case SDL_BUTTON_WHEELUP:
+			 		user_mouse(3,1,event.motion.x,event.motion.y);break;
+				case SDL_BUTTON_WHEELDOWN:
+			 		user_mouse(4,1,event.motion.x,event.motion.y);break;
+				default:
+					dprintf(LOW,"don't know button %d", event.button.button);
 			 }
 			 break;
 

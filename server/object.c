@@ -234,7 +234,6 @@ int obj_push_poly(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
 				obj->p_poly[m+i].tc[0].x=obj->p_poly[m+i].n[0].y=obj->p_poly[m+i].n[0].z=0;
 				obj->p_poly[m+i].tc[1].x=obj->p_poly[m+i].n[1].y=obj->p_poly[m+i].n[1].z=0;
 				obj->p_poly[m+i].tc[2].x=obj->p_poly[m+i].n[2].y=obj->p_poly[m+i].n[2].z=0;
-		 /* 		obj->p_poly[m+i].n=NULL;		/ *  no normals yet * / */
 			}
 			obj->n_poly+=n;
 		}
@@ -369,6 +368,7 @@ int obj_pep_poly_normal(struct t_process *p, uint32_t oid, float *x, uint32_t n)
 	uint32_t i,j,m;
 	struct t_obj *obj;
 	float *px;
+ 	float len; 
 	if (obj_valid(p,oid,obj))
 	{
 		m=obj->n_poly;
@@ -396,6 +396,65 @@ int obj_pep_poly_normal(struct t_process *p, uint32_t oid, float *x, uint32_t n)
 				obj->p_poly[i].n[j].x=*(px++);
 				obj->p_poly[i].n[j].y=*(px++);
 				obj->p_poly[i].n[j].z=*(px++);
+				len=sqrt(obj->p_poly[i].n[j].x*obj->p_poly[i].n[j].x + obj->p_poly[i].n[j].y*obj->p_poly[i].n[j].y +obj->p_poly[i].n[j].z*obj->p_poly[i].n[j].z);
+				if (len==0)
+					obj->p_poly[i].n[j].x=obj->p_poly[i].n[j].y=obj->p_poly[i].n[j].z=0;
+				else {
+					obj->p_poly[i].n[j].x/=len;
+					obj->p_poly[i].n[j].y/=len;
+					obj->p_poly[i].n[j].z/=len;
+				}
+			}
+		}
+	} else 
+	{
+		return(-1);
+	}
+	return(0);
+}
+/*  add some normal information to the line buffer */
+int obj_pep_line_normal(struct t_process *p, uint32_t oid, float *x, uint32_t n)
+{
+	uint32_t i,j,m;
+	struct t_obj *obj;
+	float *px;
+	float len;
+	if (obj_valid(p,oid,obj))
+	{
+		m=obj->n_line;
+		if (m<n)	 /*  saving the first number of lines */
+			n=m;  /*  when more lines than available should be pepped,  */
+				 /*  just pep the first m liness */
+		px=x; 				 /*  movable pointer for x, later */
+		if (obj->oflags&OF_NODATA)
+		{
+			errds(MED,"obj_pep_line_normal()","error: no data on object allowed!");
+			return(-1);
+		}
+
+		if (obj->dplist)
+		{
+			dprintf(VLOW,"freeing display list %d to get new data",obj->dplist);
+			glDeleteLists(obj->dplist,1);
+			obj->dplist=0;
+		}
+		dprintf(VLOW,"pepping line's %d to %d",(m-n),m);
+		for (i=(m-n);i<m;i++)
+		{
+			for (j=0;j<2;j++)
+			{
+				obj->p_line[i].n[j].x=*(px++);
+				obj->p_line[i].n[j].y=*(px++);
+				obj->p_line[i].n[j].z=*(px++);
+				len=sqrt(obj->p_line[i].n[j].x*obj->p_line[i].n[j].x + obj->p_line[i].n[j].y*obj->p_line[i].n[j].y +obj->p_line[i].n[j].z*obj->p_line[i].n[j].z);
+				if (len==0)
+					obj->p_line[i].n[j].x=obj->p_line[i].n[j].y=obj->p_line[i].n[j].z=0;
+				else {
+					obj->p_line[i].n[j].x/=len;
+					obj->p_line[i].n[j].y/=len;
+					obj->p_line[i].n[j].z/=len;
+				}
+
 			}
 		}
 	} else 
@@ -522,6 +581,8 @@ int obj_pep_line(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
 			obj->p_line[i].v[0]=*(px++);
 			obj->p_line[i].v[1]=*(px++);
 			obj->p_line[i].mat=*(px++);
+			obj->p_line[i].n[0].x=obj->p_line[i].n[0].y=obj->p_line[i].n[0].z=0;
+			obj->p_line[i].n[1].x=obj->p_line[i].n[1].y=obj->p_line[i].n[1].z=0;
 		}
 	} else 
 	{
@@ -640,6 +701,7 @@ int obj_load_poly_normal(struct t_process *p, uint32_t oid, float *x, uint32_t s
 	uint32_t i,j,m;
 	struct t_obj *obj;
 	float *px;
+	float len;
 	if (obj_valid(p,oid,obj))
 	{
 		m=obj->n_poly;
@@ -665,6 +727,62 @@ int obj_load_poly_normal(struct t_process *p, uint32_t oid, float *x, uint32_t s
 				obj->p_poly[i].n[j].x=*(px++);
 				obj->p_poly[i].n[j].y=*(px++);
 				obj->p_poly[i].n[j].z=*(px++);
+				len=sqrt(obj->p_poly[i].n[j].x*obj->p_poly[i].n[j].x + obj->p_poly[i].n[j].y*obj->p_poly[i].n[j].y +obj->p_poly[i].n[j].z*obj->p_poly[i].n[j].z);
+				if (len==0)
+					obj->p_poly[i].n[j].x=obj->p_poly[i].n[j].y=obj->p_poly[i].n[j].z=0;
+				else {
+					obj->p_poly[i].n[j].x/=len;
+					obj->p_poly[i].n[j].y/=len;
+					obj->p_poly[i].n[j].z/=len;
+				}
+
+			}
+		}
+	} else 
+		return(-1);
+	return(0);
+}
+/*  add some normal information to the line  buffer */
+int obj_load_line_normal(struct t_process *p, uint32_t oid, float *x, uint32_t start, uint32_t n)
+{
+	uint32_t i,j,m;
+	struct t_obj *obj;
+	float *px;
+	float len;
+	if (obj_valid(p,oid,obj))
+	{
+		m=obj->n_line;
+		if (m<(start+n))	
+			n=m-start; 
+		px=x;
+		if (obj->oflags&OF_NODATA)
+		{
+			errds(MED,"obj_load_line_normal()","error: no data on object allowed!");
+			return(-1);
+		}
+
+		if (obj->dplist)
+		{
+			dprintf(VLOW,"freeing display list %d to get new data",obj->dplist);
+			glDeleteLists(obj->dplist,1);
+			obj->dplist=0;
+		}
+		for (i=start;i<(start+n);i++)
+		{
+			for (j=0;j<2;j++)
+			{
+				obj->p_line[i].n[j].x=*(px++);
+				obj->p_line[i].n[j].y=*(px++);
+				obj->p_line[i].n[j].z=*(px++);
+				len=sqrt(obj->p_line[i].n[j].x*obj->p_line[i].n[j].x + obj->p_line[i].n[j].y*obj->p_line[i].n[j].y +obj->p_line[i].n[j].z*obj->p_line[i].n[j].z);
+				if (len==0)
+					obj->p_line[i].n[j].x=obj->p_line[i].n[j].y=obj->p_line[i].n[j].z=0;
+				else {
+					obj->p_line[i].n[j].x/=len;
+					obj->p_line[i].n[j].y/=len;
+					obj->p_line[i].n[j].z/=len;
+				}
+
 			}
 		}
 	} else 
@@ -1467,8 +1585,7 @@ int calc_normal(struct t_obj *obj, uint32_t pn)
 /* checks if a normal is set for a line object, or set some default oif not */
 int check_line_normal(struct t_obj *obj, uint32_t pn)
 {
-	struct t_vertex *v[2],n;
-	float len;
+	struct t_vertex *v[2];
 	int i,vp;
 	for (i=0;i<2;i++)  /*  set and check */
 	{
@@ -1481,27 +1598,6 @@ int check_line_normal(struct t_obj *obj, uint32_t pn)
 		 obj->p_line[pn].n[0].y*obj->p_line[pn].n[0].y+
 		 obj->p_line[pn].n[0].z*obj->p_line[pn].n[0].z)==0)  
 	{ /* guess we have nothing set yet, so set something */
-			/*
-		n.x=v[1]->x-v[0]->x;
-		n.y=v[1]->y-v[0]->y;
-		n.z=v[1]->z-v[0]->z;
-		len=sqrt(n.x*n.x+n.y*n.y+n.z*n.z);
-		if (len==0.0F)
-		{  * no length? no good ...*
-			len=1.0;
-			n.z=1.0;
-			n.y=0.0;
-			n.x=0.0;
-		}
-		n.x=n.x/len;
-		n.y=n.y/len;
-		n.z=n.z/len;
-		obj->p_line[pn].n[0].x=n.x;
-		obj->p_line[pn].n[0].y=n.y;
-		obj->p_line[pn].n[0].z=n.z;
-		obj->p_line[pn].n[1].x=-n.x;
-		obj->p_line[pn].n[1].y=-n.y;
-		obj->p_line[pn].n[1].z=-n.z;*/
 		for (i=0;i<2;i++)
 		{
 			obj->p_line[pn].n[0].x=0;
@@ -1662,7 +1758,13 @@ int obj_render(struct t_process *p,uint32_t oid)
 		if (tex!=NULL)			glBindTexture( GL_TEXTURE_2D, 0);  /*  switch back to standard texture */
 		for (pn=0;pn<obj->n_line; pn++)
 		{
-			check_line_normal(obj,pn);
+			if (check_line_normal(obj,pn))
+			{
+				dprintf(HIGH,"something is wrong with line %d!",pn);
+				if (obj->dplist) glEndList();	glPopMatrix(); /* clean up GL-stuff */
+				return(-1);
+			}
+
 			mat= obj->p_line[pn].mat;
 			if (mat!=omat) {
 				tex=NULL;

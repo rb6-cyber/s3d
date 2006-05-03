@@ -475,6 +475,21 @@ int s3d_pep_polygon_normals(int object, float *nbuf,unsigned short n)
 	return(0);
 	
 }
+/*  adds normal information to the last n line. */
+int s3d_pep_line_normals(int object, float *nbuf,unsigned short n)
+{
+	unsigned char buf[MF_LEN+4];
+	if ((n*9*sizeof(float)+4)>MF_LEN) 
+	{
+		errds(MED,"s3d_pep_line_normals()","too much data");
+		return(-1);  /*  impossible */
+	}
+	*((uint32_t *)buf)=htonl(object);
+	memcpy(buf+4,nbuf,6*n*sizeof(float));
+	net_send(S3D_P_C_PEP_LINE_NORMAL,(char *)buf,n*6*sizeof(float)+4);
+	return(0);
+	
+}
 /*  replaces the last vertex. */
 int s3d_pep_vertex(int object, float x, float y, float z)
 {
@@ -528,7 +543,7 @@ int s3d_pep_vertices(int object, float *vbuf,unsigned short n)
 	unsigned char buf[MF_LEN+4];
 	if ((n*3*sizeof(float)+4)>MF_LEN) 
 	{
-		errds(MED,"s3d_pep_polygon_normals()","too much data");
+		errds(MED,"s3d_pep_vertices()","too much data");
 		return(-1);  /*  impossible */
 	}
 	*((uint32_t *)buf)=htonl(object);
@@ -589,6 +604,33 @@ int s3d_load_polygon_normals(int object, float *nbuf,unsigned long start, unsign
 			flen=(len-i*stepl);
 		memcpy(ptr,(char *)nbuf+i*stepl,flen);
 		net_send(S3D_P_C_PEP_POLY_NORMAL,buf,flen+8);
+		mstart+=stepl;
+	}
+	return(0);
+}
+/*  adds normal information to the last n polygons. */
+int s3d_load_line_normals(int object, float *nbuf,unsigned long start, unsigned short n)
+{
+	char				buf[MF_LEN+4],*ptr;
+	int					f,i,len=n*6*4;
+	int					flen,stepl;
+	uint32_t			mstart;
+	if (n<1)
+		return(-1);
+	mstart=start;
+	stepl=((int)((MF_LEN-8)/(6*4)))*(6*4);
+	f=len/(MF_LEN-8)+1;  /*  how many fragments? */
+	for (i=0;i<f;i++)
+	{
+		ptr=buf;
+		*((uint32_t *)ptr)=htonl(object);			ptr+=sizeof(uint32_t);		  /*  object id */
+		*((uint32_t *)ptr)=htonl(mstart);			ptr+=sizeof(uint32_t);		  /*  start */
+		if (len-i*stepl>stepl)
+			flen=stepl;
+		else
+			flen=(len-i*stepl);
+		memcpy(ptr,(char *)nbuf+i*stepl,flen);
+		net_send(S3D_P_C_PEP_LINE_NORMAL,buf,flen+8);
 		mstart+=stepl;
 	}
 	return(0);

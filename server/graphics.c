@@ -60,33 +60,41 @@ int graphics_init ()
 #endif
 		default: return(-1);
 	}
+	/* light */
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	
+	/* depth test */
 	glEnable(GL_DEPTH_TEST);
+/*     glDepthFunc( GL_LEQUAL ); */
+	
+	/* textures */
     glEnable(GL_TEXTURE_2D);
+    glShadeModel (GL_SMOOTH);
+	glDisable(GL_DITHER);
+
+	/* lines */
+    glHint(GL_LINE_SMOOTH_HINT, GL_FASTEST); 
+    glLineWidth(1.0);
+    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
+	
+	/* polygon smoothing */
+	glDisable(GL_POLYGON_SMOOTH);
+/*    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST); */
+
+	/* normalizing */
+	glDisable(GL_AUTO_NORMAL);
+	glDisable(GL_NORMALIZE); 		/* don't use the expensive GL_NORMALIZE, we use uniform scaling so GL_RESCALE_NORMAL is sufficent */
+	glEnable(GL_RESCALE_NORMAL);
+
+	/* blending */
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-/*     glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE); */
-    glShadeModel (GL_SMOOTH);
+/*    glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);*/
 
-/*     glDepthFunc( GL_LEQUAL ); */
-    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
-	glDisable(GL_DITHER);
-	glEnable(GL_NORMALIZE);
-	glDisable(GL_AUTO_NORMAL);
-    glLineWidth(1.0);
+	/* set shininess */
 /* 	glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shin); */
 	glMaterialfv(GL_FRONT,GL_SHININESS,shin);
-/*	cam.translate.x=0;
-	cam.translate.y=0;
-	cam.translate.z=5;
-	cam.rotate.x=0;
-	cam.rotate.y=0;
-	cam.rotate.z=0;
-	cam.scale=1;
-	cam.oflags=OF_CAM;
-	cam.linkid=-1;
-	cam.m_uptodate=0;*/
 	graphics_reshape(X_RES,Y_RES);
 	return(0);
 }
@@ -336,7 +344,7 @@ void graphics_main()
 	struct t_process *p=get_proc_by_pid(MCP);
 	t_mtrx m;
 	GLfloat pos[]={100.0,20.0,100.0,1.0};
-	GLfloat light0_spec[]={0.4,0.4,0.4,0.0};
+	GLfloat light0_spec[]={0.7,0.7,0.7,0.0};
 	GLfloat light0_shininess[] ={50.0};
 	GLfloat light0_diff[]={0.5,0.5,0.5,1.0};
 	GLfloat light0_amb[]={1.0,1.0,1.0,1.0};

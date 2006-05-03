@@ -69,31 +69,58 @@ int greentorus()
 {
 	int o,i,j;
 	float R,r,a;
+	float ia,ja,iap,jap;
 	float v[SIDES*RINGS*3];
+	float n[SIDES*12]; /* normals */
 	unsigned long l[SIDES*RINGS*6];
 	o=s3d_new_object();
 	R=100; /* outer radius */
 	r=100; /* inner radius */
 	a=M_PI/180;
-	for (i=0;i<RINGS;i++)
-	for (j=0;j<SIDES;j++)
-	{
-		v[i*SIDES*3+ j*3 +0]=(R+r*cos(a*((float)j*360.0/SIDES)))* cos(a*((float)i*360.0/RINGS));
-		v[i*SIDES*3+ j*3 +1]= r*sin(a* ((float)j*360.0/SIDES));
-		v[i*SIDES*3+ j*3 +2]=(R+r*cos(a*((float)j*360.0/SIDES)))* sin(a*((float)i*360.0/RINGS));
-		
-		l[i*SIDES*6+ j*6 +0]=i*SIDES+ j;
-		l[i*SIDES*6+ j*6 +1]=i*SIDES+ (j+1)%SIDES;
-		l[i*SIDES*6+ j*6 +2]=0;
-		l[i*SIDES*6+ j*6 +3]=i*SIDES+ j;
-		l[i*SIDES*6+ j*6 +4]=((i+1)%RINGS)*SIDES+ j;
-		l[i*SIDES*6+ j*6 +5]=0;
-	}
 	s3d_push_material_a(o, 0.2,0.6,0.2,0.5,
 						   1  ,1  ,1  ,0.5,
 						   0.2,0.6,0.2,0.5);
-	s3d_push_vertices(o,v,RINGS*SIDES);
-	s3d_push_lines(o,l,RINGS*SIDES*2);
+	for (i=0;i<RINGS;i++)
+	{
+		for (j=0;j<SIDES;j++)
+		{
+			ia=a*((float)i*360.0/RINGS);
+			ja=a*((float)j*360.0/SIDES);
+			iap=a*((float)(i+1)*360.0/RINGS);
+			jap=a*((float)(j+1)*360.0/SIDES);
+
+			v[i*SIDES*3+ j*3 +0]=(R+r*cos(ja))* cos(ia);
+			v[i*SIDES*3+ j*3 +1]=r*sin(ja);
+			v[i*SIDES*3+ j*3 +2]=(R+r*cos(ja))* sin(ia);
+		
+			l[i*SIDES*6+ j*6 +0]=i*SIDES+ j;
+			l[i*SIDES*6+ j*6 +1]=i*SIDES+ (j+1)%SIDES;
+			l[i*SIDES*6+ j*6 +2]=0;
+			l[i*SIDES*6+ j*6 +3]=i*SIDES+ j;
+			l[i*SIDES*6+ j*6 +4]=((i+1)%RINGS)*SIDES+ j;
+			l[i*SIDES*6+ j*6 +5]=0;
+			
+			n[j*12 +0] =R*r*cos(ja)*    cos(ia) + r*r*cos(ja)* cos(ia)*cos(ia);
+			n[j*12 +1] =R*r*sin(ja)*    cos(ia) + r*r*sin(ja)* cos(ia)*cos(ia);
+			n[j*12 +2] =R*r*sin(ia) 			+ r*r*sin(ia)* cos(ia);
+			n[j*12 +3] =R*r*cos(jap)*    cos(ia)+ r*r*cos(jap)*cos(ia)*cos(ia);
+			n[j*12 +4] =R*r*sin(jap)*    cos(ia)+ r*r*sin(jap)*cos(ia)*cos(ia);
+			n[j*12 +5] =R*r*sin(ia) 			+ r*r*sin(ia)* cos(ia);
+
+			n[j*12 +6] =R*r*cos(ja)*    cos(ia) + r*r*cos(ja)* cos(ia)*cos(ia);
+			n[j*12 +7] =R*r*sin(ja)*    cos(ia) + r*r*sin(ja)* cos(ia)*cos(ia);
+			n[j*12 +8] =R*r*sin(ia) 			+ r*r*sin(ia)* cos(ia);
+			n[j*12 +9] =R*r*cos(ja)*    cos(iap)+ r*r*cos(ja)* cos(ia)*cos(iap);
+			n[j*12 +10]=R*r*sin(ja)*    cos(iap)+ r*r*sin(ja)* cos(ia)*cos(iap);
+			n[j*12 +11]=R*r*sin(iap) 			+ r*r*sin(iap)*cos(iap);
+		}
+		s3d_push_vertices(o,&v[i*SIDES*3],SIDES);
+		s3d_push_lines(o,   &l[i*SIDES*6],SIDES*2);
+		s3d_pep_line_normals(o,n,SIDES*2);
+	}
+/*	s3d_push_vertices(o,v,SIDES*RINGS);
+	s3d_push_lines(o,   l,SIDES*RINGS*2);*/
+
 	s3d_flags_on(o,S3D_OF_VISIBLE);
 	return(o);
 }
