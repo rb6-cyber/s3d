@@ -301,12 +301,12 @@ int graphics_pick_obj(int x, int y)
 		/* check all the hits, only select the nearest ... */
 		for (i=0;i<hits;i++)
 		{
-			names=*ptr;				ptr++;
+			names=*ptr;						ptr++;
 			z1=(float)*ptr/0x7fffffff;		ptr++;
 			z2=(float)*ptr/0x7fffffff;		ptr++;
-			mcp_o=o=-1;
 			if (z1<big)
 			{
+				mcp_o=o=-1;
 				for (j=0;j<names;j++)
 				{
 					switch (j)
@@ -317,7 +317,9 @@ int graphics_pick_obj(int x, int y)
 					ptr++;
 				}
 				big=z1;
-			}
+			} else 
+				for (j=0;j<names;j++)
+					ptr++;
 		    dprintf(LOW,"[HIT %d] names %d [z1:%f|z2:%f] mcp_o=%d, o=%d ",i,names, z1, z2, mcp_o, o);
 		}
 		dprintf(MED,"mcp_o= %d, o= %d",mcp_o,o);
