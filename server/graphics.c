@@ -151,10 +151,16 @@ void render_virtual_object(struct t_obj *o)
 					{
 /*						dprintf(HIGH,"object %d is in %s frustum",j,k?"":"not");*/
 						if (select_mode==1)
+						{
+							dprintf(MED,"glPushName(%d)",j);
 							glPushName(j);
+						}
 						obj_render(ap,j);
 						if (select_mode==1)
+						{
+							dprintf(MED,"glPopName(%d)",j);
 							glPopName();
+						}
 					}
 				}
 			}
@@ -172,11 +178,11 @@ int render_by_mcp()
 	struct t_vertex x,y;
 	int k;
 	for (i=0;i<p->n_obj;i++)
-	{
+	{   /* check all mcp objects ... */
 		o=p->object[i];
 		if (o!=NULL)
 		{
-			if (o->oflags&OF_VISIBLE)   /*  it's even visible;) */
+			if (o->oflags&OF_VISIBLE)   /*  it's even visible ;) */
 			{
 				if (o->oflags&OF_VIRTUAL)  /*  we have an app here. */
 				{
@@ -209,7 +215,7 @@ int render_by_mcp()
 							}
 						}
 					}
-				} else if ((o->oflags&OF_CLONE) && (p->object[o->n_vertex]->oflags&OF_VIRTUAL))
+				} else if ((o->oflags&OF_CLONE) && (p->object[o->n_vertex]->oflags&OF_VIRTUAL))  /* it's a clone of an app */
 				{
 					if (select_mode==1)
 						glLoadName(o->n_vertex);/*TODO: what to do if a clone is selected?! */
@@ -217,7 +223,7 @@ int render_by_mcp()
 					render_virtual_object(o);
 					render_virtual_object(p->object[o->n_vertex]); 
 					glPopMatrix();
-				} else {
+				} else { /* it's a "regular" mcp object */
 					if ((select_mode ==0 ) || (p->object[i]->oflags&OF_SELECTABLE)) /* either select mode is off or it's selectable */
 					{
 						if (select_mode==1)
@@ -245,7 +251,7 @@ int graphics_pick_obj(int x, int y)
 	int i,j;
 	GLint viewport[4];
 	GLfloat xpos,ypos;
-	float big,z1;
+	float big,z1,z2;
 	uint32_t mcp_o,o;
 	struct t_process *p=get_proc_by_pid(MCP);
 	GLuint select_buf[SBSIZE],*ptr,names,hits;
@@ -295,24 +301,24 @@ int graphics_pick_obj(int x, int y)
 		/* check all the hits, only select the nearest ... */
 		for (i=0;i<hits;i++)
 		{
-			names=*ptr;
-			dprintf(LOW,"number of names for hit = %d", names); ptr++;
-			z1=*ptr/0x7fffffff;
-		    dprintf(LOW," z1 is %g;", (float) *ptr/0x7fffffff); ptr++;
-		    dprintf(LOW," z2 is %g", (float) *ptr/0x7fffffff); ptr++;
+			names=*ptr;				ptr++;
+			z1=(float)*ptr/0x7fffffff;		ptr++;
+			z2=(float)*ptr/0x7fffffff;		ptr++;
 			mcp_o=o=-1;
-			for (j=0;j<names;j++)
+			if (z1<big)
 			{
-				if (z1<big)
+				for (j=0;j<names;j++)
 				{
 					switch (j)
 					{
 						case 0:mcp_o=	*ptr;break;
 						case 1:o=		*ptr;break;
 					}
+					ptr++;
 				}
-				ptr++;
+				big=z1;
 			}
+		    dprintf(LOW,"[HIT %d] names %d [z1:%f|z2:%f] mcp_o=%d, o=%d ",i,names, z1, z2, mcp_o, o);
 		}
 		dprintf(MED,"mcp_o= %d, o= %d",mcp_o,o);
 		ptr=select_buf;
