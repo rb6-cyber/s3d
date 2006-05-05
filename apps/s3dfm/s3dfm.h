@@ -66,7 +66,7 @@ void object_click(struct s3d_evt *evt);
 void mainloop();
 /* animation.c */
 float ani_get_scale(struct t_item *f);
-void ani_rescale(struct t_item *f);
+void ani_focus(struct t_item *f);
 void ani_mate();
 void ani_add(struct t_item *f);
 void ani_del(int i);

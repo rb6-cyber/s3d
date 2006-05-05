@@ -71,8 +71,10 @@ int box_icon(struct t_item *dir,int i)
 	int dps;
 	dps=ceil(sqrt(dir->n_item)); /* directories per line */
 	/* find position for the new block in our directory box */
-	dir->list[i].px=((float)((int)i%dps)+0.5)/((float)dps)-0.5;
-	dir->list[i].pz=((float)((int)i/dps)+0.5)/((float)dps)-0.5;
+	dir->list[i].dpx = dir->list[i].px=-1 +2*  ((float)((int)i%dps)+0.5)/((float)dps);
+	dir->list[i].dpy = dir->list[i].py=0.5+((float)((int)i/dps)+0.5)/((float)dps)-0.5;
+	dir->list[i].dpz = dir->list[i].pz=1.0;
+	dir->list[i].scale = dir->list[i].dscale = (float)1.0/((float)dps);
 	/* create the block */
 	if (dir->list[i].close!=-1)		s3d_del_object(dir->list[i].close);
 	if (dir->list[i].block!=-1)		s3d_del_object(dir->list[i].block);
@@ -94,8 +96,6 @@ int box_icon(struct t_item *dir,int i)
 									0,0,0.5-d);
 	};
 	s3d_push_polygons(dir->list[i].block,polys,10);
-	s3d_scale(dir->list[i].block,(float)1.0/((float)dps));
-	s3d_translate(dir->list[i].block,dir->list[i].px*2,dir->list[i].pz+0.5,1.0);
 	s3d_link(dir->list[i].block,dir->block);
 
 	/* draw and position the string */
@@ -107,10 +107,11 @@ int box_icon(struct t_item *dir,int i)
 	}
 	else 
 		len=dir->list[i].len;
-	s3d_scale(dir->list[i].str,(float)1.8/(((float)dps)*len));
-	s3d_translate(dir->list[i].str,dir->list[i].px*2-0.9/(float)dps,dir->list[i].pz-0.4/(float)dps+0.5,1.01);
+	s3d_scale(dir->list[i].str,(float)1.8/len);
+	s3d_translate(dir->list[i].str,-0.9,-0.3,0.1);
 	s3d_rotate(dir->list[i].str,0,0,0);
-	s3d_link(dir->list[i].str,dir->block);
+	s3d_link(dir->list[i].str,dir->list[i].block);
+	ani_finish(&dir->list[i],-1); /* apply transformation */
 	return(0);
 }
 
@@ -219,7 +220,6 @@ int box_expand(struct t_item *dir)
 		return(-1); /* already displayed ... */ 
 	s3d_del_object(dir->block);
 	box_buildblock(dir);
-	box_sidelabel(dir);
 	if (dir->parent!=NULL)
 		dir->parent->dirs_opened++;
 	dir->dirs_opened=0;
@@ -238,14 +238,19 @@ int box_expand(struct t_item *dir)
 	if (dir->parent!=NULL)
 	{
 		s3d_link(dir->block,dir->parent->block);
-		printf("[L] parent: linking against %d\n",dir->parent->block);
+		dir->dpx=0.0;
+		dir->dpy=BOXHEIGHT;
+		dir->dpz=0.0;
+		dir->dscale=0.0;
 		box_position_kids(dir->parent);
+		ani_doit(dir);
 	}
 	for (i=0;i<dir->n_item;i++)
 	{
 		s3d_flags_on(dir->list[i].block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 		s3d_flags_on(dir->list[i].str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	}
+	box_sidelabel(dir);
     s3d_flags_on(dir->block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
     s3d_flags_on(dir->close,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	return(0);
@@ -296,6 +301,11 @@ int box_collapse(struct t_item *dir)
 	}
 	dir->dirs_opened=0;
 	dir->disp=0;
+	if (dir->parent!=NULL)
+	{
+		box_position_kids(dir->parent);
+	}
+
 	return(0);
 
 }
@@ -328,9 +338,10 @@ void box_position_kids(struct t_item *dir)
 				if (dir->list[i].disp)
 				{
 					dir->list[i].px=0.0;
+					dir->list[i].py=BOXHEIGHT;
 					dir->list[i].pz=0.0;
-					s3d_translate(dir->list[i].block,0,BOXHEIGHT,0);
-					s3d_scale    (dir->list[i].block,0.2);
+					dir->list[i].scale=0.2;
+					ani_add(&dir->list[i]);
 				}
 			}
 			break;
@@ -341,9 +352,10 @@ void box_position_kids(struct t_item *dir)
 				if (dir->list[i].disp)
 				{
 					dir->list[i].px=0.8 * sin(((float)j*2*M_PI)/((float)dir->dirs_opened));
+					dir->list[i].py=BOXHEIGHT;
 					dir->list[i].pz=0.8 * cos(((float)j*2*M_PI)/((float)dir->dirs_opened));
-					s3d_translate(dir->list[i].block,dir->list[i].px,BOXHEIGHT,dir->list[i].pz);
-					s3d_scale(dir->list[i].block,0.2);
+					dir->list[i].scale=0.2;
+					ani_add(&dir->list[i]);
 					j++;
 				}
 

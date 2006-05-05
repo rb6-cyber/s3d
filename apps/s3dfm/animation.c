@@ -53,7 +53,7 @@ float ani_get_scale(struct t_item *f)
 	return(scale);
 }
 /* center f for the viewer, therefore moving the root box ... */
-void ani_rescale(struct t_item *f)
+void ani_focus(struct t_item *f)
 {
 	root.px=0.0;
 	root.py=0.0;
@@ -77,6 +77,7 @@ void ani_add(struct t_item *f)
 			if (ani_s[i]==f)
 				return;		/* already in list */
 		ani_s[ani_n]=f;
+		ani_iterate(f);
 		printf("[A]ni ADD %d\n",ani_n);
 		ani_n++;
 	}

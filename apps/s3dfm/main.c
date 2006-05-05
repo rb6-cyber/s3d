@@ -29,9 +29,6 @@
 #include <string.h>  /*  strlen(), strncmp(), strrchr() */
 #include <time.h>	/* nanosleep() */
 static struct timespec t={0,33*1000*1000}; /* 30 fps */
-
-
-int folder,geometry,mp3,duno,dot,dotdot;
 struct t_item root;
 
 void get_path(struct t_item *dir, char *path)
@@ -130,6 +127,8 @@ void object_click(struct s3d_evt *evt)
 		if (f->close==oid)
 		{
 			box_collapse(f);
+			if (f->parent!=NULL)
+				ani_focus(f->parent);
 			return;
 		}
 		if (f->type==T_FOLDER)
@@ -137,7 +136,7 @@ void object_click(struct s3d_evt *evt)
 			printf("[F]ound, expanding %s\n",f->name);
 			parse_dir(f);
 			box_expand(f);
-			ani_rescale(f);
+			ani_focus(f);
 		} else
 			printf("[F]ound, but is %s no folder\n",f->name);
 	} else {
@@ -151,17 +150,8 @@ void mainloop()
 }
 int main (int argc, char **argv)
 {
-	int i;
 	if (!s3d_init(&argc,&argv,"s3dfm"))	
 	{
-		i=0;
-		 /*  load the object files */
-		folder=s3d_import_3ds_file("objs/folder.3ds");
-		geometry=s3d_import_3ds_file("objs/geometry.3ds");
-		mp3=s3d_import_3ds_file("objs/notes.3ds");
-		duno=s3d_import_3ds_file("objs/duno.3ds");
-		dot=s3d_import_3ds_file("objs/dot.3ds");
-		dotdot=s3d_import_3ds_file("objs/dotdot.3ds");
 		s3d_select_font("vera");
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
 		
@@ -174,7 +164,8 @@ int main (int argc, char **argv)
 		if (root.len<2) root.len=2;
 		parse_dir(&root);
 		box_expand(&root);
-		ani_rescale(&root);
+		ani_doit(&root);
+		ani_focus(&root);
 		s3d_mainloop(mainloop);
 		s3d_quit();
 	}
