@@ -66,9 +66,11 @@ float Asp = 1.0;
 float Bottom = -1.0;
 float Left = -1.0;
 
-float CamPosition[2][3];   /* CamPosition[trans|rot][x-z] */
-float CamPosition2[2][3];   /* CamPosition[trans|rot][x-z] */
-float ZeroPosition[3] = {0,0,0};   /* current position zero position */
+float CamPosition[2][3];	/* CamPosition[trans|rot][x-z] */
+float CamPosition2[2][3];	/* CamPosition[trans|rot][x-z] */
+float ZeroPosition[3] = {0,0,0};	/* current position zero position */
+float ReturnPoint[2][3];	/* return point to move back from terminal */
+
 int ZeroPoint;   /* object zeropoint */
 int Zp_rotate = 0;
 int ColorSwitch = 0;   /* enable/disable colored olsr connections */
@@ -76,21 +78,20 @@ int RotateSwitch = 0;
 int RotateSpeed = 2;
 float Factor = 0.6;	/* Factor in calc_olsr_node_mov */
 struct olsr_node *Olsr_node_pEtx;
+
+
 int Btn_close_id = -1;
 int Btn_close_obj;
+
+int Btn_move_terminal_obj;
+int Btn_move_terminal_id = -1;
 
 float Title_len;
 int cam_go=0;
 
-/* object vars
-int obj_term;
-int obj_cursor;
-int obj_cursor_mp;
-struct s3d_object **obj;
-*/
 int move_cam_to = -1;
 int oid_focus = -1;
-float returnPoint[2][3];
+
 
 /***
  *
@@ -749,24 +750,24 @@ void mainloop() {
 		oid_focus = -1;
 		for( i=0; i<3; i++)
 		{
-			CamPosition[0][i]=(CamPosition[0][i]*4+returnPoint[0][i])/5;
+			CamPosition[0][i]=(CamPosition[0][i]*4+ReturnPoint[0][i])/5;
 
-			target = returnPoint[1][i];
+			target = ReturnPoint[1][i];
 			current = CamPosition[1][i];
 
-			if( returnPoint[1][i] - CamPosition[1][i] > 180 )
-				target = returnPoint[1][i] - 360;
-			if( returnPoint[1][i] - CamPosition[1][i] < -180 )
+			if( ReturnPoint[1][i] - CamPosition[1][i] > 180 )
+				target = ReturnPoint[1][i] - 360;
+			if( ReturnPoint[1][i] - CamPosition[1][i] < -180 )
 				current = CamPosition[1][i] - 360;
 			CamPosition[1][i]=(CamPosition[1][i]*4+target)/5;
 		}
 		s3d_translate(0,CamPosition[0][0],CamPosition[0][1],CamPosition[0][2]);
 		s3d_rotate(0,CamPosition[1][0],CamPosition[1][1],CamPosition[1][2]);
 
-		if (dist(CamPosition[0],returnPoint[0])<0.2)
+		if (dist(CamPosition[0],ReturnPoint[0])<0.2)
 		{
-			s3d_translate(0,returnPoint[0][0],returnPoint[0][1],returnPoint[0][2]);
-			s3d_rotate(0,returnPoint[1][0],returnPoint[1][1],returnPoint[1][2]);
+			s3d_translate(0,ReturnPoint[0][0],ReturnPoint[0][1],ReturnPoint[0][2]);
+			s3d_rotate(0,ReturnPoint[1][0],ReturnPoint[1][1],ReturnPoint[1][2]);
 			move_cam_to = -1;
 		}
 	}
@@ -816,7 +817,7 @@ void stop() {
  ***/
 
 void keypress(struct s3d_evt *event) {
-	int key,i;
+	int key;
 	key=*((unsigned short *)event->buf);
 
 	if(oid_focus != obj[obj_term]->oid)
@@ -832,14 +833,6 @@ void keypress(struct s3d_evt *event) {
 			case 'r': /* r -> rotate start/stop*/
 				if(RotateSwitch) RotateSwitch = 0;
 				else RotateSwitch = 1;
-				break;
-			case 't': /* t -> move to terminal*/
-				for(i=0;i<3;i++)
-				{
-					returnPoint[0][i] = CamPosition[0][i];
-					returnPoint[1][i] = CamPosition[1][i];
-				}
-				move_cam_to = obj[obj_term]->oid;
 				break;
 			case '+': /* + -> rotate speed increase*/
 				if(RotateSwitch && RotateSpeed < 10)
@@ -873,11 +866,6 @@ void keypress(struct s3d_evt *event) {
 	} else {
 		if( (key >= 48 && key <= 57) || key == 46 || key == 13 || key == 8 )
 			write_terminal(key);
-		if ( key == S3DK_ESCAPE )
-		{
-			oid_focus = -1;
-			move_cam_to = -2;
-		}
 	}
 }
 
@@ -889,7 +877,7 @@ void keypress(struct s3d_evt *event) {
 
 void object_click(struct s3d_evt *evt)
 {
-	int oid;
+	int oid,i;
 	/* float distance,tmp_vector[3]; */
 	char ip_str[50];
 
@@ -910,6 +898,23 @@ void object_click(struct s3d_evt *evt)
 			if(Output_border[i] != -1)
 				s3d_del_object(Output_border[i]);
 			Output_border[i] = -1;
+		}
+		return;
+	}
+	
+	if( oid == Btn_move_terminal_id )
+	{
+		if(oid_focus != obj[obj_term]->oid)
+		{
+			for(i=0;i<3;i++)
+			{
+				ReturnPoint[0][i] = CamPosition[0][i];
+				ReturnPoint[1][i] = CamPosition[1][i];
+			}
+			move_cam_to = obj[obj_term]->oid;
+		} else {
+			oid_focus = -1;
+			move_cam_to = -2;	
 		}
 		return;
 	}
@@ -1099,6 +1104,12 @@ void initialize_objects()
 {
 	create_terminal();
 	create_cursor();
+	
+	Btn_move_terminal_id = s3d_clone( Btn_move_terminal_obj );
+	s3d_link(Btn_move_terminal_id,0);
+	s3d_flags_on(Btn_move_terminal_id,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	s3d_scale( Btn_move_terminal_id, 0.5 );
+	s3d_translate( Btn_move_terminal_id,-Left*3.0-0.5, -Bottom*3.0-0.7, -3.0 );
 }
 
 int main( int argc, char *argv[] ) {
@@ -1149,18 +1160,21 @@ int main( int argc, char *argv[] ) {
 		if (!s3d_init(&argc,&argv,"olsrs3d"))
 		{
 			s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
-			/* s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click); */
 			s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
-			s3d_set_callback(S3D_EVENT_MBUTTON,mbutton_press);
 			s3d_set_callback(S3D_EVENT_KEY,keypress);
 			s3d_set_callback(S3D_EVENT_QUIT,stop);
-			/* s3d_set_callback(S3D_EVENT_MBUTTON,mbutton_click); */
+
 			if (s3d_select_font("vera"))
 				printf("font not found\n");
+
 			Olsr_node_obj = s3d_import_3ds_file( "objs/accesspoint.3ds" );
 			Olsr_node_inet_obj = s3d_import_3ds_file( "objs/accesspoint_inet.3ds" );
 			Olsr_node_hna_net = s3d_import_3ds_file( "objs/internet.3ds" );
+
+			/* terminal buttons */
 			Btn_close_obj = s3d_import_3ds_file("objs/btn_close.3ds");
+			Btn_move_terminal_obj = s3d_import_3ds_file("objs/dot.3ds");
+			
 			ZeroPoint = s3d_new_object();
 			Output_border[0] = Output_border[1] = Output_border[2] = Output_border[3] = -1;
 
