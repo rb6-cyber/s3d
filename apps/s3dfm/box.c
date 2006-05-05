@@ -1,0 +1,352 @@
+/*
+ * box.c
+ * 
+ * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
+ *
+ * This file is part of s3dfm, a s3d file manager.
+ * See http://s3d.berlios.de/ for more updates.
+ * 
+ * s3dfm is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * s3dfm is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with s3dfm; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+#include "s3dfm.h"
+#include <stdio.h> 	 /*  printf() */
+#include <math.h>	 /*  sin(),cos() */
+
+/* clear the dirs attributes */
+int box_init(struct t_item *dir)
+{
+	dir->parent=NULL;
+	dir->list=NULL;
+	dir->n_item=-1;
+
+	dir->block=-1;
+	dir->str=-1;
+	dir->close=-1;
+
+	dir->len=0;
+	dir->disp=0;
+
+	dir->px=root.pz=0.0;
+	dir->dirs_opened=0;
+	dir->type=T_DUNO;
+	dir->px=dir->py=dir->pz=0.0;
+	dir->dpx=dir->dpy=dir->dpz=0.0;
+	dir->scale=dir->dscale=1.0;
+
+	return(0);
+}
+/* draws icon i in the block of dir */
+int box_icon(struct t_item *dir,int i)
+{
+	float vertices[]={	-1,-0.5,0,
+						-1, 0.5,0,
+						 1, 0.5,0,
+						 1,-0.5,0,
+						-1,-0.5,-1,
+						-1, 0.5,-1,
+						 1, 0.5,-1,
+						 1,-0.5,-1};
+	unsigned long polys[]={
+				1,3,0,0,				2,3,1,0,
+				5,6,2,0,				1,5,2,0,
+				2,6,7,0,				2,7,3,0,
+				0,3,7,0,				0,7,4,0,
+				5,1,0,0,				5,0,4,0	
+				};
+	float len;
+	float d;
+	int dps;
+	dps=ceil(sqrt(dir->n_item)); /* directories per line */
+	/* find position for the new block in our directory box */
+	dir->list[i].px=((float)((int)i%dps)+0.5)/((float)dps)-0.5;
+	dir->list[i].pz=((float)((int)i/dps)+0.5)/((float)dps)-0.5;
+	/* create the block */
+	if (dir->list[i].close!=-1)		s3d_del_object(dir->list[i].close);
+	if (dir->list[i].block!=-1)		s3d_del_object(dir->list[i].block);
+	dir->list[i].block=s3d_new_object();
+	s3d_push_vertices(dir->list[i].block,vertices,8);
+	d=((int)(((i+(dps+1)%2*(i/dps)))%2))*0.2;
+	switch (dir->list[i].type)
+	{
+		case T_FOLDER:
+			s3d_push_material(dir->list[i].block,
+									0.4-d,0.4-d,0,
+									0.4-d,0.4-d,0,
+									0.4-d,0.4-d,0);
+			break;
+		default:
+			s3d_push_material(dir->list[i].block,
+									0,0,0.5-d,
+									0,0,0.5-d,
+									0,0,0.5-d);
+	};
+	s3d_push_polygons(dir->list[i].block,polys,10);
+	s3d_scale(dir->list[i].block,(float)1.0/((float)dps));
+	s3d_translate(dir->list[i].block,dir->list[i].px*2,dir->list[i].pz+0.5,1.0);
+	s3d_link(dir->list[i].block,dir->block);
+
+	/* draw and position the string */
+	if (dir->list[i].str==-1)
+	{
+		dir->list[i].str=s3d_draw_string(dir->list[i].name,&len);
+		if (len<2) len=2;
+		dir->list[i].len=len;
+	}
+	else 
+		len=dir->list[i].len;
+	s3d_scale(dir->list[i].str,(float)1.8/(((float)dps)*len));
+	s3d_translate(dir->list[i].str,dir->list[i].px*2-0.9/(float)dps,dir->list[i].pz-0.4/(float)dps+0.5,1.01);
+	s3d_rotate(dir->list[i].str,0,0,0);
+	s3d_link(dir->list[i].str,dir->block);
+	return(0);
+}
+
+
+/* places the string at the left side of the cube */
+void box_sidelabel(struct t_item *dir)
+{
+
+	s3d_rotate(dir->str,0,90,0);
+	s3d_translate(dir->str,1.1,0.3,1);
+	s3d_scale(dir->str,(float)1.8/(dir->len));
+	s3d_scale(dir->str,(float)1.8/(dir->len));
+	s3d_link(dir->str,dir->block);
+	s3d_flags_on(dir->str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+}
+
+/* creates a big block which will hold files and subdirs on top */
+int box_buildblock(struct t_item *dir)
+{
+	float vertices[]=
+			{-BHP,0,-BHP,
+			 -BHP,0, BHP,
+			  BHP,0, BHP,
+			  BHP,0,-BHP,
+			 -BHP,BHH,-BHP,
+			 -BHP,BHH, BHP,
+			  BHP,BHH, BHP,
+			  BHP,BHH,-BHP,
+			 -1,0, 0.8,
+			 -1,BOXHEIGHT, 0.8,
+			  1,BOXHEIGHT, 0.8,
+			  1,0, 0.8
+				};
+	float xvertices[]=
+			{
+			  0.8,BOXHEIGHT-0.2, 0.8,
+			  0.8,BOXHEIGHT    , 0.8,
+			  1.0,BOXHEIGHT    , 0.8,
+			  1.0,BOXHEIGHT-0.2, 0.8,
+			  0.8,BOXHEIGHT-0.2, 1.0,
+			  0.8,BOXHEIGHT    , 1.0,
+			  1.0,BOXHEIGHT    , 1.0,
+			  1.0,BOXHEIGHT-0.2, 1.0
+
+			 };
+	struct t_item *d;
+	float f;	 
+	dir->block=s3d_new_object();
+	s3d_push_vertices(dir->block,vertices,sizeof(vertices)/(3*sizeof(float)));
+	s3d_push_material(dir->block,
+						0.5,0.5,0.5,
+						0.5,0.5,0.5,
+						0.5,0.5,0.5
+					);
+	d=dir;
+	f=0;
+	while (d->parent!=NULL)
+	{
+		f=(f+1)/4;
+		d=d->parent;
+	}
+	s3d_push_material(dir->block,
+						0.5+f/2,0.5+f,0.6,
+						0.5+f/2,0.5+f,0.6,
+						0.5+f/2,0.5+f,0.6);
+
+	s3d_push_polygon(dir->block,4,5,6,1);
+	s3d_push_polygon(dir->block,4,6,7,1);
+
+	s3d_push_polygon(dir->block,0,4,5,0);
+	s3d_push_polygon(dir->block,0,5,1,0);
+	
+	s3d_push_polygon(dir->block,3,7,4,0);
+	s3d_push_polygon(dir->block,3,4,0,0);
+
+	s3d_push_polygon(dir->block,2,6,7,0);
+	s3d_push_polygon(dir->block,2,7,3,0);
+	
+	s3d_push_polygon(dir->block,8,9,10,0);
+	s3d_push_polygon(dir->block,8,10,11,0);
+	dir->close=s3d_new_object();
+	s3d_push_vertices(dir->close,xvertices,sizeof(xvertices)/(3*sizeof(float)));
+	s3d_push_material(dir->close,
+						0.5,0.1,0.1,
+						0.5,0.1,0.1,
+						0.5,0.1,0.1
+					);
+	s3d_push_polygon(dir->close,4,5,6,0);
+	s3d_push_polygon(dir->close,4,6,7,0);
+	s3d_push_polygon(dir->close,0,4,5,0);
+	s3d_push_polygon(dir->close,0,5,1,0);
+	s3d_push_polygon(dir->close,3,7,4,0);
+	s3d_push_polygon(dir->close,3,4,0,0);
+	s3d_link(dir->close,dir->block);
+	return(0);
+}
+
+/* display a directoy on the top of another, draw it's icons etc ... */
+int box_expand(struct t_item *dir)
+{
+	int i;
+	float  px,pz;
+	int dirn;
+	px=pz=0.0;
+	if (dir->disp)
+		return(-1); /* already displayed ... */ 
+	s3d_del_object(dir->block);
+	box_buildblock(dir);
+	box_sidelabel(dir);
+	if (dir->parent!=NULL)
+		dir->parent->dirs_opened++;
+	dir->dirs_opened=0;
+ /* count directories */
+	dirn=0;
+	for (i=0;i<dir->n_item;i++)
+	{
+		if (dir->list[i].type==T_FOLDER)
+			dirn++;
+	}
+	for (i=0;i<dir->n_item;i++)
+	{
+		box_icon(dir,i);
+	}
+	dir->disp=1;
+	if (dir->parent!=NULL)
+	{
+		s3d_link(dir->block,dir->parent->block);
+		printf("[L] parent: linking against %d\n",dir->parent->block);
+		box_position_kids(dir->parent);
+	}
+	for (i=0;i<dir->n_item;i++)
+	{
+		s3d_flags_on(dir->list[i].block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		s3d_flags_on(dir->list[i].str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	}
+    s3d_flags_on(dir->block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+    s3d_flags_on(dir->close,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	return(0);
+}
+
+/* undisplay a directory, thus recursively removing the kids.*/
+int box_collapse(struct t_item *dir)
+{
+	int i;
+	struct t_item *par;
+	if (&root==dir)
+	{
+		printf("won't undisplay root window ... \n");
+		return(-1);
+	}
+	if (dir->disp==0)
+	{
+/*		printf("[A]lready undisplayed, nothing to do ...\n");*/
+		return(-1);
+	}
+	for (i=0;i<dir->n_item;i++)
+	{
+		if (dir->list[i].disp)
+			box_collapse(&dir->list[i]);
+		if (dir->list[i].block!=-1)
+		{
+			s3d_del_object(dir->list[i].block);
+			dir->list[i].block=-1;
+		}
+		if (dir->list[i].str!=-1)
+		{
+			s3d_del_object(dir->list[i].str);
+			dir->list[i].str=-1;
+		}
+	}
+	if ((par=dir->parent)!=NULL) /* should never be because there we don't process root */
+	{
+		for (i=0;i<par->n_item;i++)
+			if (&par->list[i]==dir)
+				break;
+		if (i!=par->n_item)
+		{
+			box_icon(par,i);
+			s3d_flags_on(dir->block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+			s3d_flags_on(dir->str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		}
+		par->dirs_opened--;
+	}
+	dir->dirs_opened=0;
+	dir->disp=0;
+	return(0);
+
+}
+/* only display dir and its kids, but nothing below. */
+int box_collapse_grandkids(struct t_item *dir)
+{
+	int i,j;
+	struct t_item *kid;
+	for (i=0;i<dir->n_item;i++)
+		if (dir->list[i].disp)
+		{
+			kid=&dir->list[i];
+			for (j=0;j<kid->n_item;j++)
+				box_collapse(&kid->list[j]);
+		}
+	return(0);
+}
+/* orders the directory objects on top of its parent objects 
+ * to be called after adding or removing things ...*/
+void box_position_kids(struct t_item *dir)
+{
+	int i,j;
+	printf("placeontop dir %s, %d\n",dir->name,dir->dirs_opened);
+	switch (dir->dirs_opened)
+	{
+		case 0: return;
+		case 1:
+			for (i=0;i<dir->n_item;i++)
+			{
+				if (dir->list[i].disp)
+				{
+					dir->list[i].px=0.0;
+					dir->list[i].pz=0.0;
+					s3d_translate(dir->list[i].block,0,BOXHEIGHT,0);
+					s3d_scale    (dir->list[i].block,0.2);
+				}
+			}
+			break;
+		default:
+			j=0;
+			for (i=0;i<dir->n_item;i++)
+			{
+				if (dir->list[i].disp)
+				{
+					dir->list[i].px=0.8 * sin(((float)j*2*M_PI)/((float)dir->dirs_opened));
+					dir->list[i].pz=0.8 * cos(((float)j*2*M_PI)/((float)dir->dirs_opened));
+					s3d_translate(dir->list[i].block,dir->list[i].px,BOXHEIGHT,dir->list[i].pz);
+					s3d_scale(dir->list[i].block,0.2);
+					j++;
+				}
+
+			}
+	}
+}

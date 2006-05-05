@@ -22,319 +22,18 @@
  */
 
 
-#include <s3d.h>
+#include "s3dfm.h"
 #include <stdio.h> 	 /*  printf() */
 #include <dirent.h>  /*  dirent */
 #include <stdlib.h>	 /*  malloc() */
 #include <string.h>  /*  strlen(), strncmp(), strrchr() */
-#include <math.h>	 /*  sin(),cos() */
 #include <time.h>	/* nanosleep() */
 static struct timespec t={0,33*1000*1000}; /* 30 fps */
 
 
-#define SH			0.4 /* height of the step */
-
-#define T_DUNO		0
-#define T_LOCALDIR	1
-#define T_BACKDIR	2
-#define T_FOLDER	3
-#define T_GEOMETRY	4
-#define T_MUSIC		5
-
-#define M_DIR		512
-#define M_NAME		256
 int folder,geometry,mp3,duno,dot,dotdot;
-int moveon;
-float dpx,dpy,dpz,dscale;
-float px, py, pz, scale;
-struct t_item {
-	int icon, str;							/* object ids ...*/
-	int block;								/* oid of the block */
-	int dirs_opened;						/* how many directories are on the block */
-	char name[M_NAME];						/* name (e.g. file name) */
-	float len;
-	struct t_item *parent;					/* parent item */
-	struct t_item *list;					/* list of items  (if it's a subdir)*/
-	float px,pz;
-	int n_item;								/* number of items in list ( = -1 for normal or not-expanded files) */
-	int type;								/* type, determined by extension or file type like dir, pipe, link etc */
-	int disp;
-};
 struct t_item root;
 
-
-int undisplay(struct t_item *dir);
-/* draw a block */
-int small_item(struct t_item *dir,int i)
-{
-	float vertices[]={	-1,-0.5,0,
-						-1, 0.5,0,
-						 1, 0.5,0,
-						 1,-0.5,0,
-						-1,-0.5,-1,
-						-1, 0.5,-1,
-						 1, 0.5,-1,
-						 1,-0.5,-1};
-	unsigned long polys[]={
-				1,3,0,0,				2,3,1,0,
-				5,6,2,0,				1,5,2,0,
-				2,6,7,0,				2,7,3,0,
-				0,3,7,0,				0,7,4,0,
-				5,1,0,0,				5,0,4,0	
-				};
-	float len;
-	float d;
-	int dps;
-	dps=ceil(sqrt(dir->n_item)); /* directories per line */
-	if (dir->list[i].block!=-1)		s3d_del_object(dir->list[i].block);
-	if (dir->list[i].block!=-1)		s3d_del_object(dir->list[i].block);
-	dir->list[i].px=((float)((int)i%dps)+0.5)/((float)dps)-0.5;
-	dir->list[i].pz=((float)((int)i/dps)+0.5)/((float)dps)-0.5;
-	dir->list[i].block=s3d_new_object();
-	printf("[L]inking %d against %d\n",dir->list[i].block,dir->block);
-	s3d_push_vertices(dir->list[i].block,vertices,8);
-	d=((int)(((i+(dps+1)%2*(i/dps)))%2))*0.2;
-	switch (dir->list[i].type)
-	{
-		case T_FOLDER:
-			s3d_push_material(dir->list[i].block,
-									0.4-d,0.4-d,0,
-									0.4-d,0.4-d,0,
-									0.4-d,0.4-d,0);
-			break;
-		default:
-			s3d_push_material(dir->list[i].block,
-									0,0,0.5-d,
-									0,0,0.5-d,
-									0,0,0.5-d);
-	};
-	s3d_push_polygons(dir->list[i].block,polys,10);
-/*	s3d_push_polygon(dir->list[i].block,0,1,2,0);
-	s3d_push_polygon(dir->list[i].block,0,2,3,0);*/
-	s3d_scale(dir->list[i].block,(float)1.0/((float)dps));
-	if (dir->list[i].str==-1)	dir->list[i].str=s3d_draw_string(dir->list[i].name,&len);
-	if (len<2) len=2;
-	dir->list[i].len=len;
-	s3d_scale(dir->list[i].str,(float)1.8/(((float)dps)*len));
-
-	s3d_translate(dir->list[i].block,dir->list[i].px*2,dir->list[i].pz+0.5,1.0);
-	s3d_translate(dir->list[i].str,dir->list[i].px*2-0.9/(float)dps,dir->list[i].pz-0.4/(float)dps+0.5,1.01);
-	s3d_link(dir->list[i].block,dir->block);
-	s3d_link(dir->list[i].str,dir->block);
-
-	return(0);
-}
-int new_block(struct t_item *dir)
-{
-#define S 1.001
-	float vertices[]=
-			{-S,0,-S,
-			 -S,0, S,
-			  S,0, S,
-			  S,0,-S,
-			 -S,S,-S,
-			 -S,S, S,
-			  S,S, S,
-			  S,S,-S,
-			 -1,0, 0.8,
-			 -1,1, 0.8,
-			  1,1, 0.8,
-			  1,0, 0.8,
-			 };
-#undef S
-	struct t_item *d;
-	float f;	 
-	dir->block=s3d_new_object();
-	s3d_push_vertices(dir->block,vertices,12);
-	s3d_push_material(dir->block,
-						0.5,0.5,0.5,
-						0.5,0.5,0.5,
-						0.5,0.5,0.5
-					);
-	d=dir;
-	f=0;
-	while (d->parent!=NULL)
-	{
-		f=(f+1)/4;
-		d=d->parent;
-	}
-	s3d_push_material(dir->block,
-						0.5+f/2,0.5+f,0.6,
-						0.5+f/2,0.5+f,0.6,
-						0.5+f/2,0.5+f,0.6);
-
-	s3d_push_polygon(dir->block,4,5,6,1);
-	s3d_push_polygon(dir->block,4,6,7,1);
-
-	s3d_push_polygon(dir->block,0,4,5,0);
-	s3d_push_polygon(dir->block,0,5,1,0);
-	
-	s3d_push_polygon(dir->block,3,7,4,0);
-	s3d_push_polygon(dir->block,3,4,0,0);
-
-	s3d_push_polygon(dir->block,2,6,7,0);
-	s3d_push_polygon(dir->block,2,7,3,0);
-	
-	s3d_push_polygon(dir->block,8,9,10,0);
-	s3d_push_polygon(dir->block,8,10,11,0);
-
-	return(0);
-
-}
-/* orders the directory objects on top of its parent objects 
- * to be called after adding or removing things ...*/
-void placeontop(struct t_item *dir)
-{
-	int i,j;
-	printf("placeontop dir %s, %d\n",dir->name,dir->dirs_opened);
-	switch (dir->dirs_opened)
-	{
-		case 0: return;
-		case 1:
-			for (i=0;i<dir->n_item;i++)
-			{
-				if (dir->list[i].disp)
-				{
-					printf("raising %d\n", i);
-					dir->list[i].px=0.0;
-					dir->list[i].pz=0.0;
-					s3d_translate(dir->list[i].block,0,1,0);
-					s3d_scale(dir->list[i].block,0.2);
-				}
-			}
-			break;
-		default:
-			j=0;
-			for (i=0;i<dir->n_item;i++)
-			{
-				if (dir->list[i].disp)
-				{
-					printf("raising %d\n", i);
-					dir->list[i].px=0.8 * sin(((float)j*2*M_PI)/((float)dir->dirs_opened));
-					dir->list[i].pz=0.8 * cos(((float)j*2*M_PI)/((float)dir->dirs_opened));
-					s3d_translate(dir->list[i].block,dir->list[i].px,1,dir->list[i].pz);
-					s3d_scale(dir->list[i].block,0.2);
-					j++;
-				}
-
-			}
-	}
-}
-/* places the string at the left side of the cube */
-void place_str(struct t_item *dir)
-{
-
-	s3d_rotate(dir->str,0,90,0);
-	s3d_translate(dir->str,1.1,0.3,1);
-	s3d_scale(dir->str,(float)1.8/(dir->len));
-	s3d_scale(dir->str,(float)1.8/(dir->len));
-	s3d_link(dir->str,dir->block);
-	s3d_flags_on(dir->str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-}
-/* only display dir and its kids, but nothing below. */
-int undisplay_kids(struct t_item *dir)
-{
-	int i,j;
-	struct t_item *kid;
-	for (i=0;i<dir->n_item;i++)
-		if (dir->list[i].disp)
-		{
-			kid=&dir->list[i];
-			for (j=0;j<kid->n_item;j++)
-				undisplay(&kid->list[j]);
-		}
-	return(0);
-}
-/* undisplay a directory, thus recursively removing the kids.*/
-int undisplay(struct t_item *dir)
-{
-	int i;
-	struct t_item *par;
-	if (&root==dir)
-	{
-		printf("won't undisplay root window ... \n");
-		return(-1);
-	}
-	if (dir->disp==0)
-	{
-/*		printf("[A]lready undisplayed, nothing to do ...\n");*/
-		return(-1);
-	}
-	for (i=0;i<dir->n_item;i++)
-	{
-		if (dir->list[i].disp)
-			undisplay(&dir->list[i]);
-		if (dir->list[i].block!=-1)
-		{
-			s3d_del_object(dir->list[i].block);
-			dir->list[i].block=-1;
-		}
-		if (dir->list[i].str!=-1)
-		{
-			s3d_del_object(dir->list[i].str);
-			dir->list[i].str=-1;
-		}
-	}
-	if ((par=dir->parent)!=NULL) /* should never be because there we don't process root */
-	{
-		for (i=0;i<par->n_item;i++)
-			if (&par->list[i]==dir)
-				break;
-		if (i==par->n_item)
-		{
-			printf("Couldn't find dir %s in parent %s ...\n",dir->name,par->name); /* that should never happen */
-		} else {
-			small_item(par,i);
-		}
-	}
-	dir->dirs_opened=0;
-	dir->disp=0;
-	return(0);
-
-}
-
-int display_dir(struct t_item *dir)
-{
-	int i;
-	float  px,pz;
-	int dirn;
-	px=pz=0.0;
-	if (dir->disp)
-		return(-1); /* already displayed ... */ 
-	s3d_del_object(dir->block);
-	new_block(dir);
-	place_str(dir);
-	if (dir->parent!=NULL)
-		dir->parent->dirs_opened++;
-	dir->dirs_opened=0;
- /* count directories */
-	dirn=0;
-	for (i=0;i<dir->n_item;i++)
-	{
-		if (dir->list[i].type==T_FOLDER)
-			dirn++;
-	}
-	for (i=0;i<dir->n_item;i++)
-	{
-		dir->list[i].block=-1;
-		dir->list[i].str=-1;
-		small_item(dir,i);
-	}
-	dir->disp=1;
-	if (dir->parent!=NULL)
-	{
-		s3d_link(dir->block,dir->parent->block);
-		printf("[L] parent: linking against %d\n",dir->parent->block);
-		placeontop(dir->parent);
-	}
-	for (i=0;i<dir->n_item;i++)
-	{
-		s3d_flags_on(dir->list[i].block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-		s3d_flags_on(dir->list[i].str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-	}
-    s3d_flags_on(dir->block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-	return(0);
-}
 void get_path(struct t_item *dir, char *path)
 {
 	if (dir->parent!=NULL)
@@ -370,7 +69,8 @@ int parse_dir(struct t_item *dir)
 		dir->n_item=n;
 		printf("found %d items, processing ...\n",n);
         while(n--) {
-			list[n].type=T_DUNO;
+
+			box_init(&list[n]);
 			nstr=namelist[n]->d_name;
 			strncpy(list[n].name,nstr,M_NAME);
  		    if ((0==strncmp(nstr,".",1)) && (strlen(nstr)==1))
@@ -395,10 +95,7 @@ int parse_dir(struct t_item *dir)
 				   }
 				}
 			}
-			list[n].n_item=-1;
 			list[n].parent=dir;
-			list[n].disp=0;
-			list[n].icon=-1;
         	free(namelist[n]);
 		}
 		free(namelist);
@@ -412,6 +109,7 @@ struct t_item *finditem(struct t_item *t, int oid)
 	struct t_item *f;
 	if (t->block==oid)		return(t);
 	if (t->str==oid)		return(t);
+	if (t->close==oid)		return(t);
 	if (t->type==T_FOLDER)
 		for (i=0;i<t->n_item;i++)
 			if ((f=finditem(&(t->list[i]),oid))!=NULL)
@@ -420,38 +118,7 @@ struct t_item *finditem(struct t_item *t, int oid)
 }
 /* gets the scale by multiplying scales */
 
-float get_scale(struct t_item *f)
-{
-	float scale,s;
-	s=0.2;
-	scale=1.0/s;
-	if (f->parent!=NULL)
-		scale=1/s*get_scale(f->parent);
-	else
-		return(1.0);
-	px-=f->px;
-	pz-=f->pz;
-	py-=1;
-	printf("[S]cale factor of %s: %f\n",f->name,1/s);
-	px*=1/s;
-	py*=1/s;
-	pz*=1/s;
-	
-	return(scale);
-}
-#define SCALE 	1
-void rescale(struct t_item *f)
-{
-	px=0.0;
-	py=0.0;
-	pz=0.0;
-	moveon=1;
-	printf("[Z]ooming to %s\n",f->name);
-	undisplay_kids(f);
-	scale=get_scale(f);
-	printf("[R]escaling to %f\n",scale);
-	printf("px: %f py:%f pz: %f\n",px,py,pz);
-}
+
 
 void object_click(struct s3d_evt *evt)
 {
@@ -460,50 +127,32 @@ void object_click(struct s3d_evt *evt)
 	oid=(int)*((unsigned long *)evt->buf);
 	if (NULL!=(f=finditem(&root,oid)))
 	{
+		if (f->close==oid)
+		{
+			box_collapse(f);
+			return;
+		}
 		if (f->type==T_FOLDER)
 		{
 			printf("[F]ound, expanding %s\n",f->name);
 			parse_dir(f);
-			display_dir(f);
-			rescale(f);
+			box_expand(f);
+			ani_rescale(f);
 		} else
 			printf("[F]ound, but is %s no folder\n",f->name);
 	} else {
 		printf("[C]ould not find :/\n");
 	}
 }
-#define ZOOMS 	10
 void mainloop()
 {
-	float x,y,z;
-	if (moveon)
-	{
-		dpx=(px+dpx*ZOOMS)/(ZOOMS+1);
-		dpy=(py+dpy*ZOOMS)/(ZOOMS+1);
-		dpz=(pz+dpz*ZOOMS)/(ZOOMS+1);
-		dscale=(scale+dscale*ZOOMS)/(ZOOMS+1);
-
-		x=dpx-px;
-		y=dpy-py;
-		z=dpz-pz;
-		if (((fabs(dscale-scale)/scale)>0.01) || sqrt(x*x+y*y+z*z))
-		{
-			s3d_translate(root.block,dpx*SCALE,-1.2+SCALE*dpy,dpz*SCALE);
-			s3d_scale(root.block,dscale*SCALE);
-		} else
-			moveon=0;
-	}
 	nanosleep(&t,NULL); 
+	ani_mate();
 }
 int main (int argc, char **argv)
 {
 	int i;
-	px=py=pz=0.0;
-	dpx=dpy=dpz=0.0;
-	dscale=0.1;
-	scale=1.0;
-	moveon=1;
-	if (!s3d_init(&argc,&argv,"filebrowser"))	
+	if (!s3d_init(&argc,&argv,"s3dfm"))	
 	{
 		i=0;
 		 /*  load the object files */
@@ -517,17 +166,15 @@ int main (int argc, char **argv)
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
 		
 		/* set up file system representation */
+		box_init(&root);
 		strncpy(root.name,"/",M_NAME);
-		root.parent=NULL;
-		root.block=-1;
+		root.dscale=0.1;
 		root.type=T_FOLDER;
-		root.px=root.pz=0.0;
-		root.dirs_opened=0;
 		root.str=s3d_draw_string(root.name,&root.len);
 		if (root.len<2) root.len=2;
 		parse_dir(&root);
-		display_dir(&root);
-		rescale(&root);
+		box_expand(&root);
+		ani_rescale(&root);
 		s3d_mainloop(mainloop);
 		s3d_quit();
 	}
