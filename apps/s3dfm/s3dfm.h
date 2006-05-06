@@ -43,7 +43,7 @@
 /* zoomspeed */
 
 struct t_item {
-	int str,close;							/* object ids ...*/
+	int str,close,select,title,titlestr;	/* object ids ...*/
 	int block;								/* oid of the block */
 	int dirs_opened;						/* how many directories are on the block */
 	char name[M_NAME];						/* name (e.g. file name) */

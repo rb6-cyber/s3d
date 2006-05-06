@@ -28,7 +28,7 @@
 #include <stdlib.h>	 /*  malloc() */
 #include <string.h>  /*  strlen(), strncmp(), strrchr() */
 #include <time.h>	/* nanosleep() */
-static struct timespec t={0,33*1000*1000}; /* 30 fps */
+static struct timespec t={0,33*1000*1000}; 
 struct t_item root,cam;
 
 void get_path(struct t_item *dir, char *path)
@@ -66,7 +66,6 @@ int parse_dir(struct t_item *dir)
 		dir->n_item=n;
 		printf("found %d items, processing ...\n",n);
         while(n--) {
-
 			box_init(&list[n]);
 			nstr=namelist[n]->d_name;
 			strncpy(list[n].name,nstr,M_NAME);
@@ -155,8 +154,8 @@ void object_click(struct s3d_evt *evt)
 }
 void mainloop()
 {
-	nanosleep(&t,NULL); 
 	ani_mate();
+	nanosleep(&t,NULL); 
 }
 int main (int argc, char **argv)
 {

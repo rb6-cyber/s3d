@@ -35,6 +35,9 @@ int box_init(struct t_item *dir)
 	dir->block=-1;
 	dir->str=-1;
 	dir->close=-1;
+	dir->select=-1;
+	dir->title=-1;
+	dir->titlestr=-1;
 
 	dir->len=0;
 	dir->disp=0;
@@ -76,8 +79,11 @@ int box_icon(struct t_item *dir,int i)
 	dir->list[i].dpz = dir->list[i].pz=1.0;
 	dir->list[i].scale = dir->list[i].dscale = (float)1.0/((float)dps);
 	/* create the block */
-	if (dir->list[i].close!=-1)		s3d_del_object(dir->list[i].close);
-	if (dir->list[i].block!=-1)		s3d_del_object(dir->list[i].block);
+	if (dir->list[i].close!=-1)		{	s3d_del_object(dir->list[i].close);		dir->list[i].close=-1; }
+	if (dir->list[i].select!=-1)	{	s3d_del_object(dir->list[i].select);	dir->list[i].select=-1; }
+	if (dir->list[i].title!=-1)		{	s3d_del_object(dir->list[i].title);		dir->list[i].title=-1; }
+	if (dir->list[i].titlestr!=-1)	{	s3d_del_object(dir->list[i].titlestr);	dir->list[i].titlestr=-1; }
+	if (dir->list[i].block!=-1)			s3d_del_object(dir->list[i].block);
 	dir->list[i].block=s3d_new_object();
 	s3d_push_vertices(dir->list[i].block,vertices,8);
 	d=((int)(((i+(dps+1)%2*(i/dps)))%2))*0.2;
@@ -147,18 +153,45 @@ int box_buildblock(struct t_item *dir)
 				};
 	float xvertices[]=
 			{
-			  0.8,BOXHEIGHT-0.2, 0.8,
-			  0.8,BOXHEIGHT    , 0.8,
-			  1.0,BOXHEIGHT    , 0.8,
-			  1.0,BOXHEIGHT-0.2, 0.8,
-			  0.8,BOXHEIGHT-0.2, 1.0,
-			  0.8,BOXHEIGHT    , 1.0,
-			  1.0,BOXHEIGHT    , 1.0,
-			  1.0,BOXHEIGHT-0.2, 1.0
-
+			  0.8,BHH-0.2, 0.8,
+			  0.8,BHH    , 0.8,
+			  BHP,BHH    , 0.8,
+			  BHP,BHH-0.2, 0.8,
+			  0.8,BHH-0.2, 1.0,
+			  0.8,BHH    , 1.0,
+			  BHP,BHH    , 1.0,
+			  BHP,BHH-0.2, 1.0
 			 };
-	struct t_item *d;
-	float f;	 
+	float svertices[]=
+			{
+			  0.6,BHH-0.2, 0.8,
+			  0.6,BHH    , 0.8,
+			  0.8,BHH    , 0.8,
+			  0.8,BHH-0.2, 0.8,
+			  0.6,BHH-0.2, 1.0,
+			  0.6,BHH    , 1.0,
+			  0.8,BHH    , 1.0,
+			  0.8,BHH-0.2, 1.0
+			 };
+	float tvertices[]=
+			{
+			  -BHP,BHH-0.2, 0.8,
+			  -BHP,BHH    , 0.8,
+			  0.6, BHH    , 0.8,
+			  0.6, BHH-0.2, 0.8,
+			  -BHP,BHH-0.2, 1.0,
+			  -BHP,BHH    , 1.0,
+			  0.6, BHH    , 1.0,
+			  0.6, BHH-0.2, 1.0
+			 };
+	unsigned long bar_poly[]={
+		4,5,6,0,
+		4,6,7,0,
+		3,7,4,0,
+		3,4,0,0
+	};
+	printf("new block for %s\n",dir->name);
+
 	dir->block=s3d_new_object();
 	s3d_push_vertices(dir->block,vertices,sizeof(vertices)/(3*sizeof(float)));
 	s3d_push_material(dir->block,
@@ -166,17 +199,10 @@ int box_buildblock(struct t_item *dir)
 						0.5,0.5,0.5,
 						0.5,0.5,0.5
 					);
-	d=dir;
-	f=0;
-	while (d->parent!=NULL)
-	{
-		f=(f+1)/4;
-		d=d->parent;
-	}
 	s3d_push_material(dir->block,
-						0.5+f/2,0.5+f,0.6,
-						0.5+f/2,0.5+f,0.6,
-						0.5+f/2,0.5+f,0.6);
+						0.5,0.5,0.6,
+						0.5,0.5,0.6,
+						0.5,0.5,0.6);
 
 	s3d_push_polygon(dir->block,4,5,6,1);
 	s3d_push_polygon(dir->block,4,6,7,1);
@@ -192,20 +218,36 @@ int box_buildblock(struct t_item *dir)
 	
 	s3d_push_polygon(dir->block,8,9,10,0);
 	s3d_push_polygon(dir->block,8,10,11,0);
+
 	dir->close=s3d_new_object();
-	s3d_push_vertices(dir->close,xvertices,sizeof(xvertices)/(3*sizeof(float)));
 	s3d_push_material(dir->close,
-						0.5,0.1,0.1,
-						0.5,0.1,0.1,
-						0.5,0.1,0.1
+						0.5,0.3,0.3,
+						0.5,0.3,0.3,
+						0.5,0.3,0.3
 					);
-	s3d_push_polygon(dir->close,4,5,6,0);
-	s3d_push_polygon(dir->close,4,6,7,0);
-	s3d_push_polygon(dir->close,0,4,5,0);
-	s3d_push_polygon(dir->close,0,5,1,0);
-	s3d_push_polygon(dir->close,3,7,4,0);
-	s3d_push_polygon(dir->close,3,4,0,0);
+	s3d_push_vertices(dir->close,xvertices,sizeof(xvertices)/(3*sizeof(float)));
+	s3d_push_polygons(dir->close,bar_poly,sizeof(bar_poly)/(sizeof(unsigned long)*4));
 	s3d_link(dir->close,dir->block);
+	
+	dir->select=s3d_new_object();
+	s3d_push_material(dir->select,
+						0.1,0.1,0.3,
+						0.1,0.1,0.3,
+						0.1,0.1,0.3
+					);
+	s3d_push_vertices(dir->select,svertices,sizeof(svertices)/(3*sizeof(float)));
+	s3d_push_polygons(dir->select,bar_poly,sizeof(bar_poly)/(sizeof(unsigned long)*4));
+	s3d_link(dir->select,dir->block);
+	
+	dir->title=s3d_new_object();
+	s3d_push_material(dir->title,
+						0.3,0.3,0.3,
+						0.3,0.3,0.3,
+						0.3,0.3,0.3
+					);
+	s3d_push_vertices(dir->title,tvertices,sizeof(tvertices)/(3*sizeof(float)));
+	s3d_push_polygons(dir->title,bar_poly,sizeof(bar_poly)/(sizeof(unsigned long)*4));
+	s3d_link(dir->title,dir->block);
 	return(0);
 }
 
@@ -253,6 +295,9 @@ int box_expand(struct t_item *dir)
 	box_sidelabel(dir);
     s3d_flags_on(dir->block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
     s3d_flags_on(dir->close,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+    s3d_flags_on(dir->title,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+    s3d_flags_on(dir->select,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+    s3d_flags_on(dir->titlestr,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	return(0);
 }
 
@@ -305,9 +350,7 @@ int box_collapse(struct t_item *dir)
 	{
 		box_position_kids(dir->parent);
 	}
-
 	return(0);
-
 }
 /* only display dir and its kids, but nothing below. */
 int box_collapse_grandkids(struct t_item *dir)
