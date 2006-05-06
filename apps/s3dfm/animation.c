@@ -29,7 +29,7 @@
 /* the animation stack */
 static struct t_item *ani_s[MAXANI];
 static int ani_n=0;
-extern struct t_item root;
+extern struct t_item root,cam;
 int moveon=1;
 
 /* get the scale for the rootbox zoom */
@@ -62,20 +62,37 @@ void ani_focus(struct t_item *f)
 	printf("[Z]ooming to %s\n",f->name);
 	box_collapse_grandkids(f);
 	root.scale=ani_get_scale(f);
-	root.py-=1.2;
+	root.py-=1.5;
 	printf("[R]escaling to %f\n",root.scale);
 	printf("px: %f py:%f pz: %f\n",root.px,root.py,root.pz);
+
 	ani_add(&root);
+	if (((cam.dpx-cam.px)* (cam.dpx-cam.px) + (cam.dpy-cam.py)* (cam.dpy-cam.py) 
+		  + (cam.dpz-cam.pz)* (cam.dpz-cam.pz))	> ( 10 * 10))
+	{
+		cam.px=0;
+		cam.py=0;
+		cam.pz=5;
+		ani_add(&cam);
+	}
+}
+/* is item f already on stack? */
+int ani_onstack(struct t_item *f)
+{
+	int i;
+	for (i=0;i<ani_n;i++)
+		if (ani_s[i]==f)
+			return(1);		/* already in list */
+	return(0);
+
 }
 /* add an item on the animation stack */
 void ani_add(struct t_item *f)
 {
-	int i;
 	if (ani_n<MAXANI)
 	{
-		for (i=0;i<ani_n;i++)
-			if (ani_s[i]==f)
-				return;		/* already in list */
+		if (ani_onstack(f))
+			return;		/* already in list */
 		ani_s[ani_n]=f;
 		ani_iterate(f);
 		printf("[A]ni ADD %d\n",ani_n);

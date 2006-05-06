@@ -29,7 +29,7 @@
 #include <string.h>  /*  strlen(), strncmp(), strrchr() */
 #include <time.h>	/* nanosleep() */
 static struct timespec t={0,33*1000*1000}; /* 30 fps */
-struct t_item root;
+struct t_item root,cam;
 
 void get_path(struct t_item *dir, char *path)
 {
@@ -113,10 +113,20 @@ struct t_item *finditem(struct t_item *t, int oid)
 				return(f);
 	return(NULL);
 }
-/* gets the scale by multiplying scales */
+/* info packets handler, we're just interested in the cam */
+void object_info(struct s3d_evt *hrmz)
+{
+	struct s3d_obj_info *inf;
+	inf=(struct s3d_obj_info *)hrmz->buf;
+	if ((inf->object==0) && (!ani_onstack(&cam)))
+	{
+		cam.dpx=inf->trans_x;
+		cam.dpy=inf->trans_y;
+		cam.dpz=inf->trans_z;
+	}
 
-
-
+}
+/* object click handler */
 void object_click(struct s3d_evt *evt)
 {
 	int oid;
@@ -150,10 +160,12 @@ void mainloop()
 }
 int main (int argc, char **argv)
 {
+
+	s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
+	s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
 	if (!s3d_init(&argc,&argv,"s3dfm"))	
 	{
 		s3d_select_font("vera");
-		s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
 		
 		/* set up file system representation */
 		box_init(&root);
@@ -166,6 +178,11 @@ int main (int argc, char **argv)
 		box_expand(&root);
 		ani_doit(&root);
 		ani_focus(&root);
+		
+		box_init(&cam); /* a virtual object, just to push the cam throu our animation stack */
+		cam.block=0;
+		
+		
 		s3d_mainloop(mainloop);
 		s3d_quit();
 	}
