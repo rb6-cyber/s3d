@@ -1157,12 +1157,13 @@ int main( int argc, char *argv[] ) {
 
 	if (!net_init(Olsr_host))
 	{
+		s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
+		s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
+		s3d_set_callback(S3D_EVENT_KEY,keypress);
+		s3d_set_callback(S3D_EVENT_QUIT,stop);
+
 		if (!s3d_init(&argc,&argv,"olsrs3d"))
 		{
-			s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
-			s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
-			s3d_set_callback(S3D_EVENT_KEY,keypress);
-			s3d_set_callback(S3D_EVENT_QUIT,stop);
 
 			if (s3d_select_font("vera"))
 				printf("font not found\n");
