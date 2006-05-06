@@ -185,7 +185,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 				{
 					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
 					num=(length-4)/(6*4);
-					dprintf(HIGH,"PEP_LINE_NORMAL[%d]: oid %d, %.1f lines",length,oid, (length-4)/(6.0*4.0));
+					dprintf(VLOW,"PEP_LINE_NORMAL[%d]: oid %d, %.1f lines",length,oid, (length-4)/(6.0*4.0));
 					obj_pep_line_normal(p,oid, (float *)cptr, num);
 				}
 				break;
@@ -222,7 +222,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 				{
 					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
 					num=(length-4)/(4);
-					dprintf(LOW,"PEP_MAT_TEX[%d]: %d materials for object oid...%d", length, num, oid);
+					dprintf(VLOW,"PEP_MAT_TEX[%d]: %d materials for object oid...%d", length, num, oid);
 					obj_pep_mat_tex(p,oid, (uint32_t *)cptr, num);
 				}
 				break;
@@ -244,7 +244,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 					oid=ntohl(*((uint32_t *)cptr));		cptr+=4;
 					toid=ntohl(*((uint32_t *)cptr));		cptr+=4;
 					num=(length-8)/(6*4);
-					dprintf(MED,"LOAD_POLY_NORMAL[%d]: oid %d, %.2f lines",length,oid, (length-8)/(6.0*4.0));
+					dprintf(VLOW,"LOAD_POLY_NORMAL[%d]: oid %d, %.2f lines",length,oid, (length-8)/(6.0*4.0));
 					obj_load_line_normal(p,oid, (float *)cptr, toid, num);
 				}
 				break;

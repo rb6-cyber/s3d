@@ -151,16 +151,10 @@ void render_virtual_object(struct t_obj *o)
 					{
 /*						dprintf(HIGH,"object %d is in %s frustum",j,k?"":"not");*/
 						if (select_mode==1)
-						{
-							dprintf(MED,"glPushName(%d)",j);
 							glPushName(j);
-						}
 						obj_render(ap,j);
 						if (select_mode==1)
-						{
-							dprintf(MED,"glPopName(%d)",j);
 							glPopName();
-						}
 					}
 				}
 			}
@@ -204,14 +198,14 @@ int render_by_mcp()
 							{
 							if (select_mode==1)
 							{
-								dprintf(MED,"object %d in culling frustrum!",i);
+								dprintf(VLOW,"object %d in culling frustrum!",i);
 								glLoadName(i);
 							}
 							render_virtual_object(o);
 						} else {
 							if (select_mode==1)
 							{
-								dprintf(MED,"object %d not in culling frustrum!",i);
+								dprintf(VLOW,"object %d not in culling frustrum!",i);
 							}
 						}
 					}
@@ -228,7 +222,7 @@ int render_by_mcp()
 					{
 						if (select_mode==1)
 						{
-							dprintf(HIGH,"mcp object no. %d",i);
+							dprintf(VLOW,"mcp object no. %d",i);
 							glLoadName(-1);
 							glPushName(i);
 						}
@@ -258,7 +252,6 @@ int graphics_pick_obj(int x, int y)
 	t_mtrx m;
 
 	select_mode=1;
-	dprintf(LOW,"looking for some objects ...");
 	glSelectBuffer(SBSIZE,select_buf);
 	glRenderMode(GL_SELECT);
 	glMatrixMode(GL_PROJECTION);
@@ -320,13 +313,13 @@ int graphics_pick_obj(int x, int y)
 			} else 
 				for (j=0;j<names;j++)
 					ptr++;
-		    dprintf(LOW,"[HIT %d] names %d [z1:%f|z2:%f] mcp_o=%d, o=%d ",i,names, z1, z2, mcp_o, o);
+		    dprintf(VLOW,"[HIT %d] names %d [z1:%f|z2:%f] mcp_o=%d, o=%d ",i,names, z1, z2, mcp_o, o);
 		}
-		dprintf(MED,"mcp_o= %d, o= %d",mcp_o,o);
+		dprintf(VLOW,"mcp_o= %d, o= %d",mcp_o,o);
 		ptr=select_buf;
 		if (mcp_o==-1) /* it's an mcp object */
 		{
-			dprintf(MED,"clicked on mcp-object no. %d",o);
+			dprintf(LOW,"clicked on mcp-object no. %d",o);
 			event_obj_click(p,o);
 		} else 
 		if ((names>1) && ((mcp_o>=0)&&(mcp_o<p->n_obj)))
