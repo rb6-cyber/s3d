@@ -79,18 +79,20 @@ int RotateSpeed = 2;
 float Factor = 0.6;	/* Factor in calc_olsr_node_mov */
 struct olsr_node *Olsr_node_pEtx;
 
-
 int Btn_close_id = -1;
 int Btn_close_obj;
-
 int Btn_move_terminal_obj;
 int Btn_move_terminal_id = -1;
+int Btn_follow_mode_obj;
+int Btn_follow_mode_id = -1;
+
+int Rotate_follow_button = 0;
 
 float Title_len;
 int cam_go=0;
 
 int move_cam_to = -1;
-int oid_focus = -1;
+int Oid_focus = -1;
 
 
 /***
@@ -689,9 +691,9 @@ void mainloop() {
 	}
 
 	/* move to terminal */
-	if(move_cam_to != -1 && move_cam_to == obj[obj_term]->oid)
+	if( move_cam_to == obj[obj_term]->oid )
 	{
-		oid_focus = obj[obj_term]->oid;
+		Oid_focus = obj[obj_term]->oid;
 		for( i=0; i<3; i++)
 		{
 			CamPosition[0][i]=(CamPosition[0][i]*4+obj[obj_term]->poi[i])/5;
@@ -715,7 +717,7 @@ void mainloop() {
 			move_cam_to = -1;
 		}
 	} else if ( move_cam_to != -2 && move_cam_to != -1 ) {
-		oid_focus = -1;
+		Oid_focus = -1;
 		for( i=0; i<3; i++)
 		{
 			if( i==2 )
@@ -736,6 +738,17 @@ void mainloop() {
 		s3d_translate(0,CamPosition[0][0],CamPosition[0][1],CamPosition[0][2]);
 		s3d_rotate(0,CamPosition[1][0],CamPosition[1][1],CamPosition[1][2]);
 
+		if(Btn_follow_mode_id == -1)
+		{
+			Btn_follow_mode_id = s3d_clone( Btn_follow_mode_obj );
+			s3d_link(Btn_follow_mode_id,0);
+			s3d_flags_on(Btn_follow_mode_id,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+			s3d_scale( Btn_follow_mode_id, 0.5 );
+			s3d_translate( Btn_follow_mode_id,-Left*3.0-1.0, -Bottom*3.0-0.7, -3.0 );
+		}
+		
+		Rotate_follow_button = (Rotate_follow_button + 50)%360;
+		s3d_rotate(Btn_follow_mode_id,0,Rotate_follow_button,0);
 /*		if (dist(CamPosition[0],search_node->pos_vec) < 6)
 		{
 			s3d_translate(0,search_node->pos_vec[0],search_node->pos_vec[1],(search_node->pos_vec[2]+5));
@@ -747,7 +760,7 @@ void mainloop() {
 	/* move back to returnPoint */
 	if(move_cam_to == -2)
 	{
-		oid_focus = -1;
+		Oid_focus = -1;
 		for( i=0; i<3; i++)
 		{
 			CamPosition[0][i]=(CamPosition[0][i]*4+ReturnPoint[0][i])/5;
@@ -820,7 +833,7 @@ void keypress(struct s3d_evt *event) {
 	int key;
 	key=*((unsigned short *)event->buf);
 
-	if(oid_focus != obj[obj_term]->oid)
+	if(Oid_focus != obj[obj_term]->oid)
 	{
 		switch(key) {
 			case S3DK_ESCAPE: /* esc -> close olsr */
@@ -864,7 +877,7 @@ void keypress(struct s3d_evt *event) {
 				break;
 		}
 	} else {
-		if( (key >= 48 && key <= 57) || key == 46 || key == 13 || key == 8 )
+		if( (key >= 48 && key <= 57) || key == 46 || key == 13 || key == 8 || (key >= 256 && key <= 265) || key == 266 || key == 271 )
 			write_terminal(key);
 	}
 }
@@ -885,7 +898,6 @@ void object_click(struct s3d_evt *evt)
 
 	if( oid == Btn_close_id )
 	{
-		int i;
 		s3d_del_object(Btn_close_id);
 		s3d_del_object(Olsr_ip_label_obj);
 		Btn_close_id = Olsr_ip_label_obj = -1;
@@ -901,10 +913,10 @@ void object_click(struct s3d_evt *evt)
 		}
 		return;
 	}
-	
+
 	if( oid == Btn_move_terminal_id )
 	{
-		if(oid_focus != obj[obj_term]->oid)
+		if(Oid_focus != obj[obj_term]->oid)
 		{
 			for(i=0;i<3;i++)
 			{
@@ -913,21 +925,34 @@ void object_click(struct s3d_evt *evt)
 			}
 			move_cam_to = obj[obj_term]->oid;
 		} else {
-			oid_focus = -1;
+			Oid_focus = -1;
 			move_cam_to = -2;	
 		}
+		return;
+	}
+	
+	if( oid == Btn_follow_mode_id )
+	{
+		s3d_del_object(Btn_follow_mode_id	);
+		Btn_follow_mode_id = -1;
+		Oid_focus = -1;
+		move_cam_to = -1;
 		return;
 	}
 
 	Olsr_node_pEtx = *lst_search(oid);
 
-	if( Btn_close_id == -1 && Olsr_node_pEtx != NULL )
+	if( Olsr_node_pEtx != NULL )
 	{
-		Btn_close_id = s3d_clone( Btn_close_obj );
-		s3d_link(Btn_close_id,0);
-		s3d_flags_on(Btn_close_id,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-		s3d_scale( Btn_close_id, 0.05 );
-		s3d_translate( Btn_close_id,-Left*3.0-0.125, -Bottom*3.0-0.7, -3.0 );
+		if( Btn_close_id == -1 )
+		{
+			Btn_close_id = s3d_clone( Btn_close_obj );
+			s3d_link(Btn_close_id,0);
+			s3d_flags_on(Btn_close_id,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+			s3d_scale( Btn_close_id, 0.05 );
+			s3d_translate( Btn_close_id,-Left*3.0-0.125, -Bottom*3.0-0.7, -3.0 );
+		}
+		
 		if ( Olsr_ip_label_obj != -1 ) s3d_del_object( Olsr_ip_label_obj );
 		snprintf( ip_str, 35, "ip: %s", Olsr_node_pEtx->ip );
 		Olsr_ip_label_obj = s3d_draw_string( ip_str, &Title_len );
@@ -935,6 +960,7 @@ void object_click(struct s3d_evt *evt)
 		s3d_flags_on( Olsr_ip_label_obj, S3D_OF_VISIBLE );
 		s3d_scale( Olsr_ip_label_obj, 0.2 );
 		s3d_translate( Olsr_ip_label_obj,-Left*3.0-(Title_len * 0.2)-0.15, -Bottom*3.0-1.0, -3.0 );
+		/*
 		cam_go=1;
 		if ( Olsr_ip_label_obj != -1 ) s3d_del_object( Olsr_ip_label_obj );
 		snprintf( ip_str, 35, "ip: %s", Olsr_node_pEtx->ip );
@@ -943,9 +969,8 @@ void object_click(struct s3d_evt *evt)
 		s3d_flags_on( Olsr_ip_label_obj, S3D_OF_VISIBLE );
 		s3d_scale( Olsr_ip_label_obj, 0.2 );
 		s3d_translate( Olsr_ip_label_obj,-Left*3.0-(Title_len * 0.2)-0.15, -Bottom*3.0-1.0, -3.0 );
-	} else {
-		/* object_handler(oid); */
-	}
+		*/
+	} 
 }
 
 void print_etx()
@@ -1110,6 +1135,7 @@ void initialize_objects()
 	s3d_flags_on(Btn_move_terminal_id,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	s3d_scale( Btn_move_terminal_id, 0.5 );
 	s3d_translate( Btn_move_terminal_id,-Left*3.0-0.5, -Bottom*3.0-0.7, -3.0 );
+
 }
 
 int main( int argc, char *argv[] ) {
@@ -1175,6 +1201,7 @@ int main( int argc, char *argv[] ) {
 			/* terminal buttons */
 			Btn_close_obj = s3d_import_3ds_file("objs/btn_close.3ds");
 			Btn_move_terminal_obj = s3d_import_3ds_file("objs/dot.3ds");
+			Btn_follow_mode_obj = s3d_import_3ds_file("objs/dotdot.3ds");
 			
 			ZeroPoint = s3d_new_object();
 			Output_border[0] = Output_border[1] = Output_border[2] = Output_border[3] = -1;

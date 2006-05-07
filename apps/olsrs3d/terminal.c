@@ -126,7 +126,10 @@ void write_terminal(int key)
 	float tmp;
 	static int str_id = -1;
 
-	if(key != 13)
+	if( key == 266) key = 46;
+	if( key >= 256 && key <= 265) key = key - 208;
+	
+	if(key != 13 && key != 271)
 	{
 		if(key == 8)
 		{
@@ -152,7 +155,7 @@ void write_terminal(int key)
 		{
 			printf("no node found\n");
 		} else {
-			move_cam_to = search_node->obj_id;	
+			move_cam_to = search_node->obj_id;
 		}
 	}
 }
