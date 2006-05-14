@@ -396,7 +396,7 @@ as in <link linkend="s3d_push_line">s3d_push_line()</link>.
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
-<funcdef>int <function>s3d_push_line</function></funcdef>
+<funcdef>int <function>s3d_push_texture</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
 int <parameter>w</parameter>,
 int <parameter>h</parameter>
