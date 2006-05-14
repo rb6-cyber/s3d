@@ -95,7 +95,7 @@ void ani_add(struct t_item *f)
 			return;		/* already in list */
 		ani_s[ani_n]=f;
 		ani_iterate(f);
-		printf("[A]ni ADD %d\n",ani_n);
+	/*	printf("[A]ni ADD %d\n",ani_n); */
 		ani_n++;
 	}
 	else /* no place, finish now */
@@ -106,7 +106,7 @@ void ani_del(int i)
 {
 	if ((i>=0) && (i<ani_n))
 	{
-		printf("[A]ni DEL %d\n",i);
+/*		printf("[A]ni DEL %d\n",i);*/
 		ani_n--;
 		ani_s[i]=ani_s[ani_n]; /* that should also work if i is the last one */
 	} else {

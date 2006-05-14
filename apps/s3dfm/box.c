@@ -24,6 +24,7 @@
 #include "s3dfm.h"
 #include <stdio.h> 	 /*  printf() */
 #include <math.h>	 /*  sin(),cos() */
+#include <string.h>  /*  strlen() */
 
 /* clear the dirs attributes */
 int box_init(struct t_item *dir)
@@ -137,6 +138,11 @@ void box_sidelabel(struct t_item *dir)
 /* creates a big block which will hold files and subdirs on top */
 int box_buildblock(struct t_item *dir)
 {
+	char fname[30];
+	char *fullname=fname;
+	struct t_item *d;
+	int i,j,m;
+	float len;
 	float vertices[]=
 			{-BHP,0,-BHP,
 			 -BHP,0, BHP,
@@ -248,6 +254,39 @@ int box_buildblock(struct t_item *dir)
 	s3d_push_vertices(dir->title,tvertices,sizeof(tvertices)/(3*sizeof(float)));
 	s3d_push_polygons(dir->title,bar_poly,sizeof(bar_poly)/(sizeof(unsigned long)*4));
 	s3d_link(dir->title,dir->block);
+	i=28;
+	fullname[29]=0;
+	d=dir;
+	do {
+		j=strlen(d->name)-1;
+		if (NULL!=(d->parent))
+		{
+			fullname[i]='/';
+			i--;
+		}
+		while ((i >= 0) && (j >= 0))
+		{
+			fullname[i]=d->name[j];
+			j--;
+			i--;
+		}
+		if (i<0) 
+			break;
+
+
+	} while ((d=d->parent)!=NULL);
+	if (i<0)
+		fullname[0]=fullname[1]='.';
+	else 
+		fullname=(char *)fullname+i+1; /* jump to start of the string */
+	dir->titlestr=s3d_draw_string(fullname,&len);
+	if (len>(1.6*5.0))
+		s3d_scale(dir->titlestr,1.6/len);
+	else
+		s3d_scale(dir->titlestr,0.2);
+	s3d_translate(dir->titlestr,-1.0,1.05,1.01);
+	s3d_link(dir->titlestr,dir->block);
+	printf("FULLNAME is [%s]\n",fullname);
 	return(0);
 }
 
