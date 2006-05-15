@@ -1,0 +1,89 @@
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN">
+<refentry id="s3d"> 
+
+	<refmeta> 
+		<refentrytitle>s3d</refentrytitle>
+		<manvolnum>1</manvolnum>
+	</refmeta> 
+	
+	<refnamediv> 
+		<refname>s3d</refname> 
+		<refpurpose> network display server </refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv> 
+		<cmdsynopsis> 
+			<command>s3d</command> 
+			<arg choice="opt">-g|--use-glut</arg>
+			<arg choice="opt">-s|--use-sdl</arg>
+			<arg choice="opt">-r|--rc</arg>
+			<arg choice="opt">-n|--no-rc</arg>
+			<arg choice="opt">-h|-?|--help</arg>
+		</cmdsynopsis>
+	</refsynopsisdiv> 
+	
+	<refsect1> 
+		<title>DESCRIPTION</title> 
+		<para>
+			<command>s3d(1)</command> is a network display server which can be used as 3d desktop enviroment.
+		</para>
+		<para> </para>
+	</refsect1> 
+	
+	<refsect1>
+		<title>OPTIONS</title> 
+		<para> 
+			This program follows the usual GNU command line syntax. A summary of 
+			the options supported by <command>s3d</command> is below. 
+		</para>
+		<variablelist>
+			<varlistentry> 
+				<term>-h, -?, --help</term> 
+				<listitem> 
+					<para> Show summary of options and exit. </para> 
+				</listitem> 
+			</varlistentry> 
+			<varlistentry> 
+				<term>-g, --use-glut</term> 
+				<listitem> 
+					<para> Tells s3d to use GLUT as graphics framework system. </para>
+				</listitem> 
+			</varlistentry>
+			<varlistentry> 
+				<term>-s, --use-sdl</term> 
+				<listitem> 
+					<para> Tells s3d to use SDL as graphics framework system. </para>
+				</listitem>
+			</varlistentry> 
+			<varlistentry> 
+				<term>-r, --rc</term> 
+				<listitem> 
+					<para> Use the specified file as rc-script. By default s3d uses ~/.s3drc as
+						   per-user rc-script and /etc/s3drc as system-wide rc-script</para>
+				</listitem> 
+			</varlistentry>
+			<varlistentry> 
+				<term>-n, --no-rc</term> 
+				<listitem> 
+					<para> Don't use rc-scripts even if the exist in the apropriate locations. </para>
+				</listitem> 
+			</varlistentry>
+		</variablelist> 
+	</refsect1> 
+		
+	<refsect1> 
+		<title>SEE ALSO</title>
+		<para> <ulink url="http://s3d.berlios.de/"> s3d project page on berlios </ulink> </para>
+		<!--TODO: ADD REFERENCE TO APPS AND /usr/share/doc/s3d/ -->
+	</refsect1>
+
+	<refsect1> 
+		<title>AUTHOR</title>
+		<para>
+			This manual page was written by Timo Schneider <email>timo.schneider@s2004.tu-chemnitz.de</email> 
+			for the Debian project (but may be used by others).
+		</para>
+	</refsect1>
+	
+</refentry> 
+
