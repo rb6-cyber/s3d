@@ -573,6 +573,9 @@ int main (int argc, char **argv)
 	unsigned int b;
 	chars_init();
    	init_terminal();
+	s3d_set_callback(S3D_EVENT_QUIT,stop);
+	s3d_set_callback(S3D_EVENT_OBJ_CLICK,stop);
+	s3d_set_callback(S3D_EVENT_KEY,keypress);
 
 	if (!s3d_init(&argc,&argv,"s3dvt"))	
 	{
@@ -583,9 +586,6 @@ int main (int argc, char **argv)
 		}
 		b=draw_background();
 		chars_s3d_init();
-		s3d_set_callback(S3D_EVENT_QUIT,stop);
-		s3d_set_callback(S3D_EVENT_OBJ_CLICK,stop);
-		s3d_set_callback(S3D_EVENT_KEY,keypress);
 		s3d_mainloop(mainloop);
 		s3d_quit();
 	}
