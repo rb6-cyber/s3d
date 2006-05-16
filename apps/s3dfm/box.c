@@ -49,6 +49,7 @@ int box_init(struct t_item *dir)
 	dir->px=dir->py=dir->pz=0.0;
 	dir->dpx=dir->dpy=dir->dpz=0.0;
 	dir->scale=dir->dscale=1.0;
+	dir->detached=0;
 
 	return(0);
 }
@@ -141,7 +142,7 @@ int box_buildblock(struct t_item *dir)
 	char fname[30];
 	char *fullname=fname;
 	struct t_item *d;
-	int i,j,m;
+	int i,j;
 	float len;
 	float vertices[]=
 			{-BHP,0,-BHP,
@@ -196,7 +197,7 @@ int box_buildblock(struct t_item *dir)
 		3,7,4,0,
 		3,4,0,0
 	};
-	printf("new block for %s\n",dir->name);
+/*	printf("new block for %s\n",dir->name);*/
 
 	dir->block=s3d_new_object();
 	s3d_push_vertices(dir->block,vertices,sizeof(vertices)/(3*sizeof(float)));
@@ -286,7 +287,7 @@ int box_buildblock(struct t_item *dir)
 		s3d_scale(dir->titlestr,0.2);
 	s3d_translate(dir->titlestr,-1.0,1.05,1.01);
 	s3d_link(dir->titlestr,dir->block);
-	printf("FULLNAME is [%s]\n",fullname);
+/*	printf("FULLNAME is [%s]\n",fullname);*/
 	return(0);
 }
 
@@ -410,7 +411,7 @@ int box_collapse_grandkids(struct t_item *dir)
 void box_position_kids(struct t_item *dir)
 {
 	int i,j;
-	printf("placeontop dir %s, %d\n",dir->name,dir->dirs_opened);
+/*	printf("placeontop dir %s, %d\n",dir->name,dir->dirs_opened);*/
 	switch (dir->dirs_opened)
 	{
 		case 0: return;
@@ -420,7 +421,7 @@ void box_position_kids(struct t_item *dir)
 				if (dir->list[i].disp)
 				{
 					dir->list[i].px=0.0;
-					dir->list[i].py=BOXHEIGHT;
+					dir->list[i].py=BOXHEIGHT+dir->list[i].detached*0.3;
 					dir->list[i].pz=0.0;
 					dir->list[i].scale=0.2;
 					ani_add(&dir->list[i]);
@@ -434,7 +435,7 @@ void box_position_kids(struct t_item *dir)
 				if (dir->list[i].disp)
 				{
 					dir->list[i].px=0.8 * sin(((float)j*2*M_PI)/((float)dir->dirs_opened));
-					dir->list[i].py=BOXHEIGHT;
+					dir->list[i].py=BOXHEIGHT+dir->list[i].detached*0.3;
 					dir->list[i].pz=0.8 * cos(((float)j*2*M_PI)/((float)dir->dirs_opened));
 					dir->list[i].scale=0.2;
 					ani_add(&dir->list[i]);
@@ -442,5 +443,16 @@ void box_position_kids(struct t_item *dir)
 				}
 
 			}
+	}
+}
+void box_select(struct t_item *dir)
+{
+	dir->detached=dir->detached?0:1; /* swapping, not sure if !dir->detached would do the same .. */
+	if ((dir->type==T_FOLDER) && dir->disp)
+	{
+		if (dir->parent!=NULL)
+			box_position_kids(dir->parent);
+	} else {
+		/* nothing yet ... */
 	}
 }

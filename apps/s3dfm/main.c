@@ -52,7 +52,7 @@ int parse_dir(struct t_item *dir)
 	if (dir->n_item>0) /* refusing */
 		return(-1);
 	get_path(dir,path);
-	printf("scanning %s\n",path);
+/*	printf("scanning %s\n",path);*/
     n = i = scandir(path, &namelist, 0, alphasort);
     if (n < 0)
 	{
@@ -64,7 +64,7 @@ int parse_dir(struct t_item *dir)
 		list=malloc(sizeof(struct t_item)*i);
 		dir->list=list;
 		dir->n_item=n;
-		printf("found %d items, processing ...\n",n);
+/*		printf("found %d items, processing ...\n",n);*/
         while(n--) {
 			box_init(&list[n]);
 			nstr=namelist[n]->d_name;
@@ -106,6 +106,9 @@ struct t_item *finditem(struct t_item *t, int oid)
 	if (t->block==oid)		return(t);
 	if (t->str==oid)		return(t);
 	if (t->close==oid)		return(t);
+	if (t->select==oid)		return(t);
+	if (t->title==oid)		return(t);
+	if (t->titlestr==oid)	return(t);
 	if (t->type==T_FOLDER)
 		for (i=0;i<t->n_item;i++)
 			if ((f=finditem(&(t->list[i]),oid))!=NULL)
@@ -138,6 +141,12 @@ void object_click(struct s3d_evt *evt)
 			box_collapse(f);
 			if (f->parent!=NULL)
 				ani_focus(f->parent);
+			return;
+		}
+		if (f->select==oid)
+		{
+			printf("[S]electing %s\n",f->name);
+			box_select(f);
 			return;
 		}
 		if (f->type==T_FOLDER)

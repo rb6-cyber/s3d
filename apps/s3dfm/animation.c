@@ -45,7 +45,6 @@ float ani_get_scale(struct t_item *f)
 	root.px-=f->px;
 	root.pz-=f->pz;
 	root.py-=BOXHEIGHT;
-/*	printf("[S]cale factor of %s: %f\n",f->name,1/s);*/
 	root.px*=1/s;
 	root.py*=1/s;
 	root.pz*=1/s;
@@ -59,12 +58,12 @@ void ani_focus(struct t_item *f)
 	root.py=0.0;
 	root.pz=0.0;
 	moveon=1;
-	printf("[Z]ooming to %s\n",f->name);
+/*	printf("[Z]ooming to %s\n",f->name);*/
 	box_collapse_grandkids(f);
 	root.scale=ani_get_scale(f);
 	root.py-=1.5;
-	printf("[R]escaling to %f\n",root.scale);
-	printf("px: %f py:%f pz: %f\n",root.px,root.py,root.pz);
+/*	printf("[R]escaling to %f\n",root.scale);
+	printf("px: %f py:%f pz: %f\n",root.px,root.py,root.pz);*/
 
 	ani_add(&root);
 	if (((cam.dpx-cam.px)* (cam.dpx-cam.px) + (cam.dpy-cam.py)* (cam.dpy-cam.py) 

@@ -46,6 +46,7 @@ struct t_item {
 	int str,close,select,title,titlestr;	/* object ids ...*/
 	int block;								/* oid of the block */
 	int dirs_opened;						/* how many directories are on the block */
+	int detached;							/* if it's detached ... */
 	char name[M_NAME];						/* name (e.g. file name) */
 	float len;
 	struct t_item *parent;					/* parent item */
@@ -80,7 +81,8 @@ int box_collapse(struct t_item *dir);
 int box_collapse_grandkids(struct t_item *dir);
 int box_expand(struct t_item *dir);
 int box_buildblock(struct t_item *dir);
-void box_sidelabel(struct t_item *dir);
-void box_position_kids(struct t_item *dir);
 int box_icon(struct t_item *dir,int i);
 int box_init(struct t_item *dir);
+void box_sidelabel(struct t_item *dir);
+void box_position_kids(struct t_item *dir);
+void box_select(struct t_item *dir);
