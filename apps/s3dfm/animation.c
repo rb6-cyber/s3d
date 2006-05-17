@@ -44,7 +44,7 @@ float ani_get_scale(struct t_item *f)
 		return(1.0);
 	root.px-=f->px;
 	root.pz-=f->pz;
-	root.py-=BOXHEIGHT;
+	root.py-=BOXHEIGHT+f->detached*DETHEIGHT;
 	root.px*=1/s;
 	root.py*=1/s;
 	root.pz*=1/s;

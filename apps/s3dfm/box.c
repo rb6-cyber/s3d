@@ -386,6 +386,7 @@ int box_collapse(struct t_item *dir)
 	}
 	dir->dirs_opened=0;
 	dir->disp=0;
+	dir->detached=0;
 	if (dir->parent!=NULL)
 	{
 		box_position_kids(dir->parent);
@@ -421,7 +422,7 @@ void box_position_kids(struct t_item *dir)
 				if (dir->list[i].disp)
 				{
 					dir->list[i].px=0.0;
-					dir->list[i].py=BOXHEIGHT+dir->list[i].detached*0.3;
+					dir->list[i].py=BOXHEIGHT+dir->list[i].detached*DETHEIGHT;
 					dir->list[i].pz=0.0;
 					dir->list[i].scale=0.2;
 					ani_add(&dir->list[i]);
@@ -435,7 +436,7 @@ void box_position_kids(struct t_item *dir)
 				if (dir->list[i].disp)
 				{
 					dir->list[i].px=0.8 * sin(((float)j*2*M_PI)/((float)dir->dirs_opened));
-					dir->list[i].py=BOXHEIGHT+dir->list[i].detached*0.3;
+					dir->list[i].py=BOXHEIGHT+dir->list[i].detached*DETHEIGHT;
 					dir->list[i].pz=0.8 * cos(((float)j*2*M_PI)/((float)dir->dirs_opened));
 					dir->list[i].scale=0.2;
 					ani_add(&dir->list[i]);

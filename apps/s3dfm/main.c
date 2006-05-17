@@ -139,8 +139,8 @@ void object_click(struct s3d_evt *evt)
 		if (f->close==oid)
 		{
 			box_collapse(f);
-			if (f->parent!=NULL)
-				ani_focus(f->parent);
+/*			if (f->parent!=NULL)
+				ani_focus(f->parent);*/
 			return;
 		}
 		if (f->select==oid)

@@ -33,9 +33,12 @@
 #define M_DIR		512
 #define M_NAME		256
 
+/* total height of the block */
 #define BOXHEIGHT	1.2
 #define BHP			1.001
 #define BHH			BOXHEIGHT+0.001
+/* how much should detached dirs move away from parent block */
+#define DETHEIGHT	0.3
 
 /* maximum size of the animation stack */
 #define MAXANI		1024
