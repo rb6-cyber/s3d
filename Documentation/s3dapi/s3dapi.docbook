@@ -519,12 +519,12 @@ proper normal values (same for every vertex, calculated by the plane which is de
 </para>
 </sect1>
 
-<sect1 id="s3d_pep_tex_coord">
-<title>s3d_pep_tex_coord</title>
+<sect1 id="s3d_pep_polygon_tex_coord">
+<title>s3d_pep_polygon_tex_coord</title>
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
-<funcdef>int <function>s3d_pep_tex_coord</function></funcdef>
+<funcdef>int <function>s3d_pep_polygon_tex_coord</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
 float <parameter>x1</parameter>, 
@@ -540,16 +540,16 @@ float <parameter>y3</parameter>
 Pimp the last polygon pushed with some textures coordinates, x and y values for each vertex point respectively.
 Those values may be between 0 and 1 and are vertex points on the <link linkend="s3d_pep_material_texture">
 texture defined in the material</link> of the polygon. If you have more polygons which should get a texture, use
-<link linkend="s3d_pep_tex_coords">s3d_pep_tex_coords()</link>
+<link linkend="s3d_pep_polygon_tex_coords">s3d_pep_polygon_tex_coords()</link>
 </para>
 </sect1>
 
-<sect1 id="s3d_pep_tex_coords">
-<title>s3d_pep_tex_coords</title>
+<sect1 id="s3d_pep_polygon_tex_coords">
+<title>s3d_pep_polygon_tex_coords</title>
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
-<funcdef>int <function>s3d_pep_tex_coords</function></funcdef>
+<funcdef>int <function>s3d_pep_polygon_tex_coords</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
 float *<parameter>tbuf</parameter>, 
@@ -559,7 +559,7 @@ int <parameter>n</parameter>
 </funcsynopsis>
 <para>
 Pimp the latest n polygons with texture coordinates. tbuf has 6*n float values for its entries, which are supplied in the order
-as in <link linkend="s3d_pep_tex_coord">s3d_pep_polygon_tex_coord()</link>
+as in <link linkend="s3d_pep_polygon_tex_coord">s3d_pep_polygon_tex_coord()</link>
 </para>
 </sect1>
 
@@ -799,7 +799,7 @@ int <parameter>n</parameter>
 </funcprototype>
 </funcsynopsis>
 <para>
-Just as <link linkend="s3d_pep_tex_coords">s3d_load_tex_coords()</link>, with the difference you won't alter 
+Just as <link linkend="s3d_pep_polygon_tex_coords">s3d_pep_polygon_tex_coords()</link>, with the difference you won't alter 
 the latest n polygons but n polygons starting with index start.
 </para>
 </sect1>
@@ -827,7 +827,7 @@ the width w and height h. This can be used to update only parts of the texture. 
 as the image will be sent to server in fragments. Of course, you will have created the texture with 
 <link linkend="s3d_push_texture">s3d_push_texture</link>, have an material assigned to the texture with <link linkend="s3d_pep_material_texture">
 s3d_pep_material_texture()</link> and have your polygons set sane polygon texture coords 
-using <link linkend="s3d_pep_tex_coord">s3d_pep_tex_coord()</link>.
+using <link linkend="s3d_pep_polygon_tex_coord">s3d_pep_polygon_tex_coord()</link>.
 </para>
 </sect1>
 
