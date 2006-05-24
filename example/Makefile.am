@@ -1,9 +1,10 @@
 noinst_PROGRAMS=	hudtest katze \
 			ptrtest radius_test s3dclock snowman \
-			strtest texturetest linetest
+			strtest texturetest linetest widgets
 bin_PROGRAMS= filebrowser 3dsloader
 			
 3dsloader_SOURCES=	3dsloader.c
+widgets_SOURCES=	widgets.c
 filebrowser_SOURCES=	filebrowser.c
 hudtest_SOURCES=	hudtest.c
 katze_SOURCES=		katze.c

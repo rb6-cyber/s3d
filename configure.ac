@@ -185,7 +185,9 @@ AC_OUTPUT
 
 echo "
 --------------------------------------------------------------------------------
+Warnings (not fatal, if any):
 $WARNS
 --------------------------------------------------------------------------------
 "
+
 echo "now use 'make' to compile and 'make install' to install"
