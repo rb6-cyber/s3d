@@ -1,0 +1,44 @@
+SUPPORTED FILETYPES:
++-------+---+---+---+---+---------------------------------------------+
+|\ feat.| i | c | t | n | s                                           |
+| \     | m | o | e | o | u +-----------------------------------------+
+|  \    | p | l | x | r | b |                                         |
+|   \   | o | o | t | m | o |                                         |
+|    \  | r | r | u | a | b |                                         |
+|     \ | t | s | r | l | j |                                         |
+| type \|   |   | e | s | s | Program                                 |
++-------+---+---+---+---+---+-----------------------------------------+
+| .3mf  | x | x |   |   |   | 3D Metafile                             |
+| .3ds  | x | x | p |   |   | 3D Studio                               |
+| .ac   | x | x | x |   | x | AC3D                                    |
+| .acc  | x | x | x |   | x | AC3D with triangle strips (TORCS)       |
+| .b3d  | x | x |   |   |   | ?? (3D MetaFile format)                 |
+| .cob  | x | x |   |   |   | Caligari TrueSpace                      |
+| .dxf  | x |   |   |   |   | AutoCAD                                 |
+| .iob  | x | x |   |   |   | Impulse Turbo Silver / Imagine          |
+| .lcd  | x | x |   |   |   | LeoCAD                                  |
+| .lw   | x | x |   |   |   | LightWave                               |
+| .lwb  | x | x |   |   |   | LightWave                               |
+| .lwo  | x | x |   |   |   | LightWave                               |
+| .md2  | x |   |   |   |   | id Software Quake II                    |
+| .md3  | x | x | x | ? |   | id Software Quake III                   |
+| .nff  | x | x |   | x |   | Neutral File Format                     |
+| .obj  | x | x |   |   |   | Alias Wavefront Maya                    |
+| .prj  | x | ? |   |   |   | 3D Studio                               |
+| .q3o  | x | x | x |   |   | Quick3D Object                          |
+| .q3s  | x | x | x |   |   | Quick3D Scene                           |
+| .wrl  | x | x |   |   |   | VRML World (VRML 1 only and incomplete) |
++-------+---+---+---+---+---------------------------------------------+
+
+x: implemented
+p: partly done (strange results)
+
+other model plugins:
+* heightfield: generates a landscape from an image (broken atm?)
+
+IMAGE PLUGINS:
+
+* bmp: Windows Bitmap, uncompressed, only 8-bit tested
+* sgi: SGI RGB files, uncompressed & RLE, 8, 24, 32 bit
+* GdkPixbuf: everything GdkPixbuf can load, GTK 2.x required
+
