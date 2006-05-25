@@ -23,6 +23,7 @@
 
 #include <s3d.h>
 #include <s3dw.h>
+#include <s3dw_int.h>
 #include <stdlib.h> /* malloc() */
 /* create a new surface */
 struct s3dw_surface *s3dw_surface_new()

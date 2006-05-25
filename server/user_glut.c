@@ -24,7 +24,7 @@
 
 #include "global.h"
 #include <GL/glut.h> 	 /*  all the glut functions */
-#include "../client/s3d_keysym.h" /* our very own (haha) keysyms */
+#include <s3d_keysym.h> /* our very own (haha) keysyms */
 /*  local prototypes */
 void keyboard(unsigned char key, int x, int y);
 void special(int skey, int x, int y);

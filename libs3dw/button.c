@@ -24,8 +24,10 @@
 
 #include <s3d.h>
 #include <s3dw.h>
+#include <s3dw_int.h>
 #include <stdlib.h> /* malloc() */
 #include <string.h> /* strdup() */
+
 
 /* create a new button in the surface */
 struct s3dw_button *s3dw_button_new(struct s3dw_surface *surface, char *text, int posx, int posy)

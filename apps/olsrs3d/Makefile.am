@@ -11,8 +11,8 @@ olsrs3d_SOURCES =  \
 	net.c \
 	terminal.c
 
-olsrs3d_CPPFLAGS=	-I$(top_srcdir)/client
-olsrs3d_LDADD=		$(top_builddir)/client/libs3d.la
+olsrs3d_CPPFLAGS=	-I$(top_srcdir)/libs3d
+olsrs3d_LDADD=		$(top_builddir)/libs3d/libs3d.la
 
 EXTRA_DIST = \
 	output.sample TODO

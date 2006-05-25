@@ -16,8 +16,8 @@ strtest_SOURCES=	strtest.c
 texturetest_SOURCES=	texturetest.c
 ptrtest_SOURCES=	ptrtest.c
 
-CPPFLAGS=		-I$(top_srcdir)/server -I$(top_srcdir)/client
-LIBS=			$(top_builddir)/client/libs3d.la
+CPPFLAGS=		-I$(top_srcdir)/server -I$(top_srcdir)/libs3d -I$(top_srcdir)/libs3dw
+LIBS=			$(top_builddir)/libs3d/libs3d.la $(top_builddir)/libs3dw/libs3dw.la
 
 EXTRA_DIST=	\
 	TODO

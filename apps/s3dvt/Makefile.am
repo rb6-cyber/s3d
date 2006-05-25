@@ -8,6 +8,6 @@ s3dvt_SOURCES =  \
 	main.c \
 	terminal.c
 
-s3dvt_CPPFLAGS=	-I${top_srcdir}/client @PTHREAD_CFLAGS@
-s3dvt_LDADD=	${top_builddir}/client/libs3d.la @PTHREAD_LIBS@
+s3dvt_CPPFLAGS=	-I${top_srcdir}/libs3d @PTHREAD_CFLAGS@
+s3dvt_LDADD=	${top_builddir}/libs3d/libs3d.la @PTHREAD_LIBS@
 

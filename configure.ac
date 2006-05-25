@@ -99,14 +99,11 @@ fi
 AM_CONDITIONAL([BUILD_SDL], test x"${HAVE_SDL}" = xyes)
 AM_CONDITIONAL([BUILD_GLUT], test x"${HAVE_glut}" = xyes)
 
-dnl ##################################### CLIENT #######################################
+dnl ##################################### LIBS3D #######################################
 
 PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.1.0, [:], [AC_MSG_ERROR([Please install fontconfig (version 2.1.0 or higher)])])
 PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.5.0, [:], [AC_MSG_ERROR([Please install freetype2 (version 9.5.0 or higher)])])
 
-dnl if test "x${HAVE_glut}" = "x"; then
-dnl     AC_MSG_ERROR([Sorry, we need glut for the client in for Glyph Tesselation ...])
-dnl fi
 
 dnl ##################################### EXAMPLES / APPS ######################
 

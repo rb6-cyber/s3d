@@ -22,15 +22,17 @@
  */
 
 
+#include <s3d.h>
 #include <s3dw.h>
+#include <s3dw_int.h>
 
 
 /* default style */
 struct s3dw_style def_style={"default",
 /* surface_mat */
 {0.5,0.5,0.5,1.0, 
-0.5,0.5,0.5,1.0, 
-0.5,0.5,0.5,1.0}
+ 0.5,0.5,0.5,1.0, 
+ 0.5,0.5,0.5,1.0}
 ,
 /* input_mat */
 {0.5,0.5,0.5,1.0,
