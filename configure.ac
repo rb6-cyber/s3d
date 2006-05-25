@@ -169,7 +169,8 @@ AC_CONFIG_HEADER(config.h)
 AC_CONFIG_FILES([
 	Makefile
 	server/Makefile
-	client/Makefile
+	libs3d/Makefile
+	libs3dw/Makefile
 	apps/Makefile
 	apps/olsrs3d/Makefile
 	apps/s3d_x11gate/Makefile
