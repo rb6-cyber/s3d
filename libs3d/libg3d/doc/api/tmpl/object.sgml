@@ -1,0 +1,93 @@
+<!-- ##### SECTION Title ##### -->
+object
+
+<!-- ##### SECTION Short_Description ##### -->
+Object manipulation
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION g3d_object_free ##### -->
+<para>
+
+</para>
+
+@object: 
+
+
+<!-- ##### FUNCTION g3d_object_radius ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_object_scale ##### -->
+<para>
+
+</para>
+
+@object: 
+@scale: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_object_transform ##### -->
+<para>
+
+</para>
+
+@object: 
+@matrix: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_object_duplicate ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_object_optimize ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_object_smooth ##### -->
+<para>
+
+</para>
+
+@object: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_object_merge ##### -->
+<para>
+
+</para>
+
+@o1: 
+@o2: 
+@Returns: 
+
+

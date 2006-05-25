@@ -1,0 +1,39 @@
+<!-- ##### SECTION Title ##### -->
+texture
+
+<!-- ##### SECTION Short_Description ##### -->
+Texture loading and manipulation
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION g3d_texture_load_cached ##### -->
+<para>
+
+</para>
+
+@context: 
+@model: 
+@filename: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_texture_prepare ##### -->
+<para>
+
+</para>
+
+@texture: 
+@Returns: 
+
+

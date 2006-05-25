@@ -1,0 +1,52 @@
+<!-- ##### SECTION Title ##### -->
+iff
+
+<!-- ##### SECTION Short_Description ##### -->
+IFF file helper functions
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### MACRO G3D_IFF_MKID ##### -->
+<para>
+
+</para>
+
+@a: 
+@b: 
+@c: 
+@d: 
+
+
+<!-- ##### FUNCTION g3d_iff_open ##### -->
+<para>
+
+</para>
+
+@filename: 
+@id: 
+@len: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_iff_readchunk ##### -->
+<para>
+
+</para>
+
+@f: 
+@id: 
+@len: 
+@Returns: 
+
+

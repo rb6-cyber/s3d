@@ -1,0 +1,78 @@
+<!-- ##### SECTION Title ##### -->
+context
+
+<!-- ##### SECTION Short_Description ##### -->
+Libg3d initialization and configuration
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION g3d_context_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_context_free ##### -->
+<para>
+
+</para>
+
+@context: 
+
+
+<!-- ##### FUNCTION g3d_context_set_bgcolor ##### -->
+<para>
+
+</para>
+
+@context: 
+@r: 
+@g: 
+@b: 
+@a: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_context_update_interface ##### -->
+<para>
+
+</para>
+
+@context: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_context_update_progress_bar ##### -->
+<para>
+
+</para>
+
+@context: 
+@percentage: 
+@visibility: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_context_set_set_bgcolor_func ##### -->
+<para>
+
+</para>
+
+@context: 
+@func: 
+@user_data: 
+
+

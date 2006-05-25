@@ -1,0 +1,165 @@
+<!-- ##### SECTION Title ##### -->
+plugins
+
+<!-- ##### SECTION Short_Description ##### -->
+Plugin interface
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### MACRO G3D_PLUGIN_UNKNOWN ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO G3D_PLUGIN_IMPORT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO G3D_PLUGIN_IMAGE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### USER_FUNCTION PluginInitFunc ##### -->
+<para>
+
+</para>
+
+@context: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION PluginCleanupFunc ##### -->
+<para>
+
+</para>
+
+@user_data: 
+
+
+<!-- ##### USER_FUNCTION PluginLoadModelFunc ##### -->
+<para>
+
+</para>
+
+@context: 
+@filename: 
+@model: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION PluginLoadImageFunc ##### -->
+<para>
+
+</para>
+
+@context: 
+@filename: 
+@image: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION PluginGetDescFunc ##### -->
+<para>
+
+</para>
+
+@context: 
+@Returns: 
+
+
+<!-- ##### USER_FUNCTION PluginGetExtFunc ##### -->
+<para>
+
+</para>
+
+@context: 
+@Returns: 
+
+
+<!-- ##### STRUCT G3DPlugin ##### -->
+<para>
+
+</para>
+
+@name: 
+@path: 
+@type: 
+@extensions: 
+@init_func: 
+@cleanup_func: 
+@loadmodel_func: 
+@loadimage_func: 
+@desc_func: 
+@ext_func: 
+@user_data: 
+@module: 
+
+<!-- ##### FUNCTION g3d_plugins_init ##### -->
+<para>
+
+</para>
+
+@context: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_plugins_cleanup ##### -->
+<para>
+
+</para>
+
+@context: 
+
+
+<!-- ##### FUNCTION g3d_plugins_load_model ##### -->
+<para>
+
+</para>
+
+@context: 
+@filename: 
+@model: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_plugins_load_image ##### -->
+<para>
+
+</para>
+
+@context: 
+@filename: 
+@image: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_plugins_get_image_extensions ##### -->
+<para>
+
+</para>
+
+@context: 
+@Returns: 
+
+

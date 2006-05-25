@@ -1,0 +1,76 @@
+<!-- ##### SECTION Title ##### -->
+matrix
+
+<!-- ##### SECTION Short_Description ##### -->
+Matrix manipulation and calculation
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION Stability_Level ##### -->
+
+
+<!-- ##### FUNCTION g3d_matrix_identity ##### -->
+<para>
+
+</para>
+
+@matrix: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_matrix_multiply ##### -->
+<para>
+
+</para>
+
+@m1: 
+@m2: 
+@rm: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_matrix_translate ##### -->
+<para>
+
+</para>
+
+@x: 
+@y: 
+@z: 
+@rm: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_matrix_rotate ##### -->
+<para>
+
+</para>
+
+@angle: 
+@ax: 
+@ay: 
+@az: 
+@rm: 
+@Returns: 
+
+
+<!-- ##### FUNCTION g3d_matrix_rotate_xyz ##### -->
+<para>
+
+</para>
+
+@rx: 
+@ry: 
+@rz: 
+@rm: 
+@Returns: 
+
+
