@@ -5,7 +5,7 @@ else
 MAYBE_EXAMPLES=
 endif
 
-SUBDIRS=server client apps $(MAYBE_EXAMPLES) objs Documentation
+SUBDIRS=server libs3d libs3dw apps $(MAYBE_EXAMPLES) objs Documentation
 
 EXTRA_DIST=	gpl.txt \
 		config/libtool15.m4 config/mdl_have_opengl.m4 \
