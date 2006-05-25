@@ -342,24 +342,31 @@ int box_expand(struct t_item *dir)
 }
 
 /* undisplay a directory, thus recursively removing the kids.*/
-int box_collapse(struct t_item *dir)
+int box_collapse(struct t_item *dir,int force)
 {
 	int i;
+	int ret;
 	struct t_item *par;
 	if (&root==dir)
 	{
 		printf("won't undisplay root window ... \n");
 		return(-1);
 	}
+	if (dir->detached && !force)
+		return(1);
 	if (dir->disp==0)
 	{
 /*		printf("[A]lready undisplayed, nothing to do ...\n");*/
 		return(-1);
 	}
+	ret=0;
+	for (i=0;i<dir->n_item;i++)
+		if (dir->list[i].disp)
+			ret|=box_collapse(&dir->list[i],force);
+
+	if (ret && !force) return(ret);
 	for (i=0;i<dir->n_item;i++)
 	{
-		if (dir->list[i].disp)
-			box_collapse(&dir->list[i]);
 		if (dir->list[i].block!=-1)
 		{
 			s3d_del_object(dir->list[i].block);
@@ -391,7 +398,7 @@ int box_collapse(struct t_item *dir)
 	{
 		box_position_kids(dir->parent);
 	}
-	return(0);
+	return(ret);
 }
 /* only display dir and its kids, but nothing below. */
 int box_collapse_grandkids(struct t_item *dir)
@@ -403,7 +410,7 @@ int box_collapse_grandkids(struct t_item *dir)
 		{
 			kid=&dir->list[i];
 			for (j=0;j<kid->n_item;j++)
-				box_collapse(&kid->list[j]);
+				box_collapse(&kid->list[j],0);
 		}
 	return(0);
 }

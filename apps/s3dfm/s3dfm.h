@@ -80,7 +80,7 @@ void ani_iterate(struct t_item *f);
 int ani_check(struct t_item *f);
 int ani_onstack(struct t_item *f);
 /* display.c */
-int box_collapse(struct t_item *dir);
+int box_collapse(struct t_item *dir,int force);
 int box_collapse_grandkids(struct t_item *dir);
 int box_expand(struct t_item *dir);
 int box_buildblock(struct t_item *dir);
