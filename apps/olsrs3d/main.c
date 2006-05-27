@@ -649,7 +649,7 @@ void mainloop() {
 	int net_result;   /* result of function net_main */
 	char nc_str[20];
 	float strLen;
-	float target,current;
+	float target,current,diff[3],tmp_mov_vec[3],angle,angle_rad;
 	int i;
 	/* calculate new movement vector */
 	calc_olsr_node_mov();
@@ -689,6 +689,14 @@ void mainloop() {
 			break;
 		}
 	}
+	
+	if(RotateSwitch) {
+		Zp_rotate = (Zp_rotate+RotateSpeed)%360;
+		s3d_rotate(ZeroPoint,0,Zp_rotate,0);
+	}
+	CamPosition2[0][0]=  CamPosition[0][0]*cos(Zp_rotate*M_PI/180.0) - CamPosition[0][2] * sin (Zp_rotate*M_PI/180.0);
+	CamPosition2[0][1]=  CamPosition[0][1];
+	CamPosition2[0][2]=  CamPosition[0][0]*sin(Zp_rotate*M_PI/180.0) + CamPosition[0][2] * cos (Zp_rotate*M_PI/180.0);
 
 	/* move to terminal */
 	if( move_cam_to == obj[obj_term]->oid )
@@ -718,14 +726,25 @@ void mainloop() {
 		}
 	} else if ( move_cam_to != -2 && move_cam_to != -1 ) {
 		Oid_focus = -1;
+		
+		/* s3d_vector_substract(CamPosition2[0], CamPosition[0], diff); */
+		
+		diff[0]=  search_node->pos_vec[0]*cos(Zp_rotate*M_PI/180.0) - search_node->pos_vec[2] * -sin (Zp_rotate*M_PI/180.0);
+		diff[1]=  search_node->pos_vec[1];
+		diff[2]=  search_node->pos_vec[0]*-sin(Zp_rotate*M_PI/180.0) + search_node->pos_vec[2] * cos (Zp_rotate*M_PI/180.0);
+
+		
+		CamPosition[0][0]=(CamPosition[0][0]*4+diff[0])/5;
+		CamPosition[0][1]=(CamPosition[0][1]*4+(diff[1])+2)/5;
+		CamPosition[0][2]=(CamPosition[0][2]*4+(diff[2]+10))/5;
+		
+		/*
+		CamPosition[0][0]=((CamPosition[0][0]*4+search_node->pos_vec[0])/5)+diff[0];
+		CamPosition[0][1]=((CamPosition[0][1]*4+(search_node->pos_vec[1])+2)/5)+diff[1];
+		CamPosition[0][2]=((CamPosition[0][2]*4+(search_node->pos_vec[2]+10))/5)+diff[2];
+		*/	
 		for( i=0; i<3; i++)
 		{
-			if( i==2 )
-				CamPosition[0][i]=(CamPosition[0][i]*4+(search_node->pos_vec[i]+10))/5;
-			else if ( i == 1 )
-				CamPosition[0][i]=(CamPosition[0][i]*4+(search_node->pos_vec[i])+2)/5;
-			else
-				CamPosition[0][i]=(CamPosition[0][i]*4+search_node->pos_vec[i])/5;
 			target = 0.0;
 			current = CamPosition[1][i];
 
@@ -735,6 +754,22 @@ void mainloop() {
 				current = CamPosition[1][i] - 360;
 			CamPosition[1][i]=(CamPosition[1][i]*4+target)/5;
 		}
+		/*
+		tmp_mov_vec[0] = diff[0] - search_node->pos_vec[0];
+		tmp_mov_vec[1] = 0; 
+		tmp_mov_vec[2] = diff[2] - search_node->pos_vec[2];
+
+		angle = s3d_vector_angle( CamPosition[1], tmp_mov_vec );
+
+		
+		if ( tmp_mov_vec[0] > 0 ) {
+			angle_rad = 90.0/M_PI - angle;
+			angle = 180 - ( 180.0/M_PI * angle );
+		} else {
+			angle_rad = 90.0/M_PI + angle;
+			angle = 180 + ( 180.0/M_PI * angle );
+		}
+		*/
 		s3d_translate(0,CamPosition[0][0],CamPosition[0][1],CamPosition[0][2]);
 		s3d_rotate(0,CamPosition[1][0],CamPosition[1][1],CamPosition[1][2]);
 
@@ -792,14 +827,7 @@ void mainloop() {
 		print_etx();
 	}
 
-	if(RotateSwitch) {
-		Zp_rotate = (Zp_rotate+RotateSpeed)%360;
-		s3d_rotate(ZeroPoint,0,Zp_rotate,0);
-	}
-	CamPosition2[0][0]=  CamPosition[0][0]*cos(Zp_rotate*M_PI/180.0) - CamPosition[0][2] * sin (Zp_rotate*M_PI/180.0);
-	CamPosition2[0][1]=  CamPosition[0][1];
-	CamPosition2[0][2]=  CamPosition[0][0]*sin(Zp_rotate*M_PI/180.0) + CamPosition[0][2] * cos (Zp_rotate*M_PI/180.0);
-
+	
 	if (cam_go && move_cam_to == -1)
 	{ /* move a little bit closer ... */
 		CamPosition[0][0]=(CamPosition[0][0]*9+Olsr_node_pEtx->pos_vec[0])/10;
@@ -858,14 +886,6 @@ void keypress(struct s3d_evt *event) {
 			case 16: /* strg + p -> reset nodes ( zeroPoint to 0,0,0 ) */
 				s3d_translate(ZeroPoint,0.0,0.0,0.0);
 				ZeroPosition[0] = ZeroPosition[1] = ZeroPosition[2] = 0.0;
-				break;
-			case S3DK_UP: /* arrow up -> move nodes up */
-				ZeroPosition[1]++;
-				s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
-				break;
-			case S3DK_DOWN: /* arrow down -> move nodes down */
-				ZeroPosition[1]--;
-				s3d_translate(ZeroPoint,ZeroPosition[0],ZeroPosition[1],ZeroPosition[2]);
 				break;
 			case S3DK_PAGEUP: /* page up -> change factor in calc_olsr_node_mov */
 				if(Factor < 0.9)
@@ -949,8 +969,8 @@ void object_click(struct s3d_evt *evt)
 			Btn_close_id = s3d_clone( Btn_close_obj );
 			s3d_link(Btn_close_id,0);
 			s3d_flags_on(Btn_close_id,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-			s3d_scale( Btn_close_id, 0.05 );
-			s3d_translate( Btn_close_id,-Left*3.0-0.125, -Bottom*3.0-0.7, -3.0 );
+			s3d_scale( Btn_close_id, 0.10 );
+			s3d_translate( Btn_close_id,-Left*3.0-0.150, -Bottom*3.0-0.9, -3.0 );
 		}
 		
 		if ( Olsr_ip_label_obj != -1 ) s3d_del_object( Olsr_ip_label_obj );
@@ -959,7 +979,7 @@ void object_click(struct s3d_evt *evt)
 		s3d_link( Olsr_ip_label_obj, 0 );
 		s3d_flags_on( Olsr_ip_label_obj, S3D_OF_VISIBLE );
 		s3d_scale( Olsr_ip_label_obj, 0.2 );
-		s3d_translate( Olsr_ip_label_obj,-Left*3.0-(Title_len * 0.2)-0.15, -Bottom*3.0-1.0, -3.0 );
+		s3d_translate( Olsr_ip_label_obj,-Left*3.0-(Title_len * 0.2)-0.15, -Bottom*3.0-1.2, -3.0 );
 		/*
 		cam_go=1;
 		if ( Olsr_ip_label_obj != -1 ) s3d_del_object( Olsr_ip_label_obj );
@@ -976,7 +996,7 @@ void object_click(struct s3d_evt *evt)
 void print_etx()
 {
 	struct olsr_neigh_list *tmpNeighbour;
-	float p = 1.2;
+	float p = 1.4;
 	int i;
 	float len = 0.0, max_len=0.0;
 
@@ -1035,16 +1055,16 @@ void print_etx()
 					1.0,1.0,1.0,
 					1.0,1.0,1.0);
 			}
-			s3d_push_vertex(Output_border[0], -Left*3.0-0.2,			-Bottom*3.0-0.7, -3.0);
-			s3d_push_vertex(Output_border[0], -Left*3.0-(max_len*0.2),	-Bottom*3.0-0.7, -3.0);
+			s3d_push_vertex(Output_border[0], -Left*3.0-0.2,			-Bottom*3.0-0.9, -3.0);
+			s3d_push_vertex(Output_border[0], -Left*3.0-(max_len*0.2),	-Bottom*3.0-0.9, -3.0);
 
-			s3d_push_vertex(Output_border[1], -Left*3.0-0.1,			-Bottom*3.0-0.8, -3.0);
+			s3d_push_vertex(Output_border[1], -Left*3.0-0.1,			-Bottom*3.0-1.0, -3.0);
 			s3d_push_vertex(Output_border[1], -Left*3.0-0.1,			-Bottom*3.0-p, 	-3.0);
 
 			s3d_push_vertex(Output_border[2], -Left*3.0-0.1,			-Bottom*3.0-p, 	-3.0);
 			s3d_push_vertex(Output_border[2], -Left*3.0-(max_len*0.2),	-Bottom*3.0-p, 	-3.0);
 
-			s3d_push_vertex(Output_border[3], -Left*3.0-(max_len*0.2),	-Bottom*3.0-0.7, -3.0);
+			s3d_push_vertex(Output_border[3], -Left*3.0-(max_len*0.2),	-Bottom*3.0-0.9, -3.0);
 			s3d_push_vertex(Output_border[3], -Left*3.0-(max_len*0.2),	-Bottom*3.0-p, 	-3.0);
 
 			s3d_push_line( Output_border[0], 0,1,0);
@@ -1066,16 +1086,16 @@ void print_etx()
 			s3d_pop_vertex(Output_border[1], 2);
 			s3d_pop_vertex(Output_border[2], 2);
 			s3d_pop_vertex(Output_border[3], 2);
-			s3d_push_vertex(Output_border[0], -Left*3.0-0.2,				-Bottom*3.0-0.7, -3.0);
-			s3d_push_vertex(Output_border[0], -Left*3.0-(max_len*0.2),	-Bottom*3.0-0.7, -3.0);
+			s3d_push_vertex(Output_border[0], -Left*3.0-0.2,				-Bottom*3.0-0.9, -3.0);
+			s3d_push_vertex(Output_border[0], -Left*3.0-(max_len*0.2),	-Bottom*3.0-0.9, -3.0);
 
-			s3d_push_vertex(Output_border[1], -Left*3.0-0.1,				-Bottom*3.0-0.8, -3.0);
+			s3d_push_vertex(Output_border[1], -Left*3.0-0.1,				-Bottom*3.0-1.0, -3.0);
 			s3d_push_vertex(Output_border[1], -Left*3.0-0.1,				-Bottom*3.0-p,	 -3.0);
 
 			s3d_push_vertex(Output_border[2], -Left*3.0-0.1,				-Bottom*3.0-p,	 -3.0);
 			s3d_push_vertex(Output_border[2], -Left*3.0-(max_len*0.2),	-Bottom*3.0-p,	 -3.0);
 
-			s3d_push_vertex(Output_border[3], -Left*3.0-(max_len*0.2),	-Bottom*3.0-0.7, -3.0);
+			s3d_push_vertex(Output_border[3], -Left*3.0-(max_len*0.2),	-Bottom*3.0-0.9, -3.0);
 			s3d_push_vertex(Output_border[3], -Left*3.0-(max_len*0.2),	-Bottom*3.0-p, 	 -3.0);
 		}
 	}
