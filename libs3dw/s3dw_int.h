@@ -22,4 +22,29 @@
  */
 
 #include <s3dlib.h> /* dprintf() */
+#define MAXANI		16
+#define ZOOMS		5
+extern	struct s3dw_object  **psurf;
+extern	int					  nsurf;
 
+/* button.c */
+void s3dw_button_destroy(struct s3dw_button *button);
+void s3dw_button_event_click(struct s3dw_button *button, unsigned long oid);
+/* object.c */
+struct s3dw_object *s3dw_object_new();
+void s3dw_object_destroy(struct s3dw_object *object);
+void s3dw_object_event_click(struct s3dw_object *object, unsigned long oid);
+/* surface.c */
+void s3dw_surface_event_click(struct s3dw_surface *surface, unsigned long oid);
+void s3dw_surface_append_obj(struct s3dw_surface *surface, struct s3dw_object *object);
+void s3dw_surface_event_click(struct s3dw_surface *surface, unsigned long oid);
+/* style.c */
+extern struct s3dw_style def_style;
+/* animate.c */
+int  _s3dw_ani_onstack(struct s3dw_object *f);
+void _s3dw_ani_add(struct s3dw_object *f);
+void _s3dw_ani_del(int i);
+void _s3dw_ani_doit(struct s3dw_object *f);
+void _s3dw_ani_finish(struct s3dw_object *f, int i);
+void _s3dw_ani_iterate(struct s3dw_object *f);
+int  _s3dw_ani_check(struct s3dw_object *f);
