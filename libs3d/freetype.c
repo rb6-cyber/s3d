@@ -95,10 +95,16 @@ int s3d_ft_load_font()
 int _s3d_clear_tessbuf()
 {
 	int i;
+	if (memory_font==NULL);
 	for (i=0; i<256;i++)
 	{
 		if (tess_buf[i].vbuf!=NULL) free(tess_buf[i].vbuf);
 		if (tess_buf[i].pbuf!=NULL) free(tess_buf[i].pbuf);
+	}
+	for (i=0; i<256;i++)
+	{
+		tess_buf[i].vbuf=NULL;
+		tess_buf[i].pbuf=NULL;
 	}
 	return(0);
 }
@@ -309,8 +315,8 @@ int _s3d_draw_tessbuf(int oid,unsigned short a,int *voff, float *xoff)
 }
 int s3d_select_font(char *path)
 {
-	unsigned char *oldfont=memory_font;
-	int oldsize=memory_font_size;
+	unsigned char 	*newfont,*oldfont=memory_font;
+	int 			 newsize, oldsize=memory_font_size;
 	char *c;
 	if (!ft_init)
 		if (s3d_ft_init())
@@ -322,21 +328,19 @@ int s3d_select_font(char *path)
 	 /*  yse (system-specific?!) font grabber */
 	if (((c=s3d_findfont(path))!=NULL))
 	{
+		_s3d_clear_tessbuf(); /* free and clear the tessbuf */
 		if ((memory_font_size=s3d_open_file(c,(char **)&memory_font))>0)
 		{
 			if (!s3d_ft_load_font())
 			{
-				_s3d_clear_tessbuf();
-				if (oldfont!=NULL)
-					free(oldfont);
+				if (oldfont!=NULL)				free(oldfont);
 				return(0);
+			} else {
+				memory_font=oldfont;
+				memory_font_size=oldsize;
 			}
 		}
 	}
-
-	 /*  failed too. restore and return */
-	memory_font_size=	oldsize;
-	memory_font=		oldfont;
 	return(-1);
 }
 
