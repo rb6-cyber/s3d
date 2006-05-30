@@ -315,9 +315,10 @@ int _s3d_draw_tessbuf(int oid,unsigned short a,int *voff, float *xoff)
 }
 int s3d_select_font(char *path)
 {
-	unsigned char 	*newfont,*oldfont=memory_font;
-	int 			 newsize, oldsize=memory_font_size;
+	unsigned char 	*oldfont=memory_font;
+	int 			 oldsize=memory_font_size;
 	char *c;
+	char **p;
 	if (!ft_init)
 		if (s3d_ft_init())
 		{
@@ -329,7 +330,8 @@ int s3d_select_font(char *path)
 	if (((c=s3d_findfont(path))!=NULL))
 	{
 		_s3d_clear_tessbuf(); /* free and clear the tessbuf */
-		if ((memory_font_size=s3d_open_file(c,(char **)&memory_font))>0)
+		p=&memory_font;
+		if ((memory_font_size=s3d_open_file(c,p))>0)
 		{
 			if (!s3d_ft_load_font())
 			{
