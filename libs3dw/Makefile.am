@@ -1,6 +1,6 @@
 lib_LTLIBRARIES=	libs3dw.la
 
-libs3dw_la_SOURCES=	button.c surface.c object.c style.c event.c animate.c
+libs3dw_la_SOURCES=	button.c surface.c object.c style.c event.c animate.c label.c input.c
 			
 include_HEADERS= 	s3dw.h
 noinst_HEADERS=		s3dw_int.h

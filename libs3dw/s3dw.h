@@ -29,6 +29,7 @@
 enum {
 	S3DW_TSURFACE,
 	S3DW_TBUTTON,
+	S3DW_TLABEL,
 	S3DW_TINPUT
 };
 
@@ -41,10 +42,23 @@ struct s3dw_button {
 	unsigned long   _oid_box;
 	
 };
+struct s3dw_label {
+	char *_text;
+	struct s3dw_object *_object;
+	int   _flags;
+	void (*onclick)(struct s3dw_label *);
+	unsigned long   _oid_text;
+	
+};
 struct s3dw_input {
 	char *_text;
-	int   _flags;
 	struct s3dw_object *_object;
+	int   _flags;
+	void (*onclick)(struct s3dw_input *);
+	void (*onedit)(struct s3dw_input *);
+	unsigned long   _oid_text;
+	unsigned long   _oid_box;
+	
 };
 
 struct s3dw_object {
@@ -55,6 +69,7 @@ struct s3dw_object {
 	unsigned long *o;
 	struct s3dw_surface *_surface;
 	union {
+		struct s3dw_label 	*label;
 		struct s3dw_button  *button;
 		struct s3dw_input   *input;
 		struct s3dw_surface *surface;
@@ -84,6 +99,12 @@ struct s3dw_style {
 };
 /* button.c */
 struct s3dw_button *s3dw_button_new(struct s3dw_surface *surface, char *text, float posx, float posy);
+/* label.c */
+struct s3dw_label *s3dw_label_new(struct s3dw_surface *surface, char *text, float posx, float posy);
+/* input.c */
+struct s3dw_input *s3dw_input_new(struct s3dw_surface *surface, char *text, float posx, float posy);
+
+
 /* surface.c */
 struct s3dw_surface *s3dw_surface_new(char *title, float width, float height);
 void s3dw_surface_delete(struct s3dw_surface *surface);

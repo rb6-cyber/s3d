@@ -50,7 +50,7 @@ void forward_button(struct s3dw_button *dummy)
 	struct s3dw_button *button;
 	s3dw_surface_delete(surface);
 	surface=s3dw_surface_new("Let's go",10,7);
-	s3dw_button_new(surface,"Fast Forward!!",1,1);
+	s3dw_label_new(surface,"Fast Forward!!",1,2);
 	button=s3dw_button_new(surface,"Okay",4,4);
 	button->onclick=okay_button;
 
@@ -60,7 +60,7 @@ void high_button(struct s3dw_button *dummy)
 	struct s3dw_button *button;
 	s3dw_surface_delete(surface);
 	surface=s3dw_surface_new("Up Up'n Away!",10,7);
-	s3dw_button_new(surface,"Fly away ...",1,1);
+	s3dw_label_new(surface,"Fly away ...",1,2);
 	button=s3dw_button_new(surface,"Okay",4,4);
 	button->onclick=okay_button;
 
@@ -74,7 +74,7 @@ int main (int argc, char **argv)
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
 
 		surface=s3dw_surface_new("Hello World",20,10);
-		s3dw_button_new(surface,"Where do you want to fly today?",1,1);
+		s3dw_label_new(surface,"Where do you want to fly today?",1,2);
 		button=s3dw_button_new(surface,"Forward",1,7);
 		button->onclick=forward_button;
 		button=s3dw_button_new(surface,"Into the Sky",10,7);

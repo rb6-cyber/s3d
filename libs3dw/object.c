@@ -64,6 +64,13 @@ void s3dw_object_event_click(struct s3dw_object *object, unsigned long oid)
 			case S3DW_TBUTTON:
 					s3dw_button_event_click(object->data.button,oid);
 					break;
+			case S3DW_TLABEL:
+					s3dw_label_event_click(object->data.label,oid);
+					break;
+			case S3DW_TINPUT:
+					s3dw_input_event_click(object->data.input,oid);
+					break;
+
 		}
 
 }
