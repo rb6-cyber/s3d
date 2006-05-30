@@ -144,6 +144,38 @@ HAVE_PTHREAD
 
 AC_ARG_WITH([examples], AS_HELP_STRING([--with-examples], [build examples]), [with_examples=$withval], [with_examples=yes])
 AM_CONDITIONAL([BUILD_EXAMPLES], [test x$with_examples = xyes])
+########################################### LIBG3D ################
+AC_CONFIG_HEADERS(libs3d/libg3d/include/g3d/config.h)
+AM_PROG_LEX
+
+## gtk-doc
+# GTK_DOC_CHECK
+
+# glib
+AM_PATH_GLIB_2_0(2.0.0,,AC_MSG_ERROR([glib >= 2.0 is needed]), gmodule gobject)
+
+# gdk-pixbuf
+AM_PATH_GTK_2_0(2.0.0, have_gtk2=true)
+if test "x$have_gtk2" = "xtrue" ; then
+GDKPIXBUF_CFLAGS=$GTK_CFLAGS
+GDKPIXBUF_LIBS=$GTK_LIBS
+AC_SUBST(GDKPIXBUF_CFLAGS)
+AC_SUBST(GDKPIXBUF_LIBS)
+fi
+AM_CONDITIONAL([HAVE_GDKPIXBUF], test "x$have_gtk2" = "xtrue")
+
+# AC_DEFINE_DIR(PLUGIN_DIR, libdir/$PACKAGE/plugins, [Plugin directory])
+
+AC_OUTPUT(
+)
+
+DBG_CFLAGS=""
+AC_SUBST(DBG_CFLAGS)
+DEBUG=0
+AC_SUBST(DEBUG)
+AC_DEFINE_DIR(PLUGIN_DIR, libdir/$PACKAGE/plugins, [Plugin directory])
+PLUGINS_LDFLAGS="-avoid-version -export-dynamic"
+AC_SUBST(PLUGINS_LDFLAGS)
 
 ###
 ### This part just defined some things in config.h
@@ -178,8 +210,21 @@ AC_CONFIG_FILES([
 	example/Makefile
 	objs/Makefile
 	Documentation/Makefile
+	libs3d/libg3d/Makefile
+	libs3d/libg3d/include/Makefile
+	libs3d/libg3d/include/g3d/Makefile
+	libs3d/libg3d/plugins/Makefile
+	libs3d/libg3d/plugins/image/Makefile
+	libs3d/libg3d/plugins/import/Makefile
+	libs3d/libg3d/src/Makefile
+	libs3d/libg3d/libg3d.pc
 	s3drc])
 AC_OUTPUT
+# libg3d
+#	libs3d/libg3d/doc/Makefile
+#	libs3d/libg3d/doc/api/Makefile
+#	libs3d/libg3d/m4/Makefile
+#	libs3d/libg3d/tests/Makefile
 
 echo "
 --------------------------------------------------------------------------------

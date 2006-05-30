@@ -160,7 +160,6 @@ gboolean g3d_plugins_init(G3DContext *context)
 
 	plugins_loaddirectory(context, PLUGIN_DIR "/image");
 	plugins_loaddirectory(context, PLUGIN_DIR "/import");
-
 	return TRUE;
 }
 

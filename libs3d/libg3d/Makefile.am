@@ -1,8 +1,8 @@
-SUBDIRS = . doc m4 include plugins src tests
+SUBDIRS = . include plugins src 
 
-pkgconfigdir=${libdir}/pkgconfig
+#pkgconfigdir=${libdir}/pkgconfig
 
-pkgconfig_DATA = libg3d.pc
+#pkgconfig_DATA = libg3d.pc
 
-deb:
-	fakeroot dpkg-buildpackage
+#deb:
+#	fakeroot dpkg-buildpackage
