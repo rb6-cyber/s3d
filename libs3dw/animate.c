@@ -70,27 +70,27 @@ void _s3dw_ani_del(int i)
 /* well ... */
 void _s3dw_ani_doit(struct s3dw_object *f)
 {
-	s3d_translate(	*(f->o), f->dx,f->dy,f->dz);
-	s3d_scale(		*(f->o), f->ds);
+	s3d_translate(	*(f->_o), f->_dx,f->_dy,f->_dz);
+	s3d_scale(		*(f->_o), f->_ds);
 }
 
 /* finish an animation on the stack, stack index i */
 void _s3dw_ani_finish(struct s3dw_object *f, int i)
 {
-	f->dx= f->x;
-	f->dy= f->y;
-	f->dz= f->z;
-	f->ds= f->s;
+	f->_dx= f->_x;
+	f->_dy= f->_y;
+	f->_dz= f->_z;
+	f->_ds= f->_s;
 	_s3dw_ani_doit(f);
 	if (i!=-1)
 		_s3dw_ani_del(i);
 }
 void _s3dw_ani_iterate(struct s3dw_object *f)
 {
-	f->dx=(f->x + f->dx*ZOOMS)/(ZOOMS+1);
-	f->dy=(f->y + f->dy*ZOOMS)/(ZOOMS+1);
-	f->dz=(f->z + f->dz*ZOOMS)/(ZOOMS+1);
-	f->ds=(f->s + f->ds*ZOOMS)/(ZOOMS+1);
+	f->_dx=(f->_x + f->_dx*ZOOMS)/(ZOOMS+1);
+	f->_dy=(f->_y + f->_dy*ZOOMS)/(ZOOMS+1);
+	f->_dz=(f->_z + f->_dz*ZOOMS)/(ZOOMS+1);
+	f->_ds=(f->_s + f->_ds*ZOOMS)/(ZOOMS+1);
 
 }
 
@@ -98,10 +98,10 @@ void _s3dw_ani_iterate(struct s3dw_object *f)
 int _s3dw_ani_check(struct s3dw_object *f)
 {
 	float x,y,z;
-	x=f->dx - f->x;
-	y=f->dy - f->y;
-	z=f->dz - f->z;
-	if (((fabs(f->ds - f->s)/f->s)>0.01) || (sqrt(x*x+y*y+z*z) > 0.01))
+	x=f->_dx - f->_x;
+	y=f->_dy - f->_y;
+	z=f->_dz - f->_z;
+	if (((fabs(f->_ds - f->_s)/f->_s)>0.01) || (sqrt(x*x+y*y+z*z) > 0.01))
 		return(0);
 	return(1);
 }

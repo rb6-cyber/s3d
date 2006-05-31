@@ -21,19 +21,16 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 #include <s3d.h>
 #include <s3dw.h>
 #include <s3dw_int.h>
 #include <stdlib.h> /* malloc() */
 #include <string.h> /* strdup() */
 
-
-/* create a new button in the surface */
-struct s3dw_button *s3dw_button_new(struct s3dw_surface *surface, char *text, float posx, float posy)
+/* draw and setup the button */
+void s3dw_button_draw(struct s3dw_object *object)
 {
-	struct s3dw_button *button;
-	struct s3dw_object *object;
+	struct s3dw_button *button=object->data.button;
 	float length;
 	float vertices[8*3];
 	unsigned long polygons[10*4]={
@@ -48,16 +45,10 @@ struct s3dw_button *s3dw_button_new(struct s3dw_surface *surface, char *text, fl
 			4,7,6,0,
 			4,6,5,0
 	};
-	button=(struct s3dw_button *)malloc(sizeof(struct s3dw_button));
-	object=s3dw_object_new();
-	object->type=S3DW_TBUTTON;
-	button->_object=object;
-	/* draw button */
-	button->_text=strdup(text);
-	button->_flags=0;
-	button->onclick=NULL;
+
 	button->_oid_text=s3d_draw_string(button->_text,&length);
-	s3d_pep_materials_a(button->_oid_text,surface->_style->text_mat,1);
+	s3d_pep_materials_a(button->_oid_text,object->_surface->_style->text_mat,1);
+
 	/* width of the button depends on the length of the text */
 	vertices[0*3+0]=0.0;			vertices[0*3+1]=0.0;		vertices[0*3+2]=0.0;	
 	vertices[1*3+0]=0.0;			vertices[1*3+1]=-2.0;		vertices[1*3+2]=0.0;	
@@ -68,41 +59,61 @@ struct s3dw_button *s3dw_button_new(struct s3dw_surface *surface, char *text, fl
 	vertices[6*3+0]=length+0.75;	vertices[6*3+1]=-1.75;		vertices[6*3+2]=0.25;	
 	vertices[7*3+0]=length+0.75;	vertices[7*3+1]=-0.25;		vertices[7*3+2]=0.25;	
 	button->_oid_box=s3d_new_object();
-	s3d_push_materials_a(button->_oid_box,surface->_style->input_mat,1);
+	s3d_push_materials_a(button->_oid_box,object->_surface->_style->input_mat,1);
 	s3d_push_vertices   (button->_oid_box,vertices,8);
 	s3d_push_polygons   (button->_oid_box,polygons,10);
-	s3d_link(		   button->_oid_box,surface->oid);
+	s3d_link(		   button->_oid_box,object->_surface->oid);
 	s3d_link(		   button->_oid_text,button->_oid_box);
 	s3d_translate(button->_oid_text,0.5,-1.5,0.30);
-	s3d_translate(button->_oid_box,posx,-posy,0);
-	object->x=posx;
-	object->y=posy;
-	object->width=length+1;
-	object->height=2;
-	object->data.button=button;
-	object->o=&(button->_oid_box);
+	s3d_translate(button->_oid_box,object->_x,-object->_y,0);
+	object->_o=&(button->_oid_box);
+	object->_width=length+1;
+	object->_height=2;
     s3d_flags_on(button->_oid_box,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
     s3d_flags_on(button->_oid_text,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 
-	s3dw_surface_append_obj(surface, object);
-	return(button);
 }
-/* destroy the button */
-void s3dw_button_destroy(struct s3dw_button *button)
+
+/* create a new button in the surface */
+struct s3dw_object *s3dw_button_new(struct s3dw_surface *surface, char *text, float posx, float posy)
+{
+	struct s3dw_button *button;
+	struct s3dw_object *object;
+	button=(struct s3dw_button *)malloc(sizeof(struct s3dw_button));
+	object=s3dw_object_new();
+	object->type=S3DW_TBUTTON;
+	/* draw button */
+	button->_text=strdup(text);
+	button->onclick=NULL;
+	object->_x=posx;
+	object->_y=posy;
+	object->data.button=button;
+	s3dw_button_draw(object);
+	s3dw_surface_append_obj(surface, object);
+	return(object);
+}
+void s3dw_button_erase(struct s3dw_button *button)
 {
 	s3d_del_object(button->_oid_text);
 	s3d_del_object(button->_oid_box);
+
+}
+
+/* destroy the button */
+void s3dw_button_destroy(struct s3dw_button *button)
+{
+	s3dw_button_erase(button);
 	free(button->_text);
 	free(button);
 }
 
 
-void s3dw_button_event_click(struct s3dw_button *button, unsigned long oid)
+void s3dw_button_event_click(struct s3dw_object *object, unsigned long oid)
 {
-	if ((button->_oid_text==oid) || (button->_oid_box==oid))
+	if ((object->data.button->_oid_text==oid) || (object->data.button->_oid_box==oid))
 	{
-		if (button->onclick!=NULL)
-			button->onclick(button);
+		if (object->data.button->onclick!=NULL)
+			object->data.button->onclick(object);
 	}
 	
 }

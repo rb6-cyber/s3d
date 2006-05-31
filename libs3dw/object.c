@@ -31,16 +31,16 @@ struct s3dw_object *s3dw_object_new()
 {
 	struct s3dw_object *object=malloc(sizeof(struct s3dw_object));
 	object->type=-1;
-	object->x=object->dx=0;
-	object->y=object->dy=0;
-	object->z=object->dz=0;
-	object->rx=object->drx=0;
-	object->ry=object->dry=0;
-	object->rz=object->drz=0;
-	object->s=object->ds=1;
-	object->o=NULL;
-	object->width=0;
-	object->height=0;
+	object->_x=object->_dx=0;
+	object->_y=object->_dy=0;
+	object->_z=object->_dz=0;
+	object->_rx=object->_drx=0;
+	object->_ry=object->_dry=0;
+	object->_rz=object->_drz=0;
+	object->_s=object->_ds=1;
+	object->_o=NULL;
+	object->_width=0;
+	object->_height=0;
 	object->_surface=NULL;
 	object->data.surface=NULL;
 	return(object);
@@ -49,9 +49,10 @@ void s3dw_object_destroy(struct s3dw_object *object)
 {
 	switch (object->type)
 		{
-			case S3DW_TBUTTON:
-					s3dw_button_destroy(object->data.button);
-					break;
+			case S3DW_TBUTTON:		s3dw_button_destroy(object->data.button);			break;
+			case S3DW_TSURFACE:		s3dw_surface_destroy(object->data.surface);			break;
+			case S3DW_TLABEL:		s3dw_label_destroy(object->data.label);				break;
+			case S3DW_TINPUT:		s3dw_input_destroy(object->data.input);				break;
 			default:
 					dprintf(MED,"can't free this type (yet) - memory leak\n");
 		}
@@ -62,13 +63,13 @@ void s3dw_object_event_click(struct s3dw_object *object, unsigned long oid)
 	switch (object->type)
 		{
 			case S3DW_TBUTTON:
-					s3dw_button_event_click(object->data.button,oid);
+					s3dw_button_event_click(object,oid);
 					break;
 			case S3DW_TLABEL:
-					s3dw_label_event_click(object->data.label,oid);
+					s3dw_label_event_click(object,oid);
 					break;
 			case S3DW_TINPUT:
-					s3dw_input_event_click(object->data.input,oid);
+					s3dw_input_event_click(object,oid);
 					break;
 
 		}

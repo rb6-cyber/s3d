@@ -29,21 +29,27 @@ extern	int					  nsurf;
 
 /* object.c */
 struct s3dw_object *s3dw_object_new();
-void s3dw_object_destroy(struct s3dw_object *object);
 void s3dw_object_event_click(struct s3dw_object *object, unsigned long oid);
 /* surface.c */
-void s3dw_surface_event_click(struct s3dw_surface *surface, unsigned long oid);
+void s3dw_surface_destroy(struct s3dw_surface *surface);
 void s3dw_surface_append_obj(struct s3dw_surface *surface, struct s3dw_object *object);
-void s3dw_surface_event_click(struct s3dw_surface *surface, unsigned long oid);
+void s3dw_surface_event_click(struct s3dw_object *object, unsigned long oid);
+void s3dw_surface_draw(struct s3dw_object *object);
 /* button.c */
 void s3dw_button_destroy(struct s3dw_button *button);
-void s3dw_button_event_click(struct s3dw_button *button, unsigned long oid);
+void s3dw_button_event_click(struct s3dw_object *object, unsigned long oid);
+void s3dw_button_draw(struct s3dw_object *object);
+void s3dw_button_erase(struct s3dw_button *button);
 /* label.c */
 void s3dw_label_destroy(struct s3dw_label *label);
-void s3dw_label_event_click(struct s3dw_label *label, unsigned long oid);
+void s3dw_label_event_click(struct s3dw_object *object, unsigned long oid);
+void s3dw_label_draw(struct s3dw_object *object);
 /* input.c */
 void s3dw_input_destroy(struct s3dw_input *input);
-void s3dw_input_event_click(struct s3dw_input *input, unsigned long oid);
+void s3dw_input_event_click(struct s3dw_object *object, unsigned long oid);
+void s3dw_input_draw(struct s3dw_object *object);
+void s3dw_input_erase(struct s3dw_input *input);
+
 
 /* style.c */
 extern struct s3dw_style def_style;

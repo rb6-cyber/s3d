@@ -30,5 +30,5 @@ void s3dw_click_event(struct s3d_evt *evt)
 	int i;
 	unsigned long oid=*((unsigned long *)evt->buf);
 	for (i=0;i<nsurf;i++)
-		s3dw_surface_event_click(psurf[i]->data.surface,oid);
+		s3dw_surface_event_click(psurf[i],oid);
 }

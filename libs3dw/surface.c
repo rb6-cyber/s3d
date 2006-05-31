@@ -29,11 +29,10 @@
 
 struct s3dw_object **psurf=NULL;
 int					  nsurf=0;
-/* create a new surface */
-struct s3dw_surface *s3dw_surface_new(char *title, float width, float height)
+
+void s3dw_surface_draw(struct s3dw_object *object)
 {
-	struct s3dw_surface *surface;
-	struct s3dw_object  *object;
+	struct s3dw_surface *surface=object->data.surface;
 	int textlen;
 	float length;
 	float vertices[8*3]={
@@ -61,36 +60,17 @@ struct s3dw_surface *s3dw_surface_new(char *title, float width, float height)
 	};
 	unsigned long tpol[10*4];
 	int i;
-			
-	surface=(struct s3dw_surface *)malloc(sizeof(struct s3dw_surface));
+
 	surface->oid=s3d_new_object();
 	surface->_oid_tbar=s3d_new_object();
-	surface->_flags=0;
-	surface->_nobj=0;
-	surface->_pobj=NULL;
-	surface->_style=&def_style;
-	surface->title=strdup(title);
-
-	nsurf++;
-	psurf=realloc(psurf,sizeof(struct s3dw_object **)*nsurf);
-	object=s3dw_object_new();
-	object->type=S3DW_TSURFACE;
-	object->data.surface=surface;
-	object->width=width;
-	object->height=height;
-	object->o=&(surface->oid);
-	surface->_object=object;
-	psurf[nsurf-1]=object;
-	
 	s3d_select_font("vera");
 	surface->_oid_title=s3d_draw_string(surface->title,&length);
-	while (length > (object->width+1))
+	while (length > (object->_width+1))
 	{
-
-		dprintf(HIGH,"%f > %f",length,object->width+1);
+		dprintf(HIGH,"%f > %f",length,object->_width+1);
 		textlen=strlen(surface->title);
-		if (length>((object->width+1)*1.3))
-			textlen=textlen*((object->width+1)*1.1/length);
+		if (length>((object->_width+1)*1.3))
+			textlen=textlen*((object->_width+1)*1.1/length);
 		if (textlen>4)
 		{
 			surface->title[textlen-2]=0;
@@ -105,10 +85,10 @@ struct s3dw_surface *s3dw_surface_new(char *title, float width, float height)
  	/* prepare vertices */
 	for (i=0;i<8;i++)
 	{
-		sver[i*3 + 0]=vertices[i*3+0] * width;
-		sver[i*3 + 1]=vertices[i*3+1] * -height;
+		sver[i*3 + 0]=vertices[i*3+0] * object->_width;
+		sver[i*3 + 1]=vertices[i*3+1] * -object->_height;
 		sver[i*3 + 2]=vertices[i*3+2] * -1;
-		tver[i*3 + 0]=vertices[i*3+0] * width;
+		tver[i*3 + 0]=vertices[i*3+0] * object->_width;
 		tver[i*3 + 1]=vertices[i*3+1];
 		tver[i*3 + 2]=vertices[i*3+2] * -1;
 	}
@@ -120,6 +100,7 @@ struct s3dw_surface *s3dw_surface_new(char *title, float width, float height)
 	   tpol[i*4 + 2]=polygon[i*4 + 2];
 	   tpol[i*4 + 3]=polygon[i*4 + 3];
 	}
+	object->_o=&(surface->oid);
 	s3d_push_vertices(surface->oid,sver,8);
 	s3d_push_vertices(surface->_oid_tbar,tver,8);
 	s3d_push_materials_a(surface->oid      ,surface->_style->surface_mat,1);
@@ -133,11 +114,40 @@ struct s3dw_surface *s3dw_surface_new(char *title, float width, float height)
     s3d_flags_on(surface->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
     s3d_flags_on(surface->_oid_title,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
     s3d_flags_on(surface->_oid_tbar,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-	return(surface);
-}
 
+
+}
+/* create a new surface */
+struct s3dw_object *s3dw_surface_new(char *title, float width, float height)
+{
+	struct s3dw_surface *surface;
+	struct s3dw_object  *object;
+			
+	surface=(struct s3dw_surface *)malloc(sizeof(struct s3dw_surface));
+	surface->_nobj=0;
+	surface->_pobj=NULL;
+	surface->_style=&def_style;
+	surface->title=strdup(title);
+
+	nsurf++;
+	psurf=realloc(psurf,sizeof(struct s3dw_object **)*nsurf);
+	object=s3dw_object_new();
+	object->type=S3DW_TSURFACE;
+	object->data.surface=surface;
+	object->_width=width;
+	object->_height=height;
+	psurf[nsurf-1]=object;
+	s3dw_surface_draw(object);
+	return(object);
+}
+void s3dw_surface_erase(struct s3dw_surface *surface)
+{
+	s3d_del_object(surface->oid);
+	s3d_del_object(surface->_oid_tbar);
+	s3d_del_object(surface->_oid_title);
+}
 /* destroy the surface */
-void s3dw_surface_delete(struct s3dw_surface *surface)
+void s3dw_surface_destroy(struct s3dw_surface *surface)
 {
 	int i;
 	if (surface->_nobj>0)
@@ -148,20 +158,24 @@ void s3dw_surface_delete(struct s3dw_surface *surface)
 		}
 		free(surface->_pobj);
 	}
-	s3d_del_object(surface->oid);
-	s3d_del_object(surface->_oid_tbar);
-	s3d_del_object(surface->_oid_title);
+
+	s3dw_surface_erase(surface);
+	free(surface->title);
+	free(surface);
+}
+/* properly delete, take care of the carrying structure ... */
+void s3dw_surface_delete(struct s3dw_surface *surface)
+{
+	int i;
 	for (i=0;i<nsurf;i++) /* search ... */
 		if (psurf[i]->data.surface==surface) /* ... and destroy */
 		{
+			s3dw_surface_erase(surface);
+			free(psurf[i]);
 			psurf[i]=psurf[nsurf-1]; /* swap last element to the to be deleted one */
 			nsurf--;
 			break;
 		}
-	free(surface->title);
-	free(surface->_object);
-	free(surface);
-
 }
 /* append an object */
 void s3dw_surface_append_obj(struct s3dw_surface *surface, struct s3dw_object *object)
@@ -172,18 +186,18 @@ void s3dw_surface_append_obj(struct s3dw_surface *surface, struct s3dw_object *o
 	object->_surface=surface;
 }
 /* test objects of the surface for clicks */
-void s3dw_surface_event_click(struct s3dw_surface *surface, unsigned long oid)
+void s3dw_surface_event_click(struct s3dw_object *object, unsigned long oid)
 {
 	int i;
-	if (surface->oid==oid)
+	if (object->data.surface->oid==oid)
 	{
-		dprintf(MED,"body %s clicked",surface->title);
+		dprintf(MED,"body %s clicked",object->data.surface->title);
 	}
-	if ((surface->_oid_tbar==oid) || (surface->_oid_title==oid))
+	if ((object->data.surface->_oid_tbar==oid) || (object->data.surface->_oid_title==oid))
 	{
-		dprintf(MED,"title %s clicked",surface->title);
+		dprintf(MED,"title %s clicked",object->data.surface->title);
 	}
-	for (i=0;i<surface->_nobj;i++)
-		s3dw_object_event_click(surface->_pobj[i],oid);
+	for (i=0;i<object->data.surface->_nobj;i++)
+		s3dw_object_event_click(object->data.surface->_pobj[i],oid);
 }
 
