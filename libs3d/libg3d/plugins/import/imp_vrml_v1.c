@@ -999,7 +999,7 @@ YY_DECL
 #endif
 
         if ( ! yyg->yy_state_buf )
-            yyg->yy_state_buf = (yy_state_type *)vrml_v1_yyalloc(YY_BUF_SIZE + 2  ,yyscanner);
+            yyg->yy_state_buf = (yy_state_type *)vrml_v1_yyalloc(((YY_BUF_SIZE + 2) * sizeof(yy_state_type))  ,yyscanner);
 
 		if ( ! yyg->yy_start )
 			yyg->yy_start = 1;	/* first start state */
@@ -2333,7 +2333,6 @@ YY_BUFFER_STATE vrml_v1_yy_scan_buffer  (char * base, yy_size_t  size , yyscan_t
 /** Setup the input buffer state to scan a string. The next call to vrml_v1_yylex() will
  * scan from a @e copy of @a str.
  * @param str a NUL-terminated string to scan
- * @param yy_str a NUL-terminated string to scan
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object.
  * @note If you want to scan bytes that may contain NUL values, then use

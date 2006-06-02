@@ -155,14 +155,14 @@ AM_PROG_LEX
 AM_PATH_GLIB_2_0(2.0.0,,AC_MSG_ERROR([glib >= 2.0 is needed]), gmodule gobject)
 
 # gdk-pixbuf
-AM_PATH_GTK_2_0(2.0.0, have_gtk2=true)
-if test "x$have_gtk2" = "xtrue" ; then
-GDKPIXBUF_CFLAGS=$GTK_CFLAGS
-GDKPIXBUF_LIBS=$GTK_LIBS
-AC_SUBST(GDKPIXBUF_CFLAGS)
-AC_SUBST(GDKPIXBUF_LIBS)
-fi
-AM_CONDITIONAL([HAVE_GDKPIXBUF], test "x$have_gtk2" = "xtrue")
+#AM_PATH_GTK_2_0(2.0.0, have_gtk2=true)
+#if test "x$have_gtk2" = "xtrue" ; then
+#GDKPIXBUF_CFLAGS=$GTK_CFLAGS
+#GDKPIXBUF_LIBS=$GTK_LIBS
+#AC_SUBST(GDKPIXBUF_CFLAGS)
+#AC_SUBST(GDKPIXBUF_LIBS)
+#fi
+#AM_CONDITIONAL([HAVE_GDKPIXBUF], test "x$have_gtk2" = "xtrue")
 
 # AC_DEFINE_DIR(PLUGIN_DIR, libdir/$PACKAGE/plugins, [Plugin directory])
 
