@@ -1,5 +1,5 @@
 /*
- * object.c
+ * widget.c
  *
  * Copyright (C) 2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
@@ -27,49 +27,49 @@
 #include <stdlib.h> /* malloc() */
 #include <string.h> /* strdup() */
 
-struct s3dw_object *s3dw_object_new()
+struct s3dw_widget *s3dw_widget_new()
 {
-	struct s3dw_object *object=malloc(sizeof(struct s3dw_object));
-	object->type=-1;
-	object->_x=object->_dx=0;
-	object->_y=object->_dy=0;
-	object->_z=object->_dz=0;
-	object->_rx=object->_drx=0;
-	object->_ry=object->_dry=0;
-	object->_rz=object->_drz=0;
-	object->_s=object->_ds=1;
-	object->_o=NULL;
-	object->_width=0;
-	object->_height=0;
-	object->_surface=NULL;
-	object->data.surface=NULL;
-	return(object);
+	struct s3dw_widget *widget=malloc(sizeof(struct s3dw_widget));
+	widget->type=-1;
+	widget->_x=widget->_dx=0;
+	widget->_y=widget->_dy=0;
+	widget->_z=widget->_dz=0;
+	widget->_rx=widget->_drx=0;
+	widget->_ry=widget->_dry=0;
+	widget->_rz=widget->_drz=0;
+	widget->_s=widget->_ds=1;
+	widget->_o=NULL;
+	widget->_width=0;
+	widget->_height=0;
+	widget->_surface=NULL;
+	widget->data.surface=NULL;
+	return(widget);
 }
-void s3dw_object_destroy(struct s3dw_object *object)
+void s3dw_widget_destroy(struct s3dw_widget *widget)
 {
-	switch (object->type)
+	switch (widget->type)
 		{
-			case S3DW_TBUTTON:		s3dw_button_destroy(object->data.button);			break;
-			case S3DW_TSURFACE:		s3dw_surface_destroy(object->data.surface);			break;
-			case S3DW_TLABEL:		s3dw_label_destroy(object->data.label);				break;
-			case S3DW_TINPUT:		s3dw_input_destroy(object->data.input);				break;
+			case S3DW_TBUTTON:		s3dw_button_destroy(widget->data.button);			break;
+			case S3DW_TSURFACE:		s3dw_surface_destroy(widget->data.surface);			break;
+			case S3DW_TLABEL:		s3dw_label_destroy(widget->data.label);				break;
+			case S3DW_TINPUT:		s3dw_input_destroy(widget->data.input);				break;
 			default:
 					dprintf(MED,"can't free this type (yet) - memory leak\n");
 		}
-	free(object);
+	free(widget);
 }
-void s3dw_object_event_click(struct s3dw_object *object, unsigned long oid)
+void s3dw_widget_event_click(struct s3dw_widget *widget, unsigned long oid)
 {
-	switch (object->type)
+	switch (widget->type)
 		{
 			case S3DW_TBUTTON:
-					s3dw_button_event_click(object,oid);
+					s3dw_button_event_click(widget,oid);
 					break;
 			case S3DW_TLABEL:
-					s3dw_label_event_click(object,oid);
+					s3dw_label_event_click(widget,oid);
 					break;
 			case S3DW_TINPUT:
-					s3dw_input_event_click(object,oid);
+					s3dw_input_event_click(widget,oid);
 					break;
 
 		}

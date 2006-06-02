@@ -27,12 +27,12 @@
 #include <math.h>
 
 /* the animation stack */
-static struct s3dw_object *ani_s[MAXANI];
+static struct s3dw_widget *ani_s[MAXANI];
 static int ani_n=0;
 int moveon=1;
 
 /* is item f already on stack? */
-int _s3dw_ani_onstack(struct s3dw_object *f)
+int _s3dw_ani_onstack(struct s3dw_widget *f)
 {
 	int i;
 	for (i=0;i<ani_n;i++)
@@ -42,7 +42,7 @@ int _s3dw_ani_onstack(struct s3dw_object *f)
 
 }
 /* add an item on the animation stack */
-void _s3dw_ani_add(struct s3dw_object *f)
+void _s3dw_ani_add(struct s3dw_widget *f)
 {
 	if (ani_n<MAXANI)
 	{
@@ -68,14 +68,14 @@ void _s3dw_ani_del(int i)
 	}
 }
 /* well ... */
-void _s3dw_ani_doit(struct s3dw_object *f)
+void _s3dw_ani_doit(struct s3dw_widget *f)
 {
 	s3d_translate(	*(f->_o), f->_dx,f->_dy,f->_dz);
 	s3d_scale(		*(f->_o), f->_ds);
 }
 
 /* finish an animation on the stack, stack index i */
-void _s3dw_ani_finish(struct s3dw_object *f, int i)
+void _s3dw_ani_finish(struct s3dw_widget *f, int i)
 {
 	f->_dx= f->_x;
 	f->_dy= f->_y;
@@ -85,7 +85,7 @@ void _s3dw_ani_finish(struct s3dw_object *f, int i)
 	if (i!=-1)
 		_s3dw_ani_del(i);
 }
-void _s3dw_ani_iterate(struct s3dw_object *f)
+void _s3dw_ani_iterate(struct s3dw_widget *f)
 {
 	f->_dx=(f->_x + f->_dx*ZOOMS)/(ZOOMS+1);
 	f->_dy=(f->_y + f->_dy*ZOOMS)/(ZOOMS+1);
@@ -95,7 +95,7 @@ void _s3dw_ani_iterate(struct s3dw_object *f)
 }
 
 /* checks if f is good enough */
-int _s3dw_ani_check(struct s3dw_object *f)
+int _s3dw_ani_check(struct s3dw_widget *f)
 {
 	float x,y,z;
 	x=f->_dx - f->_x;
@@ -109,7 +109,7 @@ int _s3dw_ani_check(struct s3dw_object *f)
 void s3dw_ani_mate()
 {
 	int i;
-	struct s3dw_object *f;
+	struct s3dw_widget *f;
 	for (i=0;i<ani_n;i++)
 	{
 		f=ani_s[i];
@@ -117,7 +117,7 @@ void s3dw_ani_mate()
 		if (_s3dw_ani_check(f))
 		{
 			_s3dw_ani_finish(f,i);
-			i--; /* a new object is here now, take care in the next iteration */
+			i--; /* a new widget is here now, take care in the next iteration */
 		} else {
 			_s3dw_ani_doit(f);
 		}

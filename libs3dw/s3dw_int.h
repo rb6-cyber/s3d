@@ -24,40 +24,40 @@
 #include <s3dlib.h> /* dprintf() */
 #define MAXANI		16
 #define ZOOMS		5
-extern	struct s3dw_object  **psurf;
+extern	struct s3dw_widget  **psurf;
 extern	int					  nsurf;
 
-/* object.c */
-struct s3dw_object *s3dw_object_new();
-void s3dw_object_event_click(struct s3dw_object *object, unsigned long oid);
+/* widget.c */
+struct s3dw_widget *s3dw_widget_new();
+void s3dw_widget_event_click(struct s3dw_widget *widget, unsigned long oid);
 /* surface.c */
 void s3dw_surface_destroy(struct s3dw_surface *surface);
-void s3dw_surface_append_obj(struct s3dw_surface *surface, struct s3dw_object *object);
-void s3dw_surface_event_click(struct s3dw_object *object, unsigned long oid);
-void s3dw_surface_draw(struct s3dw_object *object);
+void s3dw_surface_append_obj(struct s3dw_surface *surface, struct s3dw_widget *widget);
+void s3dw_surface_event_click(struct s3dw_widget *widget, unsigned long oid);
+void s3dw_surface_draw(struct s3dw_widget *widget);
 /* button.c */
 void s3dw_button_destroy(struct s3dw_button *button);
-void s3dw_button_event_click(struct s3dw_object *object, unsigned long oid);
-void s3dw_button_draw(struct s3dw_object *object);
+void s3dw_button_event_click(struct s3dw_widget *widget, unsigned long oid);
+void s3dw_button_draw(struct s3dw_widget *widget);
 void s3dw_button_erase(struct s3dw_button *button);
 /* label.c */
 void s3dw_label_destroy(struct s3dw_label *label);
-void s3dw_label_event_click(struct s3dw_object *object, unsigned long oid);
-void s3dw_label_draw(struct s3dw_object *object);
+void s3dw_label_event_click(struct s3dw_widget *widget, unsigned long oid);
+void s3dw_label_draw(struct s3dw_widget *widget);
 /* input.c */
 void s3dw_input_destroy(struct s3dw_input *input);
-void s3dw_input_event_click(struct s3dw_object *object, unsigned long oid);
-void s3dw_input_draw(struct s3dw_object *object);
+void s3dw_input_event_click(struct s3dw_widget *widget, unsigned long oid);
+void s3dw_input_draw(struct s3dw_widget *widget);
 void s3dw_input_erase(struct s3dw_input *input);
 
 
 /* style.c */
 extern struct s3dw_style def_style;
 /* animate.c */
-int  _s3dw_ani_onstack(struct s3dw_object *f);
-void _s3dw_ani_add(struct s3dw_object *f);
+int  _s3dw_ani_onstack(struct s3dw_widget *f);
+void _s3dw_ani_add(struct s3dw_widget *f);
 void _s3dw_ani_del(int i);
-void _s3dw_ani_doit(struct s3dw_object *f);
-void _s3dw_ani_finish(struct s3dw_object *f, int i);
-void _s3dw_ani_iterate(struct s3dw_object *f);
-int  _s3dw_ani_check(struct s3dw_object *f);
+void _s3dw_ani_doit(struct s3dw_widget *f);
+void _s3dw_ani_finish(struct s3dw_widget *f, int i);
+void _s3dw_ani_iterate(struct s3dw_widget *f);
+int  _s3dw_ani_check(struct s3dw_widget *f);

@@ -33,7 +33,7 @@ enum {
 	S3DW_TINPUT
 };
 
-struct s3dw_object {
+struct s3dw_widget {
 	int type;
 	int   _flags;
 	struct s3dw_surface *_surface;
@@ -50,7 +50,7 @@ struct s3dw_object {
 	unsigned long *_o;
 };
 
-typedef void (*s3dw_callback)(struct s3dw_object *);
+typedef void (*s3dw_callback)(struct s3dw_widget *);
 
 struct s3dw_button {
 	char *_text;
@@ -80,7 +80,7 @@ struct s3dw_surface {
 	unsigned long		  _oid_tbar;
 	int 				  _nobj;
 	char				 *title;
-	struct s3dw_object 	**_pobj;
+	struct s3dw_widget 	**_pobj;
 	struct s3dw_style 	 *_style;
 };
 
@@ -94,16 +94,16 @@ struct s3dw_style {
 	float title_text_mat[12];
 };
 /* button.c */
-struct s3dw_object *s3dw_button_new(struct s3dw_surface *surface, char *text, float posx, float posy);
+struct s3dw_widget *s3dw_button_new(struct s3dw_surface *surface, char *text, float posx, float posy);
 /* label.c */
-struct s3dw_object *s3dw_label_new(struct s3dw_surface *surface, char *text, float posx, float posy);
+struct s3dw_widget *s3dw_label_new(struct s3dw_surface *surface, char *text, float posx, float posy);
 /* input.c */
-struct s3dw_object *s3dw_input_new(struct s3dw_surface *surface, char *text, float posx, float posy);
+struct s3dw_widget *s3dw_input_new(struct s3dw_surface *surface, char *text, float posx, float posy);
 /* surface.c */
-struct s3dw_object *s3dw_surface_new(char *title, float width, float height);
+struct s3dw_widget *s3dw_surface_new(char *title, float width, float height);
 void s3dw_surface_delete(struct s3dw_surface *surface);
-/* object.c */
-void s3dw_object_destroy(struct s3dw_object *object);
+/* widget.c */
+void s3dw_widget_destroy(struct s3dw_widget *widget);
 /* event.c */
 void s3dw_click_event(struct s3d_evt *evt);
 /* animate.c */
