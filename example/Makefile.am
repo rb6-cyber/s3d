@@ -19,9 +19,9 @@ ptrtest_SOURCES=		ptrtest.c
 3dsloader_g3d_SOURCES=	3dsloader_g3d.c
 
 CPPFLAGS=		-I$(top_srcdir)/server -I$(top_srcdir)/libs3d 
-3dsloader_g3d_CFLAGS=	-I$(top_srcdir)/libs3d/libg3d/include
-widgets_CFLAGS=			-I$(top_srcdir)/libs3dw 
 LIBS=			$(top_builddir)/libs3d/libs3d.la  
+3dsloader_g3d_CFLAGS=	-I$(top_srcdir)/libs3d/libg3d/include @GLIB_CFLAGS@
+widgets_CFLAGS=			-I$(top_srcdir)/libs3dw 
 widgets_LDFLAGS=		$(top_builddir)/libs3dw/libs3dw.la
 3dsloader_g3d_LDFLAGS=	$(top_builddir)/libs3d/libg3d/src/libg3d.la
 
