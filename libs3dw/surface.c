@@ -61,8 +61,8 @@ void s3dw_surface_draw(struct s3dw_widget *widget)
 	unsigned long tpol[10*4];
 	int i;
 
-	surface->oid=s3d_new_widget();
-	surface->_oid_tbar=s3d_new_widget();
+	surface->oid=s3d_new_object();
+	surface->_oid_tbar=s3d_new_object();
 	s3d_select_font("vera");
 	surface->_oid_title=s3d_draw_string(surface->title,&length);
 	while (length > (widget->_width+1))
@@ -76,7 +76,7 @@ void s3dw_surface_draw(struct s3dw_widget *widget)
 			surface->title[textlen-2]=0;
 			surface->title[textlen-3]='.';
 			surface->title[textlen-4]='.';
-			s3d_del_widget(surface->_oid_title);
+			s3d_del_object(surface->_oid_title);
 			surface->_oid_title=s3d_draw_string(surface->title,&length);
 		} else {
 			break;
@@ -142,9 +142,9 @@ struct s3dw_widget *s3dw_surface_new(char *title, float width, float height)
 }
 void s3dw_surface_erase(struct s3dw_surface *surface)
 {
-	s3d_del_widget(surface->oid);
-	s3d_del_widget(surface->_oid_tbar);
-	s3d_del_widget(surface->_oid_title);
+	s3d_del_object(surface->oid);
+	s3d_del_object(surface->_oid_tbar);
+	s3d_del_object(surface->_oid_title);
 }
 /* destroy the surface */
 void s3dw_surface_destroy(struct s3dw_surface *surface)

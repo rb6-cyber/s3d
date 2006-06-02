@@ -64,7 +64,7 @@ struct s3dw_widget *s3dw_label_new(struct s3dw_surface *surface, char *text, flo
 
 void s3dw_label_erase(struct s3dw_label *label)
 {
-	s3d_del_widget(label->_oid_text);
+	s3d_del_object(label->_oid_text);
 }
 /* destroy the label */
 void s3dw_label_destroy(struct s3dw_label *label)

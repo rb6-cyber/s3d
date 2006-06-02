@@ -58,7 +58,7 @@ void s3dw_button_draw(struct s3dw_widget *widget)
 	vertices[5*3+0]=0.25;			vertices[5*3+1]=-1.75;		vertices[5*3+2]=0.25;	
 	vertices[6*3+0]=length+0.75;	vertices[6*3+1]=-1.75;		vertices[6*3+2]=0.25;	
 	vertices[7*3+0]=length+0.75;	vertices[7*3+1]=-0.25;		vertices[7*3+2]=0.25;	
-	button->_oid_box=s3d_new_widget();
+	button->_oid_box=s3d_new_object();
 	s3d_push_materials_a(button->_oid_box,widget->_surface->_style->input_mat,1);
 	s3d_push_vertices   (button->_oid_box,vertices,8);
 	s3d_push_polygons   (button->_oid_box,polygons,10);
@@ -94,8 +94,8 @@ struct s3dw_widget *s3dw_button_new(struct s3dw_surface *surface, char *text, fl
 }
 void s3dw_button_erase(struct s3dw_button *button)
 {
-	s3d_del_widget(button->_oid_text);
-	s3d_del_widget(button->_oid_box);
+	s3d_del_object(button->_oid_text);
+	s3d_del_object(button->_oid_box);
 
 }
 
