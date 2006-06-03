@@ -28,59 +28,70 @@
 #include <stdlib.h> /* malloc() */
 #include <string.h> /* strdup() */
 
-void s3dw_label_draw(struct s3dw_widget *widget)
+void s3dw_label_draw(s3dw_widget *widget)
 {
-	struct s3dw_label *label=widget->data.label;
+	s3dw_label *label=(s3dw_label *)widget;
 	float length;
-	label->_oid_text=s3d_draw_string(label->_text,&length);
-	s3d_pep_materials_a(label->_oid_text,widget->_surface->_style->text_mat,1);
-	s3d_link(label->_oid_text,widget->_surface->oid);
-	s3d_translate(label->_oid_text,widget->_x,-widget->_y,0.1);
-	widget->_width=length+1;
-	widget->_height=2;
-
-    s3d_flags_on(label->_oid_text,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-
+	widget->oid=s3d_draw_string(label->text,&length);
+	s3d_pep_materials_a(widget->oid,widget->style->text_mat,1);
+	s3d_link(widget->oid,widget->parent->oid);
+	s3d_translate(widget->oid,widget->x,-widget->y,0.1);
+	widget->width=length+1;
+	widget->height=2;
 }
+/* show the label */
+void s3dw_label_show(s3dw_widget *widget)
+{
+    s3d_flags_on(widget->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+}
+/* hides the label */
+void s3dw_label_hide(s3dw_widget *widget)
+{
+    s3d_flags_off(widget->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+}
+
 /* create a new label in the surface */
-struct s3dw_widget *s3dw_label_new(struct s3dw_surface *surface, char *text, float posx, float posy)
+s3dw_label *s3dw_label_new(s3dw_surface *surface, char *text, float posx, float posy)
 {
-	struct s3dw_label *label;
-	struct s3dw_widget *widget;
-	label=(struct s3dw_label *)malloc(sizeof(struct s3dw_label));
-	widget=s3dw_widget_new();
+	s3dw_label *label;
+	s3dw_widget *widget;
+	label=(s3dw_label *)malloc(sizeof(s3dw_label));
+	widget=s3dw_widget_new((s3dw_widget *)label);
 	widget->type=S3DW_TBUTTON;
-	/* draw label */
-	label->_text=strdup(text);
-	label->onclick=NULL;
-	widget->_x=posx;
-	widget->_y=posy;
-	widget->data.label=label;
-	widget->_o=&(label->_oid_text);
+	widget->x=posx;
+	widget->y=posy;
+	label->text=strdup(text);
+	label->onclick=s3dw_nothing;
+	s3dw_widget_append((s3dw_widget *)surface, widget);
 	s3dw_label_draw(widget);
-	s3dw_surface_append_obj(surface, widget);
-	return(widget);
+	return(label);
 }
 
-void s3dw_label_erase(struct s3dw_label *label)
+void s3dw_label_erase(s3dw_widget *widget)
 {
-	s3d_del_object(label->_oid_text);
+	s3d_del_object(widget->oid);
 }
 /* destroy the label */
-void s3dw_label_destroy(struct s3dw_label *label)
+void s3dw_label_destroy(s3dw_widget *widget)
 {
-	s3dw_label_erase(label);
-	free(label->_text);
+	s3dw_label *label=(s3dw_label *)widget;
+	s3dw_label_erase(widget);
+	free(label->text);
 	free(label);
 }
-
-
-void s3dw_label_event_click(struct s3dw_widget *widget, unsigned long oid)
+/* handle key events */
+int s3dw_label_event_key(s3dw_widget *widget, unsigned short oid)
 {
-	if (widget->data.label->_oid_text==oid)
+	return(0);
+}
+/* handle click events */
+int s3dw_label_event_click(s3dw_widget *widget, unsigned long oid)
+{
+	s3dw_label *label=(s3dw_label *)widget;
+	if (widget->oid==oid)
 	{
-		if (widget->data.label->onclick!=NULL)
-			widget->data.label->onclick(widget);
+		label->onclick(widget);
+		return(1);
 	}
-	
+	return(0);
 }

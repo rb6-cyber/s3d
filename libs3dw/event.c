@@ -24,11 +24,15 @@
 #include <s3d.h>
 #include <s3dw.h>
 #include <s3dw_int.h>
+int modkey;
 
-void s3dw_click_event(struct s3d_evt *evt)
+void s3dw_handle_click(struct s3d_evt *evt)
 {
-	int i;
 	unsigned long oid=*((unsigned long *)evt->buf);
-	for (i=0;i<nsurf;i++)
-		s3dw_surface_event_click(psurf[i],oid);
+	s3dw_widget_event_click(s3dw_getroot(),oid);
+}
+void s3dw_handle_key(struct s3d_evt *evt)
+{
+	unsigned short key=*((unsigned short *)evt->buf);
+	s3dw_widget_event_key(s3dw_getroot(),key);
 }

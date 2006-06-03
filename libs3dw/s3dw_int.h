@@ -24,40 +24,70 @@
 #include <s3dlib.h> /* dprintf() */
 #define MAXANI		16
 #define ZOOMS		5
-extern	struct s3dw_widget  **psurf;
-extern	int					  nsurf;
+/* constructor and handler callbacks */
+typedef int (*s3dw_click_callback)(s3dw_widget *, unsigned long);
+typedef int (*s3dw_key_callback)(  s3dw_widget *, unsigned short);
+s3dw_callback 		s3dwcb_show[S3DW_NTYPES];
+s3dw_callback 		s3dwcb_hide[S3DW_NTYPES];
+s3dw_callback 		s3dwcb_destroy[S3DW_NTYPES];
+s3dw_click_callback s3dwcb_click[S3DW_NTYPES];
+s3dw_key_callback	s3dwcb_key[S3DW_NTYPES];
 
+/* root.c */
+s3dw_widget *s3dw_getroot();
+void s3dw_nothing(s3dw_widget *widget);
+void s3dw_root_destroy(s3dw_widget *widget);
+int s3dw_root_event_click(s3dw_widget *widget, unsigned long oid);
+int s3dw_root_event_key(s3dw_widget *widget, unsigned short key);
 /* widget.c */
-struct s3dw_widget *s3dw_widget_new();
-void s3dw_widget_event_click(struct s3dw_widget *widget, unsigned long oid);
+s3dw_widget *s3dw_widget_new();
+void s3dw_widget_append(s3dw_widget *parent, s3dw_widget *widget);
+void s3dw_widget_visible(s3dw_widget *widget);
+int s3dw_widget_event_click(s3dw_widget *widget, unsigned long oid);
+int s3dw_widget_event_key(s3dw_widget *widget, unsigned short key);
 /* surface.c */
-void s3dw_surface_destroy(struct s3dw_surface *surface);
-void s3dw_surface_append_obj(struct s3dw_surface *surface, struct s3dw_widget *widget);
-void s3dw_surface_event_click(struct s3dw_widget *widget, unsigned long oid);
-void s3dw_surface_draw(struct s3dw_widget *widget);
+void s3dw_surface_destroy(s3dw_widget *widget);
+void s3dw_surface_draw(s3dw_widget *widget);
+void s3dw_surface_erase(s3dw_widget *widget);
+void s3dw_surface_show(s3dw_widget *widget);
+void s3dw_surface_hide(s3dw_widget *widget);
+int s3dw_surface_event_click(s3dw_widget *widget, unsigned long oid);
+int s3dw_surface_event_key(s3dw_widget *widget, unsigned short key);
 /* button.c */
-void s3dw_button_destroy(struct s3dw_button *button);
-void s3dw_button_event_click(struct s3dw_widget *widget, unsigned long oid);
-void s3dw_button_draw(struct s3dw_widget *widget);
-void s3dw_button_erase(struct s3dw_button *button);
-/* label.c */
-void s3dw_label_destroy(struct s3dw_label *label);
-void s3dw_label_event_click(struct s3dw_widget *widget, unsigned long oid);
-void s3dw_label_draw(struct s3dw_widget *widget);
-/* input.c */
-void s3dw_input_destroy(struct s3dw_input *input);
-void s3dw_input_event_click(struct s3dw_widget *widget, unsigned long oid);
-void s3dw_input_draw(struct s3dw_widget *widget);
-void s3dw_input_erase(struct s3dw_input *input);
+void s3dw_button_destroy(s3dw_widget *widget);
+void s3dw_button_draw(s3dw_widget *widget);
+void s3dw_button_erase(s3dw_widget *widget);
+void s3dw_button_show(s3dw_widget *widget);
+void s3dw_button_hide(s3dw_widget *widget);
+int s3dw_button_event_key(s3dw_widget *widget, unsigned short key);
+int s3dw_button_event_click(s3dw_widget *widget, unsigned long oid);
 
+/* label.c */
+void s3dw_label_destroy(s3dw_widget *widget);
+void s3dw_label_draw(s3dw_widget *widget);
+void s3dw_label_erase(s3dw_widget *widget);
+void s3dw_label_show(s3dw_widget *widget);
+void s3dw_label_hide(s3dw_widget *widget);
+int s3dw_label_event_click(s3dw_widget *widget, unsigned long oid);
+int s3dw_label_event_key(s3dw_widget *widget, unsigned short key);
+
+/* input.c */
+void s3dw_input_destroy(s3dw_widget *widget);
+void s3dw_input_draw(s3dw_widget *widget);
+void s3dw_input_erase(s3dw_widget *widget);
+void s3dw_input_show(s3dw_widget *widget);
+void s3dw_input_hide(s3dw_widget *widget);
+unsigned long s3dw_input_draw_string(s3dw_widget *widget);
+int s3dw_input_event_click(s3dw_widget *widget, unsigned long oid);
+int s3dw_input_event_key(s3dw_widget *widget, unsigned short key);
 
 /* style.c */
-extern struct s3dw_style def_style;
+extern s3dw_style def_style;
 /* animate.c */
-int  _s3dw_ani_onstack(struct s3dw_widget *f);
-void _s3dw_ani_add(struct s3dw_widget *f);
+int  _s3dw_ani_onstack(s3dw_widget *f);
+void _s3dw_ani_add(s3dw_widget *f);
 void _s3dw_ani_del(int i);
-void _s3dw_ani_doit(struct s3dw_widget *f);
-void _s3dw_ani_finish(struct s3dw_widget *f, int i);
-void _s3dw_ani_iterate(struct s3dw_widget *f);
-int  _s3dw_ani_check(struct s3dw_widget *f);
+void _s3dw_ani_doit(s3dw_widget *f);
+void _s3dw_ani_finish(s3dw_widget *f, int i);
+void _s3dw_ani_iterate(s3dw_widget *f);
+int  _s3dw_ani_check(s3dw_widget *f);

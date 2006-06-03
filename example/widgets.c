@@ -1,7 +1,7 @@
 /*
  * widgets.c
  * 
- * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.berlios.de/ for more updates.
@@ -28,61 +28,122 @@
 #include <s3dw.h>
 #include <stdio.h>  /* NULL */
 #include <time.h>	/* nanosleep() */
+#include <stdlib.h>	/* free() */
+#include <string.h> /* strlen() */
 
-struct s3dw_widget *surface;
+s3dw_surface *surface;
+s3dw_input *input;
 static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
 void mainloop()
 {
+	/* keep this in your mainloop. this will do smooth animations for you ... */
+	s3dw_ani_mate();
 	nanosleep(&t,NULL); 
 }
-void widget_click(struct s3d_evt *evt)
+/* you should always put the s3dw-handler in your own event handler,
+ * if you want s3dw to react on clicks or keys ... and i'm sure you
+ * want that ... */
+void click(struct s3d_evt *evt)
 {
-	s3dw_click_event(evt);
-/*	s3d_quit();*/
+	s3dw_handle_click(evt);
 }
-void okay_button(struct s3dw_widget *dummy)
+void key(struct s3d_evt *evt)
+{
+	s3dw_handle_key(evt);
+}
+
+void done_button(s3dw_widget *dummy)
 {
 	s3d_quit();
 }
 
-void forward_button(struct s3dw_widget *dummy)
+void okay_button(s3dw_widget *dummy)
 {
-	struct s3dw_widget *o;
-	s3dw_widget_destroy(surface);
-	surface=s3dw_surface_new("Let's go",10,7);
-	s3dw_label_new(surface->data.surface,"Fast Forward!!",1,2);
-	o=s3dw_button_new(surface->data.surface,"Okay",4,4);
-	o->data.button->onclick=okay_button;
+	s3dw_button *button;
+	char string[32];
+	char *age;
 
+	/* get the input of the text ... before its destroyed, of course*/
+	age=s3dw_input_gettext(input);
+
+	/* delete the old surface with it subwidgets */
+	s3dw_delete(S3DWIDGET(surface));
+	
+	/* and create a new one ... */
+	surface=s3dw_surface_new("Ah!",10,7);
+	
+	/* just cutting the string if it's too long */
+	if (strlen(age)>8) age[8]=0;
+	
+	/* assemble the string ..*/
+	sprintf(string,"I see, %s!!",age);
+
+	s3dw_label_new(surface,string,1,2);
+	button=s3dw_button_new(surface,"Great",4,4);
+	/* clicking on the button will exit ... */
+	button->onclick=done_button;
+	
+	/* of couse, show it */
+	s3dw_show(S3DWIDGET(surface));
+
+	/* we don't need it anymore. always free strings, don't leak around */
+	free(age); 
 }
-void high_button(struct s3dw_widget *dummy)
+void no_button(s3dw_widget *dummy)
 {
-	struct s3dw_widget *o;
-	s3dw_widget_destroy(surface);
-	surface=s3dw_surface_new("Up Up'n Away!",10,7);
-	s3dw_label_new(surface->data.surface,"Fly away ...",1,2);
-	o=s3dw_button_new(surface->data.surface,"Okay",4,4);
-	o->data.button->onclick=okay_button;
-
+	s3dw_button *button;
+	s3dw_delete(S3DWIDGET(surface));
+	surface=s3dw_surface_new("Well ...",10,7);
+	s3dw_label_new(surface,"If you don't want to tell me ...",1,2);
+	button=s3dw_button_new(surface,"Bye",4,4);
+	/* clicking on the button will exit ... */
+	
+	button->onclick=done_button;
+	/* of couse, show it */
+	
+	s3dw_show(S3DWIDGET(surface));
 }
 
 int main (int argc, char **argv)
 {
-	struct s3dw_widget *o;
+	s3dw_button *button;
 	if (!s3d_init(&argc,&argv,"widgettest"))
 	{
-		s3d_set_callback(S3D_EVENT_OBJ_CLICK,widget_click);
-
+		s3d_set_callback(S3D_EVENT_OBJ_CLICK,click);
+		s3d_set_callback(S3D_EVENT_KEY,key);
+		/* this creates the "window" */
 		surface=s3dw_surface_new("Hello World",20,10);
-		s3dw_label_new(surface->data.surface,"Where do you want to fly today?",1,2);
-		o=s3dw_button_new(surface->data.surface,"Forward",1,7);
-		o->data.button->onclick=forward_button;
-		o=s3dw_button_new(surface->data.surface,"Into the Sky",10,7);
-		o->data.button->onclick=high_button;
+		
+		/* put a label (which is simply text) at position x=1, y=2 */
+		s3dw_label_new(surface,"How old are you?",1,2);
+
+		/* put an input box right below. we grab the pointer because we want to focus it (need for reference) */
+		input=s3dw_input_new(surface,8,1,4);
+		
+		/* we want the input-field be focused on our widget */
+		s3dw_focus(S3DWIDGET(input));
+
+		/* create the okay button */
+		button=s3dw_button_new(surface,"OK",1,7);
+
+		/* define the callback when the button is clicked. in our case, okay_button() will handle the event */
+		button->onclick=okay_button;
+
+		/* another button  */
+		button=s3dw_button_new(surface,"Won't tell you",10,7);
+
+		/* we will tell him how sad we are ... */
+		button->onclick=no_button;
+
+		/* this widget is focused (of course, it's our only one ... */
+		s3dw_focus(S3DWIDGET(surface));
+
+		/* show it. without showing, things would be boring... */
+		s3dw_show(S3DWIDGET(surface));
+
 		s3d_mainloop(mainloop);
 		s3d_quit();
 	}
-
 	return(0);
 }
 

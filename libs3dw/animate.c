@@ -27,12 +27,12 @@
 #include <math.h>
 
 /* the animation stack */
-static struct s3dw_widget *ani_s[MAXANI];
+static s3dw_widget *ani_s[MAXANI];
 static int ani_n=0;
 int moveon=1;
 
 /* is item f already on stack? */
-int _s3dw_ani_onstack(struct s3dw_widget *f)
+int _s3dw_ani_onstack(s3dw_widget *f)
 {
 	int i;
 	for (i=0;i<ani_n;i++)
@@ -42,7 +42,7 @@ int _s3dw_ani_onstack(struct s3dw_widget *f)
 
 }
 /* add an item on the animation stack */
-void _s3dw_ani_add(struct s3dw_widget *f)
+void _s3dw_ani_add(s3dw_widget *f)
 {
 	if (ani_n<MAXANI)
 	{
@@ -68,40 +68,41 @@ void _s3dw_ani_del(int i)
 	}
 }
 /* well ... */
-void _s3dw_ani_doit(struct s3dw_widget *f)
+void _s3dw_ani_doit(s3dw_widget *f)
 {
-	s3d_translate(	*(f->_o), f->_dx,f->_dy,f->_dz);
-	s3d_scale(		*(f->_o), f->_ds);
+	s3d_translate(	f->oid, f->ax,f->ay,f->az);
+	s3d_rotate(		f->oid, f->arx,f->ary,f->arz);
+	s3d_scale(		f->oid, f->as);
 }
 
 /* finish an animation on the stack, stack index i */
-void _s3dw_ani_finish(struct s3dw_widget *f, int i)
+void _s3dw_ani_finish(s3dw_widget *f, int i)
 {
-	f->_dx= f->_x;
-	f->_dy= f->_y;
-	f->_dz= f->_z;
-	f->_ds= f->_s;
+	f->ax= f->x;
+	f->ay= f->y;
+	f->az= f->z;
+	f->as= f->s;
 	_s3dw_ani_doit(f);
 	if (i!=-1)
 		_s3dw_ani_del(i);
 }
-void _s3dw_ani_iterate(struct s3dw_widget *f)
+void _s3dw_ani_iterate(s3dw_widget *f)
 {
-	f->_dx=(f->_x + f->_dx*ZOOMS)/(ZOOMS+1);
-	f->_dy=(f->_y + f->_dy*ZOOMS)/(ZOOMS+1);
-	f->_dz=(f->_z + f->_dz*ZOOMS)/(ZOOMS+1);
-	f->_ds=(f->_s + f->_ds*ZOOMS)/(ZOOMS+1);
+	f->ax=(f->x + f->ax*ZOOMS)/(ZOOMS+1);
+	f->ay=(f->y + f->ay*ZOOMS)/(ZOOMS+1);
+	f->az=(f->z + f->az*ZOOMS)/(ZOOMS+1);
+	f->as=(f->s + f->as*ZOOMS)/(ZOOMS+1);
 
 }
 
 /* checks if f is good enough */
-int _s3dw_ani_check(struct s3dw_widget *f)
+int _s3dw_ani_check(s3dw_widget *f)
 {
 	float x,y,z;
-	x=f->_dx - f->_x;
-	y=f->_dy - f->_y;
-	z=f->_dz - f->_z;
-	if (((fabs(f->_ds - f->_s)/f->_s)>0.01) || (sqrt(x*x+y*y+z*z) > 0.01))
+	x=f->ax - f->x;
+	y=f->ay - f->y;
+	z=f->az - f->z;
+	if (((fabs(f->as - f->s)/f->s)>0.01) || (sqrt(x*x+y*y+z*z) > 0.01))
 		return(0);
 	return(1);
 }
@@ -109,7 +110,7 @@ int _s3dw_ani_check(struct s3dw_widget *f)
 void s3dw_ani_mate()
 {
 	int i;
-	struct s3dw_widget *f;
+	s3dw_widget *f;
 	for (i=0;i<ani_n;i++)
 	{
 		f=ani_s[i];

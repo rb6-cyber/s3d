@@ -28,9 +28,9 @@
 #include <string.h> /* strdup() */
 
 /* draw and setup the button */
-void s3dw_button_draw(struct s3dw_widget *widget)
+void s3dw_button_draw(s3dw_widget *widget)
 {
-	struct s3dw_button *button=widget->data.button;
+	s3dw_button *button=(s3dw_button *)widget;
 	float length;
 	float vertices[8*3];
 	unsigned long polygons[10*4]={
@@ -46,8 +46,8 @@ void s3dw_button_draw(struct s3dw_widget *widget)
 			4,6,5,0
 	};
 
-	button->_oid_text=s3d_draw_string(button->_text,&length);
-	s3d_pep_materials_a(button->_oid_text,widget->_surface->_style->text_mat,1);
+	button->oid_text=s3d_draw_string(button->text,&length);
+	s3d_pep_materials_a(button->oid_text,widget->style->text_mat,1);
 
 	/* width of the button depends on the length of the text */
 	vertices[0*3+0]=0.0;			vertices[0*3+1]=0.0;		vertices[0*3+2]=0.0;	
@@ -58,62 +58,80 @@ void s3dw_button_draw(struct s3dw_widget *widget)
 	vertices[5*3+0]=0.25;			vertices[5*3+1]=-1.75;		vertices[5*3+2]=0.25;	
 	vertices[6*3+0]=length+0.75;	vertices[6*3+1]=-1.75;		vertices[6*3+2]=0.25;	
 	vertices[7*3+0]=length+0.75;	vertices[7*3+1]=-0.25;		vertices[7*3+2]=0.25;	
-	button->_oid_box=s3d_new_object();
-	s3d_push_materials_a(button->_oid_box,widget->_surface->_style->input_mat,1);
-	s3d_push_vertices   (button->_oid_box,vertices,8);
-	s3d_push_polygons   (button->_oid_box,polygons,10);
-	s3d_link(		   button->_oid_box,widget->_surface->oid);
-	s3d_link(		   button->_oid_text,button->_oid_box);
-	s3d_translate(button->_oid_text,0.5,-1.5,0.30);
-	s3d_translate(button->_oid_box,widget->_x,-widget->_y,0);
-	widget->_o=&(button->_oid_box);
-	widget->_width=length+1;
-	widget->_height=2;
-    s3d_flags_on(button->_oid_box,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-    s3d_flags_on(button->_oid_text,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-
+	widget->oid=s3d_new_object();
+	s3d_push_materials_a(widget->oid,widget->style->input_mat,1);
+	s3d_push_vertices   (widget->oid,vertices,8);
+	s3d_push_polygons   (widget->oid,polygons,10);
+	s3d_link(		   widget->oid,widget->parent->oid);
+	s3d_link(		   button->oid_text,widget->oid);
+	s3d_translate(button->oid_text,0.5,-1.5,0.30);
+	s3d_translate(widget->oid,widget->x,-widget->y,0);
+	widget->width=length+1;
+	widget->height=2;
 }
 
 /* create a new button in the surface */
-struct s3dw_widget *s3dw_button_new(struct s3dw_surface *surface, char *text, float posx, float posy)
+s3dw_button *s3dw_button_new(s3dw_surface *surface, char *text, float posx, float posy)
 {
-	struct s3dw_button *button;
-	struct s3dw_widget *widget;
-	button=(struct s3dw_button *)malloc(sizeof(struct s3dw_button));
-	widget=s3dw_widget_new();
+	s3dw_button *button;
+	s3dw_widget *widget;
+	button=(s3dw_button *)malloc(sizeof(s3dw_button));
+	button->text=strdup(text);
+	button->onclick=s3dw_nothing;
+	widget=s3dw_widget_new((s3dw_widget *)button);
 	widget->type=S3DW_TBUTTON;
-	/* draw button */
-	button->_text=strdup(text);
-	button->onclick=NULL;
-	widget->_x=posx;
-	widget->_y=posy;
-	widget->data.button=button;
-	s3dw_button_draw(widget);
-	s3dw_surface_append_obj(surface, widget);
-	return(widget);
-}
-void s3dw_button_erase(struct s3dw_button *button)
-{
-	s3d_del_object(button->_oid_text);
-	s3d_del_object(button->_oid_box);
+	widget->x=posx;
+	widget->y=posy;
+	widget->style=((s3dw_widget *)surface)->style;
 
+	s3dw_widget_append((s3dw_widget *)surface, widget);
+	s3dw_button_draw(widget);
+	return(button);
+}
+/* show, make visible */
+void s3dw_button_show(s3dw_widget *widget)
+{
+	s3dw_button *button=(s3dw_button *)widget;
+    s3d_flags_on(widget->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+    s3d_flags_on(button->oid_text,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+}
+/* hide */
+void s3dw_button_hide(s3dw_widget *widget)
+{
+	s3dw_button *button=(s3dw_button *)widget;
+    s3d_flags_off(widget->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+    s3d_flags_off(button->oid_text,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+}
+/* destroy s3d structures of the button */
+void s3dw_button_erase(s3dw_widget *widget)
+{
+	s3dw_button *button=(s3dw_button *)widget;
+	s3d_del_object(button->oid_text);
+	s3d_del_object(widget->oid);
 }
 
 /* destroy the button */
-void s3dw_button_destroy(struct s3dw_button *button)
+void s3dw_button_destroy(s3dw_widget *widget)
 {
-	s3dw_button_erase(button);
-	free(button->_text);
+	s3dw_button *button=(s3dw_button *)widget;
+	s3dw_button_erase(widget);
+	free(button->text);
 	free(button);
 }
-
-
-void s3dw_button_event_click(struct s3dw_widget *widget, unsigned long oid)
+/* handle key events */
+int s3dw_button_event_key(s3dw_widget *widget, unsigned short oid)
 {
-	if ((widget->data.button->_oid_text==oid) || (widget->data.button->_oid_box==oid))
+	return(0);
+}
+
+/* handle click on a button */
+int s3dw_button_event_click(s3dw_widget *widget, unsigned long oid)
+{
+	s3dw_button *button=(s3dw_button *)widget;
+	if ((button->oid_text==oid) || (widget->oid==oid))
 	{
-		if (widget->data.button->onclick!=NULL)
-			widget->data.button->onclick(widget);
+		button->onclick(widget);
+		return(1);
 	}
-	
+	return(0);
 }
