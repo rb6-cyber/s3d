@@ -1,7 +1,7 @@
 noinst_PROGRAMS=	hudtest katze \
 			ptrtest radius_test s3dclock snowman \
 			strtest texturetest linetest widgets \
-			3dsloader_g3d
+			3dsloader_g3d nichtsnutz
 bin_PROGRAMS= filebrowser 3dsloader
 			
 3dsloader_SOURCES=		3dsloader.c
@@ -17,6 +17,7 @@ strtest_SOURCES=		strtest.c
 texturetest_SOURCES=	texturetest.c
 ptrtest_SOURCES=		ptrtest.c
 3dsloader_g3d_SOURCES=	3dsloader_g3d.c
+nichtsnutz_SOURCES=		nichtsnutz.c
 
 CPPFLAGS=		-I$(top_srcdir)/server -I$(top_srcdir)/libs3d 
 LIBS=			$(top_builddir)/libs3d/libs3d.la  
