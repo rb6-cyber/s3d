@@ -33,7 +33,7 @@
 
 s3dw_surface *surface;
 s3dw_input *input;
-static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
+static struct timespec t={0,33*1000*1000}; /* 33 mili seconds */
 void mainloop()
 {
 	/* keep this in your mainloop. this will do smooth animations for you ... */
@@ -47,9 +47,30 @@ void click(struct s3d_evt *evt)
 {
 	s3dw_handle_click(evt);
 }
+void key_button(s3dw_widget *button)
+{
+	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
+}
 void key(struct s3d_evt *evt)
 {
+	struct s3d_key_event *key=(struct s3d_key_event *)evt->buf;
+	char string[8];
+	s3dw_surface *miniwin;
+	s3dw_button  *button;
+	
 	s3dw_handle_key(evt);
+	/* okay, that's a little bit insane ... ;) 
+	 * we create some little windows with the actual key pressed. */
+
+	miniwin=s3dw_surface_new("Key",6,6);
+	sprintf(string,"%c",key->unicode);
+	s3dw_label_new(miniwin,string,1,2);
+	button=s3dw_button_new(miniwin,"OK",2,4);
+	/* clicking on the button will exit ... */
+	button->onclick=key_button;
+	/* of couse, show it */
+	s3dw_show(S3DWIDGET(miniwin));
+
 }
 
 void done_button(s3dw_widget *dummy)

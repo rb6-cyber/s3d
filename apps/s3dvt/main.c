@@ -397,10 +397,10 @@ void paint_chars()
 }*/
 void keypress(struct s3d_evt *event)
 {
+	struct s3d_key_event *keys=(struct s3d_key_event *)event->buf;
 	int key;
-	key=*((unsigned short *)event->buf);
 /*	printf("received key: %d\n",key);*/
-	switch (key)
+	switch (key=keys->keysym)
 	{
 		case S3DK_F1:
 		case S3DK_F2:
@@ -482,8 +482,8 @@ void keypress(struct s3d_evt *event)
 			term_addchar(10);
 			break;
 		default:
-			if ((char)key)  /*  \0 is no good idea .. */
-				term_addchar((char)key);
+			if ((char)keys->unicode)  /*  \0 is no good idea .. */
+				term_addchar((char)keys->unicode);
 	}
 
 }

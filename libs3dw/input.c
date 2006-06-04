@@ -166,34 +166,39 @@ void s3dw_input_change_text(s3dw_input *input, char *text)
 	input->oid_text=oid_text;
 }
 /* handle key events */
-int s3dw_input_event_key(s3dw_widget *widget, unsigned short key)
+int s3dw_input_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 {
 	s3dw_input *input=(s3dw_input *)widget;
 	char *newtext;
+	char key=keys->unicode; /* unicode support so far ... :/ */
 	int len;
 	dprintf(MED,"edit field got key %d!!",key);
-	if (isprint(key))
+	switch (keys->keysym)
 	{
-		len=strlen(input->text);
-		newtext=malloc(len + 2); /* +1 for the terminating byte, +1 for the new character */
-		strcpy(newtext,input->text);
-		newtext[len]=key;
-		newtext[len+1]=0;
-		s3dw_input_change_text(input,newtext);
-		free(newtext);
-		return(1);
-	} 
-	if (key==S3DK_BACKSPACE)
-	{
-		len=strlen(input->text);
-		if ((len=strlen(input->text))>0)
-		{
-			newtext=malloc(len + 0); /* +1 for the terminating byte, -1 for the deleted character */
-			strncpy(newtext,input->text,len);
-			newtext[len-1]=0;
-			s3dw_input_change_text(input,newtext);
-			free(newtext);
-		}
+		case S3DK_BACKSPACE:
+			len=strlen(input->text);
+			if ((len=strlen(input->text))>0)
+			{
+				newtext=malloc(len + 0); /* +1 for the terminating byte, -1 for the deleted character */
+				strncpy(newtext,input->text,len);
+				newtext[len-1]=0;
+				s3dw_input_change_text(input,newtext);
+				free(newtext);
+				return(1);
+			}
+			break;
+		default:
+			if (isprint(key))
+			{
+				len=strlen(input->text);
+				newtext=malloc(len + 2); /* +1 for the terminating byte, +1 for the new character */
+				strcpy(newtext,input->text);
+				newtext[len]=key;
+				newtext[len+1]=0;
+				s3dw_input_change_text(input,newtext);
+				free(newtext);
+				return(1);
+			} 
 	}
 	
 	return(0);

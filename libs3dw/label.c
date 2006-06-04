@@ -80,7 +80,7 @@ void s3dw_label_destroy(s3dw_widget *widget)
 	free(label);
 }
 /* handle key events */
-int s3dw_label_event_key(s3dw_widget *widget, unsigned short oid)
+int s3dw_label_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 {
 	return(0);
 }

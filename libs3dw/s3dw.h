@@ -30,6 +30,8 @@
 #define 	S3DW_ACTIVE		2
 /* tells us if the widget is currently displayed */
 #define		S3DW_ONSCREEN	256
+/* if the surface (or widget) is already properly arranged */
+#define 	S3DW_ARRANGED	512
 /* just a typecaster to beatify code. use it if you like */
 #define 	S3DWIDGET(x)	(s3dw_widget *)x
 

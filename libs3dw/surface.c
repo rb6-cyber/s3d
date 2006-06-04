@@ -130,6 +130,7 @@ s3dw_surface *s3dw_surface_new(char *title, float width, float height)
 {
 	s3dw_surface *surface;
 	s3dw_widget  *widget;
+	float f1[3];
 			
 	surface=(s3dw_surface *)malloc(sizeof(s3dw_surface));
 	surface->title=strdup(title);
@@ -137,8 +138,15 @@ s3dw_surface *s3dw_surface_new(char *title, float width, float height)
 	widget->type=S3DW_TSURFACE;
 	widget->width=width;
 	widget->height=height;
+	widget->as=0.01;
+	s3dw_arr_widgetcenter(widget,f1);
+	widget->x=-f1[0];
+	widget->y=-f1[1];
+	widget->z=-f1[2];
 	s3dw_widget_append(s3dw_getroot(),widget);
 	s3dw_surface_draw(widget);
+	s3dw_arrange();
+	s3dw_ani_add(widget);
 	return(surface);
 }
 /* delete objects in the s3d context */
@@ -158,7 +166,7 @@ void s3dw_surface_destroy(s3dw_widget *widget)
 	free(surface);
 }
 /* handle key events */
-int s3dw_surface_event_key(s3dw_widget *widget, unsigned short oid)
+int s3dw_surface_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 {
 	return(0);
 }

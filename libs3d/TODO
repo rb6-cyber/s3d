@@ -1,4 +1,5 @@
 TODO:
+- key repeation
 - texture support for 3ds
 - shmat() return (char *) -1 or NULL?! data_ctos/data_stoc should
   really not be 0x0

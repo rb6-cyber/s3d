@@ -29,10 +29,10 @@
 /* the animation stack */
 static s3dw_widget *ani_s[MAXANI];
 static int ani_n=0;
-int moveon=1;
+static int animation_on=0;
 
 /* is item f already on stack? */
-int _s3dw_ani_onstack(s3dw_widget *f)
+int s3dw_ani_onstack(s3dw_widget *f)
 {
 	int i;
 	for (i=0;i<ani_n;i++)
@@ -42,21 +42,21 @@ int _s3dw_ani_onstack(s3dw_widget *f)
 
 }
 /* add an item on the animation stack */
-void _s3dw_ani_add(s3dw_widget *f)
+void s3dw_ani_add(s3dw_widget *f)
 {
-	if (ani_n<MAXANI)
+	if ((ani_n<MAXANI) && (animation_on))
 	{
-		if (_s3dw_ani_onstack(f))
+		if (s3dw_ani_onstack(f))
 			return;		/* already in list */
 		ani_s[ani_n]=f;
-		_s3dw_ani_iterate(f);
+		s3dw_ani_iterate(f);
 		ani_n++;
 	}
 	else /* no place, finish now */
-		_s3dw_ani_finish(f,-1);
+		s3dw_ani_finish(f,-1);
 }
 /* delete an item from the animation stack */
-void _s3dw_ani_del(int i)
+void s3dw_ani_del(int i)
 {
 	if ((i>=0) && (i<ani_n))
 	{
@@ -68,7 +68,7 @@ void _s3dw_ani_del(int i)
 	}
 }
 /* well ... */
-void _s3dw_ani_doit(s3dw_widget *f)
+void s3dw_ani_doit(s3dw_widget *f)
 {
 	s3d_translate(	f->oid, f->ax,f->ay,f->az);
 	s3d_rotate(		f->oid, f->arx,f->ary,f->arz);
@@ -76,17 +76,17 @@ void _s3dw_ani_doit(s3dw_widget *f)
 }
 
 /* finish an animation on the stack, stack index i */
-void _s3dw_ani_finish(s3dw_widget *f, int i)
+void s3dw_ani_finish(s3dw_widget *f, int i)
 {
 	f->ax= f->x;
 	f->ay= f->y;
 	f->az= f->z;
 	f->as= f->s;
-	_s3dw_ani_doit(f);
+	s3dw_ani_doit(f);
 	if (i!=-1)
-		_s3dw_ani_del(i);
+		s3dw_ani_del(i);
 }
-void _s3dw_ani_iterate(s3dw_widget *f)
+void s3dw_ani_iterate(s3dw_widget *f)
 {
 	f->ax=(f->x + f->ax*ZOOMS)/(ZOOMS+1);
 	f->ay=(f->y + f->ay*ZOOMS)/(ZOOMS+1);
@@ -96,7 +96,7 @@ void _s3dw_ani_iterate(s3dw_widget *f)
 }
 
 /* checks if f is good enough */
-int _s3dw_ani_check(s3dw_widget *f)
+int s3dw_ani_check(s3dw_widget *f)
 {
 	float x,y,z;
 	x=f->ax - f->x;
@@ -111,16 +111,17 @@ void s3dw_ani_mate()
 {
 	int i;
 	s3dw_widget *f;
+	animation_on=1;			/* animation is activated */
 	for (i=0;i<ani_n;i++)
 	{
 		f=ani_s[i];
-		_s3dw_ani_iterate(f);
-		if (_s3dw_ani_check(f))
+		s3dw_ani_iterate(f);
+		if (s3dw_ani_check(f))
 		{
-			_s3dw_ani_finish(f,i);
+			s3dw_ani_finish(f,i);
 			i--; /* a new widget is here now, take care in the next iteration */
 		} else {
-			_s3dw_ani_doit(f);
+			s3dw_ani_doit(f);
 		}
 	}
 }

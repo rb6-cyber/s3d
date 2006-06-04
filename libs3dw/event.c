@@ -33,6 +33,6 @@ void s3dw_handle_click(struct s3d_evt *evt)
 }
 void s3dw_handle_key(struct s3d_evt *evt)
 {
-	unsigned short key=*((unsigned short *)evt->buf);
-	s3dw_widget_event_key(s3dw_getroot(),key);
+	struct s3d_key_event *keys=(struct s3d_key_event *)evt->buf;
+	s3dw_widget_event_key(s3dw_getroot(),keys);
 }

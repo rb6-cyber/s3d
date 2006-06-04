@@ -42,7 +42,7 @@ int s3dw_root_event_click(s3dw_widget *widget,unsigned long oid)
 	return(0);
 }
 /* dummy handler */
-int s3dw_root_event_key(s3dw_widget *widget,unsigned short key)
+int s3dw_root_event_key(s3dw_widget *widget,struct s3d_key_event *keys)
 {
 	return(0);
 }

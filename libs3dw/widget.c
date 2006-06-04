@@ -56,11 +56,11 @@ int s3dw_widget_event_click(s3dw_widget *widget, unsigned long oid)
 	return(0);
 }
 /* widget received key,,call specific function and check (focused) kids */
-int s3dw_widget_event_key(s3dw_widget *widget, unsigned short key)
+int s3dw_widget_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 {
-	if (s3dwcb_key[widget->type](widget,key)) return(1);
+	if (s3dwcb_key[widget->type](widget,keys)) return(1);
 	if (widget->focus!=-1)
-		if (s3dw_widget_event_key(widget->pobj[widget->focus],key)) return(1);
+		if (s3dw_widget_event_key(widget->pobj[widget->focus],keys)) return(1);
 	return(0);
 }
 
