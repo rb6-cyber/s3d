@@ -1187,7 +1187,9 @@ int obj_translate(struct t_process *p, uint32_t oid, float *transv)
 	float v[3];
 	if (obj_valid(p,oid,obj))
 	{
-		dprintf(VLOW,"[translate|pid %d] %d: %3.3f %3.3f %3.3f",p->id,oid,obj->translate.x,obj->translate.y,obj->translate.z);
+		if (isnan(transv[0])||isinf(transv[0])) return(-1);
+		if (isnan(transv[1])||isinf(transv[1])) return(-1);
+		if (isnan(transv[2])||isinf(transv[2])) return(-1);
 		if ((p->id!=MCP) && (obj->oflags&OF_SYSTEM))
 		{
 			if (focus_oid==p->mcp_oid)
@@ -1209,7 +1211,7 @@ int obj_translate(struct t_process *p, uint32_t oid, float *transv)
 			obj->translate.z=*(transv+2);
 			obj_pos_update(p,oid,oid);
 		}
-
+		dprintf(LOW,"[translate|pid %d] %d: %3.3f %3.3f %3.3f",p->id,oid,obj->translate.x,obj->translate.y,obj->translate.z);
 	}
 	return(0);
 }
@@ -1222,7 +1224,9 @@ int obj_rotate(struct t_process *p, uint32_t oid, float *rotv)
 	float f;
 	if (obj_valid(p,oid,obj))
 	{
-		dprintf(VLOW,"[rotate|pid %d] %d: %3.3f %3.3f %3.3f",p->id,oid,obj->rotate.x,obj->rotate.y,obj->rotate.z);
+		if (isnan(rotv[0])||isinf(rotv[0])) return(-1);
+		if (isnan(rotv[1])||isinf(rotv[1])) return(-1);
+		if (isnan(rotv[2])||isinf(rotv[2])) return(-1);
 		if ((p->id!=MCP) && (obj->oflags&OF_SYSTEM))
 		{
 			if (focus_oid==p->mcp_oid)
@@ -1247,6 +1251,7 @@ int obj_rotate(struct t_process *p, uint32_t oid, float *rotv)
 			obj->rotate.z=f;
 			obj_pos_update(p,oid,oid);
 		}
+		dprintf(LOW,"[rotate|pid %d] %d: %3.3f %3.3f %3.3f",p->id,oid,obj->rotate.x,obj->rotate.y,obj->rotate.z);
 	}
 	return(0);
 }
@@ -1456,7 +1461,7 @@ void obj_sys_update(struct t_process *p, uint32_t oid)
 	}
 	/* reverse in the application space */
 	mySetMatrix(mcp_p->object[p->mcp_oid]->m);
-	myInvert();
+	if (myInvert()) return; /* we don't bother if the matrix doesn't work. */
 	myTransform3f(v);
 
 	p->object[oid]->rotate.x=fs.x-fa.x;

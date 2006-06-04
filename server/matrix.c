@@ -163,6 +163,7 @@ check:	if (M(l,l)*M(l,l)>0.00000001F) /* it won't work with real zero */
 					goto check;
 				}
 			dprintf(MED,"nothing to swap, can't reverse this matrix! returning ... ");
+			mat_debug(Mm);
 			return(-1); /* the dead end!! */
 		}
 	}
