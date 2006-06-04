@@ -60,7 +60,7 @@ void mainloop()
 	length = s3d_vector_length(CatPos);
 
 	RotCam[0][0] = ( CatPos[0] * 12.0 ) / length;
-	RotCam[0][1] = CatPos[1];
+	RotCam[0][1] = ( CatPos[1] != 0 ) ?(( CatPos[1] * 12 ) / length):0;
 	RotCam[0][2] = ( CatPos[2] * RotCam[0][0] ) / CatPos[0];
 	
 	
@@ -76,11 +76,9 @@ void mainloop()
 		TmpMove[1] = CamPosition[0][1];
 		TmpMove[2] = CamPosition[0][2];
 		
-		TmpMove[0] += sin( ( CamPosition[1][1] * M_PI ) / 180 );
-		TmpMove[2] += cos( ( CamPosition[1][1] * M_PI ) / 180 );
-		TmpMove[0] += cos( (-CamPosition[1][1] * M_PI ) / 180 );
-		TmpMove[2] += sin( (-CamPosition[1][1] * M_PI ) / 180 );
-		TmpMove[1] += sin( (-CamPosition[1][0] * M_PI ) / 180 );
+		TmpMove[0] += 2 * sin( ( CamPosition[1][1] * M_PI ) / 180 );
+		TmpMove[2] += 2 * cos( ( CamPosition[1][1] * M_PI ) / 180 );
+		TmpMove[1] += 2 * sin( (-CamPosition[1][0] * M_PI ) / 180 );
 						 
 	/*	
 		angle = s3d_vector_angle(CatPos,TmpMove);
