@@ -80,7 +80,8 @@ int graphics_init ()
 	
 	/* polygon smoothing */
 	glDisable(GL_POLYGON_SMOOTH);
-/*    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST); */
+/*    glEnable(GL_POLYGON_SMOOTH); 
+    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST); */
 
 	/* normalizing */
 	glDisable(GL_AUTO_NORMAL);
@@ -349,7 +350,7 @@ void graphics_main()
 	struct t_process *p=get_proc_by_pid(MCP);
 	t_mtrx m;
 /*	GLfloat pos[]={100.0,20.0,100.0,1.0};*/
-	GLfloat pos[]={0,20,0,1.0};
+	GLfloat pos[]={0,20,1.0,1.0};
 	GLfloat light0_spec[]={0.7,0.7,0.7,0.0};
 	GLfloat light0_shininess[] ={50.0};
 	GLfloat light0_diff[]={0.5,0.5,0.5,1.0};
