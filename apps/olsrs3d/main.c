@@ -72,10 +72,10 @@ float ZeroPosition[3] = {0,0,0};	/* current position zero position */
 float ReturnPoint[2][3];	/* return point to move back from terminal */
 
 int ZeroPoint;   /* object zeropoint */
-int Zp_rotate = 0;
+float Zp_rotate = 0.0;
 int ColorSwitch = 0;   /* enable/disable colored olsr connections */
 int RotateSwitch = 0;
-int RotateSpeed = 2;
+float RotateSpeed = 0.5;
 float Factor = 0.6;	/* Factor in calc_olsr_node_mov */
 struct olsr_node *Olsr_node_pEtx;
 
@@ -649,7 +649,7 @@ void mainloop() {
 	int net_result;   /* result of function net_main */
 	char nc_str[20];
 	float strLen,node_length;
-	float target,current,diff[3],tmp_mov_vec[3],angle;
+	float target,current,diff[3],angle;
 	float tmpVec[3], diffVec[3], np[3];
 	int i;
 	/* calculate new movement vector */
@@ -692,7 +692,7 @@ void mainloop() {
 	}
 	
 	if(RotateSwitch) {
-		Zp_rotate = (Zp_rotate+RotateSpeed)%360;
+		Zp_rotate = ( Zp_rotate + RotateSpeed ) > 360 ? 0.0 : ( Zp_rotate + RotateSpeed );	
 		s3d_rotate(ZeroPoint,0,Zp_rotate,0);
 	}
 	CamPosition2[0][0]=  CamPosition[0][0]*cos(Zp_rotate*M_PI/180.0) - CamPosition[0][2] * sin (Zp_rotate*M_PI/180.0);
@@ -849,25 +849,45 @@ void keypress(struct s3d_evt *event) {
 				stop();
 				break;
 			case 'c': /* c -> color on/off */
-				if(ColorSwitch) ColorSwitch = 0;
-				else ColorSwitch = 1;
+				ColorSwitch =  ColorSwitch ? 0 : 1;
 				break;
 			case 'r': /* r -> rotate start/stop*/
-				if(RotateSwitch) RotateSwitch = 0;
-				else RotateSwitch = 1;
+				RotateSwitch = RotateSwitch ? 0 : 1;
 				break;
+			case S3DK_KP_PLUS:
 			case '+': /* + -> rotate speed increase*/
-				if(RotateSwitch && RotateSpeed < 10)
-					RotateSpeed++;
+				
+				if(RotateSwitch && RotateSpeed < 5)
+				{
+					if(RotateSpeed >= 1.0)
+						RotateSpeed += 1.0;
+					else
+						RotateSpeed += 0.1;
+					printf("%f,\n",RotateSpeed);
+				}
 				break;
+				
+			case S3DK_KP_MINUS:
 			case '-': /* - -> rotate speed decrease*/
-				if(RotateSwitch && RotateSpeed > 1)
-					RotateSpeed--;
+				
+				if(RotateSwitch)
+				{
+					if( RotateSpeed >= 2.0 )
+						RotateSpeed -= 1.0;
+					else {
+						if(RotateSpeed > 0.2)
+							RotateSpeed -= 0.1;
+					}
+					printf("%f,\n",RotateSpeed);
+				}
 				break;
+				
 			case 16: /* strg + p -> reset nodes ( zeroPoint to 0,0,0 ) */
-				s3d_translate(ZeroPoint,0.0,0.0,0.0);
-				ZeroPosition[0] = ZeroPosition[1] = ZeroPosition[2] = 0.0;
-				break;
+				{
+					s3d_translate(ZeroPoint,0.0,0.0,0.0);
+					ZeroPosition[0] = ZeroPosition[1] = ZeroPosition[2] = 0.0;
+					break;
+				}
 			case S3DK_PAGEUP: /* page up -> change factor in calc_olsr_node_mov */
 				if(Factor < 0.9)
 					Factor += 0.1;
