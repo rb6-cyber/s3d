@@ -526,8 +526,8 @@ unsigned int draw_background()
 	s3d_push_material_a(b,0.5,0.5,0.5,0.7,
 						  1,1,1,0.7,
 						  0,0,0,0.7);
-	s3d_push_polygon(b,1,0,2,0);
-	s3d_push_polygon(b,2,0,3,0);
+	s3d_push_polygon(b,1,2,0,0);
+	s3d_push_polygon(b,2,3,0,0);
 	s3d_flags_on(b,S3D_OF_VISIBLE);
 	return(b);
 }

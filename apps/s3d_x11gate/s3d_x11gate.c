@@ -196,14 +196,14 @@ int main(int argc, char **argv)
 						0.8,	0.0,	0.0	,1.0,
 						1.0,	1.0,	1.0	,1.0,
 						0.8,	0.0,	0.0	,1.0);
-		s3d_push_polygon(oid,0,1,2,0);
-		s3d_pep_polygon_tex_coord(oid, 0.0,1.0, 
-									   1.0,1.0,
-									   1.0,0.0);
-		s3d_push_polygon(oid,0,2,3,0);
+		s3d_push_polygon(oid,0,2,1,0);
 		s3d_pep_polygon_tex_coord(oid, 0.0,1.0, 
 									   1.0,0.0,
-									   0.0,0.0);
+									   1.0,1.0);
+		s3d_push_polygon(oid,0,3,2,0);
+		s3d_pep_polygon_tex_coord(oid, 0.0,1.0, 
+									   0.0,0.0,
+									   1.0,0.0);
 		s3d_push_texture(oid,width,height);
 					 /*  push data on texture 0 position (0,0) */
 		s3d_pep_material_texture(oid,0);	 /*  assign texture 0 to material 0 */
