@@ -158,6 +158,7 @@ gboolean g3d_plugins_init(G3DContext *context)
 	context->exts_import = g_hash_table_new(g_str_hash, g_str_equal);
 	context->exts_image = g_hash_table_new(g_str_hash, g_str_equal);
 
+	printf("Loading plugins from " PLUGIN_DIR "\n");
 	plugins_loaddirectory(context, PLUGIN_DIR "/image");
 	plugins_loaddirectory(context, PLUGIN_DIR "/import");
 	return TRUE;

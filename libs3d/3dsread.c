@@ -356,8 +356,8 @@ int s3d_import_3ds(char *buf)
 		    for (j=0; j<polynum; j++)
 			{
 				poly_buf[j*4+0]=vertex_offset+gints(ptr+0); 
-				poly_buf[j*4+1]=vertex_offset+gints(ptr+2);
-				poly_buf[j*4+2]=vertex_offset+gints(ptr+4);
+				poly_buf[j*4+1]=vertex_offset+gints(ptr+4);
+				poly_buf[j*4+2]=vertex_offset+gints(ptr+2);
 				poly_buf[j*4+3]=col_obj;  /*  we should have a default material .... */
 				ptr+=sizeof(unsigned short)*4;
 		    }

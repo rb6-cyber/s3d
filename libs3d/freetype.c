@@ -258,8 +258,8 @@ int _s3d_add_tessbuf(unsigned short a)
 				for (i=0;i<np;i++)
 				{
 					tess_buf[a].pbuf[k*4]=  triangles[i][0]+ncsta[c]-1;
-					tess_buf[a].pbuf[k*4+1]=triangles[i][1]+ncsta[c]-1;
-					tess_buf[a].pbuf[k*4+2]=triangles[i][2]+ncsta[c]-1;
+					tess_buf[a].pbuf[k*4+1]=triangles[i][2]+ncsta[c]-1;
+					tess_buf[a].pbuf[k*4+2]=triangles[i][1]+ncsta[c]-1;
 					tess_buf[a].pbuf[k*4+3]=0;
 					k++;
 				}

@@ -96,6 +96,10 @@ int graphics_init ()
 /* 	glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shin); */
 	glMaterialfv(GL_FRONT,GL_SHININESS,shin);
 	graphics_reshape(X_RES,Y_RES);
+
+	/* face culling */
+	glCullFace(GL_FRONT);
+	glEnable(GL_CULL_FACE);
 	return(0);
 }
 /*  this is to be called when the window is resized or created ... */
@@ -344,7 +348,8 @@ void graphics_main()
 {
 	struct t_process *p=get_proc_by_pid(MCP);
 	t_mtrx m;
-	GLfloat pos[]={100.0,20.0,100.0,1.0};
+/*	GLfloat pos[]={100.0,20.0,100.0,1.0};*/
+	GLfloat pos[]={0,20,0,1.0};
 	GLfloat light0_spec[]={0.7,0.7,0.7,0.0};
 	GLfloat light0_shininess[] ={50.0};
 	GLfloat light0_diff[]={0.5,0.5,0.5,1.0};
@@ -371,6 +376,7 @@ void graphics_main()
 	myInvert();
 	myGetMatrix(m);
 	glMultMatrixf(m);
+	glLightfv(GL_LIGHT0,GL_POSITION,pos);
 	
 	/*glRotatef(-cam.rotate.z, 0.0,0.0,1.0);
 	glRotatef(-cam.rotate.x, 1.0,0.0,0.0);
@@ -378,7 +384,6 @@ void graphics_main()
 	glTranslatef(-cam.translate.x,-cam.translate.y,-cam.translate.z);*/
 
  	glPushMatrix();  /*  save the cam */ 
-		glLightfv(GL_LIGHT0,GL_POSITION,pos);
 		render_by_mcp();
 /*
 #ifdef DEBUG
