@@ -33,7 +33,7 @@
 static struct timespec t={0,10*1000*1000}; /* 10 mili seconds */
 
 int object,foll;
-float al, r, alpha=0.0, Asp, Bottom, Left, angle;
+float al, r, rc ,alpha=0.0, Asp, Bottom, Left, angle;
 float CamPosition[2][3],
 	  TmpMove[3],
 	  Tmp[3],
@@ -48,21 +48,27 @@ void mainloop()
 	
 	al=(alpha*M_PI/180);
     r = 5.0;
+	rc = 12.0;
 	
 	CatPos[0] = sin(al)*r;
 	CatPos[1] = 0;
 	CatPos[2] = cos(al)*r;
-	
+	/*
+	RotCam[0][0] = sin(al) * rc;
+	RotCam[0][1] = 0.0;
+	RotCam[0][2] = cos(al) * rc;
+	*/
 	s3d_translate(object,CatPos[0] ,CatPos[1], CatPos[2]);
 	s3d_rotate(object, 0, alpha, 0);
 	alpha = alpha+0.1;
 	if (alpha>360.0) alpha=0.0;
 	
-	length = s3d_vector_length(CatPos);
+	/* length = s3d_vector_length(CatPos); */
+
 
 	RotCam[0][0] = ( CatPos[0] * 12.0 ) / length;
-	RotCam[0][1] = ( CatPos[1] != 0 ) ?(( CatPos[1] * 12 ) / length):0;
-	RotCam[0][2] = ( CatPos[2] * RotCam[0][0] ) / CatPos[0];
+	RotCam[0][1] = ( CatPos[1] * 12.0 ) / length;
+	RotCam[0][2] = ( CatPos[2] * 12.0 ) / length;
 	
 	
 	if( foll )
@@ -75,14 +81,14 @@ void mainloop()
 
 		TmpMove[0] = 0.0;
 		TmpMove[1] = 0.0;
-		TmpMove[2] = 1.0;
+		TmpMove[2] = -1.0;
 
 		Tmp[0] = CamPosition[0][0] - CatPos[0];
 		Tmp[1] = 0.0;
 		Tmp[2] = CamPosition[0][2] - CatPos[2];
 		
 		angle = s3d_vector_angle(Tmp,TmpMove);
-		angle = (CatPos[0] > 0)?(180-(180 / M_PI * -angle)):(180+(180 / M_PI * -angle));
+		angle = (CatPos[0] > 0)?(180-(180 / M_PI * angle)):(180+(180 / M_PI * angle));
 		printf("%f %f\n",angle,al);
 	
 		CamPosition[1][1] = (CamPosition[1][1]*4 + angle)/5;
