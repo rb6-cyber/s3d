@@ -63,7 +63,7 @@ void mainloop()
 	alpha = alpha+0.1;
 	if (alpha>360.0) alpha=0.0;
 	
-	/* length = s3d_vector_length(CatPos); */
+	length = s3d_vector_length(CatPos);
 
 
 	RotCam[0][0] = ( CatPos[0] * 12.0 ) / length;
