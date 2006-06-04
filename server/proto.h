@@ -166,6 +166,9 @@
 			 /*  4b: oid */
 #define	S3D_P_S_KEY		4
 			 /*  2b: button */
+			 /*  2b: unicode translation */
+			 /*  2b: modifier information */
+			 /*  2b: state */
 #define S3D_P_S_MBUTTON	5
              /*  1b: button number */
              /*  2b: butotn state */

@@ -29,6 +29,7 @@
 
 extern int SDLFlags;
 int user_init_sdl() {
+	SDL_EnableUNICODE(1);
 	return(0);
 }
 int user_main_sdl() {
@@ -98,7 +99,10 @@ int user_main_sdl() {
 			 break;
 
 		case SDL_KEYDOWN:
-			user_key(event.key.keysym.sym,0);
+			user_key(event.key.keysym.sym,event.key.keysym.unicode,event.key.keysym.mod,0);
+			break;
+		case SDL_KEYUP:
+			user_key(event.key.keysym.sym,event.key.keysym.unicode,event.key.keysym.mod,1);
 			break;
 		case SDL_QUIT:
 			dprintf(HIGH,"SDL_QUIT");
@@ -106,7 +110,6 @@ int user_main_sdl() {
 			break;
 		 /*  these events are not processed right now ... */
 		case SDL_ACTIVEEVENT:		dprintf(VLOW,"SDL_ACTIVEEVENT");break;
-		case SDL_KEYUP:				dprintf(VLOW,"SDL_KEYUP");break;
 		case SDL_SYSWMEVENT:		dprintf(VLOW,"SDL_SYSWMEVENT");break;
 		case SDL_VIDEORESIZE:		if ((GLwin = SDL_SetVideoMode(event.resize.w,event.resize.h,16,SDLFlags))==NULL) 
 										errsf("SDL_SetVideoMode()",SDL_GetError());

@@ -237,7 +237,7 @@ int prot_com_out(struct t_process *p, uint8_t opcode, uint8_t *buf, uint16_t len
 /* event.c */
 int event_obj_info(struct t_process *p, uint32_t oid);
 int event_obj_click(struct t_process *p, uint32_t oid);
-int event_key_pressed(uint16_t key);
+int event_key_pressed(uint16_t key, uint16_t uni, uint16_t mod, int state);
 int event_mbutton_clicked(uint8_t button, uint8_t state);
 int event_cam_changed(void);
 int event_ptr_changed(void);
@@ -258,7 +258,7 @@ int user_quit_sdl(void);
 int user_main_sdl(void);
 #endif
 void user_mouse(int button, int state, int x, int y);
-void user_key(unsigned short key,int state);
+void user_key(unsigned short key, unsigned short unicode, unsigned short mod, int state);
 
 /*  error.c */
 void errn(char *func, int en);

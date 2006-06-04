@@ -33,7 +33,9 @@ typedef void (*s3d_cb)(struct s3d_evt *);
 
 #define S3D_EVENT_OBJ_CLICK		1
 #define S3D_EVENT_KEY			2
+#define S3D_EVENT_KEYDOWN		2
 #define S3D_EVENT_MBUTTON		3
+#define S3D_EVENT_KEYUP			4
 #define S3D_EVENT_NEW_OBJECT	16
 #define S3D_EVENT_OBJ_INFO		17
 
@@ -69,6 +71,13 @@ struct s3d_obj_info
 struct s3d_but_info
 {
 	unsigned char button, state;
+};
+struct s3d_key_event
+{
+	unsigned short keysym;		/* the symbol, use this with s3d_keysym.h */
+	unsigned short unicode;		/* the unicode or "actually typed" character */
+	unsigned short modifier;	/* any modifiers involved */
+	unsigned short state;		/* 0 = pressed, 1 = released */
 };
 /* framework functions */
 void s3d_usage();

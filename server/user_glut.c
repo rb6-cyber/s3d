@@ -45,7 +45,8 @@ int user_init_glut()
 
 void keyboard(unsigned char key, int x, int y)
 {
-	user_key(key,0);
+	user_key(key,key,0,0);
+	user_key(key,key,0,1);
 }
 void special(int skey, int x, int y)
 {
@@ -76,7 +77,8 @@ void special(int skey, int x, int y)
 		default: 				mkey=skey; break;
 	}
 	dprintf(MED,"special(): %d -> %d",skey,mkey);
-	user_key(mkey,0);
+	user_key(mkey,0,0,0);
+	user_key(mkey,0,0,1);
 }
 void mouse_motion(int x, int y)
 {

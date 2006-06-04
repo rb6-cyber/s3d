@@ -44,16 +44,22 @@ int event_obj_click(struct t_process *p, uint32_t oid)
 }
 /*  this functions sends keystroke events to the focused program. */
 /*  maybe mcp-keystrokes should be catched here. */
-int event_key_pressed(uint16_t key)
+/*  state = 0 -> pressed, 1 -> released */
+int event_key_pressed(uint16_t key, uint16_t uni, uint16_t mod,int state)
 {
-	uint16_t k;
+	uint16_t k[4];
 	struct t_obj *o;
-	k=htons(key);
+	k[0]=htons(key);
+	k[1]=htons(uni);
+	k[2]=htons(mod);
+	k[3]=htons(state);
 	if (obj_valid(get_proc_by_pid(MCP),focus_oid,o))
-		prot_com_out(get_proc_by_pid(o->n_mat), S3D_P_S_KEY, (uint8_t *)&k, 2);
-	prot_com_out(get_proc_by_pid(MCP),S3D_P_S_KEY,(uint8_t *)&k, 2); /* mcp always gets a copy */
+		prot_com_out(get_proc_by_pid(o->n_mat), S3D_P_S_KEY, (uint8_t *)k, 8);
+	prot_com_out(get_proc_by_pid(MCP),S3D_P_S_KEY,(uint8_t *)k, 8); /* mcp always gets a copy */
 	return(0);
 }
+
+
 /* mouse button changes are sent to the client */
 int event_mbutton_clicked(uint8_t button, uint8_t state)
 {

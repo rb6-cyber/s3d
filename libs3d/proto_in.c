@@ -74,15 +74,19 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 			}
 			break;
 		case S3D_P_S_KEY:
-			if (length==2)
+			if (length==8)
 			{
 				if (NULL!=(s3devt=malloc(sizeof(struct s3d_evt))))
 				{
-					s3devt->event=S3D_EVENT_KEY;
+					struct s3d_key_event *keyevent;
 					s3devt->length=2;
-					*((uint16_t *)buf)=
-							ntohs(*((uint16_t *)buf));
+					keyevent=(struct s3d_key_event *)buf;
+					keyevent->keysym=ntohs(keyevent->keysym);
+					keyevent->unicode=ntohs(keyevent->unicode);
+					keyevent->modifier=ntohs(keyevent->modifier);
+					keyevent->state=ntohs(keyevent->state);
 					s3devt->buf=buf;
+					s3devt->event=(keyevent->state==0)?S3D_EVENT_KEYDOWN:S3D_EVENT_KEYUP;
 				}
 				dprintf(VLOW,"S3D_P_S_KEY: key %d hit!!",*((uint16_t *)s3devt->buf));
 			}

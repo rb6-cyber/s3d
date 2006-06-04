@@ -36,7 +36,7 @@
 /*  bad global vars ... */
 static FT_Library 	library;
 static FT_Face		face;
-static unsigned char *memory_font=NULL;		 /*  the font file in memory */
+static char *memory_font=NULL;		 /*  the font file in memory */
 static int memory_font_size=0;	 /*  and it's size, to reduce load times. */
 static int ft_init=0;
 static int face_init=0;
@@ -74,7 +74,7 @@ int s3d_ft_load_font()
 		return(-1);
 	}
 	face_init=0;
-	error= FT_New_Memory_Face(library,memory_font,memory_font_size,0,&face);
+	error= FT_New_Memory_Face(library,(unsigned char *)memory_font,memory_font_size,0,&face);
 	switch (error)
 	{
 		case 0:
@@ -315,7 +315,7 @@ int _s3d_draw_tessbuf(int oid,unsigned short a,int *voff, float *xoff)
 }
 int s3d_select_font(char *path)
 {
-	unsigned char 	*oldfont=memory_font;
+	char		 	*oldfont=memory_font;
 	int 			 oldsize=memory_font_size;
 	char *c;
 	char **p;

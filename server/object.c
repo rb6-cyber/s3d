@@ -1211,7 +1211,7 @@ int obj_translate(struct t_process *p, uint32_t oid, float *transv)
 			obj->translate.z=*(transv+2);
 			obj_pos_update(p,oid,oid);
 		}
-		dprintf(LOW,"[translate|pid %d] %d: %3.3f %3.3f %3.3f",p->id,oid,obj->translate.x,obj->translate.y,obj->translate.z);
+		dprintf(VLOW,"[translate|pid %d] %d: %3.3f %3.3f %3.3f",p->id,oid,obj->translate.x,obj->translate.y,obj->translate.z);
 	}
 	return(0);
 }
@@ -1251,7 +1251,7 @@ int obj_rotate(struct t_process *p, uint32_t oid, float *rotv)
 			obj->rotate.z=f;
 			obj_pos_update(p,oid,oid);
 		}
-		dprintf(LOW,"[rotate|pid %d] %d: %3.3f %3.3f %3.3f",p->id,oid,obj->rotate.x,obj->rotate.y,obj->rotate.z);
+		dprintf(VLOW,"[rotate|pid %d] %d: %3.3f %3.3f %3.3f",p->id,oid,obj->rotate.x,obj->rotate.y,obj->rotate.z);
 	}
 	return(0);
 }
