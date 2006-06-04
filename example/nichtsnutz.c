@@ -33,32 +33,37 @@
 static struct timespec t={0,10*1000*1000}; /* 10 mili seconds */
 
 int object,foll;
-float al, r, rc, alpha,Asp,Bottom,Left,angle;
+float al, r, alpha, Asp, Bottom, Left, angle;
 float CamPosition[2][3],
+	  TmpMove[3],
 	  TmpCam[2][3],
 	  RotCam[2][3],
 	  CatPos[3];
+
+float length;
 
 void mainloop()
 {
 	
 	al=(alpha*M_PI/180);
     r = 5.0;
-	rc = 10.0;
 	
 	CatPos[0] = sin(al)*r;
 	CatPos[1] = 0;
 	CatPos[2] = cos(al)*r;
 	
-	RotCam[0][0] = sin(al)*rc;
-	RotCam[0][1] = 0;
-	RotCam[0][2] = cos(al)*rc;
-	
 	s3d_translate(object,CatPos[0] ,CatPos[1], CatPos[2]);
 	s3d_rotate(object, 0, alpha, 0);
 	alpha = alpha+0.1;
 	if (alpha>360.0) alpha=0.0;
+	
+	length = s3d_vector_length(CatPos);
 
+	RotCam[0][0] = ( CatPos[0] * 12.0 ) / length;
+	RotCam[0][1] = CatPos[1];
+	RotCam[0][2] = ( CatPos[2] * RotCam[0][0] ) / CatPos[0];
+	
+	
 	if( foll )
 	{
 		
@@ -66,14 +71,28 @@ void mainloop()
 		CamPosition[0][1] = ((CamPosition[0][1]*4 + RotCam[0][1])/5);
 		CamPosition[0][2] = ((CamPosition[0][2]*4 + RotCam[0][2])/5);
 		s3d_translate(0,CamPosition[0][0],CamPosition[0][1],CamPosition[0][2]);
-	
-		angle = s3d_vector_angle(CatPos,CamPosition[0]);
-		angle = (CatPos[0] > 0)?(180-(180 / M_PI * angle)):(180+(180 / M_PI * angle));
 
-		CamPosition[1][1] = (CamPosition[1][1]*4 + angle)/5;
-		s3d_rotate(0,CamPosition[1][0], CamPosition[1][1], CamPosition[1][2]);
-		/*printf("angle %f\n",angle);*/
+		TmpMove[0] = CamPosition[0][0];
+		TmpMove[1] = CamPosition[0][1];
+		TmpMove[2] = CamPosition[0][2];
+		
+		TmpMove[0] += sin( ( CamPosition[1][1] * M_PI ) / 180 );
+		TmpMove[2] += cos( ( CamPosition[1][1] * M_PI ) / 180 );
+		TmpMove[0] += cos( (-CamPosition[1][1] * M_PI ) / 180 );
+		TmpMove[2] += sin( (-CamPosition[1][1] * M_PI ) / 180 );
+		TmpMove[1] += sin( (-CamPosition[1][0] * M_PI ) / 180 );
+						 
+	/*	
+		angle = s3d_vector_angle(CatPos,TmpMove);
+		angle = (CatPos[0] > 0)?(180-(180 / M_PI * angle)):(180+(180 / M_PI * angle));
+		printf("%f %f\n",angle,al);
+	*/
+	//	CamPosition[1][1] = (CamPosition[1][1]*4 + angle)/5;
+	//	s3d_rotate(0,CamPosition[1][0], CamPosition[1][1], CamPosition[1][2]);
 	}
+	
+
+	
 	nanosleep(&t,NULL); 
 }
 
