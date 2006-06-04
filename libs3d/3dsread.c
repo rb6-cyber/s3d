@@ -85,7 +85,7 @@ static void normal(float *p0, float *p1, float *p2, float *r)
 		r[1]=n[1]/len;
 		r[2]=n[2]/len;
 	} else {
-		dprintf(VLOW,"normal(): couldn't calc normal");
+		s3dprintf(VLOW,"normal(): couldn't calc normal");
 		r[0]=r[1]=r[2]=0.0F;
 	}
 }
@@ -223,7 +223,7 @@ static float *calc_normals(float *vertex_buf, int vertexnum, unsigned long *poly
 				return(NULL);
 			}
 		}
-		 /* dprintf(LOW,"polygon [%d/%d]: %d %d %d is in smoothlist %d",i,polynum,v[0],v[1],v[2],g); */
+		 /* s3dprintf(LOW,"polygon [%d/%d]: %d %d %d is in smoothlist %d",i,polynum,v[0],v[1],v[2],g); */
 		
 		normal(	vertex_buf+v[0]*3,
 				vertex_buf+v[1]*3,
@@ -235,12 +235,12 @@ static float *calc_normals(float *vertex_buf, int vertexnum, unsigned long *poly
 
 
 
-	 /* dprintf(MED,"processing the final group ... %d (%d members)",g,n); */
+	 /* s3dprintf(MED,"processing the final group ... %d (%d members)",g,n); */
 	smooth(vertex_buf,voff,poly_buf+(i-n)*4,pnormal_list+(i-n)*3, nbuf+(i-n)*9,v_t_buf,n,g);
 /*	for (i=0;i<polynum;i++)
 	{
 		for (j=0;j<3;j++)
-			dprintf(MED,"poly[%d/%d],point[%d/3]: %f %f %f",i,polynum,j,
+			s3dprintf(MED,"poly[%d/%d],point[%d/3]: %f %f %f",i,polynum,j,
 							nbuf[i*9+j*3],
 							nbuf[i*9+j*3+1],
 							nbuf[i*9+j*3+2]);
@@ -295,7 +295,7 @@ int s3d_import_3ds(char *buf)
 		cid=gints(ptr);
 		clen=gintl(ptr+2);
 		
-		dprintf (VLOW,"[pos %x]: \t%04x [len:%d]",(ptr-buf),cid,(clen-6));
+		s3dprintf (VLOW,"[pos %x]: \t%04x [len:%d]",(ptr-buf),cid,(clen-6));
 		if ((ptr==buf) && (cid!=0x4d4d))
 		{
 			errs("3d_import_3ds()","file doesn't start with 0x4d4d, maybe file corrupt?");
@@ -305,7 +305,7 @@ int s3d_import_3ds(char *buf)
 		switch (cid)
 		{
 		  case 0x4d4d: 
-			  dprintf(VLOW,"-- the main chunk!!");
+			  s3dprintf(VLOW,"-- the main chunk!!");
 			  filesize=clen;
 			  if (cur_oid==-1)
 			  {
@@ -317,24 +317,24 @@ int s3d_import_3ds(char *buf)
 
            	  break;
 		  case 0x3D3D:
-			  dprintf(VLOW,"-- the 3d editor chunk!");
+			  s3dprintf(VLOW,"-- the 3d editor chunk!");
 			  break;
 		  case 0x4000:
-			  dprintf(VLOW,"-- an object block. let's see ...");
+			  s3dprintf(VLOW,"-- an object block. let's see ...");
 			  strncpy((char *)ostr,(char *)ptr,MAXSTRN);
 			  vertex_offset+=v;
 			  v=0;
 			  ptr=(ptr+strlen(ostr)+1);
 			  break;
 		  case 0x4100:
-			  dprintf(VLOW,"-- Triangular mesh");
+			  s3dprintf(VLOW,"-- Triangular mesh");
 			  smooth_list=NULL;
 			  mesh_end=ptr+(clen-6);
 			  break;
 		  case 0x4110: 
 			  vertexnum=gints(ptr);
 			  ptr+=sizeof(unsigned short);
-			  dprintf(VLOW,"-- vertices list!! number of vertices: %d",vertexnum);
+			  s3dprintf(VLOW,"-- vertices list!! number of vertices: %d",vertexnum);
 			  vertex_buf=malloc(sizeof(float)*3*vertexnum);
 			  if (vertex_buf==NULL) break;
 /* 			  memcpy(vertex_buf,ptr,sizeof(float)*3*i); */
@@ -350,7 +350,7 @@ int s3d_import_3ds(char *buf)
 		  case 0x4120:
 			polynum=gints(ptr);
 			ptr+=sizeof(unsigned short);
-			dprintf(VLOW,"-- polygon list!! number of polygons: %d",polynum);
+			s3dprintf(VLOW,"-- polygon list!! number of polygons: %d",polynum);
 			poly_buf=malloc(sizeof(unsigned long)*4*polynum);
 			if (poly_buf==NULL) break;
 		    for (j=0; j<polynum; j++)
@@ -364,10 +364,10 @@ int s3d_import_3ds(char *buf)
 			break;
 		  case 0x4130:
 			ptr2=(char *)ptr+(clen-6);  /*  backup our endpointer ... */
-			dprintf(VLOW,"-- material information for faces .....");
+			s3dprintf(VLOW,"-- material information for faces .....");
 			strncpy((char *)ostr,(char *)ptr,MAXSTRN);
 			ptr+=strlen(ptr)+1;
-			dprintf(VLOW,".. material string name is %s",ostr);
+			s3dprintf(VLOW,".. material string name is %s",ostr);
 			col_obj=0;
 			while (col_obj<256 && (strncmp(ostr,materials[col_obj],MAXSTRN)!=0)) col_obj++;
 			if (col_obj>=256)
@@ -389,7 +389,7 @@ int s3d_import_3ds(char *buf)
 			ptr=ptr2;
 			break;
 		  case 0x4150:
-			dprintf(VLOW,"-- smoothing group information (length %d [%d])", clen,clen/4);
+			s3dprintf(VLOW,"-- smoothing group information (length %d [%d])", clen,clen/4);
 			smooth_list=(unsigned long *)ptr;
 			for (j=0;j<(clen/4);j++)
 			{
@@ -399,10 +399,10 @@ int s3d_import_3ds(char *buf)
 			ptr=(char *)ptr+(clen-6);
 			break;
 		  case 0x4160:
-			  dprintf(VLOW,"-- translation matrix");
+			  s3dprintf(VLOW,"-- translation matrix");
 			  for (j=0; j<4; j++)
 		 	  {
-				dprintf(VLOW,"[%f:%f:%f:%f]",
+				s3dprintf(VLOW,"[%f:%f:%f:%f]",
 								*((float *)ptr),
 								*((float *)ptr+1),
 								*((float *)ptr+2),
@@ -412,11 +412,11 @@ int s3d_import_3ds(char *buf)
 			  }
 			  break;
 		  case 0xafff:
-			  dprintf(VLOW,"-- material chunk O_o");
+			  s3dprintf(VLOW,"-- material chunk O_o");
 			  break;
 		  case 0xa000:
 			  strncpy((char *)ostr,(char *)ptr,MAXSTRN);
-			  dprintf(VLOW,"-- material string name is %s",ostr);
+			  s3dprintf(VLOW,"-- material string name is %s",ostr);
 			  ptr=(char *)ptr+(clen-6);
 			  color|=8;
 			  break;
@@ -430,7 +430,7 @@ int s3d_import_3ds(char *buf)
 			  r3=(unsigned char)*(ptr+6);
 			  g3=(unsigned char)*(ptr+7);
 			  b3=(unsigned char)*(ptr+8);
-			  dprintf(VLOW,"-- ambient color 3:>> [rgb] [%x %x %x]",r3,g3,b3);
+			  s3dprintf(VLOW,"-- ambient color 3:>> [rgb] [%x %x %x]",r3,g3,b3);
 			  r_amb=r3;g_amb=g3;b_amb=b3;
 			  color=color|1;
 			  ptr=(char *)ptr+(clen-6);
@@ -445,7 +445,7 @@ int s3d_import_3ds(char *buf)
 			  r3=(unsigned char)*(ptr+6);
 			  g3=(unsigned char)*(ptr+7);
 			  b3=(unsigned char)*(ptr+8);
-			  dprintf(VLOW,"-- diffuse color 3:>> [rgb] [%x %x %x]",r3,g3,b3);
+			  s3dprintf(VLOW,"-- diffuse color 3:>> [rgb] [%x %x %x]",r3,g3,b3);
 			  r_diff=r3;g_diff=g3;b_diff=b3;
 			  color=color|2;
 			  ptr=(char *)ptr+(clen-6);
@@ -460,7 +460,7 @@ int s3d_import_3ds(char *buf)
 			  r3=(unsigned char)*(ptr+6);
 			  g3=(unsigned char)*(ptr+7);
 			  b3=(unsigned char)*(ptr+8);
-			  dprintf(VLOW,"-- spec color 3:>> [rgb] [%x %x %x]",r3,g3,b3);
+			  s3dprintf(VLOW,"-- spec color 3:>> [rgb] [%x %x %x]",r3,g3,b3);
 			  r_spec=r3;g_spec=g3;b_spec=b3;
 			  color=color|4;
 			  ptr=(char *)ptr+(clen-6);
@@ -477,10 +477,10 @@ int s3d_import_3ds(char *buf)
 							  /*  that's just because i'm lazy */
 			{
 				strncpy(materials[col_obj],ostr,MAXSTRN);
-				dprintf(VLOW,"assigned material %s on position %d",
+				s3dprintf(VLOW,"assigned material %s on position %d",
 								materials[col_obj],col_obj);
 			}
-			dprintf(VLOW,"-- [%d]colors... amb: %d %d %d, spec %d %d %d, diff %d %d %d",col_obj,
+			s3dprintf(VLOW,"-- [%d]colors... amb: %d %d %d, spec %d %d %d, diff %d %d %d",col_obj,
 							r_amb,g_amb,b_amb,
 							r_spec,g_spec,b_spec,
 							r_diff,g_diff,b_diff
@@ -503,7 +503,7 @@ int s3d_import_3ds(char *buf)
 					nbuf=calc_normals(vertex_buf,vertexnum,poly_buf,polynum,vertex_offset,smooth_list);
 
 				 /*  do in 1000 chunks */
-				dprintf(LOW,"committing %d polys",polynum);
+				s3dprintf(LOW,"committing %d polys",polynum);
 				tnbuf=nbuf;
 				tpbuf=poly_buf;
 #define CSIZE	1000
@@ -541,7 +541,7 @@ int s3d_import_3ds(char *buf)
 			}
 		}
 	}
-	dprintf(VLOW,"-- done [ptr:%010p,buf:%010p]...",ptr,buf);
+	s3dprintf(VLOW,"-- done [ptr:%010p,buf:%010p]...",ptr,buf);
 	free(buf);
 	return(cur_oid);
 }

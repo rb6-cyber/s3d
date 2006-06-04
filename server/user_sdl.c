@@ -40,7 +40,7 @@ int user_main_sdl() {
 	switch (event.type)
 	{
 		case SDL_MOUSEMOTION: 
-/* 			dprintf(VLOW,"Current mouse position is: (%d, %d),button %d", event.motion.x, event.motion.y,event.button.button); */
+/* 			s3dprintf(VLOW,"Current mouse position is: (%d, %d),button %d", event.motion.x, event.motion.y,event.button.button); */
 			 switch (event.button.button)
 			 {
 			 	case SDL_BUTTON_LEFT:
@@ -59,7 +59,7 @@ int user_main_sdl() {
 					break;
 					 /*  no button ... */
 				default:
-					dprintf(LOW,"don't know button %d", event.button.button);
+					s3dprintf(LOW,"don't know button %d", event.button.button);
 
 			 }
 			break;
@@ -77,7 +77,7 @@ int user_main_sdl() {
 				case SDL_BUTTON_WHEELDOWN:
 			 		user_mouse(4,0,event.motion.x,event.motion.y);break;
 				default:
-					dprintf(LOW,"don't know button %d", event.button.button);
+					s3dprintf(LOW,"don't know button %d", event.button.button);
 			 }
 			 break;
 		case SDL_MOUSEBUTTONUP:
@@ -94,7 +94,7 @@ int user_main_sdl() {
 				case SDL_BUTTON_WHEELDOWN:
 			 		user_mouse(4,1,event.motion.x,event.motion.y);break;
 				default:
-					dprintf(LOW,"don't know button %d", event.button.button);
+					s3dprintf(LOW,"don't know button %d", event.button.button);
 			 }
 			 break;
 
@@ -105,25 +105,25 @@ int user_main_sdl() {
 			user_key(event.key.keysym.sym,event.key.keysym.unicode,event.key.keysym.mod,1);
 			break;
 		case SDL_QUIT:
-			dprintf(HIGH,"SDL_QUIT");
+			s3dprintf(HIGH,"SDL_QUIT");
 			quit();
 			break;
 		 /*  these events are not processed right now ... */
-		case SDL_ACTIVEEVENT:		dprintf(VLOW,"SDL_ACTIVEEVENT");break;
-		case SDL_SYSWMEVENT:		dprintf(VLOW,"SDL_SYSWMEVENT");break;
+		case SDL_ACTIVEEVENT:		s3dprintf(VLOW,"SDL_ACTIVEEVENT");break;
+		case SDL_SYSWMEVENT:		s3dprintf(VLOW,"SDL_SYSWMEVENT");break;
 		case SDL_VIDEORESIZE:		if ((GLwin = SDL_SetVideoMode(event.resize.w,event.resize.h,16,SDLFlags))==NULL) 
 										errsf("SDL_SetVideoMode()",SDL_GetError());
 									graphics_reshape(event.resize.w,event.resize.h);
 									break;
-		case SDL_VIDEOEXPOSE:		dprintf(LOW,"SDL_VIDEOEXPOSE");break;
-		case SDL_USEREVENT:			dprintf(VLOW,"SDL_USEREVENT");break;
-		case SDL_JOYAXISMOTION:		dprintf(VLOW,"SDL_JOYAXISMOTION");break;
-		case SDL_JOYBALLMOTION:		dprintf(VLOW,"SDL_JOYBALLMOTION");break;
-		case SDL_JOYHATMOTION:		dprintf(VLOW,"SDL_JOYHATMOTION");break;
-		case SDL_JOYBUTTONDOWN:		dprintf(VLOW,"SDL_JOYBUTTONDOWN");break;
-		case SDL_JOYBUTTONUP:		dprintf(VLOW,"SDL_JOYBUTTONUP");break;
+		case SDL_VIDEOEXPOSE:		s3dprintf(LOW,"SDL_VIDEOEXPOSE");break;
+		case SDL_USEREVENT:			s3dprintf(VLOW,"SDL_USEREVENT");break;
+		case SDL_JOYAXISMOTION:		s3dprintf(VLOW,"SDL_JOYAXISMOTION");break;
+		case SDL_JOYBALLMOTION:		s3dprintf(VLOW,"SDL_JOYBALLMOTION");break;
+		case SDL_JOYHATMOTION:		s3dprintf(VLOW,"SDL_JOYHATMOTION");break;
+		case SDL_JOYBUTTONDOWN:		s3dprintf(VLOW,"SDL_JOYBUTTONDOWN");break;
+		case SDL_JOYBUTTONUP:		s3dprintf(VLOW,"SDL_JOYBUTTONUP");break;
 		default:
-			dprintf(MED,"SDL_PollEvent(): unhandled event");
+			s3dprintf(MED,"SDL_PollEvent(): unhandled event");
 		 	break;
 	  }
   }

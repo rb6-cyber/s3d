@@ -42,10 +42,10 @@ void myLoadIdentity()
 #define M(x, y)		MAT[I(x, y)]
 void mat_debug(t_mtrx S)
 {
-	dprintf(MED,"MAT_0: %.2f %.2f %.2f %.2f",S[I(0,0)],S[I(1,0)],S[I(2,0)],S[I(3,0)]);
-	dprintf(MED,"MAT_1: %.2f %.2f %.2f %.2f",S[I(0,1)],S[I(1,1)],S[I(2,1)],S[I(3,1)]);
-	dprintf(MED,"MAT_2: %.2f %.2f %.2f %.2f",S[I(0,2)],S[I(1,2)],S[I(2,2)],S[I(3,2)]);
-	dprintf(MED,"MAT_3: %.2f %.2f %.2f %.2f",S[I(0,3)],S[I(1,3)],S[I(2,3)],S[I(3,3)]);
+	s3dprintf(MED,"MAT_0: %.2f %.2f %.2f %.2f",S[I(0,0)],S[I(1,0)],S[I(2,0)],S[I(3,0)]);
+	s3dprintf(MED,"MAT_1: %.2f %.2f %.2f %.2f",S[I(0,1)],S[I(1,1)],S[I(2,1)],S[I(3,1)]);
+	s3dprintf(MED,"MAT_2: %.2f %.2f %.2f %.2f",S[I(0,2)],S[I(1,2)],S[I(2,2)],S[I(3,2)]);
+	s3dprintf(MED,"MAT_3: %.2f %.2f %.2f %.2f",S[I(0,3)],S[I(1,3)],S[I(2,3)],S[I(3,3)]);
 }
 void myMultMatrix(t_mtrx mat2)
 {
@@ -107,10 +107,10 @@ int myInvert()
 	memcpy(Mm,MAT,sizeof(t_mtrx));			/* backup matrix */
 	memcpy(Pm,Identity,sizeof(t_mtrx));		/* target */
 
-/*	dprintf(MED,"start:");
+/*	s3dprintf(MED,"start:");
 	mat_debug(MAT);*/
 
-/*	dprintf(LOW,"inverting matrix, we shall begin now ...");*/
+/*	s3dprintf(LOW,"inverting matrix, we shall begin now ...");*/
 
 	/* step 1 */
 	for (l=0;l<4;l++)
@@ -118,7 +118,7 @@ int myInvert()
 check:	if (M(l,l)*M(l,l)>0.00000001F) /* it won't work with real zero */
 		{
 			
-/*			dprintf(MED,"normalizing line %d",l);*/
+/*			s3dprintf(MED,"normalizing line %d",l);*/
 			/* normalize */
 			f=1/M(l,l);
 			M(l,l)=1.0;
@@ -127,12 +127,12 @@ check:	if (M(l,l)*M(l,l)>0.00000001F) /* it won't work with real zero */
 			for (i=0;i<4;i++)
 				P(i,l)*=f; /* ... and the right */
 /*			mat_debug(Mm);
-			dprintf(MED,"-");
+			s3dprintf(MED,"-");
 			mat_debug(Pm);*/
 			/* mult/fac */
 			for (lh=l+1;lh<4;lh++)
 			{
-			/*	dprintf(MED,"adding line %d for %d",lh,l);*/
+			/*	s3dprintf(MED,"adding line %d for %d",lh,l);*/
 				if (M(l,lh)!=0) /* "first" element of the line */
 				{
 					f=-M(l,lh);
@@ -141,15 +141,15 @@ check:	if (M(l,l)*M(l,l)>0.00000001F) /* it won't work with real zero */
 						M(i,lh)+=f*M(i,l);
 					for (i=0;i<4;i++)	/* ... and the right one! */
 						P(i,lh)+=f*P(i,l);
-				} /*else dprintf(MED,"element already zero!");*/
+				} /*else s3dprintf(MED,"element already zero!");*/
 			}
 		} else {
 			M(l,l)=0.0F;
-/*			dprintf(MED,"already zero now check and try to swap lines ...");*/
+/*			s3dprintf(MED,"already zero now check and try to swap lines ...");*/
 			for (lh=l+1;lh<4;lh++)
 				if (M(l,lh)!=0.0)
 				{
-/*					dprintf(MED,"swapping lines %d and %d",l,lh);*/
+/*					s3dprintf(MED,"swapping lines %d and %d",l,lh);*/
 					for (i=0;i<4;i++)
 					{
 						f=M(i,l);
@@ -162,7 +162,7 @@ check:	if (M(l,l)*M(l,l)>0.00000001F) /* it won't work with real zero */
 					}
 					goto check;
 				}
-			dprintf(MED,"nothing to swap, can't reverse this matrix! returning ... ");
+			s3dprintf(MED,"nothing to swap, can't reverse this matrix! returning ... ");
 			mat_debug(Mm);
 			return(-1); /* the dead end!! */
 		}
@@ -177,13 +177,13 @@ check:	if (M(l,l)*M(l,l)>0.00000001F) /* it won't work with real zero */
 	 * */
 
 	/* step 2 */
-/*	dprintf(MED,"S.T.E.P. 2!!");*/
+/*	s3dprintf(MED,"S.T.E.P. 2!!");*/
 	for (l=3;l>0;l--)
 	{
 		/* mult/fac */
 		for (lh=l-1;lh>=0;lh--)
 		{
-/*			dprintf(MED,"adding line %d for %d",lh,l);*/
+/*			s3dprintf(MED,"adding line %d for %d",lh,l);*/
 			if (M(l,lh)!=0) /* "first" element of the line */
 			{
 				f=-M(l,lh);
@@ -199,7 +199,7 @@ check:	if (M(l,l)*M(l,l)>0.00000001F) /* it won't work with real zero */
 		}
 	}
 	/* now, Mm,is Identity and Pm is result!*/
-/*	dprintf(MED,"result:");
+/*	s3dprintf(MED,"result:");
 	mat_debug(Pm);*/
 	memcpy(MAT,Pm,sizeof(t_mtrx)); /* copy result */
 	return(0);

@@ -68,7 +68,7 @@ int shm_init()
 		errnf("shm_init():ftok()",errno);
 		return(1);
 	}
-	dprintf(LOW,"shm_init(): init key is 0x%08x",key);
+	s3dprintf(LOW,"shm_init(): init key is 0x%08x",key);
 	mkey=next_key(key);
 	/* connect to (and possibly create) the segment: */
 	if ((shmid = shmget(key, SHM_SIZE, 0644 | IPC_CREAT)) == -1) {
@@ -104,7 +104,7 @@ static int shm_new_comblock(key_t *data)
 	mkey=next_key(mkey);
 	mycb->key_ctos=mkey;
 	mkey=next_key(mkey);
-	dprintf(MED,"shm_open_comblock():stoc: %08x, ctos: %08x",mycb->key_stoc,mycb->key_ctos);
+	s3dprintf(MED,"shm_open_comblock():stoc: %08x, ctos: %08x",mycb->key_stoc,mycb->key_ctos);
 	/* connect & create the client to server segment: */
 	if ((mycb->shmid_ctos = shmget(mycb->key_ctos, RB_STD_SIZE, 0644 | IPC_CREAT)) == -1) {
 		errn("shm_open_comblock:shmget()",errno);
@@ -132,17 +132,17 @@ static int shm_new_comblock(key_t *data)
 	data[0]=mycb->key_ctos;
 	data[1]=mycb->key_stoc;
 	mycb->idle=0;
-	dprintf(LOW,"shm_open_comblock():data: %08x, %08x",data[0],data[1]);
+	s3dprintf(LOW,"shm_open_comblock():data: %08x, %08x",data[0],data[1]);
 	return(0);	
 }
 
 int shm_quit()
 {
 	/* detach from the segment: */
-	dprintf(LOW,"shm_quit()...");
+	s3dprintf(LOW,"shm_quit()...");
 	unlink(ftoken);
 	data[0]=data[1]=0;
-	dprintf(MED,"shm_quit():removing init block");
+	s3dprintf(MED,"shm_quit():removing init block");
 	if (shmdt(data) == -1) 
 		errn("shm_quit():shmdt()",errno);
 	if (shmctl(shmid, IPC_RMID, NULL) == -1) 
@@ -151,8 +151,8 @@ int shm_quit()
 }
 int shm_remove(struct t_process *p)
 {
-	dprintf(MED,"shm_remove(): removing pid %d",p->id);
-	dprintf(MED,"shm_remove():freeing keys: %08x, %08x",p->shmsock.key_ctos,p->shmsock.key_stoc);
+	s3dprintf(MED,"shm_remove(): removing pid %d",p->id);
+	s3dprintf(MED,"shm_remove():freeing keys: %08x, %08x",p->shmsock.key_ctos,p->shmsock.key_stoc);
 	if (shmdt(p->shmsock.data_ctos) == -1) 
 		errn("shm_rmove():shmdt()",errno);
 	if (shmctl(p->shmsock.shmid_ctos, IPC_RMID, NULL) == -1) 
@@ -188,7 +188,7 @@ int shm_main()
 						shmctl(procs_p[i].shmsock.shmid_ctos,IPC_STAT,&d);
 						if (d.shm_nattch==1) /* we're all alone ... remove it!! */
 						{
-							dprintf(MED,"client [%s] detached, removing ... ",procs_p[i].name);
+							s3dprintf(MED,"client [%s] detached, removing ... ",procs_p[i].name);
 							process_del(procs_p[i].id);
 						} else {
 							procs_p[i].shmsock.idle=0;
@@ -203,8 +203,8 @@ int shm_main()
 		new_p=process_add();
 		new_p->con_type=CON_SHM;
 		memcpy(&new_p->shmsock,&waiting_comblock,sizeof(struct t_shmcb));
-		dprintf(HIGH,"shm_main():registered new connection (keys %d, %d) as pid %d",new_p->shmsock.key_ctos,new_p->shmsock.key_stoc, new_p->id);
-			dprintf(LOW,"shm_main():new client attached! allocating shm block for further clients ...");
+		s3dprintf(HIGH,"shm_main():registered new connection (keys %d, %d) as pid %d",new_p->shmsock.key_ctos,new_p->shmsock.key_stoc, new_p->id);
+			s3dprintf(LOW,"shm_main():new client attached! allocating shm block for further clients ...");
 			shm_new_comblock(data);
 		}
 	return(0);
@@ -219,7 +219,7 @@ int shm_prot_com_in(struct t_process *p)
 	if (3==shm_readn(dai,ibuf,3))
 	{
 		length=ntohs(*((uint16_t *)((uint8_t *)ibuf+1)));
-		dprintf(VLOW,"command %d, length %d",ibuf[0], length);
+		s3dprintf(VLOW,"command %d, length %d",ibuf[0], length);
 		if (length>0)
 		{
 			shm_readn(dai,ibuf+3,length);	  
@@ -242,7 +242,7 @@ int shm_writen(struct buf_t *rb,uint8_t *buf, int n)
 		buf += no_written;
 		if (wait++>SHM_MAXLOOP) 
 		{
-			dprintf(HIGH,"shm_writen():waited too long ...");
+			s3dprintf(HIGH,"shm_writen():waited too long ...");
 			return(-1);
 		}
 	}
@@ -263,7 +263,7 @@ int shm_readn(struct buf_t *rb,uint8_t *buf, int n)
 		buf += no_read;
 		if (wait++>SHM_MAXLOOP) 
 		{
-			dprintf(HIGH,"shm_readn():waited too long ...");
+			s3dprintf(HIGH,"shm_readn():waited too long ...");
 			return(-1);
 		}
 	}

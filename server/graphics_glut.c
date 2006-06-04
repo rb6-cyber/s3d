@@ -35,14 +35,14 @@ int graphics_init_glut()
 	/* XXX: Faking argc and argv is probably not a good idea. */
 	int argc=1;
 	char *argv[]={"s3d", NULL};
-	dprintf(MED,"Using GLUT for GL/windowing ...");
+	s3dprintf(MED,"Using GLUT for GL/windowing ...");
  	glutInit(&argc, argv); 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGBA);
 	glutInitWindowSize (X_RES, Y_RES);
 	glutCreateWindow("grmbl");
     glutIdleFunc(one_time);
 	if (0!=(atexit(quit)))
-		dprintf(MED,"Error in setting Exit function ...");
+		s3dprintf(MED,"Error in setting Exit function ...");
 	glutDisplayFunc(graphics_main);
 	glutReshapeFunc(graphics_reshape);
 	return(0);

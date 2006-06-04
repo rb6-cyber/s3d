@@ -67,7 +67,7 @@ void errds(int relevance,char *func, const char *fmt, ...)
 }
 /*  printing debug message */
 
-void dprintf(int relevance, const char *fmt, ...) {
+void s3dprintf(int relevance, const char *fmt, ...) {
 	char dbm[DBM_MAX];
 	va_list args;
 	if (relevance >= DEBUG )

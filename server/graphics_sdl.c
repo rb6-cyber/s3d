@@ -32,7 +32,7 @@ int graphics_init_sdl()
     SDL_Surface *GLwin = NULL;
     SDL_VideoInfo *VideoInfo;
     int rgb_size[3]; 				 /*  for SDL_GL attributes */
-	dprintf(MED,"Using SDL driver ...");
+	s3dprintf(MED,"Using SDL driver ...");
 	
     SDLFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE | SDL_RESIZABLE;
     if (SDL_Init(SDL_INIT_VIDEO) < 0)  		
@@ -41,12 +41,12 @@ int graphics_init_sdl()
 			errs("SDL_GetVIdeoInfo()",SDL_GetError());
     if(VideoInfo -> hw_available) 
 	{
-		dprintf(LOW,"detected HW_SURFACE");
+		s3dprintf(LOW,"detected HW_SURFACE");
 		SDLFlags |= SDL_HWSURFACE;
 	}
 	else
 	{
-		dprintf(LOW,"detected SW_SURFACE");
+		s3dprintf(LOW,"detected SW_SURFACE");
 		SDLFlags |= SDL_SWSURFACE;
 	}
     if(VideoInfo -> blit_hw)  	
@@ -77,11 +77,11 @@ int graphics_init_sdl()
 	}
 
 	 /*  print some information */
-	dprintf(VLOW,"Screen BPP: %d", SDL_GetVideoSurface()->format->BitsPerPixel);
-	dprintf(VLOW,"Vendor     : %s", glGetString( GL_VENDOR ) );
-	dprintf(VLOW,"Renderer   : %s", glGetString( GL_RENDERER ) );
-	dprintf(VLOW,"Version    : %s", glGetString( GL_VERSION ) );
-	dprintf(VLOW,"Extensions : %s", glGetString( GL_EXTENSIONS ) );
+	s3dprintf(VLOW,"Screen BPP: %d", SDL_GetVideoSurface()->format->BitsPerPixel);
+	s3dprintf(VLOW,"Vendor     : %s", glGetString( GL_VENDOR ) );
+	s3dprintf(VLOW,"Renderer   : %s", glGetString( GL_RENDERER ) );
+	s3dprintf(VLOW,"Version    : %s", glGetString( GL_VERSION ) );
+	s3dprintf(VLOW,"Extensions : %s", glGetString( GL_EXTENSIONS ) );
 	
 	graphics_reshape(X_RES,Y_RES);
 	return(0);

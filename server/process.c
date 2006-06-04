@@ -48,7 +48,7 @@ struct t_process *process_protinit(struct t_process *p, char *name)
 	{
 		if (procs_p[MCP].con_type==CON_NULL)
 		{
-			dprintf(MED,"free mcp place, pid %d becoming mcp!",p->id);
+			s3dprintf(MED,"free mcp place, pid %d becoming mcp!",p->id);
 			con_type=p->con_type; /* move connection data */
 #ifdef TCP			
 			procs_p[MCP].sockid=p->sockid; /* don't save contype yet,
@@ -64,7 +64,7 @@ struct t_process *process_protinit(struct t_process *p, char *name)
 			process_list_rm(p->id); /* remove old process, but don't kill connection */
 			return(&procs_p[MCP]);
 		} else {
-			dprintf(LOW,"the place for the mcp is already taken ...");
+			s3dprintf(LOW,"the place for the mcp is already taken ...");
 			return(NULL);
 		}
 	} else {
@@ -80,14 +80,14 @@ struct t_process *process_protinit(struct t_process *p, char *name)
 	/* 		mcp_p->object[mcp_oid]->p_mat=(struct t_material *)new_p; */
 						/*  dirty, but it's just a pointer after all ... */
 			p->mcp_oid=mcp_oid;
-			dprintf(LOW,"process %d now has mcp_oid %d",p->id,mcp_oid);
+			s3dprintf(LOW,"process %d now has mcp_oid %d",p->id,mcp_oid);
 			mcp_rep_object(mcp_oid);
 			if (mcp_p->con_type==CON_NULL)
 			{  /*  there is no mcp connected! setting focus to the new program: */
 				mcp_focus(mcp_oid);
 			}
 		} else {
-			dprintf(LOW,"couldn't add object to mcp ...");
+			s3dprintf(LOW,"couldn't add object to mcp ...");
 		}
 	}
 	return(p);
@@ -123,8 +123,8 @@ int process_sys_init(struct t_process *p)
 		p->object[ptr]->oflags=OF_POINTER;
 		link_insert(p,ptr,cam);
 	}
-	dprintf(MED,"process_sys_init(): added object cam0 %d",cam);
-	dprintf(MED,"process_sys_init(): added object ptr0 %d",ptr);
+	s3dprintf(MED,"process_sys_init(): added object cam0 %d",cam);
+	s3dprintf(MED,"process_sys_init(): added object ptr0 %d",ptr);
 	obj_pos_update(get_proc_by_pid(MCP),cam,cam);
 	obj_pos_update(get_proc_by_pid(MCP),ptr,ptr);
 /*	obj_recalc_tmat(p,0);*/
@@ -228,7 +228,7 @@ static int p_del(struct t_process *p)
 		 /*  the mcp keeps in our memory ... */
 		 /*  so we just delete the objects added */
 		 /*  by the last mcp */
-		dprintf(MED,"clean up mcp's junk ...");
+		s3dprintf(MED,"clean up mcp's junk ...");
 		for (i=0;i<p->n_obj;i++)
 		{
 			if (p->object[i]!=NULL)
@@ -252,10 +252,10 @@ int process_init()
 int process_quit()
 {
 	int i;
-	dprintf(HIGH,"telling %d processes to go away",procs_n);
+	s3dprintf(HIGH,"telling %d processes to go away",procs_n);
 	for (i=(procs_n-1);i>=0;i--)
 	{ 
-		dprintf(HIGH,"[QUIT] for %d",i);
+		s3dprintf(HIGH,"[QUIT] for %d",i);
 		event_quit(&procs_p[i]);
 /*		process_del(procs_p[i].id);*/
 	}

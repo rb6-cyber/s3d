@@ -58,7 +58,7 @@ int s3d_clone_target(int oid, int toid)
 	buf[0]=htonl(oid);
 	buf[1]=htonl(toid);
 	net_send(S3D_P_C_CLONE,(char *)&buf,8);
-/* 	dprintf(MED,"... changed clone-target of object %d to %d", oid, toid); */
+/* 	s3dprintf(MED,"... changed clone-target of object %d to %d", oid, toid); */
 	return oid;
 }
 /*  deletes an object */
@@ -140,7 +140,7 @@ int s3d_push_material( int object,
 	char				buf[4+4*12];
 	char				*ptr;
 	int					len=4+4*12;
-/* 	dprintf(LOW, "adding a new material..."); */
+/* 	s3dprintf(LOW, "adding a new material..."); */
 	ptr=buf;
 	*((uint32_t *)ptr)=htonl(object);	ptr+=sizeof(uint32_t);		  /*  object id */
 	*((float *)ptr)=amb_r;				ptr+=sizeof(float);
@@ -169,7 +169,7 @@ int s3d_push_material_a( int object,
 	char				buf[4+4*12];
 	char				*ptr;
 	int					len=4+4*12;
-/* 	dprintf(LOW, "adding a new material..."); */
+/* 	s3dprintf(LOW, "adding a new material..."); */
 	ptr=buf;
 	*((uint32_t *)ptr)=htonl(object);	ptr+=sizeof(uint32_t);		  /*  object id */
 	*((float *)ptr)=amb_r;				ptr+=sizeof(float);
@@ -398,7 +398,7 @@ int s3d_pep_material( int object,
 	char				buf[4+4*12];
 	char				*ptr;
 	int					len=4+4*12;
-/* 	dprintf(LOW, "adding a new material..."); */
+/* 	s3dprintf(LOW, "adding a new material..."); */
 	ptr=buf;
 	*((uint32_t *)ptr)=htonl(object);	ptr+=sizeof(uint32_t);		  /*  object id */
 	*((float *)ptr)=amb_r;				ptr+=sizeof(float);
@@ -427,7 +427,7 @@ int s3d_pep_material_a( int object,
 	char				buf[4+4*12];
 	char				*ptr;
 	int					len=4+4*12;
-/* 	dprintf(LOW, "adding a new material..."); */
+/* 	s3dprintf(LOW, "adding a new material..."); */
 	ptr=buf;
 	*((uint32_t *)ptr)=htonl(object);	ptr+=sizeof(uint32_t);		  /*  object id */
 	*((float *)ptr)=amb_r;				ptr+=sizeof(float);
@@ -727,7 +727,7 @@ int s3d_flags_on(int object, unsigned long flags)
 	char				buf[4+1+4],*ptr;
 	int					len=4+1+4;
 	ptr=buf;
-/* 	dprintf(VLOW, "toggling flags on .. %010x", flags); */
+/* 	s3dprintf(VLOW, "toggling flags on .. %010x", flags); */
 	*((uint32_t *)ptr)=htonl(object);			ptr+=4;
 	*ptr=OF_TURN_ON;							ptr+=1;
 	*((uint32_t *)ptr)=htonl(flags);			ptr+=4;		
@@ -739,7 +739,7 @@ int s3d_flags_off(int object, unsigned long flags)
 	char				buf[4+1+4],*ptr;
 	int					len=4+1+4;
 	ptr=buf;
-/* 	dprintf(VLOW, "toggling flags off .. %010x", flags); */
+/* 	s3dprintf(VLOW, "toggling flags off .. %010x", flags); */
 	*((uint32_t *)ptr)=htonl(object);			ptr+=4;
 	*ptr=OF_TURN_OFF;							ptr+=1;
 	*((uint32_t *)ptr)=htonl(flags);			ptr+=4;		 
@@ -751,7 +751,7 @@ int s3d_translate(int object, float x, float y, float z)
 	char				buf[4+4*3],*ptr;
 	int					len=4+4*3;
 	ptr=buf;
-/* 	dprintf(VLOW, "translating object to  .. %f, %f, %f", x,y,z); */
+/* 	s3dprintf(VLOW, "translating object to  .. %f, %f, %f", x,y,z); */
 	*((uint32_t *)ptr)=htonl(object);			ptr+=4;
 	*((float *)ptr)=x;							ptr+=4;
 	*((float *)ptr)=y;							ptr+=4;
@@ -766,7 +766,7 @@ int s3d_rotate(int object, float x, float y, float z)
 	char				buf[4+4*3],*ptr;
 	int					len=4+4*3;
 	ptr=buf;
-/* 	dprintf(VLOW, "rotating object to  .. %f, %f, %f", x,y,z); */
+/* 	s3dprintf(VLOW, "rotating object to  .. %f, %f, %f", x,y,z); */
 	*((uint32_t *)ptr)=htonl(object);			ptr+=4;
 	*((float *)ptr)=x;							ptr+=4;
 	*((float *)ptr)=y;							ptr+=4;

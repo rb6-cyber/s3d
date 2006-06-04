@@ -133,7 +133,7 @@ int _s3d_add_tessbuf(unsigned short a)
 		errds(VHIGH,"s3d_add_tessbuf():FT_Load_Char()","can't load character");
 		return(-1);
 	} 
-	dprintf(VLOW,"[T]riangulating character %c",a);
+	s3dprintf(VLOW,"[T]riangulating character %c",a);
 	norm=1.0/face->glyph->metrics.vertAdvance;
 	ch=a;
 	v_off=0;
@@ -167,7 +167,7 @@ int _s3d_add_tessbuf(unsigned short a)
 				i++;
 			}
 			ar=0.5f*norm*norm*ar;
-			dprintf(VLOW,"contour %d has area of %3.3f, cntr is %d, contour starts at %d, ncon %d",c,ar,cntr[c], csta[c], ncon);
+			s3dprintf(VLOW,"contour %d has area of %3.3f, cntr is %d, contour starts at %d, ncon %d",c,ar,cntr[c], csta[c], ncon);
 			area[c]=ar; /* save the area */
 		}
 		/* now as we have the areas and sizes of the contours, we need to order our contours so that 
@@ -187,7 +187,7 @@ int _s3d_add_tessbuf(unsigned short a)
 				}
 			if (outl==-1)
 			{
-				dprintf(HIGH,"hole without outline found, exiting ... %c",a);
+				s3dprintf(HIGH,"hole without outline found, exiting ... %c",a);
 				return(-1);
 			}
 			for (i=0;i<n;i++)
@@ -211,7 +211,7 @@ int _s3d_add_tessbuf(unsigned short a)
 					if (fabsf(ar)>1)						/* if ar = 0.0, it's outside, elseway it's a multiple of pi. this check should be
 															 * very generous to roundoff errors */
 					{
-						dprintf(VLOW,"hole %d (%d) in %d (%d): interior angle sum %f (n=%d)",i,perm[i],outl, perm[outl],ar,n);
+						s3dprintf(VLOW,"hole %d (%d) in %d (%d): interior angle sum %f (n=%d)",i,perm[i],outl, perm[outl],ar,n);
 						j=perm[n-1];	/* swap our hole to the end */
 						perm[n-1]=perm[i];
 						perm[i]=j;
@@ -253,7 +253,7 @@ int _s3d_add_tessbuf(unsigned short a)
 			n++;				 /* count out and inlines ... */
 			if (area[perm[c]]>0) /* outline? start! */
 			{
-				dprintf(VLOW,"[T]riangulation from outline %d (%d contours, area = %f)",perm[c],n,area[perm[c]]);
+				s3dprintf(VLOW,"[T]riangulation from outline %d (%d contours, area = %f)",perm[c],n,area[perm[c]]);
 				np=sei_triangulate_polygon(n, ncntr+c, nvertices+(ncsta[c]), triangles);
 				for (i=0;i<np;i++)
 				{
@@ -284,11 +284,11 @@ int _s3d_draw_tessbuf(int oid,unsigned short a,int *voff, float *xoff)
 	memcpy(vbuf,tess_buf[a].vbuf,sizeof(float)*3*tess_buf[a].vn);
 	memcpy(pbuf,tess_buf[a].pbuf,sizeof(unsigned long)*4*tess_buf[a].pn);
 	 /*  prepare the buffs ... */
-/* 	dprintf(LOW,"drawing [%c] (%d vertices, %d polys",a,tess_buf[a].vn,tess_buf[a].pn); */
+/* 	s3dprintf(LOW,"drawing [%c] (%d vertices, %d polys",a,tess_buf[a].vn,tess_buf[a].pn); */
 	for (i=0;i<tess_buf[a].vn;i++)
 	{
 		vbuf[i*3]+=*xoff;
-/*		dprintf(LOW,"vertex [%c:%d] %f %f %f",a,i,
+/*		s3dprintf(LOW,"vertex [%c:%d] %f %f %f",a,i,
 						vbuf[i*3],
 						vbuf[i*3+1],
 						vbuf[i*3+2]);*/
@@ -298,13 +298,13 @@ int _s3d_draw_tessbuf(int oid,unsigned short a,int *voff, float *xoff)
 		pbuf[i*4]+=*voff;
 		pbuf[i*4+1]+=*voff;
 		pbuf[i*4+2]+=*voff;
-/*		dprintf(LOW,"poly [%c:%d] %d %d %d | %d (voff %d)",a,i,
+/*		s3dprintf(LOW,"poly [%c:%d] %d %d %d | %d (voff %d)",a,i,
 						pbuf[i*4],
 						pbuf[i*4+1],
 						pbuf[i*4+2],
 						pbuf[i*4+3],*voff);*/
 	}
-	dprintf(VLOW,"commiting %d vertices, %d polygons",tess_buf[a].vn,tess_buf[a].pn);
+	s3dprintf(VLOW,"commiting %d vertices, %d polygons",tess_buf[a].vn,tess_buf[a].pn);
 	s3d_push_vertices(oid,vbuf,tess_buf[a].vn);
 	s3d_push_polygons(oid,pbuf,tess_buf[a].pn);
 	*xoff+=tess_buf[a].xoff;  /*  xoffset */

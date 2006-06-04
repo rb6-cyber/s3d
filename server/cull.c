@@ -114,7 +114,7 @@ int cull_sphere_in_frustum(struct t_vertex *center, float radius)
 		p=&frustumPlane[i];
 		if (p->n.x*center->x+p->n.y*center->y+p->n.z*center->z+p->d <= -radius)
 		{
-/*			dprintf(MED,"out of %d plane (n %f %f %f |d %f)",i,p->n.x,p->n.y,p->n.z,p->d);*/
+/*			s3dprintf(MED,"out of %d plane (n %f %f %f |d %f)",i,p->n.x,p->n.y,p->n.z,p->d);*/
 			 return 0; /* sorry, no ... */
 		}
 	}

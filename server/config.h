@@ -43,7 +43,7 @@
 #define DEBUG	LOW
 #ifndef DEBUG
 #define errds(...) /* nothing */
-#define dprintf(...) /* nothing */
+#define s3dprintf(...) /* nothing */
 #endif
 
 

@@ -39,10 +39,10 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 	switch (opcode)
 	{
 		case S3D_P_S_INIT:
-			dprintf(MED,"S3D_P_S_INIT: init!!");
+			s3dprintf(MED,"S3D_P_S_INIT: init!!");
 			break;
 		case S3D_P_S_QUIT:
-			dprintf(MED,"S3D_P_S_QUIT: server wants us to go. well ...");
+			s3dprintf(MED,"S3D_P_S_QUIT: server wants us to go. well ...");
 			s3d_quit();
 			break;	
 		case S3D_P_S_CLICK:
@@ -56,7 +56,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 					s3devt->length=4;
 					s3devt->buf=buf;
 				}
-				dprintf(MED,"S3D_P_S_CLICK: %d got clicked ....",oid);
+				s3dprintf(MED,"S3D_P_S_CLICK: %d got clicked ....",oid);
 			}
 			break;
 		case S3D_P_S_NEWOBJ:
@@ -70,7 +70,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 					s3devt->length=4;
 					s3devt->buf=buf;
 				}
-				dprintf(VLOW,"S3D_P_S_NEWOBJ: new object %d",oid);
+				s3dprintf(VLOW,"S3D_P_S_NEWOBJ: new object %d",oid);
 			}
 			break;
 		case S3D_P_S_KEY:
@@ -88,7 +88,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 					s3devt->buf=buf;
 					s3devt->event=(keyevent->state==0)?S3D_EVENT_KEYDOWN:S3D_EVENT_KEYUP;
 				}
-				dprintf(VLOW,"S3D_P_S_KEY: key %d hit!!",*((uint16_t *)s3devt->buf));
+				s3dprintf(VLOW,"S3D_P_S_KEY: key %d hit!!",*((uint16_t *)s3devt->buf));
 			}
 			break;
 		case S3D_P_S_MBUTTON:
@@ -100,7 +100,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 					s3devt->length=2;
 					s3devt->buf=buf;
 				}
-				dprintf(VLOW,"S3D_P_S_MBUTTON: mbutton %d, state %d !!",*((uint8_t *)s3devt->buf), *(1+(uint8_t *)s3devt->buf));
+				s3dprintf(VLOW,"S3D_P_S_MBUTTON: mbutton %d, state %d !!",*((uint8_t *)s3devt->buf), *(1+(uint8_t *)s3devt->buf));
 			}
 			break;
 		case S3D_P_MCP_OBJECT:
@@ -118,10 +118,10 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 					buf[length-1]='\0';  /*  put a null byte at the end  */
 										 /*  for the not so careful users */
 					s3devt->buf=buf;
-					dprintf(VLOW,"S3D_P_MCP_OBEJCT: something is happening to object %d, name %s", 	mo->object, mo->name);
+					s3dprintf(VLOW,"S3D_P_MCP_OBEJCT: something is happening to object %d, name %s", 	mo->object, mo->name);
 
 				}
-			} else dprintf(MED,"wrong length for S3D_P_MCP_OBJECT length %d != %d",length,sizeof(struct mcp_object));
+			} else s3dprintf(MED,"wrong length for S3D_P_MCP_OBJECT length %d != %d",length,sizeof(struct mcp_object));
 			break;
 		case S3D_P_S_OINFO:
 			if (length==sizeof(struct s3d_obj_info))
@@ -139,13 +139,13 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 					buf[length-1]='\0';  /*  put a null byte at the end  */
 										 /*  for the not so careful users */
 					s3devt->buf=buf;
-					dprintf(VLOW,"S3D_P_S_OINFO: something is happening to object %d, name %s", 
+					s3dprintf(VLOW,"S3D_P_S_OINFO: something is happening to object %d, name %s", 
 								oi->object,
 								oi->name
 								);
 
 				}
-			} else dprintf(MED,"wrong length for S3D_P_S_OINFO length %d != %d",length,sizeof(struct s3d_obj_info));
+			} else s3dprintf(MED,"wrong length for S3D_P_S_OINFO length %d != %d",length,sizeof(struct s3d_obj_info));
 			break;
 
 		case S3D_P_MCP_DEL_OBJECT:
@@ -156,13 +156,13 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 					s3devt->event=S3D_MCP_DEL_OBJECT;
 					s3devt->length=length;
 					*((uint32_t *)buf)=ntohl(*((uint32_t *)buf));  /*  revert oid */
-					dprintf(MED,"S3D_P_MCP_DEL_OBEJCT: deleting object %d",*((uint32_t *)buf));
+					s3dprintf(MED,"S3D_P_MCP_DEL_OBEJCT: deleting object %d",*((uint32_t *)buf));
 					s3devt->buf=buf;
 				}
 			}
 			break;
 		default:
-			dprintf(MED,"don't know command %d",opcode);
+			s3dprintf(MED,"don't know command %d",opcode);
 			if (buf!=NULL) free(buf);
 	}
 	if (s3devt!=NULL)

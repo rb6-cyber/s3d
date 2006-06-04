@@ -90,7 +90,7 @@ int mcp_del_object(uint32_t mcp_oid)
 	unsigned long oid=htonl(mcp_oid);
 	if (mcp_oid==focus_oid)
 	{
-		dprintf(MED,"lost the focus of mcp-oid %d",mcp_oid);
+		s3dprintf(MED,"lost the focus of mcp-oid %d",mcp_oid);
 		mcp_focus(-1);
 	}
 	prot_com_out(get_proc_by_pid(MCP),S3D_P_MCP_DEL_OBJECT,(uint8_t *)&oid,4);
@@ -103,7 +103,7 @@ int mcp_focus(int oid)
 	struct t_obj *o;
 	focus_oid=-1;
 	p=get_proc_by_pid(MCP);
-	dprintf(MED,"request to focus %d",oid);
+	s3dprintf(MED,"request to focus %d",oid);
 	if (obj_valid(p,oid,o))
 		if (o->oflags&OF_VIRTUAL)
 		{

@@ -27,9 +27,9 @@
 #include <stdarg.h>		 /*  va_list */
 #include <stdio.h> 		 /*  perror(),fprintf() */
 #include <string.h> 	 /*  sterror */
-/*  dprintf is only for internal use. */
+/*  s3dprintf is only for internal use. */
 #ifdef DEBUG
-void dprintf(int relevance, const char *fmt, ...) {
+void s3dprintf(int relevance, const char *fmt, ...) {
 	char dbm[DBM_MAX];
 	va_list args;
 	if (relevance >= DEBUG )

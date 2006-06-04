@@ -65,17 +65,17 @@ int _queue_fill()
 int _queue_new_object(unsigned int oid)
 {
 	int i;
-/* 	dprintf(LOW,"having a new object (%d) in the queue!!",oid); */
+/* 	s3dprintf(LOW,"having a new object (%d) in the queue!!",oid); */
 	for (i=0;i<queue_size;i++)
 		if (queue[i]==Q_UNUSED)
 		{
-/* 			dprintf(LOW,"placing it at position %d",i); */
+/* 			s3dprintf(LOW,"placing it at position %d",i); */
 			queue[i]=oid;
 			return(0);
 		}
 	if (queue_size==0) return(-1);  /*  already quit. */
 	 /*  if we reach here, all slots all taken.  */
-/* 	dprintf(LOW,"no place for object, resizing stack.",i); */
+/* 	s3dprintf(LOW,"no place for object, resizing stack.",i); */
 	queue=realloc(queue,sizeof(unsigned int)*(queue_size+1));
 	queue_size+=1;
 	queue[queue_size-1]=oid;

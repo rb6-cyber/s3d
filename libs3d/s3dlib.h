@@ -51,7 +51,7 @@ extern s3d_cb s3d_cb_list[MAX_CB];
 /*  some local prototypes: */
 /*  char *s3d_open_file(char *fname); */
 int net_prot_in(uint8_t opcode, uint16_t length, char *buf);
-void dprintf(int relevance, const char *fmt, ...);
+void s3dprintf(int relevance, const char *fmt, ...);
 void errn(char *func,int en);
 void errs(char *func, char *msg);
 void errdn(int relevance, char *func,int en); 
@@ -109,7 +109,7 @@ int _s3d_tesselate(struct tessp_t *t,struct t_buf *b);
 
 #include "config.h"
 #ifndef DEBUG
-#define dprintf(...) /* nothing */
+#define s3dprintf(...) /* nothing */
 #define errdn(...) /* nothing */
 #define errds(...) /* nothing */
 #endif

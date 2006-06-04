@@ -88,14 +88,14 @@ int _tcp_init(char *sv, int pn)
 		errn("_tcp_init():signal()",errno);
 #endif
 	s3d_socket=sd;
-	dprintf(MED,"connection to %s:%d established", sv, pn);
+	s3dprintf(MED,"connection to %s:%d established", sv, pn);
 	return(0);
 }
 int _tcp_quit()
 {
 	if (s3d_socket)
 	{
-		dprintf(MED,"closing socket %d",s3d_socket);
+		s3dprintf(MED,"closing socket %d",s3d_socket);
 		close(s3d_socket);
 		s3d_socket=0;
 	}
@@ -139,7 +139,7 @@ int _s3d_tcp_net_receive()
 		tv.tv_sec=tv.tv_usec=0;
 		FD_SET(s3d_socket,&fs_proc);
 	
-		 /* dprintf(LOW,"Added %d procceses into file descriptor ...", n); */
+		 /* s3dprintf(LOW,"Added %d procceses into file descriptor ...", n); */
 		if (select(FD_SETSIZE, &fs_proc, NULL,NULL,&tv) ==-1) 
 		{
 			errn("select()",errno); 
@@ -156,7 +156,7 @@ int _s3d_tcp_net_receive()
 					net_prot_in(opcode,length,buf);
 					found=1;
 				} else {
-					dprintf(HIGH,"socket seems to be dead ...");
+					s3dprintf(HIGH,"socket seems to be dead ...");
 					s3d_quit();
 				}
 			}

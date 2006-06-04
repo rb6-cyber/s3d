@@ -267,7 +267,7 @@ void errs(char *func, char *msg);
 void errsf(char *func, char *msg);
 #ifdef DEBUG
 void errds(int relevance,char *func, const char *fmt, ...);
-void dprintf(int relevance, const char *msg, ...);
+void s3dprintf(int relevance, const char *msg, ...);
 #endif
 /*  graphics.c */
 int graphics_quit(void);

@@ -34,7 +34,7 @@ extern int but;
 /*  init user input things for glut */
 int user_init_glut()
 {
-	dprintf(MED,"using GLUT for user input");
+	s3dprintf(MED,"using GLUT for user input");
 	glutKeyboardFunc (keyboard);
 	glutSpecialFunc (special);
 	glutMouseFunc (user_mouse);
@@ -76,7 +76,7 @@ void special(int skey, int x, int y)
 		case GLUT_KEY_INSERT: 	mkey=S3DK_INSERT;break;
 		default: 				mkey=skey; break;
 	}
-	dprintf(MED,"special(): %d -> %d",skey,mkey);
+	s3dprintf(MED,"special(): %d -> %d",skey,mkey);
 	user_key(mkey,0,0,0);
 	user_key(mkey,0,0,1);
 }

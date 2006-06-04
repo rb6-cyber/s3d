@@ -50,13 +50,13 @@ int _shm_init(char *ftoken)
 /*	struct shmid_ds *buf; */
 	key_t key,key_out,key_in;
 	
-	dprintf(MED,"connecting to shm token %s",ftoken);
+	s3dprintf(MED,"connecting to shm token %s",ftoken);
 	/* make the key: */
 	if ((key = ftok(ftoken, 'R')) == -1) {
 		errn("shm_init():ftok()",errno);
 		return(1);
 	}
-	dprintf(MED,"init key is 0x%08x",key);
+	s3dprintf(MED,"init key is 0x%08x",key);
 	
 	/* connect to the segment: */
 	if ((shmid = shmget(key, SHM_SIZE, 0644 )) == -1) {
@@ -70,10 +70,10 @@ int _shm_init(char *ftoken)
 		errn("shm_init():shmat()",errno);
 		return(1);
 	}
-	dprintf(MED,"right now, next_keys are: %08x, %08x",next_key[0],next_key[1]);
+	s3dprintf(MED,"right now, next_keys are: %08x, %08x",next_key[0],next_key[1]);
 	while ((0==(key_in=next_key[1])) || (0==(key_out=next_key[0])));
 	next_key[0]=next_key[1]=0;
-	dprintf(MED,"right now, next_keys are: %08x, %08x",key_in,key_out);
+	s3dprintf(MED,"right now, next_keys are: %08x, %08x",key_in,key_out);
 	/* as we have the new key, we  can detach here now. */
 	if (shmdt(next_key) == -1) { 
 		errn("shm_init():shmdt()",errno);
@@ -130,7 +130,7 @@ int shm_writen(char *str, int s)
 		str += no_written;
 		if (wait++>SHM_MAXLOOP) 
 		{
-			dprintf(HIGH,"shm_writen():waited too long ...");
+			s3dprintf(HIGH,"shm_writen():waited too long ...");
 			return(-1);
 		}
 		if (wait>10)
@@ -153,7 +153,7 @@ int shm_readn(char *str,int s)
 		str += no_read;
 		if (wait++>SHM_MAXLOOP) 
 		{
-			dprintf(HIGH,"shm_readn():waited too long ...");
+			s3dprintf(HIGH,"shm_readn():waited too long ...");
 			return(-1);
 		}
 		if (wait>10)
@@ -181,7 +181,7 @@ int _shm_net_receive()
 			net_prot_in(opcode,length,buf);
 			found=1;
 		} else {
-			dprintf(HIGH,"socket seems to be dead ...");
+			s3dprintf(HIGH,"socket seems to be dead ...");
 			s3d_quit();
 		}
 	} else {
@@ -190,7 +190,7 @@ int _shm_net_receive()
 			shmctl(shmid_in,IPC_STAT,&d);
 			if (d.shm_nattch==1) /* we're all alone ... remove it!! */
 			{
-				dprintf(MED,"server vanished ... ");
+				s3dprintf(MED,"server vanished ... ");
 				s3d_quit();
 			} else 
 				shm_idle=0;

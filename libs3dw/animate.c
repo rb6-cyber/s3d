@@ -64,7 +64,7 @@ void s3dw_ani_del(int i)
 		ani_n--;
 		ani_s[i]=ani_s[ani_n]; /* that should also work if i is the last one */
 	} else {
-		dprintf(MED,"[F]ATAL: can't delete animation!\n");
+		s3dprintf(MED,"[F]ATAL: can't delete animation!\n");
 	}
 }
 /* well ... */

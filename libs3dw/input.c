@@ -172,7 +172,7 @@ int s3dw_input_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 	char *newtext;
 	char key=keys->unicode; /* unicode support so far ... :/ */
 	int len;
-	dprintf(MED,"edit field got key %d!!",key);
+	s3dprintf(MED,"edit field got key %d!!",key);
 	switch (keys->keysym)
 	{
 		case S3DK_BACKSPACE:

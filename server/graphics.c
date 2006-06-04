@@ -149,7 +149,7 @@ void render_virtual_object(struct t_obj *o)
 					k=cull_sphere_in_frustum(&x,ap->object[j]->r * sqrt(y.x*y.x + y.y*y.y + y.z*y.z));
 					if (k)
 					{
-/*						dprintf(HIGH,"object %d is in %s frustum",j,k?"":"not");*/
+/*						s3dprintf(HIGH,"object %d is in %s frustum",j,k?"":"not");*/
 						if (select_mode==1)
 							glPushName(j);
 						obj_render(ap,j);
@@ -193,19 +193,19 @@ int render_by_mcp()
 						y.z-=x.z;
 
 						k=cull_sphere_in_frustum(&x,o->r * sqrt(y.x*y.x + y.y*y.y + y.z*y.z));
-						dprintf(VLOW,"mcp-object %d is in %s frustum",i,k?"":"not");
+						s3dprintf(VLOW,"mcp-object %d is in %s frustum",i,k?"":"not");
 						if (k)
 							{
 							if (select_mode==1)
 							{
-								dprintf(VLOW,"object %d in culling frustrum!",i);
+								s3dprintf(VLOW,"object %d in culling frustrum!",i);
 								glLoadName(i);
 							}
 							render_virtual_object(o);
 						} else {
 							if (select_mode==1)
 							{
-								dprintf(VLOW,"object %d not in culling frustrum!",i);
+								s3dprintf(VLOW,"object %d not in culling frustrum!",i);
 							}
 						}
 					}
@@ -222,7 +222,7 @@ int render_by_mcp()
 					{
 						if (select_mode==1)
 						{
-							dprintf(VLOW,"mcp object no. %d",i);
+							s3dprintf(VLOW,"mcp object no. %d",i);
 							glLoadName(-1);
 							glPushName(i);
 						}
@@ -288,7 +288,7 @@ int graphics_pick_obj(int x, int y)
 	if (hits>0)
 	{
 		big=INFINITY;
-		dprintf(LOW,"had %d hits",hits);
+		s3dprintf(LOW,"had %d hits",hits);
 		ptr=select_buf;
 		mcp_o=o=names=-1;
 		/* check all the hits, only select the nearest ... */
@@ -313,18 +313,18 @@ int graphics_pick_obj(int x, int y)
 			} else 
 				for (j=0;j<names;j++)
 					ptr++;
-		    dprintf(VLOW,"[HIT %d] names %d [z1:%f|z2:%f] mcp_o=%d, o=%d ",i,names, z1, z2, mcp_o, o);
+		    s3dprintf(VLOW,"[HIT %d] names %d [z1:%f|z2:%f] mcp_o=%d, o=%d ",i,names, z1, z2, mcp_o, o);
 		}
-		dprintf(VLOW,"mcp_o= %d, o= %d",mcp_o,o);
+		s3dprintf(VLOW,"mcp_o= %d, o= %d",mcp_o,o);
 		ptr=select_buf;
 		if (mcp_o==-1) /* it's an mcp object */
 		{
-			dprintf(LOW,"clicked on mcp-object no. %d",o);
+			s3dprintf(LOW,"clicked on mcp-object no. %d",o);
 			event_obj_click(p,o);
 		} else 
 		if ((names>1) && ((mcp_o>=0)&&(mcp_o<p->n_obj)))
 		{ /* it's an usual object */
-			dprintf(LOW,"clicked on mcp-object %d, object %d",mcp_o,o);
+			s3dprintf(LOW,"clicked on mcp-object %d, object %d",mcp_o,o);
 			if (p->object[mcp_o]!=NULL)  /*  that shouldn't happen anyways ... */
 			{
 				obj_debug(get_proc_by_pid(p->object[mcp_o]->n_mat),o); 

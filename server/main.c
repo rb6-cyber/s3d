@@ -51,7 +51,7 @@ static void mainloop(void);
 /*  handles the SIGINT command. maybe put signals in a special file? */
 void sigint_handler(int sig)
 {
-	dprintf(HIGH,"oh my gosh there is a sigint/term signal! running away ...");
+	s3dprintf(HIGH,"oh my gosh there is a sigint/term signal! running away ...");
 	quit();
 }
 void sigchld_handler(int sig)
@@ -59,7 +59,7 @@ void sigchld_handler(int sig)
 	if (kidpid!=0)
 	{
 		kidpid=0;
-	    dprintf(HIGH,"how cruel, my kid died!!");
+	    s3dprintf(HIGH,"how cruel, my kid died!!");
 		quit();
 	}
 }
@@ -81,17 +81,17 @@ int rc_init(void)
 	{
 		nanosleep(&t,NULL); 	/* giving the father lots of time to set his signal handler
 					 			 * and all his sockets up */
-		dprintf(VHIGH,"hello, i'm the kid and will start the rc file now!");
+		s3dprintf(VHIGH,"hello, i'm the kid and will start the rc file now!");
 		for (i=0;i<(sizeof(s3drc)/sizeof(char **));i++)
 		{
 			if ((*s3drc[i])!=NULL)
 			{
-				dprintf(LOW,"[RC] launching %s",*s3drc[i]);
+				s3dprintf(LOW,"[RC] launching %s",*s3drc[i]);
 				ret=system(*s3drc[i]);
-				dprintf(LOW,"[RC] system() said %d",ret);
+				s3dprintf(LOW,"[RC] system() said %d",ret);
 				if (ret<128) 
 				{
-					dprintf(LOW,"[RC] system() did well, I guess. let's die clean now.");
+					s3dprintf(LOW,"[RC] system() did well, I guess. let's die clean now.");
 					exit(0);
 				}
 			} 
@@ -140,7 +140,7 @@ int init()
 	if (!norc)
 		rc_init();
 #else
-	dprintf(VHIGH,"rc-files won't work without signals :(");
+	s3dprintf(VHIGH,"rc-files won't work without signals :(");
 #endif
 	if (!frame_mode)  /*  turn default frame_mode on */
 	{
@@ -182,13 +182,13 @@ void quit()
 		process_quit();
 		if (kidpid!=0)
 		{ /* our kid is most probably still alive. kill it!! */
-			dprintf(HIGH,"kill all the kids!!");
+			s3dprintf(HIGH,"kill all the kids!!");
 			kill(kidpid,SIGTERM);
 			kidpid=0;
 		}
 	}
 	running=0;
-	dprintf(VHIGH,"byebye, s3d quitting ...");
+	s3dprintf(VHIGH,"byebye, s3d quitting ...");
 	exit(0);
 }
 /*  processing arguments from the commandline */
@@ -225,25 +225,25 @@ int process_args(int argc, char **argv)
 #endif					
 					break;
 				case 'r':
-					dprintf(VHIGH,"using rc file: %s",optarg);
+					s3dprintf(VHIGH,"using rc file: %s",optarg);
 					rc=optarg;
 					break;
 				case 'n':
-					dprintf(VHIGH,"Using no rc file!");
+					s3dprintf(VHIGH,"Using no rc file!");
 					norc=1;
 					break;
 
 				case '?':
 				case 'h':
-					dprintf(VHIGH,"usage: %s [options]",argv[0]);
-					dprintf(VHIGH,"s3d, the 3d server:");
+					s3dprintf(VHIGH,"usage: %s [options]",argv[0]);
+					s3dprintf(VHIGH,"s3d, the 3d server:");
 #ifdef G_GLUT
-					dprintf(VHIGH," --use-glut, -g:\tuse GLUT as framework-system");
+					s3dprintf(VHIGH," --use-glut, -g:\tuse GLUT as framework-system");
 #endif
 #ifdef G_SDL
-					dprintf(VHIGH," --use-sdl, -s:\tuse SDL as framework-system");
+					s3dprintf(VHIGH," --use-sdl, -s:\tuse SDL as framework-system");
 #endif
-					dprintf(VHIGH," --help, -?, -h: this helpful text");
+					s3dprintf(VHIGH," --help, -?, -h: this helpful text");
 					errsf("process_args()","exiting for users sake");
 					return(-1);
 		}

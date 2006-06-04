@@ -45,7 +45,7 @@ int shm_write(struct buf_t *rb,char *buf, int n)
 	{
 		if /*((size*2)>RB_MAX_SIZE)*/ (1)
 		{
-	/*		dprintf(MED,"buffer reached maxsize, no resizing possible");*/
+	/*		s3dprintf(MED,"buffer reached maxsize, no resizing possible");*/
 			return(0);
 		}
 /*		printf("buffer full!! resizing ... (to size %d)",(int)size*2);

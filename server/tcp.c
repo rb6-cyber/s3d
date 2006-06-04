@@ -53,7 +53,7 @@ int tcp_init()
 {
 	int yes=1;
 	struct sockaddr_in my_addr;   
-	dprintf(LOW,"server: creating socket");
+	s3dprintf(LOW,"server: creating socket");
 #ifdef WIN32  /*  sohn wars */
 	WSADATA datainfo;
 	if (WSAStartup(257, &datainfo) != 0)
@@ -62,7 +62,7 @@ int tcp_init()
    if ((tcp_sockid = socket(AF_INET,SOCK_STREAM,0)) < 0)
      errnf("socket()", errno);
 
-   dprintf(LOW,"server: binding my local socket");
+   s3dprintf(LOW,"server: binding my local socket");
    /*  allow addresses to be reused */
    /*  this seems to have something to do with servers using one port */
    if ( setsockopt(tcp_sockid, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1 )
@@ -118,7 +118,7 @@ select_again:
 	}
 	else 
 	if (FD_ISSET(tcp_sockid,&fs_port)) {  /* redundant, I guess */
-		dprintf(HIGH,"select(): new connection!!");
+		s3dprintf(HIGH,"select(): new connection!!");
         if ((newsd = accept(tcp_sockid ,(struct sockaddr *) &client_addr,&clilen)) < 0)
 			 errn("accept()",errno);
 		else 
@@ -132,7 +132,7 @@ select_again:
 			new_p=process_add();
 			new_p->con_type=CON_TCP;
 			new_p->sockid=newsd;
-			dprintf(HIGH,"registered new connection %d as pid %d",new_p->sockid, new_p->id);
+			s3dprintf(HIGH,"registered new connection %d as pid %d",new_p->sockid, new_p->id);
 		}
 	}
 	return(0);
@@ -207,7 +207,7 @@ int tcp_prot_com_in(struct t_process *p)
 	if (3==tcp_readn(p->sockid, ibuf,3))
 	{
 		length=ntohs(*((uint16_t *)((uint8_t *)ibuf+1)));
-		dprintf(VLOW,"command %d, length %d",ibuf[0], length);
+		s3dprintf(VLOW,"command %d, length %d",ibuf[0], length);
 		if (length>0)
 		{
 			tcp_readn(p->sockid,ibuf+3,length);	  /*  uint16_t is limited to 65536, so  */
@@ -215,7 +215,7 @@ int tcp_prot_com_in(struct t_process *p)
 		}
 		prot_com_in(p,ibuf);
 	} else {
-		dprintf(LOW,"tcp_prot_com_in():n_readn():fd seems to be dead (pid %d, sock %d)", p->id, p->sockid);
+		s3dprintf(LOW,"tcp_prot_com_in():n_readn():fd seems to be dead (pid %d, sock %d)", p->id, p->sockid);
 		process_del(p->id);
 	}
 	return(0);

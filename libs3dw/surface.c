@@ -64,7 +64,7 @@ void s3dw_surface_draw(s3dw_widget *widget)
 	surface->oid_title=s3d_draw_string(surface->title,&length);
 	while (length > (widget->width+1))
 	{
-		dprintf(HIGH,"%f > %f",length,widget->width+1);
+		s3dprintf(HIGH,"%f > %f",length,widget->width+1);
 		textlen=strlen(surface->title);
 		if (length>((widget->width+1)*1.3))
 			textlen=textlen*((widget->width+1)*1.1/length);
@@ -177,13 +177,13 @@ int s3dw_surface_event_click(s3dw_widget *widget, unsigned long oid)
 	if (widget->oid==oid)
 	{
 		s3dw_focus(widget);
-		dprintf(MED,"body %s clicked",surface->title);
+		s3dprintf(MED,"body %s clicked",surface->title);
 		return(1);
 	}
 	if ((surface->oid_tbar==oid) || (surface->oid_title==oid))
 	{
 		s3dw_focus(widget);
-		dprintf(MED,"title %s clicked",surface->title);
+		s3dprintf(MED,"title %s clicked",surface->title);
 		return(1);
 	}
 	return(0);

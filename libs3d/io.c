@@ -90,7 +90,7 @@ static int parse_args(int *argc, char ***argv)
 				if (optarg)
 				{
 					url=optarg;
-					dprintf(HIGH,"connecting to %s",url);
+					s3dprintf(HIGH,"connecting to %s",url);
 				}
 			}
 			break;
@@ -130,7 +130,7 @@ int s3d_init(int *argc, char ***argv, char *name)
 */
 	if (NULL!=(s=getenv("S3D")))
 	{
-		dprintf(VLOW,"at least we have the enviroment variable ... %s",s);
+		s3dprintf(VLOW,"at least we have the enviroment variable ... %s",s);
 		url=s;
 	}
 	parse_args(argc,argv);
@@ -226,7 +226,7 @@ int s3d_open_file(char *fname, char **pointer)
 	if (fstat(fileno(fp),&bf))
 	{ errdn(VLOW,"s3d_open_file():fstat()",errno); return(-1);}
 	filesize=bf.st_size;
-	dprintf(VLOW, "opening %s, filesize is %d",fname, filesize);
+	s3dprintf(VLOW, "opening %s, filesize is %d",fname, filesize);
 	if ((buf=malloc(filesize))==NULL)
 	{
 		errn("s3d_open_3ds_file():malloc()",errno);

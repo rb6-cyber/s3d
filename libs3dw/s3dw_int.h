@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <s3dlib.h> /* dprintf() */
+#include <s3dlib.h> /* s3dprintf() */
 #define MAXANI		128
 #define ZOOMS		5
 /* constructor and handler callbacks */

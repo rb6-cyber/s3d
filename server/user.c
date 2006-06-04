@@ -84,7 +84,7 @@ void user_mouse(int button, int state, int x, int y)
 					navi_back();
 					break;
 				default:
-					dprintf(VLOW,"button is ... %d", button);
+					s3dprintf(VLOW,"button is ... %d", button);
 			}
 			ox=x;
 			oy=y;
@@ -93,7 +93,7 @@ void user_mouse(int button, int state, int x, int y)
 		case 1:  /*  mouse up */
 			ox=oy=0xFFFFFF;
 			event_mbutton_clicked(button,state);
-	/*		dprintf(LOW,"state is: %d,button is %d",state,button);*/
+	/*		s3dprintf(LOW,"state is: %d,button is %d",state,button);*/
 			break;
 		case 2:	 /*  mouse still down */
 			switch (button)
@@ -113,7 +113,7 @@ void user_mouse(int button, int state, int x, int y)
 					navi_back();
 					break;
 				default:
-					dprintf(VLOW,"button is ... %d", button);
+					s3dprintf(VLOW,"button is ... %d", button);
 			}
 			ox=x;
 			oy=y;

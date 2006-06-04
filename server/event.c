@@ -38,7 +38,7 @@ extern int winw,winh; /* to give aspect ratio to the program */
 int event_obj_click(struct t_process *p, uint32_t oid)
 {
 	uint32_t moid=htonl(oid);
-	dprintf(MED,"telling client that oid %d got clicked",oid);
+	s3dprintf(MED,"telling client that oid %d got clicked",oid);
 	prot_com_out(p,S3D_P_S_CLICK,(uint8_t *)&moid, 4);
 	return(0);
 }
@@ -84,7 +84,7 @@ int event_init(struct t_process *p)
 int event_quit(struct t_process *p)
 {
 	prot_com_out(p, S3D_P_S_QUIT, NULL,0);
-	dprintf(HIGH,"sending pid %d QUIT signal",p->id); 
+	s3dprintf(HIGH,"sending pid %d QUIT signal",p->id); 
 	process_del(p->id);
 	return(0);
 }
