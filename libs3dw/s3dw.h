@@ -53,7 +53,7 @@ typedef void (*s3dw_callback)(s3dw_widget *);
 
 
 struct _s3dw_widget {
-	/* it's all private .. */
+	/* private .. */
 	int   		 type;
 	s3dw_widget *parent; 
 	s3dw_style  *style;
@@ -61,14 +61,15 @@ struct _s3dw_widget {
 	s3dw_widget		 	**pobj; /* pointer to list of children objects */
 	int 		 focus;			/* index of the widget focused in pobj */
 	int   		 flags;			/* flags like visibility */
-	float 		 x,y,z;			/* position, relative to the surface usually */
 	float 		 ax,ay,az;		/* current position for animation */
-	float 		 s;				/* scale factor */
 	float 		 as;			/* current scale factor */
-	float 		 rx,ry,rz;		/* rotation around the axis */
 	float 		 arx,ary,arz;   /* current rotation */
 	float 		 width,height;	/* width and height of the widget, outer size */
 	unsigned long oid;			/* the main object which is used for transformations etc ...*/
+	/* public */
+	float 		 x,y,z;			/* position, relative to the surface usually */
+	float 		 s;				/* scale factor */
+	float 		 rx,ry,rz;		/* rotation around the axis */
 };
 
 
@@ -84,7 +85,6 @@ struct _s3dw_label {
 	/* private */
 	s3dw_widget 	 widget;
 	char 			*text;
-	unsigned long    oid_text;
 	/* public */
 	s3dw_callback 	 onclick;
 	
