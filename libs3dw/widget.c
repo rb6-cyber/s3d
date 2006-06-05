@@ -133,3 +133,8 @@ void s3dw_widget_visible(s3dw_widget *widget)
 	widget->flags|=S3DW_ONSCREEN;
 	s3dwcb_show[widget->type](widget);
 }
+/* apply the moves ... */
+void				 s3dw_moveit(s3dw_widget *widget)
+{
+	s3dw_ani_add(widget);
+}

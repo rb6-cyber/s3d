@@ -126,11 +126,13 @@ char 				*s3dw_input_gettext(s3dw_input *input);
 void 				 s3dw_input_change_text(s3dw_input *input, char *text);
 s3dw_surface 		*s3dw_surface_new(char *title, float width, float height);
 
-void s3dw_delete(s3dw_widget *widget);
-void s3dw_show(s3dw_widget *widget);
-void s3dw_focus(s3dw_widget *focus);
+s3dw_widget 		*s3dw_getroot();
+void				 s3dw_moveit(s3dw_widget *widget);
+void 				 s3dw_delete(s3dw_widget *widget);
+void 				 s3dw_show(s3dw_widget *widget);
+void 				 s3dw_focus(s3dw_widget *focus);
 
-void s3dw_handle_click(struct s3d_evt *evt);
-void s3dw_handle_key(struct s3d_evt *evt);
+void 				 s3dw_handle_click(struct s3d_evt *evt);
+void 				 s3dw_handle_key(struct s3d_evt *evt);
 
-void s3dw_ani_mate();
+void 				 s3dw_ani_mate();
