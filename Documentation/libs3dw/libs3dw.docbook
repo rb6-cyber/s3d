@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<chapter id="libs3dw">
+<title>libs3wd - The S3D Widget Library</title>
+<sect1 id="using_3dw">
+<title>Using the <application>s3d</application> widget library</title>
+<sect2 id="gettingstarted_s3dw">
+<title>Getting started</title>
+<para>
+	Assuming you have already read about the lowlevel <link linkend="libs3d">libs3d s3d api</link>, the s3d widget library is 
+	build on top of it and should be (hopefully) easy to use as any other widget library.
+	Just include
+	
+ 	<programlisting>
+	  <![CDATA[#include <s3dw.h>]]>
+	 </programlisting>
+
+	 and link with -ls3dw -ls3d, and everything should be fine. :)
+	 <screen>
+	 <prompt>bash$</prompt> <command> gcc <replaceable>program</replaceable>.c -ls3dw -ls3d -o <replaceable>program</replaceable> </command>
+ 	</screen>
+</para>
+</sect2>
+</sect1>
+
+
+<sect1 id="functions_s3dw">
+<title>function reference</title>
+
+
+
+<sect2 id="s3dw_surface_new">
+<title>s3dw_surface_new</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3dw.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>s3dw_surface *<function>s3dw_surface_new</function></funcdef>
+<paramdef>
+char         *<parameter>title</parameter>,
+float		  <parameter>width</parameter>,
+float		  <parameter>height</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+		Creates a new surface (a new window) with title "title" and dimension "width" x "height".
+</para>
+<para>
+		See <link linkend="s3dw_surface">s3dw_surface</link> for information about callbacks which may be defined.
+</para>
+</sect2>
+
+
+<sect2 id="s3dw_button_new">
+<title>s3dw_button_new</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3dw.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>s3dw_button *<function>s3dw_button_new</function></funcdef>
+<paramdef>
+s3dw_surface *<parameter>surface</parameter>,
+char         *<parameter>text</parameter>,
+float		  <parameter>posx</parameter>,
+float		  <parameter>posy</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+		Creates a new button on the <link linkend="s3dw_surface">surface</link>, 
+		with "text" written on it and the upper left 
+		corner at (posx,posy) on the <link linkend="s3dw_surface">surface</link>.
+</para>
+<para>
+		See <link linkend="s3dw_button">s3dw_button</link> for information about callbacks which may be defined.
+</para>
+</sect2>
+
+<sect2 id="s3dw_input_new">
+<title>s3dw_input_new</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3dw.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>s3dw_input *<function>s3dw_input_new</function></funcdef>
+<paramdef>
+s3dw_surface *<parameter>surface</parameter>,
+float		  <parameter>width</parameter>,
+float		  <parameter>posx</parameter>,
+float		  <parameter>posy</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+		Creates a new input-box on the <link linkend="s3dw_surface">surface</link> with a input width of "width",
+		the upper left  corner at (posx,posy) on the <link linkend="s3dw_surface">surface</link>.
+		The input-box is empty on creation and can be change with <link linkend="s3dw_input_change_text">s3dw_input_change_text</link>,
+		and received with <link linkend="s3dw_input_gettext">s3dw_input_gettext</link>
+</para>
+<para>
+		See <link linkend="s3dw_input">s3dw_input</link> for information about callbacks which may be defined.
+</para>
+</sect2>
+
+<sect2 id="s3dw_label_new">
+<title>s3dw_label_new</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3dw.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>s3dw_label *<function>s3dw_label_new</function></funcdef>
+<paramdef>
+s3dw_surface *<parameter>surface</parameter>,
+char         *<parameter>text</parameter>,
+float		  <parameter>posx</parameter>,
+float		  <parameter>posy</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+		Creates a new label on the <link linkend="s3dw_surface">surface</link>, 
+		with "text" written on it and the upper left 
+		corner at (posx,posy) on the <link linkend="s3dw_surface">surface</link>.
+</para>
+<para>
+		See <link linkend="s3dw_label">s3dw_label</link> for information about callbacks which may be defined.
+</para>
+</sect2>
+
+<sect2 id="s3dw_getroot">
+<title>s3dw_getroot</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3dw.h>]]></funcsynopsisinfo>
+<funcprototype>
+	<funcdef>s3dw_widget *<function>s3dw_getroot</function></funcdef>
+<paramdef>
+		void
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+		Returns the root-<link linkend="s3dw_widget">widget</link>, which holds all the surfaces. E.g. if you want
+		to move all widgets at once, adjust the root-widgets x,y,z and use <link linkend="s3dw_moveit">s3dw_moveit()</link>
+</para>
+<programlisting>
+		<link linkend="s3dw_widget">s3dw_widget</link> *root = <emphasis>s3dw_getroot</emphasis>();
+		/* move <link linkend="s3dw_widget">widget</link> center to (0,5,0). upon creation, it's centered at (0,0,0), 
+		 * so this might move it up */
+		root->x=0;
+		root->y=5;
+		root->z=0;
+		<link linkend="s3dw_moveit">s3dw_moveit</link>(root);
+</programlisting>
+</sect2>
+
+
+<sect2 id="s3dw_input_gettext">
+<title>s3dw_input_gettext</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3dw.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>char *<function>s3dw_input_gettext</function></funcdef>
+<paramdef>
+		s3dw_input *<parameter>input</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+		Returns the text which is currently entered in the referenced <link linkend="s3dw_input">input-box</link>.
+</para>
+</sect2>
+
+<sect2 id="s3dw_input_change_text">
+<title>s3dw_input_change_text</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3dw.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>void <function>s3dw_input_change_text</function></funcdef>
+<paramdef>
+		s3dw_input *<parameter>input</parameter>,
+		char *<parameter>text</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+		Change the text in the referenced <link linkend="s3dw_input">input-box</link> to the specified text.
+</para>
+</sect2>
+
+<sect2 id="s3dw_delete">
+<title>s3dw_delete</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3dw.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>void <function>s3dw_delete</function></funcdef>
+<paramdef>
+		s3dw_widget *<parameter>widget</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+	Deletes any widget. Should be casted with <link linkend="S3DWIDGET">S3DWIDGET()</link>.
+</para>
+</sect2>
+
+<sect2 id="s3dw_moveit">
+<title>s3dw_moveit</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3dw.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>void <function>s3dw_moveit</function></funcdef>
+<paramdef>
+		s3dw_widget *<parameter>widget</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+		Moves/translates the widget as you specified in it's private <link linkend="s3dw_widget">s3dw_widget structure</link>.
+		Should be casted with <link linkend="S3DWIDGET">S3DWIDGET()</link>.
+</para>
+</sect2>
+
+<sect2 id="s3dw_show">
+<title>s3dw_show</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3dw.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>void <function>s3dw_show</function></funcdef>
+<paramdef>
+		s3dw_widget *<parameter>widget</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+		Switches a <link linkend="s3dw_widget">widget</link> visible. Should be casted with <link linkend="S3DWIDGET">S3DWIDGET()</link>.
+</para>
+</sect2>
+
+<sect2 id="s3dw_focus">
+<title>s3dw_focus</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3dw.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>void <function>s3dw_focus</function></funcdef>
+<paramdef>
+		s3dw_widget *<parameter>widget</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+		Gives focus to the <link linkend="s3dw_widget">widget</link>, relative to its parent. That means you can focus a 
+		<link linkend="s3dw_surface">surface</link>, and each <link linkend="s3dw_surface">surface</link> can focus 
+		one of its element, e.g. an input field. 
+		Should be casted with <link linkend="S3DWIDGET">S3DWIDGET()</link>.
+</para>
+</sect2>
+
+<sect2 id="s3dw_handle_click">
+<title>s3dw_handle_click</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3dw.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>void <function>s3dw_handle_click</function></funcdef>
+<paramdef>
+		struct s3d_evt *<parameter>event</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+	If you want your widgets on mouseclicks (believe me, you want that), you have to call this
+	either in your clickhandler-function or specifiy it itself as the clickhandler.
+</para>
+<programlisting>
+/* way 1: */
+<link linkend="s3d_set_callback">s3d_set_callback</link>(<link linkend="S3D_EVENT_OBJ_CLICK">S3D_EVENT_OBJ_CLICK</link>,<emphasis>s3dw_handle_click</emphasis>);
+
+/* way 2: */
+...
+void click(<link linkend="s3d_evt">struct s3d_evt</link> *evt)
+{
+	<emphasis>s3dw_handle_click</emphasis>(evt);
+	.... 
+	/* your own clickhandler code */
+	...
+}
+....
+<link linkend="s3d_set_callback">s3d_set_callback</link>(<link linkend="S3D_EVENT_OBJ_CLICK">S3D_EVENT_OBJ_CLICK</link>,click);
+</programlisting>
+</sect2>
+
+
+<sect2 id="s3dw_handle_key">
+<title>s3dw_handle_key</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3dw.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>void <function>s3dw_handle_key</function></funcdef>
+<paramdef>
+		struct s3d_evt *<parameter>event</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+	This is somehow useful to call in your keyhandler functions if you want to 
+	have input-boxes work. ;)
+</para>
+<programlisting>
+/* way 1: */
+<link linkend="s3d_set_callback">s3d_set_callback</link>(<link linkend="S3D_EVENT_KEY">S3D_EVENT_KEY</link>,<emphasis>s3dw_handle_key</emphasis>);
+
+/* way 2: */
+...
+void key(<link linkend="s3d_evt">struct s3d_evt</link> *evt)
+{
+	<emphasis>s3dw_handle_key</emphasis>(evt);
+	.... 
+	/* your own keyhandler code */
+	...
+}
+....
+<link linkend="s3d_set_callback">s3d_set_callback</link>(<link linkend="S3D_EVENT_KEY">S3D_EVENT_KEY</link>,key);
+</programlisting>
+</sect2>
+
+
+<sect2 id="s3dw_ani_mate">
+<title>s3dw_ani_mate</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3dw.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>void <function>s3dw_ani_mate</function></funcdef>
+<paramdef>void
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+	Just call this in your mainloop if you want
+	some nice window sliding animations. it's somewhat bloating, but you don't want to miss it ;)
+</para>
+<programlisting>
+<![CDATA[#include <time.h>]]>   /* nanosleep() */
+static struct timespec t={0,33*1000*1000}; /* 33 mili seconds */
+void mainloop()
+{
+    /* keep this in your mainloop. this will do smooth animations for you ... */
+    s3dw_ani_mate();
+    nanosleep(<![CDATA[&t,NULL]]>);
+}
+
+....
+<link linkend="s3d_mainloop">s3d_mainloop</link>(mainloop);
+</programlisting>
+</sect2>
+
+</sect1>
+<sect1 id="data_types_s3dw">
+<title>Data types</title>
+
+
+
+<sect2 id="s3dw_widget">
+<title>s3dw_widget</title>
+<programlisting>
+struct _s3dw_widget {   
+		/* private .. */
+		int          type;
+		<emphasis>s3dw_widget</emphasis> *parent;        
+		<link linkend="s3dw_style">s3dw_style</link>  *style;
+		int                   nobj; /* number of children objects */
+		<emphasis>s3dw_widget</emphasis>         **pobj; /* pointer to list of children objects */
+		int          focus;         /* index of the widget focused in pobj */
+		int          flags;         /* flags like visibility */
+		float        ax,ay,az;      /* current position for animation */
+		float        as;            /* current scale factor */
+		float        arx,ary,arz;   /* current rotation */
+		float        width,height;  /* width and height of the widget, outer size */
+		unsigned long oid;          /* the main object which is used for transformations etc ...*/
+		/* public */
+		float        x,y,z;         /* position, relative to the surface usually */
+		float        s;             /* scale factor */
+		float        rx,ry,rz;      /* rotation around the axis */
+};
+typedef struct _s3dw_widget     s3dw_widget;
+
+/* type may be one of the following ... */		
+
+enum {
+    S3DW_TROOT,
+    S3DW_TSURFACE,
+    S3DW_TBUTTON,
+    S3DW_TLABEL,
+    S3DW_TINPUT,
+    S3DW_NTYPES
+};
+<anchor id="S3DWIDGET"/>
+#define     S3DWIDGET(x)    (s3dw_widget *)x
+						
+</programlisting>
+<para>
+		This is the most basic widget type, it contains all the "general" widget information. If you want to move a widget, you'd
+		change x,y,z,s and rx,ry,rz and call <link linkend="s3dw_moveit">s3dw_moveit</link> to turn your action reality. Every other
+		widget has this type as first entry, so a simple typecast to <emphasis>s3dw_widget</emphasis> will give you the widgets "general"
+		information. For typecast, you may use S3DWIDGET()
+</para>
+</sect2>
+
+<sect2 id="s3dw_button">
+<title>s3dw_button</title>
+<programlisting>
+typedef struct _s3dw_button     s3dw_button;
+struct _s3dw_button {
+    /* private */
+	<link linkend="s3dw_widget">s3dw_widget</link>      widget;
+	char            *text;
+	unsigned long    oid_text;
+	/* public */
+	<link linkend="s3dw_callback">s3dw_callback</link>    onclick;
+};
+</programlisting>
+<para>
+	The buttons is just a button as you would expect it in a 2D widget library. It only reacts on clicks.
+</para>
+</sect2>
+
+
+<sect2 id="s3dw_input">
+<title>s3dw_input</title>
+<programlisting>
+typedef struct _s3dw_input     s3dw_input;
+struct _s3dw_input {
+    /* private */
+	<link linkend="s3dw_widget">s3dw_widget</link>      widget;
+	char            *text;
+	unsigned long    oid_text;
+	/* public */
+	<link linkend="s3dw_callback">s3dw_callback</link>    onclick;
+	<link linkend="s3dw_callback">s3dw_callback</link>    onedit;
+};
+</programlisting>
+<para>
+		The inputs is an input-field where a user may type things. onclick reacts on click in the field,
+		onedit notifies you when someone writes in the field.
+</para>
+</sect2>
+
+
+<sect2 id="s3dw_label">
+<title>s3dw_label</title>
+<programlisting>
+typedef struct _s3dw_label     s3dw_label;
+struct _s3dw_label {
+    /* private */
+	<link linkend="s3dw_widget">s3dw_widget</link>      widget;
+	char            *text;
+	/* public */
+	<link linkend="s3dw_callback">s3dw_callback</link>    onclick;
+};
+</programlisting>
+<para>
+		The labels is an label-field where a user may type things. onclick reacts on click in the field,
+		onedit notifies you when someone writes in the field.
+</para>
+</sect2>
+
+<sect2 id="s3dw_surface">
+<title>s3dw_surface</title>
+<programlisting>
+typedef struct _s3dw_surface     s3dw_surface;
+struct _s3dw_surface {
+    /* private */
+	<link linkend="s3dw_widget">s3dw_widget</link>      widget;
+	unsigned long         oid_title;
+	unsigned long         oid_tbar;
+	char            *text;
+};
+</programlisting>
+<para>
+	A surface is the window of this widget library, holding all of our elements like <link linkend="s3dw_button">buttons</link>, 
+	<link linkend="s3dw_input">inputfields</link> etc ...
+</para>
+</sect2>
+
+
+<sect2 id="s3dw_style">
+<title>s3dw_style</title>
+<programlisting>
+typedef struct _s3dw_style     s3dw_style;
+/* style */
+struct _s3dw_style {
+    char *name;                 /* name of the style ... kind of redundant */
+    char *fontface;             /* font face for all used fonts */
+    float surface_mat[12];      /* material for the surface background */
+    float input_mat[12];        /* material for buttonboxes and other widgets */
+    float inputback_mat[12];    /* material for inputfield background */
+    float text_mat[12];         /* material for the text on buttons and inputs */
+    float title_mat[12];        /* material for the title bar */
+    float title_text_mat[12];   /* material for the text on the title bar */
+};
+
+</programlisting>
+<para>
+	With s3dw_style you can change the colors/materials of your widgets. materials are in the same as in 
+	<link linkend="s3d_push_materials_a">s3d_push_materials_a</link>, that means red,green,blue and alpha float values 
+	(between 0.0 and 1.0) for Ambience, Specular and Diffuse Color.
+</para>
+</sect2>
+
+<sect2 id="s3dw_callback">
+<title>s3dw_callback</title>
+<programlisting>
+typedef void (*s3dw_callback)(s3dw_widget *);
+
+</programlisting>
+<para>
+	The callback type. Receive the widget which is affected as argument.
+</para>
+<programlisting>
+/* example */
+void my_handler(<link linkend="s3dw_widget">s3dw_widget</link> *widget)
+{
+	/* do something with the widget */
+	...
+}
+</programlisting>
+</sect2>
+
+
+</sect1>
+</chapter>

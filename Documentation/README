@@ -4,5 +4,5 @@ http://s3d.berlios.de/doc
 
 or compile it yourself, for example with
 
-docbook2html s3dapi.docbook
+docbook2html s3d.docbook
 

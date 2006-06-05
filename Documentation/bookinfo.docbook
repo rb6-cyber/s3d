@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <bookinfo>
-<title>The s3d manual</title>
+<title>S3D - a 3D Desktop Enviroment</title>
 <authorgroup>
 <author>
 <firstname>Simon</firstname>
@@ -7,12 +8,12 @@
 </author>
 </authorgroup>
 
-<date>03/19/2006</date>
-<releaseinfo>0.1</releaseinfo>
+<date>06/05/2006</date>
+<releaseinfo>0.2</releaseinfo>
 
 <abstract>
 <para>
-This Manual is the programmers guide to the s3d API.
+This is the Documentation for the S3D and it's Developer Libraries.
 </para>
 </abstract>
 

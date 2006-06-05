@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<chapter id="introduction">
+<title>s3d - the server</title>
+<sect1 id="client_server">
+<title>Client-Server Architecture</title>
+ <para><application>s3d</application> is build as client-server architecture, similar to the xserver.
+ 	The s3d-server is the program executed on the users desktop and waits for incoming connections, the applications,
+	which give their content they want to have displayed to the server. The server will then display the content to the 
+	user, who can move to the 3D space, and interact (mouse moving/clicking, keyboard), and the client will receive these 
+	signals over the network from the server.
+ </para>
+ <para>
+	Just like on the X-Server, it may seem unusual to have the "server" on the own machine, while the "client" may be 
+	on any other machine with network connection. But this makes features possible like browsing files on your 
+	file server or even access point. ;)
+</para>
+<para>
+	Don't let the server-client thing confuse you too much for now, on a properly installed system the s3d will startup with
+	the mcp (which is the window manager in s3d-terms) which will give you a complete look and feel just as you would expect.
+</para>
+<para>
+	More (internal) information about the server will be presented here as soon as someone is interested. ;)
+</para>
+</sect1>
+<sect1 id="Moving">
+<title>Moving in s3d</title>
+<para>
+this is not the final version for movement, but ...
+
+<itemizedlist>
+<listitem><para>
+hold middle mouse button (or left+right at once if you have middle-mousebutton-emulation) and move your mouse to move around the world
+</para></listitem>
+<listitem><para>
+hold right mouse button and move mouse to rotate the mouse (look around)
+</para></listitem>
+<listitem><para>
+left mouse button is for clicking :)
+</para></listitem>
+<listitem><para>
+presse f1 to get in ego-shooter mode :D you can use w,a,s,d for movement now. f1 again to deactivate.
+this only works with dot_mcp, the others above work out-of-the box within the server.
+</para></listitem>
+</itemizedlist>
+</para>
+</sect1>
+<sect1 id="s3drc">
+<title>The s3drc file</title>
+<para>
+You can automatically fire up the mcp or anything you want with s3d and 
+have it closed when s3d goes down or vice versa:
+</para>
+<para>
+just create a shellscript at position /etc/s3drc or ~/.s3drc, for example
+have it starting the mcp. Don't forget to toggle it executable (chmod 755 
+or so).
+</para>
+<para>
+When s3d starts, it will look for ~/.s3drc or /etc/s3drc (in this order),
+and will start it along with the server. E.g. when you log out off your mcp,
+the s3d server is shut down too.
+</para>
+<para>
+You can disable this behavior with s3d --no-rc
+</para>
+<para>
+For example my .s3drc looks like this:
+</para>
+ <screen>
+<prompt>$</prompt> cat ~/.s3drc 
+ #!/bin/sh
+cd ~/msrc/s3d/apps/dot_mcp/
+./dot_mcp
+</screen>
+</sect1>
+</chapter>
