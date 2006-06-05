@@ -211,8 +211,8 @@ int box_buildblock(struct t_item *dir)
 						0.5,0.5,0.6,
 						0.5,0.5,0.6);
 
-	s3d_push_polygon(dir->block,4,5,6,1);
-	s3d_push_polygon(dir->block,4,6,7,1);
+	s3d_push_polygon(dir->block,4,6,5,1);
+	s3d_push_polygon(dir->block,4,7,6,1);
 
 	s3d_push_polygon(dir->block,0,4,5,0);
 	s3d_push_polygon(dir->block,0,5,1,0);
