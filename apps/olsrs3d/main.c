@@ -28,13 +28,14 @@
 #include <stdio.h>
 #include <s3d.h>
 #include <s3d_keysym.h>
+#include <s3dw.h>
 #include <time.h>	      /* nanosleep() */
 #include <string.h>	/* strncpy() */
 #include <math.h>		/* sqrt() */
 #include <getopt.h>	/* getopt() */
 #include <stdlib.h>	/* exit() */
 #include "olsrs3d.h"
-#include "terminal.h"
+#include "mod_search.h"
 
 #define SPEED		10.0
 
@@ -54,7 +55,7 @@ int Olsr_ip_label_obj = -1;
 int Output_border[4];
 int *Olsr_neighbour_label_obj = NULL;
 int Size;
-int Move_prepared = 0;
+
 
 int Net_read_count;
 int Output_block_counter = 0;
@@ -68,8 +69,9 @@ float Left = -1.0;
 
 float CamPosition[2][3];	/* CamPosition[trans|rot][x-z] */
 float CamPosition2[2][3];	/* CamPosition[trans|rot][x-z] */
-float ZeroPosition[3] = {0,0,0};	/* current position zero position */
-float ReturnPoint[2][3];	/* return point to move back from terminal */
+
+/* needed ? */
+/* float ZeroPosition[3] = {0,0,0};	 current position zero position */
 
 int ZeroPoint;   /* object zeropoint */
 float Zp_rotate = 0.0;
@@ -80,20 +82,9 @@ float Factor = 0.6;	/* Factor in calc_olsr_node_mov */
 struct olsr_node *Olsr_node_pEtx;
 
 int Btn_close_id = -1;
+
 int Btn_close_obj;
-int Btn_move_terminal_obj;
-int Btn_move_terminal_id = -1;
-int Btn_follow_mode_obj;
-int Btn_follow_mode_id = -1;
-
-int Rotate_follow_button = 0;
-
 float Title_len;
-int cam_go=0;
-
-int move_cam_to = -1;
-int Oid_focus = -1;
-
 
 /***
  *
@@ -691,40 +682,25 @@ void mainloop() {
 		}
 	}
 	
+	/* rotate modus */
 	if(RotateSwitch) {
 		Zp_rotate = ( Zp_rotate + RotateSpeed ) > 360 ? 0.0 : ( Zp_rotate + RotateSpeed );	
 		s3d_rotate(ZeroPoint,0,Zp_rotate,0);
 	}
+
+	/* calc for node description */
 	CamPosition2[0][0]=  CamPosition[0][0]*cos(Zp_rotate*M_PI/180.0) - CamPosition[0][2] * sin (Zp_rotate*M_PI/180.0);
 	CamPosition2[0][1]=  CamPosition[0][1];
 	CamPosition2[0][2]=  CamPosition[0][0]*sin(Zp_rotate*M_PI/180.0) + CamPosition[0][2] * cos (Zp_rotate*M_PI/180.0);
 
-	/* move to terminal */
-	if( move_cam_to == obj[obj_term]->oid )
-	{
-		Oid_focus = obj[obj_term]->oid;
-		for( i=0; i<3; i++)
-		{
-			CamPosition[0][i]=(CamPosition[0][i]*4+obj[obj_term]->poi[i])/5;
-
-			target = obj[obj_term]->rot[i];
-			current = CamPosition[1][i];
-
-			if( obj[obj_term]->rot[i] - CamPosition[1][i] > 180 )
-				target = obj[obj_term]->rot[i] - 360;
-			if( obj[obj_term]->rot[i] - CamPosition[1][i] < -180 )
-				current = CamPosition[1][i] - 360;
-			CamPosition[1][i]=(CamPosition[1][i]*4+target)/5;
-		}
-		s3d_translate(0,CamPosition[0][0],CamPosition[0][1],CamPosition[0][2]);
-		s3d_rotate(0,CamPosition[1][0],CamPosition[1][1],CamPosition[1][2]);
-
-		if (dist(CamPosition[0],obj[obj_term]->poi)<0.2)
-		{
-			s3d_translate(0,obj[obj_term]->poi[0],obj[obj_term]->poi[1],obj[obj_term]->poi[2]);
-			s3d_rotate(0,obj[obj_term]->rot[0],(obj[obj_term]->rot[1]),obj[obj_term]->rot[2]);
-			move_cam_to = -1;
-		}
+	/* check search status */
+	if( get_search_status() == WIDGET )
+		move_to_search_widget( CamPosition[0], CamPosition[1] );
+	/* if( get_search_status  == FOLLOW ) */
+		/* follow the white rabbit ;) */
+	if( get_search_status() == ABORT )
+		move_to_return_point( CamPosition[0], CamPosition[1] );
+	/*
 	} else if ( move_cam_to != -2 && move_cam_to != -1 ) {
 	
 		Oid_focus = -1;
@@ -772,8 +748,9 @@ void mainloop() {
 		Rotate_follow_button = (Rotate_follow_button + 50)%360;
 		s3d_rotate(Btn_follow_mode_id,0,Rotate_follow_button,0);
 	}
-	
-	/* move back to returnPoint */
+	*/
+		
+	/* mod_search move back to returnPoint
 	if(move_cam_to == -2)
 	{
 		Oid_focus = -1;
@@ -800,23 +777,12 @@ void mainloop() {
 			move_cam_to = -1;
 		}
 	}
+*/
 
-	rotate_cursor();
 
 	if( Olsr_ip_label_obj != -1 )
 	{
 		print_etx();
-	}
-
-	
-	if (cam_go && move_cam_to == -1)
-	{ /* move a little bit closer ... */
-		CamPosition[0][0]=(CamPosition[0][0]*9+Olsr_node_pEtx->pos_vec[0])/10;
-		CamPosition[0][1]=(CamPosition[0][1]*9+Olsr_node_pEtx->pos_vec[1])/10;
-		CamPosition[0][2]=(CamPosition[0][2]*9+Olsr_node_pEtx->pos_vec[2])/10;
-		s3d_translate(0,CamPosition[0][0],CamPosition[0][1],CamPosition[0][2]);
-		if (dist(CamPosition[0],Olsr_node_pEtx->pos_vec)<5) /* close enough? stop! */
-				cam_go=0;
 	}
 
 	nanosleep( &sleep_time, NULL );
@@ -842,18 +808,30 @@ void keypress(struct s3d_evt *event) {
 	int key;
 	key=*((unsigned short *)event->buf);
 
-	if(Oid_focus != obj[obj_term]->oid)
-	{
+	/* mod_search if(Oid_focus != obj[obj_term]->oid)
+	{*/
 		switch(key) {
-			case S3DK_ESCAPE: /* esc -> close olsr */
-				stop();
+			case S3DK_ESCAPE: /* esc abort action */
+			
+				set_search_status( get_search_status() == WIDGET ? ABORT : NOTHING );
 				break;
+				
+			case 's': /* move to search widget, give widget focus */
+
+				set_search_status(WIDGET);
+				set_return_point(CamPosition[0],CamPosition[1]);
+				break;
+			
 			case 'c': /* c -> color on/off */
+				
 				ColorSwitch =  ColorSwitch ? 0 : 1;
 				break;
+				
 			case 'r': /* r -> rotate start/stop*/
+				
 				RotateSwitch = RotateSwitch ? 0 : 1;
 				break;
+				
 			case S3DK_KP_PLUS:
 			case '+': /* + -> rotate speed increase*/
 				
@@ -883,24 +861,30 @@ void keypress(struct s3d_evt *event) {
 				break;
 				
 			case 16: /* strg + p -> reset nodes ( zeroPoint to 0,0,0 ) */
-				{
-					s3d_translate(ZeroPoint,0.0,0.0,0.0);
-					ZeroPosition[0] = ZeroPosition[1] = ZeroPosition[2] = 0.0;
-					break;
-				}
+				
+				s3d_rotate(ZeroPoint, 0, 0, 0);
+				Zp_rotate = 0.0;
+				break;
+				
 			case S3DK_PAGEUP: /* page up -> change factor in calc_olsr_node_mov */
+				
 				if(Factor < 0.9)
 					Factor += 0.1;
 				break;
+				
 			case S3DK_PAGEDOWN: /* page down -> change factor in calc_olsr_node_mov */
+				
 				if(Factor > 0.3)
 					Factor -= 0.1;
 				break;
+				
 		}
+	/* mod_search
 	} else {
 		if( (key >= 48 && key <= 57) || key == 46 || key == 13 || key == 8 || (key >= 256 && key <= 265) || key == 266 || key == 271 )
 			write_terminal(key);
 	}
+	*/
 }
 
 /***
@@ -912,9 +896,14 @@ void keypress(struct s3d_evt *event) {
 void object_click(struct s3d_evt *evt)
 {
 	int oid,i;
-	/* float distance,tmp_vector[3]; */
 	char ip_str[50];
 
+	if( get_search_status() == WIDGET )
+	{
+		s3dw_handle_click(evt);	
+		return;
+	}
+	
 	oid=(int)*((unsigned long *)evt->buf);
 
 	if( oid == Btn_close_id )
@@ -932,32 +921,6 @@ void object_click(struct s3d_evt *evt)
 				s3d_del_object(Output_border[i]);
 			Output_border[i] = -1;
 		}
-		return;
-	}
-
-	if( oid == Btn_move_terminal_id )
-	{
-		if(Oid_focus != obj[obj_term]->oid)
-		{
-			for(i=0;i<3;i++)
-			{
-				ReturnPoint[0][i] = CamPosition[0][i];
-				ReturnPoint[1][i] = CamPosition[1][i];
-			}
-			move_cam_to = obj[obj_term]->oid;
-		} else {
-			Oid_focus = -1;
-			move_cam_to = -2;	
-		}
-		return;
-	}
-	
-	if( oid == Btn_follow_mode_id )
-	{
-		s3d_del_object(Btn_follow_mode_id	);
-		Btn_follow_mode_id = -1;
-		Oid_focus = -1;
-		move_cam_to = -1;
 		return;
 	}
 
@@ -1146,19 +1109,6 @@ void mbutton_press(struct s3d_evt *hrmz)
 	return;
 }
 
-void initialize_objects()
-{
-	create_terminal();
-	create_cursor();
-	
-	Btn_move_terminal_id = s3d_clone( Btn_move_terminal_obj );
-	s3d_link(Btn_move_terminal_id,0);
-	s3d_flags_on(Btn_move_terminal_id,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-	s3d_scale( Btn_move_terminal_id, 0.5 );
-	s3d_translate( Btn_move_terminal_id,-Left*3.0-0.5, -Bottom*3.0-0.7, -3.0 );
-
-}
-
 int main( int argc, char *argv[] ) {
 
 	int optchar;
@@ -1218,18 +1168,12 @@ int main( int argc, char *argv[] ) {
 			Olsr_node_obj = s3d_import_3ds_file( "objs/accesspoint.3ds" );
 			Olsr_node_inet_obj = s3d_import_3ds_file( "objs/accesspoint_inet.3ds" );
 			Olsr_node_hna_net = s3d_import_3ds_file( "objs/internet.3ds" );
-
-			/* terminal buttons */
-			Btn_close_obj = s3d_import_3ds_file("objs/btn_close.3ds");
-			Btn_move_terminal_obj = s3d_import_3ds_file("objs/dot.3ds");
-			Btn_follow_mode_obj = s3d_import_3ds_file("objs/dotdot.3ds");
+			Btn_close_obj = s3d_import_3ds_file( "objs/btn_close.3ds" );
+			create_search_widget( 0, 0, 300 );			
 			
 			ZeroPoint = s3d_new_object();
 			Output_border[0] = Output_border[1] = Output_border[2] = Output_border[3] = -1;
-
-			/* create system objects */
-			initialize_objects();
-
+			
 			s3d_mainloop(mainloop);
 			s3d_quit();
 			net_quit();

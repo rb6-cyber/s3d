@@ -27,6 +27,7 @@ int create_rectangle(struct rectangle *rect,float mat[])
 {
 	int oid=s3d_new_object();
 	float vertices[24];
+	/*
 	unsigned long pbuf[] = { 1,2,0,0,
 											1,3,2,0,
 											5,3,1,0,
@@ -38,7 +39,19 @@ int create_rectangle(struct rectangle *rect,float mat[])
 											3,2,7,0,
 											3,7,4,0,
 											5,6,0,0,
-											5,0,1,0};
+											5,0,1,0};*/
+	unsigned long pbuf[] = { 1,0,2,0,
+											1,2,3,0,
+											5,1,3,0,
+											5,3,4,0,
+											6,4,5,0,
+											6,7,4,0,
+											0,7,6,0,
+											0,2,7,0,
+											3,7,2,0,
+											3,4,7,0,
+											5,0,6,0,
+											5,1,0,0};
 
 	vertices[0]  = (*rect).front.x; vertices[1] = (*rect).front.y; vertices[2] = (*rect).front.z;
 	vertices[3]  = (*rect).rear.x;vertices[4] = (*rect).front.y; vertices[5] = (*rect).front.z;
@@ -118,6 +131,7 @@ void rotate_cursor()
 	return;
 }
 
+/* mod_search
 void write_terminal(int key)
 {
 	static char s[20];
@@ -159,7 +173,7 @@ void write_terminal(int key)
 		}
 	}
 }
-
+*/
 int find_olsr_node( char *ip )
 {
 	int result;
