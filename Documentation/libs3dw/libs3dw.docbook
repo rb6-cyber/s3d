@@ -389,7 +389,7 @@ enum {
     S3DW_NTYPES
 };
 <anchor id="S3DWIDGET"/>
-#define     S3DWIDGET(x)    (s3dw_widget *)x
+#define     S3DWIDGET(x)    ((s3dw_widget *)x)
 						
 </programlisting>
 <para>
