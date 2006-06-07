@@ -808,8 +808,8 @@ void keypress(struct s3d_evt *event) {
 	int key;
 	key=*((unsigned short *)event->buf);
 
-	/* mod_search if(Oid_focus != obj[obj_term]->oid)
-	{*/
+	if( get_search_status() != WIDGET )
+	{
 		switch(key) {
 			case S3DK_ESCAPE: /* esc abort action */
 			
@@ -879,12 +879,10 @@ void keypress(struct s3d_evt *event) {
 				break;
 				
 		}
-	/* mod_search
 	} else {
 		if( (key >= 48 && key <= 57) || key == 46 || key == 13 || key == 8 || (key >= 256 && key <= 265) || key == 266 || key == 271 )
-			write_terminal(key);
+			search_widget_write( key );
 	}
-	*/
 }
 
 /***

@@ -33,4 +33,5 @@ void move_to_return_point(float cam_position_t[], float cam_position_r[]);
 void set_return_point(float cam_position_t[], float cam_position_r[]);
 int get_search_status(void);
 void set_search_status(int stat);
+void search_widget_write(int key);
 

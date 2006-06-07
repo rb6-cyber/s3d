@@ -25,6 +25,7 @@
 #include <s3dw.h>
 #include <math.h>
 #include <stdio.h>	/* TODO can remove then no more printf needed */
+#include <string.h>
 #include "mod_search.h"
 
 s3dw_surface	*_search_surface;
@@ -52,6 +53,8 @@ void create_search_widget(float x, float y, float z)
 	abort_button  = s3dw_button_new( _search_surface, "Abort", 1, 7 );
 	search_button->onclick = _search_node;
 	abort_button->onclick = _abort_search;
+
+	/* TODO calc position for ok button */
 	
 	s3dw_focus	( S3DWIDGET( _search_input ) );	
 	s3dw_focus	( S3DWIDGET( _search_surface ) );
@@ -170,6 +173,34 @@ void move_to_return_point(float cam_position_t[], float cam_position_r[])
 }
 
 /* public */
+void search_widget_write(int key)
+{
+	static char s[20];
+	int ln = strlen(s);
+	float draw_length;
+	float tmp;
+	static int str_id = -1;
+
+	if( key == 266) key = 46;
+	if( key >= 256 && key <= 265) key = key - 208;
+	
+	if(key != 13 && key != 271)
+	{
+		if(key == 8)
+		{
+			if(ln > 0)
+				s[ln-1] = '\0';
+		} else {
+			if(ln < 20)
+				s[ln] = key;
+		}
+		s3dw_input_change_text( _search_input, s );
+	} else {
+		
+	}
+}
+
+/* public */
 void set_return_point(float cam_position_t[], float cam_position_r[])
 {
 	int i;
@@ -194,10 +225,33 @@ void set_search_status(int stat)
 
 /* private */
 void _search_node(s3dw_widget *dummy)
-{
+{/*
 	char *ip;
 	ip = s3dw_input_gettext( _search_input );
-	printf("%s\n",ip);
+	
+	int result;
+	search_node = Olsr_root;
+	
+	while ( search_node != NULL )
+	{
+
+		result = strncmp( search_node->ip, ip, NAMEMAX );
+
+		if ( result == 0 ) 
+			break;
+
+
+		if ( result < 0 )
+			search_node = search_node->right;
+		else
+			search_node = search_node->left;
+	}
+	
+	if( search_node != NULL )
+	{
+		return(1);
+	}
+	return(0);*/
 }
 
 /* private */
