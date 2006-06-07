@@ -1,5 +1,5 @@
 /*
- * mod_search.c
+ * search.c
  * 
  * Copyright (C) 2006 Andreas Langer <andreas_lbg@gmx.de>
  *
@@ -28,7 +28,7 @@
 #include <stdio.h>	/* TODO can remove then no more printf needed */
 #include <string.h>
 #include "structs.h"
-#include "mod_search.h"
+#include "search.h"
 
 s3dw_surface	*_search_surface;
 s3dw_input		*_search_input;

@@ -35,7 +35,7 @@
 #include <getopt.h>	/* getopt() */
 #include <stdlib.h>	/* exit() */
 #include "olsrs3d.h"
-#include "mod_search.h"
+#include "search.h"
 
 #define SPEED		10.0
 
@@ -805,35 +805,36 @@ void stop() {
  ***/
 
 void keypress(struct s3d_evt *event) {
-	int key;
-	key=*((unsigned short *)event->buf);
 
+	struct s3d_key_event *key=(struct s3d_key_event *)event->buf;
+	printf("%d\n",key->unicode);	
 	if( get_search_status() != WIDGET )
 	{
-		switch(key) {
-			case S3DK_ESCAPE: /* esc abort action */
+		switch(key->unicode)
+		{
+			case S3DK_ESCAPE: /* abort action */
 			
 				set_search_status( get_search_status() == WIDGET ? ABORT : NOTHING );
 				break;
 				
-			case 's': /* move to search widget, give widget focus */
+			case S3DK_s: /* move to search widget, give widget focus */
 
-				set_search_status(WIDGET);
-				set_return_point(CamPosition[0],CamPosition[1]);
+				set_search_status(WIDGET);							/* set status for mainloop */
+				set_return_point(CamPosition[0],CamPosition[1]);	/* save the return position */
+				set_node_root( Olsr_root );
 				break;
 			
-			case 'c': /* c -> color on/off */
+			case S3DK_c: /* color on/off */
 				
 				ColorSwitch =  ColorSwitch ? 0 : 1;
 				break;
 				
-			case 'r': /* r -> rotate start/stop*/
+			case S3DK_r: /* rotate start/stop*/
 				
 				RotateSwitch = RotateSwitch ? 0 : 1;
 				break;
 				
-			case S3DK_KP_PLUS:
-			case '+': /* + -> rotate speed increase*/
+			case S3DK_PLUS: /* rotate speed increase */
 				
 				if(RotateSwitch && RotateSpeed < 5)
 				{
@@ -845,8 +846,7 @@ void keypress(struct s3d_evt *event) {
 				}
 				break;
 				
-			case S3DK_KP_MINUS:
-			case '-': /* - -> rotate speed decrease*/
+			case S3DK_MINUS: /* - -> rotate speed decrease */
 				
 				if(RotateSwitch)
 				{
@@ -866,13 +866,13 @@ void keypress(struct s3d_evt *event) {
 				Zp_rotate = 0.0;
 				break;
 				
-			case S3DK_PAGEUP: /* page up -> change factor in calc_olsr_node_mov */
+			case S3DK_PAGEUP: /* change factor in calc_olsr_node_mov */
 				
 				if(Factor < 0.9)
 					Factor += 0.1;
 				break;
 				
-			case S3DK_PAGEDOWN: /* page down -> change factor in calc_olsr_node_mov */
+			case S3DK_PAGEDOWN: /* change factor in calc_olsr_node_mov */
 				
 				if(Factor > 0.3)
 					Factor -= 0.1;
@@ -880,8 +880,8 @@ void keypress(struct s3d_evt *event) {
 				
 		}
 	} else {
-		if( (key >= 48 && key <= 57) || key == 46 || key == 13 || key == 8 || (key >= 256 && key <= 265) || key == 266 || key == 271 )
-			search_widget_write( key );
+		if( (key->unicode >= S3DK_PERIOD && key->unicode <= S3DK_9) || key->unicode == S3DK_COMMA || key->unicode == S3DK_RETURN || key->unicode == S3DK_BACKSPACE )
+			search_widget_write( key->unicode );
 	}
 }
 

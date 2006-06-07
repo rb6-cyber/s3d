@@ -1,5 +1,5 @@
 /*
- * mod_search.h
+ * search.h
  *
  * Copyright (C) 2006 Andreas Langer <andreas_lbg@gmx.de>
  *
