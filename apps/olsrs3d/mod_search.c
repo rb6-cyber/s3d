@@ -23,14 +23,18 @@
 
 #include <s3d.h>
 #include <s3dw.h>
+#include <s3d_keysym.h>
 #include <math.h>
 #include <stdio.h>	/* TODO can remove then no more printf needed */
 #include <string.h>
+#include "structs.h"
 #include "mod_search.h"
 
 s3dw_surface	*_search_surface;
 s3dw_input		*_search_input;
 s3dw_widget		*_search_widget;
+
+struct olsr_node *_node_root = NULL;
 
 float	_return_point[2][3];				/* cam position before move to the widget */
 int		_search_status = NOTHING;			/* status of search */
@@ -177,26 +181,22 @@ void search_widget_write(int key)
 {
 	static char s[20];
 	int ln = strlen(s);
-	float draw_length;
-	float tmp;
-	static int str_id = -1;
-
-	if( key == 266) key = 46;
-	if( key >= 256 && key <= 265) key = key - 208;
 	
-	if(key != 13 && key != 271)
+	if( key == S3DK_COMMA ) key = S3DK_PERIOD;
+	
+	if( key != S3DK_RETURN )
 	{
-		if(key == 8)
+		if( key == S3DK_BACKSPACE )
 		{
-			if(ln > 0)
+			if( ln > 0 )
 				s[ln-1] = '\0';
 		} else {
-			if(ln < 20)
+			if( ln < 20 )
 				s[ln] = key;
 		}
 		s3dw_input_change_text( _search_input, s );
 	} else {
-		
+		_search_node( _search_widget );	
 	}
 }
 
@@ -223,13 +223,20 @@ void set_search_status(int stat)
 	_search_status = stat;
 }
 
+/* public */
+void set_node_root(struct olsr_node *root)
+{
+	_node_root = root;
+}
 /* private */
 void _search_node(s3dw_widget *dummy)
-{/*
+{
 	char *ip;
+	int result;
 	ip = s3dw_input_gettext( _search_input );
 	
-	int result;
+	printf("%s\n",ip);
+	/*	
 	search_node = Olsr_root;
 	
 	while ( search_node != NULL )
