@@ -639,10 +639,8 @@ void mainloop() {
 
 	int net_result;   /* result of function net_main */
 	char nc_str[20];
-	float strLen,node_length;
-	float target,current,diff[3],angle;
-	float tmpVec[3], diffVec[3], np[3];
-	int i;
+	float strLen;
+	
 	/* calculate new movement vector */
 	calc_olsr_node_mov();
 
@@ -696,89 +694,11 @@ void mainloop() {
 	/* check search status */
 	if( get_search_status() == WIDGET )
 		move_to_search_widget( CamPosition[0], CamPosition[1] );
-	/* if( get_search_status  == FOLLOW ) */
-		/* follow the white rabbit ;) */
+	if( get_search_status() == FOLLOW )
+		follow_node( CamPosition[0], CamPosition[1], Zp_rotate );
 	if( get_search_status() == ABORT )
 		move_to_return_point( CamPosition[0], CamPosition[1] );
-	/*
-	} else if ( move_cam_to != -2 && move_cam_to != -1 ) {
 	
-		Oid_focus = -1;
-				
-		diff[0] =  search_node->pos_vec[0]*cos(Zp_rotate*M_PI/180.0) - search_node->pos_vec[2] * -sin (Zp_rotate*M_PI/180.0);
-		diff[1] =  search_node->pos_vec[1];
-		diff[2] =  search_node->pos_vec[0]*-sin(Zp_rotate*M_PI/180.0) + search_node->pos_vec[2] * cos (Zp_rotate*M_PI/180.0);
-
-		node_length = s3d_vector_length(diff);
-		
-		np[0] = ( diff[0] + 7);
-		np[1] = diff[1];
-		np[2] = ( diff[2] + 7);
-		
-		CamPosition[0][0]=( CamPosition[0][0] * 4 + np[0] ) / 5;
-		CamPosition[0][1]=( CamPosition[0][1] * 4 + np[1] ) / 5;
-		CamPosition[0][2]=( CamPosition[0][2] * 4 + np[2] ) / 5;
-		
-		tmpVec[0] = 0.0;
-		tmpVec[1] = 0.0;
-		tmpVec[2] = -1.0;
-		
-		diffVec[0] = CamPosition[0][0] - diff[0];
-		diffVec[1] = 0.0;
-		diffVec[2] = CamPosition[0][2] - diff[2];
-		
-		angle = s3d_vector_angle( diffVec, tmpVec );
-		angle = (diff[0] > 0)?(180-(180 / M_PI * angle)):(180+(180 / M_PI * angle));
-		
-		CamPosition[1][1] = (CamPosition[1][1]*4 + angle)/5;
-		
-		s3d_translate(0,CamPosition[0][0],CamPosition[0][1],CamPosition[0][2]);
-		s3d_rotate(0,CamPosition[1][0],CamPosition[1][1],CamPosition[1][2]);
-
-		
-		if(Btn_follow_mode_id == -1)
-		{
-			Btn_follow_mode_id = s3d_clone( Btn_follow_mode_obj );
-			s3d_link(Btn_follow_mode_id,0);
-			s3d_flags_on(Btn_follow_mode_id,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-			s3d_scale( Btn_follow_mode_id, 0.5 );
-			s3d_translate( Btn_follow_mode_id,-Left*3.0-1.0, -Bottom*3.0-0.7, -3.0 );
-		}
-		
-		Rotate_follow_button = (Rotate_follow_button + 50)%360;
-		s3d_rotate(Btn_follow_mode_id,0,Rotate_follow_button,0);
-	}
-	*/
-		
-	/* mod_search move back to returnPoint
-	if(move_cam_to == -2)
-	{
-		Oid_focus = -1;
-		for( i=0; i<3; i++)
-		{
-			CamPosition[0][i]=(CamPosition[0][i]*4+ReturnPoint[0][i])/5;
-
-			target = ReturnPoint[1][i];
-			current = CamPosition[1][i];
-
-			if( ReturnPoint[1][i] - CamPosition[1][i] > 180 )
-				target = ReturnPoint[1][i] - 360;
-			if( ReturnPoint[1][i] - CamPosition[1][i] < -180 )
-				current = CamPosition[1][i] - 360;
-			CamPosition[1][i]=(CamPosition[1][i]*4+target)/5;
-		}
-		s3d_translate(0,CamPosition[0][0],CamPosition[0][1],CamPosition[0][2]);
-		s3d_rotate(0,CamPosition[1][0],CamPosition[1][1],CamPosition[1][2]);
-
-		if (dist(CamPosition[0],ReturnPoint[0])<0.2)
-		{
-			s3d_translate(0,ReturnPoint[0][0],ReturnPoint[0][1],ReturnPoint[0][2]);
-			s3d_rotate(0,ReturnPoint[1][0],ReturnPoint[1][1],ReturnPoint[1][2]);
-			move_cam_to = -1;
-		}
-	}
-*/
-
 
 	if( Olsr_ip_label_obj != -1 )
 	{

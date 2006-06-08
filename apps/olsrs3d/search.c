@@ -35,12 +35,51 @@ s3dw_input		*_search_input;
 s3dw_widget		*_search_widget;
 
 struct olsr_node *_node_root = NULL;
+struct olsr_node **search_node = NULL;
 
 float	_return_point[2][3];				/* cam position before move to the widget */
 int		_search_status = NOTHING;			/* status of search */
 											
 void _search_node(s3dw_widget *dummy);
 void _abort_search(s3dw_widget *dummy);
+
+/* public */
+void follow_node(float cam_position_t[], float cam_position_r[],float rotate)
+{
+	float real_node_pos[3],
+		  cam_target[3],
+		  tmp_vec[3],
+		  diff_vec[3],
+		  angle;
+	
+	real_node_pos[0] =  (*search_node)->pos_vec[0] * cos( rotate * M_PI / 180.0 ) - (*search_node)->pos_vec[2] * -sin ( rotate * M_PI / 180.0 );
+	real_node_pos[1] =  (*search_node)->pos_vec[1];
+	real_node_pos[2] =  (*search_node)->pos_vec[0] * -sin( rotate * M_PI / 180.0) + (*search_node)->pos_vec[2] * cos ( rotate * M_PI / 180.0 );
+
+	cam_target[0] = ( real_node_pos[0] + 7);
+	cam_target[1] =   real_node_pos[1];
+	cam_target[2] = ( real_node_pos[2] + 7);
+	
+	cam_position_t[0]=( cam_position_t[0] * 4 + cam_target[0] ) / 5;
+	cam_position_t[1]=( cam_position_t[1] * 4 + cam_target[1] ) / 5;
+	cam_position_t[2]=( cam_position_t[2] * 4 + cam_target[2] ) / 5;
+	
+	tmp_vec[0] =  0.0;
+	tmp_vec[1] =  0.0;
+	tmp_vec[2] = -1.0;
+	
+	diff_vec[0] = cam_position_t[0] - real_node_pos[0];
+	diff_vec[1] = 0.0;
+	diff_vec[2] = cam_position_t[2] - real_node_pos[2];
+	/* FIXME bug ;) */	
+	angle = s3d_vector_angle( diff_vec, tmp_vec );
+	angle = ( real_node_pos[0] > 0) ? ( 180 - ( 180 / M_PI * angle ) ) : ( 180 + ( 180 / M_PI * angle ) );
+	
+	cam_position_r[1] = ( cam_position_r[1] * 4 + angle ) / 5;
+	
+	s3d_translate( 0, cam_position_t[0], cam_position_t[1], cam_position_t[2] );
+	s3d_rotate( 0, cam_position_r[0], cam_position_r[1], cam_position_r[2] );
+}
 
 /* public */
 void create_search_widget(float x, float y, float z)
@@ -228,37 +267,33 @@ void set_node_root(struct olsr_node *root)
 {
 	_node_root = root;
 }
+
 /* private */
 void _search_node(s3dw_widget *dummy)
 {
 	char *ip;
 	int result;
+	
+	search_node = &_node_root;
+	
 	ip = s3dw_input_gettext( _search_input );
 	
-	printf("%s\n",ip);
-	/*	
-	search_node = Olsr_root;
-	
-	while ( search_node != NULL )
+	while ( (*search_node) != NULL )
 	{
 
-		result = strncmp( search_node->ip, ip, NAMEMAX );
+		result = strncmp( (*search_node)->ip, ip, NAMEMAX );
 
 		if ( result == 0 ) 
 			break;
-
-
+		
 		if ( result < 0 )
-			search_node = search_node->right;
+			(*search_node) = (*search_node)->right;
 		else
-			search_node = search_node->left;
+			(*search_node) = (*search_node)->left;
 	}
-	
-	if( search_node != NULL )
-	{
-		return(1);
-	}
-	return(0);*/
+
+	if( (*search_node) != NULL )
+		set_search_status( FOLLOW );
 }
 
 /* private */
