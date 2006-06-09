@@ -71,10 +71,9 @@ void follow_node(float cam_position_t[], float cam_position_r[],float rotate)
 	diff_vec[0] = cam_position_t[0] - real_node_pos[0];
 	diff_vec[1] = 0.0;
 	diff_vec[2] = cam_position_t[2] - real_node_pos[2];
-	/* FIXME bug ;) */	
 	angle = s3d_vector_angle( diff_vec, tmp_vec );
-	angle = ( real_node_pos[0] > 0) ? ( 180 - ( 180 / M_PI * angle ) ) : ( 180 + ( 180 / M_PI * angle ) );
-	
+	/* angle = ( real_node_pos[0] > 0) ? ( 180 - ( 180 / M_PI * angle ) ) : ( 180 + ( 180 / M_PI * angle ) ); */
+	angle = 180 - ( 180 / M_PI * angle );
 	cam_position_r[1] = ( cam_position_r[1] * 4 + angle ) / 5;
 	
 	s3d_translate( 0, cam_position_t[0], cam_position_t[1], cam_position_t[2] );
