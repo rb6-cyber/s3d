@@ -1,0 +1,13 @@
+INSTALL
+-------
+1. install the client library (or the whole s3d package)
+2. go into your mplayer-source directory
+3. use
+   $ patch -p1 < /path/to/mplayer.1.0pre7try2.s3d.patch
+   to patch the source
+4. do ./configure
+   In the summary, you should see "s3d" in the 
+   "Enabled optional drivers", "Video Output"
+5. install mplayer and watch videos like this:
+   mplayer -vo s3d movie.mpg
+6. enjoy ;)
