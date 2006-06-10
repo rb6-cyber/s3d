@@ -30,12 +30,16 @@
 #include <string.h>  /*  strncpy() */
 #include <stdio.h>  /*  printf() */
 #include <math.h>	/* sin(), cos() */
+#include <time.h>	/* nanosleep() */
+static struct timespec t={0,33*1000*1000}; 
+
 #define bsize 	0.2
 struct tver
 {
 	float x,y,z;
 };
 struct tver campos, camrot;
+float xdif=0,ydif=0;
 
 struct app {
 	unsigned int oid,oid_c;
@@ -443,34 +447,46 @@ void mainloop()
 		alpha=alpha+0.1;
 		if (alpha>360.0) alpha=0.0;
 	}
-	usleep(10000);
+	if (ego_mode)
+	{
+		if ((ydif!=0) || (xdif!=0))
+		{
+			campos.x+=ydif*sin((camrot.y*M_PI)/180);
+			campos.z+=ydif*cos((camrot.y*M_PI)/180);
+			campos.x+=xdif*cos((-camrot.y*M_PI)/180);
+			campos.z+=xdif*sin((-camrot.y*M_PI)/180);
+			campos.y+=ydif*sin((-camrot.x*M_PI)/180);
+			s3d_translate(	0,campos.x,campos.y,campos.z);
+		}
+	}
+	nanosleep(&t,NULL); 
 }
-void keypress(struct s3d_evt *event)
+
+void keydown(struct s3d_evt *event)
 {
-	int key;
-	float xdif=0,ydif=0;
-	key=*((unsigned short *)event->buf);
-	switch (key)
+	struct s3d_key_event *keys=(struct s3d_key_event *)event->buf;
+	switch (keys->keysym)
 	{
 		case S3DK_F1:  ego_mode=(ego_mode+1)%2;
 				 printf("ego mode %d\n",ego_mode);
 				 break;
-		case 'w':ydif=-2;break;
-		case 'a':xdif=-2;break;
-		case 's':ydif= 2;break;
-		case 'd':xdif= 2;break;
-		default:
-			printf("unknown/not handled key %d\n", key);
+		case 'w':ydif+=-1.0;break;
+		case 'a':xdif+=-1.0;break;
+		case 's':ydif+= 1.0;break;
+		case 'd':xdif+= 1.0;break;
 	}
-	if (ego_mode)
+}
+void keyup(struct s3d_evt *event)
+{
+	struct s3d_key_event *keys=(struct s3d_key_event *)event->buf;
+	switch (keys->keysym)
 	{
-		campos.x+=ydif*sin((camrot.y*M_PI)/180);
-		campos.z+=ydif*cos((camrot.y*M_PI)/180);
-		campos.x+=xdif*cos((-camrot.y*M_PI)/180);
-		campos.z+=xdif*sin((-camrot.y*M_PI)/180);
-		campos.y+=ydif*sin((-camrot.x*M_PI)/180);
-		s3d_translate(	0,campos.x,campos.y,campos.z);
+		case 'w':ydif-=-1.0;break;
+		case 'a':xdif-=-1.0;break;
+		case 's':ydif-= 1.0;break;
+		case 'd':xdif-= 1.0;break;
 	}
+
 }
 
 int main (int argc, char **argv)
@@ -480,7 +496,8 @@ int main (int argc, char **argv)
 	s3d_set_callback(S3D_EVENT_QUIT,stop);
 	s3d_set_callback(S3D_MCP_DEL_OBJECT,mcp_del_object);
 	s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
-	s3d_set_callback(S3D_EVENT_KEY,keypress);
+	s3d_set_callback(S3D_EVENT_KEYDOWN,keydown);
+	s3d_set_callback(S3D_EVENT_KEYUP,keyup);
 
 	if (!s3d_init(&argc,&argv,"mcp"))	
 	{
