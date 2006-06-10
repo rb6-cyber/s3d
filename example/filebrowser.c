@@ -29,6 +29,7 @@
 #include <dirent.h>  /*  dirent */
 #include <stdlib.h>	 /*  malloc() */
 #include <string.h>  /*  strlen(), strncmp(), strrchr() */
+#include <unistd.h>	 /*  chdir() */
 #include <math.h>	 /*  sin(),cos() */
 #include <time.h>	/* nanosleep() */
 static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
@@ -150,12 +151,12 @@ int display_dir(char *dir, int depth, int  posx, int posy, int posz)
 			f=1.0-0.05*(n%2);
 			switch (item[n].type)
 			{
-				case T_LOCALDIR:s3d_push_material(item[n].pie_oid,		0,f,0,			1,1,1,		f,f,f);		break;
-				case T_BACKDIR:	s3d_push_material(item[n].pie_oid,		0,f/2,0,		1,1,1,		f,f,f);		break;
-				case T_FOLDER:	s3d_push_material(item[n].pie_oid,		f,f,0,			1,1,0,		f,f,1);		break;
-				default:		s3d_push_material(item[n].pie_oid,		f,f,f,			1,1,1,		f,f,f);		break;
+				case T_LOCALDIR:s3d_push_material(item[n].pie_oid,		0,f,0,			0.5,0.5,0.5,		f,f,f);		break;
+				case T_BACKDIR:	s3d_push_material(item[n].pie_oid,		0,f/2,0,		0.5,0.5,0.5,		f,f,f);		break;
+				case T_FOLDER:	s3d_push_material(item[n].pie_oid,		f,f,0,			0.5,0.5,0.0,		f,f,1);		break;
+				default:		s3d_push_material(item[n].pie_oid,		f,f,f,			0.5,0.5,0.5,		f,f,f);		break;
 			}
-			s3d_push_polygon(item[n].pie_oid,	0,1,2,	0);
+			s3d_push_polygon(item[n].pie_oid,	0,2,1,	0);
 
 			s3d_push_vertex(item[n].pie_oid,pz,-2,0);
 			s3d_translate(item[n].icon_oid,px,py,pz);
