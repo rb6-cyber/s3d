@@ -93,17 +93,20 @@ diff -Naur MPlayer-1.0pre7try2/libvo/video_out.c MPlayer-1.0pre7try2.s3d/libvo/v
  #endif
 diff -Naur MPlayer-1.0pre7try2/libvo/vo_s3d.c MPlayer-1.0pre7try2.s3d/libvo/vo_s3d.c
 --- MPlayer-1.0pre7try2/libvo/vo_s3d.c	1970-01-01 01:00:00.000000000 +0100
-+++ MPlayer-1.0pre7try2.s3d/libvo/vo_s3d.c	2006-06-10 19:48:51.000000000 +0200
-@@ -0,0 +1,169 @@
++++ MPlayer-1.0pre7try2.s3d/libvo/vo_s3d.c	2006-06-11 17:44:27.000000000 +0200
+@@ -0,0 +1,262 @@
 +#include <stdio.h>
 +#include <stdlib.h>
 +#include <string.h>
 +#include <errno.h>
 +#include <s3d.h>
++#include <s3d_keysym.h>
 +#include "config.h"
 +#include "video_out.h"
 +#include "video_out_internal.h"
 +#include "mp_msg.h"
++#include "input/mouse.h"
++#include "input/input.h"
 +
 +static vo_info_t info = 
 +{
@@ -138,6 +141,7 @@ diff -Naur MPlayer-1.0pre7try2/libvo/vo_s3d.c MPlayer-1.0pre7try2.s3d/libvo/vo_s
 +	}
 +	s3d_load_texture(oid,0,x,y,w,h,data2);
 +	return(0);*/
++	return(0);
 +}
 +
 +static void draw_osd(void)
@@ -205,10 +209,94 @@ diff -Naur MPlayer-1.0pre7try2/libvo/vo_s3d.c MPlayer-1.0pre7try2.s3d/libvo/vo_s
 +	s3d_quit();
 +}
 +
++#include "osdep/keycodes.h"
++extern void mplayer_put_key(int code);
 +
 +static void check_events(void)
 +{
++	s3d_net_check();
 +}
++#define shift_key (ki->modifier==(S3D_KMOD_LSHIFT||S3D_KMOD_RSHIFT)) 
++void s3dmp_key(struct s3d_evt *evt)
++{
++	struct s3d_key_event *ki=(struct s3d_key_event *)evt->buf;
++	switch (ki->keysym)
++	{
++		case S3DK_RETURN: mplayer_put_key(KEY_ENTER);break;
++        case S3DK_ESCAPE: mplayer_put_key(KEY_ESC);break;
++		case S3DK_q: mplayer_put_key('q');break;
++ 		case S3DK_F1: mplayer_put_key(KEY_F+1);break;
++ 		case S3DK_F2: mplayer_put_key(KEY_F+2);break;
++ 		case S3DK_F3: mplayer_put_key(KEY_F+3);break;
++ 		case S3DK_F4: mplayer_put_key(KEY_F+4);break;
++ 		case S3DK_F5: mplayer_put_key(KEY_F+5);break;
++ 		case S3DK_F6: mplayer_put_key(KEY_F+6);break;
++ 		case S3DK_F7: mplayer_put_key(KEY_F+7);break;
++ 		case S3DK_F8: mplayer_put_key(KEY_F+8);break;
++ 		case S3DK_F9: mplayer_put_key(KEY_F+9);break;
++ 		case S3DK_F10: mplayer_put_key(KEY_F+10);break;
++ 		case S3DK_F11: mplayer_put_key(KEY_F+11);break;
++ 		case S3DK_F12: mplayer_put_key(KEY_F+12);break;
++                                /*case S3DK_o: mplayer_put_key('o');break;
++                                case S3DK_SPACE: mplayer_put_key(' ');break;
++                                case S3DK_p: mplayer_put_key('p');break;*/
++		case S3DK_7: mplayer_put_key(shift_key?'/':'7');
++        case S3DK_PLUS: mplayer_put_key(shift_key?'*':'+');
++        case S3DK_KP_PLUS: mplayer_put_key('+');break;
++        case S3DK_MINUS:
++        case S3DK_KP_MINUS: mplayer_put_key('-');break;
++		case S3DK_TAB: mplayer_put_key('\t');break;
++		case S3DK_PAGEUP: mplayer_put_key(KEY_PAGE_UP);break;
++		case S3DK_PAGEDOWN: mplayer_put_key(KEY_PAGE_DOWN);break;  
++		case S3DK_UP: mplayer_put_key(KEY_UP);break;
++        case S3DK_DOWN: mplayer_put_key(KEY_DOWN);break;
++        case S3DK_LEFT: mplayer_put_key(KEY_LEFT);break;
++        case S3DK_RIGHT: mplayer_put_key(KEY_RIGHT);break;
++        case S3DK_LESS: mplayer_put_key(shift_key?'>':'<'); break;
++        case S3DK_GREATER: mplayer_put_key('>'); break;
++        case S3DK_ASTERISK:
++		case S3DK_KP_MULTIPLY: mplayer_put_key('*'); break;
++		case S3DK_SLASH:
++		case S3DK_KP_DIVIDE: mplayer_put_key('/'); break;
++		case S3DK_KP0: mplayer_put_key(KEY_KP0); break;
++		case S3DK_KP1: mplayer_put_key(KEY_KP1); break;
++		case S3DK_KP2: mplayer_put_key(KEY_KP2); break;
++		case S3DK_KP3: mplayer_put_key(KEY_KP3); break;
++		case S3DK_KP4: mplayer_put_key(KEY_KP4); break;
++		case S3DK_KP5: mplayer_put_key(KEY_KP5); break;
++		case S3DK_KP6: mplayer_put_key(KEY_KP6); break;
++		case S3DK_KP7: mplayer_put_key(KEY_KP7); break;
++		case S3DK_KP8: mplayer_put_key(KEY_KP8); break;
++		case S3DK_KP9: mplayer_put_key(KEY_KP9); break;
++		case S3DK_KP_PERIOD: mplayer_put_key(KEY_KPDEC); break;
++		case S3DK_KP_ENTER: mplayer_put_key(KEY_KPENTER); break;
++		default:
++			mplayer_put_key(ki->keysym);
++			break;
++
++	}
++	
++}
++int mbutton;
++void s3dmp_mbutton(struct s3d_evt *evt)
++{
++	struct s3d_but_info *bi=(struct s3d_but_info *)evt->buf;
++	mbutton=-1;
++	if ((bi->state==0) && (!vo_nomouse_input))
++		mbutton=bi->button;
++}
++void s3dmp_obj_click(struct s3d_evt *evt)
++{
++	uint32_t coid=*((uint32_t *)evt->buf);
++	if (coid==oid)
++	{
++		mplayer_put_key(MOUSE_BASE+mbutton-1);
++	}
++	mbutton=-1;
++}
++
++
++
 +
 +static uint32_t preinit(const char *arg)
 +{
@@ -216,6 +304,11 @@ diff -Naur MPlayer-1.0pre7try2/libvo/vo_s3d.c MPlayer-1.0pre7try2.s3d/libvo/vo_s
 +	char *arg1=NULL;
 +	char **argv=&arg1;
 +    mp_msg (MSGT_VO, MSGL_INFO, "[s3d] hello, i'm initing - darn it!\n");
++	mbutton=-1;
++    s3d_set_callback(S3D_EVENT_MBUTTON,s3dmp_mbutton);
++    s3d_set_callback(S3D_EVENT_OBJ_CLICK,s3dmp_obj_click);
++    s3d_set_callback(S3D_EVENT_KEY,s3dmp_key);
++
 +	if (s3d_init(&argc,&argv,"mplayer"))
 +	{
 +    	mp_msg (MSGT_VO, MSGL_WARN, "[s3d] sorry, can't reach server.\n");

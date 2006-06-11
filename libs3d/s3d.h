@@ -70,7 +70,8 @@ struct s3d_obj_info
 };
 struct s3d_but_info
 {
-	unsigned char button, state;
+	unsigned char button; /* 0 = left, 1 = middle, 2 = right */
+	unsigned char state;  /* 0 = down, 1 = up, 2 = moving */
 };
 struct s3d_key_event
 {
@@ -178,3 +179,5 @@ void s3d_process_stack();
 /* mcp special */
 int s3d_mcp_focus(int object);
 
+/* for apps which don't employ s3d_mainloop() */
+int s3d_net_check();

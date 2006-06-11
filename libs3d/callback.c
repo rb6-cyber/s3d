@@ -26,10 +26,12 @@
 #include "s3dlib.h"
 static void _s3d_ignore(struct s3d_evt *evt);
 /*  the s3d callback list */
+/* i know it's ugly, but it's better to have ugly code somewhere than provoke
+ * race conditions in the applications code */
 s3d_cb s3d_cb_list[MAX_CB]={
-			NULL,_s3d_ignore,_s3d_ignore,_s3d_ignore, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,
+			NULL,_s3d_ignore,_s3d_ignore,_s3d_ignore, _s3d_ignore,_s3d_ignore,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,
 			_s3d_ignore,_s3d_ignore,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,
-			NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,
+			_s3d_ignore,NULL,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,
 			NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,
 
 			NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL,

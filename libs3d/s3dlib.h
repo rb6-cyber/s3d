@@ -65,7 +65,6 @@ int _queue_new_object(unsigned int oid);
 unsigned int _queue_want_object();
 int _queue_quit();
 /*  network.c */
-int s3d_net_check();
 int net_send(unsigned char opcode, char *buf, unsigned short length);
 int s3d_net_init(char *urlc);
 #ifdef TCP
