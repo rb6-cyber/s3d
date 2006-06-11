@@ -27,7 +27,6 @@
 #include <stdlib.h>		 /*  malloc(), free() */
 #include <unistd.h>		 /*  read(), write() */
 #include <errno.h>		 /*  errno */
-
 #include <string.h> 	 /*  memcpy() */
 #include <sys/socket.h>
 #include <netinet/in.h>  /*  htons(),htonl() */
@@ -35,7 +34,23 @@
 	#include <sys/select.h>
 	#include <netdb.h>		 /*  gethostbyname()  */
 #endif
+#ifdef SIGS
+#include <fcntl.h>		 /*  fcntl */
+#include <signal.h>		 /*  signal(), SIGPIPE, SIGIO */
+extern int _s3d_sigio;
+#endif
+
 int s3d_socket;		 /*  this is the socket which holds the tcp-socket .... */
+void sigpipe_handler(int sig, int code)  /*  ... ? */
+{
+	errs("sigpipe_handler()","there is a broken pipe somewhere");
+}
+void sigio_handler(int sig, int code)  /*  ... ? */
+{
+	_s3d_sigio=1;
+}
+
+
 int _tcp_init(char *sv, int pn)
 {
 	int 	 			 sd;
@@ -43,7 +58,7 @@ int _tcp_init(char *sv, int pn)
 /*	char			 	*port=NULL;*/
 	struct sockaddr_in 	 sock;
 	struct hostent 		*server=0;
-#ifdef WITH_SIGNALS
+#ifdef SIGS
 	_s3d_sigio=0;
 #endif
 #ifdef WIN32 
@@ -77,7 +92,7 @@ int _tcp_init(char *sv, int pn)
 	}
 /*    if ( fcntl(sd, F_SETFL, O_ASYNC | O_NONBLOCK) < 0 ) */
 /* 		errn("fcntl()",errno); */
-#ifdef WITH_SIGNALS
+#ifdef SIGS 
    if ( fcntl(sd, F_SETFL, O_ASYNC ) < 0 )
 		errn("fcntl()",errno);
    if ( fcntl(sd, F_SETOWN, getpid()) < 0 )

@@ -22,6 +22,9 @@
  */
 
 
+/* use the global config.h */
+#include "../config.h" 
+
 /*  this is definitly the better way to pick fonts. */
 
 #define WITH_FONTCONFIG

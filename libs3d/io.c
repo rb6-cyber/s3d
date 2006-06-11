@@ -33,8 +33,8 @@
 #include <errno.h>		 /*  errno */
 #include <sys/socket.h>  /*  socket() */
 #include <getopt.h>		 /*  getopt() */
-#include <fcntl.h>		 /*  fcntl() */
 #ifdef SIGS
+#include <fcntl.h>		 /*  fcntl() */
 #include <signal.h>		 /*  signal.h, SIG_PIPE */
 #endif
 #include <netinet/in.h>  /*  htons(),htonl() */
@@ -47,14 +47,6 @@ extern int 				con_type;
 /*  this file is the client-lib-implementation which holds the function to connect and control the server. */
 #ifdef SIGS
 int _s3d_sigio=0;
-void sigpipe_handler(int sig, int code)  /*  ... ? */
-{
-	errs("sigpipe_handler()","there is a broken pipe somewhere");
-}
-void sigio_handler(int sig, int code)  /*  ... ? */
-{
-	_s3d_sigio=1;
-}
 void sigint_handler(int sig, int code)  /*  ... ? */
 {
 	/*s3d_quit();*/ /* TODO: sometimes no clean quit ?!*/

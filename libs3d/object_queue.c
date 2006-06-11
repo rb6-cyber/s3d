@@ -32,12 +32,13 @@
 /*  access when needed. this also makes things more asynchronous, */
 /*  therefore faster (I hope). */
 
-#define Q_UNUSED	-1				 /*  unused slot magic number */
-#define MAX_REQ		100				 /*  don't request more than that. */
-static unsigned int *queue;			 /*  the object id's */
-static int queue_size=0;			 /*  the size of the object queue */
-static int requested;				 /*  counter of how many addtional */
-									 /*  objects have been requested */
+#define Q_UNUSED	-1				 	/*  unused slot magic number */
+#define MAX_REQ		100				 	/*  don't request more than that. */
+static unsigned int *queue;			 	/*  the object id's */
+static int queue_size=0;			 	/*  the size of the object queue */
+static int requested;				 	/*  counter of how many addtional */
+									 	/*  objects have been requested */
+static struct timespec t={0,10*1000};	/* 10 micro seconds */
 /*  initializes the object queue */
 int _queue_init()
 {
@@ -71,6 +72,7 @@ int _queue_new_object(unsigned int oid)
 		{
 /* 			s3dprintf(LOW,"placing it at position %d",i); */
 			queue[i]=oid;
+			requested--;
 			return(0);
 		}
 	if (queue_size==0) return(-1);  /*  already quit. */
@@ -78,10 +80,10 @@ int _queue_new_object(unsigned int oid)
 /* 	s3dprintf(LOW,"no place for object, resizing stack.",i); */
 	queue=realloc(queue,sizeof(unsigned int)*(queue_size+1));
 	queue_size+=1;
+	requested--;
 	queue[queue_size-1]=oid;
 	return(0);
 }
-static struct timespec t={0,10*1000}; /* 10 micro seconds */
 /*  an object is requested!! give one out: */
 unsigned int _queue_want_object()
 {
