@@ -164,9 +164,9 @@ int init()
 	running=1;
 #ifdef SIGS
     if (signal(SIGINT, sigint_handler) == SIG_ERR) 
-	        errn("network_init():signal()",errno);
+	        errn("init():signal()",errno);
     if (signal(SIGTERM, sigint_handler) == SIG_ERR) 
-	        errn("network_init():signal()",errno);
+	        errn("init():signal()",errno);
 #endif
 	return(0);
 }
