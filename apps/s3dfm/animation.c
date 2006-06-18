@@ -27,13 +27,13 @@
 #define SCALE 	1
 
 /* the animation stack */
-static struct t_item *ani_s[MAXANI];
+static t_item *ani_s[MAXANI];
 static int ani_n=0;
-extern struct t_item root,cam;
+extern t_item root,cam;
 int moveon=1;
 
 /* get the scale for the rootbox zoom */
-float ani_get_scale(struct t_item *f)
+float ani_get_scale(t_item *f)
 {
 	float scale,s;
 	s=0.2;
@@ -52,7 +52,7 @@ float ani_get_scale(struct t_item *f)
 	return(scale);
 }
 /* center f for the viewer, therefore moving the root box ... */
-void ani_focus(struct t_item *f)
+void ani_focus(t_item *f)
 {
 	root.px=0.0;
 	root.py=0.0;
@@ -76,7 +76,7 @@ void ani_focus(struct t_item *f)
 	}
 }
 /* is item f already on stack? */
-int ani_onstack(struct t_item *f)
+int ani_onstack(t_item *f)
 {
 	int i;
 	for (i=0;i<ani_n;i++)
@@ -86,7 +86,7 @@ int ani_onstack(struct t_item *f)
 
 }
 /* add an item on the animation stack */
-void ani_add(struct t_item *f)
+void ani_add(t_item *f)
 {
 	if (ani_n<MAXANI)
 	{
@@ -113,14 +113,14 @@ void ani_del(int i)
 	}
 }
 /* well ... */
-void ani_doit(struct t_item *f)
+void ani_doit(t_item *f)
 {
 	s3d_translate(	f->block, f->dpx,f->dpy,f->dpz);
 	s3d_scale(		f->block, f->dscale);
 }
 
 /* finish an animation on the stack, stack index i */
-void ani_finish(struct t_item *f, int i)
+void ani_finish(t_item *f, int i)
 {
 	f->dpx= f->px;
 	f->dpy= f->py;
@@ -130,7 +130,7 @@ void ani_finish(struct t_item *f, int i)
 	if (i!=-1)
 		ani_del(i);
 }
-void ani_iterate(struct t_item *f)
+void ani_iterate(t_item *f)
 {
 	f->dpx=(f->px + f->dpx*ZOOMS)/(ZOOMS+1);
 	f->dpy=(f->py + f->dpy*ZOOMS)/(ZOOMS+1);
@@ -140,7 +140,7 @@ void ani_iterate(struct t_item *f)
 }
 
 /* checks if f is good enough */
-int ani_check(struct t_item *f)
+int ani_check(t_item *f)
 {
 	float x,y,z;
 	x=f->dpx - f->px;
@@ -154,7 +154,7 @@ int ani_check(struct t_item *f)
 void ani_mate()
 {
 	int i;
-	struct t_item *f;
+	t_item *f;
 	for (i=0;i<ani_n;i++)
 	{
 		f=ani_s[i];

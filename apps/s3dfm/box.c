@@ -27,7 +27,7 @@
 #include <string.h>  /*  strlen() */
 
 /* clear the dirs attributes */
-int box_init(struct t_item *dir)
+int box_init(t_item *dir)
 {
 	dir->parent=NULL;
 	dir->list=NULL;
@@ -54,7 +54,7 @@ int box_init(struct t_item *dir)
 	return(0);
 }
 /* draws icon i in the block of dir */
-int box_icon(struct t_item *dir,int i)
+int box_icon(t_item *dir,int i)
 {
 	float vertices[]={	-1,-0.5,0,
 						-1, 0.5,0,
@@ -125,7 +125,7 @@ int box_icon(struct t_item *dir,int i)
 
 
 /* places the string at the left side of the cube */
-void box_sidelabel(struct t_item *dir)
+void box_sidelabel(t_item *dir)
 {
 
 	s3d_rotate(dir->str,0,90,0);
@@ -137,11 +137,11 @@ void box_sidelabel(struct t_item *dir)
 }
 
 /* creates a big block which will hold files and subdirs on top */
-int box_buildblock(struct t_item *dir)
+int box_buildblock(t_item *dir)
 {
 	char fname[30];
 	char *fullname=fname;
-	struct t_item *d;
+	t_item *d;
 	int i,j;
 	float len;
 	float vertices[]=
@@ -292,7 +292,7 @@ int box_buildblock(struct t_item *dir)
 }
 
 /* display a directoy on the top of another, draw it's icons etc ... */
-int box_expand(struct t_item *dir)
+int box_expand(t_item *dir)
 {
 	int i;
 	float  px,pz;
@@ -342,11 +342,11 @@ int box_expand(struct t_item *dir)
 }
 
 /* undisplay a directory, thus recursively removing the kids.*/
-int box_collapse(struct t_item *dir,int force)
+int box_collapse(t_item *dir,int force)
 {
 	int i;
 	int ret;
-	struct t_item *par;
+	t_item *par;
 	if (&root==dir)
 	{
 		printf("won't undisplay root window ... \n");
@@ -401,10 +401,10 @@ int box_collapse(struct t_item *dir,int force)
 	return(ret);
 }
 /* only display dir and its kids, but nothing below. */
-int box_collapse_grandkids(struct t_item *dir)
+int box_collapse_grandkids(t_item *dir)
 {
 	int i,j;
-	struct t_item *kid;
+	t_item *kid;
 	for (i=0;i<dir->n_item;i++)
 		if (dir->list[i].disp)
 		{
@@ -416,7 +416,7 @@ int box_collapse_grandkids(struct t_item *dir)
 }
 /* orders the directory objects on top of its parent objects 
  * to be called after adding or removing things ...*/
-void box_position_kids(struct t_item *dir)
+void box_position_kids(t_item *dir)
 {
 	int i,j;
 /*	printf("placeontop dir %s, %d\n",dir->name,dir->dirs_opened);*/
@@ -453,7 +453,7 @@ void box_position_kids(struct t_item *dir)
 			}
 	}
 }
-void box_select(struct t_item *dir)
+void box_select(t_item *dir)
 {
 	dir->detached=dir->detached?0:1; /* swapping, not sure if !dir->detached would do the same .. */
 	if ((dir->type==T_FOLDER) && dir->disp)

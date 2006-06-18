@@ -45,47 +45,68 @@
 #define ZOOMS 		10
 /* zoomspeed */
 
-struct t_item {
+struct _t_item {
 	int str,close,select,title,titlestr;	/* object ids ...*/
 	int block;								/* oid of the block */
 	int dirs_opened;						/* how many directories are on the block */
 	int detached;							/* if it's detached ... */
 	char name[M_NAME];						/* name (e.g. file name) */
 	float len;
-	struct t_item *parent;					/* parent item */
-	struct t_item *list;					/* list of items  (if it's a subdir)*/
+	struct _t_item *parent;					/* parent item */
+	struct _t_item *list;					/* list of items  (if it's a subdir)*/
 	float px ,py ,pz ,scale;				/* state after animation */
 	float dpx,dpy,dpz,dscale;				/* current state in animation */
 	int n_item;								/* number of items in list ( = -1 for normal or not-expanded files) */
 	int type;								/* type, determined by extension or file type like dir, pipe, link etc */
 	int disp;
 };
+struct _filelist {
+	char **p;
+	int n;
+};
+typedef struct _filelist filelist;
+typedef struct _t_item   t_item;
 
-extern struct t_item root;
+
+extern t_item root;
 /* main.c */
-void get_path(struct t_item *dir, char *path);
-int parse_dir(struct t_item *dir);
-struct t_item *finditem(struct t_item *t, int oid);
-void object_click(struct s3d_evt *evt);
+void get_path(t_item *dir, char *path);
+int parse_dir(t_item *dir);
+t_item *finditem(t_item *t, int oid);
 void mainloop();
 /* animation.c */
-float ani_get_scale(struct t_item *f);
-void ani_focus(struct t_item *f);
+float ani_get_scale(t_item *f);
+void ani_focus(t_item *f);
 void ani_mate();
-void ani_add(struct t_item *f);
+void ani_add(t_item *f);
 void ani_del(int i);
-void ani_doit(struct t_item *f);
-void ani_finish(struct t_item *f, int i);
-void ani_iterate(struct t_item *f);
-int ani_check(struct t_item *f);
-int ani_onstack(struct t_item *f);
-/* display.c */
-int box_collapse(struct t_item *dir,int force);
-int box_collapse_grandkids(struct t_item *dir);
-int box_expand(struct t_item *dir);
-int box_buildblock(struct t_item *dir);
-int box_icon(struct t_item *dir,int i);
-int box_init(struct t_item *dir);
-void box_sidelabel(struct t_item *dir);
-void box_position_kids(struct t_item *dir);
-void box_select(struct t_item *dir);
+void ani_doit(t_item *f);
+void ani_finish(t_item *f, int i);
+void ani_iterate(t_item *f);
+int ani_check(t_item *f);
+int ani_onstack(t_item *f);
+/* box.c */
+int box_collapse(t_item *dir,int force);
+int box_collapse_grandkids(t_item *dir);
+int box_expand(t_item *dir);
+int box_buildblock(t_item *dir);
+int box_icon(t_item *dir,int i);
+int box_init(t_item *dir);
+void box_sidelabel(t_item *dir);
+void box_position_kids(t_item *dir);
+void box_select(t_item *dir);
+/* fs.c */
+filelist *fl_new(char *path);
+void fl_del(filelist *fl);
+int fs_copy(char *source, char *dest);
+int fs_move(char *source, char *dest);
+int fs_unlink(char *dest);
+void fs_approx(char *source, int *files, int *dirs, int *bytes);
+int fs_fl_copy(filelist *fl, char *dest);
+int fs_fl_move(filelist *fl, char *dest);
+int fs_fl_unlink(filelist *fl);
+void fs_fl_approx(filelist *fl, int *files, int *dirs, int *bytes);
+/* dialog.c */
+void key_handler(struct s3d_evt *evt);
+void object_click(struct s3d_evt *evt);
+void info_window(char *path);

@@ -23,27 +23,54 @@
 
 
 #include "s3dfm.h"
+#include <s3dw.h>	 /* s3dw_ani_mate() */
 #include <stdio.h> 	 /*  printf() */
 #include <dirent.h>  /*  dirent */
 #include <stdlib.h>	 /*  malloc() */
 #include <string.h>  /*  strlen(), strncmp(), strrchr() */
 #include <time.h>	/* nanosleep() */
 static struct timespec t={0,33*1000*1000}; 
-struct t_item root,cam;
+t_item root,cam,*focus;
 
-void get_path(struct t_item *dir, char *path)
+/* save concatting 2 strings, this version takes argument n
+ * as the size of the buffer of dest. */
+char *mstrncat(char *dest, const char *src, int n)
+{
+	int i,j;
+	dest[n-1]=0;						/* for malformed destinations */
+	j=0;
+	for (i=strlen(dest);i<(n-1);i++)
+	{
+		dest[i]=src[j]; 
+		if (dest[i]==0) break;
+		j++;
+	}
+	for (;i<n;i++)
+		dest[i]=0; /* pad the rest with zero */
+	return(dest);
+}
+/* same as strncpy, but have a terminating zero even if
+ * source is too big */
+char *mstrncpy(char *dest, const char *src, int n)
+{
+	strncpy(dest,src,n);
+	dest[n-1]=0;
+	return(dest);
+}
+/* writes the path of dir into *path. path should be of type path[M_DIR] */
+void get_path(t_item *dir, char *path)
 {
 	if (dir->parent!=NULL)
 	{
 		get_path(dir->parent,path);
-		strncat(path,dir->name,M_DIR);
-		strncat(path,"/",M_DIR);
+		mstrncat(path,dir->name,M_DIR);
+		mstrncat(path,"/",M_DIR);
 	} else
-		strncpy(path,dir->name,M_DIR);
+		mstrncpy(path,dir->name,M_DIR);
 }
-int parse_dir(struct t_item *dir)
+int parse_dir(t_item *dir)
 {
-	struct t_item *list;
+	t_item *list;
 	struct dirent **namelist;
 	int n,i;
 	char *ext,*nstr;
@@ -61,7 +88,7 @@ int parse_dir(struct t_item *dir)
 	} else {
 		if (dir->n_item>0)
 			free(dir->list); /* this is a refresh, free old items */
-		list=malloc(sizeof(struct t_item)*i);
+		list=malloc(sizeof(t_item)*i);
 		dir->list=list;
 		dir->n_item=n;
 /*		printf("found %d items, processing ...\n",n);*/
@@ -99,10 +126,10 @@ int parse_dir(struct t_item *dir)
 	return(0);
 }
 /* finds an item in the tree by oid */
-struct t_item *finditem(struct t_item *t, int oid)
+t_item *finditem(t_item *t, int oid)
 {
 	int i;
-	struct t_item *f;
+	t_item *f;
 	if (t->block==oid)		return(t);
 	if (t->str==oid)		return(t);
 	if (t->close==oid)		return(t);
@@ -128,42 +155,10 @@ void object_info(struct s3d_evt *hrmz)
 	}
 
 }
-/* object click handler */
-void object_click(struct s3d_evt *evt)
-{
-	int oid;
-	struct t_item *f;
-	oid=(int)*((unsigned long *)evt->buf);
-	if (NULL!=(f=finditem(&root,oid)))
-	{
-		if (f->close==oid)
-		{
-			box_collapse(f,1);
-/*			if (f->parent!=NULL)
-				ani_focus(f->parent);*/
-			return;
-		}
-		if (f->select==oid)
-		{
-			printf("[S]electing %s\n",f->name);
-			box_select(f);
-			return;
-		}
-		if (f->type==T_FOLDER)
-		{
-			printf("[F]ound, expanding %s\n",f->name);
-			parse_dir(f);
-			box_expand(f);
-			ani_focus(f);
-		} else
-			printf("[F]ound, but is %s no folder\n",f->name);
-	} else {
-		printf("[C]ould not find :/\n");
-	}
-}
 void mainloop()
 {
 	ani_mate();
+	s3dw_ani_mate();
 	nanosleep(&t,NULL); 
 }
 int main (int argc, char **argv)
@@ -171,13 +166,16 @@ int main (int argc, char **argv)
 
 	s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
 	s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
+	s3d_set_callback(S3D_EVENT_KEY,key_handler);
 	if (!s3d_init(&argc,&argv,"s3dfm"))	
 	{
 		s3d_select_font("vera");
+
 		
 		/* set up file system representation */
 		box_init(&root);
 		strncpy(root.name,"/",M_NAME);
+		focus=&root;
 		root.dscale=0.1;
 		root.type=T_FOLDER;
 		root.str=s3d_draw_string(root.name,&root.len);
