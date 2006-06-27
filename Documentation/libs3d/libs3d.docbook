@@ -840,7 +840,7 @@ unsigned short <parameter>xpos</parameter>,
 unsigned short <parameter>ypos</parameter>,
 unsigned short <parameter>w</parameter>,
 unsigned short <parameter>h</parameter>,
-unsgined char *<parameter>data</parameter>
+unsigned char *<parameter>data</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
