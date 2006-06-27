@@ -1,7 +1,8 @@
 /*
- * 3dsloader.c
+ * 3dsloader_g3d.c
  *
  * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
+ *                         Marek Lindner <lindner_marek@yahoo.de>
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.berlios.de/ for more updates.
@@ -103,7 +104,8 @@ int main (int argc, char **argv) {
 	G3DFace *face;
 	GSList *oitem, *oface;
 	struct material2texture *mat2tex;
-	int j, material_count, texture_count;
+	int j, k, material_count, texture_count;
+	unsigned char *s3d_pixeldata = NULL;
 
 	if (argc<2) {
 		printf("usage: %s [somefile.3ds]\n",argv[0]);
@@ -130,7 +132,8 @@ int main (int argc, char **argv) {
 
 				/* push vertices */
 				for ( j = 0; j < object->vertex_count; j++ ) {
-					s3d_push_vertex( obj_id, object->vertex_data[j * 3], object->vertex_data[j * 3 + 1], object->vertex_data[j * 3 + 2] );
+					/* 3. and 4. param have to change places otherwise the object will be turned */
+					s3d_push_vertex( obj_id, object->vertex_data[j * 3], object->vertex_data[j * 3 + 2], object->vertex_data[j * 3 + 1] );
 				}
 
 
@@ -144,7 +147,7 @@ int main (int argc, char **argv) {
 
 					if ( mat2tex->material_id == -1 ) {
 
-						printf( "push material: %i\n", material_count );
+						/* printf( "push material: %i\n", material_count ); */
 
 						s3d_push_material_a( obj_id, face->material->r, face->material->g, face->material->b, face->material->a, face->material->specular[0], face->material->specular[1], face->material->specular[2], face->material->specular[3], face->material->r, face->material->g, face->material->b, face->material->a );
 
@@ -153,9 +156,32 @@ int main (int argc, char **argv) {
 
 						if ( face->tex_image != NULL ) {
 
+							/* reorder pixeldata - s3d wants rgba */
+							if ( s3d_pixeldata != NULL ) free( s3d_pixeldata );
+
+							s3d_pixeldata = malloc( sizeof( unsigned char ) * face->tex_image->width * face->tex_image->height * 32 );
+
+							if ( s3d_pixeldata == NULL ) {
+								printf( "Sorry - you ran out of memory !\n" );
+								exit(8);
+							}
+
+							for ( j = ( face->tex_image->height - 1 ); j >= 0; j-- ) {
+
+								for ( k = 0; k < face->tex_image->width; k++ ) {
+
+									s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 0 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 2 ];
+									s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 1 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 1 ];
+									s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 2 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 0 ];
+									s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 3 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 3 ];
+
+								}
+
+							}
+
 							s3d_push_texture( obj_id, face->tex_image->width, face->tex_image->height );
 							s3d_pep_material_texture( obj_id, texture_count );
-							s3d_load_texture( obj_id, texture_count, 0, 0, face->tex_image->width, face->tex_image->height, face->tex_image->pixeldata );
+							s3d_load_texture( obj_id, texture_count, 0, 0, face->tex_image->width, face->tex_image->height, s3d_pixeldata );
 
 							mat2tex->texture_id = texture_count;
 							texture_count++;
@@ -164,7 +190,7 @@ int main (int argc, char **argv) {
 
 					}
 
-					printf( "push polygone with material: %i\n", mat2tex->material_id );
+					/* printf( "push polygone with material: %i\n", mat2tex->material_id ); */
 
 					/* push polygones */
 					s3d_push_polygon( obj_id, face->vertex_indices[0], face->vertex_indices[1], face->vertex_indices[2], mat2tex->material_id );
@@ -175,11 +201,8 @@ int main (int argc, char **argv) {
 					/* face with texture */
 					if ( ( mat2tex->texture_id != -1 ) && ( face->flags & G3D_FLAG_FAC_TEXMAP ) ) {
 
-						printf( "neues face: %i\n", face->tex_vertex_count );
-/* 						for ( j = 0; j < face->tex_vertex_count; j++ ) {
- 							printf( "%i -> %f\n", j, face->tex_vertex_data[j] ); */
-							s3d_pep_polygon_tex_coord( obj_id, face->tex_vertex_data[0], face->tex_vertex_data[1], face->tex_vertex_data[2], face->tex_vertex_data[3], face->tex_vertex_data[4], face->tex_vertex_data[5] );
-/* 						} */
+						/* printf( "neues face: %i\n", face->tex_vertex_count ); */
+						s3d_pep_polygon_tex_coord( obj_id, face->tex_vertex_data[5], face->tex_vertex_data[4], face->tex_vertex_data[3], face->tex_vertex_data[2], face->tex_vertex_data[1], face->tex_vertex_data[0] );
 
 					}
 
