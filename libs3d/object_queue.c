@@ -88,28 +88,29 @@ int _queue_new_object(unsigned int oid)
 unsigned int _queue_want_object()
 {
 	unsigned int ret;
-	int i;
+	int i,j;
+	j=0;
 	do {
-	for (i=0;i<queue_size;i++)
-		if (queue[i]!=Q_UNUSED)
+		for (i=0;i<queue_size;i++)
+			if (queue[i]!=Q_UNUSED)
+			{
+				ret=queue[i];
+				queue[i]=Q_UNUSED;
+				net_send(S3D_P_C_NEW_OBJ,NULL,0);  /*  we already can request a new one. */
+				return(ret);
+			}
+		 /*  if we reach this point, our queue is empty. */
+		 /*  as other request should have sent S3D_P_C_NEW_OBJ-requests,  */
+		 /*  we request one more object than needed to satisfy more load in future. */
+		if (queue_size==0) return(-1);  /*  already quit. */
+		if (requested<MAX_REQ)
 		{
-			ret=queue[i];
-			queue[i]=Q_UNUSED;
-			net_send(S3D_P_C_NEW_OBJ,NULL,0);  /*  we already can request a new one. */
-			return(ret);
+			net_send(S3D_P_C_NEW_OBJ,NULL,0);
+			requested++;
 		}
-	 /*  if we reach this point, our queue is empty. */
-	 /*  as other request should have sent S3D_P_C_NEW_OBJ-requests,  */
-	 /*  we request one more object than needed to satisfy more load in future. */
-	if (queue_size==0) return(-1);  /*  already quit. */
-	if (requested<MAX_REQ)
-	{
-		net_send(S3D_P_C_NEW_OBJ,NULL,0);
-		requested++;
-	}
-	s3d_net_check();
-	nanosleep(&t,NULL); 
-	} while(i++<TIMEOUT);
+		s3d_net_check();
+		nanosleep(&t,NULL); 
+	} while(j++<TIMEOUT);
 
 	errds(LOW,"_queue_want_object()","timeout is reached. server is extremly slow/laggy or dead");	
 	return(-1);

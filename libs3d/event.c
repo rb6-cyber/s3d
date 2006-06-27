@@ -28,7 +28,7 @@
 #include <stdlib.h>		 /*  malloc(), free() */
 
 struct s3d_evt *s3d_stack;
-static int cb_lock=0;	 /*  callback lock */
+int cb_lock=0;	 /*  callback lock */
 void s3d_push_event(struct s3d_evt *newevt)
 {
 	struct s3d_evt *p;

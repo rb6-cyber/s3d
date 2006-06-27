@@ -35,7 +35,7 @@
 #define OF_TURN_ON 		1		 /*  logical or */
 #define OF_TURN_OFF 	2		 /*  logical ?! */
 #define OF_TURN_SWAP 	3		 /*  logical ?! */
-#define TIMEOUT			1000
+#define TIMEOUT			100000
 #define MAX_CB			256		 /*  as much as there are callbacks */
 #ifndef NULL
 	#define NULL	0

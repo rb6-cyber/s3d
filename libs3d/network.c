@@ -41,11 +41,12 @@ int net_send(unsigned char opcode, char *buf, unsigned short length)
 {
 	char *ptr;
 /* 	char *buff; */
-	char buff[65536];  /*  unsigned short really shouldn't be bigger ;) */
+	char buff[65539];  /*  unsigned short really shouldn't be bigger ;) */
 	*(buff)=opcode; 
 	ptr=buff+1;
 	*((unsigned short *) ptr)=htons(length);
-	memcpy(buff+3,buf,length);
+	if (length!=0)
+		memcpy(buff+3,buf,length);
 	switch (con_type)
 	{
 #ifdef SHM

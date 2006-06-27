@@ -44,6 +44,7 @@
 
 static char				*url=NULL;
 extern int 				con_type;
+extern int 				cb_lock;
 /*  this file is the client-lib-implementation which holds the function to connect and control the server. */
 #ifdef SIGS
 int _s3d_sigio=0;
@@ -149,8 +150,8 @@ int s3d_init(int *argc, char ***argv, char *name)
 	}
 	strncpy(buf,name,256);  /*  copy the name ... */
 	net_send(S3D_P_C_INIT,buf,strlen(buf));
+	cb_lock=2;
 
-	 /*  TODO: we should wait for the INIT-event here before proceeding. */
 	_queue_init();
 #ifdef SIGS
     if (signal(SIGINT, (sig_t)sigint_handler) == SIG_ERR)
