@@ -104,7 +104,8 @@ int main (int argc, char **argv) {
 	G3DFace *face;
 	GSList *oitem, *oface;
 	struct material2texture *mat2tex;
-	int j, k, material_count, texture_count;
+	int j, k, material_count, texture_count, voff;
+	int polys=0;
 	unsigned char *s3d_pixeldata = NULL;
 
 	if (argc<2) {
@@ -124,12 +125,12 @@ int main (int argc, char **argv) {
 
 			oitem = model->objects;
 			obj_id = s3d_new_object();
-			material_count = texture_count = 0;
+			material_count = texture_count = voff = 0;
 
 			while ( oitem ) {
 
 				object = (G3DObject *)oitem->data;
-
+				
 				/* push vertices */
 				for ( j = 0; j < object->vertex_count; j++ ) {
 					/* 3. and 4. param have to change places otherwise the object will be turned */
@@ -193,7 +194,7 @@ int main (int argc, char **argv) {
 					/* printf( "push polygone with material: %i\n", mat2tex->material_id ); */
 
 					/* push polygones */
-					s3d_push_polygon( obj_id, face->vertex_indices[0], face->vertex_indices[1], face->vertex_indices[2], mat2tex->material_id );
+					s3d_push_polygon( obj_id, face->vertex_indices[0] + voff, face->vertex_indices[1] + voff , face->vertex_indices[2] + voff, mat2tex->material_id );
 
 					/* has polygone normals */
 					if ( face->flags & G3D_FLAG_FAC_NORMALS ) s3d_pep_polygon_normals( obj_id, face->normals, 1 );
@@ -211,11 +212,11 @@ int main (int argc, char **argv) {
 
 				}
 
-				s3d_flags_on( obj_id, S3D_OF_VISIBLE|S3D_OF_SELECTABLE );
-
+				voff += object->vertex_count; /* increase vertex offset */
 				oitem = oitem->next;
 
 			}
+			s3d_flags_on( obj_id, S3D_OF_VISIBLE|S3D_OF_SELECTABLE );
 
 			s3d_mainloop(mainloop);
 
