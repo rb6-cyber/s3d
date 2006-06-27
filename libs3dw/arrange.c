@@ -25,12 +25,14 @@
 #include <s3dw.h>
 #include <s3dw_int.h>
 #include <stdlib.h> /* rand(), RAND_MAX */
+#include <math.h>	/* M_PI */
+s3dw_widget *cam=NULL;
 
 void s3dw_arr_widgetcenter(s3dw_widget *widget, float *center)
 {
-	center[0]=widget->width/2;
-	center[1]=-widget->height/2+0.5;
-	center[2]=0.5;
+	center[0]=widget->s*widget->width/2;
+	center[1]=widget->s*-widget->height/2+0.5;
+	center[2]=widget->s*0.5;
 	
 }
 void s3dw_arr_normdir(float *dir)
@@ -47,6 +49,34 @@ void s3dw_arr_normdir(float *dir)
 	dir[1]/=dirlen;
 	dir[2]/=dirlen;
 }
+void s3dw_turn()
+{
+	s3dw_widget *w,*root=s3dw_getroot();
+	int i;
+	float a[3],b[3],ry,rz;
+	a[0]=0;
+	a[1]=0;
+	a[2]=1;
+	for (i=0;i<root->nobj;i++)
+	{
+		w=root->pobj[i];
+		if (w->oid!=0)
+		{
+			/* horizontal movement */
+			b[0]=w->x   - cam->x;
+			b[1]=0;
+			b[2]=w->z   - cam->z;
+			ry=180*s3d_vector_angle(a,b)/M_PI;
+			b[0]=w->x   - cam->x;
+			b[1]=0;
+			b[2]=w->z   - cam->z;
+			rz=180*s3d_vector_angle(a,b)/M_PI;
+			w->ry=ry;
+			w->rz=rz;
+			s3dprintf(MED,"turn %03.3f, %03.3f",ry,rz);
+		}
+	}
+}
 void s3dw_arrange()
 {
 	s3dw_widget *w1,*w2,*root=s3dw_getroot();
@@ -60,11 +90,13 @@ void s3dw_arrange()
 	for (i=0;i<root->nobj;i++)
 		if (!(root->pobj[i]->flags&S3DW_ARRANGED)) arranged=0;
 	if (arranged) return; /* no arrangement necceasary .... */
-
+/*	if (cam->flags|S3DW_*/
+		
 	if (root->nobj==1)
 	{
 		w1=root->pobj[0];
 		w1->flags|=S3DW_ARRANGED; /* done */
+		return;
 	}
 	for (i=0;i<root->nobj;i++)
 	{
@@ -92,15 +124,29 @@ void s3dw_arrange()
 					tomove=((len1+len2+1)-dirlen);
 					move1=len1/(len1+len2);
 					move2=len2/(len1+len2);
-					w1->x += tomove * move1 *  dir[0];
-					w1->y += tomove * move1 *  dir[1];
-					w1->z += tomove * move1 *  dir[2];
-					w2->x += tomove * move2 * -dir[0];
-					w2->y += tomove * move2 * -dir[1];
-					w2->z += tomove * move2 * -dir[2];
+					if (w1->oid!=0)
+					{
+						w1->x += tomove * move1 *  dir[0];
+						w1->y += tomove * move1 *  dir[1];
+						w1->z += tomove * move1 *  dir[2];
+						s3dw_ani_add(w1);
+					} else {
+						w2->x += tomove * move2 * -dir[0];
+						w2->y += tomove * move2 * -dir[1];
+						w2->z += tomove * move2 * -dir[2];
 
-					s3dw_ani_add(w1);
-					s3dw_ani_add(w2);
+					}
+					if (w2->oid!=0)
+					{
+						w2->x += tomove * move2 * -dir[0];
+						w2->y += tomove * move2 * -dir[1];
+						w2->z += tomove * move2 * -dir[2];
+						s3dw_ani_add(w2);
+					} else {
+						w1->x += tomove * move1 *  dir[0];
+						w1->y += tomove * move1 *  dir[1];
+						w1->z += tomove * move1 *  dir[2];
+					}
 				}
 			}
 		if (arranged)

@@ -25,7 +25,9 @@
 #include <s3dw.h>
 #include <s3dw_int.h>
 #include <stdlib.h> /* malloc() */
-static s3dw_widget *root;
+#include <stdio.h>   /* printf() */
+static s3dw_widget *root=NULL;
+extern s3dw_widget *cam;
 
 /* just destroy the widget */
 void s3dw_root_destroy(s3dw_widget *widget)
@@ -36,16 +38,15 @@ void s3dw_root_destroy(s3dw_widget *widget)
 void s3dw_nothing(s3dw_widget *widget)
 {
 }
-/* dummy handler */
-int s3dw_root_event_click(s3dw_widget *widget,unsigned long oid)
+int s3dw_click_nothing(s3dw_widget *widget, unsigned long dummy)
 {
 	return(0);
 }
-/* dummy handler */
-int s3dw_root_event_key(s3dw_widget *widget,struct s3d_key_event *keys)
+int s3dw_key_nothing(s3dw_widget *widget, struct s3d_key_event *dummy)
 {
 	return(0);
 }
+
 /* get the root .... if it's NULL, the lib is not initialized, so do this too ... */
 s3dw_widget *s3dw_getroot()
 {
@@ -57,8 +58,20 @@ s3dw_widget *s3dw_getroot()
 		root->oid=s3d_new_object();
 		root->style=&def_style;
 		root->flags=S3DW_VISIBLE|S3DW_ACTIVE;
+		cam=(s3dw_widget *)malloc(sizeof(s3dw_widget));
+		s3dw_widget_new(cam);
+		cam->type=S3DW_TCAM;
+		cam->oid=0;
+		cam->style=&def_style;
+		cam->s=10;
+		cam->width=1;
+		cam->height=0;
+		cam->flags=S3DW_VISIBLE|S3DW_ACTIVE;
+
+		s3dw_widget_append(root, cam);
 		/* setup callback tables */
 		s3dwcb_show[S3DW_TROOT]=		s3dw_nothing;
+		s3dwcb_show[S3DW_TCAM]=			s3dw_nothing;
 		s3dwcb_show[S3DW_TSURFACE]=		s3dw_surface_show;
 		s3dwcb_show[S3DW_TBUTTON]=		s3dw_button_show;
 		s3dwcb_show[S3DW_TLABEL]=		s3dw_label_show;
@@ -70,18 +83,21 @@ s3dw_widget *s3dw_getroot()
 		s3dwcb_hide[S3DW_TINPUT]=		s3dw_input_hide;
 		
 		s3dwcb_destroy[S3DW_TROOT]=		s3dw_root_destroy;
+		s3dwcb_destroy[S3DW_TCAM]=		s3dw_root_destroy;
 		s3dwcb_destroy[S3DW_TSURFACE]=	s3dw_surface_destroy;
 		s3dwcb_destroy[S3DW_TBUTTON]=	s3dw_button_destroy;
 		s3dwcb_destroy[S3DW_TLABEL]=	s3dw_label_destroy;
 		s3dwcb_destroy[S3DW_TINPUT]=	s3dw_input_destroy;
 
-		s3dwcb_click[S3DW_TROOT]=		s3dw_root_event_click;
+		s3dwcb_click[S3DW_TROOT]=		s3dw_click_nothing;
+		s3dwcb_click[S3DW_TCAM]=		s3dw_click_nothing;
 		s3dwcb_click[S3DW_TSURFACE]=	s3dw_surface_event_click;
 		s3dwcb_click[S3DW_TBUTTON]=		s3dw_button_event_click;
 		s3dwcb_click[S3DW_TLABEL]=		s3dw_label_event_click;
 		s3dwcb_click[S3DW_TINPUT]=		s3dw_input_event_click;
 
-		s3dwcb_key[S3DW_TROOT]=			s3dw_root_event_key;
+		s3dwcb_key[S3DW_TROOT]=			s3dw_key_nothing;
+		s3dwcb_key[S3DW_TCAM]=			s3dw_key_nothing;
 		s3dwcb_key[S3DW_TSURFACE]=		s3dw_surface_event_key;
 		s3dwcb_key[S3DW_TBUTTON]=		s3dw_button_event_key;
 		s3dwcb_key[S3DW_TLABEL]=		s3dw_label_event_key;

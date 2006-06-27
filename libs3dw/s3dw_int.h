@@ -36,9 +36,9 @@ s3dw_key_callback	s3dwcb_key[S3DW_NTYPES];
 /* root.c */
 s3dw_widget *s3dw_getroot();
 void s3dw_nothing(s3dw_widget *widget);
+int s3dw_click_nothing(s3dw_widget *widget, unsigned long dummy);
+int s3dw_key_nothing(s3dw_widget *widget, struct s3d_key_event *dummy);
 void s3dw_root_destroy(s3dw_widget *widget);
-int s3dw_root_event_click(s3dw_widget *widget, unsigned long oid);
-int s3dw_root_event_key(s3dw_widget *widget, struct s3d_key_event *keys);
 /* widget.c */
 s3dw_widget *s3dw_widget_new();
 void s3dw_widget_append(s3dw_widget *parent, s3dw_widget *widget);
@@ -95,3 +95,4 @@ int  s3dw_ani_check(s3dw_widget *f);
 void s3dw_arrange();
 void s3dw_arr_widgetcenter(s3dw_widget *widget, float *center);
 void s3dw_arr_normdir(float *dir);
+void s3dw_turn();

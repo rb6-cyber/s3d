@@ -81,6 +81,9 @@ void s3dw_ani_finish(s3dw_widget *f, int i)
 	f->ax= f->x;
 	f->ay= f->y;
 	f->az= f->z;
+	f->arx= f->rx;
+	f->ary= f->ry;
+	f->arz= f->rz;
 	f->as= f->s;
 	s3dw_ani_doit(f);
 	if (i!=-1)
@@ -91,6 +94,9 @@ void s3dw_ani_iterate(s3dw_widget *f)
 	f->ax=(f->x + f->ax*ZOOMS)/(ZOOMS+1);
 	f->ay=(f->y + f->ay*ZOOMS)/(ZOOMS+1);
 	f->az=(f->z + f->az*ZOOMS)/(ZOOMS+1);
+	f->arx=(f->rx + f->arx*ZOOMS)/(ZOOMS+1);
+	f->ary=(f->ry + f->ary*ZOOMS)/(ZOOMS+1);
+	f->arz=(f->rz + f->arz*ZOOMS)/(ZOOMS+1);
 	f->as=(f->s + f->as*ZOOMS)/(ZOOMS+1);
 
 }
@@ -98,11 +104,15 @@ void s3dw_ani_iterate(s3dw_widget *f)
 /* checks if f is good enough */
 int s3dw_ani_check(s3dw_widget *f)
 {
-	float x,y,z;
+	float x,y,z,rx,ry,rz;
 	x=f->ax - f->x;
 	y=f->ay - f->y;
 	z=f->az - f->z;
-	if (((fabs(f->as - f->s)/f->s)>0.01) || (sqrt(x*x+y*y+z*z) > 0.01))
+	rx=f->arx - f->rx;
+	ry=f->ary - f->ry;
+	rz=f->arz - f->rz;
+
+	if (((fabs(f->as - f->s)/f->s)>0.01) || (sqrt(x*x+y*y+z*z) > 0.01) || (sqrt(rx*rx+ry*ry+rz*rz) > 0.01))
 		return(0);
 	return(1);
 }

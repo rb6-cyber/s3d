@@ -132,6 +132,7 @@ int main (int argc, char **argv)
 	{
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK,click);
 		s3d_set_callback(S3D_EVENT_KEY,key);
+		s3d_set_callback(S3D_EVENT_OBJ_INFO,s3dw_object_info);
 		/* this creates the "window" */
 		surface=s3dw_surface_new("Hello World",20,10);
 		

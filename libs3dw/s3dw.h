@@ -32,11 +32,16 @@
 #define		S3DW_ONSCREEN	256
 /* if the surface (or widget) is already properly arranged */
 #define 	S3DW_ARRANGED	512
+/* follow the camera */
+#define 	S3DW_FOLLOW_CAM	1024
+/* turn to the camera */
+#define 	S3DW_TURN_CAM	2048
 /* just a typecaster to beatify code. use it if you like */
 #define 	S3DWIDGET(x)	((s3dw_widget *)x)
 
 enum {
 	S3DW_TROOT,
+	S3DW_TCAM,
 	S3DW_TSURFACE,
 	S3DW_TBUTTON,
 	S3DW_TLABEL,
@@ -134,5 +139,6 @@ void 				 s3dw_focus(s3dw_widget *focus);
 
 void 				 s3dw_handle_click(struct s3d_evt *evt);
 void 				 s3dw_handle_key(struct s3d_evt *evt);
+void 				 s3dw_object_info(struct s3d_evt *evt);
 
 void 				 s3dw_ani_mate();
