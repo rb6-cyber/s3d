@@ -26,14 +26,29 @@
 #include <s3dw_int.h>
 #include <stdlib.h> /* rand(), RAND_MAX */
 #include <math.h>	/* M_PI */
+#define R2D		(180/M_PI)
 s3dw_widget *cam=NULL;
 
 void s3dw_arr_widgetcenter(s3dw_widget *widget, float *center)
 {
-	center[0]=widget->s*widget->width/2;
-	center[1]=widget->s*-widget->height/2+0.5;
-	center[2]=widget->s*0.5;
+	float x,y,z,xt,yt,zt;
+	x=widget->s*widget->width/2;
+	y=widget->s*-widget->height/2+0.5;
+	z=widget->s*0.5;
+	/* calc back rotation */
+	/* around the y axis (horizontal direction) */
+	xt= cos(widget->ry/R2D)*x + sin(widget->ry/R2D) *z;
+	yt=y;
+	zt=-sin(widget->ry/R2D)*x + cos(widget->ry/R2D) *z;
 	
+	/* around the x axis (vertical direction) */
+	x=xt;
+	y= cos(widget->rx/R2D)*yt + sin(widget->rx/R2D) *zt;
+	z=-sin(widget->rx/R2D)*yt + cos(widget->rx/R2D) *zt;
+	
+	center[0]=x;
+	center[1]=y;
+	center[2]=z;
 }
 void s3dw_arr_normdir(float *dir)
 {
@@ -49,31 +64,49 @@ void s3dw_arr_normdir(float *dir)
 	dir[1]/=dirlen;
 	dir[2]/=dirlen;
 }
+int al=0;
 void s3dw_turn()
 {
 	s3dw_widget *w,*root=s3dw_getroot();
 	int i;
-	float a[3],b[3],ry,rz;
+	float a[3],b[3],rx,ry;
+	float op[3],np[3];
 	a[0]=0;
 	a[1]=0;
 	a[2]=1;
+	al++;
 	for (i=0;i<root->nobj;i++)
 	{
 		w=root->pobj[i];
 		if (w->oid!=0)
 		{
+			s3dw_arr_widgetcenter(w,op);
 			/* horizontal movement */
-			b[0]=w->x   - cam->x;
+			b[0]=w->x + op[0]  - cam->x;
 			b[1]=0;
-			b[2]=w->z   - cam->z;
+			b[2]=w->z + op[2]  - cam->z;
 			ry=180*s3d_vector_angle(a,b)/M_PI;
-			b[0]=w->x   - cam->x;
-			b[1]=0;
-			b[2]=w->z   - cam->z;
-			rz=180*s3d_vector_angle(a,b)/M_PI;
+			/* correct acos incompletness */
+			if (b[0]<0) ry=180-ry;
+			else 		ry=180+ry;
+			b[0]=0;
+			b[1]=w->y + op[1]   - cam->y;
+			b[2]=w->z + op[2]   - cam->z;
+			rx=180*s3d_vector_angle(a,b)/M_PI;
+			if (b[1]>0) rx=180-rx;
+			else 		rx=180+rx;
+			if ((rx>90) && (rx<=180)) 
+				rx=180 - rx;
+			else if ((rx>=180) && (rx<270))  rx=540 - rx ;
+
+			w->rx=rx;
 			w->ry=ry;
-			w->rz=rz;
-			s3dprintf(MED,"turn %03.3f, %03.3f",ry,rz);
+			s3dw_arr_widgetcenter(w,np);
+			w->x-=np[0] - op[0];
+			w->y-=np[1] - op[1];
+			w->z-=np[2] - op[2];
+
+			s3dw_ani_add(w);
 		}
 	}
 }
