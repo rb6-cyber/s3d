@@ -90,6 +90,7 @@ void s3dw_ani_del(int i);
 void s3dw_ani_doit(s3dw_widget *f);
 void s3dw_ani_finish(s3dw_widget *f, int i);
 void s3dw_ani_iterate(s3dw_widget *f);
+void s3dw_ani_needarr();
 int  s3dw_ani_check(s3dw_widget *f);
 /* arrange.c */
 void s3dw_arrange();

@@ -28,6 +28,7 @@
 #include <math.h>	/* M_PI */
 #define R2D		(180/M_PI)
 s3dw_widget *cam=NULL;
+extern int ani_need_arr;
 
 void s3dw_arr_widgetcenter(s3dw_widget *widget, float *center)
 {
@@ -113,13 +114,14 @@ void s3dw_turn()
 void s3dw_arrange()
 {
 	s3dw_widget *w1,*w2,*root=s3dw_getroot();
-	int i,j,arranged;
+	int i,j,arranged,allarr;
 	float len1,len2, dirlen;
 	float tomove, move1, move2;
 	float f1[3],f2[3],dir[3];
 
 	/* test if there is anything to arrange ... */
 	arranged=1;
+	ani_need_arr=0;
 	for (i=0;i<root->nobj;i++)
 		if (!(root->pobj[i]->flags&S3DW_ARRANGED)) arranged=0;
 	if (arranged) return; /* no arrangement necceasary .... */
@@ -131,6 +133,7 @@ void s3dw_arrange()
 		w1->flags|=S3DW_ARRANGED; /* done */
 		return;
 	}
+	allarr=1;
 	for (i=0;i<root->nobj;i++)
 	{
 		w1=root->pobj[i];
@@ -149,6 +152,7 @@ void s3dw_arrange()
 				dirlen=s3d_vector_length(dir);
 				if (dirlen<(len1+len2))
 				{
+					allarr=0;
 					arranged=0;
 					w1->flags&=~S3DW_ARRANGED;
 					w2->flags&=~S3DW_ARRANGED;
@@ -185,4 +189,6 @@ void s3dw_arrange()
 		if (arranged)
 			w1->flags|=S3DW_ARRANGED;
 	}
+	if (allarr)	ani_need_arr=0;
+	s3dw_turn();
 }

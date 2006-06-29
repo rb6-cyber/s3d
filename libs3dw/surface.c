@@ -145,7 +145,7 @@ s3dw_surface *s3dw_surface_new(char *title, float width, float height)
 	widget->z=-f1[2];
 	s3dw_widget_append(s3dw_getroot(),widget);
 	s3dw_surface_draw(widget);
-	s3dw_arrange();
+	s3dw_ani_needarr();
 	s3dw_ani_add(widget);
 	return(surface);
 }

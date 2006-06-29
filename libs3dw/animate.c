@@ -30,6 +30,7 @@
 static s3dw_widget *ani_s[MAXANI];
 static int ani_n=0;
 static int animation_on=0;
+int ani_need_arr=0;
 
 /* is item f already on stack? */
 int s3dw_ani_onstack(s3dw_widget *f)
@@ -116,12 +117,23 @@ int s3dw_ani_check(s3dw_widget *f)
 		return(0);
 	return(1);
 }
+/* need an arrangement ... */
+void s3dw_ani_needarr()
+{
+	ani_need_arr=1;
+	if (!animation_on)	
+	{
+		while (ani_need_arr) s3dw_arrange();
+	}
+		
+}
 /* doing the whole animation thing */
 void s3dw_ani_mate()
 {
 	int i;
 	s3dw_widget *f;
 	animation_on=1;			/* animation is activated */
+	if (ani_need_arr) s3dw_arrange();
 	for (i=0;i<ani_n;i++)
 	{
 		f=ani_s[i];

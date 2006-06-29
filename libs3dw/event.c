@@ -47,7 +47,6 @@ void s3dw_object_info(struct s3d_evt *evt)
 		cam->ay=cam->y=info->trans_y;
 		cam->az=cam->z=info->trans_z;
 		cam->flags&=~S3DW_ARRANGED;
-		s3dw_arrange();
-		s3dw_turn();
+		s3dw_ani_needarr();
 	}
 }
