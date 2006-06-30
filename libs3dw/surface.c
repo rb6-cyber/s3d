@@ -143,6 +143,7 @@ s3dw_surface *s3dw_surface_new(char *title, float width, float height)
 	widget->x=-f1[0];
 	widget->y=-f1[1];
 	widget->z=-f1[2];
+	widget->flags|=S3DW_FOLLOW_CAM|S3DW_TURN_CAM;
 	s3dw_widget_append(s3dw_getroot(),widget);
 	s3dw_surface_draw(widget);
 	s3dw_ani_needarr();

@@ -34,7 +34,7 @@ void s3d_push_event(struct s3d_evt *newevt)
 	struct s3d_evt *p;
 	s3d_cb cb;
 
-	s3dprintf(MED,"pushed event %d",newevt->event);
+	s3dprintf(VLOW,"pushed event %d",newevt->event);
 	 /*  this will always be called for S3D_EVENT_NEW_OBJECT!! */
 	if (newevt->event==S3D_EVENT_NEW_OBJECT)
 	{
@@ -119,7 +119,7 @@ void s3d_process_stack()
 		cb_lock=2; /* request later processing */
 		return;
 	}
-	s3dprintf(LOW,"processing stack ...");
+	s3dprintf(VLOW,"processing stack ...");
 	while (p!=NULL)
 	{
 		

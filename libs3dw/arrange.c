@@ -65,7 +65,6 @@ void s3dw_arr_normdir(float *dir)
 	dir[1]/=dirlen;
 	dir[2]/=dirlen;
 }
-int al=0;
 void s3dw_turn()
 {
 	s3dw_widget *w,*root=s3dw_getroot();
@@ -75,11 +74,10 @@ void s3dw_turn()
 	a[0]=0;
 	a[1]=0;
 	a[2]=1;
-	al++;
 	for (i=0;i<root->nobj;i++)
 	{
 		w=root->pobj[i];
-		if (w->oid!=0)
+		if ((w->oid!=0) && (w->flags&S3DW_TURN_CAM))
 		{
 			s3dw_arr_widgetcenter(w,op);
 			/* horizontal movement */
@@ -111,6 +109,40 @@ void s3dw_turn()
 		}
 	}
 }
+#define DIST	60.0
+void s3dw_follow()
+{
+	s3dw_widget *w,*root=s3dw_getroot();
+	int i;
+	float b[3];
+	float op[3];
+	float lsqr,l;
+	for (i=0;i<root->nobj;i++)
+	{
+		w=root->pobj[i];
+		if ((w->oid!=0) && (w->flags&S3DW_FOLLOW_CAM))
+				
+		{
+			s3dw_arr_widgetcenter(w,op);
+			/* horizontal movement */
+			b[0]=cam->x - (w->x + op[0]);
+			b[1]=cam->y - (w->y + op[1]);
+			b[2]=cam->z - (w->z + op[2]);
+			if ((lsqr=(b[0]*b[0] + b[1]*b[1] + b[2]*b[2])) > (DIST * DIST))
+			{
+				/* need to adjust ... */
+				l=sqrt(lsqr);
+				w->x+= b[0]-b[0]*DIST/l;
+				w->y+= b[1]-b[1]*DIST/l;
+				w->z+= b[2]-b[2]*DIST/l;
+				w->flags&=~S3DW_ARRANGED;
+				ani_need_arr=1;
+				s3dw_ani_add(w);
+				
+			}
+		}
+	}
+}
 void s3dw_arrange()
 {
 	s3dw_widget *w1,*w2,*root=s3dw_getroot();
@@ -121,12 +153,11 @@ void s3dw_arrange()
 
 	/* test if there is anything to arrange ... */
 	arranged=1;
-	ani_need_arr=0;
 	for (i=0;i<root->nobj;i++)
 		if (!(root->pobj[i]->flags&S3DW_ARRANGED)) arranged=0;
-	if (arranged) return; /* no arrangement necceasary .... */
-/*	if (cam->flags|S3DW_*/
+	if (arranged && !ani_need_arr) return; /* no arrangement necceasary .... */
 		
+	ani_need_arr=0;
 	if (root->nobj==1)
 	{
 		w1=root->pobj[0];
@@ -191,4 +222,5 @@ void s3dw_arrange()
 	}
 	if (allarr)	ani_need_arr=0;
 	s3dw_turn();
+	s3dw_follow();
 }
