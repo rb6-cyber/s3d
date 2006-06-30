@@ -28,11 +28,13 @@
 #include <stdlib.h>		 /*  malloc(), free() */
 
 struct s3d_evt *s3d_stack;
-int cb_lock=0;	 /*  callback lock */
+int cb_lock=2;	 /*  callback lock */
 void s3d_push_event(struct s3d_evt *newevt)
 {
 	struct s3d_evt *p;
 	s3d_cb cb;
+
+	s3dprintf(MED,"pushed event %d",newevt->event);
 	 /*  this will always be called for S3D_EVENT_NEW_OBJECT!! */
 	if (newevt->event==S3D_EVENT_NEW_OBJECT)
 	{
@@ -47,8 +49,10 @@ void s3d_push_event(struct s3d_evt *newevt)
 			cb_lock=1;		 /*  on our way! lock it.. */
 			cb(newevt);		 /*  .. and call it! */
 			if (cb_lock==2)  /*  there were other callbacks? we process: */
+			{
+				cb_lock=0;
 				s3d_process_stack();
-			cb_lock=0;
+			}
 			free(newevt);
 			return;
 		}
@@ -110,12 +114,20 @@ void s3d_process_stack()
 	s3d_cb cb;
 	p=s3d_stack;
 	pre=NULL;
+	if (cb_lock!=0) /* can't do that now. */
+	{
+		cb_lock=2; /* request later processing */
+		return;
+	}
+	s3dprintf(LOW,"processing stack ...");
 	while (p!=NULL)
 	{
 		
 		if ((cb=s3d_get_callback(p->event))!=NULL)
 		{
+			cb_lock=1;
 			cb(p);
+			cb_lock=0;
 			if (pre!=NULL)   /*  there is a previous element */
 				pre->next=p->next;
 			else			 /*  it's the first element */

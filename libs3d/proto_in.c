@@ -40,8 +40,8 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 	{
 		case S3D_P_S_INIT:
 			s3dprintf(MED,"S3D_P_S_INIT: init!!");
-			s3d_process_stack();
 			cb_lock=0;
+/*			s3d_process_stack();*/
 			break;
 		case S3D_P_S_QUIT:
 			s3dprintf(MED,"S3D_P_S_QUIT: server wants us to go. well ...");
@@ -65,13 +65,16 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 			if (length==4) 
 			{
 				oid=ntohl(*((uint32_t *)buf));
+				_queue_new_object(oid);	
+				/*
 				if (NULL!=(s3devt=malloc(sizeof(struct s3d_evt))))
 				{
-					*((uint32_t *)buf)=oid;  /*  reuse buffer ... */
+					*((uint32_t *)buf)=oid;  / *  reuse buffer ... * /
 					s3devt->event=S3D_EVENT_NEW_OBJECT;
 					s3devt->length=4;
 					s3devt->buf=buf;
-				}
+					_queue_new_object(*((unsigned int *)newevt->buf));	
+				}*/
 				s3dprintf(VLOW,"S3D_P_S_NEWOBJ: new object %d",oid);
 			}
 			break;
