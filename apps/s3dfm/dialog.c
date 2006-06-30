@@ -82,6 +82,28 @@ void close_win(s3dw_widget *button)
 {
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
+void dotted_int(char *s,unsigned int i)
+{
+	char st[M_DIR];
+	int p;
+	p=0;
+	st[0]=0;
+	while (i>0)
+	{
+		if ((p+1)%4==0) {
+			st[p]='.';
+			p++;
+		}
+		st[p]=(i%10)+'0';
+		i=i/10;
+		p++;
+	}
+	if (p>0) p--;
+	st[p+1]=0;
+	for (i=0;i<p+1;i++)
+		s[i]=st[p-i];
+	s[p+1]=0;
+}
 
 void info_window(char *path)
 {
@@ -90,10 +112,12 @@ void info_window(char *path)
 	char string1[M_DIR];
 	char string2[M_DIR];
 	int b,d,f;
+	char bd[M_DIR];
 	float l;
 	snprintf(string1,M_DIR,"Info for %s",path);
 	fs_approx(path, &f, &d, &b);
-	snprintf(string2 ,M_DIR,"%d bytes in %d files and %d Directories",b,f,d);
+	dotted_int(bd,b);
+	snprintf(string2 ,M_DIR,"%s bytes in %d files and %d Directories",bd,f,d);
 	
 	l=((strlen(string1)>strlen(string2)) ? strlen(string1) :strlen(string2))*0.7;
 	
