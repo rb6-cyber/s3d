@@ -40,6 +40,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 	{
 		case S3D_P_S_INIT:
 			s3dprintf(MED,"S3D_P_S_INIT: init!!");
+			s3d_process_stack();
 			cb_lock=0;
 			break;
 		case S3D_P_S_QUIT:
