@@ -62,14 +62,17 @@ void key(struct s3d_evt *evt)
 	/* okay, that's a little bit insane ... ;) 
 	 * we create some little windows with the actual key pressed. */
 
-	miniwin=s3dw_surface_new("Key",6,6);
-	sprintf(string,"%c",key->unicode);
-	s3dw_label_new(miniwin,string,1,2);
-	button=s3dw_button_new(miniwin,"OK",2,4);
-	/* clicking on the button will exit ... */
-	button->onclick=key_button;
-	/* of couse, show it */
-	s3dw_show(S3DWIDGET(miniwin));
+	if (key->unicode!=0)
+	{
+		miniwin=s3dw_surface_new("Key",6,6);
+		sprintf(string,"%c",key->unicode);
+		s3dw_label_new(miniwin,string,1,2);
+		button=s3dw_button_new(miniwin,"OK",2,4);
+		/* clicking on the button will exit ... */
+		button->onclick=key_button;
+		/* of couse, show it */
+		s3dw_show(S3DWIDGET(miniwin));
+	}
 
 }
 

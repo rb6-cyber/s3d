@@ -153,7 +153,7 @@ void object_info(struct s3d_evt *hrmz)
 		cam.dpy=inf->trans_y;
 		cam.dpz=inf->trans_z;
 	}
-
+	s3dw_object_info(hrmz);
 }
 void mainloop()
 {

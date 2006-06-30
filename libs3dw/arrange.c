@@ -27,7 +27,7 @@
 #include <stdlib.h> /* rand(), RAND_MAX */
 #include <math.h>	/* M_PI */
 #define R2D		(180/M_PI)
-s3dw_widget *cam=NULL;
+s3dw_widget *_s3dw_cam=NULL;
 extern int ani_need_arr;
 
 void s3dw_arr_widgetcenter(s3dw_widget *widget, float *center)
@@ -81,16 +81,16 @@ void s3dw_turn()
 		{
 			s3dw_arr_widgetcenter(w,op);
 			/* horizontal movement */
-			b[0]=w->x + op[0]  - cam->x;
+			b[0]=w->x + op[0]  - _s3dw_cam->x;
 			b[1]=0;
-			b[2]=w->z + op[2]  - cam->z;
+			b[2]=w->z + op[2]  - _s3dw_cam->z;
 			ry=180*s3d_vector_angle(a,b)/M_PI;
 			/* correct acos incompletness */
 			if (b[0]<0) ry=180-ry;
 			else 		ry=180+ry;
 			b[0]=0;
-			b[1]=w->y + op[1]   - cam->y;
-			b[2]=w->z + op[2]   - cam->z;
+			b[1]=w->y + op[1]   - _s3dw_cam->y;
+			b[2]=w->z + op[2]   - _s3dw_cam->z;
 			rx=180*s3d_vector_angle(a,b)/M_PI;
 			if (b[1]>0) rx=180-rx;
 			else 		rx=180+rx;
@@ -125,9 +125,9 @@ void s3dw_follow()
 		{
 			s3dw_arr_widgetcenter(w,op);
 			/* horizontal movement */
-			b[0]=cam->x - (w->x + op[0]);
-			b[1]=cam->y - (w->y + op[1]);
-			b[2]=cam->z - (w->z + op[2]);
+			b[0]=_s3dw_cam->x - (w->x + op[0]);
+			b[1]=_s3dw_cam->y - (w->y + op[1]);
+			b[2]=_s3dw_cam->z - (w->z + op[2]);
 			if ((lsqr=(b[0]*b[0] + b[1]*b[1] + b[2]*b[2])) > (DIST * DIST))
 			{
 				/* need to adjust ... */

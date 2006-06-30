@@ -102,7 +102,7 @@ void fs_approx(char *source, int *files, int *dirs, int *bytes)
 	*dirs=	sdirs=	0;
 	*bytes=	sbytes=	0;
 
-	printf("start: %d files, %d dirs, %d bytes in %s\n",*files,*dirs,*bytes,source);
+/*	printf("start: %d files, %d dirs, %d bytes in %s\n",*files,*dirs,*bytes,source);*/
 	if (-1==stat(source,&s))
 		return;
 /*	printf("%s: %08x (%db)\n",source,s.st_mode,(int)s.st_size);*/
@@ -113,7 +113,7 @@ void fs_approx(char *source, int *files, int *dirs, int *bytes)
 		if (fl->n>0)
 			fs_fl_approx(fl,&sfiles,&sdirs,&sbytes);
 		fl_del(fl);
-		printf("%d files, %d dirs, %d bytes in %s\n",sfiles,sdirs,sbytes,source);
+/*		printf("%d files, %d dirs, %d bytes in %s\n",sfiles,sdirs,sbytes,source);*/
 
 		*files=		sfiles;
 		*bytes+=	sbytes;
@@ -122,7 +122,7 @@ void fs_approx(char *source, int *files, int *dirs, int *bytes)
 	} else 
 		*files=		1;
 	*bytes+=s.st_size;
-	printf("end: %d files, %d dirs, %d bytes in %s\n",*files,*dirs,*bytes,source);
+/*	printf("end: %d files, %d dirs, %d bytes in %s\n",*files,*dirs,*bytes,source);*/
 }
 /* approximate the heaviness of our source ...*/
 void fs_fl_approx(filelist *fl, int *files, int *dirs, int *bytes)

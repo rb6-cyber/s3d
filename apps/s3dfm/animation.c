@@ -155,6 +155,7 @@ void ani_mate()
 {
 	int i;
 	t_item *f;
+	s3dw_ani_mate();
 	for (i=0;i<ani_n;i++)
 	{
 		f=ani_s[i];

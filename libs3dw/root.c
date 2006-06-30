@@ -27,7 +27,7 @@
 #include <stdlib.h> /* malloc() */
 #include <stdio.h>   /* printf() */
 static s3dw_widget *root=NULL;
-extern s3dw_widget *cam;
+extern s3dw_widget *_s3dw_cam;
 
 /* just destroy the widget */
 void s3dw_root_destroy(s3dw_widget *widget)
@@ -58,17 +58,17 @@ s3dw_widget *s3dw_getroot()
 		root->oid=s3d_new_object();
 		root->style=&def_style;
 		root->flags=S3DW_VISIBLE|S3DW_ACTIVE;
-		cam=(s3dw_widget *)malloc(sizeof(s3dw_widget));
-		s3dw_widget_new(cam);
-		cam->type=S3DW_TCAM;
-		cam->oid=0;
-		cam->style=&def_style;
-		cam->s=10;
-		cam->width=1;
-		cam->height=0;
-		cam->flags=S3DW_VISIBLE|S3DW_ACTIVE;
+		_s3dw_cam=(s3dw_widget *)malloc(sizeof(s3dw_widget));
+		s3dw_widget_new(_s3dw_cam);
+		_s3dw_cam->type=S3DW_TCAM;
+		_s3dw_cam->oid=0;
+		_s3dw_cam->style=&def_style;
+		_s3dw_cam->s=10;
+		_s3dw_cam->width=1;
+		_s3dw_cam->height=0;
+		_s3dw_cam->flags=S3DW_VISIBLE|S3DW_ACTIVE;
 
-		s3dw_widget_append(root, cam);
+		s3dw_widget_append(root, _s3dw_cam);
 		/* setup callback tables */
 		s3dwcb_show[S3DW_TROOT]=		s3dw_nothing;
 		s3dwcb_show[S3DW_TCAM]=			s3dw_nothing;

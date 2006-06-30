@@ -25,7 +25,7 @@
 #include <s3dw.h>
 #include <s3dw_int.h>
 static int modkey;
-extern s3dw_widget *cam;
+extern s3dw_widget *_s3dw_cam;
 void s3dw_handle_click(struct s3d_evt *evt)
 {
 	unsigned long oid=*((unsigned long *)evt->buf);
@@ -40,13 +40,13 @@ void s3dw_handle_key(struct s3d_evt *evt)
 void s3dw_object_info(struct s3d_evt *evt)
 {
 	struct s3d_obj_info *info=(struct s3d_obj_info *)evt->buf;
-	if (info->object==0) /* the cam */
+	if (info->object==0) /* the _s3dw_cam */
 	{
-		if (cam==NULL)	s3dw_getroot(); /* init, get cam */
-		cam->ax=cam->x=info->trans_x;
-		cam->ay=cam->y=info->trans_y;
-		cam->az=cam->z=info->trans_z;
-		cam->flags&=~S3DW_ARRANGED;
+		if (_s3dw_cam==NULL)	s3dw_getroot(); /* init, get _s3dw_cam */
+		_s3dw_cam->ax=_s3dw_cam->x=info->trans_x;
+		_s3dw_cam->ay=_s3dw_cam->y=info->trans_y;
+		_s3dw_cam->az=_s3dw_cam->z=info->trans_z;
+		_s3dw_cam->flags&=~S3DW_ARRANGED;
 		s3dw_ani_needarr();
 	}
 }
