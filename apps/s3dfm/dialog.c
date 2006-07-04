@@ -33,12 +33,14 @@ void key_handler(struct s3d_evt *evt)
 	struct s3d_key_event *keys=(struct s3d_key_event *)evt->buf;
 	switch (keys->keysym)
 	{
-		case S3DK_F1:
+		case 'i':
+		case 'I':
 				{
 				char path[M_DIR];
 				get_path(focus,path);
 				info_window(path);
 				}
+				break;
 	}
 	s3dw_handle_key(evt);
 }
@@ -75,7 +77,7 @@ void object_click(struct s3d_evt *evt)
 		} else
 			printf("[F]ound, but is %s no folder\n",f->name);
 	} else {
-		printf("[C]ould not find :/\n");
+/*		printf("[C]ould not find :/\n");*/
 	}
 }
 void close_win(s3dw_widget *button)
