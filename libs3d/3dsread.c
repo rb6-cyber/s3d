@@ -533,7 +533,8 @@ int s3d_import_3ds(char *buf)
 			}
 			if (smooth_list!=NULL)
 			{
-				free(smooth_list);smooth_list=NULL;
+				/*FIXME: free(smooth_list);*/
+				smooth_list=NULL;
 			}
 			if (nbuf!=NULL)
 			{
