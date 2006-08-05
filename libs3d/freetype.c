@@ -30,6 +30,19 @@
 #include <math.h>			/*  atan2() */
 #include "ft2build.h"
 #include FT_FREETYPE_H
+#undef __FTERRORS_H__                
+#define FT_ERRORDEF( e, v, s )  { e, s },                    
+#define FT_ERROR_START_LIST     {                           
+#define FT_ERROR_END_LIST       { 0, 0 } };                
+                                                          
+const struct                                             
+{                                                       
+    int          err_code;                             
+    const char*  err_msg                                        
+} ft_errors[] =                                                
+                                                              
+#include FT_ERRORS_H                                         
+
 #ifndef CALLBACK 
 #define CALLBACK
 #endif
@@ -75,20 +88,13 @@ int s3d_ft_load_font()
 	}
 	face_init=0;
 	error= FT_New_Memory_Face(library,(unsigned char *)memory_font,memory_font_size,0,&face);
-	switch (error)
+	if (error)
 	{
-		case 0:
-				face_init=1;
-				break;
-		case FT_Err_Unknown_File_Format:
-				errds(HIGH,"s3d_ft_load_font()","bad font file format");
-				return(-1);
-				break;
-		default:
-				errds(HIGH,"s3d_ft_load_font()","couldn't load font for some reason (error %d)",error);
-				return(-1);
-				break;
+		errds(VHIGH,"s3d_ft_load_font():FT_New_Memory_Face","can't load font : (%d) %s",ft_errors[error].err_code,ft_errors[error].err_msg);
+		return(-1);
 	}
+	s3dprintf(LOW,"Load Font successful ...");
+	face_init=1;
 	return(0);
 }
 
@@ -110,6 +116,7 @@ int _s3d_clear_tessbuf()
 }
 
 
+
 /* renders a character with seidels algorithm and stores it in the tess_buf for later
  * usage */
 int _s3d_add_tessbuf(unsigned short a)
@@ -126,14 +133,16 @@ int _s3d_add_tessbuf(unsigned short a)
 	float area[SEI_SS];
 	double vertices[SEI_SS+1][2];
 	double nvertices[SEI_SS+1][2];
+	FT_Error error;
 	
-
-	if (FT_Load_Char(face,a,	FT_LOAD_NO_BITMAP|FT_LOAD_NO_SCALE))
+	error= FT_Load_Char(face,a, FT_LOAD_NO_BITMAP|FT_LOAD_NO_SCALE);
+	if (error)
 	{
-		errds(VHIGH,"s3d_add_tessbuf():FT_Load_Char()","can't load character");
+		
+		errds(VHIGH,"_s3d_add_tessbuf():FT_Load_Char()","can't load character %d : (%d) %s",a,ft_errors[error].err_code,ft_errors[error].err_msg);
 		return(-1);
 	} 
-	s3dprintf(VLOW,"[T]riangulating character %c",a);
+	s3dprintf(LOW,"[T]riangulating character %c",a);
 	norm=1.0/face->glyph->metrics.vertAdvance;
 	ch=a;
 	v_off=0;
@@ -329,6 +338,7 @@ int s3d_select_font(char *path)
 	 /*  yse (system-specific?!) font grabber */
 	if (((c=s3d_findfont(path))!=NULL))
 	{
+		s3dprintf(LOW,"Loading Font %s ... ",c);
 		_s3d_clear_tessbuf(); /* free and clear the tessbuf */
 		p=&memory_font;
 		if ((memory_font_size=s3d_open_file(c,p))>0)
@@ -341,6 +351,8 @@ int s3d_select_font(char *path)
 				memory_font=oldfont;
 				memory_font_size=oldsize;
 			}
+		} else {
+			errds(VHIGH,"s3d_select_font()","Could not open fontfile %s",c);
 		}
 	}
 	return(-1);
