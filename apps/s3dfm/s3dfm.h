@@ -59,6 +59,8 @@ struct _t_item {
 	int n_item;								/* number of items in list ( = -1 for normal or not-expanded files) */
 	int type;								/* type, determined by extension or file type like dir, pipe, link etc */
 	int disp,parsed;						/* Flags for displayed/parsed items ... */
+#define D_ICON	1
+#define D_DIR	2
 };
 struct _filelist {
 	char **p;
@@ -74,8 +76,9 @@ void get_path(t_item *dir, char *path);
 t_item *finditem(t_item *t, int oid);
 void mainloop();
 /* parse.c */
+int node_init(t_item *dir);
+void node_free(t_item *t);
 int parse_dir(t_item *dir);
-void freeitem(t_item *t);
 void parse_again(t_item *t);
 /* animation.c */
 float ani_get_scale(t_item *f);
@@ -93,13 +96,14 @@ int box_collapse(t_item *dir,int force);
 int box_collapse_grandkids(t_item *dir);
 int box_expand(t_item *dir);
 int box_buildblock(t_item *dir);
-int box_icon(t_item *dir,int i);
-int box_init(t_item *dir);
 void box_dissolve(t_item *dir);
-void box_undisplay(t_item *dir);
+int  box_undisplay(t_item *dir);
 void box_sidelabel(t_item *dir);
 void box_position_kids(t_item *dir);
 void box_select(t_item *dir);
+/* icon.c */
+int icon_draw(t_item *dir,int i);
+int icon_undisplay(t_item *dir);
 /* fs.c */
 filelist *fl_new(char *path);
 void fl_del(filelist *fl);

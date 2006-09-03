@@ -22,6 +22,7 @@
  */
 
 #include "s3dfm.h"
+#include <s3dw.h>
 #include <stdio.h> 	 /*  printf(),NULL */
 #include <math.h>	 /*  fabs() */
 #define SCALE 	1

@@ -76,13 +76,17 @@ void object_click(struct s3d_evt *evt)
 		}
 		if (f->type==T_FOLDER)
 		{
-			printf("[F]ound, expanding %s\n",f->name);
-			if (!f->disp)		parse_dir(f);
-			box_expand(f);
+			if (f->disp == D_DIR)
+			{
+				printf("[F]ound, Already displayed - ani_focus( %s )\n",f->name);
+			} else {
+				if (!f->parsed)	parse_dir(f);
+				box_expand(f);
+			}
 			focus=f;
 			ani_focus(f);
 		} else
-			printf("[F]ound, but is %s no folder\n",f->name);
+			printf("[F]ound, but %s is no folder\n",f->name);
 	} else {
 /*		printf("[C]ould not find :/\n");*/
 	}
@@ -91,6 +95,7 @@ void close_win(s3dw_widget *button)
 {
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
+/* add some dots to an integer value for better readability */
 void dotted_int(char *s,unsigned int i)
 {
 	char st[M_DIR];
@@ -113,7 +118,7 @@ void dotted_int(char *s,unsigned int i)
 		s[i]=st[p-i];
 	s[p+1]=0;
 }
-
+/* a small window which counts directories/files and displays the result */
 void info_window(char *path)
 {
 	s3dw_surface *infwin;

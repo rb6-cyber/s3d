@@ -116,7 +116,7 @@ int main (int argc, char **argv)
 
 		
 		/* set up file system representation */
-		box_init(&root);
+		node_init(&root);
 		strncpy(root.name,"/",M_NAME);
 		focus=&root;
 		root.dscale=0.1;
@@ -128,7 +128,7 @@ int main (int argc, char **argv)
 		ani_doit(&root);
 		ani_focus(&root);
 		
-		box_init(&cam); /* a virtual object, just to push the cam throu our animation stack */
+		node_init(&cam); /* a virtual object, just to push the cam throu our animation stack */
 		cam.block=0;
 		
 		
