@@ -142,7 +142,7 @@ int _s3d_add_tessbuf(unsigned short a)
 		errds(VHIGH,"_s3d_add_tessbuf():FT_Load_Char()","can't load character %d : (%d) %s",a,ft_errors[error].err_code,ft_errors[error].err_msg);
 		return(-1);
 	} 
-	s3dprintf(LOW,"[T]riangulating character %c",a);
+	s3dprintf(VLOW,"[T]riangulating character %c",a);
 	norm=1.0/face->glyph->metrics.vertAdvance;
 	ch=a;
 	v_off=0;
