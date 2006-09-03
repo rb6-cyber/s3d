@@ -42,6 +42,7 @@ int box_init(t_item *dir)
 
 	dir->len=0;
 	dir->disp=0;
+	dir->parsed=0;
 
 	dir->px=root.pz=0.0;
 	dir->dirs_opened=0;
@@ -52,6 +53,16 @@ int box_init(t_item *dir)
 	dir->detached=0;
 
 	return(0);
+}
+/* remove old items on the box */
+void box_dissolve(t_item *dir)
+{
+	if (dir->close!=-1)		{	s3d_del_object(dir->close);		dir->close=-1; }
+	if (dir->select!=-1)	{	s3d_del_object(dir->select);	dir->select=-1; }
+	if (dir->title!=-1)		{	s3d_del_object(dir->title);		dir->title=-1; }
+	if (dir->titlestr!=-1)	{	s3d_del_object(dir->titlestr);	dir->titlestr=-1; }
+	if (dir->block!=-1)			s3d_del_object(dir->block);
+
 }
 /* draws icon i in the block of dir */
 int box_icon(t_item *dir,int i)
@@ -81,11 +92,7 @@ int box_icon(t_item *dir,int i)
 	dir->list[i].dpz = dir->list[i].pz=1.0;
 	dir->list[i].scale = dir->list[i].dscale = (float)1.0/((float)dps);
 	/* create the block */
-	if (dir->list[i].close!=-1)		{	s3d_del_object(dir->list[i].close);		dir->list[i].close=-1; }
-	if (dir->list[i].select!=-1)	{	s3d_del_object(dir->list[i].select);	dir->list[i].select=-1; }
-	if (dir->list[i].title!=-1)		{	s3d_del_object(dir->list[i].title);		dir->list[i].title=-1; }
-	if (dir->list[i].titlestr!=-1)	{	s3d_del_object(dir->list[i].titlestr);	dir->list[i].titlestr=-1; }
-	if (dir->list[i].block!=-1)			s3d_del_object(dir->list[i].block);
+	box_dissolve(&(dir->list[i]));
 	dir->list[i].block=s3d_new_object();
 	s3d_push_vertices(dir->list[i].block,vertices,8);
 	d=((int)(((i+(dps+1)%2*(i/dps)))%2))*0.2;
@@ -314,7 +321,10 @@ int box_expand(t_item *dir)
 	}
 	for (i=0;i<dir->n_item;i++)
 	{
-		box_icon(dir,i);
+		if (!dir->list[i].disp)
+			box_icon(dir,i);
+		else 
+			s3d_link(dir->list[i].block,dir->block); /* if it's already displayed, make sure it linked properly ... */
 	}
 	dir->disp=1;
 	if (dir->parent!=NULL)
@@ -340,13 +350,56 @@ int box_expand(t_item *dir)
     s3d_flags_on(dir->titlestr,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	return(0);
 }
+void box_undisplay(t_item *dir)
+{
+	int i;
+	t_item *par;
+	for (i=0;i<dir->n_item;i++)
+	{
+		if (!dir->list[i].disp)
+		{
+			if (dir->list[i].block!=-1)
+			{
+				s3d_del_object(dir->list[i].block);
+				dir->list[i].block=-1;
+			}
+			if (dir->list[i].str!=-1)
+			{
+				s3d_del_object(dir->list[i].str);
+				dir->list[i].str=-1;
+			}
+		} else {
+			printf("not undisplaying: %s\n",dir->list[i].name);
+		}
+	}
+	if ((par=dir->parent)!=NULL) /* we can't do this on root.... */
+	{
+		for (i=0;i<par->n_item;i++)
+			if (&par->list[i]==dir)
+				break;
+		if (i!=par->n_item) /* if it actually was in the parents item list */
+		{
+			box_icon(par,i);
+			s3d_flags_on(dir->block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+			s3d_flags_on(dir->str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		}
+		par->dirs_opened--;
+	} else {
+		/* we're root ... */
+		box_dissolve(dir);
 
+	}
+	printf("[U]ndisplayed %s\n",dir->name);
+	dir->dirs_opened=0;
+	dir->disp=0;
+	dir->detached=0;
+	
+}
 /* undisplay a directory, thus recursively removing the kids.*/
 int box_collapse(t_item *dir,int force)
 {
 	int i;
 	int ret;
-	t_item *par;
 	if (&root==dir)
 	{
 		printf("won't undisplay root window ... \n");
@@ -356,7 +409,7 @@ int box_collapse(t_item *dir,int force)
 		return(1);
 	if (dir->disp==0)
 	{
-/*		printf("[A]lready undisplayed, nothing to do ...\n");*/
+		printf("[A]lready undisplayed %s, nothing to do ...\n",dir->name);
 		return(-1);
 	}
 	ret=0;
@@ -364,36 +417,8 @@ int box_collapse(t_item *dir,int force)
 		if (dir->list[i].disp)
 			ret|=box_collapse(&dir->list[i],force);
 
-	if (ret && !force) return(ret);
-	for (i=0;i<dir->n_item;i++)
-	{
-		if (dir->list[i].block!=-1)
-		{
-			s3d_del_object(dir->list[i].block);
-			dir->list[i].block=-1;
-		}
-		if (dir->list[i].str!=-1)
-		{
-			s3d_del_object(dir->list[i].str);
-			dir->list[i].str=-1;
-		}
-	}
-	if ((par=dir->parent)!=NULL) /* should never be because there we don't process root */
-	{
-		for (i=0;i<par->n_item;i++)
-			if (&par->list[i]==dir)
-				break;
-		if (i!=par->n_item)
-		{
-			box_icon(par,i);
-			s3d_flags_on(dir->block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-			s3d_flags_on(dir->str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-		}
-		par->dirs_opened--;
-	}
-	dir->dirs_opened=0;
-	dir->disp=0;
-	dir->detached=0;
+	if (ret && !force) return(ret); /* if anything got wrong, return here ... */
+	box_undisplay(dir);
 	if (dir->parent!=NULL)
 	{
 		box_position_kids(dir->parent);

@@ -41,6 +41,13 @@ void key_handler(struct s3d_evt *evt)
 				info_window(path);
 				}
 				break;
+		case 'r':
+		case 'R':
+				{/* refresh this window ... */
+					printf("[R]efreshing %s\n",focus->name);
+					parse_again(focus);
+				}
+				break;
 	}
 	s3dw_handle_key(evt);
 }
@@ -70,7 +77,7 @@ void object_click(struct s3d_evt *evt)
 		if (f->type==T_FOLDER)
 		{
 			printf("[F]ound, expanding %s\n",f->name);
-			parse_dir(f);
+			if (!f->disp)		parse_dir(f);
 			box_expand(f);
 			focus=f;
 			ani_focus(f);

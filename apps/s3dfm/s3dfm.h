@@ -58,7 +58,7 @@ struct _t_item {
 	float dpx,dpy,dpz,dscale;				/* current state in animation */
 	int n_item;								/* number of items in list ( = -1 for normal or not-expanded files) */
 	int type;								/* type, determined by extension or file type like dir, pipe, link etc */
-	int disp;
+	int disp,parsed;						/* Flags for displayed/parsed items ... */
 };
 struct _filelist {
 	char **p;
@@ -71,9 +71,12 @@ typedef struct _t_item   t_item;
 extern t_item root;
 /* main.c */
 void get_path(t_item *dir, char *path);
-int parse_dir(t_item *dir);
 t_item *finditem(t_item *t, int oid);
 void mainloop();
+/* parse.c */
+int parse_dir(t_item *dir);
+void freeitem(t_item *t);
+void parse_again(t_item *t);
 /* animation.c */
 float ani_get_scale(t_item *f);
 void ani_focus(t_item *f);
@@ -92,6 +95,8 @@ int box_expand(t_item *dir);
 int box_buildblock(t_item *dir);
 int box_icon(t_item *dir,int i);
 int box_init(t_item *dir);
+void box_dissolve(t_item *dir);
+void box_undisplay(t_item *dir);
 void box_sidelabel(t_item *dir);
 void box_position_kids(t_item *dir);
 void box_select(t_item *dir);

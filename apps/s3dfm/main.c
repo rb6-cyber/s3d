@@ -68,63 +68,6 @@ void get_path(t_item *dir, char *path)
 	} else
 		mstrncpy(path,dir->name,M_DIR);
 }
-int parse_dir(t_item *dir)
-{
-	t_item *list;
-	struct dirent **namelist;
-	int n,i;
-	char *ext,*nstr;
-	char path[M_DIR];
-	char ndir[M_DIR];  
-	if (dir->n_item>0) /* refusing */
-		return(-1);
-	get_path(dir,path);
-/*	printf("scanning %s\n",path);*/
-    n = i = scandir(path, &namelist, 0, alphasort);
-    if (n < 0)
-	{
-        perror("scandir");
-		return(-1);
-	} else {
-		if (dir->n_item>0)
-			free(dir->list); /* this is a refresh, free old items */
-		list=malloc(sizeof(t_item)*i);
-		dir->list=list;
-		dir->n_item=n;
-/*		printf("found %d items, processing ...\n",n);*/
-        while(n--) {
-			box_init(&list[n]);
-			nstr=namelist[n]->d_name;
-			strncpy(list[n].name,nstr,M_NAME);
- 		    if ((0==strncmp(nstr,".",1)) && (strlen(nstr)==1))
-				list[n].type=T_LOCALDIR;
-			else if (0==strncmp(nstr,"..",strlen(nstr)<2?strlen(nstr):2))
-			   list[n].type=T_BACKDIR;
-			else {
-				ext=strrchr(nstr,'.');
-				strncpy(ndir,path,M_DIR);
-		    	strncat(ndir,namelist[n]->d_name,M_DIR);
-			    if ((namelist[n]->d_type==DT_DIR) ||
-					((namelist[n]->d_type==DT_UNKNOWN) && (opendir(ndir)!=NULL)))
-						list[n].type=T_FOLDER;
-				else 
-				{
-				   if (ext!=NULL)
-				   {
-					   if (0==strncmp(ext,".3ds",strlen(ext)<4?strlen(ext):4))
-							   list[n].type=T_GEOMETRY;
-					   else if (0==strncmp(ext,".mp3",strlen(ext)<4?strlen(ext):4))
-							   list[n].type=T_MUSIC;
-				   }
-				}
-			}
-			list[n].parent=dir;
-        	free(namelist[n]);
-		}
-		free(namelist);
-   	}
-	return(0);
-}
 /* finds an item in the tree by oid */
 t_item *finditem(t_item *t, int oid)
 {
