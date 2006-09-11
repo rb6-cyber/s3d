@@ -57,6 +57,7 @@ void key_handler(struct s3d_evt *evt)
 				{/* refresh this window ... */
 					printf("[R]efreshing %s\n",focus->name);
 					parse_again(focus);
+					ani_focus(focus);
 				}
 				break;
 		case S3DK_F1:
@@ -166,18 +167,13 @@ void window_help()
 {
 	s3dw_surface *infwin;
 	s3dw_button  *button;
-	char string1[M_DIR];
 	infwin=s3dw_surface_new("Help Window",12,12);
-	snprintf(string1,M_DIR,"F1 - This Help Window");
-	s3dw_label_new(infwin,string1,1,2);
-	snprintf(string1,M_DIR,"F5 - Copy");
-	s3dw_label_new(infwin,string1,1,3);
-	snprintf(string1,M_DIR,"F6 - Move");
-	s3dw_label_new(infwin,string1,1,4);
-	snprintf(string1,M_DIR,"R - Refresh");
-	s3dw_label_new(infwin,string1,1,5);
-	snprintf(string1,M_DIR,"I - Info");
-	s3dw_label_new(infwin,string1,1,6);
+	s3dw_label_new(infwin,"F1 - This Help Window",1,2);
+	s3dw_label_new(infwin,"F5 - Copy",1,3);
+	s3dw_label_new(infwin,"F6 - Move",1,4);
+	s3dw_label_new(infwin,"F7 - Create Directory",1,5);
+	s3dw_label_new(infwin,"R - Refresh",1,6);
+	s3dw_label_new(infwin,"I - Info",1,7);
 
 	button=s3dw_button_new(infwin,"OK",4,10);
 	button->onclick=close_win;
