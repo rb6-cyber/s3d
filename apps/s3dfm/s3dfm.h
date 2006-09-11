@@ -73,6 +73,7 @@ typedef struct _t_item   t_item;
 extern t_item root;
 /* main.c */
 void get_path(t_item *dir, char *path);
+t_item *get_item(char *path);
 t_item *finditem(t_item *t, int oid);
 void mainloop();
 /* parse.c */
@@ -118,4 +119,8 @@ void fs_fl_approx(filelist *fl, int *files, int *dirs, int *bytes);
 /* dialog.c */
 void key_handler(struct s3d_evt *evt);
 void object_click(struct s3d_evt *evt);
-void info_window(char *path);
+void window_info(char *path);
+void window_help();
+void window_copy(char *path);
+void window_move(char *path);
+void window_mkdir(char *path);

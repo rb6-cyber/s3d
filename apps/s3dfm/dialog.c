@@ -26,19 +26,30 @@
 #include <s3dw.h>
 #include <stdio.h> 	/* NULL, printf() */
 #include <string.h> /* strlen() */
+#include <stdlib.h> /* realloc(),malloc() */
+#include <errno.h>  /* errno */
+#include <sys/stat.h> /* mkdir() */
+#include <sys/types.h> /* mkdir() */
 extern t_item *focus;
+filelist fp={NULL,0};
+int typeinput=0;
 /* keyevent handler */
 void key_handler(struct s3d_evt *evt)
 {
 	struct s3d_key_event *keys=(struct s3d_key_event *)evt->buf;
+	char path[M_DIR];
+	if (typeinput) {	/* we have some inputfield now and want the s3dw to handle our input */	
+			printf("inputting text ...\n");
+			s3dw_handle_key(evt); 
+			return; 
+	}
+	get_path(focus,path);
 	switch (keys->keysym)
 	{
 		case 'i':
 		case 'I':
 				{
-				char path[M_DIR];
-				get_path(focus,path);
-				info_window(path);
+				window_info(path);
 				}
 				break;
 		case 'r':
@@ -48,6 +59,20 @@ void key_handler(struct s3d_evt *evt)
 					parse_again(focus);
 				}
 				break;
+		case S3DK_F1:
+				window_help();
+				break;
+		case S3DK_F5:
+				window_copy(path);
+				break;
+		case S3DK_F6:
+				window_move(path);
+				break;
+		case S3DK_F7:
+				window_mkdir(path);
+				break;
+
+
 	}
 	s3dw_handle_key(evt);
 }
@@ -118,8 +143,196 @@ void dotted_int(char *s,unsigned int i)
 		s[i]=st[p-i];
 	s[p+1]=0;
 }
+/* add all selected dirs in the new filelist */
+int get_selected(filelist *fp, t_item *dir)
+{
+	int i;
+	char *s;
+	for (i=0;i<dir->n_item;i++)
+	{
+		if (dir->list[i].list!=NULL)	get_selected(fp,&(dir->list[i])); /* scan subdir */
+		if (dir->list[i].detached)
+		{
+			fp->n++;
+			fp->p=realloc(fp->p,sizeof(char *) * fp->n);
+			s=malloc(M_DIR);
+			get_path(&(dir->list[i]),s);
+			fp->p[fp->n - 1]=s;
+		}
+	}
+	return(0);
+}
+void window_help()
+{
+	s3dw_surface *infwin;
+	s3dw_button  *button;
+	char string1[M_DIR];
+	infwin=s3dw_surface_new("Help Window",12,12);
+	snprintf(string1,M_DIR,"F1 - This Help Window");
+	s3dw_label_new(infwin,string1,1,2);
+	snprintf(string1,M_DIR,"F5 - Copy");
+	s3dw_label_new(infwin,string1,1,3);
+	snprintf(string1,M_DIR,"F6 - Move");
+	s3dw_label_new(infwin,string1,1,4);
+	snprintf(string1,M_DIR,"R - Refresh");
+	s3dw_label_new(infwin,string1,1,5);
+	snprintf(string1,M_DIR,"I - Info");
+	s3dw_label_new(infwin,string1,1,6);
+
+	button=s3dw_button_new(infwin,"OK",4,10);
+	button->onclick=close_win;
+	s3dw_show(S3DWIDGET(infwin));
+
+}
+void window_fs_another()
+{
+	s3dw_surface *infwin;
+	s3dw_button  *button;
+	infwin=s3dw_surface_new("Error",12,8);
+	s3dw_label_new(infwin,"Sorry, another FS Action is in Progress",1,2);
+	button=s3dw_button_new(infwin,"OK",5,5);
+	button->onclick=close_win;
+	s3dw_show(S3DWIDGET(infwin));
+}
+void window_fs_nothing()
+{
+	s3dw_surface *infwin;
+	s3dw_button  *button;
+	infwin=s3dw_surface_new("Error",12,8);
+	s3dw_label_new(infwin,"Nothing selected :(",1,2);
+	button=s3dw_button_new(infwin,"OK",5,5);
+	button->onclick=close_win;
+	s3dw_show(S3DWIDGET(infwin));
+
+}
+void window_fs_errno(char *errmsg)
+{
+	s3dw_surface *infwin;
+	s3dw_button  *button;
+	char string[M_DIR];
+	float l;
+	snprintf(string,M_DIR,"%s: %s",errmsg,strerror(errno));
+	l=strlen(string)*0.7;
+	infwin=s3dw_surface_new("Error",l,8);
+	s3dw_label_new(infwin,string,1,2);
+	button=s3dw_button_new(infwin,"OK",l/2-1,5);
+	button->onclick=close_win;
+	s3dw_show(S3DWIDGET(infwin));
+}
+
+void window_fs_abort(s3dw_widget *button)
+{
+	int i;
+	for (i=0;i<fp.n;i++)
+		free(fp.p[i]);
+	if (fp.p!=NULL) free(fp.p);
+	fp.n=0;
+	fp.p=NULL;
+	typeinput=0;
+	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
+}
+void window_copy(char *path)
+{
+	s3dw_surface *infwin;
+	s3dw_button  *okbutton,*abortbutton;
+	float l;
+	char destdir[M_DIR];
+
+	int i,m;
+
+	if (fp.n!=0) 	{	window_fs_another(); 	return; }
+	fp.n=0;
+	fp.p=NULL;
+	get_selected(&fp,&root);
+	printf("selected %d nodes\n",fp.n);
+	if (fp.n == 0)	{	window_fs_nothing();	return;	}
+	m=10;
+	for (i=0;i<fp.n;i++)
+	{
+		if (strlen(fp.p[i])>m) m=strlen(fp.p[i]);
+		printf("%d: %s\n",i,fp.p[i]);
+	}
+
+	l=(m+3)*0.7;
+	infwin=s3dw_surface_new("Copy Window",l,fp.n+8);
+	s3dw_label_new(infwin,"Copy: ",1,1);
+	for (i=0;i<fp.n;i++)
+		s3dw_label_new(infwin,fp.p[i],3,2+i);
+	s3dw_label_new(infwin,"to:",1,fp.n+3);
+	get_path(focus,destdir);
+	s3dw_label_new(infwin,destdir,3,fp.n+4);
+
+	okbutton=s3dw_button_new(infwin,"OK",l/2-3,fp.n+5);
+	okbutton->onclick=window_fs_abort;
+	abortbutton=s3dw_button_new(infwin,"abort",l/2,fp.n+5);
+	abortbutton->onclick=window_fs_abort;
+
+	s3dw_show(S3DWIDGET(infwin));
+
+}
+s3dw_input	 *input;
+void window_fs_mkdir(s3dw_widget *button)
+{
+	char *dir;
+	t_item *item;
+	dir=s3dw_input_gettext(input);
+	printf("creating Directory ...%s\n",dir);
+	if (-1==mkdir(dir,0777)) /* umask ?! */
+		window_fs_errno("could not create directory");
+	else {
+		/* success, now refresh it */
+		item=get_item(dir);
+		if (item==NULL)
+		{
+			printf("cannot refresh\n");
+		} else {
+			printf("refreshing %s\n",item->name);
+			parse_again(item);
+
+		}
+				
+	}
+	window_fs_abort(button); /* finish */
+
+}
+void window_mkdir(char *path)
+{
+	s3dw_surface *infwin;
+	s3dw_button  *okbutton,*abortbutton;
+	char string1[M_DIR];
+	float l;
+	if (fp.n!=0) {window_fs_another(); return; }
+	snprintf(string1,M_DIR,"Create Directory in %s",path);
+	l=strlen(string1)*0.7;
+	infwin=s3dw_surface_new("Create Directory",l,8);
+	s3dw_label_new(infwin,string1,1,2);
+	input=s3dw_input_new(infwin,10,1,3);
+	s3dw_input_change_text(input, path);
+	s3dw_focus(S3DWIDGET(input));
+	s3dw_focus(S3DWIDGET(infwin));
+	typeinput=1;
+	okbutton=s3dw_button_new(infwin,"OK",l/2-3,fp.n+5);
+	okbutton->onclick=window_fs_mkdir;
+	abortbutton=s3dw_button_new(infwin,"abort",l/2,fp.n+5);
+	abortbutton->onclick=window_fs_abort;
+	s3dw_show(S3DWIDGET(infwin));
+
+}
+
+void window_move(char *path)
+{
+	s3dw_surface *infwin;
+	s3dw_button  *button;
+	if (fp.n!=0) {window_fs_another(); return; }
+	infwin=s3dw_surface_new("Info Window",20,8);
+	s3dw_label_new(infwin,"Sorry, moving is not implemented yet.. :(",1,2);
+	button=s3dw_button_new(infwin,"Too bad",7,5);
+	button->onclick=close_win;
+	s3dw_show(S3DWIDGET(infwin));
+
+}
 /* a small window which counts directories/files and displays the result */
-void info_window(char *path)
+void window_info(char *path)
 {
 	s3dw_surface *infwin;
 	s3dw_button  *button;
@@ -145,5 +358,4 @@ void info_window(char *path)
 	button->onclick=close_win;
 	/* of couse, show it */
 	s3dw_show(S3DWIDGET(infwin));
-
 }

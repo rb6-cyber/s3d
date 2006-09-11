@@ -68,6 +68,42 @@ void get_path(t_item *dir, char *path)
 	} else
 		mstrncpy(path,dir->name,M_DIR);
 }
+/* find the item to a path, return NULL if not parsed yet */
+t_item *get_item(char *path)
+{
+	char p[M_DIR];
+	char *s,*match;
+	t_item *cur;
+	int i;
+	
+	if (path==NULL) return NULL;
+	if (path[0]=='/')
+	{
+		strncpy(p,path,M_DIR);
+		s=p+1;
+		cur=&root;
+	} else return NULL; /* TODO: also process local paths. right now, we are to lazy */
+	printf("processing rest of string %s\n",s);
+	match=s;
+	while ((s=index(s,'/'))!=NULL) { /* while we have slashes inside */
+		s[0]=0; /* mark the slash with space */
+		s++;	/* move to the next */
+		/* parse ... */
+		printf("looking for a match for %s\n",match);
+		for (i=0;i<cur->n_item;i++)
+			if (0==strcmp(cur->list[i].name,match))
+			{ /* found !! */
+				cur=&(cur->list[i]); /* forward */
+				match=s; /* select next */
+				break;
+			}
+		if (i==cur->n_item) {
+			printf("found no match for %s :(\n",match);
+			return NULL; /* not found */
+		}
+	}
+	return(cur);
+}
 /* finds an item in the tree by oid */
 t_item *finditem(t_item *t, int oid)
 {
