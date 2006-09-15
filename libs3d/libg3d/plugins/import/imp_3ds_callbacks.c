@@ -406,7 +406,7 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 	GSList *oface;
 	gint32 i, j, k, n=0, polynum, group;
 	guint32 *smooth_list;
-	gfloat *pnormal_list, *v_t_buf;			 	
+	gfloat *pnormal_list, *v_t_buf;
 	gfloat a[3],b[3], *p0,*p1,*p2,*r;
 	gfloat len;
 
@@ -424,6 +424,7 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 	printf("reading %d int32 values\n",polynum);
 	for ( i=0 ; i<polynum ; i++ ) 
 		smooth_list[i] = g3d_read_int32_le(global->f);
+
 	parent->nb -= polynum * 4;
 	/* first, we calculate the normal by the polygon vertices (just vector product) */
 	i=0;
@@ -434,7 +435,7 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 		p0=&(object->vertex_data[3* face->vertex_indices[0]]);
 		p1=&(object->vertex_data[3* face->vertex_indices[1]]);
 		p2=&(object->vertex_data[3* face->vertex_indices[2]]);
-		
+
 		a[0]=p1[0] - p0[0];
 		a[1]=p1[1] - p0[1];
 		a[2]=p1[2] - p0[2];
@@ -444,7 +445,7 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 		r[0]=a[1]*b[2] - a[2]*b[1];
 		r[1]=a[2]*b[0] - a[0]*b[2];
 		r[2]=a[0]*b[1] - a[1]*b[0];
-	
+
 		len=sqrt(r[0]*r[0]+r[1]*r[1]+r[2]*r[2]);
 		if (len!=0.0F)
 		{
@@ -457,6 +458,7 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 		face->flags|=G3D_FLAG_FAC_NORMALS;
 		i++;
 	}
+
 	do {
 		/* find a suitable group. -1 means we've already taken care */
 		group=-1;
@@ -509,7 +511,7 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 						if (len==0.0F)   /*  this should not happen. well ... */
 								for (n=0;n<3;n++)	v_t_buf[k*3 + n]=0;
 						else	for (n=0;n<3;n++)	v_t_buf[k*3 + n]/=len; /* normalize it */
-						
+
 						if (len!=0.0) 	memcpy(face->normals +j*3, v_t_buf+ 	k*3,sizeof(gfloat)*3);	/*  finally, we save the normal in our normal buffer */
 						else  			{memcpy(face->normals +j*3, pnormal_list+i*3,sizeof(gfloat)*3);	/*  use the pbuf normal */
 							printf("using pnormal_list as fallback\n");

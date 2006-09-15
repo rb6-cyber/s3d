@@ -72,8 +72,8 @@ static void objects_post_load(GSList *objects, gdouble max_rad)
 	{
 		object = (G3DObject *)oitem->data;
 
-		g3d_object_scale(object, (10.0 / max_rad));
-		g3d_object_optimize(object);
+ 		g3d_object_scale(object, (10.0 / max_rad));
+ 		g3d_object_optimize(object);
 
 		objects_post_load(object->objects, max_rad);
 
@@ -165,14 +165,14 @@ G3DModel *g3d_model_load(G3DContext *context, const gchar *filename)
 			return NULL;
 		}
 
-		/* center model */
-		g3d_model_center(model);
+		/* center model
+		g3d_model_center(model); */
 
-		/* get maximum radius of all objects */
-		max_rad = objects_max_radius(model->objects);
+		/* get maximum radius of all objects
+		max_rad = objects_max_radius(model->objects); */
 
-		/* scale and optimize objects */
-		objects_post_load(model->objects, max_rad);
+		/* scale and optimize objects
+		objects_post_load(model->objects, max_rad); */
 
 		/* save filename */
 		if(model->filename == NULL)
