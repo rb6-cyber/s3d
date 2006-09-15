@@ -400,12 +400,26 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 {
 
 	G3DObject *object;
+	G3DFace *face;
+	GSList *oface;
+	gint32 chunk_length, i;
 
 	object = (G3DObject *)parent->object;
 	g_return_val_if_fail(object, FALSE);
 
-	/* g3d_read_int16_le(global->f) */
-	/* smooth list goes here face->normals */
+	oface = object->faces;
+	while ( oface->next ) {
+		oface = oface->next;
+	}
+
+	face = (G3DFace *)oface->data;
+	face->normals = g_malloc(chunk_length);
+	chunk_length = g3d_read_int16_le(global->f);
+
+	for ( i = 0; i < ( chunk_length / 4 ); i++ )
+	{
+		face->normals[i] = gintl(ptr+j*4);
+	}
 
 	return TRUE;
 }
