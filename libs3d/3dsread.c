@@ -390,12 +390,11 @@ int s3d_import_3ds(char *buf)
 			break;
 		  case 0x4150:
 			s3dprintf(VLOW,"-- smoothing group information (length %d [%d])", clen,clen/4);
-			printf( "-- smoothing group information (length %d [%d])", clen, clen/4 );
 			smooth_list=(unsigned long *)ptr;
 			for (j=0;j<(clen/4);j++)
 			{
 				smooth_list[j]=gintl(ptr+j*4);
-				printf( "smooth_list[%i] = %i", j, smooth_list[j] );
+				s3dprintf(VLOW, "smooth_list[%i] = %i", j, smooth_list[j] );
 			}
 
 			ptr=(char *)ptr+(clen-6);
