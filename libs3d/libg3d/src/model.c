@@ -20,6 +20,8 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#include <string.h>
+
 #include <g3d/types.h>
 #include <g3d/context.h>
 #include <g3d/model.h>
@@ -79,6 +81,70 @@ static void objects_post_load(GSList *objects, gdouble max_rad)
 	}
 }
 
+static gboolean objects_check(GSList *objects)
+{
+	G3DFace *face;
+	G3DObject *object;
+	GSList *fitem, *oitem;
+	guint32 i, no = 0, nf;
+
+	oitem = objects;
+	while(oitem)
+	{
+		object = (G3DObject *)oitem->data;
+
+		nf = 0;
+		fitem = object->faces;
+		while(fitem)
+		{
+			face = (G3DFace *)fitem->data;
+
+			if(face->material == NULL)
+			{
+				g_warning("g3d_object_check: face->material is NULL"
+					" (o: %d, f: %d)", no, nf);
+				return FALSE;
+			}
+
+			if(face->vertex_count < 3)
+			{
+				g_warning("g3d_object_check: face->num_vertices < 3 (%d)"
+					" (o: %d, f: %d)", face->vertex_count, no, nf);
+				return FALSE;
+			}
+
+			for(i = 0; i < face->vertex_count; i ++)
+			{
+				if(face->vertex_indices[i] >= object->vertex_count)
+				{
+					g_warning("g3d_object_check: "
+						"vertex_indices[%d] >= vertex_count (%d >= %d)"
+						" (o: %d, f: %d)",
+						i, face->vertex_indices[i], object->vertex_count,
+						no, nf);
+					return FALSE;
+				}
+			}
+
+			nf ++;
+			fitem = fitem->next;
+		} /* while(fitem) */
+
+		if(objects_check(object->objects) == FALSE)
+			return FALSE;
+
+		oitem = oitem->next;
+	} /* while(oitem) */
+	return TRUE;
+
+}
+
+gboolean g3d_model_check(G3DModel *model)
+{
+	return objects_check(model->objects);
+}
+
+
 G3DModel *g3d_model_load(G3DContext *context, const gchar *filename)
 {
 	G3DModel *model;
@@ -123,98 +189,50 @@ G3DModel *g3d_model_load(G3DContext *context, const gchar *filename)
 	return NULL;
 }
 
-gboolean g3d_model_check(G3DModel *model)
+static void objects_max_extension(GSList *objects,
+	gdouble *min_x, gdouble *min_y, gdouble *min_z,
+	gdouble *max_x,	gdouble *max_y, gdouble *max_z)
 {
-	G3DFace *face;
-	G3DObject *object;
-	GSList *fitem, *oitem;
-	guint32 i, no = 0, nf;
-
-	oitem = model->objects;
-	while(oitem)
-	{
-		object = (G3DObject *)oitem->data;
-
-		nf = 0;
-		fitem = object->faces;
-		while(fitem)
-		{
-			face = (G3DFace *)fitem->data;
-
-			if(face->material == NULL)
-			{
-				g_warning("g3d_object_check: face->material is NULL"
-					" (o: %d, f: %d)", no, nf);
-				return FALSE;
-			}
-
-			if(face->vertex_count < 3)
-			{
-				g_warning("g3d_object_check: face->num_vertices < 3 (%d)"
-					" (o: %d, f: %d)", face->vertex_count, no, nf);
-				return FALSE;
-			}
-
-			for(i = 0; i < face->vertex_count; i ++)
-			{
-				if(face->vertex_indices[i] >= object->vertex_count)
-				{
-					g_warning("g3d_object_check: "
-						"vertex_indices[%d] >= vertex_count (%d >= %d)"
-						" (o: %d, f: %d)",
-						i, face->vertex_indices[i], object->vertex_count,
-						no, nf);
-					return FALSE;
-				}
-			}
-
-			nf ++;
-			fitem = fitem->next;
-		} /* while(fitem) */
-		oitem = oitem->next;
-	} /* while(oitem) */
-	return TRUE;
-}
-
-gboolean g3d_model_center(G3DModel *model)
-{
-	gdouble min_x = 10.0e99, min_y = 10.0e99, min_z = 10.0e99;
-	gdouble max_x = -9.9e99, max_y = -9.9e99, max_z = -9.9e99;
-	gdouble off_x, off_y, off_z;
 	GSList *oitem;
 	G3DObject *object;
 	guint32 i;
 
-	/* determine maximum extension */
-	oitem = model->objects;
+	oitem = objects;
 	while(oitem)
 	{
 		object = (G3DObject *)oitem->data;
 		for(i = 0; i < object->vertex_count; i ++)
 		{
-			if(object->vertex_data[i * 3 + 0] < min_x)
-				min_x = object->vertex_data[i * 3 + 0];
-			if(object->vertex_data[i * 3 + 1] < min_y)
-				min_y = object->vertex_data[i * 3 + 1];
-			if(object->vertex_data[i * 3 + 2] < min_z)
-				min_z = object->vertex_data[i * 3 + 2];
+			if(object->vertex_data[i * 3 + 0] < *min_x)
+				*min_x = object->vertex_data[i * 3 + 0];
+			if(object->vertex_data[i * 3 + 1] < *min_y)
+				*min_y = object->vertex_data[i * 3 + 1];
+			if(object->vertex_data[i * 3 + 2] < *min_z)
+				*min_z = object->vertex_data[i * 3 + 2];
 
-			if(object->vertex_data[i * 3 + 0] > max_x)
-				max_x = object->vertex_data[i * 3 + 0];
-			if(object->vertex_data[i * 3 + 1] > max_y)
-				max_y = object->vertex_data[i * 3 + 1];
-			if(object->vertex_data[i * 3 + 2] > max_z)
-				max_z = object->vertex_data[i * 3 + 2];
+			if(object->vertex_data[i * 3 + 0] > *max_x)
+				*max_x = object->vertex_data[i * 3 + 0];
+			if(object->vertex_data[i * 3 + 1] > *max_y)
+				*max_y = object->vertex_data[i * 3 + 1];
+			if(object->vertex_data[i * 3 + 2] > *max_z)
+				*max_z = object->vertex_data[i * 3 + 2];
 		}
+
+		objects_max_extension(object->objects,
+			min_x, min_y, min_z, max_x, max_y, max_z);
+
 		oitem = oitem->next;
 	}
+}
 
-	/* move model */
-	off_x = max_x - ((max_x - min_x) / 2.0);
-	off_y = max_y - ((max_y - min_y) / 2.0);
-	off_z = max_z - ((max_z - min_z) / 2.0);
+static void objects_move(GSList *objects,
+	gdouble off_x, gdouble off_y, gdouble off_z)
+{
+	GSList *oitem;
+	G3DObject *object;
+	guint32 i;
 
-	oitem = model->objects;
+	oitem = objects;
 	while(oitem)
 	{
 		object = (G3DObject *)oitem->data;
@@ -224,8 +242,29 @@ gboolean g3d_model_center(G3DModel *model)
 			object->vertex_data[i * 3 + 1] -= off_y;
 			object->vertex_data[i * 3 + 2] -= off_z;
 		}
+
+		objects_move(object->objects, off_x, off_y, off_z);
+
 		oitem = oitem->next;
 	}
+}
+
+gboolean g3d_model_center(G3DModel *model)
+{
+	gdouble min_x = 10.0e99, min_y = 10.0e99, min_z = 10.0e99;
+	gdouble max_x = -9.9e99, max_y = -9.9e99, max_z = -9.9e99;
+	gdouble off_x, off_y, off_z;
+
+	/* determine maximum extension */
+	objects_max_extension(model->objects,
+		&min_x, &min_y, &min_z, &max_x, &max_y, &max_z);
+
+	/* move model */
+	off_x = max_x - ((max_x - min_x) / 2.0);
+	off_y = max_y - ((max_y - min_y) / 2.0);
+	off_z = max_z - ((max_z - min_z) / 2.0);
+
+	objects_move(model->objects, off_x, off_y, off_z);
 
 	return TRUE;
 }
@@ -246,25 +285,33 @@ static gboolean remove_teximg(gpointer key, gpointer value, gpointer data)
 	return TRUE;
 }
 
-void g3d_model_clear(G3DModel *model)
+static void objects_clear(GSList *objects)
 {
 	GSList *list, *next;
 	G3DObject *object;
+
+	list = objects;
+	while(list)
+	{
+		object = (G3DObject*)list->data;
+		objects_clear(object->objects);
+		g3d_object_free(object);
+		next = list->next;
+		g_slist_free_1(list);
+		list = next;
+	}
+}
+
+void g3d_model_clear(G3DModel *model)
+{
+	GSList *list, *next;
 	G3DMaterial *mat;
 
 	/* lights */
 	/* TODO */
 
 	/* objects */
-	list = model->objects;
-	while(list)
-	{
-		object = (G3DObject*)list->data;
-		g3d_object_free(object);
-		next = list->next;
-		g_slist_free_1(list);
-		list = next;
-	}
+	objects_clear(model->objects);
 	model->objects = NULL;
 
 	/* materials */
@@ -293,4 +340,30 @@ void g3d_model_free(G3DModel *model)
 	g_free(model);
 }
 
+static G3DObject *objects_get_by_name(GSList *objects, const gchar *name)
+{
+	GSList *olist;
+	G3DObject *object;
+
+	olist = objects;
+	while(olist)
+	{
+		object = (G3DObject *)olist->data;
+
+		if((object->name != NULL) && (strcmp(object->name, name) == 0))
+			return object;
+
+		object = objects_get_by_name(object->objects, name);
+		if(object != NULL)
+			return object;
+
+		olist = olist->next;
+	}
+	return NULL;
+}
+
+G3DObject *g3d_model_get_object_by_name(G3DModel *model, const gchar *name)
+{
+	return objects_get_by_name(model->objects, name);
+}
 

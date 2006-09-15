@@ -5,17 +5,17 @@
  *
  * This file is part of the s3d API, the API of s3d (the 3d network display server).
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * The s3d API is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The s3d API is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with the s3d API; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -38,14 +38,14 @@ int s3d_import_3ds_file(char *fname)
 #ifndef OBJSDIR
 #define OBJSDIR 	"./:../:../../:/usr/local/share/s3d/:/usr/share/s3d/"
 #endif
-	
+
 	strncpy(searchpath,OBJSDIR,1023);
 	searchpath[1023]=0;							/* just in case */
 	next=ptr=searchpath;
 	while (next!=NULL)
 	{
 		next=NULL;
-		
+
 		if (NULL!=(next=strchr(ptr,':')))
 		{
 			*next=0; 							/* clear the delimiter */
@@ -97,7 +97,7 @@ void sort_poly(unsigned long *smooth_list, unsigned long *poly_buf,int polynum)
 	min=0;
 	for (i=0;i<polynum;i++)
 	{
-		if (smooth_list[i]<minv) 
+		if (smooth_list[i]<minv)
 		{
 			min=i;
 			minv=smooth_list[i];
@@ -108,7 +108,7 @@ void sort_poly(unsigned long *smooth_list, unsigned long *poly_buf,int polynum)
 #define EL	4*sizeof(unsigned long)
 		memcpy(polyel,poly_buf,EL);  /* save */
 		memcpy(poly_buf,poly_buf+4*min,EL);  /* put at first place */
-		memcpy(poly_buf+4*min,polyel,EL); 
+		memcpy(poly_buf+4*min,polyel,EL);
 		 /*  now the same with smooth_list */
 		i=smooth_list[0];
 		smooth_list[0]=smooth_list[min];
@@ -119,7 +119,7 @@ void sort_poly(unsigned long *smooth_list, unsigned long *poly_buf,int polynum)
 	{
 		sort_poly(smooth_list+1,poly_buf+4,polynum-1);
 	}
-	
+
 }
 struct t_vertex_normal
 {
@@ -168,7 +168,7 @@ static int smooth(float *vbuf,int voff, unsigned long *pbuf, float *pnbuf, float
 						v_t_buf[k].n[n]=0;
 					v_t_buf[k].g=-1;  /*  we're telling this by setting group to -1 */
 				}
-				else 
+				else
 					for (n=0;n<3;n++)
 						v_t_buf[k].n[n]/=len;
 				v_t_buf[k].num=1;
@@ -224,7 +224,7 @@ static float *calc_normals(float *vertex_buf, int vertexnum, unsigned long *poly
 			}
 		}
 		 /* s3dprintf(LOW,"polygon [%d/%d]: %d %d %d is in smoothlist %d",i,polynum,v[0],v[1],v[2],g); */
-		
+
 		normal(	vertex_buf+v[0]*3,
 				vertex_buf+v[1]*3,
 				vertex_buf+v[2]*3,
@@ -276,7 +276,7 @@ int s3d_import_3ds(char *buf)
 	char materials[256][MAXSTRN+1];
 	int clen,cid;
 	int filesize=1;  /*  just so it hops above the main chunk ... */
-	int vertex_offset=0; 
+	int vertex_offset=0;
 	int v=0;
 	int col_obj=-1;
 	unsigned long *poly_buf=NULL,*tpbuf,*smooth_list=NULL;
@@ -294,7 +294,7 @@ int s3d_import_3ds(char *buf)
 	{
 		cid=gints(ptr);
 		clen=gintl(ptr+2);
-		
+
 		s3dprintf (VLOW,"[pos %x]: \t%04x [len:%d]",(ptr-buf),cid,(clen-6));
 		if ((ptr==buf) && (cid!=0x4d4d))
 		{
@@ -304,7 +304,7 @@ int s3d_import_3ds(char *buf)
 		ptr=ptr+6;  /*  point to the data .. */
 		switch (cid)
 		{
-		  case 0x4d4d: 
+		  case 0x4d4d:
 			  s3dprintf(VLOW,"-- the main chunk!!");
 			  filesize=clen;
 			  if (cur_oid==-1)
@@ -331,7 +331,7 @@ int s3d_import_3ds(char *buf)
 			  smooth_list=NULL;
 			  mesh_end=ptr+(clen-6);
 			  break;
-		  case 0x4110: 
+		  case 0x4110:
 			  vertexnum=gints(ptr);
 			  ptr+=sizeof(unsigned short);
 			  s3dprintf(VLOW,"-- vertices list!! number of vertices: %d",vertexnum);
@@ -355,7 +355,7 @@ int s3d_import_3ds(char *buf)
 			if (poly_buf==NULL) break;
 		    for (j=0; j<polynum; j++)
 			{
-				poly_buf[j*4+0]=vertex_offset+gints(ptr+0); 
+				poly_buf[j*4+0]=vertex_offset+gints(ptr+0);
 				poly_buf[j*4+1]=vertex_offset+gints(ptr+4);
 				poly_buf[j*4+2]=vertex_offset+gints(ptr+2);
 				poly_buf[j*4+3]=col_obj;  /*  we should have a default material .... */
@@ -381,7 +381,7 @@ int s3d_import_3ds(char *buf)
 			{
 				j=gints(ptr+2*i);
 				if (j>=0 && j<polynum)
-					poly_buf[gints(ptr+2*i)*4+3]=col_obj; 
+					poly_buf[gints(ptr+2*i)*4+3]=col_obj;
 				else {
 					errds(MED,"s3d_import_3ds()","polygon %d out of range!",j);
 				}
@@ -390,10 +390,12 @@ int s3d_import_3ds(char *buf)
 			break;
 		  case 0x4150:
 			s3dprintf(VLOW,"-- smoothing group information (length %d [%d])", clen,clen/4);
+			printf( "-- smoothing group information (length %d [%d])", clen, clen/4 );
 			smooth_list=(unsigned long *)ptr;
 			for (j=0;j<(clen/4);j++)
 			{
 				smooth_list[j]=gintl(ptr+j*4);
+				printf( "smooth_list[%i] = %i", j, smooth_list[j] );
 			}
 
 			ptr=(char *)ptr+(clen-6);
@@ -496,7 +498,7 @@ int s3d_import_3ds(char *buf)
 		{
 			mesh_end=NULL;
 			if ((vertex_buf!=NULL))
-			    s3d_push_vertices(cur_oid, vertex_buf, vertexnum); 
+			    s3d_push_vertices(cur_oid, vertex_buf, vertexnum);
 			if (poly_buf!=NULL)
 			{
 				if (smooth_list!=NULL)

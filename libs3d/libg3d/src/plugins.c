@@ -122,10 +122,10 @@ static gboolean plugins_loaddirectory(G3DContext *context,
 					{
 						if(plugin->type == G3D_PLUGIN_IMAGE)
 							g_hash_table_insert(context->exts_image,
-								g_strdup(*ext), plugin);
+								*ext, plugin);
 						else if(plugin->type == G3D_PLUGIN_IMPORT)
 							g_hash_table_insert(context->exts_import,
-								g_strdup(*ext), plugin);
+								*ext, plugin);
 
 						ext ++;
 					}
@@ -158,15 +158,60 @@ gboolean g3d_plugins_init(G3DContext *context)
 	context->exts_import = g_hash_table_new(g_str_hash, g_str_equal);
 	context->exts_image = g_hash_table_new(g_str_hash, g_str_equal);
 
-	printf("Loading plugins from " PLUGIN_DIR "\n");
 	plugins_loaddirectory(context, PLUGIN_DIR "/image");
 	plugins_loaddirectory(context, PLUGIN_DIR "/import");
+
 	return TRUE;
 }
 
+/**
+ * g3d_plugins_cleanup:
+ * @context: an initialized context
+ *
+ * Tries to free any memory allocated during g3d_plugins_init.
+ */
+
 void g3d_plugins_cleanup(G3DContext *context)
 {
-	/* TODO: implement */
+	GSList *plist;
+	G3DPlugin *plugin;
+	gchar **pext;
+
+	plist = context->plugins;
+	while(plist)
+	{
+		plugin = (G3DPlugin *)plist->data;
+
+#if DEBUG > 2
+		g_print("D: cleaning up plugin '%s'\n", plugin->name);
+#endif
+
+		/* cleanup plugin-specific data */
+		if(plugin->cleanup_func)
+			plugin->cleanup_func(plugin->user_data);
+
+		/* remove extensions from hash tables */
+		pext = plugin->extensions;
+		while(*pext)
+		{
+			if(plugin->type == G3D_PLUGIN_IMAGE)
+				g_hash_table_remove(context->exts_image, *pext);
+			else if(plugin->type == G3D_PLUGIN_IMPORT)
+				g_hash_table_remove(context->exts_import, *pext);
+
+			pext ++;
+		}
+
+		/* cleanup struct data */
+		plugins_free_plugin(plugin);
+
+		/* free list item */
+		plist = g_slist_remove(plist, plugin);
+	}
+
+	/* remove hash tables */
+	g_hash_table_destroy(context->exts_image);
+	g_hash_table_destroy(context->exts_import);
 }
 
 gchar *g3d_plugins_get_filetype(const gchar *filename)

@@ -31,6 +31,7 @@
 
 static G3DObject *obj_createobject(G3DModel *model, const gchar *name);
 static gboolean obj_tryloadmat(G3DModel *model, const gchar *filename);
+static G3DMaterial *obj_usemat(G3DModel *model, const gchar *matname);
 
 gboolean plugin_load_model(G3DContext *context, const gchar *filename,
 	G3DModel *model, gpointer user_data)
@@ -75,6 +76,7 @@ gboolean plugin_load_model(G3DContext *context, const gchar *filename,
 					}
 					else if(sscanf(line, "g %s", oname) == 1)
 					{
+						material = obj_usemat(model, oname);
 #if 0
 						object = obj_createobject(model, oname);
 						v_off += v_cnt;
@@ -158,18 +160,7 @@ gboolean plugin_load_model(G3DContext *context, const gchar *filename,
 				case 's':
 					if(sscanf(line, "usemtl %s", matname) == 1)
 					{
-						/* sets new active material from named list */
-						GSList *mlist = model->materials;
-						while(mlist != NULL)
-						{
-							G3DMaterial *mat = (G3DMaterial*)mlist->data;
-							if(strcmp(matname, mat->name) == 0)
-							{
-								material = mat;
-								break;
-							}
-							mlist = mlist->next;
-						}
+						material = obj_usemat(model, matname);
 					}
 					else if(sscanf(line, "mtllib %s", matfile) == 1)
 					{
@@ -227,7 +218,7 @@ int obj_tryloadmat(G3DModel *model, const char *filename)
 	if(f == NULL)
 	{
 #if DEBUG > 1
-		g_printerr("obj_tryloadmat: loading '%s' failed: %s\n", filename, 
+		g_printerr("obj_tryloadmat: loading '%s' failed: %s\n", filename,
 							 strerror(errno));
 #endif
 		return FALSE;
@@ -240,7 +231,7 @@ int obj_tryloadmat(G3DModel *model, const char *filename)
 		char line[2048];
 		float r,g,b, t1,t2, ni;
 		int tf, ns, il;
-	 
+
 		fgets(line, 2048, f);
 		if(strlen(line))
 		{
@@ -294,3 +285,21 @@ int obj_tryloadmat(G3DModel *model, const char *filename)
 	}
 	return TRUE;
 }
+
+G3DMaterial *obj_usemat(G3DModel *model, const gchar *matname)
+{
+	/* sets new active material from named list */
+	GSList *mlist = model->materials;
+	while(mlist != NULL)
+	{
+		G3DMaterial *mat = (G3DMaterial*)mlist->data;
+		if(strcmp(matname, mat->name) == 0)
+		{
+			return mat;
+		}
+		mlist = mlist->next;
+	}
+
+	return NULL;
+}
+

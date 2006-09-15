@@ -44,6 +44,7 @@
 #define LEOCAD_FLAG_PIECE_SMALL         0x10
 #define LEOCAD_FLAG_PIECE_MEDIUM        0x20
 #define LEOCAD_FLAG_LONGDATA_RUNTIME    0x40
+#define LEOCAD_FLAG_PIECE_RENAMED       0x80
 
 #define LEOCAD_TYPE_MESH                0x01
 #define LEOCAD_TYPE_STUD                0x02
@@ -99,11 +100,45 @@ LeoCadLibrary *leocad_library_load(const gchar *libdir)
 	return library;
 }
 
+static gboolean leocad_free_piece_cb(gpointer key, gpointer value,
+	gpointer user_data)
+{
+	LeoCadPiece *piece;
+
+	piece = (LeoCadPiece *)value;
+
+#if DEBUG > 3
+	g_print("D: freeing piece %s\n", piece->name);
+#endif
+
+	if(piece->name) g_free(piece->name);
+	if(piece->description) g_free(piece->description);
+	if(piece->moved_to) g_free(piece->moved_to);
+
+	if(!(piece->flags & LEOCAD_FLAG_PIECE_RENAMED))
+		if(piece->object) g3d_object_free(piece->object);
+
+	g_free(piece);
+
+	return TRUE;
+}
+
 void leocad_library_free(LeoCadLibrary *library)
 {
+	GSList *mlist;
+	G3DMaterial *material;
+
 	/* remove materials */
+	mlist = library->materials;
+	while(mlist)
+	{
+		material = (G3DMaterial *)mlist->data;
+		mlist = g_slist_remove(mlist, material);
+		g3d_material_free(material);
+	}
+
 	/* remove pieces */
-	/* FIXME: remove pieces */
+	g_hash_table_foreach_remove(library->pieces, leocad_free_piece_cb, NULL);
 	g_hash_table_destroy(library->pieces);
 
 	/* free library */
@@ -408,8 +443,13 @@ G3DObject *leocad_library_get_piece(LeoCadLibrary *library, const gchar *name)
 
 						g3d_matrix_identity(matrix);
 						for(j = 0; j < 12; j ++)
-							matrix[(j % 3) * 4 + (j / 3)] =
+#if 1
+							matrix[(j / 3) * 4 + (j % 3)] =
 								g3d_read_float_le(bin);
+#else
+							matrix[j] = g3d_read_float_le(bin);
+#endif
+							/* g3d_matrix_dump(matrix); */
 
 						if(stud && piece->object)
 						{
@@ -542,7 +582,7 @@ static gboolean leocad_library_read_pieces_idx(LeoCadLibrary *library,
 	gchar magic[32], nameold[9], namenew[9];
 	guint8 version, lastupdate;
 	guint32 nmoved, nbinsize, npieces, i;
-	LeoCadPiece *piece;
+	LeoCadPiece *piece, *newpiece;
 
 	fread(magic, 1, 32, idx);
 	if(strncmp(magic, "LeoCAD piece library index file", 31) != 0)
@@ -583,7 +623,17 @@ static gboolean leocad_library_read_pieces_idx(LeoCadLibrary *library,
 
 		piece = g_hash_table_lookup(library->pieces, namenew);
 		if(piece)
-			g_hash_table_insert(library->pieces, g_strdup(nameold), piece);
+		{
+			newpiece = g_new0(LeoCadPiece, 1);
+			memcpy(newpiece, piece, sizeof(LeoCadPiece));
+			newpiece->name = g_strdup(nameold);
+			newpiece->description = g_strdup(piece->description);
+			newpiece->moved_to = g_strdup(namenew);
+			newpiece->object = piece->object;
+			newpiece->flags |= LEOCAD_FLAG_PIECE_RENAMED;
+
+			g_hash_table_insert(library->pieces, piece->name, newpiece);
+		}
 	}
 
 	return TRUE;

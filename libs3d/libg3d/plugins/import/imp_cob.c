@@ -28,6 +28,7 @@
 #include <g3d/context.h>
 #include <g3d/material.h>
 #include <g3d/vector.h>
+#include <g3d/matrix.h>
 #include <g3d/read.h>
 #include <g3d/iff.h>
 
@@ -188,23 +189,15 @@ static G3DObject *cob_read_polh_bin(FILE *f, guint32 len, gboolean is_be,
 	len -= 48;
 
 	/* current position: 3 x 16 */
-	curpos[12] = curpos[13] = curpos[14] = 0.0;
-	curpos[15] = 1.0;
-
+	g3d_matrix_identity(curpos);
 	for(i = 0; i < 12; i ++)
 	{
 		curpos[i] = cob_read_e(f, float, is_be);
 		len -= 4;
 	}
+	g3d_matrix_transpose(curpos);
 
-#if DEBUG > 0
-	for(i = 0; i < 4; i ++)
-	{
-		g_print("COB: PolH: CurPos: %+1.2f %+1.2f %+1.2f %+1.2f\n",
-			curpos[i * 4 + 0], curpos[i * 4 + 1],
-			curpos[i * 4 + 2], curpos[i * 4 + 3]);
-	}
-#endif
+	/*g3d_matrix_dump(curpos);*/
 
 	/* vertex list */
 	object->vertex_count = cob_read_e(f, int32, is_be);

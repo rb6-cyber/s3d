@@ -27,6 +27,13 @@
 
 G_BEGIN_DECLS
 
+/*
+ * gfloat matrix[16]:
+ *
+ * matrix[col * 4 + row] = f;
+ *
+ */
+
 /**
  * g3d_matrix_identity:
  * @matrix: 4x4 matrix (float[16])
@@ -89,6 +96,39 @@ gboolean g3d_matrix_rotate(gfloat angle, gfloat ax, gfloat ay, gfloat az,
  * Returns: TRUE on success, FALSE else
  */
 gboolean g3d_matrix_rotate_xyz(gfloat rx, gfloat ry, gfloat rz, gfloat *rm);
+
+/**
+ * g3d_matrix_scale:
+ * @x: x factor
+ * @y: y factor
+ * @z: z factor
+ * @rm: resulting matrix
+ *
+ * Adds a scaling to the matrix.
+ *
+ * Returns: TRUE on success, FALSE else
+ */
+gboolean g3d_matrix_scale(gfloat x, gfloat y, gfloat z, gfloat *rm);
+
+/**
+ * g3d_matrix_transpose:
+ * @matrix: the matrix
+ *
+ * Transposes the matrix.
+ *
+ * Returns: TRUE on success, FALSE else
+ */
+gboolean g3d_matrix_transpose(gfloat *matrix);
+
+/**
+ * g3d_matrix_dump:
+ * @matrix: the matrix
+ *
+ * If debugging is enabled, this function dump the matrix to stderr.
+ *
+ * Returns: TRUE if matrix is dumped, FALSE else
+ */
+gboolean g3d_matrix_dump(gfloat *matrix);
 
 G_END_DECLS
 

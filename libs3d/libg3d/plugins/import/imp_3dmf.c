@@ -72,7 +72,7 @@ gboolean plugin_load_model(G3DContext *context, const gchar *filename,
 		return FALSE;
 	}
 
-	g3d_iff_readchunk(f, &id, &len);
+	g3d_iff_readchunk(f, &id, &len, 0);
 	if((id != G3D_IFF_MKID('3', 'D', 'M', 'F')) ||
 		(len != 16))
 	{
@@ -409,7 +409,7 @@ static gboolean x3dmf_read_rfrn(FILE *f, G3DModel *model,
 
 	object = x3dmf_object_new(f, model);
 
-	g3d_iff_readchunk(f, &id, &len);
+	g3d_iff_readchunk(f, &id, &len, 0);
 	switch(id)
 	{
 		case G3D_IFF_MKID('c', 't', 'n', 'r'):
@@ -438,7 +438,7 @@ static gboolean x3dmf_read_container(FILE *f, guint32 length, G3DModel *model,
 	{
 		if(feof(f)) break;
 
-		g3d_iff_readchunk(f, &id, &len);
+		g3d_iff_readchunk(f, &id, &len, 0);
 		length -= 8;
 
 		if(id == 0)

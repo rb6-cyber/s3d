@@ -130,7 +130,7 @@ int main (int argc, char **argv) {
 			while ( oitem ) {
 
 				object = (G3DObject *)oitem->data;
-				
+
 				/* push vertices */
 				for ( j = 0; j < object->vertex_count; j++ ) {
 					/* 3. and 4. param have to change places otherwise the object will be turned */
@@ -202,8 +202,9 @@ int main (int argc, char **argv) {
 					/* face with texture */
 					if ( ( mat2tex->texture_id != -1 ) && ( face->flags & G3D_FLAG_FAC_TEXMAP ) ) {
 
-						/* printf( "neues face: %i\n", face->tex_vertex_count ); */
-						s3d_pep_polygon_tex_coord( obj_id, face->tex_vertex_data[5], face->tex_vertex_data[4], face->tex_vertex_data[3], face->tex_vertex_data[2], face->tex_vertex_data[1], face->tex_vertex_data[0] );
+						/* printf( "text_coords: %f:%f %f:%f %f:%f\n", face->tex_vertex_data[0], face->tex_vertex_data[1], face->tex_vertex_data[2], face->tex_vertex_data[3], face->tex_vertex_data[4], face->tex_vertex_data[5] ); */
+
+						s3d_pep_polygon_tex_coord( obj_id, face->tex_vertex_data[0], face->tex_vertex_data[1], face->tex_vertex_data[2], face->tex_vertex_data[3], face->tex_vertex_data[4], face->tex_vertex_data[5] );
 
 					}
 
@@ -216,6 +217,7 @@ int main (int argc, char **argv) {
 				oitem = oitem->next;
 
 			}
+
 			s3d_flags_on( obj_id, S3D_OF_VISIBLE|S3D_OF_SELECTABLE );
 
 			s3d_mainloop(mainloop);

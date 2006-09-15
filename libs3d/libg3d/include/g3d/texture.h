@@ -27,6 +27,8 @@
 
 G_BEGIN_DECLS
 
+G3DImage *g3d_texture_load(G3DContext *context, const gchar *filename);
+
 /**
  * g3d_texture_load_cached:
  * @context: a valid context
@@ -41,6 +43,8 @@ G_BEGIN_DECLS
 G3DImage *g3d_texture_load_cached(G3DContext *context, G3DModel *model,
 	const gchar *filename);
 
+void g3d_texture_free(G3DImage *texture);
+
 /**
  * g3d_texture_prepare:
  * @texture: a texture image
@@ -52,6 +56,10 @@ G3DImage *g3d_texture_load_cached(G3DContext *context, G3DModel *model,
  * Returns: TRUE on success, FALSE else
  */
 gboolean g3d_texture_prepare(G3DImage *texture);
+
+gboolean g3d_texture_flip_y(G3DImage *texture);
+
+G3DImage *g3d_texture_merge_alpha(G3DImage *image, G3DImage *aimage);
 
 G_END_DECLS
 

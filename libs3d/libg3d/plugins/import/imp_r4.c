@@ -25,13 +25,9 @@
 
 #include <glib.h>
 
-#include <g3d/types.h>
-#include <g3d/context.h>
-#include <g3d/material.h>
-#include <g3d/read.h>
 #include <g3d/iff.h>
 
-#include "imp_iob_chunks.h"
+#include "imp_r4_chunks.h"
 
 gboolean plugin_load_model(G3DContext *context, const gchar *filename,
 	G3DModel *model, gpointer user_data)
@@ -42,9 +38,9 @@ gboolean plugin_load_model(G3DContext *context, const gchar *filename,
 	FILE *f;
 
 	f = g3d_iff_open(filename, &id, &len);
-	if(id != G3D_IFF_MKID('T','D','D','D'))
+	if(id != G3D_IFF_MKID('R','E','F','L'))
 	{
-		g_warning("file is not an .iob (TDDD) file %s", filename);
+		g_warning("file is not an .r4 (REFL) file %s", filename);
 		fclose(f);
 		return FALSE;
 	}
@@ -59,7 +55,7 @@ gboolean plugin_load_model(G3DContext *context, const gchar *filename,
 	local->parent_id = id;
 	local->nb = len;
 
-	g3d_iff_read_ctnr(global, local, iob_chunks, G3D_IFF_PAD2);
+	g3d_iff_read_ctnr(global, local, r4_chunks, G3D_IFF_PAD1);
 
 	g_free(local);
 	g_free(global);
@@ -67,25 +63,15 @@ gboolean plugin_load_model(G3DContext *context, const gchar *filename,
 	return TRUE;
 }
 
-char *plugin_description(void)
+gchar *plugin_description(void)
 {
 	return g_strdup(
-		"import plugin for Impulse Turbo Silver / Imagine objects\n");
+		"import plugin for Reflections R4\n");
 }
 
-char **plugin_extensions(void)
+gchar **plugin_extensions(void)
 {
-	return g_strsplit("iob", ":", 0);
+	return g_strsplit("r4", ":", 0);
 }
 
-
-/*****************************************************************************/
-/* IOB specific                                                              */
-/*****************************************************************************/
-
-gfloat iob_read_fract(FILE *f)
-{
-	gint32 i = g3d_read_int32_be(f);
-	return (gfloat)(i / 0xFFFF);
-}
 

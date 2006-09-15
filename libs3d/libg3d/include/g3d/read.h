@@ -98,6 +98,30 @@ gfloat g3d_read_float_be(FILE *f);
  */
 gfloat g3d_read_float_le(FILE *f);
 
+/**
+ * g3d_read_double_be:
+ * @f: the file to read from
+ *
+ * Read a 8 byte big-endian double-precision floating point number from file.
+ *
+ * Returns: The read value, 0 in case of error
+ */
+gdouble g3d_read_double_be(FILE *f);
+
+/**
+ * g3d_read_double_be:
+ * @f: the file to read from
+ *
+ * Read a 8 byte little-endian double-precision floating point number from
+ * file.
+ *
+ * Returns: The read value, 0 in case of error
+ */
+
+gdouble g3d_read_double_le(FILE *f);
+
+gint32 g3d_read_cstr(FILE *f, gchar *buffer, gint32 max_len);
+
 G_END_DECLS
 
 #endif /* __G3D_READ_H__ */

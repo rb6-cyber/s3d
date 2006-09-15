@@ -85,6 +85,17 @@ void g3d_model_clear(G3DModel *model);
  */
 void g3d_model_free(G3DModel *model);
 
+/**
+ * g3d_model_get_object_by_name:
+ * @model: the model containing all objects
+ * @name: the name of the requested object
+ *
+ * Searches the object tree for an object with the given name.
+ *
+ * Returns: the requested object or NULL if non was found
+ */
+G3DObject *g3d_model_get_object_by_name(G3DModel *model, const gchar *name);
+
 G_END_DECLS
 
 #endif /* __G3D_MODEL_H__ */

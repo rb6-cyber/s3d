@@ -63,7 +63,11 @@ gboolean g3d_vector_transform(gfloat *x, gfloat *y, gfloat *z, gfloat *matrix)
 		result[i] = 0.0;
 
 		for(k = 0; k < 4; k ++)
+#if 0
 			result[i] += matrix[i * 4 + k] * vector[k];
+#else
+			result[i] += matrix[k * 4 + i] * vector[k];
+#endif
 	}
 
 	*x = result[0];

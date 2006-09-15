@@ -85,6 +85,16 @@ typedef struct {
 } G3DFace;
 
 /*****************************************************************************
+ * G3DTransformation
+ *****************************************************************************/
+
+typedef struct {
+	gfloat matrix[16];
+	guint32 flags;
+} G3DTransformation;
+
+
+/*****************************************************************************
  * G3DObject
  *****************************************************************************/
 typedef struct {
@@ -93,6 +103,9 @@ typedef struct {
 	GSList *materials;
 	GSList *faces;
 	GSList *objects;
+
+	/* transformation, may be NULL */
+	G3DTransformation *transformation;
 
 	/* don't render this object */
 	gboolean hide;
