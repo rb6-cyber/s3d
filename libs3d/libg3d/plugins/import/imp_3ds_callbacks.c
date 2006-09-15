@@ -1,4 +1,5 @@
 #include <string.h>
+#include <math.h>
 
 #include <g3d/read.h>
 #include <g3d/texture.h>
@@ -404,25 +405,125 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 	G3DObject *object;
 	G3DFace *face;
 	GSList *oface;
-	gint32 chunk_length, i;
+	gint32 i, j, k, n=0, polynum, group;
+	guint32 *smooth_list;
+	gfloat *pnormal_list, *v_t_buf;			 	
+	gfloat a[3],b[3], *p0,*p1,*p2,*r;
+	gfloat len;
 
+	/* read data */
 	object = (G3DObject *)parent->object;
 	g_return_val_if_fail(object, FALSE);
 
-	oface = object->faces;
-	while ( oface->next ) {
-		oface = oface->next;
+	oface=object->faces;
+	polynum=0;
+	for (oface=object->faces; oface != NULL ; oface=oface->next) polynum++; /* count polygons */
+
+	pnormal_list=	g_new(float, 3*polynum);							/* polygon normal list */
+	v_t_buf=		g_new0(float,3*object->vertex_count);				/* normals per vertice */
+	smooth_list = 	g_new(guint32, polynum);
+	printf("reading %d int32 values\n",polynum);
+	for ( i=0 ; i<polynum ; i++ ) {
+		smooth_list[i] = g3d_read_int32_le(global->f);
+		printf("smoothlist[%d] = %d\n",i,smooth_list[i]);
 	}
-
-	face = (G3DFace *)oface->data;
-	face->normals = g_malloc(chunk_length);
-	chunk_length = g3d_read_int16_le(global->f);
-
-	for ( i = 0; i < ( chunk_length / 4 ); i++ )
+	parent->nb -= polynum * 4;
+	/* first, we calculate the normal by the polygon vertices (just vector product) */
+	i=0;
+	for (oface=object->faces; oface != NULL ; oface=oface->next)
 	{
-		face->normals[i] = gintl(ptr+j*4);
+		face=(G3DFace *)oface->data;
+		r=&(pnormal_list[i*3]);
+		p0=&(object->vertex_data[3* face->vertex_indices[0]]);
+		p1=&(object->vertex_data[3* face->vertex_indices[1]]);
+		p2=&(object->vertex_data[3* face->vertex_indices[2]]);
+		
+		a[0]=p1[0] - p0[0];
+		a[1]=p1[1] - p0[1];
+		a[2]=p1[2] - p0[2];
+		b[0]=p2[0] - p0[0];
+		b[1]=p2[1] - p0[1];
+		b[2]=p2[2] - p0[2];
+		r[0]=a[1]*b[2] - a[2]*b[1];
+		r[1]=a[2]*b[0] - a[0]*b[2];
+		r[2]=a[0]*b[1] - a[1]*b[0];
+	
+		len=sqrt(r[0]*r[0]+r[1]*r[1]+r[2]*r[2]);
+		if (len!=0.0F)
+		{
+			r[0]=r[0]/len;
+			r[1]=r[1]/len;
+			r[2]=r[2]/len;
+		} else {
+			r[0]=r[1]=r[2]=0.0F;
+		}
+		face->flags|=G3D_FLAG_FAC_NORMALS;
+		i++;
 	}
+	do {
+		/* find a suitable group. -1 means we've already taken care */
+		group=-1;
+		for (i=0;i<polynum;i++)
+			if ((group=smooth_list[i])!=-1) /* found a group */
+				break;
+		/* handle this group */
+		if (group!=-1)
+		{
+			/* SMOOTH */
+			/*  this functions takes a shitload of arguments, but that's because of optimization.  */
+			/*  we add normals of the polygons's vertices so each vertex will finally have */
+			/*  the sum of the polygons normals where the vertex is part of. */
 
+			/* run0: clear the v_t_buf for this group */
+			for (i=0;i<object->vertex_count*3;i++)
+				v_t_buf[i]=0.0;
+			 /*  run1: add normals on themselves into the v_t_buf */
+			i=0;
+			for (oface=object->faces; oface != NULL ; oface=oface->next)
+			{
+				if (smooth_list[i]==group)
+				{
+					for (j=0;j<3;j++) /* for all 3 vertices of the polygon */
+					{
+						k=face->vertex_indices[j];
+						for (n=0;n<3;n++)
+							v_t_buf[ k*3+n ]+= pnormal_list[i*3 + n];
+					}
+				}
+				i++;
+			}
+			i=0;
+			 /*  run2: apply to the final vertex buffer */
+			for (oface=object->faces; oface != NULL ; oface=oface->next)
+			{
+				face=(G3DFace *)oface->data;
+				if (smooth_list[i]==group)
+				{
+					face->normals=g_new(gfloat,9);
+					for (j=0;j<3;j++)
+					{
+						k=face->vertex_indices[j];
+						len=sqrt(	v_t_buf[k*3]   * v_t_buf[k]+
+									v_t_buf[k*3+1] * v_t_buf[k*3+1]+
+									v_t_buf[k*3+2] * v_t_buf[k*3+2]);
+						if (len==0.0F)   /*  this should not happen. well ... */
+								for (n=0;n<3;n++)	v_t_buf[k*3 + n]=0;
+						else	for (n=0;n<3;n++)	v_t_buf[k*3 + n]/=len; /* normalize it */
+						
+						if (len!=0.0) 	memcpy(face->normals +j*3, v_t_buf+ 	k*3,sizeof(gfloat)*3);	/*  finally, we save the normal in our normal buffer */
+						else  			memcpy(face->normals +j*3, pnormal_list+i*3,sizeof(gfloat)*3);	/*  use the pbuf normal */
+					}
+					smooth_list[i]=-1; /* finished this polygon */
+				}
+				i++;
+			}
+			/* SMOOTH END */
+		}
+	} while (group!=-1);
+
+	g_free(pnormal_list);
+	g_free(v_t_buf);
+	g_free(smooth_list);
 	return TRUE;
 }
 

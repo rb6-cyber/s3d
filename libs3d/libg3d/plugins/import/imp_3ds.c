@@ -133,6 +133,13 @@ gboolean x3ds_read_ctnr(x3ds_global_data *global, x3ds_parent_data *parent)
 				x3ds_chunks[i].container ? 'c' : ' ',
 				x3ds_chunks[i].callback ? 'f' : ' ',
 				x3ds_chunks[i].desc, chunk_len);
+			
+			if (chunk_id==0)
+			{
+				g_printerr("error: bad chunk id\n");
+		/*		return FALSE;*/
+				exit(-1);
+			}
 
 			subparent = g_new0(x3ds_parent_data, 1);
 			subparent->id = parent->id;
