@@ -395,28 +395,17 @@ gboolean x3ds_cb_0x4140(x3ds_global_data *global, x3ds_parent_data *parent)
 	return TRUE;
 }
 
-/* texture vertices */
+/* smoothing groups */
 gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 {
-/* 	G3DObject *object;
- 	gint32 i;
+
+	G3DObject *object;
 
 	object = (G3DObject *)parent->object;
- 	g_return_val_if_fail(object, FALSE);
+	g_return_val_if_fail(object, FALSE);
 
- 	object->tex_vertex_count = g3d_read_int16_le(global->f);
- 	parent->nb -= 2;
-
- 	object->tex_vertex_data = g_new0(gfloat, object->tex_vertex_count * 2);
-
- 	for(i = 0; i < object->tex_vertex_count; i ++)
- 	{
- 		object->tex_vertex_data[i * 2 + 0] = g3d_read_float_le(global->f);
- 		object->tex_vertex_data[i * 2 + 1] = g3d_read_float_le(global->f);
- 		parent->nb -= 8;
-
- 		if((i % 1000) == 0) x3ds_update_progress(global);
- 	}*/
+	/* g3d_read_int16_le(global->f) */
+	/* smooth list goes here face->normals */
 
 	return TRUE;
 }
