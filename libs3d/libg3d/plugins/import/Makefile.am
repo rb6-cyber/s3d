@@ -24,10 +24,12 @@ pluginimp_LTLIBRARIES += \
 	imp_r4.la \
 	imp_test.la
 
+#	@DBG_CFLAGS@ -DDEBUG=@DEBUG@ 
+#	we currently have no global DEBUG in autohell, so we just turn it on
 AM_CFLAGS = \
 	-Wall -ansi -pedantic \
 	-DG_LOG_DOMAIN=\"LibG3D\" \
-	@DBG_CFLAGS@ -DDEBUG=@DEBUG@ \
+	@DBG_CFLAGS@ -DDEBUG=1 \
 	@GLIB_CFLAGS@
 
 INCLUDES = -I$(top_builddir)/libs3d/libg3d/include

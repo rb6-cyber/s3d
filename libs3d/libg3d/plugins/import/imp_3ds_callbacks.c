@@ -243,6 +243,8 @@ gboolean x3ds_cb_0x4110(x3ds_global_data *global, x3ds_parent_data *parent)
 		object->vertex_data[i * 3 + 0] = g3d_read_float_le(global->f);
 		object->vertex_data[i * 3 + 1] = g3d_read_float_le(global->f);
 		object->vertex_data[i * 3 + 2] = g3d_read_float_le(global->f);
+
+		printf("point array original vertex data: %f, %f, %f\n",object->vertex_data[i * 3 + 0], object->vertex_data[i * 3 + 1], object->vertex_data[i * 3 + 2]);
 		parent->nb -= 12;
 
 		if((i % 1000) == 0) x3ds_update_progress(global);

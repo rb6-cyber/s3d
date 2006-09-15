@@ -134,6 +134,7 @@ int main (int argc, char **argv) {
 				/* push vertices */
 				for ( j = 0; j < object->vertex_count; j++ ) {
 					/* 3. and 4. param have to change places otherwise the object will be turned */
+					printf("vertex: %d/%d: %f %f %f\n",j, object->vertex_count, object->vertex_data[j * 3], object->vertex_data[j * 3 + 2], object->vertex_data[j * 3 + 1]);
 					s3d_push_vertex( obj_id, object->vertex_data[j * 3], object->vertex_data[j * 3 + 2], object->vertex_data[j * 3 + 1] );
 				}
 
