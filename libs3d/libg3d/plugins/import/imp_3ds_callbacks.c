@@ -406,7 +406,7 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 	GSList *oface;
 	gint32 i, j, k, n=0, polynum, group;
 	guint32 *smooth_list;
-	gfloat *pnormal_list, *v_t_buf;
+	gfloat *pnormal_list, *vertex_normal_buf;			 	
 	gfloat a[3],b[3], *p0,*p1,*p2,*r;
 	gfloat len;
 
@@ -418,13 +418,11 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 	polynum=0;
 	for (oface=object->faces; oface != NULL ; oface=oface->next) polynum++; /* count polygons */
 
-	pnormal_list=	g_new(float, 3*polynum);							/* polygon normal list */
-	v_t_buf=		g_new0(float,3*object->vertex_count);				/* normals per vertice */
-	smooth_list = 	g_new(guint32, polynum);
-	printf("reading %d int32 values\n",polynum);
+	pnormal_list=		g_new(float, 3*polynum);							/* polygon normal list */
+	vertex_normal_buf=	g_new0(float,3*object->vertex_count);				/* normals per vertice */
+	smooth_list = 		g_new(guint32, polynum);
 	for ( i=0 ; i<polynum ; i++ ) 
 		smooth_list[i] = g3d_read_int32_le(global->f);
-
 	parent->nb -= polynum * 4;
 	/* first, we calculate the normal by the polygon vertices (just vector product) */
 	i=0;
@@ -435,7 +433,7 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 		p0=&(object->vertex_data[3* face->vertex_indices[0]]);
 		p1=&(object->vertex_data[3* face->vertex_indices[1]]);
 		p2=&(object->vertex_data[3* face->vertex_indices[2]]);
-
+		
 		a[0]=p1[0] - p0[0];
 		a[1]=p1[1] - p0[1];
 		a[2]=p1[2] - p0[2];
@@ -445,7 +443,7 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 		r[0]=a[1]*b[2] - a[2]*b[1];
 		r[1]=a[2]*b[0] - a[0]*b[2];
 		r[2]=a[0]*b[1] - a[1]*b[0];
-
+	
 		len=sqrt(r[0]*r[0]+r[1]*r[1]+r[2]*r[2]);
 		if (len!=0.0F)
 		{
@@ -458,26 +456,23 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 		face->flags|=G3D_FLAG_FAC_NORMALS;
 		i++;
 	}
-
 	do {
 		/* find a suitable group. -1 means we've already taken care */
 		group=-1;
 		for (i=0;i<polynum;i++)
 			if ((group=smooth_list[i])!=-1) /* found a group */
 				break;
-		printf("handling group %d\n",group);
 		/* handle this group */
 		if (group!=-1)
 		{
 			/* SMOOTH */
-			/*  this functions takes a shitload of arguments, but that's because of optimization.  */
 			/*  we add normals of the polygons's vertices so each vertex will finally have */
 			/*  the sum of the polygons normals where the vertex is part of. */
 
-			/* run0: clear the v_t_buf for this group */
+			/* run0: clear the vertex_normal_buf for this group */
 			for (i=0;i<object->vertex_count*3;i++)
-				v_t_buf[i]=0.0;
-			 /*  run1: add normals on themselves into the v_t_buf */
+				vertex_normal_buf[i]=0.0;
+			 /*  run1: add normals on themselves into the vertex_normal_buf */
 			i=0;
 			for (oface=object->faces; oface != NULL ; oface=oface->next)
 			{
@@ -488,7 +483,7 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 					{
 						k=face->vertex_indices[j];
 						for (n=0;n<3;n++)
-							v_t_buf[ k*3+n ]+= pnormal_list[i*3 + n];
+							vertex_normal_buf[ k*3+n ]+= pnormal_list[i*3 + n];
 					}
 				}
 				i++;
@@ -504,18 +499,15 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 					for (j=0;j<3;j++)
 					{
 						k=face->vertex_indices[j];
-						len=sqrt(	v_t_buf[k*3]   * v_t_buf[k]+
-									v_t_buf[k*3+1] * v_t_buf[k*3+1]+
-									v_t_buf[k*3+2] * v_t_buf[k*3+2]);
-						printf("vertex buffer : %f %f %f ... len = %f\n",v_t_buf[k*3],v_t_buf[k*3+1],v_t_buf[k*3+2],len);
+						len=sqrt(	vertex_normal_buf[k*3]   * vertex_normal_buf[k*3]+
+									vertex_normal_buf[k*3+1] * vertex_normal_buf[k*3+1]+
+									vertex_normal_buf[k*3+2] * vertex_normal_buf[k*3+2]);
 						if (len==0.0F)   /*  this should not happen. well ... */
-								for (n=0;n<3;n++)	v_t_buf[k*3 + n]=0;
-						else	for (n=0;n<3;n++)	v_t_buf[k*3 + n]/=len; /* normalize it */
-
-						if (len!=0.0) 	memcpy(face->normals +j*3, v_t_buf+ 	k*3,sizeof(gfloat)*3);	/*  finally, we save the normal in our normal buffer */
-						else  			{memcpy(face->normals +j*3, pnormal_list+i*3,sizeof(gfloat)*3);	/*  use the pbuf normal */
-							printf("using pnormal_list as fallback\n");
-						}
+								for (n=0;n<3;n++)	vertex_normal_buf[k*3 + n]=0;
+						else	for (n=0;n<3;n++)	vertex_normal_buf[k*3 + n]/=len; /* normalize it */
+						
+						if (len!=0.0) 	memcpy(face->normals +j*3, vertex_normal_buf+ 	k*3,sizeof(gfloat)*3);	/*  finally, we save the normal in our normal buffer */
+						else  			memcpy(face->normals +j*3, pnormal_list+i*3,sizeof(gfloat)*3);	/*  use the pbuf normal */
 					}
 					smooth_list[i]=-1; /* finished this polygon */
 				}
@@ -526,7 +518,7 @@ gboolean x3ds_cb_0x4150(x3ds_global_data *global, x3ds_parent_data *parent)
 	} while (group!=-1);
 
 	g_free(pnormal_list);
-	g_free(v_t_buf);
+	g_free(vertex_normal_buf);
 	g_free(smooth_list);
 	return TRUE;
 }

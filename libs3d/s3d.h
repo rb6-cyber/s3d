@@ -151,8 +151,7 @@ int s3d_rotate(int object, float x, float y, float z);
 int s3d_scale(int object, float s);
 
 /* high-level object creating */
-int s3d_import_3ds_file(char *fname);
-int s3d_import_3ds(char *buf);
+int s3d_import_model_file(char *fname);
 int s3d_open_file(char *fname, char **pointer);
 int s3d_select_font(char *mask);
 int s3d_draw_string( char *str, float *xlen);

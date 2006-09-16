@@ -10,7 +10,7 @@ include_HEADERS= s3d.h s3d_keysym.h
 noinst_HEADERS=		config.h s3dlib.h sei_triangulate.h sei_interface.h
 
 libs3d_la_CPPFLAGS=	-I${top_srcdir}/server
-libs3d_la_CFLAGS=	@FONTCONFIG_CFLAGS@ @FREETYPE_CFLAGS@ 
-libs3d_la_LIBADD=	@FONTCONFIG_LIBS@ @FREETYPE_LIBS@ @LIBM@
+libs3d_la_CFLAGS=	@FONTCONFIG_CFLAGS@ @FREETYPE_CFLAGS@ -I$(top_srcdir)/libs3d/libg3d/include @GLIB_CFLAGS@
+libs3d_la_LIBADD=	@FONTCONFIG_LIBS@ @FREETYPE_LIBS@ @LIBM@ $(top_builddir)/libs3d/libg3d/src/libg3d.la
 
 EXTRA_DIST=		lgpl.txt

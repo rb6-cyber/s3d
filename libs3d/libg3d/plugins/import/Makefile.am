@@ -29,8 +29,8 @@ pluginimp_LTLIBRARIES += \
 AM_CFLAGS = \
 	-Wall -ansi -pedantic \
 	-DG_LOG_DOMAIN=\"LibG3D\" \
-	@DBG_CFLAGS@ -DDEBUG=1 \
-	@GLIB_CFLAGS@
+	@DBG_CFLAGS@ \
+	@GLIB_CFLAGS@ #-DDEBUG=1 
 
 INCLUDES = -I$(top_builddir)/libs3d/libg3d/include
 
