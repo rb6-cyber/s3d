@@ -30,15 +30,30 @@
 #define XK_MISCELLANY
 #include <X11/keysymdef.h>	 /* keysyms */
 #include <X11/extensions/XTest.h>	/* keyboard/mouse input via s3d */
-#include <time.h>	/* nanosleep() */
+#include <X11/extensions/XShm.h> /* */
+#include <time.h>		/* nanosleep() */
+#include <sys/time.h> 	/* gettimeofday */
+#include <sys/ipc.h>
+#include <sys/shm.h>
 static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
 
 int oid;
 XImage *image;
 Display *dpy=0;
 int window,scr;
-int width,height;
+unsigned int width,height, height, depth;
+int format;
+char *data;
+Visual *visual;
+XShmSegmentInfo shminfo;
 char *tex_image=NULL,*otex_image=NULL,*img1,*img2;
+
+
+
+struct timeval start, end;
+int iterations;
+float count[3];
+
 int get_shift(unsigned long t)
 {
 	int i=0;
@@ -57,7 +72,18 @@ void mainloop()
 	int bpp;
 	char *swap_timg;
 	int last_change,start_change;
-	image = XGetImage(dpy,window,0,0,width,height,AllPlanes,ZPixmap);
+	gettimeofday(&end,NULL);
+	count[0]+=(end.tv_sec-start.tv_sec)*10000000 + end.tv_usec-start.tv_usec;
+	start.tv_sec	=end.tv_sec;
+	start.tv_usec 	=end.tv_usec;
+
+/*	image = XGetImage(dpy,window,0,0,width,height,AllPlanes,ZPixmap);*/
+	printf("dpy: %010p, window: %010p, image: %010p\n",dpy,window,image);
+	XShmGetImage(dpy, window, image, 0,0,0xffffffff);
+	gettimeofday(&end,NULL);
+	count[1]+=(end.tv_sec-start.tv_sec)*10000000 + end.tv_usec-start.tv_usec;
+	start.tv_sec	=end.tv_sec;
+	start.tv_usec 	=end.tv_usec;
 	if (image->format==ZPixmap)
 	{
 		printf("Ximage: %dx%d, format %d (%d), bpp: %d, depth %d, pad %d\n",image->width,image->height,image->format,ZPixmap,
@@ -102,7 +128,6 @@ void mainloop()
 				}
 				if (last_change!=y)
 				{	 /*  last change is already over, post it! */
-/*					printf("[%d to %d]",start_change,last_change);*/
 					s3d_load_texture(oid,0,0,start_change,width,last_change-start_change+1,(unsigned char *)tex_image+start_change*width*4);
 					start_change=-1;
 					last_change=-1;
@@ -121,9 +146,16 @@ void mainloop()
 		tex_image=otex_image;
 		otex_image=swap_timg;
 	}
-	XDestroyImage(image);
+	gettimeofday(&end,NULL);
+	count[2]+=(end.tv_sec-start.tv_sec)*10000000 + end.tv_usec-start.tv_usec;
+	start.tv_sec	=end.tv_sec;
+	start.tv_usec 	=end.tv_usec;
+	iterations++;
+/*	XDestroyImage(image);*/
+	for (x=0;x<3;x++)
+		printf("[%d] %f\n",x,count[x]/iterations);
 
-	nanosleep(&t,NULL); 
+/*	nanosleep(&t,NULL); */
 }
 void keypress(struct s3d_evt *event)
 {
@@ -152,7 +184,11 @@ void keypress(struct s3d_evt *event)
 }
 void mouseclick(struct s3d_evt *event)
 {
-	printf("not processing mouse clicks yet ... \n");
+	int i;
+	printf("thats it, collecting:\n");
+	for (i=0;i<3;i++)
+		printf("[%d] %f\n",i,count[i]/iterations);
+	exit(0);	
 }
 int main(int argc, char **argv)
 {
@@ -167,12 +203,16 @@ int main(int argc, char **argv)
 		printf("couldn't open display\n");
 		return(-1);
 	}
+	count[0]=count[1]=count[2]=0;
+	iterations=0;
 	if (!s3d_init(&argc,&argv,"X11-gate"))
 	{
 		scr = DefaultScreen(dpy);
 		window = RootWindow(dpy, scr);
 		width = DisplayWidth(dpy, scr);
 		height = DisplayHeight(dpy, scr);
+		visual= DefaultVisual(dpy, scr);
+		depth = DefaultDepth(dpy, scr);
 		XLockDisplay(dpy);
 		xt=XTestQueryExtension(dpy,&a,&b,&c,&d);
 		XUnlockDisplay(dpy);
@@ -180,6 +220,19 @@ int main(int argc, char **argv)
 		{
 			printf("having xtest extension ...\n");
 		}
+/* X11 shm - http://www.xfree86.org/current/mit-shm.html */
+		
+		image= XShmCreateImage(dpy, visual, depth, ZPixmap, NULL, &shminfo, width, height);
+		shminfo.shmid = shmget(IPC_PRIVATE, image->bytes_per_line * image->height, IPC_CREAT|0777);
+		shminfo.shmaddr = image->data = shmat (shminfo.shmid, 0, 0);
+		shmctl(shminfo.shmid, IPC_RMID, 0);
+		shminfo.readOnly= False;
+		if (!XShmAttach(dpy, &shminfo)) 
+			printf("cannot use the shared memory segment .. :( \n");
+		else
+			printf("can use share segment :D\n");
+		XSync(dpy, False);
+		
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK,mouseclick);
 		s3d_set_callback(S3D_EVENT_KEY,keypress);
 		printf("screen: %dx%d\n",width,height);
@@ -207,7 +260,8 @@ int main(int argc, char **argv)
 		s3d_push_texture(oid,width,height);
 					 /*  push data on texture 0 position (0,0) */
 		s3d_pep_material_texture(oid,0);	 /*  assign texture 0 to material 0 */
-		s3d_flags_on(oid,S3D_OF_VISIBLE);
+		s3d_flags_on(oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		gettimeofday(&start,NULL);
 		s3d_mainloop(mainloop);
 		free(img1);
 		free(img2);
