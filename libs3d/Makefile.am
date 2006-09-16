@@ -1,7 +1,7 @@
 SUBDIRS=. libg3d
 lib_LTLIBRARIES=	libs3d.la
 
-libs3d_la_SOURCES=	3dsread.c callback.c error.c event.c fontselect.c \
+libs3d_la_SOURCES=	modelread.c callback.c error.c event.c fontselect.c \
 			freetype.c io.c network.c object_queue.c proto_in.c \
 			proto_out.c shm.c shm_ringbuf.c tcp.c \
 			sei_construct.c sei_misc.c sei_monotone.c sei_tri.c vector.c
