@@ -349,7 +349,6 @@ void graphics_main()
 {
 	struct t_process *p=get_proc_by_pid(MCP);
 	t_mtrx m;
-/*	GLfloat pos[]={100.0,20.0,100.0,1.0};*/
 	GLfloat pos[]={0,50,50,1.0};
 	GLfloat light0_spec[]={0.7,0.7,0.7,0.0};
 	GLfloat light0_shininess[] ={50.0};

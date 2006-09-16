@@ -31,7 +31,7 @@ static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
 int i,oid;
 void mainloop()
 {
-/*	s3d_rotate(oid,0,i,0);*/
+	s3d_rotate(oid,0,i,0);
 	i++;
 	nanosleep(&t,NULL); 
 }

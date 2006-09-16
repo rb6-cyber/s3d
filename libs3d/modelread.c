@@ -223,15 +223,15 @@ int model_load(char *file)
 				polybuf[npoly*4+3]=mat2tex->material_id;
 
 				if ( face->flags & G3D_FLAG_FAC_NORMALS ) {
-					normalbuf[ npoly*9 + 0] =  face->normals[ 0 ];
-					normalbuf[ npoly*9 + 1] =  face->normals[ 1 ];
-					normalbuf[ npoly*9 + 2] =  face->normals[ 2 ];
-					normalbuf[ npoly*9 + 3] =  face->normals[ 6 ];
-					normalbuf[ npoly*9 + 4] =  face->normals[ 7 ];
-					normalbuf[ npoly*9 + 5] =  face->normals[ 8 ];
-					normalbuf[ npoly*9 + 6] =  face->normals[ 3 ];
-					normalbuf[ npoly*9 + 7] =  face->normals[ 4 ];
-					normalbuf[ npoly*9 + 8] =  face->normals[ 5 ];
+					normalbuf[ npoly*9 + 0] = -face->normals[ 0 ];
+					normalbuf[ npoly*9 + 1] = -face->normals[ 2 ];
+					normalbuf[ npoly*9 + 2] =  face->normals[ 1 ];
+					normalbuf[ npoly*9 + 3] = -face->normals[ 6 ];
+					normalbuf[ npoly*9 + 4] = -face->normals[ 8 ];
+					normalbuf[ npoly*9 + 5] =  face->normals[ 7 ];
+					normalbuf[ npoly*9 + 6] = -face->normals[ 3 ];
+					normalbuf[ npoly*9 + 7] = -face->normals[ 5 ];
+					normalbuf[ npoly*9 + 8] =  face->normals[ 4 ];
 				}
 				if ( face->flags & G3D_FLAG_FAC_TEXMAP )  
 				{
