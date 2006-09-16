@@ -62,7 +62,7 @@ struct gps_data_t 	*dgps;
 int 				 frame=0;
 struct point_t		 posicon;
 int					 iconlist[ICON_MAX];
-char				*iconnames[]={"objs/arrow.model"};
+char				*iconnames[]={"objs/arrow.3ds"};
 
 unsigned char 		*recode_image(unsigned char *data, int nc, int w, int h);
 int 				 load_mapimage(char *path,float lng, float lat, int scale);

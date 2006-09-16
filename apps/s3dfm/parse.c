@@ -102,7 +102,7 @@ int parse_dir(t_item *dir)
 				{
 				   if (ext!=NULL)
 				   {
-					   if (0==strncmp(ext,".model",strlen(ext)<4?strlen(ext):4))
+					   if (0==strncmp(ext,".3ds",strlen(ext)<4?strlen(ext):4))
 							   list[n].type=T_GEOMETRY;
 					   else if (0==strncmp(ext,".mp3",strlen(ext)<4?strlen(ext):4))
 							   list[n].type=T_MUSIC;

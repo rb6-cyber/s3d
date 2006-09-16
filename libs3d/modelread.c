@@ -150,8 +150,9 @@ int model_load(char *file)
 			/* push vertices */
 			for ( j = 0; j < object->vertex_count; j++ ) {
 				/* 2. and 3. coord have to change places otherwise the object will be turned */
-				swaph=							 object->vertex_data[j * 3 + 2];
-				object->vertex_data[j * 3 + 2] = object->vertex_data[j * 3 + 1];
+				object->vertex_data[j * 3 + 0] =  object->vertex_data[j * 3 + 0];
+				swaph=							  object->vertex_data[j * 3 + 2];
+				object->vertex_data[j * 3 + 2] = -object->vertex_data[j * 3 + 1];
 				object->vertex_data[j * 3 + 1] = swaph;
 			}
 			s3d_push_vertices( obj_id, object->vertex_data, object->vertex_count);
@@ -216,12 +217,31 @@ int model_load(char *file)
 				oldflags=face->flags;
 
 				/* add polygon to the polygon buffer */
-				for (i=0;i<3;i++)
-					polybuf[npoly*4+i]=face->vertex_indices[i] + voff;
+				polybuf[npoly*4+0]=face->vertex_indices[0] + voff;
+				polybuf[npoly*4+1]=face->vertex_indices[2] + voff;
+				polybuf[npoly*4+2]=face->vertex_indices[1] + voff;
 				polybuf[npoly*4+3]=mat2tex->material_id;
 
-				if ( face->flags & G3D_FLAG_FAC_NORMALS ) memcpy( normalbuf + npoly*9,  face->normals, sizeof(float) * 9);
-				if ( face->flags & G3D_FLAG_FAC_TEXMAP )  memcpy( texcoordbuf + npoly*6,  face->tex_vertex_data, sizeof(float) * 6);
+				if ( face->flags & G3D_FLAG_FAC_NORMALS ) {
+					normalbuf[ npoly*9 + 0] =  face->normals[ 0 ];
+					normalbuf[ npoly*9 + 1] =  face->normals[ 1 ];
+					normalbuf[ npoly*9 + 2] =  face->normals[ 2 ];
+					normalbuf[ npoly*9 + 3] =  face->normals[ 6 ];
+					normalbuf[ npoly*9 + 4] =  face->normals[ 7 ];
+					normalbuf[ npoly*9 + 5] =  face->normals[ 8 ];
+					normalbuf[ npoly*9 + 6] =  face->normals[ 3 ];
+					normalbuf[ npoly*9 + 7] =  face->normals[ 4 ];
+					normalbuf[ npoly*9 + 8] =  face->normals[ 5 ];
+				}
+				if ( face->flags & G3D_FLAG_FAC_TEXMAP )  
+				{
+					texcoordbuf[ npoly*6 + 0] = face->tex_vertex_data[ 0 ];
+					texcoordbuf[ npoly*6 + 1] = face->tex_vertex_data[ 1 ];
+					texcoordbuf[ npoly*6 + 2] = face->tex_vertex_data[ 4 ];
+					texcoordbuf[ npoly*6 + 3] = face->tex_vertex_data[ 5 ];
+					texcoordbuf[ npoly*6 + 4] = face->tex_vertex_data[ 2 ];
+					texcoordbuf[ npoly*6 + 5] = face->tex_vertex_data[ 3 ];
+				}
 				npoly++;
 				oface = oface->next;
 			}

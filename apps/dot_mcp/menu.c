@@ -36,11 +36,11 @@ struct menu_entry {
 static int go=-1;
 static int act;
 static struct menu_entry menu[]={
-		{"objs/comp.model","terminal","s3dvt",				0,0},
-		{"objs/comp.model","olsrs3d","olsrs3d",				0,0},
-		{"objs/comp.model","s3d_x11gate","s3d_x11gate",		0,0},
-		{"objs/comp.model","filebrowser","filebrowser",		0,0}, 
-		{"objs/comp.model","logout","LOGOUT",					0,0}, 
+		{"objs/comp.3ds","terminal","s3dvt",				0,0},
+		{"objs/comp.3ds","olsrs3d","olsrs3d",				0,0},
+		{"objs/comp.3ds","s3d_x11gate","s3d_x11gate",		0,0},
+		{"objs/comp.3ds","filebrowser","filebrowser",		0,0}, 
+		{"objs/comp.3ds","logout","LOGOUT",					0,0}, 
 };
 void menu_click(int oid)
 {

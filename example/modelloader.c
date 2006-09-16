@@ -31,7 +31,7 @@ static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
 int i,oid;
 void mainloop()
 {
-	s3d_rotate(oid,0,i,0);
+/*	s3d_rotate(oid,0,i,0);*/
 	i++;
 	nanosleep(&t,NULL); 
 }
@@ -44,7 +44,7 @@ int main (int argc, char **argv)
 {
 	if (argc<2)
 	{
-		printf("usage: %s [somefile.model]\n",argv[0]);
+		printf("usage: %s [somefile.3ds]\n",argv[0]);
 		return(-1);
 	}
 	if (!s3d_init(&argc,&argv,"modelloader"))	
