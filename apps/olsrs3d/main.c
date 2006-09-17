@@ -115,18 +115,18 @@ void window_help() {
 	s3dw_surface *infwin;
 	s3dw_button  *button;
 
-	infwin = s3dw_surface_new( "Help Window", 12, 14 );
+	infwin = s3dw_surface_new( "Help Window", 20, 19 );
 	s3dw_label_new(infwin,"C        - Colour On/Off",1,2);
-	s3dw_label_new(infwin,"R        - Rotation On/Off",1,3);
-	s3dw_label_new(infwin,"+        - Increase Rotation Speed",1,4);
-	s3dw_label_new(infwin,"-        - Decrease Rotation Speed",1,5);
-	s3dw_label_new(infwin,"S        - Search IP",1,6);
-	s3dw_label_new(infwin,"ESC      - Disable FollowMode",1,7);
-	s3dw_label_new(infwin,"PGUP     - Increase Drift Factor",1,8);
-	s3dw_label_new(infwin,"PGDOWN   - Decrease Drift Factor",1,9);
-	s3dw_label_new(infwin,"STRG + P - Decrease Drift Factor",1,9);
+	s3dw_label_new(infwin,"R        - Rotation On/Off",1,4);
+	s3dw_label_new(infwin,"+        - Increase Rotation Speed",1,5);
+	s3dw_label_new(infwin," -        - Decrease Rotation Speed",1,6);
+	s3dw_label_new(infwin,"S        - Search IP",1,8);
+	s3dw_label_new(infwin,"ESC      - Disable FollowMode",1,9);
+	s3dw_label_new(infwin,"PGUP     - Increase Drift Factor",1,11);
+	s3dw_label_new(infwin,"PGDOWN   - Decrease Drift Factor",1,12);
+	s3dw_label_new(infwin,"STRG + P - Reset Nodes",1,14);
 
-	button=s3dw_button_new(infwin,"OK",4,12);
+	button=s3dw_button_new(infwin,"OK",10,16);
 	button->onclick = close_win;
 	s3dw_show(S3DWIDGET(infwin));
 
@@ -830,7 +830,6 @@ void keypress(struct s3d_evt *event) {
 			case S3DK_p: /* strg + p -> reset nodes ( zeroPoint to 0,0,0 ) */
 				if (key->modifier&(S3D_KMOD_LCTRL|S3D_KMOD_RCTRL))
 				{
-
 					s3d_rotate(ZeroPoint, 0, 0, 0);
 					Zp_rotate = 0.0;
 				}
@@ -875,7 +874,7 @@ void object_click(struct s3d_evt *evt)
 
 	oid=(int)*((unsigned long *)evt->buf);
 
-	if( oid == Btn_close_id )
+/*	if( oid == Btn_close_id )
 	{
 		s3d_del_object(Btn_close_id);
 		s3d_del_object(Olsr_ip_label_obj);
@@ -913,7 +912,7 @@ void object_click(struct s3d_evt *evt)
 		s3d_flags_on( Olsr_ip_label_obj, S3D_OF_VISIBLE );
 		s3d_scale( Olsr_ip_label_obj, 0.2 );
 		s3d_translate( Olsr_ip_label_obj,-Left*3.0-(Title_len * 0.2)-0.15, -Bottom*3.0-1.2, -3.0 );
-		/*
+
 		cam_go=1;
 		if ( Olsr_ip_label_obj != -1 ) s3d_del_object( Olsr_ip_label_obj );
 		snprintf( ip_str, 35, "ip: %s", Olsr_node_pEtx->ip );
@@ -922,8 +921,8 @@ void object_click(struct s3d_evt *evt)
 		s3d_flags_on( Olsr_ip_label_obj, S3D_OF_VISIBLE );
 		s3d_scale( Olsr_ip_label_obj, 0.2 );
 		s3d_translate( Olsr_ip_label_obj,-Left*3.0-(Title_len * 0.2)-0.15, -Bottom*3.0-1.0, -3.0 );
-		*/
-	}
+
+	}*/
 }
 
 void print_etx()
