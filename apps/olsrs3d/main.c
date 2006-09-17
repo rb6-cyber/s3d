@@ -61,7 +61,7 @@ int Net_read_count;
 int Output_block_counter = 0;
 int Output_block_completed = 0;
 
-int Olsr_node_obj, Olsr_node_inet_obj, Olsr_node_hna_net;
+int Olsr_node_obj, Olsr_node_inet_obj, Olsr_node_hna_net, S3d_obj;
 
 float Asp = 1.0;
 float Bottom = -1.0;
@@ -258,7 +258,8 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
 	/* olsr node vanished */
 	if ( ( olsr_node->last_seen < Output_block_counter - 1 ) && ( olsr_node->visible ) ) {
 
-		if ( Debug ) printf( "olsr node vanished: %s\n", olsr_node->ip );
+		if ( Debug )
+			printf( "olsr node vanished: %s\n", olsr_node->ip );
 
 		Olsr_node_count--;
 
@@ -774,7 +775,7 @@ void keypress(struct s3d_evt *event) {
 		switch(key->keysym)
 		{
 			case S3DK_F1: /* help */
-				printf("S3DK_F1\n");
+
 				window_help();
 				break;
 
@@ -789,7 +790,7 @@ void keypress(struct s3d_evt *event) {
 				show_search_window();
 /*				set_return_point(CamPosition[0],CamPosition[1]);	/ * save the return position * /
 				set_node_root( Olsr_root );*/
-				
+
 				break;
 
 			case S3DK_c: /* color on/off */
@@ -810,7 +811,6 @@ void keypress(struct s3d_evt *event) {
 						RotateSpeed += 1.0;
 					else
 						RotateSpeed += 0.1;
-					printf("%f,\n",RotateSpeed);
 				}
 				break;
 
@@ -824,7 +824,6 @@ void keypress(struct s3d_evt *event) {
 						if(RotateSpeed > 0.2)
 							RotateSpeed -= 0.1;
 					}
-					printf("%f,\n",RotateSpeed);
 				}
 				break;
 
@@ -1107,7 +1106,8 @@ int main( int argc, char *argv[] ) {
 
 	}
 
-	if ( Debug ) printf( "debug mode enabled ...\n" );
+	if ( Debug )
+		printf( "debug mode enabled ...\n" );
 
 	/* initialize obj2ip linked list */
 	lst_initialize();
@@ -1140,7 +1140,15 @@ int main( int argc, char *argv[] ) {
 			Olsr_node_inet_obj = s3d_import_model_file( "objs/accesspoint_inet.3ds" );
 			Olsr_node_hna_net = s3d_import_model_file( "objs/internet.3ds" );
 			Btn_close_obj = s3d_import_model_file( "objs/btn_close.3ds" );
-/*			create_search_widget( 0, 0, 300 );*/
+
+			S3d_obj = s3d_import_model_file( "objs/s3d_berlios_de.3ds" );
+
+			s3d_translate( S3d_obj, 0.75, -0.75, -1 );
+			s3d_scale( S3d_obj, 0.07 );
+			s3d_link( S3d_obj, 0 );
+			s3d_flags_on( S3d_obj, S3D_OF_VISIBLE );
+
+			/* create_search_widget( 0, 0, 300 ); */
 
 			ZeroPoint = s3d_new_object();
 			Output_border[0] = Output_border[1] = Output_border[2] = Output_border[3] = -1;
