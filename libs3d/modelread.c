@@ -188,21 +188,12 @@ int model_load(char *file)
 							exit(8);
 						}
 
-						/*for ( j = ( face->tex_image->height - 1 ); j >= 0; j-- ) {
+						for ( j = ( face->tex_image->height - 1 ); j >= 0; j-- ) {
 							for ( k = 0; k < face->tex_image->width; k++ ) {
 								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 0 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 2 ];
 								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 1 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 1 ];
 								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 2 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 0 ];
 								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 3 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 3 ];
-							}
-					}*/
-
-						for ( j = ( face->tex_image->height - 1 ); j >= 0; j-- ) {
-							for ( k = 0; k < face->tex_image->width; k++ ) {
-								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 0 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 2 ];
-								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 1 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 1 ];
-								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 2 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 3 ];
-								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 3 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 0 ];
 							}
 						}
 
