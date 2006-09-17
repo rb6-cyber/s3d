@@ -104,6 +104,35 @@ void print_usage( void ) {
 }
 
 
+void close_win(s3dw_widget *button) {
+	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
+}
+
+
+
+void window_help() {
+
+	s3dw_surface *infwin;
+	s3dw_button  *button;
+
+	infwin = s3dw_surface_new( "Help Window", 12, 14 );
+	s3dw_label_new(infwin,"C        - Colour On/Off",1,2);
+	s3dw_label_new(infwin,"R        - Rotation On/Off",1,3);
+	s3dw_label_new(infwin,"+        - Increase Rotation Speed",1,4);
+	s3dw_label_new(infwin,"-        - Decrease Rotation Speed",1,5);
+	s3dw_label_new(infwin,"S        - Search IP",1,6);
+	s3dw_label_new(infwin,"ESC      - Disable FollowMode",1,7);
+	s3dw_label_new(infwin,"PGUP     - Increase Drift Factor",1,8);
+	s3dw_label_new(infwin,"PGDOWN   - Decrease Drift Factor",1,9);
+	s3dw_label_new(infwin,"STRG + P - Decrease Drift Factor",1,9);
+
+	button=s3dw_button_new(infwin,"OK",4,12);
+	button->onclick = close_win;
+	s3dw_show(S3DWIDGET(infwin));
+
+}
+
+
 
 /***
  *
@@ -640,7 +669,7 @@ void mainloop() {
 	int net_result;   /* result of function net_main */
 	char nc_str[20];
 	float strLen;
-	
+
 	/* calculate new movement vector */
 	calc_olsr_node_mov();
 
@@ -679,10 +708,10 @@ void mainloop() {
 			break;
 		}
 	}
-	
+
 	/* rotate modus */
 	if(RotateSwitch) {
-		Zp_rotate = ( Zp_rotate + RotateSpeed ) > 360 ? 0.0 : ( Zp_rotate + RotateSpeed );	
+		Zp_rotate = ( Zp_rotate + RotateSpeed ) > 360 ? 0.0 : ( Zp_rotate + RotateSpeed );
 		s3d_rotate(ZeroPoint,0,Zp_rotate,0);
 	}
 
@@ -698,7 +727,7 @@ void mainloop() {
 		follow_node( CamPosition[0], CamPosition[1], Zp_rotate );
 	if( get_search_status() == ABORT )
 		move_to_return_point( CamPosition[0], CamPosition[1] );
-	
+
 
 	if( Olsr_ip_label_obj != -1 )
 	{
@@ -727,35 +756,40 @@ void stop() {
 void keypress(struct s3d_evt *event) {
 
 	struct s3d_key_event *key=(struct s3d_key_event *)event->buf;
-	printf("%d\n",key->unicode);	
+	printf("%d\n",key->unicode);
 	if( get_search_status() != WIDGET )
 	{
 		switch(key->unicode)
 		{
+			case S3DK_F1: /* help */
+				printf("S3DK_F1\n");
+				window_help();
+				break;
+
 			case S3DK_ESCAPE: /* abort action */
-			
+
 				set_search_status( get_search_status() == WIDGET ? ABORT : NOTHING );
 				break;
-				
+
 			case S3DK_s: /* move to search widget, give widget focus */
 
 				set_search_status(WIDGET);							/* set status for mainloop */
 				set_return_point(CamPosition[0],CamPosition[1]);	/* save the return position */
 				set_node_root( Olsr_root );
 				break;
-			
+
 			case S3DK_c: /* color on/off */
-				
+
 				ColorSwitch =  ColorSwitch ? 0 : 1;
 				break;
-				
+
 			case S3DK_r: /* rotate start/stop*/
-				
+
 				RotateSwitch = RotateSwitch ? 0 : 1;
 				break;
-				
+
 			case S3DK_PLUS: /* rotate speed increase */
-				
+
 				if(RotateSwitch && RotateSpeed < 5)
 				{
 					if(RotateSpeed >= 1.0)
@@ -765,9 +799,9 @@ void keypress(struct s3d_evt *event) {
 					printf("%f,\n",RotateSpeed);
 				}
 				break;
-				
+
 			case S3DK_MINUS: /* - -> rotate speed decrease */
-				
+
 				if(RotateSwitch)
 				{
 					if( RotateSpeed >= 2.0 )
@@ -779,25 +813,25 @@ void keypress(struct s3d_evt *event) {
 					printf("%f,\n",RotateSpeed);
 				}
 				break;
-				
+
 			case 16: /* strg + p -> reset nodes ( zeroPoint to 0,0,0 ) */
-				
+
 				s3d_rotate(ZeroPoint, 0, 0, 0);
 				Zp_rotate = 0.0;
 				break;
-				
+
 			case S3DK_PAGEUP: /* change factor in calc_olsr_node_mov */
-				
+
 				if(Factor < 0.9)
 					Factor += 0.1;
 				break;
-				
+
 			case S3DK_PAGEDOWN: /* change factor in calc_olsr_node_mov */
-				
+
 				if(Factor > 0.3)
 					Factor -= 0.1;
 				break;
-				
+
 		}
 	} else {
 		if( (key->unicode >= S3DK_PERIOD && key->unicode <= S3DK_9) || key->unicode == S3DK_COMMA || key->unicode == S3DK_RETURN || key->unicode == S3DK_BACKSPACE )
@@ -818,10 +852,10 @@ void object_click(struct s3d_evt *evt)
 
 	if( get_search_status() == WIDGET )
 	{
-		s3dw_handle_click(evt);	
+		s3dw_handle_click(evt);
 		return;
 	}
-	
+
 	oid=(int)*((unsigned long *)evt->buf);
 
 	if( oid == Btn_close_id )
@@ -854,7 +888,7 @@ void object_click(struct s3d_evt *evt)
 			s3d_scale( Btn_close_id, 0.10 );
 			s3d_translate( Btn_close_id,-Left*3.0-0.150, -Bottom*3.0-0.9, -3.0 );
 		}
-		
+
 		if ( Olsr_ip_label_obj != -1 ) s3d_del_object( Olsr_ip_label_obj );
 		snprintf( ip_str, 35, "ip: %s", Olsr_node_pEtx->ip );
 		Olsr_ip_label_obj = s3d_draw_string( ip_str, &Title_len );
@@ -872,7 +906,7 @@ void object_click(struct s3d_evt *evt)
 		s3d_scale( Olsr_ip_label_obj, 0.2 );
 		s3d_translate( Olsr_ip_label_obj,-Left*3.0-(Title_len * 0.2)-0.15, -Bottom*3.0-1.0, -3.0 );
 		*/
-	} 
+	}
 }
 
 void print_etx()
@@ -1087,11 +1121,11 @@ int main( int argc, char *argv[] ) {
 			Olsr_node_inet_obj = s3d_import_model_file( "objs/accesspoint_inet.3ds" );
 			Olsr_node_hna_net = s3d_import_model_file( "objs/internet.3ds" );
 			Btn_close_obj = s3d_import_model_file( "objs/btn_close.3ds" );
-			create_search_widget( 0, 0, 300 );			
-			
+			create_search_widget( 0, 0, 300 );
+
 			ZeroPoint = s3d_new_object();
 			Output_border[0] = Output_border[1] = Output_border[2] = Output_border[3] = -1;
-			
+
 			s3d_mainloop(mainloop);
 			s3d_quit();
 			net_quit();

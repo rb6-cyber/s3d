@@ -156,7 +156,7 @@ int model_load(char *file)
 				object->vertex_data[j * 3 + 1] = swaph;
 			}
 			s3d_push_vertices( obj_id, object->vertex_data, object->vertex_count);
-					
+
 
 
 			oface = object->faces;
@@ -169,7 +169,7 @@ int model_load(char *file)
 				mat2tex = get_mat2tex( &mat2tex_root, face->material );
 
 				if ( mat2tex->material_id == -1 ) { /* create a new texture if nothing found */
-					s3d_push_material_a( obj_id, 	face->material->r, face->material->g, face->material->b,face->material->a, 
+					s3d_push_material_a( obj_id, 	face->material->r, face->material->g, face->material->b,face->material->a,
 													face->material->specular[0], face->material->specular[1], face->material->specular[2], face->material->specular[3],
 													face->material->r, face->material->g, face->material->b, face->material->a );
 
@@ -188,12 +188,21 @@ int model_load(char *file)
 							exit(8);
 						}
 
-						for ( j = ( face->tex_image->height - 1 ); j >= 0; j-- ) {
+						/*for ( j = ( face->tex_image->height - 1 ); j >= 0; j-- ) {
 							for ( k = 0; k < face->tex_image->width; k++ ) {
 								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 0 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 2 ];
 								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 1 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 1 ];
 								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 2 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 0 ];
 								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 3 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 3 ];
+							}
+					}*/
+
+						for ( j = ( face->tex_image->height - 1 ); j >= 0; j-- ) {
+							for ( k = 0; k < face->tex_image->width; k++ ) {
+								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 0 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 2 ];
+								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 1 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 1 ];
+								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 2 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 3 ];
+								s3d_pixeldata[ ( j * face->tex_image->width + k ) * 4 + 3 ] = face->tex_image->pixeldata[ ( j * face->tex_image->width + k ) * 4 + 0 ];
 							}
 						}
 
@@ -233,7 +242,7 @@ int model_load(char *file)
 					normalbuf[ npoly*9 + 7] = -face->normals[ 5 ];
 					normalbuf[ npoly*9 + 8] =  face->normals[ 4 ];
 				}
-				if ( face->flags & G3D_FLAG_FAC_TEXMAP )  
+				if ( face->flags & G3D_FLAG_FAC_TEXMAP )
 				{
 					texcoordbuf[ npoly*6 + 0] = face->tex_vertex_data[ 0 ];
 					texcoordbuf[ npoly*6 + 1] = face->tex_vertex_data[ 1 ];
@@ -253,14 +262,14 @@ int model_load(char *file)
 				if (oldflags & G3D_FLAG_FAC_TEXMAP)			s3d_pep_polygon_tex_coords( obj_id, texcoordbuf, npoly);
 				npoly=0;
 			}
-	
+
 			voff += object->vertex_count; /* increase vertex offset */
 			oitem = oitem->next;
 		}
 	}
 	g3d_model_free(model);
 	g3d_context_free(context);
-	
+
 	return(obj_id);
 }
 
