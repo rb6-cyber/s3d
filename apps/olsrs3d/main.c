@@ -118,17 +118,27 @@ void window_help() {
 	infwin = s3dw_surface_new( "Help Window", 20, 19 );
 
 	/*s3dw_label_new(infwin,"C        - Colour On/Off",1,2);*/
-	s3dw_label_new(infwin,"C",1,2); 						s3dw_label_new(infwin,"- Colour On/Off",3,2);
-	s3dw_label_new(infwin,"R        - Rotation On/Off",1,4);
-	s3dw_label_new(infwin,"+        - Increase Rotation Speed",1,5);
-	s3dw_label_new(infwin," -        - Decrease Rotation Speed",1,6);
-	s3dw_label_new(infwin,"S        - Search IP",1,8);
-	s3dw_label_new(infwin,"ESC      - Disable FollowMode",1,9);
-	s3dw_label_new(infwin,"PGUP     - Increase Drift Factor",1,11);
-	s3dw_label_new(infwin,"PGDOWN   - Decrease Drift Factor",1,12);
-	s3dw_label_new(infwin,"STRG + P - Reset Nodes",1,14);
+	s3dw_label_new(infwin,"c",1,2);
+	s3dw_label_new(infwin,"- Colour On/Off",6,2);
+	/*s3dw_label_new(infwin,"r        - Rotation On/Off",1,4);*/
+	s3dw_label_new(infwin,"r",1,4);
+	s3dw_label_new(infwin,"- Rotation On/Off",6,4);
+	s3dw_label_new(infwin,"+",1,5);
+	s3dw_label_new(infwin,"- Increase Rotation Speed",6,5);
+	s3dw_label_new(infwin,"-",1,6);
+	s3dw_label_new(infwin,"- Decrease Rotation Speed",6,6);
+	s3dw_label_new(infwin,"s",1,8);
+	s3dw_label_new(infwin,"- Search IP",6,8);
+	s3dw_label_new(infwin,"ESC",1,9);
+	s3dw_label_new(infwin,"- Disable FollowMode",6,9);
+	s3dw_label_new(infwin,"PGUP",1,11);
+	s3dw_label_new(infwin,"- Increase Drift Factor",6,11);
+	s3dw_label_new(infwin,"PGDOWN",1,12);
+	s3dw_label_new(infwin,"- Decrease Drift Factor",6,12);
+	s3dw_label_new(infwin,"STRG + p",1,14);
+	s3dw_label_new(infwin,"- Reset Nodes",6,14);
 
-	button=s3dw_button_new(infwin,"OK",10,16);
+	button=s3dw_button_new(infwin,"OK",9,16);
 	button->onclick = close_win;
 	s3dw_show(S3DWIDGET(infwin));
 
@@ -789,6 +799,7 @@ void keypress(struct s3d_evt *event) {
 			case S3DK_s: /* move to search widget, give widget focus */
 
 				set_search_status(WIDGET);							/* set status for mainloop */
+				set_node_root( Olsr_root );
 				show_search_window();
 /*				set_return_point(CamPosition[0],CamPosition[1]);	/ * save the return position * /
 				set_node_root( Olsr_root );*/
