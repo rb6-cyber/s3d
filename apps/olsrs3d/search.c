@@ -378,5 +378,3 @@ void _abort_search(s3dw_widget *dummy)
 {
 	set_search_status(ABORT);
 }
-
-	

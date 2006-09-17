@@ -851,8 +851,8 @@ void keypress(struct s3d_evt *event) {
 
 		}
 	} else {
-		if( (key->unicode >= S3DK_PERIOD && key->unicode <= S3DK_9) || key->unicode == S3DK_COMMA || key->unicode == S3DK_RETURN || key->unicode == S3DK_BACKSPACE )
-			search_widget_write( key->unicode );
+		if( (key->keysym >= S3DK_PERIOD && key->keysym <= S3DK_9) || key->keysym == S3DK_COMMA || key->keysym == S3DK_RETURN || key->keysym == S3DK_BACKSPACE )
+			search_widget_write( key->keysym );
 	}
 }
 
