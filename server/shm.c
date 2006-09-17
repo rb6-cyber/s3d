@@ -44,7 +44,7 @@ extern struct t_process *procs_p;
 extern int procs_n;
 struct t_shmcb waiting_comblock;
 
-key_t *data;
+key_t *data=NULL;
 char ftoken[]="/tmp/.s3d";
 int shmid;
 int mkey;	/* increasing key */
@@ -141,12 +141,15 @@ int shm_quit()
 	/* detach from the segment: */
 	s3dprintf(LOW,"shm_quit()...");
 	unlink(ftoken);
-	data[0]=data[1]=0;
-	s3dprintf(MED,"shm_quit():removing init block");
-	if (shmdt(data) == -1) 
-		errn("shm_quit():shmdt()",errno);
-	if (shmctl(shmid, IPC_RMID, NULL) == -1) 
-		errn("shm_quit():shmctl()",errno);
+	if (data!=NULL)
+	{
+		data[0]=data[1]=0;
+		s3dprintf(MED,"shm_quit():removing init block");
+		if (shmdt(data) == -1) 
+			errn("shm_quit():shmdt()",errno);
+		if (shmctl(shmid, IPC_RMID, NULL) == -1) 
+			errn("shm_quit():shmctl()",errno);
+	}
 	return(0);
 }
 int shm_remove(struct t_process *p)

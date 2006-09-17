@@ -68,10 +68,9 @@ int rc_init(void)
 {
 #ifdef SIGS
 	int ret,i;
-	struct timespec t={0,200*1000*1000}; /* 200 mili seconds */
+	struct timespec t={0,500*1000*1000}; /* 500 mili seconds */
 	if (signal(SIGCHLD, sigchld_handler) == SIG_ERR);
 	kidpid=fork();
-	running=1;
 	if (kidpid==-1)
 	{
 		errsf("rc_init()","*sobsob*, can't fork");
