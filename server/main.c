@@ -44,6 +44,7 @@ int running;
 static char *rc=NULL;
 static char *homerc="~/.s3drc";
 static char *etcrc ="/etc/s3drc";
+static int father_done=0;
 char **s3drc[]={&rc,&homerc,&etcrc};
 
 static void mainloop(void);
@@ -64,12 +65,17 @@ void sigchld_handler(int sig)
 	}
 }
 #endif
+void sigusr_handler(int sig)
+{
+	s3dprintf(HIGH,"father told use he's done, so lets start to think about the rc file ...");
+	running=1;
+}
+
 int rc_init(void)
 {
 #ifdef SIGS
 	int ret,i;
-	struct timespec t={0,500*1000*1000}; /* 500 mili seconds */
-	if (signal(SIGCHLD, sigchld_handler) == SIG_ERR);
+	struct timespec t={0,10*1000*1000}; /* 10 mili seconds */
 	kidpid=fork();
 	if (kidpid==-1)
 	{
@@ -78,19 +84,23 @@ int rc_init(void)
 	}
 	if (kidpid==0)
 	{
-		nanosleep(&t,NULL); 	/* giving the father lots of time to set his signal handler
-					 			 * and all his sockets up */
-		s3dprintf(VHIGH,"hello, i'm the kid and will start the rc file now!");
+	    if (signal(SIGUSR1, sigusr_handler) == SIG_ERR) 
+		        errn("init():signal()",errno);
+
+		/* giving the father lots of time to set his signal handler
+		 * and all his sockets up */
+		while (!running)  
+			nanosleep(&t,NULL); 	
 		for (i=0;i<(sizeof(s3drc)/sizeof(char **));i++)
 		{
 			if ((*s3drc[i])!=NULL)
 			{
 				s3dprintf(LOW,"[RC] launching %s",*s3drc[i]);
 				ret=system(*s3drc[i]);
-				s3dprintf(LOW,"[RC] system() said %d",ret);
+				s3dprintf(VLOW,"[RC] system() said %d",ret);
 				if (ret<128) 
 				{
-					s3dprintf(LOW,"[RC] system() did well, I guess. let's die clean now.");
+					s3dprintf(LOW,"V[RC] system() did well, I guess. let's die clean now.");
 					exit(0);
 				}
 			} 
@@ -107,6 +117,7 @@ int rc_init(void)
 		}
 		exit(1);
 	} else {
+		if (signal(SIGCHLD, sigchld_handler) == SIG_ERR);
 		/* father just returns */
 	}	
 #endif
@@ -166,6 +177,7 @@ int init()
 	        errn("init():signal()",errno);
     if (signal(SIGTERM, sigint_handler) == SIG_ERR) 
 	        errn("init():signal()",errno);
+	kill(kidpid, SIGUSR1);
 #endif
 	return(0);
 }
