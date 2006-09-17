@@ -116,7 +116,9 @@ void window_help() {
 	s3dw_button  *button;
 
 	infwin = s3dw_surface_new( "Help Window", 20, 19 );
-	s3dw_label_new(infwin,"C        - Colour On/Off",1,2);
+
+	/*s3dw_label_new(infwin,"C        - Colour On/Off",1,2);*/
+	s3dw_label_new(infwin,"C",1,2); 						s3dw_label_new(infwin,"- Colour On/Off",3,2);
 	s3dw_label_new(infwin,"R        - Rotation On/Off",1,4);
 	s3dw_label_new(infwin,"+        - Increase Rotation Speed",1,5);
 	s3dw_label_new(infwin," -        - Decrease Rotation Speed",1,6);
