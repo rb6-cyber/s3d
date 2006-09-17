@@ -41,6 +41,7 @@ extern int	Olsr_node_obj;
 extern int	Olsr_node_inet_obj;
 extern int	Olsr_node_hna_net;
 extern int	Btn_close_obj;
+extern int	S3d_obj;
 extern int	Btn_close_id;
 extern int Olsr_node_count_obj;
 extern int Olsr_node_count;
