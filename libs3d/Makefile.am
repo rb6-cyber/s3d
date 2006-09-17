@@ -1,4 +1,4 @@
-SUBDIRS=. libg3d
+SUBDIRS= libg3d
 lib_LTLIBRARIES=	libs3d.la
 
 libs3d_la_SOURCES=	modelread.c callback.c error.c event.c fontselect.c \
