@@ -759,7 +759,7 @@ void keypress(struct s3d_evt *event) {
 	printf("%d\n",key->unicode);
 	if( get_search_status() != WIDGET )
 	{
-		switch(key->unicode)
+		switch(key->keysym)
 		{
 			case S3DK_F1: /* help */
 				printf("S3DK_F1\n");
@@ -814,10 +814,13 @@ void keypress(struct s3d_evt *event) {
 				}
 				break;
 
-			case 16: /* strg + p -> reset nodes ( zeroPoint to 0,0,0 ) */
+			case S3DK_p: /* strg + p -> reset nodes ( zeroPoint to 0,0,0 ) */
+				if (key->modifier&(S3D_KMOD_LCTRL|S3D_KMOD_RCTRL))
+				{
 
-				s3d_rotate(ZeroPoint, 0, 0, 0);
-				Zp_rotate = 0.0;
+					s3d_rotate(ZeroPoint, 0, 0, 0);
+					Zp_rotate = 0.0;
+				}
 				break;
 
 			case S3DK_PAGEUP: /* change factor in calc_olsr_node_mov */
