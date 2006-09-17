@@ -72,3 +72,4 @@ void out_of_mem( void );
 struct olsr_node **lst_search(int id);
 void print_etx( void );
 float dist(float p1[], float p2[]);
+void window_error(char *msg); 

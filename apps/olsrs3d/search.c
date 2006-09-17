@@ -27,7 +27,8 @@
 #include <math.h>
 #include <stdio.h>	/* TODO can remove then no more printf needed */
 #include <string.h>
-#include "structs.h"
+#include "olsrs3d.h"	/* for window_error(), structs */
+/* #include "structs.h"  already included by olsrs3d.h */
 #include "search.h"
 
 s3dw_surface	*_search_surface;
@@ -41,7 +42,9 @@ float	_return_point[2][3];				/* cam position before move to the widget */
 int		_search_status = NOTHING;			/* status of search */
 											
 void _search_node(s3dw_widget *dummy);
+void _new_search_node(s3dw_widget *dummy);
 void _abort_search(s3dw_widget *dummy);
+
 
 /* public */
 void follow_node(float cam_position_t[], float cam_position_r[],float rotate)
@@ -78,6 +81,36 @@ void follow_node(float cam_position_t[], float cam_position_r[],float rotate)
 	
 	s3d_translate( 0, cam_position_t[0], cam_position_t[1], cam_position_t[2] );
 	s3d_rotate( 0, cam_position_r[0], cam_position_r[1], cam_position_r[2] );
+}
+void _abort_search_window(s3dw_widget *bwidget)
+{
+	s3dw_delete(bwidget->parent); /* remove the window cointaining the button */
+	_search_surface=NULL;
+	_search_input=NULL;
+	_search_widget=NULL;
+	set_search_status(NOTHING);
+}
+void show_search_window()
+{
+	s3dw_button *search_button, *abort_button;
+	
+	_search_surface	= s3dw_surface_new( "Node Search", 17, 10 );
+	_search_input	= s3dw_input_new( _search_surface, 15, 1, 4 );
+	
+	s3dw_label_new( _search_surface, "Enter the IP of the node.", 1, 2);
+	s3dw_focus( S3DWIDGET( _search_input ) );
+	
+	search_button = s3dw_button_new( _search_surface, "Search", 11.5, 7 );
+	abort_button  = s3dw_button_new( _search_surface, "Abort", 1, 7 );
+	search_button->onclick = _new_search_node;
+	abort_button->onclick = _abort_search_window;
+
+	/* TODO calc position for ok button */
+	
+	s3dw_focus	( S3DWIDGET( _search_input ) );	
+	s3dw_focus	( S3DWIDGET( _search_surface ) );
+	s3dw_show	( S3DWIDGET( _search_surface ) );
+
 }
 
 /* public */
@@ -216,6 +249,11 @@ void move_to_return_point(float cam_position_t[], float cam_position_r[])
 }
 
 /* public */
+/* TODO: WTF?! 
+ * please fix: 
+ *  - s is not initialized but still strlen() is used?! 
+ *  - s will vanish after the function is processed. global variable would be better
+ *  - don't forget the terminating \0 after writing a key */
 void search_widget_write(int key)
 {
 	static char s[20];
@@ -267,7 +305,46 @@ void set_node_root(struct olsr_node *root)
 {
 	_node_root = root;
 }
+/* private */
+void _new_search_node(s3dw_widget *dummy)
+{
+	char *ip;
+	int result;
+	
+	search_node = &_node_root;
+	
+	ip = s3dw_input_gettext( _search_input );
+	
+	while ( (*search_node) != NULL )
+	{
 
+		result = strncmp( (*search_node)->ip, ip, NAMEMAX );
+
+		if ( result == 0 ) 
+			break;
+		
+		if ( result < 0 )
+			(*search_node) = (*search_node)->right;
+		else
+			(*search_node) = (*search_node)->left;
+	}
+	s3dw_delete(dummy->parent); /* remove the window cointaining the button */
+	_search_surface=NULL;
+	_search_input=NULL;
+	_search_widget=NULL;
+
+
+	if( (*search_node) != NULL )
+	{
+		window_error("Okay, following");
+		set_search_status( FOLLOW );
+	}
+	else
+	{
+		window_error("Sorry, could not find...");
+		set_search_status( NOTHING );
+	}
+}
 /* private */
 void _search_node(s3dw_widget *dummy)
 {

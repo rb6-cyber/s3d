@@ -133,7 +133,19 @@ void window_help() {
 }
 
 
+void window_error(char *msg) {
 
+	s3dw_surface *infwin;
+	s3dw_button  *button;
+
+	infwin = s3dw_surface_new( "Error", 12, 6 );
+	s3dw_label_new(infwin,msg,1,2);
+
+	button=s3dw_button_new(infwin,"OK",4,4);
+	button->onclick = close_win;
+	s3dw_show(S3DWIDGET(infwin));
+
+}
 /***
  *
  * print error and exit
@@ -721,12 +733,12 @@ void mainloop() {
 	CamPosition2[0][2]=  CamPosition[0][0]*sin(Zp_rotate*M_PI/180.0) + CamPosition[0][2] * cos (Zp_rotate*M_PI/180.0);
 
 	/* check search status */
-	if( get_search_status() == WIDGET )
-		move_to_search_widget( CamPosition[0], CamPosition[1] );
+/*	if( get_search_status() == WIDGET )
+		move_to_search_widget( CamPosition[0], CamPosition[1] );*/
 	if( get_search_status() == FOLLOW )
 		follow_node( CamPosition[0], CamPosition[1], Zp_rotate );
-	if( get_search_status() == ABORT )
-		move_to_return_point( CamPosition[0], CamPosition[1] );
+/*	if( get_search_status() == ABORT )
+		move_to_return_point( CamPosition[0], CamPosition[1] );*/
 
 
 	if( Olsr_ip_label_obj != -1 )
@@ -774,8 +786,10 @@ void keypress(struct s3d_evt *event) {
 			case S3DK_s: /* move to search widget, give widget focus */
 
 				set_search_status(WIDGET);							/* set status for mainloop */
-				set_return_point(CamPosition[0],CamPosition[1]);	/* save the return position */
-				set_node_root( Olsr_root );
+				show_search_window();
+/*				set_return_point(CamPosition[0],CamPosition[1]);	/ * save the return position * /
+				set_node_root( Olsr_root );*/
+				
 				break;
 
 			case S3DK_c: /* color on/off */
@@ -853,11 +867,12 @@ void object_click(struct s3d_evt *evt)
 	int oid,i;
 	char ip_str[50];
 
-	if( get_search_status() == WIDGET )
+	s3dw_handle_click(evt);
+/*	if( get_search_status() == WIDGET )
 	{
 		s3dw_handle_click(evt);
 		return;
-	}
+	}*/
 
 	oid=(int)*((unsigned long *)evt->buf);
 
@@ -1125,7 +1140,7 @@ int main( int argc, char *argv[] ) {
 			Olsr_node_inet_obj = s3d_import_model_file( "objs/accesspoint_inet.3ds" );
 			Olsr_node_hna_net = s3d_import_model_file( "objs/internet.3ds" );
 			Btn_close_obj = s3d_import_model_file( "objs/btn_close.3ds" );
-			create_search_widget( 0, 0, 300 );
+/*			create_search_widget( 0, 0, 300 );*/
 
 			ZeroPoint = s3d_new_object();
 			Output_border[0] = Output_border[1] = Output_border[2] = Output_border[3] = -1;
