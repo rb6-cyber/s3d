@@ -101,12 +101,13 @@ void create_search_widget(float x, float y, float z)
 	s3dw_focus	( S3DWIDGET( _search_input ) );	
 	s3dw_focus	( S3DWIDGET( _search_surface ) );
 	s3dw_show	( S3DWIDGET( _search_surface ) );
-	
-	_search_widget	= s3dw_getroot();
+
+	/* disabled for autofollowing mode */
+	/*_search_widget	= s3dw_getroot();
 	move_search_widget( x, y, z );
 
 	_search_widget->ary = 180;
-	s3d_rotate( _search_widget->oid, _search_widget->arx, _search_widget->ary, _search_widget->arz );
+	s3d_rotate( _search_widget->oid, _search_widget->arx, _search_widget->ary, _search_widget->arz );*/
 }
 
 /* public */

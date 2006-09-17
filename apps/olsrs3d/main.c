@@ -733,6 +733,7 @@ void mainloop() {
 	{
 		print_etx();
 	}
+	s3dw_ani_mate();
 
 	nanosleep( &sleep_time, NULL );
 
@@ -756,7 +757,6 @@ void stop() {
 void keypress(struct s3d_evt *event) {
 
 	struct s3d_key_event *key=(struct s3d_key_event *)event->buf;
-	printf("%d\n",key->unicode);
 	if( get_search_status() != WIDGET )
 	{
 		switch(key->keysym)
@@ -1033,6 +1033,7 @@ void object_info(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
 	inf=(struct s3d_obj_info *)hrmz->buf;
+	s3dw_object_info(hrmz);
 	if (inf->object==0)
 	{
 		CamPosition[0][0] = inf->trans_x;
