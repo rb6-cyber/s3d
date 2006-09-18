@@ -877,6 +877,7 @@ void object_click(struct s3d_evt *evt)
 {
 	int oid,i;
 	char ip_str[50];
+	struct olsr_node *olsr_node;
 
 	s3dw_handle_click(evt);
 /*	if( get_search_status() == WIDGET )
@@ -886,6 +887,19 @@ void object_click(struct s3d_evt *evt)
 	}*/
 
 	oid=(int)*((unsigned long *)evt->buf);
+
+	if( get_search_status() != FOLLOW ){
+
+		olsr_node = NULL;
+		olsr_node = *lst_search(oid);
+
+		if ( olsr_node != NULL ) {
+			follow_node_by_click( olsr_node );
+		} else {
+			printf( "clicked obj not found(%i) ?!\n", oid );
+		}
+
+	}
 
 /*	if( oid == Btn_close_id )
 	{
