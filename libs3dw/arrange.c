@@ -117,7 +117,7 @@ void s3dw_turn()
 		}
 	}
 }
-#define DIST	30.0
+#define DIST	40.0
 void s3dw_follow()
 {
 	s3dw_widget *w,*root=s3dw_getroot();
