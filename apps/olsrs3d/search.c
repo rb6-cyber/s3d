@@ -348,6 +348,7 @@ void _new_search_node(s3dw_widget *dummy)
 }
 /* public */
 void follow_node_by_click(struct olsr_node *olsr_node) {
+	search_node = &_node_root;
 	(*search_node) = olsr_node;
 	set_search_status( FOLLOW );
 }
