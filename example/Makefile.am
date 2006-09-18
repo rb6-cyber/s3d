@@ -4,7 +4,7 @@ noinst_PROGRAMS=	hudtest katze \
 			nichtsnutz
 bin_PROGRAMS= filebrowser modelloader
 			
-3dsloader_SOURCES=		modelloader.c
+modelloader_SOURCES=	modelloader.c
 widgets_SOURCES=		widgets.c
 filebrowser_SOURCES=	filebrowser.c
 hudtest_SOURCES=		hudtest.c
