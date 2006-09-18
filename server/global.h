@@ -38,7 +38,7 @@ extern int running;		 /*  server running flag */
 /*  server version */
 #define S3D_SERVER_MAJOR	0
 #define S3D_SERVER_MINOR	1
-#define S3D_SERVER_PATCH	0
+#define S3D_SERVER_PATCH	1
 #define S3D_SERVER_NAME 	"dotslash s3d server"
 
 #define MAXPLEN	65536
