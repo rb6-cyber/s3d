@@ -26,6 +26,9 @@
 #include <s3dw_int.h>
 #include <stdlib.h> /* malloc() */
 #include <string.h> /* strdup() */
+#include <math.h>	/* cos(), sin() */
+#define POPUPDIST	40
+extern s3dw_widget *_s3dw_cam; /* for correct popup position */
 
 void s3dw_surface_draw(s3dw_widget *widget)
 {
@@ -108,6 +111,8 @@ void s3dw_surface_draw(s3dw_widget *widget)
 	s3d_link(surface->oid_title,surface->oid_tbar);
 	s3d_link(widget->oid,widget->parent->oid);
 	s3d_translate(surface->oid_title,0.5,0.2,0.1);
+	s3d_scale(widget->oid,	widget->as);
+	s3d_translate(widget->oid,	widget->ax, widget->ay, widget->az);
 }
 /* show the surface */
 void s3dw_surface_show(s3dw_widget *widget)
@@ -140,11 +145,14 @@ s3dw_surface *s3dw_surface_new(char *title, float width, float height)
 	widget->height=height;
 	widget->as=0.01;
 	s3dw_arr_widgetcenter(widget,f1);
-	widget->x=-f1[0];
-	widget->y=-f1[1];
-	widget->z=-f1[2];
-	widget->flags|=S3DW_FOLLOW_CAM|S3DW_TURN_CAM;
 	s3dw_widget_append(s3dw_getroot(),widget);
+	widget->x=-f1[0] + _s3dw_cam->x - sin( _s3dw_cam->ry * M_PI/180) * 	cos ( _s3dw_cam->rx *M_PI/180) * POPUPDIST;
+	widget->y=-f1[1] + _s3dw_cam->y + 								   	sin( _s3dw_cam->rx * M_PI/180 ) *POPUPDIST;
+	widget->z=-f1[2] + _s3dw_cam->z - cos( _s3dw_cam->ry * M_PI/180) * 	cos ( _s3dw_cam->rx *M_PI/180) * POPUPDIST;
+	widget->ax=widget->x;
+	widget->ay=widget->y;
+	widget->az=widget->z;
+	widget->flags|=S3DW_FOLLOW_CAM|S3DW_TURN_CAM;
 	s3dw_surface_draw(widget);
 	s3dw_ani_needarr();
 	s3dw_ani_add(widget);

@@ -1,6 +1,3 @@
-- let widgets popup infront of the camera
-- blinking when creating? 
 - checkbox
 - hbox/vbox, aligning
 - focus colors, focus cycling
-

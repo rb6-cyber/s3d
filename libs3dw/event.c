@@ -46,6 +46,10 @@ void s3dw_object_info(struct s3d_evt *evt)
 		_s3dw_cam->ax=_s3dw_cam->x=info->trans_x;
 		_s3dw_cam->ay=_s3dw_cam->y=info->trans_y;
 		_s3dw_cam->az=_s3dw_cam->z=info->trans_z;
+		_s3dw_cam->arx=_s3dw_cam->rx=info->rot_x;
+		_s3dw_cam->ary=_s3dw_cam->ry=info->rot_y;
+		_s3dw_cam->arz=_s3dw_cam->rz=info->rot_z;
+
 		_s3dw_cam->flags&=~S3DW_ARRANGED;
 		s3dw_ani_needarr();
 	}
