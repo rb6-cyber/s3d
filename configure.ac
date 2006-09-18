@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.5)
-AC_INIT([s3d], [0.1])
+AC_INIT([s3d], [0.2rc1])
 AC_CONFIG_SRCDIR(server/main.c)
 
 AC_CANONICAL_HOST

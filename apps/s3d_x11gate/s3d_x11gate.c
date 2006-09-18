@@ -78,7 +78,6 @@ void mainloop()
 	start.tv_usec 	=end.tv_usec;
 
 /*	image = XGetImage(dpy,window,0,0,width,height,AllPlanes,ZPixmap);*/
-	printf("dpy: %010p, window: %010p, image: %010p\n",dpy,window,image);
 	XShmGetImage(dpy, window, image, 0,0,0xffffffff);
 	gettimeofday(&end,NULL);
 	count[1]+=(end.tv_sec-start.tv_sec)*10000000 + end.tv_usec-start.tv_usec;
@@ -152,9 +151,6 @@ void mainloop()
 	start.tv_usec 	=end.tv_usec;
 	iterations++;
 /*	XDestroyImage(image);*/
-	for (x=0;x<3;x++)
-		printf("[%d] %f\n",x,count[x]/iterations);
-
 /*	nanosleep(&t,NULL); */
 }
 void keypress(struct s3d_evt *event)
