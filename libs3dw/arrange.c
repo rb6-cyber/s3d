@@ -85,21 +85,29 @@ void s3dw_turn()
 			b[1]=0;
 			b[2]=w->z + op[2]  - _s3dw_cam->z;
 			ry=180*s3d_vector_angle(a,b)/M_PI;
+			if ((b[0]==0) && (b[1]==0) && (b[2]==0)) ry=0;
 			/* correct acos incompletness */
 			if (b[0]<0) ry=180-ry;
 			else 		ry=180+ry;
-			b[0]=0;
+
+			b[2]=sqrt(b[0]*b[0] + b[2]*b[2]);
 			b[1]=w->y + op[1]   - _s3dw_cam->y;
-			b[2]=w->z + op[2]   - _s3dw_cam->z;
+			b[0]=0;
 			rx=180*s3d_vector_angle(a,b)/M_PI;
+			if ((b[0]==0) && (b[1]==0) && (b[2]==0)) rx=0;
 			if (b[1]>0) rx=180-rx;
 			else 		rx=180+rx;
-			if ((rx>90) && (rx<=180)) 
-				rx=180 - rx;
+			if 		((rx>90) && (rx<=180)) 	 rx=180 - rx;
 			else if ((rx>=180) && (rx<270))  rx=540 - rx ;
 
 			w->rx=rx;
 			w->ry=ry;
+			if ((w->arx - w->rx)>180)  w->arx-=360;
+			if ((w->arx - w->rx)<-180) w->arx+=360;
+			if ((w->ary - w->ry)>180)  w->ary-=360;
+			if ((w->ary - w->ry)<-180) w->ary+=360;
+
+
 			s3dw_arr_widgetcenter(w,np);
 			w->x-=np[0] - op[0];
 			w->y-=np[1] - op[1];
