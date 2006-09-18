@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdlib.h> /* exit() */
 
 #include <g3d/types.h>
 #include <g3d/read.h>
