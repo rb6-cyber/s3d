@@ -467,7 +467,7 @@ void keydown(struct s3d_evt *event)
 	struct s3d_key_event *keys=(struct s3d_key_event *)event->buf;
 	switch (keys->keysym)
 	{
-		case S3DK_F1:  ego_mode=(ego_mode+1)%2;
+		case S3DK_F2:  ego_mode=(ego_mode+1)%2;
 				 xdif=0;
 			     ydif=0;
 				 printf("ego mode %d\n",ego_mode);
