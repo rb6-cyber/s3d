@@ -321,7 +321,6 @@ void _new_search_node(s3dw_widget *dummy)
 
 		result = strncmp( (*search_node)->ip, ip, NAMEMAX );
 
-		printf( "ip: %s\n", (*search_node)->ip );
 		if ( result == 0 )
 			break;
 

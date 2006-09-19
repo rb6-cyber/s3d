@@ -311,15 +311,17 @@ void lst_del(int id) {
  *
  */
 
-void move_lst_ptr(int *id) {
+struct olsr_node *move_lst_ptr(int *id) {
 	/* printf("obj2ip: move for %d\n",*id); */
 	/* head to point at end or id lass then first element in linked list*/
-	if(Obj_to_ip_head->next == Obj_to_ip_head || *id < Obj_to_ip_head->next->id)
+	if(Obj_to_ip_head->next == Obj_to_ip_head || *id < Obj_to_ip_head->next->id) {
 		List_ptr = Obj_to_ip_head;
+		return NULL;
  	/* id is greather then last element in linked list */
-	else if(*id > Obj_to_ip_end->prev->id)
+	} else if(*id > Obj_to_ip_end->prev->id) {
 		List_ptr = Obj_to_ip_end->prev;
-	else {
+		return NULL;
+	} else {
 		/* printf("obj2ip: ok i search deeper ;-) for id=%d\n",*id); */
 		if((*id - (int) Obj_to_ip_head->next->id) <= ((int)(Obj_to_ip_end->prev->id)-*id)) {
 			List_ptr = Obj_to_ip_head;
@@ -340,6 +342,12 @@ void move_lst_ptr(int *id) {
 			}
 			List_ptr = List_ptr->prev;
 		}
+
+		if ( List_ptr->id == *id )
+			return List_ptr->olsr_node;
+		else
+			return NULL;
+
 		/* printf("obj2ip: found id to insert between %d--> .. <--%d to search/delete %d--> .. <--%d\n",List_ptr->id,List_ptr->next->next->id,List_ptr->prev->id,List_ptr->next->id); */
 	}
 }
@@ -357,14 +365,10 @@ void move_lst_ptr(int *id) {
  *
  */
 
-struct olsr_node **lst_search(int id) {
-	move_lst_ptr(&id);
-	/* TODO: return NULL when no node found */
-	/* if(id != List_ptr->id) */
-		/* printf("obj2ip: search id....id not found\n"); */
-	/* else */
-		/* printf("obj2ip: search found objekt_id=%d objekt_ip=%s\n",List_ptr->id,List_ptr->olsr_node->ip); */
-	return(&List_ptr->olsr_node);
+struct olsr_node *lst_search(int id) {
+
+	return( move_lst_ptr(&id) );
+
 }
 
 void lst_out() {

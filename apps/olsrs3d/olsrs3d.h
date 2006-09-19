@@ -60,9 +60,9 @@ extern int move_cam_to;
 void lst_initialize();
 void lst_add(int id,struct olsr_node **olsr_node);
 void lst_del(int id);
-struct olsr_node **lst_search(int id);
+struct olsr_node *lst_search(int id);
 void lst_out();
-void move_lst_ptr(int *id);
+struct olsr_node *move_lst_ptr(int *id);
 int process_main();
 /* net */
 int net_init(char *host);
@@ -70,7 +70,6 @@ int net_main();
 int net_quit();
 /* main */
 void out_of_mem( void );
-struct olsr_node **lst_search(int id);
 void print_etx( void );
 float dist(float p1[], float p2[]);
 void window_error(char *msg);

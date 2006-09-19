@@ -84,6 +84,8 @@ struct olsr_node *Olsr_node_pEtx;
 int Btn_close_id = -1;
 
 int Btn_close_obj;
+int Last_Click_Time = 0;
+int Last_Click_Oid = 0;
 float Title_len;
 
 /***
@@ -158,6 +160,8 @@ void window_error(char *msg) {
 	s3dw_show(S3DWIDGET(infwin));
 
 }
+
+
 /***
  *
  * print error and exit
@@ -168,6 +172,18 @@ void out_of_mem( void ) {
 
 	printf( "Sorry - you ran out of memory !\n" );
 	exit(8);
+
+}
+
+
+
+unsigned int get_time(void) {
+
+	struct timeval tv;
+
+	gettimeofday(tv, NULL);
+
+	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 
 }
 
@@ -875,9 +891,10 @@ void keypress(struct s3d_evt *event) {
 
 void object_click(struct s3d_evt *evt)
 {
-	int oid,i;
+	int oid, i;
 	char ip_str[50];
-	struct Obj_to_ip *obj_to_ip_tmp;
+	struct olsr_node *olsr_node;
+	struct timeval tv;
 
 	s3dw_handle_click(evt);
 /*	if( get_search_status() == WIDGET )
@@ -888,26 +905,19 @@ void object_click(struct s3d_evt *evt)
 
 	oid=(int)*((unsigned long *)evt->buf);
 
-	if( get_search_status() != FOLLOW ){
 
-		obj_to_ip_tmp = Obj_to_ip_head;
+	if ( ( get_search_status() != FOLLOW ) && ( Last_Click_Oid == oid ) && ( Last_Click_Time + 250 > get_time() ) ) {
 
-		while ( obj_to_ip_tmp != Obj_to_ip_end ) {
+		olsr_node = lst_search(oid);
 
-			if ( obj_to_ip_tmp->id == oid ) {
-
-				follow_node_by_click( obj_to_ip_tmp->olsr_node );
-				break;
-
-			} else {
-
-				obj_to_ip_tmp = obj_to_ip_tmp->next;
-
-			}
-
-		}
+		if ( olsr_node != NULL )
+			follow_node_by_click( olsr_node );
 
 	}
+
+	Last_Click_Oid = oid;
+	Last_Click_Time = get_time();
+
 
 /*	if( oid == Btn_close_id )
 	{
