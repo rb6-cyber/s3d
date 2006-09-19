@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
-#include <stdlib.h> /* exit() */
 
 #include <g3d/types.h>
 #include <g3d/read.h>
@@ -42,6 +41,7 @@ gboolean plugin_load_model(G3DContext *context, const gchar *filename,
 {
 	FILE *f;
 	gint32 nbytes, magic;
+	gboolean retval;
 	x3ds_global_data global;
 	x3ds_parent_data *parent;
 	long int fpos;
@@ -80,19 +80,18 @@ gboolean plugin_load_model(G3DContext *context, const gchar *filename,
 	parent->id = magic;
 	parent->nb = nbytes;
 
-	x3ds_read_ctnr(&global, parent);
+	retval = x3ds_read_ctnr(&global, parent);
 
 	g_free(parent);
 
-	/*
-	x3ds_container(f, nbytes, context, model, NULL, 1, magic);
-	*/
-
 	fclose(f);
+
 #if DEBUG > 0
-	g_printerr("imp_3ds.c: %s successfully loaded\n", filename);
+	if(retval)
+		g_printerr("imp_3ds.c: %s successfully loaded\n", filename);
 #endif
-	return TRUE;
+
+	return retval;
 }
 
 gchar *plugin_description(void)
@@ -134,12 +133,11 @@ gboolean x3ds_read_ctnr(x3ds_global_data *global, x3ds_parent_data *parent)
 				x3ds_chunks[i].container ? 'c' : ' ',
 				x3ds_chunks[i].callback ? 'f' : ' ',
 				x3ds_chunks[i].desc, chunk_len);
-			
+
 			if (chunk_id==0)
 			{
 				g_printerr("error: bad chunk id\n");
-		/*		return FALSE;*/
-				exit(-1);
+				return FALSE;
 			}
 
 			subparent = g_new0(x3ds_parent_data, 1);
@@ -161,7 +159,11 @@ gboolean x3ds_read_ctnr(x3ds_global_data *global, x3ds_parent_data *parent)
 
 			if(x3ds_chunks[i].container)
 			{
-				x3ds_read_ctnr(global, subparent);
+				if(x3ds_read_ctnr(global, subparent) == FALSE)
+				{
+					/* abort on error */
+					return FALSE;
+				}
 			}
 
 			if(subparent->nb)
