@@ -57,7 +57,7 @@ s3dw_label *s3dw_label_new(s3dw_surface *surface, char *text, float posx, float 
 	s3dw_widget *widget;
 	label=(s3dw_label *)malloc(sizeof(s3dw_label));
 	widget=s3dw_widget_new((s3dw_widget *)label);
-	widget->type=S3DW_TBUTTON;
+	widget->type=S3DW_TLABEL;
 	widget->x=posx;
 	widget->y=posy;
 	label->text=strdup(text);
