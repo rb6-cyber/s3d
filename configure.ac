@@ -92,8 +92,8 @@ fi
 if test "x${HAVE_SDL}" = "xyes"; then
 	AC_DEFINE([G_SDL], 1, [Use SDL])
 fi
-if test "x${HAVE_glut}${HAVE_SDL}" = "x"; then
-	AC_MSG_ERROR([No OpenGL Framework found. Try installing GLUT or SDL, or both])
+if test "x${HAVE_SDL}" = "x"; then
+	AC_MSG_ERROR([Please install SDL.])
 fi
 
 AM_CONDITIONAL([BUILD_SDL], test x"${HAVE_SDL}" = xyes)

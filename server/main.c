@@ -177,7 +177,8 @@ int init()
 	        errn("init():signal()",errno);
     if (signal(SIGTERM, sigint_handler) == SIG_ERR) 
 	        errn("init():signal()",errno);
-	kill(kidpid, SIGUSR1);
+	if (kidpid!=0)
+		kill(kidpid, SIGUSR1);
 #endif
 	return(0);
 }

@@ -1,9 +1,28 @@
-### 1 Preparing 
+
+
+             ________
+            /        \________  _______
+            \         \       \|       \
+         ____\     ___/____   /|_       \
+        /     \     \    \    \ |        \
+        \            \____\_   \|         \
+         \___________/          \    |    /
+                 s3D \__________/________/
+				
+						INSTALL
+
+
+
+
+1. Preparing 
+------------
+
 
 Before being able to install s3d and the sample programs, you need to prepare
 the build, and compile s3d. 
 
-### 1.1 Subversion Checkout
+1.1. Subversion Checkout
+------------------------
 
 If you are using a version directly checked out from subversion, you will need
 to setup the GNU autotools first. The following assumes that automake 1.9,
@@ -26,7 +45,8 @@ $ ./configure --help
 
 to learn about more configuration parameters.
 
-### 1.2 Preparing a Released Version
+1.2 Preparing a Released Version
+--------------------------------
 
 A released version of s3d contains a pregenerated configure script, which you
 can run directly:
@@ -37,7 +57,8 @@ Releases do not have debugging or profiling enabled by default, if you want thes
 features you have to enable them with --enable-debug and --enable-profiling,
 respectively.
 
-### 2 Building
+2. Building
+-----------
 
 After configure has finished, you can start the build of s3d:
 
@@ -46,14 +67,22 @@ $ make
 in the root directory will compile server, client-lib and the examples
 for you.
 
-after that, go
 
-$ cd server
-$ ./s3d --no-rc
+3. Installing
+-------------
 
-fire up the server. if you're lucky, a window appears.now the s3d is listening 
-on port 6066. 
-now it's time to test some things. on another terminal:
+Because of the new plugins, things need to be installed before you can test. 
+
+$ make install
+
+installs s3d in the selected prefix (default /usr/local/*), you may need to become 
+root first.
+
+$ s3d --no-rc
+
+fires up the server. Uf you're lucky, a X11 window appears. Now the s3d is listening 
+on TCP port 6066. 
+Now it's time to test some things. on another terminal:
 
 $ cd examples
 $ ./3dsloader miu3ds/miu.3ds
@@ -62,17 +91,28 @@ now there should appear a rotating cat. you can move with with the middle
 mouse-button pushed.
 now you can try the MCP, which is something like a windowmanager in X:
 
-$ cd examples
+$ cd apps/dot_mcp
 $ ./dot_mcp
 
 now you should get some fancy window decorations :D
 there are a few other examples, just play around
 
-### 3 Installing
+4. s3drc
+--------
 
-You can use the install target to install s3d into the selected prefix. 
+We recommend to make use of the .s3drc. The idea is the same as in .xinitrc,
+starting the window manager (the mcp) along with the server. When the .s3drc
+is finished, the server will go down with it (so you can press a "quit" button
+in the mcp).
 
-$ make install
+Give it a try:
 
-Depending on the selected prefix, you may need to become superuser first.
+$ cat << EOF > ~/.s3drc
+#!/bin/sh
+dot_mcp
+EOF
+$ s3d
+
+(note, this time without --no-rc)
+
 
