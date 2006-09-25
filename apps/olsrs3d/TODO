@@ -1,5 +1,4 @@
-	rotate text in cam-direction
-	search for vertices (text input?)
+	make detailed  error messages (just "connection reset" is not enough, at least "failed to connect to olsrd-daemon" should be printed)
 	show link times
 	add 3ds files for cubes, linksys wrt, internet node, hna node
 	add color mode without red & green colors

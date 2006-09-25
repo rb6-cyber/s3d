@@ -1,4 +1,5 @@
 TODO:
+- remove/correct libg3d error messages ...
 - key repeation
 - shmat() return (char *) -1 or NULL?! data_ctos/data_stoc should
   really not be 0x0
