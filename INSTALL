@@ -25,8 +25,13 @@ the build, and compile s3d.
 ------------------------
 
 If you are using a version directly checked out from subversion, you will need
-to setup the GNU autotools first. The following assumes that automake 1.9,
-autoconf 2.59 are available and installed into a directory listed in the $PATH
+to setup the GNU autotools first. The following assumes that 
+
+* automake 1.9 (1.4 is too old!)
+* autoconf 2.59 
+* libtool
+
+are available and installed into a directory listed in the $PATH
 environment variable.
 
 $ ./autogen.sh [--prefix=/some/where] [--disable-debug] [--enable-profiling]
