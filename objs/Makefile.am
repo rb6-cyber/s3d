@@ -47,5 +47,6 @@ dist_objs_DATA = \
 	btn_minimize.3ds \
 	btn_rotate.3ds \
 	btn_maximize.3ds \
+	s3d_berlios_de.3ds \
 	AUTHORS
 
