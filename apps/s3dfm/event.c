@@ -99,30 +99,34 @@ void event_click(struct s3d_evt *evt)
 	{
 		if (f->objs.close==oid)
 		{
-/*			box_collapse(f,1);*/
-/*			if (f->parent!=NULL)
-				ani_focus(f->parent);*/
+			box_close(f,1);
+			if (f->parent!=NULL)
+				ani_focus(f->parent);
 			return;
 		}
 		if (f->objs.select==oid)
 		{
 			printf("[S]electing %s\n",f->name);
-			box_select(f);
+			node_select(f);
 			return;
 		}
-		if (f->type==T_FOLDER)
+		switch (f->disp)
 		{
-			if (f->disp == D_DIR)
-			{
+			case D_DIR:
 				printf("[F]ound, Already displayed - ani_focus( %s )\n",f->name);
-			} else {
-				if (!f->parsed)	parse_dir(f);
-/*				box_expand(f);*/
-			}
-			focus=f;
-			ani_focus(f);
-		} else
-			printf("[F]ound, but %s is no folder\n",f->name);
+				ani_focus(f);
+				break;
+			case D_ICON:
+				if (f->type==T_FOLDER)
+				{
+					parse_dir(f);
+					box_expand(f);	
+					ani_focus(f);
+				} else {
+					node_select(f);
+				}
+				break;
+		}
 	} else {
 /*		printf("[C]ould not find :/\n");*/
 	}

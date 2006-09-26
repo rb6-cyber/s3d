@@ -44,7 +44,6 @@ int icon_draw(t_node *dir)
 				5,1,0,0,				5,0,4,0	
 				};
 	float len;
-	printf("icon_draw( %s )\n",dir->name);
 	/* find position for the new block in our directory box */
 	/* create the block */
 	dir->oid=s3d_new_object();
@@ -78,13 +77,11 @@ int icon_draw(t_node *dir)
 	s3d_translate(dir->objs.str,-0.9,-0.3,0.1);
 	s3d_rotate(dir->objs.str,0,0,0);
 	s3d_link(dir->objs.str,dir->oid);
-
 	dir->disp=D_ICON;
 	return(0);
 }
 int icon_undisplay(t_node *dir)
 {
-	printf("icon_undisplay( %s )\n",dir->name);
 	if (dir->oid!=-1)
 	{
 		s3d_del_object(dir->oid);

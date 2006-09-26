@@ -66,6 +66,7 @@ void ani_focus(t_node *f)
 	printf("px: %f py:%f pz: %f\n",root.px,root.py,root.pz);*/
 
 	ani_add(&root);
+	focus=f;
 	if (((cam.dpx-cam.px)* (cam.dpx-cam.px) + (cam.dpy-cam.py)* (cam.dpy-cam.py) 
 		  + (cam.dpz-cam.pz)* (cam.dpz-cam.pz))	> ( 10 * 10))
 	{

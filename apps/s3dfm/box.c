@@ -30,6 +30,7 @@ void box_draw(t_node *dir)
 {
 	box_buildblock(dir);
 	box_sidelabel(dir);
+	ani_doit(dir);
     s3d_flags_on(dir->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
     s3d_flags_on(dir->objs.close,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
     s3d_flags_on(dir->objs.title,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
@@ -50,45 +51,6 @@ void box_draw_icons(t_node *dir)
 	}
 	box_order_icons(dir);
 }
-/* order the icons properly */
-void box_order_icons(t_node *dir)
-{
-	int dps,i;
-	dps=ceil(sqrt(dir->n_sub)); /* directories per line */
-	for (i=0;i<dir->n_sub;i++)
-	{
-		printf("ordering icon %s\n",dir->sub[i]->name);
-		dir->sub[i]->dpx = -1 +2*  ((float)((int)i%dps)+0.5)/((float)dps);
-		dir->sub[i]->dpy = 0.5+((float)((int)i/dps)+0.5)/((float)dps)-0.5;
-		dir->sub[i]->dpz = 1.0;
-		dir->sub[i]->scale = (float)1.0/((float)dps);
-		dir->sub[i]->dscale = 0.001;
-		dir->sub[i]->dpx = 0;
-		dir->sub[i]->dpy = 0;
-		dir->sub[i]->dpz = 1;
-		/* make a first setup so there is no flickering */
-		s3d_link(dir->sub[i]->oid,dir->oid); /* if it's already displayed, make sure it linked properly ... */
-		ani_doit(dir->sub[i]);
-		ani_add(dir->sub[i]); /* apply transformation */
-		s3d_flags_on(dir->sub[i]->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-		s3d_flags_on(dir->sub[i]->objs.str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-
-		
-	}
-}
-
-/* remove old items on the box */
-/*
-void box_dissolve(t_node *dir)
-{
-	if (dir->objs.close!=-1)		{	s3d_del_object(dir->objs.close);		dir->objs.close=-1; }
-	if (dir->objs.select!=-1)	{	s3d_del_object(dir->objs.select);	dir->objs.select=-1; }
-	if (dir->objs.title!=-1)		{	s3d_del_object(dir->objs.title);		dir->objs.title=-1; }
-	if (dir->objs.titlestr!=-1)	{	s3d_del_object(dir->objs.titlestr);	dir->objs.titlestr=-1; }
-	if (dir->oid!=-1)			s3d_del_object(dir->oid);
-
-}*/
-
 
 
 /* places the string at the left side of the cube */
@@ -178,20 +140,43 @@ int box_buildblock(t_node *dir)
 						0.5,0.5,0.6,
 						0.5,0.5,0.6);
 
+	/* top */
 	s3d_push_polygon(dir->oid,4,6,5,1);
 	s3d_push_polygon(dir->oid,4,7,6,1);
+	/* bottom */
+	s3d_push_polygon(dir->oid,8,11,3,1);
+	s3d_push_polygon(dir->oid,8,3,0,1);
 
+
+	/* left */
 	s3d_push_polygon(dir->oid,0,4,5,0);
 	s3d_push_polygon(dir->oid,0,5,1,0);
 	
+	/* back */
 	s3d_push_polygon(dir->oid,3,7,4,0);
 	s3d_push_polygon(dir->oid,3,4,0,0);
 
+	/* right */
 	s3d_push_polygon(dir->oid,2,6,7,0);
 	s3d_push_polygon(dir->oid,2,7,3,0);
 	
+	/* front */
 	s3d_push_polygon(dir->oid,8,9,10,0);
 	s3d_push_polygon(dir->oid,8,10,11,0);
+	/* left inner side */
+	s3d_push_polygon(dir->oid,1,5,9,0);
+	s3d_push_polygon(dir->oid,1,9,8,0);
+
+	/* right inner side */
+	s3d_push_polygon(dir->oid,2,11,10,0);
+	s3d_push_polygon(dir->oid,2,10,6,0);
+
+	/* top inner side */
+	s3d_push_polygon(dir->oid,9,5,6,0);
+	s3d_push_polygon(dir->oid,9,6,10,0);
+
+
+
 
 	/* draw the select, close buttons ... */
 	dir->objs.close=s3d_new_object();
@@ -235,117 +220,95 @@ int box_buildblock(t_node *dir)
 /*	printf("FULLNAME is [%s]\n",fullname);*/
 	return(0);
 }
-/* display a directoy on the top of another, draw it's icons etc ... */
-/*
+/* display a directoy on the top of another */
 int box_expand(t_node *dir)
 {
-	int i;
-	float  px,pz;
-	int dirn;
-	px=pz=0.0;
 	printf("box_expand( %s )\n",dir->name);
-	if (dir->disp)		undisplay(dir);
-	box_buildblock(dir);
-	if (dir->parent!=NULL)
-		dir->parent->dirs_opened++;
- / * count directories * /
-	dirn=0;
-	for (i=0;i<dir->n_sub;i++)
+	switch (dir->disp)
 	{
-		if (dir->sub[i].type==T_FOLDER) dirn++;
+		case D_DIR:			return(0); /* already done */
+		case D_ICON:		icon_undisplay(dir); /* undisplay previously displayed types, like icons etc */
+			break;
+		case D_NONE:		break; /* ignore */
+		default:			return(-1); /* panic */
 	}
+	dir->dpx=0.0;
+	dir->dpy=BOXHEIGHT;
+	dir->dpz=0.0;
+	dir->dscale=0.01;
+	box_draw(dir);
 
-	/ * draw icons, if necceasry * /
-	for (i=0;i<dir->n_sub;i++)
+	/* initialize position on the parent */
+	if (dir->parent!=NULL)	
 	{
-		if (!dir->sub[i].disp)	icon_draw(dir,i);
-		else {
-			printf("link %d to the block %d of %s\n",dir->sub[i].block,dir->oid,dir->name);
-			s3d_link(dir->sub[i].block,dir->oid); / * if it's already displayed, make sure it linked properly ... * /
-		}
+		dir->parent->dirs_opened++;
+		s3d_link(dir->oid,dir->parent->oid);
+		box_order_subdirs(dir->parent);
 	}
-	if (dir->parent!=NULL)
-	{
-		s3d_link(dir->oid,dir->parent->block);
-		dir->dpx=0.0;
-		dir->dpy=BOXHEIGHT;
-		dir->dpz=0.0;
-		dir->dscale=0.0;
-		box_position_kids(dir->parent);
-		ani_doit(dir);
-	}
-	box_sidelabel(dir);
 	return(0);
 }
-
-*/
+/* remove s3d-objects of a directory node */
 int box_undisplay(t_node *dir)
 {
-	/*
-	int i;
-	t_node *par;
 	printf("box_undisplay( %s )\n",dir->name);
-	for (i=0;i<dir->n_sub;i++)
-	{
-		if (dir->sub[i].disp==D_ICON)	icon_undisplay(&(dir->sub[i]));
-		else if (dir->sub[i].disp!=0)	
-				printf("not undisplaying: %s (disp = %d)\n",dir->sub[i].name, dir->sub[i].disp);
-	}
-	if ((par=dir->parent)!=NULL) / * we can't do this on root.... * /
-	{
-		for (i=0;i<par->n_item;i++)
-			if (&par->list[i]==dir)
-				break;
-		if (i!=par->n_item) / * if it actually was in the parents item list * /
-		{
-			icon_draw(par,i);
-			s3d_flags_on(dir->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-			s3d_flags_on(dir->objs.str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-		}
-		par->dirs_opened--;
-	} else {
-		/ * we're root ... * /
-		box_dissolve(dir);
-	}
-	printf("[U]ndisplayed %s\n",dir->name);
-/ * 	dir->dirs_opened=0;* /
-	dir->detached=0;
-	*/
+	if (dir->objs.close!=-1)		{	s3d_del_object(dir->objs.close);		dir->objs.close=-1; }
+	if (dir->objs.select!=-1)	{	s3d_del_object(dir->objs.select);	dir->objs.select=-1; }
+	if (dir->objs.title!=-1)		{	s3d_del_object(dir->objs.title);		dir->objs.title=-1; }
+	if (dir->objs.titlestr!=-1)	{	s3d_del_object(dir->objs.titlestr);	dir->objs.titlestr=-1; }
+	if (dir->oid!=-1)			s3d_del_object(dir->oid);
+	dir->disp=D_NONE;
 	return(0);
 }
+/* the opposite effect of box_expand, e.g. transforming the box back to an icon */
+int box_unexpand(t_node *dir)
+{
+	if (dir->parent==NULL) /* we can't do this on root.... */
+		return(-1);
+	box_undisplay(dir);
+	icon_draw(dir);
+	box_order_icons(dir->parent);
+	dir->parent->dirs_opened--;
+	printf("[U]ndisplayed %s\n",dir->name);
+	return(0);
+}
+
 /* undisplay a directory, thus recursively removing the kids.*/
-/*
-int box_collapse(t_node *dir,int force)
+/* if force is 1, even the directory is removed even if it still have selected kids */
+int box_close(t_node *dir,int force)
 {
 	int i;
 	int ret;
-	printf("box_collapse( %s )\n",dir->name);
+	printf("box_close( %s )\n",dir->name);
 	if (&root==dir)
 	{
 		printf("won't undisplay root window ... \n");
 		return(-1);
 	}
-	if (dir->detached && !force)
-		return(1);
-	if (dir->disp!=D_DIR)
+	if (dir->detached && !force)	return(1);
+	if (dir->disp!=D_DIR) /* that should not be happening ... */
 	{
 		printf("[A]lready undisplayed %s, nothing to do ...\n",dir->name);
 		return(-1);
 	}
-	/ * undisplaying kids. ret will be != 0 if any of the kids did not close correctly * /
+	/* undisplaying kids. ret will be != 0 if any of the kids did not close correctly */
 	ret=0;
 	for (i=0;i<dir->n_sub;i++)
-		if (dir->sub[i].disp==D_DIR)
-			ret|=box_collapse(&dir->sub[i],force);
-
-	if (ret && !force) return(ret); / * if anything got wrong, return here ... * /
-	undisplay(dir);
-	if (dir->parent!=NULL)
+		if (dir->sub[i]->disp==D_DIR)
+			ret|=box_close(dir->sub[i],force);
+	if (ret && !force) 
 	{
-		box_position_kids(dir->parent);
+		box_order_subdirs(dir);
+		return(ret); /* if anything got wrong, return here ... */
+	} else {
+		/* also remove the icons */
+		for (i=0;i<dir->n_sub;i++)
+			if (dir->sub[i]->disp==D_ICON)
+				icon_undisplay(dir->sub[i]);
+		box_undisplay(dir);
 	}
 	return(ret);
 }
+/*
 / * only display dir and its kids, but nothing below. * /
 int box_collapse_grandkids(t_node *dir)
 {
@@ -400,14 +363,25 @@ void box_order_subdirs(t_node *dir)
 			}
 	}
 }
-void box_select(t_node *dir)
+/* order the icons properly */
+void box_order_icons(t_node *dir)
 {
-	dir->detached=dir->detached?0:1; /* swapping, not sure if !dir->detached would do the same .. */
-	if ((dir->type==T_FOLDER) && dir->disp)
+	int dps,i;
+	dps=ceil(sqrt(dir->n_sub)); /* directories per line */
+	for (i=0;i<dir->n_sub;i++)
 	{
-		if (dir->parent!=NULL)
-			box_order_subdirs(dir->parent);
-	} else {
-		/* nothing yet ... */
+		dir->sub[i]->px = -1 +2*  ((float)((int)i%dps)+0.5)/((float)dps);
+		dir->sub[i]->py = 0.5+((float)((int)i/dps)+0.5)/((float)dps)-0.5;
+		dir->sub[i]->pz = 1.0;
+		dir->sub[i]->scale = (float)1.0/((float)dps);
+		dir->sub[i]->dscale = dir->sub[i]->scale;
+		dir->sub[i]->dpx = dir->sub[i]->px;
+		dir->sub[i]->dpy = dir->sub[i]->py;
+		dir->sub[i]->dpz = dir->sub[i]->dpz;
+		/* make a first setup so there is no flickering */
+		s3d_link(dir->sub[i]->oid,dir->oid); /* if it's already displayed, make sure it linked properly ... */
+		ani_finish(dir->sub[i], -1);
+		s3d_flags_on(dir->sub[i]->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		s3d_flags_on(dir->sub[i]->objs.str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	}
 }

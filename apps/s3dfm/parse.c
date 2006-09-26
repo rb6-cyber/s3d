@@ -74,40 +74,36 @@ int parse_dir(t_node *dir)
 					dir->sub[i]->parent = dir;
 				}
 				/* find out the filetype ... very simple */
-				else {
-					ext=strrchr(nstr,'.');
-					strncpy(ndir,path,M_DIR);
-			    	strncat(ndir,namelist[n]->d_name,M_DIR);
-				    if ((namelist[n]->d_type==DT_DIR) ||
-						((namelist[n]->d_type==DT_UNKNOWN) && ((dirhd=opendir(ndir))!=NULL)))
-						{
-							dir->sub[i]->type=T_FOLDER;
-							closedir(dirhd);
-						}
-					else 
-					{
-					   if (ext!=NULL)
-					   {
-						   if (0==strncmp(ext,".3ds",strlen(ext)<4?strlen(ext):4))		   dir->sub[i]->type=T_GEOMETRY;
-						   else if (0==strncmp(ext,".mp3",strlen(ext)<4?strlen(ext):4))	   dir->sub[i]->type=T_MUSIC;
-					   }	
-					}
-				}
-	
-				dir->sub[i]->check=0;
+				ext=strrchr(nstr,'.');
+				strncpy(ndir,path,M_DIR);
+		    	strncat(ndir,namelist[n]->d_name,M_DIR);
+			    if ((namelist[n]->d_type==DT_DIR) || ((namelist[n]->d_type==DT_UNKNOWN) && ((dirhd=opendir(ndir))!=NULL)))
+				{
+					dir->sub[i]->type=T_FOLDER;
+					closedir(dirhd);
+				} else if (ext!=NULL)
+				   {
+					   if (0==strncmp(ext,".3ds",strlen(ext)<4?strlen(ext):4))		   dir->sub[i]->type=T_GEOMETRY;
+					   else if (0==strncmp(ext,".mp3",strlen(ext)<4?strlen(ext):4))	   dir->sub[i]->type=T_MUSIC;
+				   }	
+				dir->sub[i]->check=0; /* check=0 means we've already processed this item */
 			}
 	   	    free(namelist[n]);
 		}
 		free(namelist);
+		dir->check=0;
 		for (i=0;i<dir->n_sub;i++)
 			if (dir->sub[i]->check) 
-			/* not checked yet... that means the item is not in the reparsed directory, ie vanished.
-			 * so we're removing it from our queue */
 			{
+				/* not checked yet... that means the item is not in the reparsed directory, ie vanished.
+				 * so we're removing it from our queue */
 				node_delete(dir->sub[i]);
 				dir->n_sub--;
 				dir->sub[i]=dir->sub[dir->n_sub]; /* exchange with the last one */
+				dir->check=1;
 			}
+		/* if we removed something, then shrink the buffer accordingly .. */
+		if (dir->check)		dir->sub = realloc( dir->sub , dir->n_sub * sizeof(t_node *) );
 		dir->parsed=1;
    	}
 	return(0);

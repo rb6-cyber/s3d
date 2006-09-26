@@ -149,3 +149,22 @@ int node_delete(t_node *dir)
 	*/
 	return(0);
 }
+/* node select handles click on the detach button. selected items can be moved, copied etc.*/
+void node_select(t_node *dir)
+{
+	printf("node_select(%s)\n",dir->name);
+	dir->detached=dir->detached?0:1; /* swapping, not sure if !dir->detached would do the same .. */
+	printf("dir->type = %d\n",dir->disp);
+	switch (dir->disp)
+	{
+		case D_DIR:
+			if (dir->parent!=NULL)
+				box_order_subdirs(dir->parent);
+			break;
+		case D_ICON:
+			dir->pz=dir->detached*0.2+1.0;
+			ani_add(dir);
+			break;
+		/* nothing yet ... */
+	}
+}

@@ -81,13 +81,6 @@ typedef struct _t_node   t_node;
 extern t_node root,cam; /* some global objects */
 extern t_node *focus;	/* the focused object */
 
-/* node.c */
-t_node 		*node_getbypath(char *path);
-void 		 node_path(t_node *dir, char *path);
-t_node 		*node_getbyoid(t_node *t, int oid);
-int 		 node_init(t_node *dir);
-int 		 node_delete(t_node *dir);
-int 		 node_undisplay(t_node *dir);
 /* animation.c */
 float		 ani_get_scale(t_node *f);
 void 		 ani_focus(t_node *f);
@@ -99,10 +92,6 @@ void 		 ani_finish(t_node *f, int i);
 void 		 ani_iterate(t_node *f);
 int 		 ani_check(t_node *f);
 void 		 ani_mate();
-/* event.c */
-void 		 event_click(struct s3d_evt *evt);
-void		 event_key(struct s3d_evt *evt);
-void		 event_oinfo(struct s3d_evt *hrmz);
 /* box.c */
 void	 	 box_draw(t_node *dir);
 void 	 	 box_draw_icons(t_node *dir);
@@ -110,13 +99,10 @@ int 		 box_undisplay(t_node *dir);
 void  		 box_order_icons(t_node *dir);
 void	 	 box_sidelabel(t_node *dir);
 int 		 box_buildblock(t_node *dir);
-void		 box_select(t_node *dir);
 void 		 box_order_subdirs(t_node *dir);
-/* parse.c */
-int 		 parse_dir(t_node *dir);
-/* icon.c */
-int 		 icon_draw(t_node *dir);
-int 		 icon_undisplay(t_node *dir);
+int 		 box_expand(t_node *dir);
+int 		 box_unexpand(t_node *dir);
+int 		 box_close(t_node *dir,int force);
 /* dialog.c */
 void		 close_win(s3dw_widget *button);
 void		 window_help();
@@ -129,11 +115,10 @@ void		 window_fs_mkdir(s3dw_widget *button);
 void		 window_mkdir(char *path);
 void		 window_move(char *path);
 void		 window_info(char *path);
-/* string.c */
-void 		 dots_at_start(char *s, unsigned int n, t_node *d);
-void		 dotted_int(char *s,unsigned int i);
-char		 *mstrncat(char *dest, const char *src, int n);
-char		 *mstrncpy(char *dest, const char *src, int n);
+/* event.c */
+void 		 event_click(struct s3d_evt *evt);
+void		 event_key(struct s3d_evt *evt);
+void		 event_oinfo(struct s3d_evt *hrmz);
 /* fs.c */
 filelist	 *fl_new(char *path);
 void		 fl_del(filelist *fl);
@@ -144,4 +129,21 @@ int			 fs_fl_unlink(filelist *fl);
 void	 	 fs_approx(char *source, int *files, int *dirs, int *bytes);
 int			 fs_copy(char *source, char *dest);
 int			 fs_move(char *source, char *dest);
-int			 fs_unlink(char *dest);
+int			 fs_unlink(char *dest);/* icon.c */
+int 		 icon_draw(t_node *dir);
+int 		 icon_undisplay(t_node *dir);
+/* node.c */
+t_node 		*node_getbypath(char *path);
+void 		 node_path(t_node *dir, char *path);
+t_node 		*node_getbyoid(t_node *t, int oid);
+int 		 node_init(t_node *dir);
+int 		 node_delete(t_node *dir);
+int 		 node_undisplay(t_node *dir);
+void		 node_select(t_node *dir);
+/* parse.c */
+int 		 parse_dir(t_node *dir);
+/* string.c */
+void 		 dots_at_start(char *s, unsigned int n, t_node *d);
+void		 dotted_int(char *s,unsigned int i);
+char		 *mstrncat(char *dest, const char *src, int n);
+char		 *mstrncpy(char *dest, const char *src, int n);
