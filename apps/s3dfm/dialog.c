@@ -1,5 +1,6 @@
 /*
  * dialog.c
+ *
  * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3dfm, a s3d file manager.
@@ -23,141 +24,37 @@
 
 #include "s3dfm.h"
 #include <s3d_keysym.h>
-#include <s3dw.h>
 #include <stdio.h> 	/* NULL, printf() */
 #include <string.h> /* strlen() */
 #include <stdlib.h> /* realloc(),malloc() */
 #include <errno.h>  /* errno */
 #include <sys/stat.h> /* mkdir() */
 #include <sys/types.h> /* mkdir() */
-extern t_item *focus;
-filelist fp={NULL,0};
-int typeinput=0;
-/* keyevent handler */
-void key_handler(struct s3d_evt *evt)
-{
-	struct s3d_key_event *keys=(struct s3d_key_event *)evt->buf;
-	char path[M_DIR];
-	if (typeinput) {	/* we have some inputfield now and want the s3dw to handle our input */	
-			printf("inputting text ...\n");
-			s3dw_handle_key(evt); 
-			return; 
-	}
-	get_path(focus,path);
-	switch (keys->keysym)
-	{
-		case 'i':
-		case 'I':
-				{
-				window_info(path);
-				}
-				break;
-		case 'r':
-		case 'R':
-				{/* refresh this window ... */
-					printf("[R]efreshing %s\n",focus->name);
-					parse_again(focus);
-					ani_focus(focus);
-				}
-				break;
-		case S3DK_F1:
-				window_help();
-				break;
-		case S3DK_F5:
-				window_copy(path);
-				break;
-		case S3DK_F6:
-				window_move(path);
-				break;
-		case S3DK_F7:
-				window_mkdir(path);
-				break;
+
+static s3dw_input	 *input;
+static filelist fp={NULL,0};
+
+extern int typeinput;
 
 
-	}
-	s3dw_handle_key(evt);
-}
-
-/* object click handler */
-void object_click(struct s3d_evt *evt)
-{
-	int oid;
-	t_item *f;
-	s3dw_handle_click(evt);
-	oid=(int)*((unsigned long *)evt->buf);
-	if (NULL!=(f=finditem(&root,oid)))
-	{
-		if (f->close==oid)
-		{
-			box_collapse(f,1);
-/*			if (f->parent!=NULL)
-				ani_focus(f->parent);*/
-			return;
-		}
-		if (f->select==oid)
-		{
-			printf("[S]electing %s\n",f->name);
-			box_select(f);
-			return;
-		}
-		if (f->type==T_FOLDER)
-		{
-			if (f->disp == D_DIR)
-			{
-				printf("[F]ound, Already displayed - ani_focus( %s )\n",f->name);
-			} else {
-				if (!f->parsed)	parse_dir(f);
-				box_expand(f);
-			}
-			focus=f;
-			ani_focus(f);
-		} else
-			printf("[F]ound, but %s is no folder\n",f->name);
-	} else {
-/*		printf("[C]ould not find :/\n");*/
-	}
-}
 void close_win(s3dw_widget *button)
 {
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
-/* add some dots to an integer value for better readability */
-void dotted_int(char *s,unsigned int i)
-{
-	char st[M_DIR];
-	int p;
-	p=0;
-	st[0]=0;
-	while (i>0)
-	{
-		if ((p+1)%4==0) {
-			st[p]='.';
-			p++;
-		}
-		st[p]=(i%10)+'0';
-		i=i/10;
-		p++;
-	}
-	if (p>0) p--;
-	st[p+1]=0;
-	for (i=0;i<p+1;i++)
-		s[i]=st[p-i];
-	s[p+1]=0;
-}
 /* add all selected dirs in the new filelist */
-int get_selected(filelist *fp, t_item *dir)
+int get_selected(filelist *fp, t_node *dir)
 {
 	int i;
 	char *s;
-	for (i=0;i<dir->n_item;i++)
+	for (i=0;i<dir->n_sub;i++)
 	{
-		if (dir->list[i].list!=NULL)	get_selected(fp,&(dir->list[i])); /* scan subdir */
-		if (dir->list[i].detached)
+		if (dir->sub[i]->sub!=NULL)	get_selected(fp,dir->sub[i]); /* scan subdir */
+		if (dir->sub[i]->detached)
 		{
 			fp->n++;
 			fp->p=realloc(fp->p,sizeof(char *) * fp->n);
 			s=malloc(M_DIR);
-			get_path(&(dir->list[i]),s);
+			node_path(dir->sub[i],s);
 			fp->p[fp->n - 1]=s;
 		}
 	}
@@ -255,7 +152,7 @@ void window_copy(char *path)
 	for (i=0;i<fp.n;i++)
 		s3dw_label_new(infwin,fp.p[i],3,2+i);
 	s3dw_label_new(infwin,"to:",1,fp.n+3);
-	get_path(focus,destdir);
+	node_path(focus,destdir);
 	s3dw_label_new(infwin,destdir,3,fp.n+4);
 
 	okbutton=s3dw_button_new(infwin,"OK",l/2-3,fp.n+5);
@@ -266,24 +163,23 @@ void window_copy(char *path)
 	s3dw_show(S3DWIDGET(infwin));
 
 }
-s3dw_input	 *input;
 void window_fs_mkdir(s3dw_widget *button)
 {
 	char *dir;
-	t_item *item;
+	t_node *item;
 	dir=s3dw_input_gettext(input);
 	printf("creating Directory ...%s\n",dir);
 	if (-1==mkdir(dir,0777)) /* umask ?! */
 		window_fs_errno("could not create directory");
 	else {
 		/* success, now refresh it */
-		item=get_item(dir);
+		item=node_getbypath(dir);
 		if (item==NULL)
 		{
 			printf("cannot refresh\n");
 		} else {
 			printf("refreshing %s\n",item->name);
-			parse_again(item);
+/*			parse_again(item);*/
 
 		}
 				

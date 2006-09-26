@@ -26,39 +26,88 @@
 #include <math.h>	 /*  sin(),cos() */
 #include <string.h>  /*  strlen() */
 
-
-/* remove old items on the box */
-void box_dissolve(t_item *dir)
+void box_draw(t_node *dir)
 {
-	if (dir->close!=-1)		{	s3d_del_object(dir->close);		dir->close=-1; }
-	if (dir->select!=-1)	{	s3d_del_object(dir->select);	dir->select=-1; }
-	if (dir->title!=-1)		{	s3d_del_object(dir->title);		dir->title=-1; }
-	if (dir->titlestr!=-1)	{	s3d_del_object(dir->titlestr);	dir->titlestr=-1; }
-	if (dir->block!=-1)			s3d_del_object(dir->block);
+	box_buildblock(dir);
+	box_sidelabel(dir);
+    s3d_flags_on(dir->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+    s3d_flags_on(dir->objs.close,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+    s3d_flags_on(dir->objs.title,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+    s3d_flags_on(dir->objs.select,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+    s3d_flags_on(dir->objs.titlestr,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	dir->disp=D_DIR;
+	box_draw_icons(dir);
 
 }
+/* draw all the icons which are not displayed yet */
+void box_draw_icons(t_node *dir)
+{
+	int i;
+	printf("box_draw_icons(%s, %d subs)\n",dir->name, dir->n_sub);
+	for (i=0;i<dir->n_sub;i++)
+	{
+		if (dir->sub[i]->disp==D_NONE)	icon_draw(dir->sub[i]);
+	}
+	box_order_icons(dir);
+}
+/* order the icons properly */
+void box_order_icons(t_node *dir)
+{
+	int dps,i;
+	dps=ceil(sqrt(dir->n_sub)); /* directories per line */
+	for (i=0;i<dir->n_sub;i++)
+	{
+		printf("ordering icon %s\n",dir->sub[i]->name);
+		dir->sub[i]->dpx = -1 +2*  ((float)((int)i%dps)+0.5)/((float)dps);
+		dir->sub[i]->dpy = 0.5+((float)((int)i/dps)+0.5)/((float)dps)-0.5;
+		dir->sub[i]->dpz = 1.0;
+		dir->sub[i]->scale = (float)1.0/((float)dps);
+		dir->sub[i]->dscale = 0.001;
+		dir->sub[i]->dpx = 0;
+		dir->sub[i]->dpy = 0;
+		dir->sub[i]->dpz = 1;
+		/* make a first setup so there is no flickering */
+		s3d_link(dir->sub[i]->oid,dir->oid); /* if it's already displayed, make sure it linked properly ... */
+		ani_doit(dir->sub[i]);
+		ani_add(dir->sub[i]); /* apply transformation */
+		s3d_flags_on(dir->sub[i]->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		s3d_flags_on(dir->sub[i]->objs.str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+
+		
+	}
+}
+
+/* remove old items on the box */
+/*
+void box_dissolve(t_node *dir)
+{
+	if (dir->objs.close!=-1)		{	s3d_del_object(dir->objs.close);		dir->objs.close=-1; }
+	if (dir->objs.select!=-1)	{	s3d_del_object(dir->objs.select);	dir->objs.select=-1; }
+	if (dir->objs.title!=-1)		{	s3d_del_object(dir->objs.title);		dir->objs.title=-1; }
+	if (dir->objs.titlestr!=-1)	{	s3d_del_object(dir->objs.titlestr);	dir->objs.titlestr=-1; }
+	if (dir->oid!=-1)			s3d_del_object(dir->oid);
+
+}*/
 
 
 
 /* places the string at the left side of the cube */
-void box_sidelabel(t_item *dir)
+void box_sidelabel(t_node *dir)
 {
 
-	s3d_rotate(dir->str,0,90,0);
-	s3d_translate(dir->str,1.1,0.3,1);
-	s3d_scale(dir->str,(float)1.8/(dir->len));
-	s3d_scale(dir->str,(float)1.8/(dir->len));
-	s3d_link(dir->str,dir->block);
-	s3d_flags_on(dir->str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	s3d_rotate(dir->objs.str,0,90,0);
+	s3d_translate(dir->objs.str,1.1,0.3,1);
+	s3d_scale(dir->objs.str,(float)1.8/(dir->len));
+	s3d_scale(dir->objs.str,(float)1.8/(dir->len));
+	s3d_link(dir->objs.str,dir->oid);
+	s3d_flags_on(dir->objs.str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 }
 
 /* creates a big block which will hold files and subdirs on top */
-int box_buildblock(t_item *dir)
+int box_buildblock(t_node *dir)
 {
 	char fname[30];
 	char *fullname=fname;
-	t_item *d;
-	int i,j;
 	float len;
 	float vertices[]=
 			{-BHP,0,-BHP,
@@ -115,109 +164,80 @@ int box_buildblock(t_item *dir)
 	};
 /*	printf("new block for %s\n",dir->name);*/
 
-	dir->block=s3d_new_object();
-	s3d_push_vertices(dir->block,vertices,sizeof(vertices)/(3*sizeof(float)));
-	s3d_push_material(dir->block,
+	dir->oid=s3d_new_object();
+	
+	/* draw block outside */
+	s3d_push_vertices(dir->oid,vertices,sizeof(vertices)/(3*sizeof(float)));
+	s3d_push_material(dir->oid,
 						0.5,0.5,0.5,
 						0.5,0.5,0.5,
 						0.5,0.5,0.5
 					);
-	s3d_push_material(dir->block,
+	s3d_push_material(dir->oid,
 						0.5,0.5,0.6,
 						0.5,0.5,0.6,
 						0.5,0.5,0.6);
 
-	s3d_push_polygon(dir->block,4,6,5,1);
-	s3d_push_polygon(dir->block,4,7,6,1);
+	s3d_push_polygon(dir->oid,4,6,5,1);
+	s3d_push_polygon(dir->oid,4,7,6,1);
 
-	s3d_push_polygon(dir->block,0,4,5,0);
-	s3d_push_polygon(dir->block,0,5,1,0);
+	s3d_push_polygon(dir->oid,0,4,5,0);
+	s3d_push_polygon(dir->oid,0,5,1,0);
 	
-	s3d_push_polygon(dir->block,3,7,4,0);
-	s3d_push_polygon(dir->block,3,4,0,0);
+	s3d_push_polygon(dir->oid,3,7,4,0);
+	s3d_push_polygon(dir->oid,3,4,0,0);
 
-	s3d_push_polygon(dir->block,2,6,7,0);
-	s3d_push_polygon(dir->block,2,7,3,0);
+	s3d_push_polygon(dir->oid,2,6,7,0);
+	s3d_push_polygon(dir->oid,2,7,3,0);
 	
-	s3d_push_polygon(dir->block,8,9,10,0);
-	s3d_push_polygon(dir->block,8,10,11,0);
+	s3d_push_polygon(dir->oid,8,9,10,0);
+	s3d_push_polygon(dir->oid,8,10,11,0);
 
-	dir->close=s3d_new_object();
-	s3d_push_material(dir->close,
+	/* draw the select, close buttons ... */
+	dir->objs.close=s3d_new_object();
+	s3d_push_material(dir->objs.close,
 						0.5,0.3,0.3,
 						0.5,0.3,0.3,
 						0.5,0.3,0.3
 					);
-	s3d_push_vertices(dir->close,xvertices,sizeof(xvertices)/(3*sizeof(float)));
-	s3d_push_polygons(dir->close,bar_poly,sizeof(bar_poly)/(sizeof(unsigned long)*4));
-	s3d_link(dir->close,dir->block);
+	s3d_push_vertices(dir->objs.close,xvertices,sizeof(xvertices)/(3*sizeof(float)));
+	s3d_push_polygons(dir->objs.close,bar_poly,sizeof(bar_poly)/(sizeof(unsigned long)*4));
+	s3d_link(dir->objs.close,dir->oid);
 	
-	dir->select=s3d_new_object();
-	s3d_push_material(dir->select,
+	dir->objs.select=s3d_new_object();
+	s3d_push_material(dir->objs.select,
 						0.1,0.1,0.3,
 						0.1,0.1,0.3,
 						0.1,0.1,0.3
 					);
-	s3d_push_vertices(dir->select,svertices,sizeof(svertices)/(3*sizeof(float)));
-	s3d_push_polygons(dir->select,bar_poly,sizeof(bar_poly)/(sizeof(unsigned long)*4));
-	s3d_link(dir->select,dir->block);
+	s3d_push_vertices(dir->objs.select,svertices,sizeof(svertices)/(3*sizeof(float)));
+	s3d_push_polygons(dir->objs.select,bar_poly,sizeof(bar_poly)/(sizeof(unsigned long)*4));
+	s3d_link(dir->objs.select,dir->oid);
 	
-	dir->title=s3d_new_object();
-	s3d_push_material(dir->title,
+	/* draw the title string */
+	
+	dir->objs.title=s3d_new_object();
+	s3d_push_material(dir->objs.title,
 						0.3,0.3,0.3,
 						0.3,0.3,0.3,
 						0.3,0.3,0.3
 					);
-	s3d_push_vertices(dir->title,tvertices,sizeof(tvertices)/(3*sizeof(float)));
-	s3d_push_polygons(dir->title,bar_poly,sizeof(bar_poly)/(sizeof(unsigned long)*4));
-	s3d_link(dir->title,dir->block);
-	i=28;
-	fullname[29]=0;
-	d=dir;
-	do {
-		j=strlen(d->name)-1;
-		if (NULL!=(d->parent))
-		{
-			fullname[i]='/';
-			i--;
-		}
-		while ((i >= 0) && (j >= 0))
-		{
-			fullname[i]=d->name[j];
-			j--;
-			i--;
-		}
-		if (i<0) 
-			break;
-
-
-	} while ((d=d->parent)!=NULL);
-	if (i<0)
-		fullname[0]=fullname[1]='.';
-	else 
-		fullname=(char *)fullname+i+1; /* jump to start of the string */
-	dir->titlestr=s3d_draw_string(fullname,&len);
-	if (len>(1.6*5.0))
-		s3d_scale(dir->titlestr,1.6/len);
-	else
-		s3d_scale(dir->titlestr,0.2);
-	s3d_translate(dir->titlestr,-1.0,1.05,1.01);
-	s3d_link(dir->titlestr,dir->block);
+	s3d_push_vertices(dir->objs.title,tvertices,sizeof(tvertices)/(3*sizeof(float)));
+	s3d_push_polygons(dir->objs.title,bar_poly,sizeof(bar_poly)/(sizeof(unsigned long)*4));
+	s3d_link(dir->objs.title,dir->oid);
+	dots_at_start(fullname,30,dir);
+	dir->objs.titlestr=s3d_draw_string(fullname,&len);
+	if (len>(1.6*5.0))		s3d_scale(dir->objs.titlestr,1.6/len);
+	else					s3d_scale(dir->objs.titlestr,0.2);
+	s3d_translate(dir->objs.titlestr,-1.0,1.05,1.01);
+	s3d_link(dir->objs.titlestr,dir->oid);
 	dir->disp=D_DIR;
 /*	printf("FULLNAME is [%s]\n",fullname);*/
 	return(0);
 }
-int undisplay(t_item *dir)
-{
-	switch (dir->disp)
-	{
-		case D_DIR: return(box_undisplay(dir));break;
-		case D_ICON:return(icon_undisplay(dir));break;
-		default:	return(-1);
-	}
-}
 /* display a directoy on the top of another, draw it's icons etc ... */
-int box_expand(t_item *dir)
+/*
+int box_expand(t_node *dir)
 {
 	int i;
 	float  px,pz;
@@ -228,25 +248,25 @@ int box_expand(t_item *dir)
 	box_buildblock(dir);
 	if (dir->parent!=NULL)
 		dir->parent->dirs_opened++;
- /* count directories */
+ / * count directories * /
 	dirn=0;
-	for (i=0;i<dir->n_item;i++)
+	for (i=0;i<dir->n_sub;i++)
 	{
-		if (dir->list[i].type==T_FOLDER) dirn++;
+		if (dir->sub[i].type==T_FOLDER) dirn++;
 	}
 
-	/* draw icons, if necceasry */
-	for (i=0;i<dir->n_item;i++)
+	/ * draw icons, if necceasry * /
+	for (i=0;i<dir->n_sub;i++)
 	{
-		if (!dir->list[i].disp)	icon_draw(dir,i);
+		if (!dir->sub[i].disp)	icon_draw(dir,i);
 		else {
-			printf("link %d to the block %d of %s\n",dir->list[i].block,dir->block,dir->name);
-			s3d_link(dir->list[i].block,dir->block); /* if it's already displayed, make sure it linked properly ... */
+			printf("link %d to the block %d of %s\n",dir->sub[i].block,dir->oid,dir->name);
+			s3d_link(dir->sub[i].block,dir->oid); / * if it's already displayed, make sure it linked properly ... * /
 		}
 	}
 	if (dir->parent!=NULL)
 	{
-		s3d_link(dir->block,dir->parent->block);
+		s3d_link(dir->oid,dir->parent->block);
 		dir->dpx=0.0;
 		dir->dpy=BOXHEIGHT;
 		dir->dpz=0.0;
@@ -254,54 +274,48 @@ int box_expand(t_item *dir)
 		box_position_kids(dir->parent);
 		ani_doit(dir);
 	}
-	for (i=0;i<dir->n_item;i++)
-	{
-		s3d_flags_on(dir->list[i].block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-		s3d_flags_on(dir->list[i].str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-	}
 	box_sidelabel(dir);
-    s3d_flags_on(dir->block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-    s3d_flags_on(dir->close,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-    s3d_flags_on(dir->title,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-    s3d_flags_on(dir->select,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-    s3d_flags_on(dir->titlestr,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-	dir->disp=D_DIR;
 	return(0);
 }
-int box_undisplay(t_item *dir)
+
+*/
+int box_undisplay(t_node *dir)
 {
+	/*
 	int i;
-	t_item *par;
+	t_node *par;
 	printf("box_undisplay( %s )\n",dir->name);
-	for (i=0;i<dir->n_item;i++)
+	for (i=0;i<dir->n_sub;i++)
 	{
-		if (dir->list[i].disp==D_ICON)	icon_undisplay(&(dir->list[i]));
-		else if (dir->list[i].disp!=0)	
-				printf("not undisplaying: %s (disp = %d)\n",dir->list[i].name, dir->list[i].disp);
+		if (dir->sub[i].disp==D_ICON)	icon_undisplay(&(dir->sub[i]));
+		else if (dir->sub[i].disp!=0)	
+				printf("not undisplaying: %s (disp = %d)\n",dir->sub[i].name, dir->sub[i].disp);
 	}
-	if ((par=dir->parent)!=NULL) /* we can't do this on root.... */
+	if ((par=dir->parent)!=NULL) / * we can't do this on root.... * /
 	{
 		for (i=0;i<par->n_item;i++)
 			if (&par->list[i]==dir)
 				break;
-		if (i!=par->n_item) /* if it actually was in the parents item list */
+		if (i!=par->n_item) / * if it actually was in the parents item list * /
 		{
 			icon_draw(par,i);
-			s3d_flags_on(dir->block,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-			s3d_flags_on(dir->str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+			s3d_flags_on(dir->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+			s3d_flags_on(dir->objs.str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 		}
 		par->dirs_opened--;
 	} else {
-		/* we're root ... */
+		/ * we're root ... * /
 		box_dissolve(dir);
 	}
 	printf("[U]ndisplayed %s\n",dir->name);
-/*	dir->dirs_opened=0;*/
+/ * 	dir->dirs_opened=0;* /
 	dir->detached=0;
+	*/
 	return(0);
 }
 /* undisplay a directory, thus recursively removing the kids.*/
-int box_collapse(t_item *dir,int force)
+/*
+int box_collapse(t_node *dir,int force)
 {
 	int i;
 	int ret;
@@ -318,13 +332,13 @@ int box_collapse(t_item *dir,int force)
 		printf("[A]lready undisplayed %s, nothing to do ...\n",dir->name);
 		return(-1);
 	}
-	/* undisplaying kids. ret will be != 0 if any of the kids did not close correctly */
+	/ * undisplaying kids. ret will be != 0 if any of the kids did not close correctly * /
 	ret=0;
-	for (i=0;i<dir->n_item;i++)
-		if (dir->list[i].disp==D_DIR)
-			ret|=box_collapse(&dir->list[i],force);
+	for (i=0;i<dir->n_sub;i++)
+		if (dir->sub[i].disp==D_DIR)
+			ret|=box_collapse(&dir->sub[i],force);
 
-	if (ret && !force) return(ret); /* if anything got wrong, return here ... */
+	if (ret && !force) return(ret); / * if anything got wrong, return here ... * /
 	undisplay(dir);
 	if (dir->parent!=NULL)
 	{
@@ -332,67 +346,67 @@ int box_collapse(t_item *dir,int force)
 	}
 	return(ret);
 }
-/* only display dir and its kids, but nothing below. */
-int box_collapse_grandkids(t_item *dir)
+/ * only display dir and its kids, but nothing below. * /
+int box_collapse_grandkids(t_node *dir)
 {
 	int i,j;
-	t_item *kid;
-	for (i=0;i<dir->n_item;i++)
-		if (dir->list[i].disp==D_DIR)
+	t_node *kid;
+	for (i=0;i<dir->n_sub;i++)
+		if (dir->sub[i].disp==D_DIR)
 		{
-			kid=&dir->list[i];
+			kid=&dir->sub[i];
 			for (j=0;j<kid->n_item;j++)
 			if (kid->list[j].disp==D_DIR)
 				box_collapse(&kid->list[j],0);
 		}
 	return(0);
-}
+}*/
 /* orders the directory objects on top of its parent objects 
  * to be called after adding or removing things ...*/
-void box_position_kids(t_item *dir)
+void box_order_subdirs(t_node *dir)
 {
 	int i,j;
-	printf("box_position_kids( %s ): %d dirs opened\n",dir->name,dir->dirs_opened);
+	printf("box_order_subdirs( %s ): %d dirs opened\n",dir->name,dir->dirs_opened);
 	switch (dir->dirs_opened)
 	{
 		case 0: return;
 		case 1:
-			for (i=0;i<dir->n_item;i++)
+			for (i=0;i<dir->n_sub;i++)
 			{
-				if (dir->list[i].disp==D_DIR)
+				if (dir->sub[i]->disp==D_DIR)
 				{
-					dir->list[i].px=0.0;
-					dir->list[i].py=BOXHEIGHT+dir->list[i].detached*DETHEIGHT;
-					dir->list[i].pz=0.0;
-					dir->list[i].scale=0.2;
-					ani_add(&dir->list[i]);
+					dir->sub[i]->px=0.0;
+					dir->sub[i]->py=BOXHEIGHT+dir->sub[i]->detached*DETHEIGHT;
+					dir->sub[i]->pz=0.0;
+					dir->sub[i]->scale=0.2;
+					ani_add(dir->sub[i]);
 				}
 			}
 			break;
 		default:
 			j=0;
-			for (i=0;i<dir->n_item;i++)
+			for (i=0;i<dir->n_sub;i++)
 			{
-				if (dir->list[i].disp==D_DIR)
+				if (dir->sub[i]->disp==D_DIR)
 				{
-					dir->list[i].px=0.8 * sin(((float)j*2*M_PI)/((float)dir->dirs_opened));
-					dir->list[i].py=BOXHEIGHT+dir->list[i].detached*DETHEIGHT;
-					dir->list[i].pz=0.8 * cos(((float)j*2*M_PI)/((float)dir->dirs_opened));
-					dir->list[i].scale=0.2;
-					ani_add(&dir->list[i]);
+					dir->sub[i]->px=0.8 * sin(((float)j*2*M_PI)/((float)dir->dirs_opened));
+					dir->sub[i]->py=BOXHEIGHT+dir->sub[i]->detached*DETHEIGHT;
+					dir->sub[i]->pz=0.8 * cos(((float)j*2*M_PI)/((float)dir->dirs_opened));
+					dir->sub[i]->scale=0.2;
+					ani_add(dir->sub[i]);
 					j++;
 				}
 
 			}
 	}
 }
-void box_select(t_item *dir)
+void box_select(t_node *dir)
 {
 	dir->detached=dir->detached?0:1; /* swapping, not sure if !dir->detached would do the same .. */
 	if ((dir->type==T_FOLDER) && dir->disp)
 	{
 		if (dir->parent!=NULL)
-			box_position_kids(dir->parent);
+			box_order_subdirs(dir->parent);
 	} else {
 		/* nothing yet ... */
 	}

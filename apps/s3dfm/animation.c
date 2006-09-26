@@ -22,19 +22,18 @@
  */
 
 #include "s3dfm.h"
-#include <s3dw.h>
 #include <stdio.h> 	 /*  printf(),NULL */
 #include <math.h>	 /*  fabs() */
 #define SCALE 	1
 
 /* the animation stack */
-static t_item *ani_s[MAXANI];
+static t_node *ani_s[MAXANI];
 static int ani_n=0;
-extern t_item root,cam;
+extern t_node root,cam;
 int moveon=1;
 
 /* get the scale for the rootbox zoom */
-float ani_get_scale(t_item *f)
+float ani_get_scale(t_node *f)
 {
 	float scale,s;
 	s=0.2;
@@ -53,14 +52,14 @@ float ani_get_scale(t_item *f)
 	return(scale);
 }
 /* center f for the viewer, therefore moving the root box ... */
-void ani_focus(t_item *f)
+void ani_focus(t_node *f)
 {
 	root.px=0.0;
 	root.py=0.0;
 	root.pz=0.0;
 	moveon=1;
 /*	printf("[Z]ooming to %s\n",f->name);*/
-	box_collapse_grandkids(f);
+/*	box_collapse_grandkids(f);*/
 	root.scale=ani_get_scale(f);
 	root.py-=1.5;
 /*	printf("[R]escaling to %f\n",root.scale);
@@ -76,8 +75,8 @@ void ani_focus(t_item *f)
 		ani_add(&cam);
 	}
 }
-/* is item f already on stack? */
-int ani_onstack(t_item *f)
+/* is node f already on stack? */
+int ani_onstack(t_node *f)
 {
 	int i;
 	for (i=0;i<ani_n;i++)
@@ -86,8 +85,8 @@ int ani_onstack(t_item *f)
 	return(0);
 
 }
-/* add an item on the animation stack */
-void ani_add(t_item *f)
+/* add an node on the animation stack */
+void ani_add(t_node *f)
 {
 	if (ani_n<MAXANI)
 	{
@@ -101,7 +100,7 @@ void ani_add(t_item *f)
 	else /* no place, finish now */
 		ani_finish(f,-1);
 }
-/* delete an item from the animation stack */
+/* delete an node from the animation stack */
 void ani_del(int i)
 {
 	if ((i>=0) && (i<ani_n))
@@ -114,14 +113,14 @@ void ani_del(int i)
 	}
 }
 /* well ... */
-void ani_doit(t_item *f)
+void ani_doit(t_node *f)
 {
-	s3d_translate(	f->block, f->dpx,f->dpy,f->dpz);
-	s3d_scale(		f->block, f->dscale);
+	s3d_translate(	f->oid, f->dpx,f->dpy,f->dpz);
+	s3d_scale(		f->oid, f->dscale);
 }
 
 /* finish an animation on the stack, stack index i */
-void ani_finish(t_item *f, int i)
+void ani_finish(t_node *f, int i)
 {
 	f->dpx= f->px;
 	f->dpy= f->py;
@@ -131,7 +130,7 @@ void ani_finish(t_item *f, int i)
 	if (i!=-1)
 		ani_del(i);
 }
-void ani_iterate(t_item *f)
+void ani_iterate(t_node *f)
 {
 	f->dpx=(f->px + f->dpx*ZOOMS)/(ZOOMS+1);
 	f->dpy=(f->py + f->dpy*ZOOMS)/(ZOOMS+1);
@@ -141,7 +140,7 @@ void ani_iterate(t_item *f)
 }
 
 /* checks if f is good enough */
-int ani_check(t_item *f)
+int ani_check(t_node *f)
 {
 	float x,y,z;
 	x=f->dpx - f->px;
@@ -155,7 +154,7 @@ int ani_check(t_item *f)
 void ani_mate()
 {
 	int i;
-	t_item *f;
+	t_node *f;
 	s3dw_ani_mate();
 	for (i=0;i<ani_n;i++)
 	{

@@ -23,6 +23,7 @@
 
 
 #include <s3d.h>
+#include <s3dw.h>
 #define T_DUNO		0
 #define T_LOCALDIR	1
 #define T_BACKDIR	2
@@ -45,82 +46,102 @@
 #define ZOOMS 		10
 /* zoomspeed */
 
-struct _t_item {
-	int str,close,select,title,titlestr;	/* object ids ...*/
-	int block;								/* oid of the block */
-	int dirs_opened;						/* how many directories are on the block */
-	int detached;							/* if it's detached ... */
-	char name[M_NAME];						/* name (e.g. file name) */
-	float len;
-	struct _t_item *parent;					/* parent item */
-	struct _t_item *list;					/* list of items  (if it's a subdir)*/
-	float px ,py ,pz ,scale;				/* state after animation */
-	float dpx,dpy,dpz,dscale;				/* current state in animation */
-	int n_item;								/* number of items in list ( = -1 for normal or not-expanded files) */
-	int type;								/* type, determined by extension or file type like dir, pipe, link etc */
-	int disp,parsed;						/* Flags for displayed/parsed items ... */
-#define D_ICON	1
-#define D_DIR	2
+struct _t_node {
+	char 			 name[M_NAME];						/* name (e.g. file name) */
+	struct _t_node 	*parent;							/* parent node */
+	struct _t_node 	**sub;								/* list of nodes  (if it's a subdir)*/
+	int 			 n_sub;								/* number of nodes in list ( = -1 for normal or not-expanded files) */
+	int 			 dirs_opened;						/* how many dirs are opened/displayed */
+	float 			 px ,py ,pz ,scale;					/* state after animation */
+	float 			 dpx,dpy,dpz,dscale;				/* current state in animation */
+	int 			 type;								/* type, determined by extension or file type like dir, pipe, link etc */
+	int 			 disp;								/* the type of how the node is displayed currently */
+#define D_NONE		0
+#define D_ICON		1
+#define D_DIR		2
+	int				 parsed,detached;					/* Flags for parsed/detached (selected) nodes ... */
+	int 			 oid;								/* main oid, e.g the block or icons oid */
+	float 			 len;								/* lenght ... TODO: of what? */
+	struct 			 {	
+		/* some objects which might be used ... if not, should be -1 */
+		int 		 close,select,title,titlestr; /* box decorations. */
+		int 		 str;						  
+		
+	} 				 objs;
+	int 			 check;							    /* check marker, for internal things */
 };
 struct _filelist {
 	char **p;
 	int n;
 };
 typedef struct _filelist filelist;
-typedef struct _t_item   t_item;
+typedef struct _t_node   t_node;
 
 
-extern t_item root;
-/* main.c */
-void get_path(t_item *dir, char *path);
-t_item *get_item(char *path);
-t_item *finditem(t_item *t, int oid);
-void mainloop();
-/* parse.c */
-int node_init(t_item *dir);
-void node_free(t_item *t);
-int parse_dir(t_item *dir);
-void parse_again(t_item *t);
+extern t_node root,cam; /* some global objects */
+extern t_node *focus;	/* the focused object */
+
+/* node.c */
+t_node 		*node_getbypath(char *path);
+void 		 node_path(t_node *dir, char *path);
+t_node 		*node_getbyoid(t_node *t, int oid);
+int 		 node_init(t_node *dir);
+int 		 node_delete(t_node *dir);
+int 		 node_undisplay(t_node *dir);
 /* animation.c */
-float ani_get_scale(t_item *f);
-void ani_focus(t_item *f);
-void ani_mate();
-void ani_add(t_item *f);
-void ani_del(int i);
-void ani_doit(t_item *f);
-void ani_finish(t_item *f, int i);
-void ani_iterate(t_item *f);
-int ani_check(t_item *f);
-int ani_onstack(t_item *f);
+float		 ani_get_scale(t_node *f);
+void 		 ani_focus(t_node *f);
+int 		 ani_onstack(t_node *f);
+void 		 ani_add(t_node *f);
+void 		 ani_del(int i);
+void 		 ani_doit(t_node *f);
+void 		 ani_finish(t_node *f, int i);
+void 		 ani_iterate(t_node *f);
+int 		 ani_check(t_node *f);
+void 		 ani_mate();
+/* event.c */
+void 		 event_click(struct s3d_evt *evt);
+void		 event_key(struct s3d_evt *evt);
+void		 event_oinfo(struct s3d_evt *hrmz);
 /* box.c */
-int box_collapse(t_item *dir,int force);
-int box_collapse_grandkids(t_item *dir);
-int box_expand(t_item *dir);
-int box_buildblock(t_item *dir);
-void box_dissolve(t_item *dir);
-int  box_undisplay(t_item *dir);
-void box_sidelabel(t_item *dir);
-void box_position_kids(t_item *dir);
-void box_select(t_item *dir);
+void	 	 box_draw(t_node *dir);
+void 	 	 box_draw_icons(t_node *dir);
+int 		 box_undisplay(t_node *dir);
+void  		 box_order_icons(t_node *dir);
+void	 	 box_sidelabel(t_node *dir);
+int 		 box_buildblock(t_node *dir);
+void		 box_select(t_node *dir);
+void 		 box_order_subdirs(t_node *dir);
+/* parse.c */
+int 		 parse_dir(t_node *dir);
 /* icon.c */
-int icon_draw(t_item *dir,int i);
-int icon_undisplay(t_item *dir);
-/* fs.c */
-filelist *fl_new(char *path);
-void fl_del(filelist *fl);
-int fs_copy(char *source, char *dest);
-int fs_move(char *source, char *dest);
-int fs_unlink(char *dest);
-void fs_approx(char *source, int *files, int *dirs, int *bytes);
-int fs_fl_copy(filelist *fl, char *dest);
-int fs_fl_move(filelist *fl, char *dest);
-int fs_fl_unlink(filelist *fl);
-void fs_fl_approx(filelist *fl, int *files, int *dirs, int *bytes);
+int 		 icon_draw(t_node *dir);
+int 		 icon_undisplay(t_node *dir);
 /* dialog.c */
-void key_handler(struct s3d_evt *evt);
-void object_click(struct s3d_evt *evt);
-void window_info(char *path);
-void window_help();
-void window_copy(char *path);
-void window_move(char *path);
-void window_mkdir(char *path);
+void		 close_win(s3dw_widget *button);
+void		 window_help();
+void		 window_fs_another();
+void		 window_fs_nothing();
+void		 window_fs_errno(char *errmsg);
+void		 window_fs_abort(s3dw_widget *button);
+void		 window_copy(char *path);
+void		 window_fs_mkdir(s3dw_widget *button);
+void		 window_mkdir(char *path);
+void		 window_move(char *path);
+void		 window_info(char *path);
+/* string.c */
+void 		 dots_at_start(char *s, unsigned int n, t_node *d);
+void		 dotted_int(char *s,unsigned int i);
+char		 *mstrncat(char *dest, const char *src, int n);
+char		 *mstrncpy(char *dest, const char *src, int n);
+/* fs.c */
+filelist	 *fl_new(char *path);
+void		 fl_del(filelist *fl);
+void	 	 fs_fl_approx(filelist *fl, int *files, int *dirs, int *bytes);
+int			 fs_fl_copy(filelist *fl, char *dest);
+int			 fs_fl_move(filelist *fl, char *dest);
+int			 fs_fl_unlink(filelist *fl);
+void	 	 fs_approx(char *source, int *files, int *dirs, int *bytes);
+int			 fs_copy(char *source, char *dest);
+int			 fs_move(char *source, char *dest);
+int			 fs_unlink(char *dest);

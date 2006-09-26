@@ -25,8 +25,8 @@
 #include <stdio.h> 	 /*  printf() */
 #include <math.h>	 /*  sin(),cos() */
 #include <string.h>  /*  strlen() */
-/* draws icon i in the block of dir */
-int icon_draw(t_item *dir,int i)
+/* draws icon dir, which is number i (used for nice coloring) */
+int icon_draw(t_node *dir)
 {
 	float vertices[]={	-1,-0.5,0,
 						-1, 0.5,0,
@@ -44,66 +44,56 @@ int icon_draw(t_item *dir,int i)
 				5,1,0,0,				5,0,4,0	
 				};
 	float len;
-	float d;
-	int dps;
-	printf("icon_draw( %s )\n",dir->list[i].name);
-	dps=ceil(sqrt(dir->n_item)); /* directories per line */
+	printf("icon_draw( %s )\n",dir->name);
 	/* find position for the new block in our directory box */
-	dir->list[i].dpx = dir->list[i].px=-1 +2*  ((float)((int)i%dps)+0.5)/((float)dps);
-	dir->list[i].dpy = dir->list[i].py=0.5+((float)((int)i/dps)+0.5)/((float)dps)-0.5;
-	dir->list[i].dpz = dir->list[i].pz=1.0;
-	dir->list[i].scale = dir->list[i].dscale = (float)1.0/((float)dps);
 	/* create the block */
-	box_dissolve(&(dir->list[i]));
-	dir->list[i].block=s3d_new_object();
-	s3d_push_vertices(dir->list[i].block,vertices,8);
-	d=((int)(((i+(dps+1)%2*(i/dps)))%2))*0.2;
-	switch (dir->list[i].type)
+	dir->oid=s3d_new_object();
+	s3d_push_vertices(dir->oid,vertices,8);
+	switch (dir->type)
 	{
 		case T_FOLDER:
-			s3d_push_material(dir->list[i].block,
-									0.4-d,0.4-d,0,
-									0.4-d,0.4-d,0,
-									0.4-d,0.4-d,0);
+			s3d_push_material(dir->oid,
+									0.4,0.4,0,
+									0.4,0.4,0,
+									0.4,0.4,0);
 			break;
 		default:
-			s3d_push_material(dir->list[i].block,
-									0,0,0.5-d,
-									0,0,0.5-d,
-									0,0,0.5-d);
+			s3d_push_material(dir->oid,
+									0,0,0.5,
+									0,0,0.5,
+									0,0,0.5);
 	};
-	s3d_push_polygons(dir->list[i].block,polys,10);
-	s3d_link(dir->list[i].block,dir->block);
+	s3d_push_polygons(dir->oid,polys,10);
 
 	/* draw and position the string */
-	if (dir->list[i].str==-1)
+	if (dir->objs.str==-1)
 	{
-		dir->list[i].str=s3d_draw_string(dir->list[i].name,&len);
+		dir->objs.str=s3d_draw_string(dir->name,&len);
 		if (len<2) len=2;
-		dir->list[i].len=len;
+		dir->len=len;
 	}
 	else 
-		len=dir->list[i].len;
-	s3d_scale(dir->list[i].str,(float)1.8/len);
-	s3d_translate(dir->list[i].str,-0.9,-0.3,0.1);
-	s3d_rotate(dir->list[i].str,0,0,0);
-	s3d_link(dir->list[i].str,dir->list[i].block);
-	ani_finish(&dir->list[i],-1); /* apply transformation */
-	dir->list[i].disp=D_ICON;
+		len=dir->len;
+	s3d_scale(dir->objs.str,(float)1.8/len);
+	s3d_translate(dir->objs.str,-0.9,-0.3,0.1);
+	s3d_rotate(dir->objs.str,0,0,0);
+	s3d_link(dir->objs.str,dir->oid);
+
+	dir->disp=D_ICON;
 	return(0);
 }
-int icon_undisplay(t_item *dir)
+int icon_undisplay(t_node *dir)
 {
 	printf("icon_undisplay( %s )\n",dir->name);
-	if (dir->block!=-1)
+	if (dir->oid!=-1)
 	{
-		s3d_del_object(dir->block);
-		dir->block=-1;
+		s3d_del_object(dir->oid);
+		dir->oid=-1;
 	}
-	if (dir->str!=-1)
+	if (dir->objs.str!=-1)
 	{
-		s3d_del_object(dir->str);
-		dir->str=-1;
+		s3d_del_object(dir->objs.str);
+		dir->objs.str=-1;
 	}
 	dir->disp=0;
 	return(0);
