@@ -100,8 +100,6 @@ void event_click(struct s3d_evt *evt)
 		if (f->objs.close==oid)
 		{
 			box_close(f,1);
-			if (f->parent!=NULL)
-				ani_focus(f->parent);
 			return;
 		}
 		if (f->objs.select==oid)

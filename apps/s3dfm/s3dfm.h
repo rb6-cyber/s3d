@@ -61,11 +61,12 @@ struct _t_node {
 #define D_DIR		2
 	int				 parsed,detached;					/* Flags for parsed/detached (selected) nodes ... */
 	int 			 oid;								/* main oid, e.g the block or icons oid */
-	float 			 len;								/* lenght ... TODO: of what? */
 	struct 			 {	
 		/* some objects which might be used ... if not, should be -1 */
 		int 		 close,select,title,titlestr; /* box decorations. */
-		int 		 str;						  
+		int 		 str;						  /* the name of the nodeas s3d object */
+		float		 strlen;					  /* the length of this string */
+		
 		
 	} 				 objs;
 	int 			 check;							    /* check marker, for internal things */
@@ -143,7 +144,7 @@ void		 node_select(t_node *dir);
 /* parse.c */
 int 		 parse_dir(t_node *dir);
 /* string.c */
-void 		 dots_at_start(char *s, unsigned int n, t_node *d);
 void		 dotted_int(char *s,unsigned int i);
-char		 *mstrncat(char *dest, const char *src, int n);
-char		 *mstrncpy(char *dest, const char *src, int n);
+char 		*dots_at_start(char *str, unsigned int n, t_node *d);
+char		*mstrncat(char *dest, const char *src, int n);
+char		*mstrncpy(char *dest, const char *src, int n);

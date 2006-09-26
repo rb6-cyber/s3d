@@ -101,11 +101,12 @@ int node_init(t_node *dir)
 	dir->objs.select=-1;
 	dir->objs.title=-1;
 	dir->objs.titlestr=-1;
-
-	dir->len=0;
-	dir->disp=0;
+	dir->objs.strlen=0;
+	
+	dir->disp=D_NONE;
 	dir->parsed=0;
 
+	dir->check=0;
 	dir->px=root.pz=0.0;
 	dir->dirs_opened=0;
 	dir->type=T_DUNO;
@@ -152,9 +153,7 @@ int node_delete(t_node *dir)
 /* node select handles click on the detach button. selected items can be moved, copied etc.*/
 void node_select(t_node *dir)
 {
-	printf("node_select(%s)\n",dir->name);
 	dir->detached=dir->detached?0:1; /* swapping, not sure if !dir->detached would do the same .. */
-	printf("dir->type = %d\n",dir->disp);
 	switch (dir->disp)
 	{
 		case D_DIR:

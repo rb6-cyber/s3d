@@ -69,10 +69,8 @@ int icon_draw(t_node *dir)
 	{
 		dir->objs.str=s3d_draw_string(dir->name,&len);
 		if (len<2) len=2;
-		dir->len=len;
-	}
-	else 
-		len=dir->len;
+		dir->objs.strlen=len;
+	} else len=dir->objs.strlen;
 	s3d_scale(dir->objs.str,(float)1.8/len);
 	s3d_translate(dir->objs.str,-0.9,-0.3,0.1);
 	s3d_rotate(dir->objs.str,0,0,0);

@@ -160,13 +160,19 @@ void ani_mate()
 	for (i=0;i<ani_n;i++)
 	{
 		f=ani_s[i];
-		ani_iterate(f);
-		if (ani_check(f))
-		{
-			ani_finish(f,i);
-			i--; /* a new object is here now, take care in the next iteration */
+		if (f->oid==-1)
+		{ /* kick out bad animations */
+			ani_del(i);
+			i--;
 		} else {
-			ani_doit(f);
+			ani_iterate(f);
+			if (ani_check(f))
+			{
+				ani_finish(f,i);
+				i--; /* a new object is here now, take care in the next iteration */
+			} else {
+				ani_doit(f);
+			}
 		}
 	}
 }

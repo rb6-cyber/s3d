@@ -56,11 +56,17 @@ void box_draw_icons(t_node *dir)
 /* places the string at the left side of the cube */
 void box_sidelabel(t_node *dir)
 {
-
+	float len;
+	if (dir->objs.str==-1)
+	{
+		dir->objs.str=s3d_draw_string(dir->name,&len);
+		if (len<2) len=2;
+		dir->objs.strlen=len;
+	}
 	s3d_rotate(dir->objs.str,0,90,0);
 	s3d_translate(dir->objs.str,1.1,0.3,1);
-	s3d_scale(dir->objs.str,(float)1.8/(dir->len));
-	s3d_scale(dir->objs.str,(float)1.8/(dir->len));
+	s3d_scale(dir->objs.str,(float)1.8/(dir->objs.strlen));
+	s3d_scale(dir->objs.str,(float)1.8/(dir->objs.strlen));
 	s3d_link(dir->objs.str,dir->oid);
 	s3d_flags_on(dir->objs.str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 }
@@ -210,8 +216,7 @@ int box_buildblock(t_node *dir)
 	s3d_push_vertices(dir->objs.title,tvertices,sizeof(tvertices)/(3*sizeof(float)));
 	s3d_push_polygons(dir->objs.title,bar_poly,sizeof(bar_poly)/(sizeof(unsigned long)*4));
 	s3d_link(dir->objs.title,dir->oid);
-	dots_at_start(fullname,30,dir);
-	dir->objs.titlestr=s3d_draw_string(fullname,&len);
+	dir->objs.titlestr=s3d_draw_string(dots_at_start(fullname,30,dir),&len);
 	if (len>(1.6*5.0))		s3d_scale(dir->objs.titlestr,1.6/len);
 	else					s3d_scale(dir->objs.titlestr,0.2);
 	s3d_translate(dir->objs.titlestr,-1.0,1.05,1.01);
@@ -251,24 +256,27 @@ int box_expand(t_node *dir)
 int box_undisplay(t_node *dir)
 {
 	printf("box_undisplay( %s )\n",dir->name);
-	if (dir->objs.close!=-1)		{	s3d_del_object(dir->objs.close);		dir->objs.close=-1; }
-	if (dir->objs.select!=-1)	{	s3d_del_object(dir->objs.select);	dir->objs.select=-1; }
-	if (dir->objs.title!=-1)		{	s3d_del_object(dir->objs.title);		dir->objs.title=-1; }
-	if (dir->objs.titlestr!=-1)	{	s3d_del_object(dir->objs.titlestr);	dir->objs.titlestr=-1; }
-	if (dir->oid!=-1)			s3d_del_object(dir->oid);
+	if (dir->objs.close!=-1)		{	s3d_del_object(dir->objs.close);	dir->objs.close=-1; }
+	if (dir->objs.select!=-1)		{	s3d_del_object(dir->objs.select);	dir->objs.select=-1; }
+	if (dir->objs.title!=-1)		{	s3d_del_object(dir->objs.title);	dir->objs.title=-1; }
+	if (dir->objs.titlestr!=-1)		{	s3d_del_object(dir->objs.titlestr);	dir->objs.titlestr=-1; }
+	if (dir->oid!=-1)				{	s3d_del_object(dir->oid);	}
+	/* keep this. icons also needs the *same* string */
+	/*	if (dir->objs.str!=-1)			{ 	s3d_del_object(dir->objs.str); dir->objs.str=-1;	}*/
 	dir->disp=D_NONE;
 	return(0);
 }
 /* the opposite effect of box_expand, e.g. transforming the box back to an icon */
 int box_unexpand(t_node *dir)
 {
+	printf("box_unexpand( %s )\n",dir->name);
 	if (dir->parent==NULL) /* we can't do this on root.... */
 		return(-1);
 	box_undisplay(dir);
 	icon_draw(dir);
-	box_order_icons(dir->parent);
 	dir->parent->dirs_opened--;
-	printf("[U]ndisplayed %s\n",dir->name);
+	box_order_icons(dir->parent);
+	box_order_subdirs(dir->parent);
 	return(0);
 }
 
@@ -296,15 +304,15 @@ int box_close(t_node *dir,int force)
 		if (dir->sub[i]->disp==D_DIR)
 			ret|=box_close(dir->sub[i],force);
 	if (ret && !force) 
-	{
+	{	/* if anything got wrong, return here ... */
 		box_order_subdirs(dir);
-		return(ret); /* if anything got wrong, return here ... */
+		return(ret); 
 	} else {
 		/* also remove the icons */
 		for (i=0;i<dir->n_sub;i++)
 			if (dir->sub[i]->disp==D_ICON)
 				icon_undisplay(dir->sub[i]);
-		box_undisplay(dir);
+		box_unexpand(dir);
 	}
 	return(ret);
 }
@@ -359,7 +367,6 @@ void box_order_subdirs(t_node *dir)
 					ani_add(dir->sub[i]);
 					j++;
 				}
-
 			}
 	}
 }
@@ -370,18 +377,16 @@ void box_order_icons(t_node *dir)
 	dps=ceil(sqrt(dir->n_sub)); /* directories per line */
 	for (i=0;i<dir->n_sub;i++)
 	{
-		dir->sub[i]->px = -1 +2*  ((float)((int)i%dps)+0.5)/((float)dps);
-		dir->sub[i]->py = 0.5+((float)((int)i/dps)+0.5)/((float)dps)-0.5;
-		dir->sub[i]->pz = 1.0;
-		dir->sub[i]->scale = (float)1.0/((float)dps);
-		dir->sub[i]->dscale = dir->sub[i]->scale;
-		dir->sub[i]->dpx = dir->sub[i]->px;
-		dir->sub[i]->dpy = dir->sub[i]->py;
-		dir->sub[i]->dpz = dir->sub[i]->dpz;
-		/* make a first setup so there is no flickering */
-		s3d_link(dir->sub[i]->oid,dir->oid); /* if it's already displayed, make sure it linked properly ... */
-		ani_finish(dir->sub[i], -1);
-		s3d_flags_on(dir->sub[i]->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-		s3d_flags_on(dir->sub[i]->objs.str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		if (dir->sub[i]->disp == D_ICON)
+		{
+			dir->sub[i]->px = -1 +2*  ((float)((int)i%dps)+0.5)/((float)dps);
+			dir->sub[i]->py = 0.5+((float)((int)i/dps)+0.5)/((float)dps)-0.5;
+			dir->sub[i]->pz = 1.0;
+			dir->sub[i]->scale = (float)1.0/((float)dps);
+			s3d_link(dir->sub[i]->oid,dir->oid);	 /* if it's already displayed, make sure it linked properly ... */
+			ani_finish(dir->sub[i], -1);			 /* copy to the current animation state */
+			s3d_flags_on(dir->sub[i]->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+			s3d_flags_on(dir->sub[i]->objs.str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		}
 	}
 }

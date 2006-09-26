@@ -20,12 +20,18 @@
  * along with s3dfm; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+/* just a few helper functions which only operate on strings, so we put them 
+ * here ... */
+
 #include "s3dfm.h"
 #include <string.h> /* strlen(), strncpy() */
-/* writes the path of the item d in string s with bufferlength n, 
+
+/* writes the path of the item d in string str with bufferlength n, 
  * adds some dots to the beginning if its too long */ 
-void dots_at_start(char *s, unsigned int n, t_node *d)
+char *dots_at_start(char *str, unsigned int n, t_node *d)
 {
+	char *s=str;
 	int i,j;
 	i=n-2;
 	s[n-1]=0;
@@ -47,6 +53,7 @@ void dots_at_start(char *s, unsigned int n, t_node *d)
 	} while ((d=d->parent)!=NULL);
 	if (i<0)			s[0]=s[1]='.';
 	else 				s=(char *)s+i+1; /* jump to start of the string */
+	return(s);
 
 }
 /* add some dots to an integer value for better readability */

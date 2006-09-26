@@ -57,7 +57,7 @@ int parse_dir(t_node *dir)
 			/* setup kids in the sub */
 			for (i=0;i<oldn;i++) /* see if it's already there */
 				if (dir->sub[i])
-				if (0==strcmp(namelist[n]->d_name,dir->sub[n]->name))
+				if (0==strcmp(namelist[n]->d_name,dir->sub[i]->name))
 					break;
  		    if ((0!=strcmp(nstr,".")) && (0!=strcmp(nstr,".."))) /* we don't care about those */
 			{
