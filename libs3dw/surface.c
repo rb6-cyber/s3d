@@ -27,7 +27,7 @@
 #include <stdlib.h> /* malloc() */
 #include <string.h> /* strdup() */
 #include <math.h>	/* cos(), sin() */
-#define POPUPDIST	40
+#define POPUPDIST	20
 extern s3dw_widget *_s3dw_cam; /* for correct popup position */
 
 void s3dw_surface_draw(s3dw_widget *widget)
