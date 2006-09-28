@@ -55,7 +55,7 @@ int main (int argc, char **argv)
 		parse_dir(&root);
 		box_draw(&root);
 		ani_doit(&root);
-		ani_focus(&root);
+		focus_set(&root);
 		
 		
 		

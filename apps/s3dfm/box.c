@@ -38,8 +38,8 @@ void box_draw(t_node *dir)
     s3d_flags_on(dir->objs.titlestr,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	dir->disp=D_DIR;
 	box_draw_icons(dir);
-
 }
+
 /* draw all the icons which are not displayed yet */
 void box_draw_icons(t_node *dir)
 {
@@ -70,7 +70,16 @@ void box_sidelabel(t_node *dir)
 	s3d_link(dir->objs.str,dir->oid);
 	s3d_flags_on(dir->objs.str,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 }
+/* gives another color for the focused box */
+void box_focus_color(t_node *dir, int on)
+{
+	
+	s3d_pep_material(dir->oid,
+						0.5+on*0.3,0.5+on*0.3,0.5+on*0.3,
+						0.5+on*0.3,0.5+on*0.3,0.5+on*0.3,
+						0.5+on*0.3,0.5+on*0.3,0.5+on*0.3);
 
+}
 /* creates a big block which will hold files and subdirs on top */
 int box_buildblock(t_node *dir)
 {
@@ -141,17 +150,13 @@ int box_buildblock(t_node *dir)
 						0.5,0.5,0.5,
 						0.5,0.5,0.5
 					);
-	s3d_push_material(dir->oid,
-						0.5,0.5,0.6,
-						0.5,0.5,0.6,
-						0.5,0.5,0.6);
 
 	/* top */
-	s3d_push_polygon(dir->oid,4,6,5,1);
-	s3d_push_polygon(dir->oid,4,7,6,1);
+	s3d_push_polygon(dir->oid,4,6,5,0);
+	s3d_push_polygon(dir->oid,4,7,6,0);
 	/* bottom */
-	s3d_push_polygon(dir->oid,8,11,3,1);
-	s3d_push_polygon(dir->oid,8,3,0,1);
+	s3d_push_polygon(dir->oid,8,11,3,0);
+	s3d_push_polygon(dir->oid,8,3,0,0);
 
 
 	/* left */
@@ -289,7 +294,7 @@ int box_close(t_node *dir,int force)
 	printf("box_close( %s )\n",dir->name);
 	if (&root==dir)
 	{
-		printf("won't undisplay root window ... \n");
+		printf("won't close down root box ... \n");
 		return(-1);
 	}
 	if (dir->detached && !force)	return(1);
@@ -298,7 +303,7 @@ int box_close(t_node *dir,int force)
 		printf("[A]lready undisplayed %s, nothing to do ...\n",dir->name);
 		return(-1);
 	}
-	/* undisplaying kids. ret will be != 0 if any of the kids did not close correctly */
+	/* closing kids. ret will be != 0 if any of the kids did not close correctly */
 	ret=0;
 	for (i=0;i<dir->n_sub;i++)
 		if (dir->sub[i]->disp==D_DIR)
@@ -309,9 +314,14 @@ int box_close(t_node *dir,int force)
 		return(ret); 
 	} else {
 		/* also remove the icons */
+		if (focus==dir)			focus_set(dir->parent);
 		for (i=0;i<dir->n_sub;i++)
 			if (dir->sub[i]->disp==D_ICON)
+			{
 				icon_undisplay(dir->sub[i]);
+				if (focus==dir->sub[i])
+					focus_set(dir->parent);
+			}
 		box_unexpand(dir);
 	}
 	return(ret);

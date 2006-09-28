@@ -29,53 +29,7 @@
 /* the animation stack */
 static t_node *ani_s[MAXANI];
 static int ani_n=0;
-extern t_node root,cam;
-int moveon=1;
 
-/* get the scale for the rootbox zoom */
-float ani_get_scale(t_node *f)
-{
-	float scale,s;
-	s=0.2;
-	scale=1/s;
-	if (f->parent!=NULL)
-		scale=1/s*ani_get_scale(f->parent);
-	else
-		return(1.0);
-	root.px-=f->px;
-	root.pz-=f->pz;
-	root.py-=BOXHEIGHT+f->detached*DETHEIGHT;
-	root.px*=1/s;
-	root.py*=1/s;
-	root.pz*=1/s;
-	
-	return(scale);
-}
-/* center f for the viewer, therefore moving the root box ... */
-void ani_focus(t_node *f)
-{
-	root.px=0.0;
-	root.py=0.0;
-	root.pz=0.0;
-	moveon=1;
-/*	printf("[Z]ooming to %s\n",f->name);*/
-/*	box_collapse_grandkids(f);*/
-	root.scale=ani_get_scale(f);
-	root.py-=1.5;
-/*	printf("[R]escaling to %f\n",root.scale);
-	printf("px: %f py:%f pz: %f\n",root.px,root.py,root.pz);*/
-
-	ani_add(&root);
-	focus=f;
-	if (((cam.dpx-cam.px)* (cam.dpx-cam.px) + (cam.dpy-cam.py)* (cam.dpy-cam.py) 
-		  + (cam.dpz-cam.pz)* (cam.dpz-cam.pz))	> ( 10 * 10))
-	{
-		cam.px=0;
-		cam.py=0;
-		cam.pz=5;
-		ani_add(&cam);
-	}
-}
 /* is node f already on stack? */
 int ani_onstack(t_node *f)
 {

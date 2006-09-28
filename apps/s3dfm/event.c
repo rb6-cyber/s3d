@@ -67,7 +67,7 @@ void event_key(struct s3d_evt *evt)
 				{/* refresh this window ... */
 					printf("[R]efreshing %s\n",focus->name);
 /*					parse_again(focus);*/
-					ani_focus(focus);
+					focus_set(focus);
 				}
 				break;
 		case S3DK_F1:
@@ -82,8 +82,28 @@ void event_key(struct s3d_evt *evt)
 		case S3DK_F7:
 				window_mkdir(path);
 				break;
-
-
+		case S3DK_F10:
+				printf("focus %s\n",focus->name);
+				fly_set_absolute_position(focus);
+				break;
+		case S3DK_UP:
+		case S3DK_LEFT:
+		case S3DK_RIGHT:
+		case S3DK_DOWN:
+				focus_by_key(keys->keysym);
+				printf("pindex of focus = %d\n",focus->pindex);
+				break;
+		case S3DK_RETURN:
+		case S3DK_SPACE:
+				node_select(focus);
+				break;
+		case S3DK_BACKSPACE:
+				if (focus->disp==D_DIR)
+					box_close(focus,1);
+				else if (focus->parent!=NULL)
+						box_close(focus->parent,1);
+				break;
+				
 	}
 	s3dw_handle_key(evt);
 }
@@ -108,23 +128,7 @@ void event_click(struct s3d_evt *evt)
 			node_select(f);
 			return;
 		}
-		switch (f->disp)
-		{
-			case D_DIR:
-				printf("[F]ound, Already displayed - ani_focus( %s )\n",f->name);
-				ani_focus(f);
-				break;
-			case D_ICON:
-				if (f->type==T_FOLDER)
-				{
-					parse_dir(f);
-					box_expand(f);	
-					ani_focus(f);
-				} else {
-					node_select(f);
-				}
-				break;
-		}
+		node_select(f);
 	} else {
 /*		printf("[C]ould not find :/\n");*/
 	}

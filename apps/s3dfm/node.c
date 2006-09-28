@@ -106,8 +106,8 @@ int node_init(t_node *dir)
 	dir->disp=D_NONE;
 	dir->parsed=0;
 
+	dir->pindex=-1;
 	dir->check=0;
-	dir->px=root.pz=0.0;
 	dir->dirs_opened=0;
 	dir->type=T_DUNO;
 	dir->px=dir->py=dir->pz=0.0;
@@ -153,17 +153,35 @@ int node_delete(t_node *dir)
 /* node select handles click on the detach button. selected items can be moved, copied etc.*/
 void node_select(t_node *dir)
 {
+		
 	dir->detached=dir->detached?0:1; /* swapping, not sure if !dir->detached would do the same .. */
 	switch (dir->disp)
 	{
 		case D_DIR:
+			focus_set(dir);
 			if (dir->parent!=NULL)
 				box_order_subdirs(dir->parent);
 			break;
 		case D_ICON:
-			dir->pz=dir->detached*0.2+1.0;
-			ani_add(dir);
+			if (dir->type==T_FOLDER)
+			{
+				dir->detached=0;
+				parse_dir(dir);
+				box_expand(dir);
+			} else {
+				dir->pz=dir->detached*0.2+1.0;
+				ani_add(dir);
+			}
+			focus_set(dir);
 			break;
-		/* nothing yet ... */
+	}
+}
+/* change color etc if a node is focused */
+void node_focus_color(t_node *node, int on)
+{
+	switch (node->disp)
+	{
+		case D_DIR:  box_focus_color(node,on);	break;
+		case D_ICON: icon_focus_color(node,on); break;
 	}
 }

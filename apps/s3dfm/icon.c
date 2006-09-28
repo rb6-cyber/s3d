@@ -22,10 +22,34 @@
  */
 
 #include "s3dfm.h"
-#include <stdio.h> 	 /*  printf() */
-#include <math.h>	 /*  sin(),cos() */
-#include <string.h>  /*  strlen() */
-/* draws icon dir, which is number i (used for nice coloring) */
+#include <stdio.h> 	 /* printf() */
+#include <math.h>	 /* sin(),cos() */
+#include <string.h>  /* strlen() */
+#include <stdlib.h>  /* memcpy() */
+float icon_colors[T_TYPENUM][12]={
+		/* T_DUNO */
+	{	0,0,0.5,1.0,
+		0,0,0.5,1.0,
+		0,0,0.5,1.0 },
+		/* T_FOLDER */
+	{	0.4,0.4,0,1.0,
+		0.4,0.4,0,1.0,
+		0.4,0.4,0,1.0}};
+
+/* gives another color for the focused item */
+void icon_focus_color(t_node *dir, int on)
+{
+	float color[12];
+	int i;
+	memcpy(color,icon_colors[dir->type],sizeof(color));
+	if (on) for(i=0;i<3;i++) {
+			color[i*4 + 0]+=0.3;
+			color[i*4 + 1]+=0.3;
+			color[i*4 + 2]+=0.3;
+	}
+	s3d_pep_materials_a(dir->oid,color,1);
+}
+/* draws icon dir */
 int icon_draw(t_node *dir)
 {
 	float vertices[]={	-1,-0.5,0,
@@ -48,20 +72,7 @@ int icon_draw(t_node *dir)
 	/* create the block */
 	dir->oid=s3d_new_object();
 	s3d_push_vertices(dir->oid,vertices,8);
-	switch (dir->type)
-	{
-		case T_FOLDER:
-			s3d_push_material(dir->oid,
-									0.4,0.4,0,
-									0.4,0.4,0,
-									0.4,0.4,0);
-			break;
-		default:
-			s3d_push_material(dir->oid,
-									0,0,0.5,
-									0,0,0.5,
-									0,0,0.5);
-	};
+	s3d_push_materials_a(dir->oid,icon_colors[dir->type],1);
 	s3d_push_polygons(dir->oid,polys,10);
 
 	/* draw and position the string */
