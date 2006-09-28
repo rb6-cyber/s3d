@@ -114,9 +114,9 @@ void		 window_mkdir(char *path);
 void		 window_move(char *path);
 void		 window_info(char *path);
 /* event.c */
-void 		 event_click(struct s3d_evt *evt);
-void		 event_key(struct s3d_evt *evt);
-void		 event_oinfo(struct s3d_evt *hrmz);
+int 		 event_click(struct s3d_evt *evt);
+int			 event_key(struct s3d_evt *evt);
+int			 event_oinfo(struct s3d_evt *hrmz);
 /* focus.c */
 void 		 focus_by_key(int keysym);
 float		 focus_get_scale(t_node *f);

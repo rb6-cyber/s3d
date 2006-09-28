@@ -29,11 +29,12 @@
 #include <s3d.h>
 #include <s3d_keysym.h>
 #include <s3dw.h>
-#include <time.h>	      /* nanosleep() */
-#include <string.h>	/* strncpy() */
-#include <math.h>		/* sqrt() */
-#include <getopt.h>	/* getopt() */
-#include <stdlib.h>	/* exit() */
+#include <sys/time.h>	 /* gettimeofday() */
+#include <time.h>	     /* nanosleep() */
+#include <string.h>		 /* strncpy() */
+#include <math.h>		 /* sqrt() */
+#include <getopt.h>		 /* getopt() */
+#include <stdlib.h>		 /* exit() */
 #include "olsrs3d.h"
 #include "search.h"
 
@@ -181,7 +182,7 @@ unsigned int get_time(void) {
 
 	struct timeval tv;
 
-	gettimeofday(tv, NULL);
+	gettimeofday(&tv, NULL);
 
 	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 
@@ -782,11 +783,10 @@ void mainloop() {
 
 }
 
-void stop() {
-
+int stop() {
 	s3d_quit();
 	net_quit();
-
+	return(0);
 }
 
 /***
@@ -795,7 +795,7 @@ void stop() {
  *
  ***/
 
-void keypress(struct s3d_evt *event) {
+int keypress(struct s3d_evt *event) {
 
 	struct s3d_key_event *key=(struct s3d_key_event *)event->buf;
 	if( get_search_status() != WIDGET )
@@ -881,6 +881,7 @@ void keypress(struct s3d_evt *event) {
 		if( (key->keysym >= S3DK_PERIOD && key->keysym <= S3DK_9) || key->keysym == S3DK_COMMA || key->keysym == S3DK_RETURN || key->keysym == S3DK_BACKSPACE )
 			search_widget_write( key->keysym );
 	}
+	return(0);
 }
 
 /***
@@ -889,12 +890,13 @@ void keypress(struct s3d_evt *event) {
  *
  ***/
 
-void object_click(struct s3d_evt *evt)
+int object_click(struct s3d_evt *evt)
 {
-	int oid, i;
+/*	int i
 	char ip_str[50];
+	struct timeval tv;*/
 	struct olsr_node *olsr_node;
-	struct timeval tv;
+	int oid;
 
 	s3dw_handle_click(evt);
 /*	if( get_search_status() == WIDGET )
@@ -968,6 +970,7 @@ void object_click(struct s3d_evt *evt)
 		s3d_translate( Olsr_ip_label_obj,-Left*3.0-(Title_len * 0.2)-0.15, -Bottom*3.0-1.0, -3.0 );
 
 	}*/
+	return(0);
 }
 
 void print_etx()
@@ -1087,7 +1090,7 @@ void print_etx()
  *
  ***/
 
-void object_info(struct s3d_evt *hrmz)
+int object_info(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
 	inf=(struct s3d_obj_info *)hrmz->buf;
@@ -1113,14 +1116,15 @@ void object_info(struct s3d_evt *hrmz)
 
 	}
 	/* printf("%f %f %f\n",inf->trans_x,inf->trans_y,inf->trans_z); */
+	return(0);
 }
 
-void mbutton_press(struct s3d_evt *hrmz)
+int mbutton_press(struct s3d_evt *hrmz)
 {
 	struct s3d_but_info *inf;
 	inf=(struct s3d_but_info *)hrmz->buf;
 	printf("button %d, state %d\n", inf->button,inf->state);
-	return;
+	return(0);
 }
 
 int main( int argc, char *argv[] ) {

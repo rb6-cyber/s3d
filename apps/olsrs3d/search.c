@@ -111,7 +111,7 @@ void show_search_window()
 	s3dw_focus	( S3DWIDGET( _search_surface ) );
 	s3dw_show	( S3DWIDGET( _search_surface ) );
 
-	_search_widget	= search_button;
+	_search_widget	= S3DWIDGET(search_button);
 }
 
 /* public */

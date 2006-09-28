@@ -241,9 +241,10 @@ void *del_app(int oid)
 	} 
 	return(a);
 }
-void stop()
+int stop()
 {
 	s3d_quit();
+	return(0);
 }
 void place_apps()
 {
@@ -277,7 +278,7 @@ void place_apps()
 	xa=s3d_vector_angle(v,u);
 	s3d_rotate(menu, 0 ,30,0); 
 }
-void mcp_object(struct s3d_evt *hrmz)
+int mcp_object(struct s3d_evt *hrmz)
 {
 	struct mcp_object *mo;
 	struct app *a;
@@ -311,6 +312,7 @@ void mcp_object(struct s3d_evt *hrmz)
 		}
 		place_apps();
 	}
+	return(0);
 }
 void app_init(struct app *a)
 {
@@ -348,24 +350,23 @@ void app_init(struct app *a)
 	else*/
 		place_apps();
 }
-void mcp_del_object(struct s3d_evt *hrmz)
+int mcp_del_object(struct s3d_evt *hrmz)
 {
 	struct mcp_object *mo;
-	printf("omg, something got deleted!!\n");
 	mo=(struct mcp_object *)hrmz->buf;
 	del_app(mo->object);
+	return(0);
 }
-void object_click(struct s3d_evt *hrmz)
+int object_click(struct s3d_evt *hrmz)
 {
 	struct app *a;
 	unsigned int i, oid;
 	oid=*((unsigned int *)hrmz->buf);
-	printf("%d got clicked\n",oid);
 	a=apps;i=0;
 	if (oid==rotate)
 	{
 		rot_flag=!rot_flag;
-		return;
+		return(0);
 	}
 	if (oid==reset)
 	{
@@ -377,26 +378,27 @@ void object_click(struct s3d_evt *hrmz)
 		if (oid==a->close_but)
 		{
 			del_app(a->oid);
-			return;
+			return(0);
 		} else 	if (oid==a->min_but)
 		{
 			if (a==focus)
 			{
 				set_focus(NULL); /* nothing is focused now */
 			}
-			return;
+			return(0);
 		} else 	if (((oid==a->title) || (oid==a->sphere)) || (oid==a->oid))
 		{
 			printf("giving focus to [%s], %d\n",a->name,oid);
 			set_focus(a);
-			return;
+			return(0);
 		}
 		i++;
 		a=a->next;
 	}
 	menu_click(oid);
+	return(0);
 }
-void object_info(struct s3d_evt *hrmz)
+int object_info(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
 	inf=(struct s3d_obj_info *)hrmz->buf;
@@ -424,6 +426,7 @@ void object_info(struct s3d_evt *hrmz)
 			place_apps(); /* replace apps */
 		}
 	}
+	return(0);
 }
 void mainloop()
 {
@@ -462,7 +465,7 @@ void mainloop()
 	nanosleep(&t,NULL); 
 }
 
-void keydown(struct s3d_evt *event)
+int keydown(struct s3d_evt *event)
 {
 	struct s3d_key_event *keys=(struct s3d_key_event *)event->buf;
 	switch (keys->keysym)
@@ -477,8 +480,9 @@ void keydown(struct s3d_evt *event)
 		case 's':ydif+= 1.0;break;
 		case 'd':xdif+= 1.0;break;
 	}
+	return(0);
 }
-void keyup(struct s3d_evt *event)
+int keyup(struct s3d_evt *event)
 {
 	struct s3d_key_event *keys=(struct s3d_key_event *)event->buf;
 	switch (keys->keysym)
@@ -488,6 +492,7 @@ void keyup(struct s3d_evt *event)
 		case 's':ydif-= 1.0;break;
 		case 'd':xdif-= 1.0;break;
 	}
+	return(0);
 
 }
 

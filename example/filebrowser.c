@@ -178,7 +178,7 @@ int display_dir(char *dir, int depth, int  posx, int posy, int posz)
 	return(0);
 }
 
-void object_click(struct s3d_evt *evt)
+int object_click(struct s3d_evt *evt)
 {
 	int i,oid;
 	char execstr[256];
@@ -197,25 +197,26 @@ void object_click(struct s3d_evt *evt)
 						printf("going into %s\n",item[i].name);
 						chdir(item[i].name);
 						display_dir(".",0,0,0,0);
-						return;
+						return(0);
 						break;
 				case T_GEOMETRY:
 						printf("loading geometry %s\n",item[i].name);
 						snprintf(execstr,256,"modelloader \"%s\"&\n",item[i].name);
 						system(execstr);
-						return;
+						return(0);
 						break;
 				case T_MOVIE:
 						printf("playing %s\n",item[i].name);
 						snprintf(execstr,256,"mplayer -vo s3d \"%s\"&\n",item[i].name);
 						system(execstr);
-						return;
+						return(0);
 						break;
 
 						
 			}
 		}
 	}
+	return(0);
 }
 void mainloop()
 {

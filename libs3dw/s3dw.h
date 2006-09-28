@@ -137,8 +137,8 @@ void 				 s3dw_delete(s3dw_widget *widget);
 void 				 s3dw_show(s3dw_widget *widget);
 void 				 s3dw_focus(s3dw_widget *focus);
 
-void 				 s3dw_handle_click(struct s3d_evt *evt);
-void 				 s3dw_handle_key(struct s3d_evt *evt);
-void 				 s3dw_object_info(struct s3d_evt *evt);
+int 				 s3dw_handle_click(struct s3d_evt *evt);
+int 				 s3dw_handle_key(struct s3d_evt *evt);
+int 				 s3dw_object_info(struct s3d_evt *evt);
 
 void 				 s3dw_ani_mate();

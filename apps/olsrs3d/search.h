@@ -36,5 +36,6 @@ void set_search_status(int stat);
 void search_widget_write(int key);
 void set_node_root(struct olsr_node *root);
 void follow_node(float cam_position_t[], float cam_position_r[],float rotate);
+void follow_node_by_click(struct olsr_node *olsr_node);
 
 void show_search_window();

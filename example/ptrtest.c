@@ -34,9 +34,10 @@ float asp=1.0;
 float len=1.0;
 int alpha=0;
 static struct timespec t={0,10*1000*1000}; /* 100 mili seconds */
-void stop(struct s3d_evt *evt)
+int stop(struct s3d_evt *evt)
 {
 	s3d_quit();
+	return(0);
 }
 
 void mainloop()
@@ -49,7 +50,7 @@ void mainloop()
 	s3d_rotate(0,sin(a)*30,alpha,0);
 	nanosleep(&t,NULL); 
 }
-void object_info(struct s3d_evt *hrmz)
+int object_info(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
 	inf=(struct s3d_obj_info *)hrmz->buf;
@@ -73,8 +74,9 @@ void object_info(struct s3d_evt *hrmz)
 	{ /* of course, a link s3d_link(o,1 would be much easier ... */
 		s3d_translate(o,(inf->trans_x)*2.0,(inf->trans_y)*2.0,-2);
 	}
+	return(0);
 }
-void mbutton_press(struct s3d_evt *hrmz)
+int mbutton_press(struct s3d_evt *hrmz)
 {
 	struct s3d_but_info *inf;
 	char s[256];
@@ -88,6 +90,7 @@ void mbutton_press(struct s3d_evt *hrmz)
 	s3d_link(o,0);			/* link to cam */
 /*	s3d_link(o,1);*/
 	s3d_flags_on(o,S3D_OF_VISIBLE);
+	return(0);
 }
 int main (int argc, char **argv)
 {

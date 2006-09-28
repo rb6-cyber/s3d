@@ -395,7 +395,7 @@ void paint_chars()
 / * 		printf("\n"); * / 
 	}
 }*/
-void keypress(struct s3d_evt *event)
+int keypress(struct s3d_evt *event)
 {
 	struct s3d_key_event *keys=(struct s3d_key_event *)event->buf;
 	int key;
@@ -485,6 +485,7 @@ void keypress(struct s3d_evt *event)
 			if ((char)keys->unicode)  /*  \0 is no good idea .. */
 				term_addchar((char)keys->unicode);
 	}
+	return(0);
 
 }
 int i=0;
@@ -511,9 +512,10 @@ void mainloop()
 		paintit();
 	}
 }
-void stop(struct s3d_evt *event)
+int stop(struct s3d_evt *event)
 {
 	s3d_quit();
+	return(0);
 }
 unsigned int draw_background()
 {

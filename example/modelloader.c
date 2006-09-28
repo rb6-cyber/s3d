@@ -35,9 +35,10 @@ void mainloop()
 	i++;
 	nanosleep(&t,NULL); 
 }
-void object_click(struct s3d_evt *evt)
+int object_click(struct s3d_evt *evt)
 {
 	s3d_quit();
+	return(0);
 }
 	
 int main (int argc, char **argv)

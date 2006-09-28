@@ -100,7 +100,7 @@ void mainloop()
 	nanosleep(&t,NULL); 
 }
 
-void object_info(struct s3d_evt *hrmz)
+int object_info(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
 	inf=(struct s3d_obj_info *)hrmz->buf;
@@ -124,11 +124,12 @@ void object_info(struct s3d_evt *hrmz)
 			Left=-1.0;
 		}
 	}
+	return(0);
 }
 
 
 
-void keypress(struct s3d_evt *event)
+int keypress(struct s3d_evt *event)
 {
 	int key;
 	key=*((unsigned short *)event->buf);
@@ -147,6 +148,7 @@ void keypress(struct s3d_evt *event)
 				}
 				break;
 	}
+	return(0);
 }
 
 

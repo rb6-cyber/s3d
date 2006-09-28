@@ -43,15 +43,15 @@ void mainloop()
 /* you should always put the s3dw-handler in your own event handler,
  * if you want s3dw to react on clicks or keys ... and i'm sure you
  * want that ... */
-void click(struct s3d_evt *evt)
+int click(struct s3d_evt *evt)
 {
-	s3dw_handle_click(evt);
+	return(s3dw_handle_click(evt));
 }
 void key_button(s3dw_widget *button)
 {
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
-void key(struct s3d_evt *evt)
+int key(struct s3d_evt *evt)
 {
 	struct s3d_key_event *key=(struct s3d_key_event *)evt->buf;
 	char string[8];
@@ -73,6 +73,7 @@ void key(struct s3d_evt *evt)
 		/* of couse, show it */
 		s3dw_show(S3DWIDGET(miniwin));
 	}
+	return(0);
 
 }
 

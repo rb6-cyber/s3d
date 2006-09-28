@@ -29,7 +29,7 @@ struct s3d_evt {
 	struct s3d_evt *next;
 };
 
-typedef void (*s3d_cb)(struct s3d_evt *);
+typedef int (*s3d_cb)(struct s3d_evt *);
 
 #define S3D_EVENT_OBJ_CLICK		1
 #define S3D_EVENT_KEY			2

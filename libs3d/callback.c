@@ -24,7 +24,7 @@
 
 #include "s3d.h"
 #include "s3dlib.h"
-static void _s3d_ignore(struct s3d_evt *evt);
+static int _s3d_ignore(struct s3d_evt *evt);
 /*  the s3d callback list */
 /* i know it's ugly, but it's better to have ugly code somewhere than provoke
  * race conditions in the applications code */
@@ -50,7 +50,7 @@ s3d_cb s3d_cb_list[MAX_CB]={
 			NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL
 			};
 /* the ignore-handler ;) */
-static void _s3d_ignore(struct s3d_evt *evt)
+static int _s3d_ignore(struct s3d_evt *evt)
 {
 	/* do plain nothing */
 }

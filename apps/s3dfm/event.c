@@ -30,7 +30,7 @@
 int typeinput=0;
 
 /* info packets handler, we're just interested in the cam */
-void event_oinfo(struct s3d_evt *hrmz)
+int event_oinfo(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
 	inf=(struct s3d_obj_info *)hrmz->buf;
@@ -41,17 +41,18 @@ void event_oinfo(struct s3d_evt *hrmz)
 		cam.dpz=inf->trans_z;
 	}
 	s3dw_object_info(hrmz);
+	return(0);
 }
 
 /* keyevent handler */
-void event_key(struct s3d_evt *evt)
+int event_key(struct s3d_evt *evt)
 {
 	struct s3d_key_event *keys=(struct s3d_key_event *)evt->buf;
 	char path[M_DIR];
 	if (typeinput) {	/* we have some inputfield now and want the s3dw to handle our input */	
 			printf("inputting text ...\n");
 			s3dw_handle_key(evt); 
-			return; 
+			return(0); 
 	}
 	node_path(focus,path);
 	switch (keys->keysym)
@@ -91,7 +92,6 @@ void event_key(struct s3d_evt *evt)
 		case S3DK_RIGHT:
 		case S3DK_DOWN:
 				focus_by_key(keys->keysym);
-				printf("pindex of focus = %d\n",focus->pindex);
 				break;
 		case S3DK_RETURN:
 		case S3DK_SPACE:
@@ -106,10 +106,11 @@ void event_key(struct s3d_evt *evt)
 				
 	}
 	s3dw_handle_key(evt);
+	return(0);
 }
 
 /* object click handler */
-void event_click(struct s3d_evt *evt)
+int event_click(struct s3d_evt *evt)
 {
 	int oid;
 	t_node *f;
@@ -120,17 +121,18 @@ void event_click(struct s3d_evt *evt)
 		if (f->objs.close==oid)
 		{
 			box_close(f,1);
-			return;
+			return(0);
 		}
 		if (f->objs.select==oid)
 		{
 			printf("[S]electing %s\n",f->name);
 			node_select(f);
-			return;
+			return(0);
 		}
 		node_select(f);
 	} else {
 /*		printf("[C]ould not find :/\n");*/
 	}
+	return(0);
 }
 

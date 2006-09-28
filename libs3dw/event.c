@@ -24,20 +24,19 @@
 #include <s3d.h>
 #include <s3dw.h>
 #include <s3dw_int.h>
-static int modkey;
 extern s3dw_widget *_s3dw_cam;
-void s3dw_handle_click(struct s3d_evt *evt)
+int s3dw_handle_click(struct s3d_evt *evt)
 {
 	unsigned long oid=*((unsigned long *)evt->buf);
-	s3dw_widget_event_click(s3dw_getroot(),oid);
+	return(s3dw_widget_event_click(s3dw_getroot(),oid));
 }
-void s3dw_handle_key(struct s3d_evt *evt)
+int s3dw_handle_key(struct s3d_evt *evt)
 {
 	struct s3d_key_event *keys=(struct s3d_key_event *)evt->buf;
-	s3dw_widget_event_key(s3dw_getroot(),keys);
+	return(s3dw_widget_event_key(s3dw_getroot(),keys));
 }
 
-void s3dw_object_info(struct s3d_evt *evt)
+int s3dw_object_info(struct s3d_evt *evt)
 {
 	struct s3d_obj_info *info=(struct s3d_obj_info *)evt->buf;
 	if (info->object==0) /* the _s3dw_cam */
@@ -53,4 +52,5 @@ void s3dw_object_info(struct s3d_evt *evt)
 		_s3dw_cam->flags&=~S3DW_ARRANGED;
 		s3dw_ani_needarr();
 	}
+	return(0);
 }

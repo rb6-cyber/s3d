@@ -153,7 +153,7 @@ void mainloop()
 /*	XDestroyImage(image);*/
 /*	nanosleep(&t,NULL); */
 }
-void keypress(struct s3d_evt *event)
+int keypress(struct s3d_evt *event)
 {
 	int key;
 	int kc;
@@ -176,15 +176,17 @@ void keypress(struct s3d_evt *event)
 	if (kc!=0)
 	    XTestFakeKeyEvent(dpy, kc, 1, 1);
 /*	    XTestFakeKeyEvent(dpy, kc, 0, 1);*/
+	return(0);
 
 }
-void mouseclick(struct s3d_evt *event)
+int mouseclick(struct s3d_evt *event)
 {
 	int i;
 	printf("thats it, collecting:\n");
 	for (i=0;i<3;i++)
 		printf("[%d] %f\n",i,count[i]/iterations);
 	exit(0);	
+	return(0);
 }
 int main(int argc, char **argv)
 {
