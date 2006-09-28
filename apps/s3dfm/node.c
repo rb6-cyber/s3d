@@ -24,6 +24,7 @@
 #include "s3dfm.h"
 #include <string.h>	/* strncpy(), index() */
 #include <stdio.h>	/* printf() */
+#include <stdlib.h> /* free() */
 /* find the node to a path, return NULL if not parsed yet */
 t_node *node_getbypath(char *path)
 {
@@ -133,22 +134,28 @@ int node_undisplay(t_node *dir)
 /* delete a node and all its kids internally, remove the graphics, reorder the parents etc ... */
 int node_delete(t_node *dir)
 {
-	/* TODO: IMPLEMENT IT, DAMNIT */
-	/*
 	int i;
-	printf("node_free( %s )\n",t->name);
-	switch (t->disp)
+	if (dir->parent==NULL) 
 	{
-			case D_DIR:  box_collapse(t,1); / * collapse this and its kids * /
-			case D_ICON: icon_undisplay(t);
+		printf("won't delete root window!\n");
+		return(-1);
 	}
-	if (t->n_item>0) {
-		for (i=0;i<t->n_item;i++)
-			node_free(&(t->sub[i]));
-		free(t->sub);
+	/* delete all the kids */
+	if (dir->n_sub>0) {
+		for (i=0;i<dir->n_sub;i++)
+			node_delete(dir->sub[i]);
+		free(dir->sub);
 	}
-	t->n_item=0;
-	*/
+	/* move focus upward, this should go up with the recursion */
+	if (focus==dir)	focus_set(dir->parent); /* do this before deleting the contents, its better ... */
+	switch (dir->disp)
+	{
+			case D_DIR:  box_undisplay(dir);
+			case D_ICON: icon_undisplay(dir);
+	}
+
+	if (-1!=(i=ani_onstack(dir))) ani_del(i); /* tell animation stack too */
+	free(dir);
 	return(0);
 }
 /* node select handles click on the detach button. selected items can be moved, copied etc.*/
@@ -171,8 +178,8 @@ void node_select(t_node *dir)
 			if (dir->type==T_FOLDER)
 			{
 				dir->detached=0;
-				parse_dir(dir);
-				box_expand(dir);
+				if (!parse_dir(dir))
+					box_expand(dir);
 			} else {
 				dir->pz=dir->detached*0.2+1.0;
 				ani_add(dir);
@@ -189,4 +196,10 @@ void node_focus_color(t_node *node, int on)
 		case D_DIR:  box_focus_color(node,on);	break;
 		case D_ICON: icon_focus_color(node,on); break;
 	}
+}
+/* get the directory of a node */
+t_node *node_getdir(t_node *node)
+{
+	if (node->type==T_FOLDER) return(node);
+	else return(node->parent);
 }

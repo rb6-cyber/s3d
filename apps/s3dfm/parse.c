@@ -48,7 +48,7 @@ int parse_dir(t_node *dir)
     n = i = scandir(path, &namelist, 0, alphasort);
     if (n < 0)
 	{
-        perror("scandir");
+		window_fs_errno(path);
 		return(-1);
 	} else {
 		oldn=dir->n_sub;

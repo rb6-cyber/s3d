@@ -54,7 +54,7 @@ int event_key(struct s3d_evt *evt)
 			s3dw_handle_key(evt); 
 			return(0); 
 	}
-	node_path(focus,path);
+	node_path(node_getdir(focus),path);
 	switch (keys->keysym)
 	{
 		case 'i':
@@ -66,9 +66,14 @@ int event_key(struct s3d_evt *evt)
 		case 'r':
 		case 'R':
 				{/* refresh this window ... */
-					printf("[R]efreshing %s\n",focus->name);
-/*					parse_again(focus);*/
-					focus_set(focus);
+					t_node *node;
+					node=node_getdir(focus);
+					printf("[R]efreshing %s\n",node->name);
+					parse_dir(node);
+					box_draw_icons(node);
+					box_order_icons(node);
+					box_order_subdirs(node);
+					
 				}
 				break;
 		case S3DK_F1:

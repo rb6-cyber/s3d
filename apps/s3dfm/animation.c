@@ -36,8 +36,8 @@ int ani_onstack(t_node *f)
 	int i;
 	for (i=0;i<ani_n;i++)
 		if (ani_s[i]==f)
-			return(1);		/* already in list */
-	return(0);
+			return(i);		/* already in list */
+	return(-1);
 
 }
 /* add an node on the animation stack */
@@ -45,7 +45,7 @@ void ani_add(t_node *f)
 {
 	if (ani_n<MAXANI)
 	{
-		if (ani_onstack(f))
+		if (-1!=ani_onstack(f))
 			return;		/* already in list */
 		ani_s[ani_n]=f;
 		ani_iterate(f);

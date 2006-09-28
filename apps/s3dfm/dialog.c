@@ -117,8 +117,12 @@ void window_fs_errno(char *errmsg)
 
 void window_fs_abort(s3dw_widget *button)
 {
-	fl_del(fp);
-	fp=NULL;
+	/* delete a filelist, if there was any */
+	if (fp!=NULL)
+	{
+		fl_del(fp);
+		fp=NULL;
+	}
 	typeinput=0;
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
@@ -179,9 +183,7 @@ void window_fs_mkdir(s3dw_widget *button)
 		} else {
 			printf("refreshing %s\n",item->name);
 /*			parse_again(item);*/
-
 		}
-				
 	}
 	window_fs_abort(button); /* finish */
 
@@ -202,9 +204,9 @@ void window_mkdir(char *path)
 	s3dw_focus(S3DWIDGET(input));
 	s3dw_focus(S3DWIDGET(infwin));
 	typeinput=1;
-	okbutton=s3dw_button_new(infwin,"OK",l/2-3,fp->n+5);
+	okbutton=s3dw_button_new(infwin,"OK",l/2-3,5);
 	okbutton->onclick=window_fs_mkdir;
-	abortbutton=s3dw_button_new(infwin,"abort",l/2,fp->n+5);
+	abortbutton=s3dw_button_new(infwin,"abort",l/2,5);
 	abortbutton->onclick=window_fs_abort;
 	s3dw_show(S3DWIDGET(infwin));
 

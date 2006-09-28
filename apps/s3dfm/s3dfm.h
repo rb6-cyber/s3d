@@ -151,6 +151,7 @@ int 		 node_delete(t_node *dir);
 int 		 node_undisplay(t_node *dir);
 void		 node_select(t_node *dir);
 void 		 node_focus_color(t_node *node, int on);
+t_node		*node_getdir(t_node *node);
 /* parse.c */
 int 		 parse_dir(t_node *dir);
 /* string.c */

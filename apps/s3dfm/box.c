@@ -277,6 +277,7 @@ int box_unexpand(t_node *dir)
 	printf("box_unexpand( %s )\n",dir->name);
 	if (dir->parent==NULL) /* we can't do this on root.... */
 		return(-1);
+	dir->detached=0;
 	box_undisplay(dir);
 	icon_draw(dir);
 	dir->parent->dirs_opened--;
@@ -319,6 +320,7 @@ int box_close(t_node *dir,int force)
 			if (dir->sub[i]->disp==D_ICON)
 			{
 				icon_undisplay(dir->sub[i]);
+				dir->detached=0;
 				if (focus==dir->sub[i])
 					focus_set(dir->parent);
 			}
@@ -391,7 +393,7 @@ void box_order_icons(t_node *dir)
 		{
 			dir->sub[i]->px = -1 +2*  ((float)((int)i%dps)+0.5)/((float)dps);
 			dir->sub[i]->py = 0.5+((float)((int)i/dps)+0.5)/((float)dps)-0.5;
-			dir->sub[i]->pz = 1.0;
+			dir->sub[i]->pz=dir->sub[i]->detached*0.2+1.0;
 			dir->sub[i]->scale = (float)1.0/((float)dps);
 			s3d_link(dir->sub[i]->oid,dir->oid);	 /* if it's already displayed, make sure it linked properly ... */
 			ani_finish(dir->sub[i], -1);			 /* copy to the current animation state */
