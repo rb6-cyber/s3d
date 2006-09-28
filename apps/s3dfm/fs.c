@@ -58,16 +58,16 @@ filelist *fl_new(char *path)
 	} else {
 		j=0;
 		fl->n=n-2 ; /* ignore . and .. */
-		fl->p=malloc(sizeof(char *)*fl->n);
+		fl->p=malloc(sizeof(t_file)*fl->n);
 		for (i=0;i<n;i++)
 		{
 			name=namelist[i]->d_name;
 			if (!((strcmp(name,".")==0) || (strcmp(name,"..")==0))) /* ignore */
 			{
-				fl->p[j]=malloc(strlen(name)+strlen(path)+2);
-				strcpy(fl->p[j],path);
-				strcat(fl->p[j],"/");
-				strcat(fl->p[j],name);
+				fl->p[j].name=malloc(strlen(name)+strlen(path)+2);
+				strcpy(fl->p[j].name,path);
+				strcat(fl->p[j].name,"/");
+				strcat(fl->p[j].name,name);
 				j++;
 			}
 			free(namelist[i]);
@@ -87,7 +87,14 @@ void fl_del(filelist *fl)
 	int i;
 	for (i=0;i<fl->n;i++)
 	{
-		free(fl->p[i]);
+		free(fl->p[i].name);
+		if (fl->p[i].anode!=NULL)
+		{
+		/* maybe let node_delete do that? */
+			/*node_delete(fl->p[i].anode);*/
+			icon_undisplay(fl->p[i].anode);
+			free(fl->p[i].anode);
+		}
 	}
 	free(fl);
 }
@@ -136,7 +143,7 @@ void fs_fl_approx(filelist *fl, int *files, int *dirs, int *bytes)
 
 	for (i=0;i<fl->n;i++)
 	{
-		fs_approx(fl->p[i],&sfiles,&sdirs,&sbytes);
+		fs_approx(fl->p[i].name,&sfiles,&sdirs,&sbytes);
 		*files+=		sfiles;
 		*dirs+=			sdirs;
 		*bytes+=		sbytes;
@@ -196,13 +203,13 @@ int fs_fl_copy(filelist *fl, char *dest)
 	r=0;
 	for (i=0;i<fl->n;i++)
 	{
-		bname=basename(fl->p[i]);
+		bname=basename(fl->p[i].name);
 		sdest=malloc(strlen(dest)+strlen(bname)+2);
 
 		strcpy(sdest,dest);
 		strcat(sdest,"/");
 		strcat(sdest,bname);
-		r|=fs_copy(fl->p[i],sdest);
+		r|=fs_copy(fl->p[i].name,sdest);
 
 		free(sdest);
 	}
@@ -248,8 +255,8 @@ int fs_fl_unlink(filelist *fl)
 	r=0;
 	for (i=0;i<fl->n;i++)
 	{
-		printf("-> atomic unlink %s\n",fl->p[i]);
-		r|=fs_unlink(fl->p[i]);
+		printf("-> atomic unlink %s\n",fl->p[i].name);
+		r|=fs_unlink(fl->p[i].name);
 	}
 	return(r);
 
@@ -283,13 +290,13 @@ int fs_fl_move(filelist *fl, char *dest)
 	r=0;
 	for (i=0;i<fl->n;i++)
 	{
-		bname=basename(fl->p[i]);
+		bname=basename(fl->p[i].name);
 		sdest=malloc(strlen(dest)+strlen(bname)+2);
 
 		strcpy(sdest,dest);
 		strcat(sdest,"/");
 		strcat(sdest,bname);
-		r|=fs_move(fl->p[i],sdest);
+		r|=fs_move(fl->p[i].name,sdest);
 
 		free(sdest);
 	}

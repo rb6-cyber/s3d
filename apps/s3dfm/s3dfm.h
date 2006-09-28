@@ -69,12 +69,18 @@ struct _t_node {
 	} 				 objs;
 	int 			 check;							    /* check marker, for internal things */
 };
+struct _t_file {
+	char *name;
+	int size;
+	struct _t_node *anode;
+};
 struct _filelist {
-	char **p;
+	struct _t_file *p;
 	int n;
 };
 typedef struct _filelist filelist;
 typedef struct _t_node   t_node;
+typedef struct _t_file	 t_file;
 
 
 extern t_node root,cam; /* some global objects */
@@ -154,3 +160,4 @@ char		*mstrncat(char *dest, const char *src, int n);
 char		*mstrncpy(char *dest, const char *src, int n);
 /* fly.c */
 int 		 fly_set_absolute_position(t_node *node);
+t_node 		*fly_create_anode(t_node *node);

@@ -32,7 +32,7 @@
 #include <sys/types.h> /* mkdir() */
 
 static s3dw_input	 *input;
-static filelist fp={NULL,0};
+static filelist *fp;
 
 extern int typeinput;
 
@@ -52,10 +52,12 @@ int get_selected(filelist *fp, t_node *dir)
 		if (dir->sub[i]->detached)
 		{
 			fp->n++;
-			fp->p=realloc(fp->p,sizeof(char *) * fp->n);
+			fp->p=realloc(fp->p,sizeof(t_file) * fp->n);
 			s=malloc(M_DIR);
 			node_path(dir->sub[i],s);
-			fp->p[fp->n - 1]=s;
+			fp->p[fp->n - 1].name=s;
+			fp->p[fp->n - 1].anode=fly_create_anode(dir->sub[i]);
+			fp->p[fp->n - 1].size=0; /*TODO: later */
 		}
 	}
 	return(0);
@@ -81,7 +83,7 @@ void window_fs_another()
 {
 	s3dw_surface *infwin;
 	s3dw_button  *button;
-	infwin=s3dw_surface_new("Error",12,8);
+	infwin=s3dw_surface_new("Error",20,8);
 	s3dw_label_new(infwin,"Sorry, another FS Action is in Progress",1,2);
 	button=s3dw_button_new(infwin,"OK",5,5);
 	button->onclick=close_win;
@@ -115,12 +117,8 @@ void window_fs_errno(char *errmsg)
 
 void window_fs_abort(s3dw_widget *button)
 {
-	int i;
-	for (i=0;i<fp.n;i++)
-		free(fp.p[i]);
-	if (fp.p!=NULL) free(fp.p);
-	fp.n=0;
-	fp.p=NULL;
+	fl_del(fp);
+	fp=NULL;
 	typeinput=0;
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
@@ -133,31 +131,32 @@ void window_copy(char *path)
 
 	int i,m;
 
-	if (fp.n!=0) 	{	window_fs_another(); 	return; }
-	fp.n=0;
-	fp.p=NULL;
-	get_selected(&fp,&root);
-	printf("selected %d nodes\n",fp.n);
-	if (fp.n == 0)	{	window_fs_nothing();	return;	}
+	if (fp!=NULL) 	{	window_fs_another(); 	return; }
+	fp=malloc(sizeof(filelist));
+	fp->n=0;
+	fp->p=NULL;
+	get_selected(fp,&root);
+	printf("selected %d nodes\n",fp->n);
+	if (fp->n == 0)	{	window_fs_nothing();	free(fp); fp=NULL;return;	}
 	m=10;
-	for (i=0;i<fp.n;i++)
+	for (i=0;i<fp->n;i++)
 	{
-		if (strlen(fp.p[i])>m) m=strlen(fp.p[i]);
-		printf("%d: %s\n",i,fp.p[i]);
+		if (strlen(fp->p[i].name)>m) m=strlen(fp->p[i].name);
+		printf("%d: %s\n",i,fp->p[i].name);
 	}
 
 	l=(m+3)*0.7;
-	infwin=s3dw_surface_new("Copy Window",l,fp.n+8);
+	infwin=s3dw_surface_new("Copy Window",l,fp->n+8);
 	s3dw_label_new(infwin,"Copy: ",1,1);
-	for (i=0;i<fp.n;i++)
-		s3dw_label_new(infwin,fp.p[i],3,2+i);
-	s3dw_label_new(infwin,"to:",1,fp.n+3);
+	for (i=0;i<fp->n;i++)
+		s3dw_label_new(infwin,fp->p[i].name,3,2+i);
+	s3dw_label_new(infwin,"to:",1,fp->n+3);
 	node_path(focus,destdir);
-	s3dw_label_new(infwin,destdir,3,fp.n+4);
+	s3dw_label_new(infwin,destdir,3,fp->n+4);
 
-	okbutton=s3dw_button_new(infwin,"OK",l/2-3,fp.n+5);
+	okbutton=s3dw_button_new(infwin,"OK",l/2-3,fp->n+5);
 	okbutton->onclick=window_fs_abort;
-	abortbutton=s3dw_button_new(infwin,"abort",l/2,fp.n+5);
+	abortbutton=s3dw_button_new(infwin,"abort",l/2,fp->n+5);
 	abortbutton->onclick=window_fs_abort;
 
 	s3dw_show(S3DWIDGET(infwin));
@@ -193,7 +192,7 @@ void window_mkdir(char *path)
 	s3dw_button  *okbutton,*abortbutton;
 	char string1[M_DIR];
 	float l;
-	if (fp.n!=0) {window_fs_another(); return; }
+	if (fp!=NULL) {window_fs_another(); return; }
 	snprintf(string1,M_DIR,"Create Directory in %s",path);
 	l=strlen(string1)*0.7;
 	infwin=s3dw_surface_new("Create Directory",l,8);
@@ -203,9 +202,9 @@ void window_mkdir(char *path)
 	s3dw_focus(S3DWIDGET(input));
 	s3dw_focus(S3DWIDGET(infwin));
 	typeinput=1;
-	okbutton=s3dw_button_new(infwin,"OK",l/2-3,fp.n+5);
+	okbutton=s3dw_button_new(infwin,"OK",l/2-3,fp->n+5);
 	okbutton->onclick=window_fs_mkdir;
-	abortbutton=s3dw_button_new(infwin,"abort",l/2,fp.n+5);
+	abortbutton=s3dw_button_new(infwin,"abort",l/2,fp->n+5);
 	abortbutton->onclick=window_fs_abort;
 	s3dw_show(S3DWIDGET(infwin));
 
@@ -215,7 +214,7 @@ void window_move(char *path)
 {
 	s3dw_surface *infwin;
 	s3dw_button  *button;
-	if (fp.n!=0) {window_fs_another(); return; }
+	if (fp!=NULL) {window_fs_another(); return; }
 	infwin=s3dw_surface_new("Info Window",20,8);
 	s3dw_label_new(infwin,"Sorry, moving is not implemented yet.. :(",1,2);
 	button=s3dw_button_new(infwin,"Too bad",7,5);

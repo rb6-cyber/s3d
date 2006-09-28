@@ -83,8 +83,9 @@ void node_path(t_node *dir, char *path)
 	if (dir->parent!=NULL)
 	{
 		node_path(dir->parent,path);
+		if (dir->parent->parent!=NULL)
+			mstrncat(path,"/",M_DIR);
 		mstrncat(path,dir->name,M_DIR);
-		mstrncat(path,"/",M_DIR);
 	} else
 		mstrncpy(path,dir->name,M_DIR);
 }
@@ -158,7 +159,11 @@ void node_select(t_node *dir)
 	switch (dir->disp)
 	{
 		case D_DIR:
-			focus_set(dir);
+			if (focus!=dir)
+			{
+				dir->detached=dir->detached?0:1; /* swap again, we actually don't want to have it detachedf now. */
+				focus_set(dir);
+			}
 			if (dir->parent!=NULL)
 				box_order_subdirs(dir->parent);
 			break;
