@@ -36,17 +36,23 @@ t_node *node_getbypath(char *path)
 	if (path==NULL) return NULL;
 	if (path[0]=='/')
 	{
-		strncpy(p,path,M_DIR);
+		strncpy(p,path,M_DIR-1);
 		s=p+1;
 		cur=&root;
 	} else return NULL; /* TODO: also process local paths. right now, we are to lazy */
+	p[strlen(p)+1]=0; /* extra terminating 0, to be sure */
 	printf("processing rest of string %s\n",s);
 	match=s;
-	while ((s=index(s,'/'))!=NULL) { /* while we have slashes inside */
-		s[0]=0; /* mark the slash with space */
-		s++;	/* move to the next */
+	while (*s!=0) { /* while search string is not empty */
+		if ((s=index(s,'/'))!=NULL)
+		{
+			s[0]=0; /* mark the slash with space */
+			s++;	/* move to the next */
+		} else {
+			s=match+strlen(match); /* select terminating 0 */
+		}
 		/* parse ... */
-		printf("looking for a match for %s\n",match);
+		printf("looking for a match for %s, rest is %s\n",match,s);
 		for (i=0;i<cur->n_sub;i++)
 			if (0==strcmp(cur->sub[i]->name,match))
 			{ /* found !! */

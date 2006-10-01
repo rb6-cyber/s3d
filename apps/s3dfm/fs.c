@@ -34,9 +34,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include <errno.h>
+#include <errno.h> /* errno */
 
-
+struct fs_error fs_err={0,0,NULL,NULL};
 
 
 /* generates the file list */
@@ -54,7 +54,7 @@ filelist *fl_new(char *path)
     if (n <= 2) /* . and .. is always included. */
 	{
 		if (n<0)
-	        perror("scandir");
+	        fs_error("fl_new():scandir()",path);
 	} else {
 		j=0;
 		fl->n=n-2 ; /* ignore . and .. */
@@ -73,7 +73,7 @@ filelist *fl_new(char *path)
 			free(namelist[i]);
 		}
 		if (j!=fl->n)
-		{
+		{ /* TODO: GUH! don't exit(-1) */
 			printf("assertion failed\n");
 			exit(-1);
 		}
@@ -177,16 +177,34 @@ int fs_copy(char *source, char *dest)
 			link(source,dest);
 			break;
 		default:
-			printf("atomic copy ... from %s to %s\n", source, dest);
-			if (NULL==(fps=fopen(source,"r"))) return(-1);
-			if (NULL==(fpd=fopen(dest,"w"))) return(-1);
+			printf("fs_copy -> atomic copy\n");
+			printf("open source...");
+			if (NULL==(fps=fopen(source,"r"))) 
+			{
+				fs_error("fs_copy():fopen(source)",source);
+				return(-1);
+			}
+			printf("ok\n");
+			printf("open dest...");
+			if (NULL==(fpd=fopen(dest,"w"))) 
+			{
+				fs_error("fs_copy():fopen(source)",source);
+				return(-1);
+			}
+			printf("ok\n");
 			/* TODO: overwrite protection etc */
+			printf("copy ...");
 		
 			while (!feof(fps))
 			{
+				printf(".");
+				errno=0;
 				n=fread(buf,1,1024,fps);
+				if (errno)	fs_error("fs_copy():fread(source)",source);
 				fwrite(buf,1,n,fpd);
+				if (errno)	fs_error("fs_copy():fwrite(source)",source);
 			}
+			printf("ok\n");
 			fclose(fps);
 			fclose(fpd);
 
@@ -203,6 +221,7 @@ int fs_fl_copy(filelist *fl, char *dest)
 	r=0;
 	for (i=0;i<fl->n;i++)
 	{
+		fl->p[i].state=STATE_INUSE;
 		bname=basename(fl->p[i].name);
 		sdest=malloc(strlen(dest)+strlen(bname)+2);
 
@@ -212,6 +231,7 @@ int fs_fl_copy(filelist *fl, char *dest)
 		r|=fs_copy(fl->p[i].name,sdest);
 
 		free(sdest);
+		fl->p[i].state=STATE_FINISHED;
 	}
 
 	return(r);
@@ -235,14 +255,14 @@ int fs_unlink(char *dest)
 			printf("removing %s\n",dest);
 			if (rmdir(dest)==-1)
 			{
-				perror("fs_fl_unlink(): rmdir()");
+				fs_error("fs_fl_unlink(): rmdir()",dest);
 				return(-1);
 			}
 		}
 	} else {
 		if (unlink(dest)==-1)
 		{
-			perror("fs_fl_unlink(): unlink()");
+			fs_error("fs_fl_unlink(): unlink()",dest);
 			return(-1);
 		}
 	}
@@ -255,8 +275,10 @@ int fs_fl_unlink(filelist *fl)
 	r=0;
 	for (i=0;i<fl->n;i++)
 	{
+		fl->p[i].state=STATE_INUSE;
 		printf("-> atomic unlink %s\n",fl->p[i].name);
 		r|=fs_unlink(fl->p[i].name);
+		fl->p[i].state=STATE_FINISHED;
 	}
 	return(r);
 
@@ -272,7 +294,7 @@ int fs_move(char *source, char *dest)
 				fs_unlink(source);
 				break;
 			default: 
-				perror("fs_move()");
+				fs_error("fs_move()",dest);
 				return(-1); /* can't help it */
 			
 		}
@@ -290,6 +312,7 @@ int fs_fl_move(filelist *fl, char *dest)
 	r=0;
 	for (i=0;i<fl->n;i++)
 	{
+		fl->p[i].state=STATE_INUSE;
 		bname=basename(fl->p[i].name);
 		sdest=malloc(strlen(dest)+strlen(bname)+2);
 
@@ -299,6 +322,7 @@ int fs_fl_move(filelist *fl, char *dest)
 		r|=fs_move(fl->p[i].name,sdest);
 
 		free(sdest);
+		fl->p[i].state=STATE_FINISHED;
 	}
 
 	return(r);
@@ -306,4 +330,14 @@ int fs_fl_move(filelist *fl, char *dest)
 	return(0);
 }
 
-
+/* write an error and wait for a reaction */
+int fs_error(char *message, char *file)
+{
+	fs_err.err=errno;
+	fs_err.message=message;
+	fs_err.file=file;
+	fs_err.active=1;
+	printf("[FS ERROR]: %s %s %s",message,file,strerror(errno));
+	while (fs_err.active); /* until situation clear, wait */
+	return(0);
+}

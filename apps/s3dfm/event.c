@@ -88,6 +88,14 @@ int event_key(struct s3d_evt *evt)
 		case S3DK_F7:
 				window_mkdir(path);
 				break;
+		case S3DK_F8:
+				window_unlink();
+				break;
+		case S3DK_F10:
+				/* some debugging stuff */
+				node_getbypath(path);
+				break;
+
 		case S3DK_UP:
 		case S3DK_LEFT:
 		case S3DK_RIGHT:

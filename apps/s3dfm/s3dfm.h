@@ -71,12 +71,22 @@ struct _t_node {
 };
 struct _t_file {
 	char *name;
-	int size;
+	int size,state;
 	struct _t_node *anode;
+};
+enum {
+	STATE_NONE, 		/* nothing happned */
+	STATE_INUSE, 		/* currently processing */
+	STATE_FINISHED, 	/* file operation finished */
+	STATE_CLEANED		/* cleaned (e.g. reordered the item */
 };
 struct _filelist {
 	struct _t_file *p;
 	int n;
+};
+struct fs_error {
+	int err,active;
+	char *message, *file;
 };
 typedef struct _filelist filelist;
 typedef struct _t_node   t_node;
@@ -85,6 +95,17 @@ typedef struct _t_file	 t_file;
 
 extern t_node root,cam; /* some global objects */
 extern t_node *focus;	/* the focused object */
+extern struct fs_error fs_err;
+
+enum {
+	TYPE_NONE,
+	TYPE_COPY,
+	TYPE_MOVE,
+	TYPE_UNLINK,
+	TYPE_FINISHED
+};
+
+extern int fs_lock;
 
 /* animation.c */
 int 		 ani_onstack(t_node *f);
@@ -110,6 +131,7 @@ void 		 box_focus_color(t_node *dir, int on);
 /* dialog.c */
 void		 close_win(s3dw_widget *button);
 void		 window_help();
+void 		 window_fs(s3dw_widget *button);
 void		 window_fs_another();
 void		 window_fs_nothing();
 void		 window_fs_errno(char *errmsg);
@@ -119,6 +141,8 @@ void		 window_fs_mkdir(s3dw_widget *button);
 void		 window_mkdir(char *path);
 void		 window_move(char *path);
 void		 window_info(char *path);
+void		 window_fsani();
+void 		 window_unlink();
 /* event.c */
 int 		 event_click(struct s3d_evt *evt);
 int			 event_key(struct s3d_evt *evt);
@@ -138,6 +162,7 @@ void	 	 fs_approx(char *source, int *files, int *dirs, int *bytes);
 int			 fs_copy(char *source, char *dest);
 int			 fs_move(char *source, char *dest);
 int			 fs_unlink(char *dest);
+int 		 fs_error(char *message, char *file);
 /* icon.c */
 int 		 icon_draw(t_node *dir);
 int 		 icon_undisplay(t_node *dir);

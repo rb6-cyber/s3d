@@ -32,6 +32,7 @@ void mainloop()
 {
 	ani_mate();
 	s3dw_ani_mate();
+	window_fsani();
 	nanosleep(&t,NULL); 
 }
 int main (int argc, char **argv)

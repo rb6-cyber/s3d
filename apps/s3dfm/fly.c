@@ -51,7 +51,7 @@ int fly_set_absolute_position(t_node *node)
 	node->py=work.py;
 	node->pz=work.pz;
 	node->scale=work.scale;
-	printf("node coordinates: %3.3f %3.3f %3.3f %3.3f\n",node->px,node->py,node->pz,node->scale);
+/*	printf("node coordinates: %3.3f %3.3f %3.3f %3.3f\n",node->px,node->py,node->pz,node->scale);*/
 	return(0);
 }
 /* create a copy of *node as an icon (block) which can be moved for animation ... */

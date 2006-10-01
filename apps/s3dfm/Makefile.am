@@ -10,6 +10,6 @@ s3dfm_SOURCES =  \
 	string.c fly.c focus.c
 
 s3dfm_CPPFLAGS=		-I${top_srcdir}/libs3d -I${top_srcdir}/libs3dw
-s3dfm_LDADD=		${top_builddir}/libs3d/libs3d.la ${top_builddir}/libs3dw/libs3dw.la
+s3dfm_LDADD=		${top_builddir}/libs3d/libs3d.la ${top_builddir}/libs3dw/libs3dw.la -lpthread
 
 
