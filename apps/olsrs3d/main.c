@@ -35,6 +35,7 @@
 #include <math.h>		 /* sqrt() */
 #include <getopt.h>		 /* getopt() */
 #include <stdlib.h>		 /* exit() */
+#include <stdint.h>		 /* uintXX_t */
 #include "olsrs3d.h"
 #include "search.h"
 
@@ -905,7 +906,7 @@ int object_click(struct s3d_evt *evt)
 		return;
 	}*/
 
-	oid=(int)*((unsigned long *)evt->buf);
+	oid=(int)*((uint32_t *)evt->buf);
 
 
 	if ( ( get_search_status() != FOLLOW ) && ( Last_Click_Oid == oid ) && ( Last_Click_Time + 250 > get_time() ) ) {

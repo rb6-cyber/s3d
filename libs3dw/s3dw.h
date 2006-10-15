@@ -21,6 +21,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <stdint.h>  /* [u]intXX_t type definitions*/
 
 /* we want this widget visible, as long as the widgets below are also visible. 
  * on for all widgets, except surfaces which have to be switched visible 
@@ -70,7 +71,7 @@ struct _s3dw_widget {
 	float 		 as;			/* current scale factor */
 	float 		 arx,ary,arz;   /* current rotation */
 	float 		 width,height;	/* width and height of the widget, outer size */
-	unsigned long oid;			/* the main object which is used for transformations etc ...*/
+	uint32_t	 oid;			/* the main object which is used for transformations etc ...*/
 	/* public */
 	float 		 x,y,z;			/* position, relative to the surface usually */
 	float 		 s;				/* scale factor */
@@ -82,7 +83,7 @@ struct _s3dw_button {
 	/* private */
 	s3dw_widget 	 widget;
 	char 			*text;
-	unsigned long    oid_text;
+	uint32_t  		  oid_text;
 	/* public */
 	s3dw_callback 	 onclick;
 };
@@ -98,7 +99,7 @@ struct _s3dw_input {
 	/* private */
 	s3dw_widget 	 widget;
 	char 			*text;
-	unsigned long    oid_text;
+	uint32_t   	 oid_text;
 	/* public */
 	s3dw_callback 	 onclick;
 	s3dw_callback 	 onedit;
@@ -107,8 +108,8 @@ struct _s3dw_input {
 struct _s3dw_surface {
 	/* private */
 	s3dw_widget 		  widget;
-	unsigned long		  oid_title;
-	unsigned long		  oid_tbar;
+	uint32_t			  oid_title;
+	uint32_t			  oid_tbar;
 	char				 *title;
 };
 

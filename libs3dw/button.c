@@ -33,7 +33,7 @@ void s3dw_button_draw(s3dw_widget *widget)
 	s3dw_button *button=(s3dw_button *)widget;
 	float length;
 	float vertices[8*3];
-	unsigned long polygons[10*4]={
+	u_int32_t polygons[10*4]={
 			0,4,5,0,
 			0,5,1,0,
 			1,5,6,0,
@@ -125,7 +125,7 @@ int s3dw_button_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 }
 
 /* handle click on a button */
-int s3dw_button_event_click(s3dw_widget *widget, unsigned long oid)
+int s3dw_button_event_click(s3dw_widget *widget, u_int32_t oid)
 {
 	s3dw_button *button=(s3dw_button *)widget;
 	if ((button->oid_text==oid) || (widget->oid==oid))

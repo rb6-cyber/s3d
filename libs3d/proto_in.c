@@ -111,10 +111,10 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 		case S3D_P_MCP_OBJECT:
 			if (length==sizeof(struct mcp_object))
 			{
-/* 				oid=htonl(*((unsigned long *)buf)); */
+/* 				oid=htonl(*((uint32_t *)buf)); */
 				if (NULL!=(s3devt=malloc(sizeof(struct s3d_evt))))
 				{
-/* 					*((unsigned long *)buf)=oid;  / *  reuse buffer ... * / */
+/* 					*((uint32_t *)buf)=oid;  / *  reuse buffer ... * / */
 					s3devt->event=S3D_MCP_OBJECT;
 					s3devt->length=length;
 					mo=(struct mcp_object *)buf;
@@ -131,10 +131,10 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 		case S3D_P_S_OINFO:
 			if (length==sizeof(struct s3d_obj_info))
 			{
-/* 				oid=htonl(*((unsigned long *)buf)); */
+/* 				oid=htonl(*((uint32_t *)buf)); */
 				if (NULL!=(s3devt=malloc(sizeof(struct s3d_evt))))
 				{
-/* 					*((unsigned long *)buf)=oid;  / *  reuse buffer ... * / */
+/* 					*((uint32_t *)buf)=oid;  / *  reuse buffer ... * / */
 					s3devt->event=S3D_EVENT_OBJ_INFO;
 					s3devt->length=length;
 					oi=(struct s3d_obj_info *)buf;

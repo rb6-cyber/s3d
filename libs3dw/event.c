@@ -27,7 +27,7 @@
 extern s3dw_widget *_s3dw_cam;
 int s3dw_handle_click(struct s3d_evt *evt)
 {
-	unsigned long oid=*((unsigned long *)evt->buf);
+	uint32_t oid=*((uint32_t *)evt->buf);
 	return(s3dw_widget_event_click(s3dw_getroot(),oid));
 }
 int s3dw_handle_key(struct s3d_evt *evt)

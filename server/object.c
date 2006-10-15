@@ -36,7 +36,7 @@ extern t_mtrx Identity;
 extern int focus_oid;
 
 
-static void obj_update_tex(struct t_tex *tex,unsigned short x,unsigned short y,unsigned short w,unsigned short h,unsigned char *pixbuf);
+static void obj_update_tex(struct t_tex *tex,u_int16_t x,u_int16_t y,u_int16_t w,u_int16_t h,u_int8_t *pixbuf);
 void obj_sys_update(struct t_process *p, uint32_t oid);
 
 /*  debugging function for objects, prints out some stuff known about it... */
@@ -871,7 +871,7 @@ int obj_load_mat(struct t_process *p, uint32_t oid, float *x, uint32_t start, ui
 	return(0);
 }
 /* the interal texture updating function ... this is for opengl*/
-static void obj_update_tex(struct t_tex *tex,unsigned short x,unsigned short y,unsigned short w,unsigned short h,unsigned char *pixbuf)
+static void obj_update_tex(struct t_tex *tex,u_int16_t x,u_int16_t y,u_int16_t w,u_int16_t h,u_int8_t *pixbuf)
 {
 	GLuint t;
 	if ((t=tex->gl_texnum)!=-1)

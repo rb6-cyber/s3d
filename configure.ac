@@ -44,7 +44,7 @@ AC_TYPE_SIGNAL
 AC_CHECK_FUNCS([select socket strerror strtod strtol shmget signal]) # XXX: the previous test should have established the existence of signal() already. just be safe here.
 
 WARNS=""
-CFLAGS="$CFLAGS $X_CFLAGS"
+CFLAGS="$CFLAGS $X_CFLAGS -Wall -pedantic"
 LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS"
 
 ###
@@ -55,7 +55,7 @@ DEVEL_LDFLAGS=
 # XXX: switch default and help string for releases.
 AC_ARG_ENABLE([devel], AS_HELP_STRING([--disable-debug],[Disables debugging flags]), [enable_debug=$enableval], [enable_debug=yes])
 if test x$enable_debug = xyes; then
-	DEVEL_CFLAGS="$DEVEL_CFLAGS -Wall -pedantic -ansi -ggdb"
+	DEVEL_CFLAGS="$DEVEL_CFLAGS -ggdb -DDEBUG=LOW"
 	DEVEL_LDFLAGS="$DEVEL_LDFLAGS -ggdb"
 fi
 
@@ -65,8 +65,10 @@ if test x$enable_profiling = xyes; then
 	DEVEL_LDFLAGS="$DEVEL_LDFLAGS -pg"
 fi
 
-AC_SUBST(DEVEL_CFLAGS)
-AC_SUBST(DEVEL_LDFLAGS)
+CFLAGS="$CFLAGS $DEVEL_CFLAGS"
+LDFLAGS="$LDFLAGS $DEVEL_LDFLAGS"
+dnl AC_SUBST(DEVEL_CFLAGS)
+dnl AC_SUBST(DEVEL_LDFLAGS)
 dnl ##################################### SERVER #######################################
 AC_CHECK_LIBM
 AC_SUBST(LIBM)

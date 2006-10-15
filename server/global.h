@@ -228,7 +228,7 @@ int shm_writen(struct buf_t *rb,uint8_t *buf, int n);
 int shm_readn(struct buf_t *rb,uint8_t *buf, int n);
 int shm_prot_com_in(struct t_process *p);
 /* shm_ringbuf.c */
-void ringbuf_init(char *data,unsigned long init_size);
+void ringbuf_init(char *data,uint32_t init_size);
 int shm_write(struct buf_t *rb,char *buf, int n);
 int shm_read(struct buf_t *rb,char *buf, int n);
 /*  proto.c */

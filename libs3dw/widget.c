@@ -47,7 +47,7 @@ s3dw_widget *s3dw_widget_new(s3dw_widget *widget)
 	return(widget);
 }
 /* widget clicked, call specific function and check kids */
-int s3dw_widget_event_click(s3dw_widget *widget, unsigned long oid)
+int s3dw_widget_event_click(s3dw_widget *widget, uint32_t oid)
 {
 	int i;
 	s3dprintf(VLOW,"processing click event for widget %010p of type %d, oid %d (%d), subobjects: %d",widget,widget->type, widget->oid, oid, widget->nobj);

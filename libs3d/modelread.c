@@ -128,10 +128,10 @@ int model_load(char *file)
 	struct material2texture *mat2tex;
 	int						 i, j, k, material_count, texture_count, voff,obj_id;
 #define 					PMAX	100
-	unsigned long 			 polybuf[PMAX * 4],npoly,oldflags;
+	uint32_t 			 polybuf[PMAX * 4],npoly,oldflags;
 	float					 normalbuf[PMAX * 9],texcoordbuf[PMAX * 6];
 	float 					 swaph;				/* swap helper */
-	unsigned char 			*s3d_pixeldata = NULL;
+	uint8_t 			*s3d_pixeldata = NULL;
 
 	context = g3d_context_new();
 	obj_id=-1;
@@ -181,7 +181,7 @@ int model_load(char *file)
 						/* reorder pixeldata - s3d wants rgba */
 						if ( s3d_pixeldata != NULL ) free( s3d_pixeldata );
 
-						s3d_pixeldata = malloc( sizeof( unsigned char ) * face->tex_image->width * face->tex_image->height * 32 );
+						s3d_pixeldata = malloc( sizeof( uint8_t ) * face->tex_image->width * face->tex_image->height * 32 );
 
 						if ( s3d_pixeldata == NULL ) {
 							errs("model_load()", "Sorry - you ran out of memory !\n" );

@@ -25,6 +25,7 @@
 #include <s3d.h>
 #include <s3d_keysym.h>
 #include "dot_mcp.h"
+#include <stdint.h>	 /*  uint32_t */
 #include <unistd.h>  /*  sleep() */
 #include <stdlib.h>  /*  free(), malloc() */
 #include <string.h>  /*  strncpy() */
@@ -76,7 +77,7 @@ int greentorus()
 	float ia,ja,iap,jap;
 	float v[SIDES*RINGS*3];
 	float n[SIDES*12]; /* normals */
-	unsigned long l[SIDES*RINGS*6];
+	uint32_t l[SIDES*RINGS*6];
 	o=s3d_new_object();
 	R=100; /* outer radius */
 	r=100; /* inner radius */

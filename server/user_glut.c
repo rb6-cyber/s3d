@@ -26,7 +26,7 @@
 #include <GL/glut.h> 	 /*  all the glut functions */
 #include <s3d_keysym.h> /* our very own (haha) keysyms */
 /*  local prototypes */
-void keyboard(unsigned char key, int x, int y);
+void keyboard(uint8_t key, int x, int y);
 void special(int skey, int x, int y);
 void mouse_motion(int x, int y);
 void passive_mouse_motion(int x, int y);
@@ -43,14 +43,14 @@ int user_init_glut()
 	return(0);
 }
 
-void keyboard(unsigned char key, int x, int y)
+void keyboard(uint8_t key, int x, int y)
 {
 	user_key(key,key,0,0);
 	user_key(key,key,0,1);
 }
 void special(int skey, int x, int y)
 {
-	unsigned short mkey;
+	uint16_t mkey;
 	switch (skey) /* handle special keys */
 	{
 		case GLUT_KEY_F1:		mkey=S3DK_F1;	break;

@@ -46,7 +46,7 @@ void s3dw_surface_draw(s3dw_widget *widget)
 		0,1,1
 	};
 	float sver[8*3], tver[8*3];
-	unsigned long polygon[10*4]={
+	uint32_t polygon[10*4]={
 		0,1,2,0,
 		0,2,3,0,
 		1,5,6,0,
@@ -58,7 +58,7 @@ void s3dw_surface_draw(s3dw_widget *widget)
 		5,4,7,0,
 		5,7,6,0
 	};
-	unsigned long tpol[10*4];
+	uint32_t tpol[10*4];
 	int i;
 
 	widget->oid=s3d_new_object();
@@ -180,7 +180,7 @@ int s3dw_surface_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 	return(0);
 }
 /* test widgets of the surface for clicks */
-int s3dw_surface_event_click(s3dw_widget *widget, unsigned long oid)
+int s3dw_surface_event_click(s3dw_widget *widget, uint32_t oid)
 {
 	s3dw_surface *surface=(s3dw_surface *)widget;
 	if (widget->oid==oid)

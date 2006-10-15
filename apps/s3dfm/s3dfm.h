@@ -24,6 +24,7 @@
 
 #include <s3d.h>
 #include <s3dw.h>
+#include <stdlib.h>		/* uintXX_t */
 #define T_DUNO		0
 #define T_FOLDER	1
 #define T_TYPENUM	2

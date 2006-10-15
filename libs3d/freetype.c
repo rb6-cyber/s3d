@@ -87,7 +87,7 @@ int s3d_ft_load_font()
 		return(-1);
 	}
 	face_init=0;
-	error= FT_New_Memory_Face(library,(unsigned char *)memory_font,memory_font_size,0,&face);
+	error= FT_New_Memory_Face(library,(uint8_t *)memory_font,memory_font_size,0,&face);
 	if (error)
 	{
 		errds(VHIGH,"s3d_ft_load_font():FT_New_Memory_Face","can't load font : (%d) %s",ft_errors[error].err_code,ft_errors[error].err_msg);
@@ -119,7 +119,7 @@ int _s3d_clear_tessbuf()
 
 /* renders a character with seidels algorithm and stores it in the tess_buf for later
  * usage */
-int _s3d_add_tessbuf(unsigned short a)
+int _s3d_add_tessbuf(uint16_t a)
 {
 	float norm,ar,xa,ya;
 	int i,j,k,c,n,start,outl,s,e;
@@ -255,7 +255,7 @@ int _s3d_add_tessbuf(unsigned short a)
 			ncntr[c]=cntr[perm[c]];
 		}
 		n=0;
-		tess_buf[a].pbuf=malloc(sizeof(unsigned long)*4*(face->glyph->outline.n_points+2*face->glyph->outline.n_contours)); 
+		tess_buf[a].pbuf=malloc(sizeof(uint32_t)*4*(face->glyph->outline.n_points+2*face->glyph->outline.n_contours)); 
 		k=0;
 		for (c=ncontours-1;c>=0;c--)
 		{
@@ -281,17 +281,17 @@ int _s3d_add_tessbuf(unsigned short a)
 	return(0);
 }
 
-int _s3d_draw_tessbuf(int oid,unsigned short a,int *voff, float *xoff)
+int _s3d_draw_tessbuf(int oid,uint16_t a,int *voff, float *xoff)
 {
 	float *vbuf;
-	unsigned long *pbuf;
+	uint32_t *pbuf;
 	int i;
 	if (!(tess_buf[a].vbuf && tess_buf[a].pbuf))
 		_s3d_add_tessbuf(a);
 	vbuf=malloc(sizeof(float)*3*tess_buf[a].vn);
-	pbuf=malloc(sizeof(unsigned long)*4*tess_buf[a].pn);
+	pbuf=malloc(sizeof(uint32_t)*4*tess_buf[a].pn);
 	memcpy(vbuf,tess_buf[a].vbuf,sizeof(float)*3*tess_buf[a].vn);
-	memcpy(pbuf,tess_buf[a].pbuf,sizeof(unsigned long)*4*tess_buf[a].pn);
+	memcpy(pbuf,tess_buf[a].pbuf,sizeof(uint32_t)*4*tess_buf[a].pn);
 	 /*  prepare the buffs ... */
 /* 	s3dprintf(LOW,"drawing [%c] (%d vertices, %d polys",a,tess_buf[a].vn,tess_buf[a].pn); */
 	for (i=0;i<tess_buf[a].vn;i++)
@@ -383,7 +383,7 @@ int s3d_draw_string( char *str,float *xlen)
 	voff=0; 
 	len=strlen(str);
 	for (i=0;i<len; i++)
-		_s3d_draw_tessbuf(f_oid,(unsigned char )str[i],&voff,&xoff);
+		_s3d_draw_tessbuf(f_oid,(uint8_t )str[i],&voff,&xoff);
 	 /*  s3d_ft_quit(); */
 	if (xlen!=NULL) *xlen=xoff;
 	return(f_oid);

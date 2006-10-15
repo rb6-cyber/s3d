@@ -55,7 +55,7 @@ int user_main() {
 	}
 	return(0);
 }
-void user_key(unsigned short key, unsigned short unicode, unsigned short mod, int state)
+void user_key(uint16_t key, uint16_t unicode, uint16_t mod, int state)
 {
 	event_key_pressed(key,unicode,mod,state);
 }

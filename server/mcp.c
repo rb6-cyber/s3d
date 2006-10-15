@@ -87,7 +87,7 @@ int mcp_rep_object(uint32_t mcp_oid)
 /* tells the mcp that some program vanished ... */
 int mcp_del_object(uint32_t mcp_oid)
 {
-	unsigned long oid=htonl(mcp_oid);
+	uint32_t oid=htonl(mcp_oid);
 	if (mcp_oid==focus_oid)
 	{
 		s3dprintf(MED,"lost the focus of mcp-oid %d",mcp_oid);

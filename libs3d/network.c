@@ -37,14 +37,14 @@ int con_type=CON_NULL;
 static int _s3d_net_receive();
 #endif
 
-int net_send(unsigned char opcode, char *buf, unsigned short length)
+int net_send(u_int8_t opcode, char *buf, u_int16_t length)
 {
 	char *ptr;
 /* 	char *buff; */
-	char buff[65539];  /*  unsigned short really shouldn't be bigger ;) */
+	char buff[65539];  /*  u_int16_t really shouldn't be bigger ;) */
 	*(buff)=opcode; 
 	ptr=buff+1;
-	*((unsigned short *) ptr)=htons(length);
+	*((u_int16_t *) ptr)=htons(length);
 	if (length!=0)
 		memcpy(buff+3,buf,length);
 	switch (con_type)

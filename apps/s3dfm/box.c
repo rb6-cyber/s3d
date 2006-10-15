@@ -133,7 +133,7 @@ int box_buildblock(t_node *dir)
 			  0.6, BHH    , 1.0,
 			  0.6, BHH-0.2, 1.0
 			 };
-	unsigned long bar_poly[]={
+	uint32_t bar_poly[]={
 		4,5,6,0,
 		4,6,7,0,
 		3,7,4,0,
@@ -197,7 +197,7 @@ int box_buildblock(t_node *dir)
 						0.5,0.3,0.3
 					);
 	s3d_push_vertices(dir->objs.close,xvertices,sizeof(xvertices)/(3*sizeof(float)));
-	s3d_push_polygons(dir->objs.close,bar_poly,sizeof(bar_poly)/(sizeof(unsigned long)*4));
+	s3d_push_polygons(dir->objs.close,bar_poly,sizeof(bar_poly)/(sizeof(uint32_t)*4));
 	s3d_link(dir->objs.close,dir->oid);
 	
 	dir->objs.select=s3d_new_object();
@@ -207,7 +207,7 @@ int box_buildblock(t_node *dir)
 						0.1,0.1,0.3
 					);
 	s3d_push_vertices(dir->objs.select,svertices,sizeof(svertices)/(3*sizeof(float)));
-	s3d_push_polygons(dir->objs.select,bar_poly,sizeof(bar_poly)/(sizeof(unsigned long)*4));
+	s3d_push_polygons(dir->objs.select,bar_poly,sizeof(bar_poly)/(sizeof(uint32_t)*4));
 	s3d_link(dir->objs.select,dir->oid);
 	
 	/* draw the title string */
@@ -219,7 +219,7 @@ int box_buildblock(t_node *dir)
 						0.3,0.3,0.3
 					);
 	s3d_push_vertices(dir->objs.title,tvertices,sizeof(tvertices)/(3*sizeof(float)));
-	s3d_push_polygons(dir->objs.title,bar_poly,sizeof(bar_poly)/(sizeof(unsigned long)*4));
+	s3d_push_polygons(dir->objs.title,bar_poly,sizeof(bar_poly)/(sizeof(uint32_t)*4));
 	s3d_link(dir->objs.title,dir->oid);
 	dir->objs.titlestr=s3d_draw_string(dots_at_start(fullname,30,dir),&len);
 	if (len>(1.6*5.0))		s3d_scale(dir->objs.titlestr,1.6/len);

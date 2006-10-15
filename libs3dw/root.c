@@ -38,7 +38,7 @@ void s3dw_root_destroy(s3dw_widget *widget)
 void s3dw_nothing(s3dw_widget *widget)
 {
 }
-int s3dw_click_nothing(s3dw_widget *widget, unsigned long dummy)
+int s3dw_click_nothing(s3dw_widget *widget, uint32_t dummy)
 {
 	return(0);
 }

@@ -30,10 +30,10 @@
 #include <string.h> /* strdup(),strlen() */
 #include <ctype.h>	/* isprint */
 
-unsigned long s3dw_input_draw_string(s3dw_widget *widget)
+uint32_t s3dw_input_draw_string(s3dw_widget *widget)
 {
 	s3dw_input *input=(s3dw_input *)widget;
-	unsigned long oid_text;
+	uint32_t oid_text;
 	int i;
 	float tlen;
 	if (widget->width<1) return(-1);
@@ -53,7 +53,7 @@ void s3dw_input_draw(s3dw_widget *widget)
 	s3dw_input *input=(s3dw_input *)widget;
 	float length;
 	float vertices[12*3];
-	unsigned long polygons[18*4]={
+	uint32_t polygons[18*4]={
 			0,4,5,1,
 			0,5,1,1,
 			1,5,6,1,
@@ -155,7 +155,7 @@ void s3dw_input_destroy(s3dw_widget *widget)
 void s3dw_input_change_text(s3dw_input *input, char *text)
 {
 	s3dw_widget *widget=(s3dw_widget *)input;
-	unsigned long oid_text;
+	uint32_t oid_text;
 	/* redraw the text ... */
 	free(input->text);
 	input->text=strdup(text);
@@ -205,7 +205,7 @@ int s3dw_input_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 }
 
 
-int s3dw_input_event_click(s3dw_widget *widget, unsigned long oid)
+int s3dw_input_event_click(s3dw_widget *widget, uint32_t oid)
 {
 	s3dw_input *input=(s3dw_input *)widget;
 	if ((input->oid_text==oid) || (widget->oid==oid))

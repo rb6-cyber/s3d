@@ -145,7 +145,7 @@ int _s3d_tcp_net_receive()
 	struct timeval		 tv;		 /*  time structure */
 	int 				 found=0;
 	char				 opcode,*buf;
-	unsigned short		 length;
+	u_int16_t		 length;
 	
 	
 	if (s3d_socket!=-1)

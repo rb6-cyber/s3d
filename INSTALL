@@ -29,7 +29,7 @@ to setup the GNU autotools first. The following assumes that
 
 * automake 1.9 (1.4 is too old!)
 * autoconf 2.59 
-* libtool
+* libtool 1.5
 
 are available and installed into a directory listed in the $PATH
 environment variable.

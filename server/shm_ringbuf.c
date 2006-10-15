@@ -101,7 +101,7 @@ int shm_read(struct buf_t *rb,char *buf, int n)
 	if (rb->start>=rb->bufsize) rb->start-=rb->bufsize;
 	return(mn);
 }
-void ringbuf_init(char *data,unsigned long init_size)
+void ringbuf_init(char *data,uint32_t init_size)
 {
 	struct buf_t *ringbuf=(struct buf_t *)data;
 /*	ringbuf=malloc(init_size); */

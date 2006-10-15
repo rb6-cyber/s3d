@@ -85,7 +85,7 @@ int s3dw_label_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 	return(0);
 }
 /* handle click events */
-int s3dw_label_event_click(s3dw_widget *widget, unsigned long oid)
+int s3dw_label_event_click(s3dw_widget *widget, uint32_t oid)
 {
 	s3dw_label *label=(s3dw_label *)widget;
 	if (widget->oid==oid)

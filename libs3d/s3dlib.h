@@ -65,7 +65,7 @@ int _queue_new_object(unsigned int oid);
 unsigned int _queue_want_object();
 int _queue_quit();
 /*  network.c */
-int net_send(unsigned char opcode, char *buf, unsigned short length);
+int net_send(uint8_t opcode, char *buf, uint16_t length);
 int s3d_net_init(char *urlc);
 #ifdef TCP
 /* tcp.c */
@@ -94,7 +94,7 @@ int shm_readn(char *str,int s);
 struct t_buf
 {
 	float *vbuf;
-	unsigned long *pbuf;
+	uint32_t *pbuf;
 	int pn,vn;
 	float xoff;
 };
