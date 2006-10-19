@@ -1,4 +1,4 @@
-PYTHON_MOD=s3d.so
+PYTHON_MOD=_s3d.so
 MODS=$(PYTHON_MOD)
 
 default:	all
