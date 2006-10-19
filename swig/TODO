@@ -1,0 +1,2 @@
+- do something[tm] about the callbacks and structs
+- build some wrappers, remove s3d_ wrappers, we have proper namespaces in python/perl
