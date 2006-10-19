@@ -8,4 +8,4 @@ $(PYTHON_MOD):	s3d.i
 	 gcc -fPIC -c s3d_wrap.c -I/usr/include/python2.3/
 	 gcc -shared s3d_wrap.o -ls3d -o $(PYTHON_MOD)
 clean:
-	rm -f $(MODS) *.o *.py s3d_wrap.c
+	rm -f $(MODS) *.o s3d_wrap.c s3d.py s3d.pyc
