@@ -73,6 +73,7 @@ static int parse_args(int *argc, char ***argv)
 		{"s3d-help",0,0,'h'},
 		{0,0,0,0}
 	};
+	if ((argc==NULL) || (argv==NULL)) return(0); /* nothing to parse */
 	while (-1!=(c=getopt_long(*argc,*argv,"?h",long_options,&lopt_idx)))
 	{
 		switch (c)
