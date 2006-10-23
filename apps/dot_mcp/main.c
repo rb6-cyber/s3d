@@ -115,8 +115,8 @@ int greentorus()
 			n[j*12 +6] =R*r*cos(ja)*    cos(ia) + r*r*cos(ja)* cos(ia)*cos(ia);
 			n[j*12 +7] =R*r*sin(ja)*    cos(ia) + r*r*sin(ja)* cos(ia)*cos(ia);
 			n[j*12 +8] =R*r*sin(ia) 			+ r*r*sin(ia)* cos(ia);
-			n[j*12 +9] =R*r*cos(ja)*    cos(iap)+ r*r*cos(ja)* cos(ia)*cos(iap);
-			n[j*12 +10]=R*r*sin(ja)*    cos(iap)+ r*r*sin(ja)* cos(ia)*cos(iap);
+			n[j*12 +9] =R*r*cos(ja)*    cos(iap)+ r*r*cos(ja)* cos(iap)*cos(iap);
+			n[j*12 +10]=R*r*sin(ja)*    cos(iap)+ r*r*sin(ja)* cos(iap)*cos(iap);
 			n[j*12 +11]=R*r*sin(iap) 			+ r*r*sin(iap)*cos(iap);
 		}
 		s3d_push_vertices(o,&v[i*SIDES*3],SIDES);
