@@ -15,4 +15,4 @@ $(PERL_MOD):	s3d.i
 	gcc -fPIC -c s3d_wrap.c  `perl -MExtUtils::Embed -e ccopts`
 	ld -G  s3d_wrap.o -lperl -ls3d -o $(PERL_MOD)
 clean:
-	rm -f $(MODS) *.o s3d_wrap.c s3d.py s3d.pyc
+	rm -f $(MODS) *.o s3d_wrap.c s3d.py s3d.pyc s3d.pm
