@@ -4,6 +4,8 @@ MODS=$(PYTHON_MOD) $(PERL_MOD)
 
 default:	all
 all:		$(MODS)
+python:		$(PYTHON_MOD)
+perl:		$(PERL_MOD)
 $(PYTHON_MOD):	s3d.i
 	 swig -python s3d.i
 	 gcc -fPIC -c s3d_wrap.c -I/usr/include/python2.3/

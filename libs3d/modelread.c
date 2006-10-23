@@ -126,7 +126,7 @@ int model_load(char *file)
 	G3DFace 				*face;
 	GSList 					*oitem, *oface;
 	struct material2texture *mat2tex;
-	int						 i, j, k, material_count, texture_count, voff,obj_id;
+	int						 j, k, material_count, texture_count, voff,obj_id;
 #define 					PMAX	100
 	uint32_t 			 polybuf[PMAX * 4],npoly,oldflags;
 	float					 normalbuf[PMAX * 9],texcoordbuf[PMAX * 6];

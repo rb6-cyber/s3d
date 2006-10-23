@@ -32,7 +32,7 @@ int i,oid;
 void mainloop()
 {
 	s3d_rotate(oid,0,i,0);
-	i++;
+	i=(i+1)%360;
 	nanosleep(&t,NULL); 
 }
 int object_click(struct s3d_evt *evt)
@@ -51,6 +51,7 @@ int main (int argc, char **argv)
 	if (!s3d_init(&argc,&argv,"modelloader"))	
 	{
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
+		i=0;
 	    if (-1!=(oid=s3d_import_model_file(argv[1])))
 		{
 		    s3d_flags_on(oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);

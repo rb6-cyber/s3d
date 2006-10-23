@@ -1,6 +1,7 @@
 %module s3d
 typedef unsigned int uint32_t;
 %inline %{
+#include <stdint.h>
 int s3dpy_init(char *name)
 {
 	return s3d_init(NULL,NULL,name);
