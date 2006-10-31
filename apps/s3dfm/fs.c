@@ -342,9 +342,9 @@ int fs_error(char *message, char *file)
 	fs_err.err=errno;
 	fs_err.message=message;
 	fs_err.file=file;
-	fs_err.active=1;
+	fs_err.state=ESTATE_RISE;
 	printf("[FS ERROR]: %s %s %s",message,file,strerror(errno));
-	while (fs_err.active) 
+	while (fs_err.state!=ESTATE_NONE) 
 		nanosleep(&t,NULL);  /* until situation clear, wait (and don't waste cpu-time) */
 	return(0);
 }

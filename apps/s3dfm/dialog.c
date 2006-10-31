@@ -110,6 +110,12 @@ void window_fs_nothing()
 	button->onclick=close_win;
 	s3dw_show(S3DWIDGET(infwin));
 }
+void window_fs_confirm_error(s3dw_widget *button)
+{
+	fs_err.state=ESTATE_NONE;
+	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
+	
+}
 void window_fs_errno(char *errmsg)
 {
 	s3dw_surface *infwin;
@@ -352,37 +358,39 @@ void window_fsani()
 			dummy.pz=0;
 			dummy.scale=0.01;
 		}
-
-		for (i=0;i<fp->n;i++) {
-			if (fp->p[i].state==STATE_FINISHED)
-			{ /* we can go and clean up now. */
-				if (NULL!=(node=node_getbypath(fp->p[i].name)))
-				{
-					printf("[CLEANUP] for node %s (%s)\n",node->name,fp->p[i].name);
-					node->detached=0;
-					if (node->parent!=NULL)
+		if (fp!=NULL) {
+			for (i=0;i<fp->n;i++) {
+				if (fp->p[i].state==STATE_FINISHED)
+				{ /* we can go and clean up now. */
+					if (NULL!=(node=node_getbypath(fp->p[i].name)))
 					{
-						parse_dir(node->parent);
-						switch (node->disp)
+						printf("[CLEANUP] for node %s (%s)\n",node->name,fp->p[i].name);
+						node->detached=0;
+						if (node->parent!=NULL)
 						{
-							case D_ICON:	box_order_icons(node->parent);					break;
-							case D_DIR:		box_order_subdirs(node->parent);				break;
+							parse_dir(node->parent);
+							switch (node->disp)
+							{
+								case D_ICON:	box_order_icons(node->parent);					break;
+								case D_DIR:		box_order_subdirs(node->parent);				break;
+							}
 						}
-					}
+					} else 
+						printf("node %s already vanished ...\n",fp->p[i].name);
+							
+					fp->p[i].state=STATE_CLEANED;
 				}
-				fp->p[i].state=STATE_CLEANED;
-			}
-			if (fp->p[i].state>STATE_NONE)
-			{
-				if (destnode!=NULL)
+				if (fp->p[i].state>STATE_NONE)
 				{
-					fp->p[i].anode->px=dummy.px;
-					fp->p[i].anode->py=dummy.py;
-					fp->p[i].anode->pz=dummy.pz;
-					ani_add(fp->p[i].anode);
+					if (destnode!=NULL)
+					{
+						fp->p[i].anode->px=dummy.px;
+						fp->p[i].anode->py=dummy.py;
+						fp->p[i].anode->pz=dummy.pz;
+						ani_add(fp->p[i].anode);
+					}
+
 				}
-
-
 			}
 		}
 		if (fs_lock==TYPE_FINISHED)	{
@@ -400,16 +408,22 @@ void window_fsani()
 					box_order_icons(destnode);	
 				}
 			destnode=NULL;
-
 		}
-		if (fs_err.active)
+		if (fs_err.state==ESTATE_RISE)
 		{
+			s3dw_surface *infwin;
+			s3dw_button  *button;
 			char errmsg[M_DIR];
-			/* TODO: draw a window, wait for input */
+			float l;
+			fs_err.state=ESTATE_WAIT_FOR_CONFIRM;
 			snprintf(errmsg,M_DIR,"Error \"%s\" on %s",fs_err.message,fs_err.file);
-			errno=fs_err.err;
-			window_fs_errno(errmsg);
-			fs_err.active=0;
+			l=s3d_strlen(errmsg)+2;
+			infwin=s3dw_surface_new("Error",l,8);
+			s3dw_label_new(infwin,errmsg,1,2);
+			button=s3dw_button_new(infwin,"OK",l/2-1,5);
+			button->onclick=window_fs_confirm_error;
+			s3dw_show(S3DWIDGET(infwin));
+			printf("fs_err is active ... message: %s\n",errmsg);
 		}
 	}
 }

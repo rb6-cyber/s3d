@@ -86,8 +86,15 @@ struct _filelist {
 	int n;
 };
 struct fs_error {
-	int err,active;
+	int err,state;
 	char *message, *file;
+};
+enum {
+	ESTATE_NONE,
+	ESTATE_RISE,
+	ESTATE_WAIT_FOR_CONFIRM
+		/* TODO: more states should be added and handed back to the filesystem processor, like 
+		 * skip, abort, retry ... */
 };
 typedef struct _filelist filelist;
 typedef struct _t_node   t_node;
