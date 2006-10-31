@@ -156,6 +156,7 @@ int s3d_import_model_file(char *fname);
 int s3d_open_file(char *fname, char **pointer);
 int s3d_select_font(char *mask);
 int s3d_draw_string( char *str, float *xlen);
+float s3d_strlen( char *str);
 
 /* some vector calculation helpers */
 

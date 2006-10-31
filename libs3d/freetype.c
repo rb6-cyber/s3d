@@ -28,6 +28,7 @@
 #include "sei_interface.h"	/* sei_triangulate_polygon() */
 #include <stdlib.h>    		/*  malloc(), free() */
 #include <math.h>			/*  atan2() */
+#include <string.h>			/*  strncmp(), strncpy() */
 #include "ft2build.h"
 #include FT_FREETYPE_H
 #undef __FTERRORS_H__                
@@ -50,12 +51,12 @@ const struct
 static FT_Library 	library;
 static FT_Face		face;
 static char *memory_font=NULL;		 /*  the font file in memory */
+static char oldfontpath[256];
 static int memory_font_size=0;	 /*  and it's size, to reduce load times. */
 static int ft_init=0;
 static int face_init=0;
 
 static int v_off; 	 /*  the vertex number offset, to have the right vertex numbers for each character */
-static int f_oid;	 /*  the oid of our font string */
 static int ch;
 struct t_buf tess_buf[256];
 
@@ -66,6 +67,7 @@ int s3d_ft_init()
 {
 	int error= FT_Init_FreeType( &library);
 	int i;
+	oldfontpath[0]=0;
 	if (error)
 		return (-1);
     ft_init=1;
@@ -334,7 +336,11 @@ int s3d_select_font(char *path)
 			errds(VHIGH,"s3d_select_font()","error in initializtation (ft_init())");
 			return(-1);
 		}
-
+	if (strncmp(oldfontpath,path,256)==0)
+	{
+		s3dprintf(VLOW,"font already %s loaded.", path);
+		return(-1);
+	}
 	 /*  yse (system-specific?!) font grabber */
 	if (((c=s3d_findfont(path))!=NULL))
 	{
@@ -344,8 +350,9 @@ int s3d_select_font(char *path)
 		if ((memory_font_size=s3d_open_file(c,p))>0)
 		{
 			if (!s3d_ft_load_font())
-			{
+			{	/* success */
 				if (oldfont!=NULL)				free(oldfont);
+				strncpy(oldfontpath,path,256);
 				return(0);
 			} else {
 				memory_font=oldfont;
@@ -365,6 +372,7 @@ int s3d_draw_string( char *str,float *xlen)
 	float xoff;
 	int voff;
 	int len;
+	uint32_t f_oid;
 	if (!ft_init)
 		if (s3d_ft_init())
 		{
@@ -387,6 +395,38 @@ int s3d_draw_string( char *str,float *xlen)
 	 /*  s3d_ft_quit(); */
 	if (xlen!=NULL) *xlen=xoff;
 	return(f_oid);
+}
+/* get the string length before actually drawing it. */
+float s3d_strlen( char *str) {
+	int i;
+	float xoff;
+	int voff;
+	int len;
+	uint16_t a;
+	if (!ft_init)
+		if (s3d_ft_init())
+		{
+			errds(VHIGH,"s3d_draw_string()","error in initializtation (ft_init())");
+			return(0.0);
+		}
+	if (!face_init)
+	{
+		errds(VHIGH,"s3d_draw_string()","no font to draw with");
+		return(0.0);
+	}
+	 /*  standard material */
+	xoff=0;
+	voff=0; 
+	len=strlen(str);
+	for (i=0;i<len; i++)
+	{
+		a=(uint8_t )str[i];
+		if (!(tess_buf[a].vbuf && tess_buf[a].pbuf))
+			_s3d_add_tessbuf(a);
+		xoff+=tess_buf[a].xoff;  /*  xoffset */
+	}
+	return(xoff);
+	
 }
 int s3d_ft_quit()
 {
