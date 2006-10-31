@@ -35,6 +35,7 @@
 #include <unistd.h>
 
 #include <errno.h> /* errno */
+#include <time.h>	/* nanosleep() */
 
 struct fs_error fs_err={0,0,NULL,NULL};
 
@@ -68,6 +69,10 @@ filelist *fl_new(char *path)
 				strcpy(fl->p[j].name,path);
 				strcat(fl->p[j].name,"/");
 				strcat(fl->p[j].name,name);
+				fl->p[j].anode=NULL;
+				fl->p[j].size=0; /*TODO: later */
+				fl->p[j].state=STATE_NONE;
+
 				j++;
 			}
 			free(namelist[i]);
@@ -333,11 +338,13 @@ int fs_fl_move(filelist *fl, char *dest)
 /* write an error and wait for a reaction */
 int fs_error(char *message, char *file)
 {
+	static struct timespec t={0,100*1000*1000}; 
 	fs_err.err=errno;
 	fs_err.message=message;
 	fs_err.file=file;
 	fs_err.active=1;
 	printf("[FS ERROR]: %s %s %s",message,file,strerror(errno));
-	while (fs_err.active); /* until situation clear, wait */
+	while (fs_err.active) 
+		nanosleep(&t,NULL);  /* until situation clear, wait (and don't waste cpu-time) */
 	return(0);
 }
