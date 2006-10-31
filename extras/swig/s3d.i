@@ -16,5 +16,5 @@ int s3dpy_draw_string(char *str)
 #include <s3d_keysym.h>
 %}
 
-%include "../libs3d/s3d.h"
-%include "../libs3d/s3d_keysym.h"
+%include "../../libs3d/s3d.h"
+%include "../../libs3d/s3d_keysym.h"
