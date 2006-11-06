@@ -163,7 +163,7 @@ void *thread_start(void *ptr)
 	return(NULL);
 	
 }
-/* now really copy ... */
+/* start the thread, as filesystem stuff is locked ... */
 void window_fs(s3dw_widget *button)
 {
 	pthread_create( &filethread, NULL, thread_start, NULL);
@@ -394,6 +394,7 @@ void window_fsani()
 			}
 		}
 		if (fs_lock==TYPE_FINISHED)	{
+			printf("filesystem stuff is finisheed, cleaning up");
 			if (fp!=NULL)
 			{
 				fl_del(fp);

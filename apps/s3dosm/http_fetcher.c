@@ -137,17 +137,18 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 	}
 	strcat(requestBuf, "\r\n");
 
-
-
+	printf("[HTTP] creating connection ...\n");
 	sock = makeSocket(host);			/* errorSource set within makeSocket */
 	if(sock == -1) { free(url); return -1;}
-
+	printf("[HTTP] sending request \n");
 	if(write(sock, requestBuf, strlen(requestBuf)) == -1)
 		{ close(sock); free(url); errorSource = ERRNO; return -1; }
 
+	printf("[HTTP] receiving header\n");
 	/* Grab enough of the response to get the metadata */
 	ret = _http_read_header(sock, headerBuf);	/* errorSource set within */
 	if(ret < 0) { close(sock); free(url); return -1; }
+	printf("[HTTP] receiving content\n");
 
 	/* Get the return code */
 	charIndex = strstr(headerBuf, "HTTP/");
@@ -281,6 +282,7 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 				return -1;
 				}
 			}
+		printf("[HTTP] read %d bytes\n",ret);
 		}
 	
 	/*

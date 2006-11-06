@@ -19,6 +19,7 @@ char *read_osm(float minlon, float minlat, float maxlon, float maxlat,int *lengt
 	char url[1024];
 	char *fileBuf;						/* Pointer to downloaded data */
 	snprintf(url,1024,"www.openstreetmap.org/api/0.3/map?bbox=%f,%f,%f,%f",minlon,minlat,maxlon,maxlat);
+	printf("downloading url [ %s ]\n",url);
 
 	http_setAuth(user,pass);
 	ret = http_fetch(url, &fileBuf);	/* Downloads page */
@@ -53,9 +54,13 @@ int main(int argc, char **argv)
 	char *file=NULL;
 	layer_t *layer;
 	int length;
-/*	file=read_file("file.osm",&length);*/
+	file=read_file("sachsen.osm",&length);
+/*	printf("reading data from server ...\n");
 	file=read_osm(11.610952060700235,49.409270464751515,14.453271808922661,52.338403146460365,&length);
+	file=read_osm(12.8,50.6,13,51,&length);*/
+	printf("okay, parsing data...\n");
 	layer=parse_osm(file,length);
+	printf("okay, drawing layer...\n");
 	if (!s3d_init(&argc,&argv,"s3dosm"))
 	{
 		draw_layer(layer);
