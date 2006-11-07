@@ -1,6 +1,6 @@
 BIN=s3dosm
 VERS=0.0.1
-SOURCES=main.c http_fetcher.c http_error_codes.c osm.c avl.c object.c draw.c
+SOURCES=main.c http_fetcher.c http_error_codes.c osm.c avl.c object.c draw.c kismet.c
 HEADERS=s3dosm.h http_fetcher.h
 OBJS=$(SOURCES:.c=.o)
 CFLAGS=-Wall -ggdb -pedantic `xml2-config --cflags`

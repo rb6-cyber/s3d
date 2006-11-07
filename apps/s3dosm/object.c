@@ -2,6 +2,10 @@
 #include <stdlib.h> /* malloc() */
 
 /* ########### object ############### */
+void object_free(object_t *nobjs)
+{
+	/* TODO: remove taglist etc */
+}
 void object_init(object_t *nobj)
 {
 	nobj->bal=0;

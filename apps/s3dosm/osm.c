@@ -167,6 +167,8 @@ void debug_obj(object_t *obj, void *dummy)
 				 break;
 				 
 	}
+	for (i=0;i<obj->tag_n;i++)
+		printf("tag %d: %s -> %s\n",i,obj->tag_p[i].k,obj->tag_p[i].v);
 }
 /* parse the osm input file */
 layer_t *parse_osm(char *buf, int length)

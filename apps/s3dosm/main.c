@@ -54,12 +54,12 @@ int main(int argc, char **argv)
 	char *file=NULL;
 	layer_t *layer;
 	int length;
-	file=read_file("sachsen.osm",&length);
+	file=read_file("kismet_sample.xml",&length);
 /*	printf("reading data from server ...\n");
 	file=read_osm(11.610952060700235,49.409270464751515,14.453271808922661,52.338403146460365,&length);
 	file=read_osm(12.8,50.6,13,51,&length);*/
 	printf("okay, parsing data...\n");
-	layer=parse_osm(file,length);
+	layer=parse_kismet(file,length);
 	printf("okay, drawing layer...\n");
 	if (!s3d_init(&argc,&argv,"s3dosm"))
 	{

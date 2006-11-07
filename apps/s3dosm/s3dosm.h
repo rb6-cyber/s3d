@@ -90,7 +90,10 @@ void 		 node_free(node_t *node);
 void 		 segment_free(segment_t *segment);
 void 		 way_free(way_t *way);
 /* osm.c */
+void debug_obj(object_t *obj, void *dummy);
 layer_t *parse_osm(char *buf, int length);
+/* kismet.c */
+layer_t *parse_kismet(char *buf, int length);
 /* void xml_parse(xmlNode *a_node); */
 void 		 avl_tree_trav(object_t *t, avl_func func, void *data);
 object_t 	*avl_find(object_t *t, int val);
