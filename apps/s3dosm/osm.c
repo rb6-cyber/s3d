@@ -3,6 +3,7 @@
 #include <stdlib.h>			/* strtof(),strtod(),strtol() */
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include "http_fetcher.h"
 int parse_osm_tags(object_t *obj, xmlNodePtr cur)
 {
 	
@@ -215,4 +216,30 @@ layer_t *parse_osm(char *buf, int length)
 	xmlFreeDoc(doc);
 
 	return(layer);
+}
+layer_t *load_osm_web(float minlon, float minlat, float maxlon, float maxlat)
+{
+	int ret;
+	char *user = "foo@packetmixer.de";
+	char *pass = "foobar";
+	char url[1024];
+	char *fileBuf;						/* Pointer to downloaded data */
+	snprintf(url,1024,"www.openstreetmap.org/api/0.3/map?bbox=%f,%f,%f,%f",minlon,minlat,maxlon,maxlat);
+	printf("downloading url [ %s ]\n",url);
+
+	http_setAuth(user,pass);
+	ret = http_fetch(url, &fileBuf);	/* Downloads page */
+	if(ret == -1)
+	{	
+		http_perror("http_fetch");	
+		return(NULL);
+	}
+	return parse_osm(fileBuf, ret);
+}
+layer_t *load_osm_file(char *filename)
+{
+	int length;
+	char *file;
+	if (NULL==(file=read_file(filename,&length))) return(NULL);
+	return parse_osm(file,length);
 }

@@ -3,22 +3,6 @@
 #include <stdlib.h>			/* strtof(),strtod(),strtol() */
 #include <libxml/parser.h>
 #include <libxml/tree.h>
-void add_tag(object_t *obj,char *k, char *v)
-{
-	tag_t *t;
-	obj->tag_n++;
-	obj->tag_p=realloc(obj->tag_p,obj->tag_n*sizeof(tag_t));
-	if (k!=NULL && v!=NULL)
-	{
-		t=&(obj->tag_p[obj->tag_n-1]);
-		t->ttype=TAG_UNKNOWN;
-		t->k=strdup(k);
-		t->v=strdup(v);
-		t->d.s=v;
-		if (0==strcmp(k,"name"))	t->ttype=TAG_NAME;
-	}
-
-}
 object_t *parse_kismet_node(xmlNodePtr cur)
 {
 	node_t *node;
@@ -31,12 +15,13 @@ object_t *parse_kismet_node(xmlNodePtr cur)
 	for (attr=cur->properties;attr;attr=attr->next)
 	{
 		if (0==strcmp((char *)attr->name,"number")) 		node->base.id=		strtol((char *)attr->children->content,NULL,10);
-		else if (0==strcmp((char *)attr->name,"wep")) 		add_tag(OBJECT_T(node),"wep",(char *)attr->children->content);
+		else if (0==strcmp((char *)attr->name,"wep")) 		tag_add(OBJECT_T(node),"wifi_wep",(char *)attr->children->content);
+		else if (0==strcmp((char *)attr->name,"type")) 		tag_add(OBJECT_T(node),"wifi_type",(char *)attr->children->content);
 	}
 	for (kids=cur->children;kids;kids=kids->next)
 	{
-		if (0==strcmp((char *)kids->name,"SSID")) 			add_tag(OBJECT_T(node),"SSID",(char *)xmlNodeGetContent(kids->children));
-		if (0==strcmp((char *)kids->name,"BSSID")) 			add_tag(OBJECT_T(node),"BSSID",(char *)xmlNodeGetContent(kids->children));
+		if (0==strcmp((char *)kids->name,"SSID")) 			tag_add(OBJECT_T(node),"wifi_SSID",(char *)xmlNodeGetContent(kids->children));
+		if (0==strcmp((char *)kids->name,"BSSID")) 			tag_add(OBJECT_T(node),"wifi_BSSID",(char *)xmlNodeGetContent(kids->children));
 		if (0==strcmp((char *)kids->name,"gps-info"))
 		{
 			for (gpskids=kids->children;gpskids;gpskids=gpskids->next)
@@ -48,11 +33,11 @@ object_t *parse_kismet_node(xmlNodePtr cur)
 				if (0==strcmp((char *)gpskids->name,"max-lon")) 		node->lon=node->lon + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
 				if (0==strcmp((char *)gpskids->name,"min-alt")) 		node->alt=node->alt + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
 				if (0==strcmp((char *)gpskids->name,"max-alt")) 		node->alt=node->alt + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
-
-
 			}
 		}
 	}
+	node->visible=2;	/* something special */
+	tag_add(OBJECT_T(node), "amenity", "wifi");
 
 	if (node->base.id>0 && (node->lon!=0.0) && (node->lat!=0.0)) /* really, i don't want to discriminate anyone at 0 lat 0 lon running a wifi hotspot, even
 																	if it's in the middle of the ocean. i'm very sorry. */
@@ -96,6 +81,12 @@ layer_t *parse_kismet(char *buf, int length)
 		}
 	}
 	xmlFreeDoc(doc);
-
 	return(layer);
+}
+layer_t *load_kismet_file(char *filename)
+{
+	int length;
+	char *file;
+	if (NULL==(file=read_file(filename,&length))) return(NULL);
+	return parse_kismet(file,length);
 }
