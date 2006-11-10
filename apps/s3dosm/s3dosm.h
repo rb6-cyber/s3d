@@ -6,6 +6,7 @@ typedef struct _adj_t adj_t;
 typedef struct _object_t object_t;
 typedef struct _node_t node_t;
 typedef struct _segment_t segment_t;
+typedef struct _layerset_t layerset_t;
 typedef struct _way_t way_t;
 typedef struct _tag_t tag_t;
 typedef struct _icon_t icon_t;
@@ -14,10 +15,16 @@ typedef unsigned long ID_T;
 #define NODE_T(x)		((node_t *)x)
 #define SEGMENT_T(x)	((segment_t *)x)
 #define WAY_T(x)		((way_t *)x)
+struct _layerset_t {
+	int n;
+	layer_t **p;
+};
+extern layerset_t layerset;
 
 struct _layer_t {
 	object_t *tree;
 	float center_lo, center_la;
+	int visible;
 };
 
 struct _icon_t {
@@ -90,7 +97,7 @@ struct _way_t {
 	ID_T		*seg_p;
 };
 
-
+/* public functions */
 
 /* object.c */
 void 		 object_init(object_t *nobj);
@@ -105,8 +112,7 @@ way_t 		*way_new();
 void 		 node_free(node_t *node);
 void 		 segment_free(segment_t *segment);
 void 		 way_free(way_t *way);
-/* main.c */
-char *read_file(char *fname, int *fsize);
+void 		 layerset_add(layer_t *layer);
 /* osm.c */
 void debug_obj(object_t *obj, void *dummy);
 layer_t *parse_osm(char *buf, int length);
@@ -124,14 +130,19 @@ object_t 	*avl_leftmost(object_t *t);
 object_t 	*avl_rightmost(object_t *t);
 object_t 	*avl_remove(object_t *t, object_t *nn);
 int 		 avl_height(object_t *t);
-int 		 draw_layer(layer_t *layer);
 /* draw.c */
+void draw_all_layers();
 void calc_earth_to_eukl(double lon, double lat, double *x);
 int draw_layer(layer_t *layer);
 /* nav.c */
 void nav_init();
 void nav_center(float la, float lo);
+void nav_autocenter();
 extern int oidy;
 /* tag.c */
 void tag_add(object_t *obj,char *k, char *v);
 tag_t *tag_get(object_t *obj, char *k);
+void tag_free(tag_t *tag);
+/* io.c */
+char *read_file(char *fname, int *fsize);
+int process_args(int argc, char **argv);

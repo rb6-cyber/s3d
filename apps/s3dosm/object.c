@@ -1,10 +1,36 @@
+/*
+ * object.c
+ * 
+ * Copyright (C) 2006 Simon Wunderlich <dotslash@packetmixer.de>
+ *
+ * This file is part of s3dosm, a gps card application for s3d.
+ * See http://s3d.berlios.de/ for more updates.
+ * 
+ * s3dosm is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * s3dosm is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with s3dosm; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
 #include "s3dosm.h"
 #include <stdlib.h> /* malloc() */
 
 /* ########### object ############### */
-void object_free(object_t *nobjs)
+void object_free(object_t *obj)
 {
-	/* TODO: remove taglist etc */
+	int i;
+	for (i=0;i<obj->tag_n;i++)
+		tag_free(&(obj->tag_p[i]));
 }
 void object_init(object_t *nobj)
 {
@@ -93,5 +119,16 @@ layer_t *layer_new()
 {
 	layer_t *nlayer=malloc(sizeof(layer_t));
 	nlayer->tree=NULL;
+	nlayer->visible=0;
 	return(nlayer);
+}
+/* ########### layerset ############### */
+layerset_t layerset={0,NULL};
+
+void layerset_add(layer_t *layer)
+{
+	if (layer==NULL) return;
+	layerset.n++;
+	layerset.p=realloc(layerset.p, sizeof(layer_t *)*layerset.n);
+	layerset.p[layerset.n-1]=layer;
 }

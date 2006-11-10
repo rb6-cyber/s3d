@@ -14,6 +14,10 @@
 	Library General Public License for more details.
 
 	See LICENSE file for details
+
+	Changes: 
+		Simon Wunderlich <dotslash@packetmixer.de>
+		+ added http_setAuth() to support basic http-authentication and some minor fixes
 									
  */
 
@@ -85,7 +89,14 @@ int http_setReferer(const char *newReferer);
 	 *	waiting forever (or until data shows up, whichever comes first)
 	 */
 void http_setTimeout(int seconds);
-void http_setAuth(const char *user, const char *pass);
+
+	/*
+	 * Activate authentication for the Request. If user or pass is NULL,
+	 * http_set_Auth assumes a request to cleanup (disable Authentication). 
+	 * Returns 0 on success, and -1 on error or cleanup.
+	 */
+
+int http_setAuth(const char *user, const char *pass);
 
 	/*
 	 * Takes a url and puts the filename portion of it into 'filename'.

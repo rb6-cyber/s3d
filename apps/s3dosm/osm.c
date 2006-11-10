@@ -1,3 +1,26 @@
+/*
+ * osm.c
+ * 
+ * Copyright (C) 2006 Simon Wunderlich <dotslash@packetmixer.de>
+ *
+ * This file is part of s3dosm, a gps card application for s3d.
+ * See http://s3d.berlios.de/ for more updates.
+ * 
+ * s3dosm is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * s3dosm is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with s3dosm; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 #include "s3dosm.h"
 #include <string.h>			/* strcmp() */
 #include <stdlib.h>			/* strtof(),strtod(),strtol() */
@@ -224,6 +247,7 @@ layer_t *load_osm_web(float minlon, float minlat, float maxlon, float maxlat)
 	char *pass = "foobar";
 	char url[1024];
 	char *fileBuf;						/* Pointer to downloaded data */
+	layer_t *layer;
 	snprintf(url,1024,"www.openstreetmap.org/api/0.3/map?bbox=%f,%f,%f,%f",minlon,minlat,maxlon,maxlat);
 	printf("downloading url [ %s ]\n",url);
 
@@ -234,12 +258,18 @@ layer_t *load_osm_web(float minlon, float minlat, float maxlon, float maxlat)
 		http_perror("http_fetch");	
 		return(NULL);
 	}
-	return parse_osm(fileBuf, ret);
+	layer=parse_osm(fileBuf, ret);
+	/* TODO: cleanup http-lib */
+	free(fileBuf);
+	return layer;
 }
 layer_t *load_osm_file(char *filename)
 {
 	int length;
 	char *file;
+	layer_t *ret;
 	if (NULL==(file=read_file(filename,&length))) return(NULL);
-	return parse_osm(file,length);
+	ret=parse_osm(file,length);
+	free(file);
+	return ret;
 }

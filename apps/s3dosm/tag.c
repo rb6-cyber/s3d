@@ -1,3 +1,25 @@
+/*
+ * tag.c
+ * 
+ * Copyright (C) 2006 Simon Wunderlich <dotslash@packetmixer.de>
+ *
+ * This file is part of s3dosm, a gps card application for s3d.
+ * See http://s3d.berlios.de/ for more updates.
+ * 
+ * s3dosm is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * s3dosm is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with s3dosm; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 #include "s3dosm.h"
 #include <stdio.h>	/* printf() */
 #include <string.h>	/* strcmp() */
@@ -25,4 +47,14 @@ tag_t *tag_get(object_t *obj, char *k)
 		if (0==strcmp(obj->tag_p[i].k,k)) return(&(obj->tag_p[i]));
 	}
 	return(NULL);
+}
+void tag_free(tag_t *tag)
+{
+	if (tag->d.s!=tag->v)
+		free(tag->d.s);
+	free(tag->v);
+	free(tag->k);
+	tag->k=NULL;
+	tag->d.s=NULL;
+	tag->v=NULL;
 }

@@ -14,6 +14,10 @@
 
 	See included LICENSE file for details
 
+	Changes: 
+		Simon Wunderlich <dotslash@packetmixer.de>
+		+ added http_setAuth() to support basic http-authentication and some minor fixes
+		
  */
 
 #include <stdlib.h>
@@ -369,7 +373,7 @@ int http_setReferer(const char *newReferer)
 	
 	return 0;
 	}
-void http_setAuth(const char *user, const char *pass)
+int http_setAuth(const char *user, const char *pass)
 {
 	unsigned char plain[1024];
 	char ec64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -377,6 +381,12 @@ void http_setAuth(const char *user, const char *pass)
 	int i,j,c,len,n;
 	char o;
 	 /* base64 encode user and pass */
+	if ((user==NULL) || (pass==NULL)) /* bad input or request to clean up */
+	{
+		if (auth!=NULL)	free(auth); /* free old auth */
+		auth=NULL;
+		return(-1);
+	}
 	
 	snprintf((char *)plain,1024,"%s:%s",user,pass);
 	len=strlen((char *)plain);
@@ -398,7 +408,7 @@ void http_setAuth(const char *user, const char *pass)
 	b64[j]=0;
 	if (auth!=NULL)	free(auth); /* free old auth */
 	auth=b64;
-	
+	return(0);	
 
 	
 }
