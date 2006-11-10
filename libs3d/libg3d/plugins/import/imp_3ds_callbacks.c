@@ -64,7 +64,9 @@ gboolean x3ds_cb_0x0010(x3ds_global_data *global, x3ds_parent_data *parent)
 			break;
 
 		default:
+#if DEBUG > 0
 			g_printerr("[3DS] unhandled COLOR_F in 0x%04X\n", parent->id);
+#endif
 			break;
 	}
 
@@ -104,7 +106,9 @@ gboolean x3ds_cb_0x0011(x3ds_global_data *global, x3ds_parent_data *parent)
 			break;
 
 		default:
+#if DEBUG > 0
 			g_printerr("[3DS] unhandled COLOR_24 in 0x%04X\n", parent->id);
+#endif
 			break;
 	}
 

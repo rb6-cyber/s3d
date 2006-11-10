@@ -62,7 +62,9 @@ gboolean plugin_load_model(G3DContext *context, const gchar *filename,
 	}
 	nbytes = g3d_read_int32_le(f);
 	nbytes -= 6;
+#if DEBUG > 0
 	g_printerr("[%4.4X] 3DS file: main length: %d\n", magic, nbytes);
+#endif
 
 	global.context = context;
 	global.model = model;
