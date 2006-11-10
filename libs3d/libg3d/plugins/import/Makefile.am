@@ -8,7 +8,6 @@ pluginimp_LTLIBRARIES = \
 	imp_dxf.la \
 	imp_heightfield.la \
 	imp_iob.la \
-	imp_leocad.la \
 	imp_lwo.la \
 	imp_md2.la \
 	imp_md3.la \
@@ -16,6 +15,7 @@ pluginimp_LTLIBRARIES = \
 	imp_obj.la \
 	imp_q3o.la \
 	imp_vrml.la
+#	imp_leocad.la 
 
 # we are experimental ;D
 pluginimp_LTLIBRARIES += \
