@@ -3,10 +3,10 @@
  *
  * Copyright (C) 2006  Marek Lindner <lindner_marek@yahoo.de>
  *
- * This file is part of kismet3d, an 802.11 visualizer for s3d.
+ * This file is part of kism3d, an 802.11 visualizer for s3d.
  * See http://s3d.berlios.de/ for more updates.
  *
- * kismet3d is free software; you can redistribute it and/or modify
+ * kism3d is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
