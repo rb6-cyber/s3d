@@ -106,19 +106,26 @@ dnl ##################################### LIBS3D ###############################
 PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.1.0, [:], [AC_MSG_ERROR([Please install fontconfig (version 2.1.0 or higher)])])
 PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.5.0, [:], [AC_MSG_ERROR([Please install freetype2 (version 9.5.0 or higher)])])
 
+# libxml2
+AM_PATH_XML2(2.0.0, HAVE_XML=yes)
+if test "x$HAV_XML" = "xyes" ; then
+	LIBXML2_CFLAGS=$XML_CPPFLAGS
+	LIBXML2_LIBS=$XML_LIBS
+	AC_SUBST(LIBXML2_CFLAGS)
+	AC_SUBST(LIBXML2_LIBS)
+fi
+		
 
 dnl ##################################### EXAMPLES / APPS ######################
 
-AC_CHECK_LIB(gps, main, [HAVE_GPS=yes], [HAVE_GPS=no])
-if test x$HAVE_GPS = xyes; then
-	GPS_CFLAGS=
-	GPS_LIBS=-lgps	
-	AC_SUBST(GPS_CFLAGS)
-	AC_SUBST(GPS_LIBS)
-else
+if test x$HAVE_XML != xyes; then
 	WARNS="$WARNS
- ### Sorry, you lack the gps library to compile the s3dgps application."
+ ### Sorry, you lack the libxml2 library to compile the s3dosm application."
 fi
+
+
+AM_CONDITIONAL([BUILD_S3DOSM], [test x$HAVE_XML= xyes])
+
 SIM_AC_HAVE_SIMAGE_IFELSE([
 	SIMAGE_CFLAGS=$sim_ac_simage_cppflags
 	SIMAGE_LIBS="$sim_ac_simage_ldflags $sim_ac_simage_libs"
@@ -208,6 +215,8 @@ AC_CONFIG_FILES([
 	apps/s3dgps/Makefile
 	apps/s3dvt/Makefile
 	apps/s3dfm/Makefile
+	apps/kism3d/Makefile
+	apps/s3dosm/Makefile
 	apps/dot_mcp/Makefile
 	example/Makefile
 	objs/Makefile

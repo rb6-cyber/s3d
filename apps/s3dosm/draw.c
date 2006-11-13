@@ -76,6 +76,7 @@ void draw_add_vertices(object_t *t, void *data)
 							s3d_link(node->base.oid,v->oid);
 							s3d_flags_on(node->base.oid,S3D_OF_VISIBLE);
 							s3d_rotate(node->base.oid,(90-node->lat),node->lon,0);
+							v->layer->visible=1;
 						} else { /* not an ap */
 						}
 					}
@@ -112,7 +113,10 @@ void draw_add_segments(object_t *t, void *data)
 			else if (0==(strcmp(tag->v,"residential"))) color=5;
 		}
 		if (from!=NULL && to!=NULL)
+		{
 			s3d_push_line(v->oid,from->vid,to->vid,color);
+			v->layer->visible=1;
+		}
 	}
 }
 int draw_layer(layer_t *layer)
@@ -136,7 +140,6 @@ int draw_layer(layer_t *layer)
 	avl_tree_trav(layer->tree,draw_add_segments,(void *)&v);
 	layer->center_lo=(v.lonsum)/v.n;
 	layer->center_la=(v.latsum)/v.n;	
-	layer->visible=1;
 	s3d_flags_on(oid,S3D_OF_VISIBLE);
 	return(0);
 }
