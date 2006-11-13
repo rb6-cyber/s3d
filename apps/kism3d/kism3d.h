@@ -39,7 +39,7 @@ struct kismet_src {
 	int port;
 	int sock;
 	char *kismet_ip;
-	unsigned char *recv_buff;
+	char *recv_buff;
 	struct sockaddr_in kismet_addr;
 	int enable_level;
 

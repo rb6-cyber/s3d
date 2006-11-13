@@ -28,8 +28,11 @@
 #include <stdio.h>    /* printf() */
 #include <string.h>   /* memset() */
 #include <errno.h>    /* errno */
-#include <sys/socket.h>
+#include <unistd.h>   /* write() */
+
+#include <sys/socket.h> /* inet_pton(), inet_aton() */
 #include <sys/types.h>
+#include <arpa/inet.h>
 
 
 
@@ -73,6 +76,8 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 			last_cr_ptr = read_ptr;
 			*last_cr_ptr = '\0';
+
+			bssid = channel = type = ssid = mac = ip = NULL;
 
 			/* printf( "line: %s\n", line_ptr ); */
 
@@ -231,9 +236,7 @@ int main( int argc, char *argv[] ) {
 	struct list_head *kismet_pos, *kismet_pos_tmp;
 	struct timeval tv;
 	int found_args = 1, max_sock = -1, res, status;
-	char *colon_ptr;
-	char enable_network[] = "!0 ENABLE NETWORK bssid,type,channel,ssid\n", enable_client[] = "!0 ENABLE CLIENT bssid,mac,ip\n";
-	unsigned char buff[1000];
+	char *colon_ptr, buff[1000];
 	fd_set wait_sockets, tmp_wait_sockets;
 
 
@@ -272,7 +275,7 @@ int main( int argc, char *argv[] ) {
 
 			kismet_src->port = strtol(colon_ptr, NULL , 10);
 
-			if ( kismet_src->port < 0 || kismet_src->port > 65535 ) {
+			if ( kismet_src->port < 1 || kismet_src->port > 65535 ) {
 				printf( "Invalid kismet PORT specified: %s\n", colon_ptr );
 				free( kismet_src );
 				found_args++;
@@ -375,7 +378,7 @@ int main( int argc, char *argv[] ) {
 
 						} else {
 
-							/* hope that carriage return is now in buf */
+							/* hope that carriage return is now in buffer */
 							if ( strlen( kismet_src->recv_buff ) < 1500 ) {
 
 								printf( "WARNING: receive buffer almost filled without *any* carriage return within that data !\nAppending truncated buffer to receive buffer to prevent buffer overflow.\n" );
