@@ -107,24 +107,24 @@ PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.1.0, [:], [AC_MSG_ERROR([Please in
 PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.5.0, [:], [AC_MSG_ERROR([Please install freetype2 (version 9.5.0 or higher)])])
 
 # libxml2
-AM_PATH_XML2(2.0.0, HAVE_XML=yes)
-if test "x$HAV_XML" = "xyes" ; then
+AM_PATH_XML2(2.0.0, [HAVE_XML="yes"], [])
+
+if test x"${HAVE_XML}" = xyes ; then
 	LIBXML2_CFLAGS=$XML_CPPFLAGS
 	LIBXML2_LIBS=$XML_LIBS
 	AC_SUBST(LIBXML2_CFLAGS)
 	AC_SUBST(LIBXML2_LIBS)
+else
+dnl ##################################### EXAMPLES / APPS ######################
+	WARNS="$WARNS
+ ### Sorry, you lack the libxml2 library to compile the s3dosm application."
+
 fi
 		
 
-dnl ##################################### EXAMPLES / APPS ######################
-
-if test x$HAVE_XML != xyes; then
-	WARNS="$WARNS
- ### Sorry, you lack the libxml2 library to compile the s3dosm application."
-fi
 
 
-AM_CONDITIONAL([BUILD_S3DOSM], [test x$HAVE_XML= xyes])
+AM_CONDITIONAL([BUILD_S3DOSM], [test x"${HAVE_XML}" = xyes])
 
 SIM_AC_HAVE_SIMAGE_IFELSE([
 	SIMAGE_CFLAGS=$sim_ac_simage_cppflags
