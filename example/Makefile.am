@@ -1,7 +1,7 @@
 noinst_PROGRAMS=	hudtest katze \
 			ptrtest radius_test s3dclock snowman \
 			strtest texturetest linetest widgets \
-			nichtsnutz
+			nichtsnutz wiresphere
 bin_PROGRAMS= filebrowser modelloader
 			
 modelloader_SOURCES=	modelloader.c
@@ -17,6 +17,7 @@ strtest_SOURCES=		strtest.c
 texturetest_SOURCES=	texturetest.c
 ptrtest_SOURCES=		ptrtest.c
 nichtsnutz_SOURCES=		nichtsnutz.c
+wiresphere_SOURCES=		wiresphere.c
 
 CPPFLAGS=		-I$(top_srcdir)/server -I$(top_srcdir)/libs3d 
 LIBS=			$(top_builddir)/libs3d/libs3d.la  
