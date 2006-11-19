@@ -11,7 +11,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * olsrs3d is distributed in the hope that it will be useful,
+ * kism3d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -28,10 +28,6 @@
 
 
 
-extern int num_kismet_sources;
-
-
-
 struct kismet_src {
 
 	struct list_head list;
@@ -44,3 +40,47 @@ struct kismet_src {
 	int enable_level;
 
 };
+
+
+struct wlan_network {
+
+	struct list_head list;
+	char bssid[18];
+	char *ssid;
+	int type;
+	int channel;
+	int visible;
+	float pos_vec[3];
+	float mov_vec[3];
+	int obj_id;
+	int desc_id;
+
+};
+
+
+struct wlan_client {
+
+	struct list_head list;
+	char bssid[18];
+	char mac[18];
+	int ip[16];
+	struct wlan_network *wlan_network;
+	int visible;
+	float pos_vec[3];
+	float mov_vec[3];
+	int obj_id;
+	int desc_id;
+
+};
+
+
+
+void *alloc_memory( int len );
+struct wlan_network *get_wlan_network( char *bssid );
+struct wlan_network *find_wlan_network( char *bssid );
+struct wlan_client *get_wlan_client( char *mac );
+
+
+
+extern struct list_head Network_list;
+extern struct list_head Client_list;

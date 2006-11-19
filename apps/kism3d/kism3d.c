@@ -11,7 +11,7 @@
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * olsrs3d is distributed in the hope that it will be useful,
+ * kism3d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -26,7 +26,7 @@
 #include "kism3d.h"
 #include <stdlib.h>   /* malloc() */
 #include <stdio.h>    /* printf() */
-#include <string.h>   /* memset() */
+#include <string.h>   /* memset(), strncmp(), strncpy() */
 #include <errno.h>    /* errno */
 #include <unistd.h>   /* write() */
 
@@ -36,9 +36,9 @@
 
 
 
-int num_kismet_sources = 0;
-
 DEFINE_LIST_HEAD(kismet_src_list);
+DEFINE_LIST_HEAD(Network_list);
+DEFINE_LIST_HEAD(Client_list);
 
 
 
@@ -59,8 +59,27 @@ void *alloc_memory( int len ) {
 
 
 
+void *realloc_memory( void *ptr, int len ) {
+
+	void *res = realloc( ptr, len );
+
+	if (res == NULL) {
+		printf( "Error - can't trallocate memory: %s\n", strerror(errno) );
+		exit(1);
+	}
+
+	memset( res, 0, len );
+
+	return res;
+
+}
+
+
+
 void parse_buffer( struct kismet_src *kismet_src ) {
 
+	struct wlan_network *wlan_network;
+	struct wlan_client *wlan_client;
 	char enable_network[] = "!0 ENABLE NETWORK bssid,type,channel,ssid\n", enable_client[] = "!0 ENABLE CLIENT bssid,mac,ip\n", enable_alert[] = "!0 ENABLE ALERT *\n";
 	char *read_ptr, *line_ptr, *last_cr_ptr = NULL, *parse_begin_ptr, *parse_end_ptr;
 	char *bssid, *channel, *type, *ssid, *mac, *ip;
@@ -164,7 +183,26 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 				}
 
-				printf( "network found - bssid %s, type %s, channel %s, ssid %s\n", bssid, type, channel, ssid );
+				wlan_network = get_wlan_network( bssid );
+
+				if ( ( wlan_network->type != -1 ) && ( wlan_network->channel != -1 ) && ( wlan_network->ssid != NULL ) ) {
+
+					/* network properties have changed - alert user */
+
+				}
+
+				wlan_network->type = atoi( type );
+				wlan_network->channel = atoi( channel );
+
+				if ( wlan_network->ssid == NULL )
+					wlan_network->ssid = alloc_memory( strlen( ssid ) );
+				else
+					wlan_network->ssid = realloc_memory( wlan_network->ssid, strlen( ssid ) );
+
+				strncpy( wlan_network->ssid, ssid, strlen( ssid ) );
+
+
+				/* printf( "network found - bssid %s, type %s, channel %s, ssid %s\n", bssid, type, channel, ssid ); */
 
 			} else if ( strncmp( line_ptr, "*CLIENT: ", strlen( "*CLIENT: " ) ) == 0 ) {
 
@@ -205,11 +243,23 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 				}
 
-				printf( "client found - bssid %s, mac %s, ip %s\n", bssid, mac, ip );
+				wlan_client = get_wlan_client( mac );
+
+				/*if ( ( wlan_client->type != -1 ) && ( wlan_client->channel != -1 ) && ( wlan_client->ssid != NULL ) ) {
+
+					 client properties have changed - alert user
+
+				}*/
+
+				strncpy( wlan_client->bssid, bssid, 18 );
+				strncpy( wlan_client->ip, ip, 16 );
+				wlan_client->wlan_network = find_wlan_network( wlan_client->bssid );
+
+				/* printf( "client found - bssid %s, mac %s, ip %s\n", bssid, mac, ip ); */
 
 			} else if ( strncmp( line_ptr, "*ALERT: ", strlen( "*ALERT: " ) ) == 0 ) {
 
-				printf( "alert: %s\n", line_ptr + strlen( "*ALERT: " ) );
+				/* printf( "alert: %s\n", line_ptr + strlen( "*ALERT: " ) ); */
 
 			}
 
@@ -234,8 +284,10 @@ int main( int argc, char *argv[] ) {
 	struct in_addr tmp_ip_holder;
 	struct kismet_src *kismet_src;
 	struct list_head *kismet_pos, *kismet_pos_tmp;
+	struct wlan_network *wlan_network;
+	struct wlan_client *wlan_client;
 	struct timeval tv;
-	int found_args = 1, max_sock = -1, res, status;
+	int num_kismet_sources = 0, found_args = 1, max_sock = -1, res, status;
 	char *colon_ptr, buff[1000];
 	fd_set wait_sockets, tmp_wait_sockets;
 
@@ -436,6 +488,28 @@ int main( int argc, char *argv[] ) {
 
 		}
 
+		printf( "\nCurrent network list:\n" );
+
+		list_for_each_safe(kismet_pos, kismet_pos_tmp, &Network_list) {
+
+			wlan_network = list_entry(kismet_pos, struct wlan_network, list);
+
+			printf( "   => %s\n", wlan_network->bssid );
+
+		}
+
+		printf( "\nCurrent client list:\n" );
+
+		list_for_each_safe(kismet_pos, kismet_pos_tmp, &Client_list) {
+
+			wlan_client = list_entry(kismet_pos, struct wlan_client, list);
+
+			printf( "   => %s belonging to %s\n", wlan_client->mac, ( wlan_client->wlan_network == NULL ? "unknown" : wlan_client->wlan_network->bssid ) );
+
+		}
+
 	}
+
+	return (0);
 
 }
