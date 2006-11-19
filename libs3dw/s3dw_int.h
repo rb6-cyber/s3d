@@ -80,7 +80,28 @@ void s3dw_input_hide(s3dw_widget *widget);
 uint32_t s3dw_input_draw_string(s3dw_widget *widget);
 int s3dw_input_event_click(s3dw_widget *widget, uint32_t oid);
 int s3dw_input_event_key(s3dw_widget *widget, struct s3d_key_event *keys);
+/* textbox.c */
+void s3dw_textbox_drawtext(s3dw_widget *widget);
+void s3dw_textbox_erasetext(s3dw_widget *widget);
+void s3dw_textbox_show(s3dw_widget *widget);
+void s3dw_textbox_hide(s3dw_widget *widget);
+void s3dw_textbox_erase(s3dw_widget *widget);
+void s3dw_textbox_destroy(s3dw_widget *widget);
+void s3dw_textbox_erasetext(s3dw_widget *widget);
+void s3dw_textbox_drawtext(s3dw_widget *widget);
+int s3dw_textbox_event_key(s3dw_widget *widget, struct s3d_key_event *keys);
+int s3dw_textbox_event_click(s3dw_widget *widget, uint32_t oid);
 
+/* scrollbar.c */
+#define S3DW_SBAR_HORI		0
+#define S3DW_SBAR_VERT		1
+s3dw_scrollbar *s3dw_scrollbar_new(s3dw_widget *parent, int type, float posx, float posy, float length);
+void s3dw_scrollbar_show(s3dw_widget *widget);
+void s3dw_scrollbar_hide(s3dw_widget *widget);
+void s3dw_scrollbar_erase(s3dw_widget *widget);
+void s3dw_scrollbar_destroy(s3dw_widget *widget);
+int s3dw_scrollbar_event_key(s3dw_widget *widget, struct s3d_key_event *keys);
+int s3dw_scrollbar_event_click(s3dw_widget *widget, uint32_t oid);
 /* style.c */
 extern s3dw_style def_style;
 /* animate.c */

@@ -38,11 +38,8 @@ uint32_t s3dw_input_draw_string(s3dw_widget *widget)
 	float tlen;
 	if (widget->width<1) return(-1);
 	i=0;
-	do 
-	{
-		oid_text=s3d_draw_string(input->text+i,&tlen);
-		i++;
-	} while (tlen>(widget->width-1));
+	while (s3d_strlen(input->text+i) > (widget->width-1)) i++;
+	oid_text=s3d_draw_string(input->text+i,&tlen);
 	s3d_pep_materials_a(oid_text,widget->style->text_mat,1);
 	s3d_translate( oid_text,0.5,-1.5,0.30);
 	s3d_link(	   oid_text,widget->oid);

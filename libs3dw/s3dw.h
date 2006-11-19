@@ -47,11 +47,15 @@ enum {
 	S3DW_TBUTTON,
 	S3DW_TLABEL,
 	S3DW_TINPUT,
+	S3DW_TTEXTBOX,
+	S3DW_TSCROLLBAR,
 	S3DW_NTYPES
 };
 typedef struct _s3dw_widget 	s3dw_widget;
 typedef struct _s3dw_button 	s3dw_button;
 typedef struct _s3dw_label  	s3dw_label;
+typedef struct _s3dw_textbox  	s3dw_textbox;
+typedef struct _s3dw_scrollbar 	s3dw_scrollbar;
 typedef struct _s3dw_input  	s3dw_input;
 typedef struct _s3dw_surface  	s3dw_surface;
 typedef struct _s3dw_style  	s3dw_style;
@@ -95,6 +99,31 @@ struct _s3dw_label {
 	s3dw_callback 	 onclick;
 	
 };
+struct _s3dw_scrollbar {
+	/* private */
+	s3dw_widget 	 widget;
+	float			 pos,max;
+	int				 type; /* 0 = horizontal, 1 = vertical */
+	int				 loid,roid,baroid;
+	/* public */
+	s3dw_callback 	 lonclick;
+	s3dw_callback 	 ronclick;
+	
+};
+
+struct _s3dw_textbox {
+	/* private */
+	s3dw_widget 	 widget;
+	s3dw_scrollbar	*scroll_vertical,
+					*scroll_horizontal;
+	char 			*text;
+	int				n_lineoids,*p_lineoids;
+	int				window_x,window_y;
+	/* public */
+	s3dw_callback 	 onclick;
+	
+};
+
 struct _s3dw_input {
 	/* private */
 	s3dw_widget 	 widget;
@@ -128,6 +157,7 @@ struct _s3dw_style {
 s3dw_button 		*s3dw_button_new(s3dw_surface *surface, char *text, float posx, float posy);
 s3dw_label	 		*s3dw_label_new(s3dw_surface *surface, char *text, float posx, float posy);
 s3dw_input 			*s3dw_input_new(s3dw_surface *surface, float width, float posx, float posy);
+s3dw_textbox 		*s3dw_textbox_new(s3dw_surface *surface, char *text, float posx, float posy, float width, float height);
 char 				*s3dw_input_gettext(s3dw_input *input);
 void 				 s3dw_input_change_text(s3dw_input *input, char *text);
 s3dw_surface 		*s3dw_surface_new(char *title, float width, float height);
@@ -137,6 +167,13 @@ void				 s3dw_moveit(s3dw_widget *widget);
 void 				 s3dw_delete(s3dw_widget *widget);
 void 				 s3dw_show(s3dw_widget *widget);
 void 				 s3dw_focus(s3dw_widget *focus);
+
+void 				 s3dw_textbox_scrollup(s3dw_textbox *textbox);
+void 				 s3dw_textbox_scrolldown(s3dw_textbox *textbox);
+void 				 s3dw_textbox_scrollleft(s3dw_textbox *textbox);
+void 				 s3dw_textbox_scrollright(s3dw_textbox *textbox);
+void 				 s3dw_textbox_scrollto(s3dw_textbox *textbox, int x, int y);
+void 				 s3dw_textbox_change_text(s3dw_textbox *textbox, char *text);
 
 int 				 s3dw_handle_click(struct s3d_evt *evt);
 int 				 s3dw_handle_key(struct s3d_evt *evt);

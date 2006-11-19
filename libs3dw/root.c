@@ -76,11 +76,16 @@ s3dw_widget *s3dw_getroot()
 		s3dwcb_show[S3DW_TBUTTON]=		s3dw_button_show;
 		s3dwcb_show[S3DW_TLABEL]=		s3dw_label_show;
 		s3dwcb_show[S3DW_TINPUT]=		s3dw_input_show;
+		s3dwcb_show[S3DW_TTEXTBOX]=		s3dw_textbox_show;
+		s3dwcb_show[S3DW_TSCROLLBAR]=	s3dw_scrollbar_show;
+
 		s3dwcb_hide[S3DW_TROOT]=		s3dw_nothing;
 		s3dwcb_hide[S3DW_TSURFACE]=		s3dw_surface_hide;
 		s3dwcb_hide[S3DW_TBUTTON]=		s3dw_button_hide;
 		s3dwcb_hide[S3DW_TLABEL]=		s3dw_label_hide;
 		s3dwcb_hide[S3DW_TINPUT]=		s3dw_input_hide;
+		s3dwcb_hide[S3DW_TTEXTBOX]=		s3dw_textbox_hide;
+		s3dwcb_hide[S3DW_TSCROLLBAR]=	s3dw_scrollbar_hide;
 		
 		s3dwcb_destroy[S3DW_TROOT]=		s3dw_root_destroy;
 		s3dwcb_destroy[S3DW_TCAM]=		s3dw_root_destroy;
@@ -88,6 +93,8 @@ s3dw_widget *s3dw_getroot()
 		s3dwcb_destroy[S3DW_TBUTTON]=	s3dw_button_destroy;
 		s3dwcb_destroy[S3DW_TLABEL]=	s3dw_label_destroy;
 		s3dwcb_destroy[S3DW_TINPUT]=	s3dw_input_destroy;
+		s3dwcb_destroy[S3DW_TTEXTBOX]=	s3dw_textbox_destroy;
+		s3dwcb_destroy[S3DW_TSCROLLBAR]=s3dw_scrollbar_destroy;
 
 		s3dwcb_click[S3DW_TROOT]=		s3dw_click_nothing;
 		s3dwcb_click[S3DW_TCAM]=		s3dw_click_nothing;
@@ -95,6 +102,8 @@ s3dw_widget *s3dw_getroot()
 		s3dwcb_click[S3DW_TBUTTON]=		s3dw_button_event_click;
 		s3dwcb_click[S3DW_TLABEL]=		s3dw_label_event_click;
 		s3dwcb_click[S3DW_TINPUT]=		s3dw_input_event_click;
+		s3dwcb_click[S3DW_TTEXTBOX]=	s3dw_textbox_event_click;
+		s3dwcb_click[S3DW_TSCROLLBAR]=	s3dw_scrollbar_event_click;
 
 		s3dwcb_key[S3DW_TROOT]=			s3dw_key_nothing;
 		s3dwcb_key[S3DW_TCAM]=			s3dw_key_nothing;
@@ -102,6 +111,8 @@ s3dw_widget *s3dw_getroot()
 		s3dwcb_key[S3DW_TBUTTON]=		s3dw_button_event_key;
 		s3dwcb_key[S3DW_TLABEL]=		s3dw_label_event_key;
 		s3dwcb_key[S3DW_TINPUT]=		s3dw_input_event_key;
+		s3dwcb_key[S3DW_TTEXTBOX]=		s3dw_key_nothing;
+		s3dwcb_key[S3DW_TSCROLLBAR]=	s3dw_key_nothing;
 
 	} 
 	return root;
