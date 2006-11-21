@@ -49,11 +49,12 @@ struct wlan_network {
 	char *ssid;
 	int type;
 	int channel;
+	int num_wlan_clients;
 	int visible;
 	float pos_vec[3];
 	float mov_vec[3];
 	int obj_id;
-	int desc_id;
+	int rotation;
 
 };
 
@@ -63,7 +64,7 @@ struct wlan_client {
 	struct list_head list;
 	char bssid[18];
 	char mac[18];
-	int ip[16];
+	char ip[16];
 	struct wlan_network *wlan_network;
 	int visible;
 	float pos_vec[3];
@@ -79,8 +80,12 @@ void *alloc_memory( int len );
 struct wlan_network *get_wlan_network( char *bssid );
 struct wlan_network *find_wlan_network( char *bssid );
 struct wlan_client *get_wlan_client( char *mac );
+int gui_main( void *unused );
 
 
 
 extern struct list_head Network_list;
 extern struct list_head Client_list;
+extern pthread_mutex_t Network_list_mutex;
+extern pthread_mutex_t Client_list_mutex;
+extern int Kism3d_aborted;

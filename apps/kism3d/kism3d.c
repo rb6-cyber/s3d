@@ -29,6 +29,7 @@
 #include <string.h>   /* memset(), strncmp(), strncpy() */
 #include <errno.h>    /* errno */
 #include <unistd.h>   /* write() */
+#include <pthread.h>
 
 #include <sys/socket.h> /* inet_pton(), inet_aton() */
 #include <sys/types.h>
@@ -39,6 +40,11 @@
 DEFINE_LIST_HEAD(kismet_src_list);
 DEFINE_LIST_HEAD(Network_list);
 DEFINE_LIST_HEAD(Client_list);
+
+pthread_mutex_t Network_list_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t Client_list_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+int Kism3d_aborted = 0;
 
 
 
@@ -183,6 +189,8 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 				}
 
+				pthread_mutex_lock( &Network_list_mutex );
+
 				wlan_network = get_wlan_network( bssid );
 
 				if ( ( wlan_network->type != -1 ) && ( wlan_network->channel != -1 ) && ( wlan_network->ssid != NULL ) ) {
@@ -201,6 +209,7 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 				strncpy( wlan_network->ssid, ssid, strlen( ssid ) );
 
+				pthread_mutex_unlock( &Network_list_mutex );
 
 				/* printf( "network found - bssid %s, type %s, channel %s, ssid %s\n", bssid, type, channel, ssid ); */
 
@@ -253,7 +262,21 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 				strncpy( wlan_client->bssid, bssid, 18 );
 				strncpy( wlan_client->ip, ip, 16 );
-				wlan_client->wlan_network = find_wlan_network( wlan_client->bssid );
+
+				wlan_network = find_wlan_network( wlan_client->bssid );
+
+				if ( wlan_client->wlan_network != wlan_network ) {
+
+					if ( wlan_client->wlan_network != NULL )
+						wlan_client->wlan_network->num_wlan_clients--;
+
+					if ( wlan_network != NULL )
+						wlan_network->num_wlan_clients++;
+
+					wlan_client->wlan_network = wlan_network;
+
+				}
+
 
 				/* printf( "client found - bssid %s, mac %s, ip %s\n", bssid, mac, ip ); */
 
@@ -284,9 +307,10 @@ int main( int argc, char *argv[] ) {
 	struct in_addr tmp_ip_holder;
 	struct kismet_src *kismet_src;
 	struct list_head *kismet_pos, *kismet_pos_tmp;
-	struct wlan_network *wlan_network;
-	struct wlan_client *wlan_client;
+	/* struct wlan_network *wlan_network;
+	struct wlan_client *wlan_client; */
 	struct timeval tv;
+	pthread_t s3d_thread_id;
 	int num_kismet_sources = 0, found_args = 1, max_sock = -1, res, status;
 	char *colon_ptr, buff[1000];
 	fd_set wait_sockets, tmp_wait_sockets;
@@ -395,22 +419,25 @@ int main( int argc, char *argv[] ) {
 	}
 
 
-	while ( num_kismet_sources > 0 ) {
+	pthread_create( &s3d_thread_id, NULL, &gui_main, NULL );
+
+
+	while ( ( num_kismet_sources > 0 ) && !( Kism3d_aborted ) ) {
 
 		tv.tv_sec = 0;
 		tv.tv_usec = 250;
 
 		tmp_wait_sockets = wait_sockets;
 
-		res = select(max_sock + 1, &tmp_wait_sockets, NULL, NULL, &tv);
+		res = select( max_sock + 1, &tmp_wait_sockets, NULL, NULL, &tv );
 
 		if ( res > 0 ) {
 
 			max_sock = -1;
 
-			list_for_each_safe(kismet_pos, kismet_pos_tmp, &kismet_src_list) {
+			list_for_each_safe( kismet_pos, kismet_pos_tmp, &kismet_src_list ) {
 
-				kismet_src = list_entry(kismet_pos, struct kismet_src, list);
+				kismet_src = list_entry( kismet_pos, struct kismet_src, list );
 
 				if ( FD_ISSET( kismet_src->sock, &tmp_wait_sockets ) ) {
 
@@ -488,7 +515,7 @@ int main( int argc, char *argv[] ) {
 
 		}
 
-		printf( "\nCurrent network list:\n" );
+		/* printf( "\nCurrent network list:\n" );
 
 		list_for_each_safe(kismet_pos, kismet_pos_tmp, &Network_list) {
 
@@ -506,7 +533,26 @@ int main( int argc, char *argv[] ) {
 
 			printf( "   => %s belonging to %s\n", wlan_client->mac, ( wlan_client->wlan_network == NULL ? "unknown" : wlan_client->wlan_network->bssid ) );
 
+		} */
+
+	}
+
+
+	if ( Kism3d_aborted ) {
+
+		printf( "Closing all sockets ... \n" );
+		list_for_each(kismet_pos, &kismet_src_list) {
+
+			kismet_src = list_entry( kismet_pos, struct kismet_src, list );
+
+			close( kismet_src->sock );
+
 		}
+
+	} else {
+
+		Kism3d_aborted = 1;
+		pthread_join( s3d_thread_id, NULL );
 
 	}
 

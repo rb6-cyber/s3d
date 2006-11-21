@@ -22,3 +22,155 @@
  */
 
 
+
+#include "kism3d.h"
+#include <s3d.h>
+#include <math.h>	/* M_PI, cos(), sin() */
+#include <stdlib.h>	/* malloc(), free() */
+#include <time.h>	/* nanosleep()  */
+#include <pthread.h>
+
+
+
+int oid;
+int r;
+
+int wire_sphere(int slices, int stacks)
+{
+	int x,y,i,o;
+	int num_v,num_l;
+	float *v,*n;			/* vertices, normals */
+	float alpha, beta;
+	unsigned int *l;	/* lines */
+	num_v=(stacks+1) * slices;
+	num_l=stacks * slices+ (stacks-1) * slices; /* vertical + horizontal */
+	v=malloc(sizeof(float) * 3 * num_v);
+	n=malloc(sizeof(float) * 6 * num_l);
+	l=malloc(sizeof(unsigned int) * 3 * num_l);
+	i=0;
+	for (x=0;x<slices;x++) {
+		alpha=(x*360.0/slices)*M_PI/180.0;
+		for (y=0;y<(stacks+1);y++) {
+			beta=((y*180/slices)-90.0)*M_PI/180.0;
+			v[i*3+0]=cos(alpha) * cos(beta);
+			v[i*3+1]=sin(beta);
+			v[i*3+2]=sin(alpha) * cos(beta);
+			i++;
+		}
+	}
+	i=0;
+	for (x=0;x<slices;x++) {
+		for (y=0;y<stacks;y++) {
+			if ((y!=0) && (y!=stacks)) /* no horizontal lines at the poles */
+			{
+				l[i*3+0]=(x*(stacks+1))+y;
+				l[i*3+1]=(((x+1)%slices)*(stacks+1))+y;
+				l[i*3+2]=0;
+				n[i*6+0]=v[ l[i*3+0]*3 + 0];
+				n[i*6+1]=v[ l[i*3+0]*3 + 1];
+				n[i*6+2]=v[ l[i*3+0]*3 + 2];
+				n[i*6+3]=v[ l[i*3+1]*3 + 0];
+				n[i*6+4]=v[ l[i*3+1]*3 + 1];
+				n[i*6+5]=v[ l[i*3+1]*3 + 2];
+
+				i++;
+
+			}
+			/* vertical lines */
+			l[i*3+0]=(x*(stacks+1))+y;
+			l[i*3+1]=(x*(stacks+1))+y+1;
+			l[i*3+2]=0;
+			n[i*6+0]=v[ l[i*3+0]*3 + 0];
+			n[i*6+1]=v[ l[i*3+0]*3 + 1];
+			n[i*6+2]=v[ l[i*3+0]*3 + 2];
+			n[i*6+3]=v[ l[i*3+1]*3 + 0];
+			n[i*6+4]=v[ l[i*3+1]*3 + 1];
+			n[i*6+5]=v[ l[i*3+1]*3 + 2];
+			i++;
+
+		}
+	}
+	o=s3d_new_object();
+	s3d_push_material(o,0,0,1,
+			  1,0,0,
+			  0,1,0);
+	s3d_push_vertices(o,v,num_v);
+	s3d_push_lines(o,l,num_l);
+	s3d_load_line_normals(o,n,0,num_l);
+	free(v);
+	free(n);
+	free(l);
+	return(o);
+}
+
+
+
+int handle_networks() {
+
+	struct list_head *network_pos;
+	struct wlan_network *wlan_network;
+
+
+	pthread_mutex_lock( &Network_list_mutex );
+
+	list_for_each(network_pos, &Network_list) {
+
+		wlan_network = list_entry(network_pos, struct wlan_network, list);
+
+		if ( wlan_network->visible ) {
+
+			if ( wlan_network->obj_id == -1 ) {
+
+				wlan_network->obj_id = wire_sphere(30,30);
+				s3d_scale( wlan_network->obj_id, 5 );
+				s3d_translate( wlan_network->obj_id, wlan_network->pos_vec[0], wlan_network->pos_vec[1], wlan_network->pos_vec[2] );
+				s3d_flags_on( wlan_network->obj_id, S3D_OF_VISIBLE );
+
+			}
+
+			wlan_network->rotation = ( wlan_network->rotation + 1 ) % 360;
+			s3d_rotate( wlan_network->obj_id, 0, wlan_network->rotation, 0 );
+
+		}
+
+	}
+
+
+	pthread_mutex_unlock( &Network_list_mutex );
+
+	return(0);
+
+}
+
+
+
+void mainloop() {
+
+	struct timespec sleeptime = { 0, 100 * 1000 * 1000 };   /* 100 mili seconds */
+
+
+	handle_networks();
+
+	if ( Kism3d_aborted )
+		s3d_quit();
+
+	nanosleep( &sleeptime, NULL );
+
+}
+
+
+
+int gui_main( void *unused ) {
+
+	if ( !s3d_init( NULL, NULL, "kism3d" ) ) {
+
+		s3d_mainloop( mainloop );
+
+		s3d_quit();
+
+	}
+
+	Kism3d_aborted = 1;
+	return(0);
+
+}

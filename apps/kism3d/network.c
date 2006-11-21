@@ -52,6 +52,8 @@ struct wlan_network *get_wlan_network( char *bssid ) {
 
 	wlan_network->ssid = NULL;
 
+	wlan_network->num_wlan_clients = 0;
+
 	wlan_network->visible = 1;
 
 	wlan_network->pos_vec[0] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
@@ -60,7 +62,7 @@ struct wlan_network *get_wlan_network( char *bssid ) {
 	wlan_network->mov_vec[0] = wlan_network->mov_vec[1] = wlan_network->mov_vec[2] = 0.0;
 
 	wlan_network->obj_id = -1;
-	wlan_network->desc_id = -1;
+	wlan_network->rotation = 0;
 
 	list_add_tail(&wlan_network->list, &Network_list);
 
