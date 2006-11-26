@@ -26,6 +26,7 @@
 #include <stdlib.h>			/* strtof(),strtod(),strtol() */
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+static int layerid;
 object_t *parse_kismet_node(xmlNodePtr cur)
 {
 	node_t *node;
@@ -34,11 +35,13 @@ object_t *parse_kismet_node(xmlNodePtr cur)
 
 	node=node_new();
 	attr=cur->properties;
-	
+
+	node->base.layerid=layerid;
+	node->base.id=-1;				/* let database decide */
 	for (attr=cur->properties;attr;attr=attr->next)
 	{
-		if (0==strcmp((char *)attr->name,"number")) 		node->base.id=		strtol((char *)attr->children->content,NULL,10);
-		else if (0==strcmp((char *)attr->name,"wep")) 		tag_add(OBJECT_T(node),"wifi_wep",(char *)attr->children->content);
+/*		if (0==strcmp((char *)attr->name,"number")) 		node->base.id=		strtol((char *)attr->children->content,NULL,10);
+		else */if (0==strcmp((char *)attr->name,"wep")) 		tag_add(OBJECT_T(node),"wifi_wep",(char *)attr->children->content);
 		else if (0==strcmp((char *)attr->name,"type")) 		tag_add(OBJECT_T(node),"wifi_type",(char *)attr->children->content);
 	}
 	for (kids=cur->children;kids;kids=kids->next)
@@ -91,6 +94,8 @@ layer_t *parse_kismet(char *buf, int length)
 		xmlFreeDoc(doc);
 		return(NULL);
 	}
+	layerid=db_insert_layer("kismet");
+	printf("kismet layerid is %d\n",layerid);
 	for (cur=cur->children;cur!=NULL; cur=cur->next)
 	{
 		if (cur->type==XML_ELEMENT_NODE)
@@ -98,11 +103,12 @@ layer_t *parse_kismet(char *buf, int length)
 			if (0==strcmp((char *)cur->name,"wireless-network"))
 			{
 				if (NULL!=(obj=parse_kismet_node(cur)))
-					layer->tree=avl_insert(layer->tree, obj);
+					db_insert_object(obj);
 				else fprintf(stderr,"bad node\n"); 
 			} 
 		}
 	}
+	db_flush();
 	xmlFreeDoc(doc);
 	return(layer);
 }

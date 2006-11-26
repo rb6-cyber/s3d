@@ -27,6 +27,7 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include "http_fetcher.h"
+static int layerid;
 int parse_osm_tags(object_t *obj, xmlNodePtr cur)
 {
 	
@@ -35,7 +36,7 @@ int parse_osm_tags(object_t *obj, xmlNodePtr cur)
 	char *v,*k;
 	tag_t *t;
 	int n;
-	
+	v=k=NULL;
 	n=0;
 	for (c=cur->children;c!=NULL; c=c->next)
 	{
@@ -88,6 +89,7 @@ object_t *parse_osm_way(xmlNodePtr cur)
 
 	way=way_new();
 	
+	way->base.layerid=layerid;
 	for (attr=cur->properties;attr;attr=attr->next)
 		if (0==strcmp((char *)attr->name,"id")) 			way->base.id=	strtol((char *)attr->children->content,NULL,10);
 	/* count segments */
@@ -126,6 +128,7 @@ object_t *parse_osm_segment(xmlNodePtr cur)
 
 	segment=segment_new();
 	
+	segment->base.layerid=layerid;
 	for (attr=cur->properties;attr;attr=attr->next)
 	{
 		
@@ -149,6 +152,7 @@ object_t *parse_osm_node(xmlNodePtr cur)
 	node=node_new();
 	attr=cur->properties;
 	
+	node->base.layerid=layerid;
 	for (attr=cur->properties;attr;attr=attr->next)
 	{
 		if (0==strcmp((char *)attr->name,"id")) 			node->base.id=		strtol((char *)attr->children->content,NULL,10);
@@ -201,6 +205,7 @@ layer_t *parse_osm(char *buf, int length)
 	xmlNodePtr cur;
 	layer_t *layer=layer_new();
 	object_t *obj;
+	int i=0;
 	
 
 	doc = xmlReadMemory(buf, length, "noname.xml", NULL, 0);
@@ -214,29 +219,26 @@ layer_t *parse_osm(char *buf, int length)
 		xmlFreeDoc(doc);
 		return(NULL);
 	}
+	layerid=db_insert_layer("osm");
+	printf("osm layerid is %d\n",layerid);
 	for (cur=cur->children;cur!=NULL; cur=cur->next)
 	{
 		if (cur->type==XML_ELEMENT_NODE)
 		{
-			if (0==strcmp((char *)cur->name,"node"))
-			{
-				if (NULL!=(obj=parse_osm_node(cur)))
-					layer->tree=avl_insert(layer->tree, obj);
-				else fprintf(stderr,"bad node\n"); 
-			} else if (0==strcmp((char *)cur->name,"segment"))
-			{
-				if (NULL!=(obj=parse_osm_segment(cur)))
-					layer->tree=avl_insert(layer->tree, obj);
-				else fprintf(stderr,"bad segment\n");
-			} else if (0==strcmp((char *)cur->name,"way"))
-			{
-				if (NULL!=(obj=parse_osm_way(cur)))
-					layer->tree=avl_insert(layer->tree, obj);
-				else fprintf(stderr,"bad way\n");
-			}
+			obj=NULL;
+			if (0==strcmp((char *)cur->name,"node"))				obj=parse_osm_node(cur);
+			else if (0==strcmp((char *)cur->name,"segment"))		obj=parse_osm_segment(cur);
+			else if (0==strcmp((char *)cur->name,"way"))			obj=parse_osm_way(cur);
+			if (obj!=NULL)
+				db_insert_object(obj);
+			else
+				fprintf(stderr,"bad object\n");
+			if ((i++)%100==0) {printf(".");fflush(stdout);}
 		}
 	}
+	printf("\n");
 	xmlFreeDoc(doc);
+	db_flush();
 
 	return(layer);
 }

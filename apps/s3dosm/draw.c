@@ -91,10 +91,11 @@ void draw_add_vertices(object_t *t, void *data)
 }
 
 void draw_add_segments(object_t *t, void *data)
-{
+{/*
 	struct vdata *v=data;
 	tag_t *tag;
 	int color;
+	
 	if (t->type==T_SEGMENT)
 	{
 		node_t *from, *to;
@@ -103,7 +104,7 @@ void draw_add_segments(object_t *t, void *data)
 		to=NODE_T(avl_find(v->layer->tree,seg->to));
 
 		color=0;
-		/* TODO: look at the ways using it, not the segments  */
+		/ * TODO: look at the ways using it, not the segments  * /
 		if (NULL!=(tag=tag_get(OBJECT_T(seg), "highway")))
 		{
 			if (0==(strcmp(tag->v,"motorway"))) color=1;
@@ -117,7 +118,7 @@ void draw_add_segments(object_t *t, void *data)
 			s3d_push_line(v->oid,from->vid,to->vid,color);
 			v->layer->visible=1;
 		}
-	}
+	}*/
 }
 int draw_layer(layer_t *layer)
 {
@@ -136,8 +137,9 @@ int draw_layer(layer_t *layer)
 	s3d_push_material(oid,1.0,1.0,0.0,	1.0,1.0,0.0, 	1.0,1.0,0.0);	/* primary */
 	s3d_push_material(oid,0.8,0.8,0.2,	0.8,0.8,0.2, 	0.8,0.8,0.2);	/* secondary */
 	s3d_push_material(oid,0.7,0.7,0.4,	0.7,0.7,0.4, 	0.7,0.7,0.4);	/* secondary */
+	/*
 	avl_tree_trav(layer->tree,draw_add_vertices,(void *)&v);
-	avl_tree_trav(layer->tree,draw_add_segments,(void *)&v);
+	avl_tree_trav(layer->tree,draw_add_segments,(void *)&v);*/
 	layer->center_lo=(v.lonsum)/v.n;
 	layer->center_la=(v.latsum)/v.n;	
 	s3d_flags_on(oid,S3D_OF_VISIBLE);

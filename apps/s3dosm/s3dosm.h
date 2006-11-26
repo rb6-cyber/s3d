@@ -62,6 +62,7 @@ struct _tag_t {
 
 struct _object_t {
 	ID_T 		 id;		/* id of this object */
+	ID_T		 layerid;
 	int 		 oid;		/* s3d oid */
 	int 		 type;		/* type of this object */
 	/* avl stuff */
@@ -121,15 +122,6 @@ layer_t *load_osm_web(float minlon, float minlat, float maxlon, float maxlat);
 /* kismet.c */
 layer_t *parse_kismet(char *buf, int length);
 layer_t *load_kismet_file(char *filename);
-void 		 avl_tree_trav(object_t *t, avl_func func, void *data);
-object_t 	*avl_find(object_t *t, int val);
-object_t 	*avl_rotate_right(object_t *t);
-object_t	*avl_rotate_left(object_t *t);
-object_t	*avl_insert(object_t *t, object_t *nn);
-object_t 	*avl_leftmost(object_t *t);
-object_t 	*avl_rightmost(object_t *t);
-object_t 	*avl_remove(object_t *t, object_t *nn);
-int 		 avl_height(object_t *t);
 /* draw.c */
 void draw_all_layers();
 void calc_earth_to_eukl(double lon, double lat, double *x);
@@ -146,3 +138,13 @@ void tag_free(tag_t *tag);
 /* io.c */
 char *read_file(char *fname, int *fsize);
 int process_args(int argc, char **argv);
+/* db.c */
+int db_insert_node(node_t *node);
+int db_insert_segment(segment_t *seg);
+int db_insert_way(way_t *way);
+int db_insert_object(object_t *obj);
+int db_init(char *dbFile);
+int db_quit();
+int db_create();
+int db_insert_layer(char *layer_name);
+void db_flush();

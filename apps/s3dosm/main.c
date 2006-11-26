@@ -34,19 +34,26 @@ void mainloop()
 }
 int init(int argc, char **argv)
 {
+	if (db_init(":memory:")) return(-1);
+	if (db_create()) return(-1);
 	if (process_args(argc,argv)) return(-1);
 	nav_init();
-	draw_all_layers();
+/*	draw_all_layers();*/
 	nav_autocenter();
 	return(0);
-
+}
+int quit()
+{
+	s3d_quit();
+	db_quit();
+	return(0);
 }
 int main(int argc, char **argv)
 {
 	if (!s3d_init(&argc,&argv,"s3dosm"))
 	{
 		if (!init(argc, argv)) s3d_mainloop(mainloop);
-		s3d_quit();
+		quit();
 	} else return(-1);
 	return(0);
 }
