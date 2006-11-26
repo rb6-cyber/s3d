@@ -106,6 +106,7 @@ dnl ##################################### LIBS3D ###############################
 PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.1.0, [:], [AC_MSG_ERROR([Please install fontconfig (version 2.1.0 or higher)])])
 PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.5.0, [:], [AC_MSG_ERROR([Please install freetype2 (version 9.5.0 or higher)])])
 
+PKG_CHECK_MODULES(SQLITE3, sqlite3 >= 3.0, [HAVE_SQLITE3="yes"], [])
 # libxml2
 AM_PATH_XML2(2.0.0, [HAVE_XML="yes"], [])
 
@@ -121,10 +122,22 @@ dnl ##################################### EXAMPLES / APPS ######################
 
 fi
 		
+if test x"${HAVE_SQLITE3}" = xyes ; then
+	LIBSQLITE3_CFLAGS=""
+	LIBSQLITE3_LIBS="-lsqlite3"
+	AC_SUBST(LIBSQLITE3_CFLAGS)
+	AC_SUBST(LIBSQLITE3_LIBS)
+else
+dnl ##################################### EXAMPLES / APPS ######################
+	WARNS="$WARNS
+ ### Sorry, you lack the sqlite3 library to compile the s3dosm application."
+
+fi
 
 
 
-AM_CONDITIONAL([BUILD_S3DOSM], [test x"${HAVE_XML}" = xyes])
+
+AM_CONDITIONAL([BUILD_S3DOSM], [test x"${HAVE_XML}" = xyes && test x"${HAVE_SQLITE3}" = xyes])
 
 SIM_AC_HAVE_SIMAGE_IFELSE([
 	SIMAGE_CFLAGS=$sim_ac_simage_cppflags
@@ -236,12 +249,13 @@ AC_OUTPUT
 #	libs3d/libg3d/doc/api/Makefile
 #	libs3d/libg3d/m4/Makefile
 #	libs3d/libg3d/tests/Makefile
-
+if test "x$WARNS" != x; then
 echo "
 --------------------------------------------------------------------------------
-Warnings (not fatal, if any):
+Warnings (NOT FATAL, safe to ignore if you don't need any of those apps):
 $WARNS
 --------------------------------------------------------------------------------
 "
+fi
 
 echo "now use 'make' to compile and 'make install' to install"
