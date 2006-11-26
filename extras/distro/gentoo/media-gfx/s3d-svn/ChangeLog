@@ -1,5 +1,10 @@
 # ChangeLog for media-gfx/s3d-svn
 
+*s3d-svn-9999 (26 Nov 2006)
+
+  26 Nov 2006; Sven Eckelmann <sven.eckelmann@gmx.de> s3d-svn-9999.ebuild:
+  Added sqlite-3 as dependency.
+
 *s3d-svn-9999 (25 Oct 2006)
 
   25 Oct 2006; Sven Eckelmann <sven.eckelmann@gmx.de> s3d-svn-9999.ebuild:

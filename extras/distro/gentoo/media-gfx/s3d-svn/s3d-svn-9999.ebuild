@@ -17,6 +17,7 @@ DEPEND="${RDEPEND}
 	>=sys-devel/automake-1.9
 	sys-devel/flex
 	>=sys-devel/libtool-1.5
+	>=dev-db/sqlite-3
 	"
 RDEPEND="!media-gfx/s3d
 	>=media-libs/libsdl-1.2.7
