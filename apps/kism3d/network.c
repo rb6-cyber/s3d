@@ -62,9 +62,16 @@ struct wlan_network *get_wlan_network( char *bssid ) {
 	wlan_network->mov_vec[0] = wlan_network->mov_vec[1] = wlan_network->mov_vec[2] = 0.0;
 
 	wlan_network->obj_id = -1;
+	wlan_network->label_id = -1;
+
 	wlan_network->rotation = 0;
+	wlan_network->scale_factor = 0;
+
+	wlan_network->properties_changed = 1;
 
 	list_add_tail(&wlan_network->list, &Network_list);
+
+	Num_networks++;
 
 	return wlan_network;
 

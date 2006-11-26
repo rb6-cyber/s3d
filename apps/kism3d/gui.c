@@ -27,6 +27,7 @@
 #include <s3d.h>
 #include <math.h>	/* M_PI, cos(), sin() */
 #include <stdlib.h>	/* malloc(), free() */
+#include <stdio.h>      /* printf() */
 #include <time.h>	/* nanosleep()  */
 #include <pthread.h>
 
@@ -109,6 +110,9 @@ int handle_networks() {
 
 	struct list_head *network_pos;
 	struct wlan_network *wlan_network;
+	float real_node_pos_x, real_node_pos_z, label_str_len;
+	int network_index = 0;
+	char *label_str;
 
 
 	pthread_mutex_lock( &Network_list_mutex );
@@ -119,12 +123,49 @@ int handle_networks() {
 
 		if ( wlan_network->visible ) {
 
+			network_index++;
+
 			if ( wlan_network->obj_id == -1 ) {
 
 				wlan_network->obj_id = wire_sphere(30,30);
-				s3d_scale( wlan_network->obj_id, 5 );
-				s3d_translate( wlan_network->obj_id, wlan_network->pos_vec[0], wlan_network->pos_vec[1], wlan_network->pos_vec[2] );
 				s3d_flags_on( wlan_network->obj_id, S3D_OF_VISIBLE );
+
+			}
+
+			wlan_network->scale_factor = wlan_network->num_wlan_clients;
+			s3d_scale( wlan_network->obj_id, wlan_network->scale_factor );
+
+			real_node_pos_x = sin( ( 360 / Num_networks ) * network_index ) * ( M_PI / 180 ) * ( ( ( 100 * Num_networks ) / 2 * M_PI ) );
+			real_node_pos_z = cos( ( 360 / Num_networks ) * network_index ) * ( M_PI / 180 ) * ( ( ( 100 * Num_networks ) / 2 * M_PI ) );
+
+			if ( ( wlan_network->pos_vec[0] != real_node_pos_x ) || ( wlan_network->pos_vec[2] != real_node_pos_z ) ) {
+
+				if ( wlan_network->pos_vec[0] != real_node_pos_x )
+					wlan_network->pos_vec[0] += ( ( real_node_pos_x - wlan_network->pos_vec[0] ) * ( wlan_network->pos_vec[0] / real_node_pos_x ) );
+
+				if ( wlan_network->pos_vec[2] != real_node_pos_z )
+					wlan_network->pos_vec[2] += ( ( real_node_pos_z - wlan_network->pos_vec[2] ) * ( wlan_network->pos_vec[2] / real_node_pos_z ) );
+
+				s3d_translate( wlan_network->obj_id, wlan_network->pos_vec[0], wlan_network->pos_vec[1], wlan_network->pos_vec[2] );
+
+			}
+
+			if ( wlan_network->properties_changed ) {
+
+				wlan_network->properties_changed = 0;
+
+				if ( wlan_network->label_id != -1 )
+					s3d_del_object( wlan_network->label_id );
+
+
+				label_str = alloc_memory( 100 );
+				snprintf( label_str, 100, "%s\n%s", wlan_network->bssid, wlan_network->ssid );
+				label_str_len = 100;
+
+				wlan_network->label_id = s3d_draw_string( label_str, &label_str_len );
+				s3d_link( wlan_network->label_id, wlan_network->obj_id );
+				s3d_translate( wlan_network->label_id, - label_str_len / 2, -2, 0 );
+				s3d_flags_on( wlan_network->label_id, S3D_OF_VISIBLE );
 
 			}
 
@@ -164,7 +205,15 @@ int gui_main( void *unused ) {
 
 	if ( !s3d_init( NULL, NULL, "kism3d" ) ) {
 
-		s3d_mainloop( mainloop );
+		if ( s3d_select_font( "vera" ) ) {
+
+			printf( "font 'vera' not found\n" );
+
+		} else {
+
+			s3d_mainloop( mainloop );
+
+		}
 
 		s3d_quit();
 

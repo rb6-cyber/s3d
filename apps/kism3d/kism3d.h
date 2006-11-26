@@ -50,11 +50,14 @@ struct wlan_network {
 	int type;
 	int channel;
 	int num_wlan_clients;
+	int properties_changed;
 	int visible;
 	float pos_vec[3];
 	float mov_vec[3];
 	int obj_id;
+	int label_id;
 	int rotation;
+	int scale_factor;
 
 };
 
@@ -89,3 +92,4 @@ extern struct list_head Client_list;
 extern pthread_mutex_t Network_list_mutex;
 extern pthread_mutex_t Client_list_mutex;
 extern int Kism3d_aborted;
+extern int Num_networks;
