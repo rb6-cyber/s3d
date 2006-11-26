@@ -19,6 +19,7 @@ RDEPEND="!media-gfx/s3d-svn
 	>=media-libs/libsdl-1.2.7
 	>=media-libs/freetype-2
 	>=dev-libs/glib-2
+	media-fonts/ttf-bitstream-vera
 	media-libs/fontconfig
 	media-libs/mesa
 
