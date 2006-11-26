@@ -115,7 +115,7 @@ int user_main_sdl() {
 										errsf("SDL_SetVideoMode()",SDL_GetError());
 									graphics_reshape(event.resize.w,event.resize.h);
 									break;
-		case SDL_VIDEOEXPOSE:		s3dprintf(LOW,"SDL_VIDEOEXPOSE");break;
+		case SDL_VIDEOEXPOSE:		s3dprintf(VLOW,"SDL_VIDEOEXPOSE");break;
 		case SDL_USEREVENT:			s3dprintf(VLOW,"SDL_USEREVENT");break;
 		case SDL_JOYAXISMOTION:		s3dprintf(VLOW,"SDL_JOYAXISMOTION");break;
 		case SDL_JOYBALLMOTION:		s3dprintf(VLOW,"SDL_JOYBALLMOTION");break;
