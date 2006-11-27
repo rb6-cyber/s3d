@@ -106,7 +106,7 @@ int wire_sphere(int slices, int stacks)
 	return(o);
 }
 
-
+#define BSSID_SCALE		0.2
 
 int handle_networks() {
 
@@ -142,8 +142,8 @@ int handle_networks() {
 			s3d_translate( wlan_network->wrsphr_id, 0, -6 + wlan_network->scale_fac, wlan_network->scale_fac );
 			s3d_scale( wlan_network->obj_id, wlan_network->scale_fac );
 
-			real_node_pos_x = sin( ( 360 / Num_networks ) * network_index ) * ( M_PI / 180 ) * ( ( ( 100 * Num_networks ) / 2 * M_PI ) );
-			real_node_pos_z = cos( ( 360 / Num_networks ) * network_index ) * ( M_PI / 180 ) * ( ( ( 100 * Num_networks ) / 2 * M_PI ) );
+			real_node_pos_x = sin( 2.0* M_PI * network_index / ((float) Num_networks ) ) * ( ( ( 1 * Num_networks ) / 2 * M_PI ) );
+			real_node_pos_z = cos( 2.0* M_PI * network_index / ((float) Num_networks ) ) * ( ( ( 1 * Num_networks ) / 2 * M_PI ) );
 
 			if ( ( fabs( wlan_network->pos_vec[0] - real_node_pos_x ) > 0.5 ) || ( fabs( wlan_network->pos_vec[2] - real_node_pos_z ) > 0.5 ) ) {
 
@@ -173,7 +173,7 @@ int handle_networks() {
 					wlan_network->bssid_id = s3d_draw_string( wlan_network->bssid, &wlan_network->bssid_len );
 					s3d_link( wlan_network->bssid_id, wlan_network->obj_id );
 					s3d_translate( wlan_network->bssid_id, - wlan_network->bssid_len / 2, -2, 0 );
-					s3d_scale( wlan_network->bssid_id, 0.2 );
+					s3d_scale( wlan_network->bssid_id, BSSID_SCALE );
 					s3d_flags_on( wlan_network->bssid_id, S3D_OF_VISIBLE );
 
 				}
@@ -211,7 +211,7 @@ int handle_networks() {
 
 			s3d_rotate( wlan_network->bssid_id, 0, angle , 0 );
 
-			s3d_translate( wlan_network->bssid_id, -cos(angle_rad) * wlan_network->bssid_len / 2 ,-1.5, sin(angle_rad) * wlan_network->bssid_len / 2 );
+			s3d_translate( wlan_network->bssid_id, -cos(angle_rad) * BSSID_SCALE * wlan_network->bssid_len / 2 ,-1.5, sin(angle_rad) * BSSID_SCALE * wlan_network->bssid_len / 2 );
 
 			wlan_network->rotation = ( wlan_network->rotation + 1 ) % 360;
 			s3d_rotate( wlan_network->wrsphr_id, 0, wlan_network->rotation, 0 );
