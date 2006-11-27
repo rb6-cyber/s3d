@@ -25,6 +25,7 @@
 
 #include "kism3d.h"
 #include <s3d.h>
+#include <s3dw.h>
 #include <math.h>	/* M_PI, cos(), sin() */
 #include <stdlib.h>	/* malloc(), free() */
 #include <stdio.h>      /* printf() */
@@ -33,8 +34,9 @@
 
 
 
-int oid;
-int r;
+float CamPosition[2][3];	/* CamPosition[trans|rot][x-z] */
+
+
 
 int wire_sphere(int slices, int stacks)
 {
@@ -110,7 +112,8 @@ int handle_networks() {
 
 	struct list_head *network_pos;
 	struct wlan_network *wlan_network;
-	float real_node_pos_x, real_node_pos_z, label_str_len;
+	float tmp_mov_vec[3], desc_norm_vec[3] = { 0, 0, -1 };
+	float real_node_pos_x, real_node_pos_z, angle, angle_rad;
 	int network_index = 0;
 	char *label_str;
 
@@ -127,50 +130,90 @@ int handle_networks() {
 
 			if ( wlan_network->obj_id == -1 ) {
 
-				wlan_network->obj_id = wire_sphere(30,30);
-				s3d_flags_on( wlan_network->obj_id, S3D_OF_VISIBLE );
+				wlan_network->obj_id = s3d_new_object();
+				wlan_network->wrsphr_id = wire_sphere(30,30);
+				s3d_link( wlan_network->wrsphr_id, wlan_network->obj_id );
+				s3d_flags_on( wlan_network->wrsphr_id, S3D_OF_VISIBLE );
 
 			}
 
-			wlan_network->scale_factor = wlan_network->num_wlan_clients;
-			s3d_scale( wlan_network->obj_id, wlan_network->scale_factor );
+
+			wlan_network->scale_fac = wlan_network->num_wlan_clients + 2;
+			s3d_translate( wlan_network->wrsphr_id, 0, -6 + wlan_network->scale_fac, 0 );
+			s3d_scale( wlan_network->obj_id, wlan_network->scale_fac );
 
 			real_node_pos_x = sin( ( 360 / Num_networks ) * network_index ) * ( M_PI / 180 ) * ( ( ( 100 * Num_networks ) / 2 * M_PI ) );
 			real_node_pos_z = cos( ( 360 / Num_networks ) * network_index ) * ( M_PI / 180 ) * ( ( ( 100 * Num_networks ) / 2 * M_PI ) );
 
-			if ( ( wlan_network->pos_vec[0] != real_node_pos_x ) || ( wlan_network->pos_vec[2] != real_node_pos_z ) ) {
+			if ( ( fabs( wlan_network->pos_vec[0] - real_node_pos_x ) > 0.5 ) || ( fabs( wlan_network->pos_vec[2] - real_node_pos_z ) > 0.5 ) ) {
 
-				if ( wlan_network->pos_vec[0] != real_node_pos_x )
-					wlan_network->pos_vec[0] += ( ( real_node_pos_x - wlan_network->pos_vec[0] ) * ( wlan_network->pos_vec[0] / real_node_pos_x ) );
+				if ( fabs( wlan_network->pos_vec[0] - real_node_pos_x ) > 0.5 )
+					wlan_network->pos_vec[0] = ( ( wlan_network->pos_vec[0] * 9 + real_node_pos_x ) / 10 );
 
-				if ( wlan_network->pos_vec[2] != real_node_pos_z )
-					wlan_network->pos_vec[2] += ( ( real_node_pos_z - wlan_network->pos_vec[2] ) * ( wlan_network->pos_vec[2] / real_node_pos_z ) );
+				if ( fabs( wlan_network->pos_vec[2] - real_node_pos_z ) > 0.5 )
+					wlan_network->pos_vec[2] = ( ( wlan_network->pos_vec[2] * 9 + real_node_pos_z ) / 10 );
 
 				s3d_translate( wlan_network->obj_id, wlan_network->pos_vec[0], wlan_network->pos_vec[1], wlan_network->pos_vec[2] );
 
 			}
 
-			if ( wlan_network->properties_changed ) {
+			if ( wlan_network->props_changed ) {
 
-				wlan_network->properties_changed = 0;
+				wlan_network->props_changed = 0;
 
-				if ( wlan_network->label_id != -1 )
-					s3d_del_object( wlan_network->label_id );
+				if ( wlan_network->ssid_id != -1 )
+					s3d_del_object( wlan_network->ssid_id );
 
+				if ( wlan_network->misc_id != -1 )
+					s3d_del_object( wlan_network->misc_id );
+
+
+				if ( wlan_network->bssid_id == -1 ) {
+
+					wlan_network->bssid_id = s3d_draw_string( wlan_network->bssid, &wlan_network->bssid_len );
+					s3d_link( wlan_network->bssid_id, wlan_network->obj_id );
+					s3d_translate( wlan_network->bssid_id, - wlan_network->bssid_len / 2, -2, 0 );
+					s3d_flags_on( wlan_network->bssid_id, S3D_OF_VISIBLE );
+
+				}
+
+				wlan_network->ssid_id = s3d_draw_string( wlan_network->ssid, NULL );
+				s3d_link( wlan_network->ssid_id, wlan_network->bssid_id );
+				s3d_translate( wlan_network->ssid_id, 0, -2, 0 );
+				s3d_flags_on( wlan_network->ssid_id, S3D_OF_VISIBLE );
 
 				label_str = alloc_memory( 100 );
-				snprintf( label_str, 100, "%s\n%s", wlan_network->bssid, wlan_network->ssid );
-				label_str_len = 100;
+				snprintf( label_str, 100, "Type: %s, CH: %i, Clients: %i", ( wlan_network->type == 0 ? "Managed" : ( wlan_network->type == 1 ? "Ad-Hoc" : ( wlan_network->type == 2 ? "Prober" : "unknown" ) ) ), wlan_network->chan, wlan_network->num_wlan_clients );
 
-				wlan_network->label_id = s3d_draw_string( label_str, &label_str_len );
-				s3d_link( wlan_network->label_id, wlan_network->obj_id );
-				s3d_translate( wlan_network->label_id, - label_str_len / 2, -2, 0 );
-				s3d_flags_on( wlan_network->label_id, S3D_OF_VISIBLE );
+				wlan_network->misc_id = s3d_draw_string( label_str, NULL );
+				s3d_link( wlan_network->misc_id, wlan_network->ssid_id );
+				s3d_translate( wlan_network->misc_id, 0, -2, 0 );
+				s3d_flags_on( wlan_network->misc_id, S3D_OF_VISIBLE );
 
 			}
 
+			/* rotate network description so that it is always readable */
+			tmp_mov_vec[0] = CamPosition[0][0] - wlan_network->pos_vec[0];
+			tmp_mov_vec[1] = 0;   /* we are not interested in the y value */
+			tmp_mov_vec[2] = CamPosition[0][2] - wlan_network->pos_vec[2];
+
+			angle = s3d_vector_angle( desc_norm_vec, tmp_mov_vec );
+
+			/* take care of inverse cosinus */
+			if ( tmp_mov_vec[0] > 0 ) {
+				angle_rad = 90.0/M_PI - angle;
+				angle = 180 - ( 180.0/M_PI * angle );
+			} else {
+				angle_rad = 90.0/M_PI + angle;
+				angle = 180 + ( 180.0/M_PI * angle );
+			}
+
+			s3d_rotate( wlan_network->bssid_id, 0, angle , 0 );
+
+			s3d_translate( wlan_network->bssid_id, -cos(angle_rad) * wlan_network->bssid_len / 2 ,-1.5, sin(angle_rad) * wlan_network->bssid_len / 2 );
+
 			wlan_network->rotation = ( wlan_network->rotation + 1 ) % 360;
-			s3d_rotate( wlan_network->obj_id, 0, wlan_network->rotation, 0 );
+			s3d_rotate( wlan_network->wrsphr_id, 0, wlan_network->rotation, 0 );
 
 		}
 
@@ -178,6 +221,38 @@ int handle_networks() {
 
 
 	pthread_mutex_unlock( &Network_list_mutex );
+
+	return(0);
+
+}
+
+
+
+/***
+ *
+ * eventhandler when object change by user
+ * such as Cam
+ *
+ ***/
+
+int object_info(struct s3d_evt *hrmz) {
+
+	struct s3d_obj_info *inf;
+
+
+	inf = (struct s3d_obj_info *)hrmz->buf;
+	s3dw_object_info(hrmz);
+
+	if ( inf->object == 0 ) {
+
+		CamPosition[0][0] = inf->trans_x;
+		CamPosition[0][1] = inf->trans_y;
+		CamPosition[0][2] = inf->trans_z;
+		CamPosition[1][0] = inf->rot_x;
+		CamPosition[1][1] = inf->rot_y;
+		CamPosition[1][2] = inf->rot_z;
+
+	}
 
 	return(0);
 
@@ -210,6 +285,8 @@ int gui_main( void *unused ) {
 			printf( "font 'vera' not found\n" );
 
 		} else {
+
+			s3d_set_callback( S3D_EVENT_OBJ_INFO, object_info );
 
 			s3d_mainloop( mainloop );
 

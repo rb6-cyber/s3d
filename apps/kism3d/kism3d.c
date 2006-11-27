@@ -90,6 +90,7 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 	char enable_network[] = "!0 ENABLE NETWORK bssid,type,channel,ssid\n", enable_client[] = "!0 ENABLE CLIENT bssid,mac,ip\n", enable_alert[] = "!0 ENABLE ALERT *\n";
 	char *read_ptr, *line_ptr, *last_cr_ptr = NULL, *parse_begin_ptr, *parse_end_ptr;
 	char *bssid, *channel, *type, *ssid, *mac, *ip;
+	char end_char;
 	int count;
 
 	read_ptr = kismet_src->recv_buff;
@@ -149,7 +150,10 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 			} else if ( strncmp( line_ptr, "*NETWORK: ", strlen( "*NETWORK: " ) ) == 0 ) {
 
+				/* printf( "line: %s\n", line_ptr ); */
+
 				parse_begin_ptr = parse_end_ptr = line_ptr + strlen( "*NETWORK: " );
+				end_char = ' ';
 				count = 0;
 
 				while ( (*parse_end_ptr) != '\0' ) {
@@ -171,12 +175,24 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 								break;
 
 							case 3:
+								/* ssids with spaces are quoted by kismet */
+								if ( parse_begin_ptr[0] == '\001' ) {
+
+									parse_begin_ptr++;
+
+									parse_end_ptr = strchr( parse_begin_ptr, '\001' );
+									*parse_end_ptr = '\0';
+
+									count++;
+
+								}
+
 								ssid = parse_begin_ptr;
 								break;
 
 						}
 
-						if ( count == 3 )
+						if ( count == 4 )
 							break;
 
 						*parse_end_ptr = '\0';
@@ -190,29 +206,29 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 				}
 
+
 				pthread_mutex_lock( &Network_list_mutex );
 
 				wlan_network = get_wlan_network( bssid );
 
-				if ( ( wlan_network->type != -1 ) && ( wlan_network->channel != -1 ) && ( wlan_network->ssid != NULL ) ) {
+				if ( ( wlan_network->type != -1 ) && ( wlan_network->chan != -1 ) && ( wlan_network->ssid != NULL ) ) {
 
 					/* network properties have changed - alert user */
 
 				}
 
 				wlan_network->type = atoi( type );
-				wlan_network->channel = atoi( channel );
+				wlan_network->chan = atoi( channel );
 
-				if ( wlan_network->ssid == NULL )
-					wlan_network->ssid = alloc_memory( strlen( ssid ) );
-				else
-					wlan_network->ssid = realloc_memory( wlan_network->ssid, strlen( ssid ) );
+				if ( wlan_network->ssid != NULL )
+					free( wlan_network->ssid );
 
-				strncpy( wlan_network->ssid, ssid, strlen( ssid ) );
+				wlan_network->ssid = alloc_memory( strlen( ssid ) );
+				strcpy( wlan_network->ssid, ssid );
 
 				pthread_mutex_unlock( &Network_list_mutex );
 
-				/* printf( "network found - bssid %s, type %s, channel %s, ssid %s\n", bssid, type, channel, ssid ); */
+// 				printf( "network found - bssid %s, type %s, channel %s, ssid '%s' <> '%s'\n", bssid, type, channel, ssid, wlan_network->ssid );
 
 			} else if ( strncmp( line_ptr, "*CLIENT: ", strlen( "*CLIENT: " ) ) == 0 ) {
 
@@ -268,11 +284,19 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 				if ( wlan_client->wlan_network != wlan_network ) {
 
-					if ( wlan_client->wlan_network != NULL )
-						wlan_client->wlan_network->num_wlan_clients--;
+					if ( wlan_client->wlan_network != NULL ) {
 
-					if ( wlan_network != NULL )
+						wlan_client->wlan_network->num_wlan_clients--;
+						wlan_client->wlan_network->props_changed = 1;
+
+					}
+
+					if ( wlan_network != NULL ) {
+
 						wlan_network->num_wlan_clients++;
+						wlan_network->props_changed = 1;
+
+					}
 
 					wlan_client->wlan_network = wlan_network;
 

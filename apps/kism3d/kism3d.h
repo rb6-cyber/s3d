@@ -48,16 +48,20 @@ struct wlan_network {
 	char bssid[18];
 	char *ssid;
 	int type;
-	int channel;
+	int chan;
 	int num_wlan_clients;
-	int properties_changed;
+	int props_changed;
 	int visible;
 	float pos_vec[3];
 	float mov_vec[3];
 	int obj_id;
-	int label_id;
+	int wrsphr_id;
+	int bssid_id;
+	int ssid_id;
+	int misc_id;
 	int rotation;
-	int scale_factor;
+	int scale_fac;
+	float bssid_len;
 
 };
 
