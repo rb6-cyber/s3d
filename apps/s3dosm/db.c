@@ -73,13 +73,6 @@ int db_insert_node(node_t *node)
 	char addquery[MAXQ];
 	tagid= db_insert_tags(node->base.tag_n,node->base.tag_p);
 	
-/*	snprintf(addquery,MAXQ,"INSERT INTO node (layer_id,latitude,longitude,altitude, visible, tag_id) VALUES (%d, %f, %f, %f, %d, %d);",
-					(int)node->base.layerid,
-					node->lat,
-					node->lon,
-					node->alt,
-					node->visible, 
-					tagid);*/
 	if (node->base.id==-1) /* give own id */
 		snprintf(addquery,MAXQ,"INSERT INTO node (layer_id, latitude, longitude, altitude, visible, tag_id) VALUES (%d, %f, %f, %f, %d, %d);",
 						(int)node->base.layerid,				node->lat,		node->lon,		node->alt,		node->visible, 		tagid);
@@ -93,12 +86,31 @@ int db_insert_node(node_t *node)
 
 int db_insert_segment(segment_t *seg)
 {
-	/* TODO */
+	int tagid;
+	char addquery[MAXQ];
+	tagid= db_insert_tags(seg->base.tag_n,seg->base.tag_p);
+
+/*	if (seg->base.id==-1) / * give own id * /
+		snprintf(addquery,MAXQ,"INSERT INTO segment (layer_id, node_from, node_to, tag_id) VALUES (%d, %d, %d), %d;",
+						(int)seg->base.layerid,				(int)seg->from, (int)seg->to,	tagid );
+	else*/
+		snprintf(addquery,MAXQ,"INSERT INTO segment (layer_id, seg_id, node_from, node_to, tag_id) VALUES (%d, %d, %d, %d, %d);",
+						(int)seg->base.layerid,(int)seg->base.id,(int)seg->from, (int)seg->to,	tagid );
+	db_exec(addquery, NULL, 0);
+
 	return(0);
 }
 int db_insert_way(way_t *way)
 {
-	/* TODO */
+	int tagid,i;
+	char addquery[MAXQ];
+	tagid= db_insert_tags(way->base.tag_n,way->base.tag_p);
+	snprintf(addquery,MAXQ,"INSERT INTO way (layer_id, way_id, tag_id) VALUES (%d, %d, %d);",(int)way->base.layerid, (int)way->base.id, tagid );
+	db_exec(addquery, NULL, 0);
+	for (i=0;i<way->seg_n;i++) {
+		snprintf(addquery,MAXQ,"UPDATE segment SET way_id=%d WHERE seg_id=%d AND layer_id=%d;",(int)way->base.id,(int)way->seg_p[i],(int)way->base.layerid );
+		db_exec(addquery, NULL, 0);
+	}
 	return(0);
 }
 int db_insert_layer(char *layer_name)
@@ -172,17 +184,20 @@ void db_flush()
 }
 int db_exec(const char *query, sqlite3_callback callback, void *arg)
 {
-	int len;
 	int ret;
+#ifdef DB_STACK
 	if (callback==NULL) /* we can stack it */
 	{
+		int len;
 		len=strlen(query);
 		if (len+qlen>=QBUF)
 			db_flush();
 		strncat(qbuf,query,QBUF);
 		qlen+=strlen(query);
 		ret=0;
-	} else {
+	} else 
+#endif
+	{
 		ret=db_really_exec(query,callback,arg);		/* pass it to the real function */
 	}
 	return(ret);
@@ -216,8 +231,8 @@ int db_create()
 	db_exec("CREATE TABLE tag (tag_id INT, tagkey TEXT, tagvalue TEXT);", NULL, 0);
 	db_exec("CREATE TABLE layer (layer_id INTEGER PRIMARY KEY, name TEXT, UNIQUE(layer_id));", NULL, 0);
 	db_exec("CREATE TABLE node (layer_id INT, node_id INTEGER PRIMARY KEY, latitude DOUBLE PRECISION, longitude DOUBLE PRECISION, altitude DOUBLE PRECISION, visible BOOLEAN, tag_id INT, UNIQUE(layer_id,node_id));",NULL,0);
-	db_exec("CREATE TABLE segment (layer INT, seg_id INTEGER PRIMARY KEY, node_from INT, node_to INT, tag_id INT, way_id INT,UNIQUE(layer,seg_id));", NULL, 0);
-	db_exec("CREATE TABLE way (way_id INTEGER PRIMARY KEY, tag_id INT, UNIQUE(way_id));", NULL, 0);
+	db_exec("CREATE TABLE segment (layer_id INT, seg_id INTEGER PRIMARY KEY, node_from INT, node_to INT, tag_id INT, way_id INT,UNIQUE(layer_id,seg_id));", NULL, 0);
+	db_exec("CREATE TABLE way (layer_id INTEGER, way_id INTEGER PRIMARY KEY, tag_id INT, UNIQUE(layer_id,way_id));", NULL, 0);
 	db_flush();
 	return(0);
 }

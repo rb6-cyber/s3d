@@ -1,5 +1,7 @@
 #define	ESIZE	637800		/* earth size */
 #define	RESCALE	1
+/* stack it */
+/* #define DB_STACK	1*/
 
 typedef struct _layer_t layer_t;
 typedef struct _adj_t adj_t;
