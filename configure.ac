@@ -53,7 +53,7 @@ LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS"
 DEVEL_CFLAGS=
 DEVEL_LDFLAGS=
 # XXX: switch default and help string for releases.
-AC_ARG_ENABLE([devel], AS_HELP_STRING([--disable-debug],[Disables debugging flags]), [enable_debug=$enableval], [enable_debug=yes])
+AC_ARG_ENABLE([debug], AS_HELP_STRING([--enable-debug],[Enables debugging flags]), [enable_debug=$enableval], [enable_debug=no])
 if test x$enable_debug = xyes; then
 	DEVEL_CFLAGS="$DEVEL_CFLAGS -ggdb -DDEBUG=LOW"
 	DEVEL_LDFLAGS="$DEVEL_LDFLAGS -ggdb"

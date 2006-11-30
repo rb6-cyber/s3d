@@ -29,6 +29,6 @@
 
 #define WITH_FONTCONFIG
 /*  our level of debug messages */
-#define DEBUG			LOW /*  standard debug level */
+/* #define DEBUG			LOW */ 	/*  standard debug level, should be set with compiler, e.g. -DDEBUG=LOW */
 #define SHM_MAX_IDLE	200	/* maximum wait for server timeout */
 #define	SEI_SS			200	/* seidel algorithm maximum point number */
