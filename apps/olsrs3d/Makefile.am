@@ -12,8 +12,9 @@ olsrs3d_SOURCES =  \
 	net.c \
 	search.c
 
-olsrs3d_CPPFLAGS=	-I$(top_srcdir)/libs3d -I$(top_srcdir)/libs3dw
+olsrs3d_CPPFLAGS=	-pg -I$(top_srcdir)/libs3d -I$(top_srcdir)/libs3dw
 olsrs3d_LDADD=		$(top_builddir)/libs3d/libs3d.la $(top_builddir)/libs3dw/libs3dw.la
+olsrs3d_LDFLAGS=	-pg
 
 EXTRA_DIST = \
 	output.sample TODO
