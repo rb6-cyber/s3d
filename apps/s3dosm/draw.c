@@ -25,7 +25,7 @@
 #include <math.h>	/* sin(), cos() */
 #include <stdio.h>	/* printf() */
 #include <string.h>	/* strcmp() */
-
+#include <stdlib.h> /* atoi() */
 struct vdata{
 	layer_t *layer;
 	double lonsum,latsum;
@@ -145,9 +145,47 @@ int draw_layer(layer_t *layer)
 	s3d_flags_on(oid,S3D_OF_VISIBLE);
 	return(0);
 }
+static int lastid=-1;
+int way_group(void *NotUsed, int argc, char **argv, char **azColName){
+	int i;
+	int id;
+	for(i=0; i<argc; i++){
+		if (argv[i])
+		if (0==strcmp(azColName[i],"way_id")){
+			id=(argv[i]==NULL)?-2:atoi(argv[i]);
+		}
+		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL"); 
+	}
+	if ((lastid!=id) && (id!=-1)) {
+		/* flush/draw the list, add new  */
+		printf("new list: %d\n",id);
+	} else {
+		/* add id to the list */
+	}
+	lastid=id;
+	sleep(1);
+		
+	return 0;
+}
+
+void draw_ways(char *filter)
+{
+	char query[MAXQ];
+	snprintf(query,MAXQ,"SELECT * FROM segment JOIN node WHERE %s AND (node.node_id=segment.node_to OR node.node_id=segment.node_from) ORDER BY way_id;",filter);
+/*	snprintf(query,MAXQ,"SELECT DISTINCT way_id,segment.layer_id,node_id,node_from,node_to,longitude,latitude FROM segment JOIN node WHERE %s AND (node.node_id=segment.node_to OR node.node_id=segment.node_from) ORDER BY way_id;",filter);*/
+	printf("query: %s\n",query);
+	db_exec(query, way_group,0);
+	printf("[done]\n");
+}
+void draw_osm()
+{
+	draw_ways("segment.layer_id='osm'");
+}
 void draw_all_layers()
 {
-	int i;
+	draw_osm();
+/*	int i;
 	for (i=0;i<layerset.n;i++)
 		draw_layer(layerset.p[i]);
+	*/
 }

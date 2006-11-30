@@ -1,5 +1,9 @@
+#include <sqlite3.h>
 #define	ESIZE	637800		/* earth size */
 #define	RESCALE	1
+#define MAXQ	4096	
+#define QBUF	1024*128
+
 /* stack it */
 /* #define DB_STACK	1*/
 
@@ -141,6 +145,7 @@ void tag_free(tag_t *tag);
 char *read_file(char *fname, int *fsize);
 int process_args(int argc, char **argv);
 /* db.c */
+int db_exec(const char *query, sqlite3_callback callback, void *arg);
 int db_insert_node(node_t *node);
 int db_insert_segment(segment_t *seg);
 int db_insert_way(way_t *way);
@@ -150,3 +155,4 @@ int db_quit();
 int db_create();
 int db_insert_layer(char *layer_name);
 void db_flush();
+int callback(void *NotUsed, int argc, char **argv, char **azColName);

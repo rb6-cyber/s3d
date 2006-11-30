@@ -27,8 +27,6 @@
 #include <string.h> /* stdup() */
 #include <unistd.h>	/* unlink() */
 #include <stdlib.h>	/* atoi() */
-#define MAXQ	4096	
-#define QBUF	1024*128
 static char qbuf[QBUF];
 static int qlen=0;
 
@@ -37,7 +35,6 @@ static sqlite3 *db;
 static char *dbFile=NULL;
 int db_exec(const char *query, sqlite3_callback callback, void *arg);
 static int db_getint(void *tagid, int argc, char **argv, char **azColName);
-/*static int callback(void *NotUsed, int argc, char **argv, char **azColName);*/
 
 /* TODO: remove '' for security reasons */
 char *clean_string(char *dirty)
@@ -153,16 +150,14 @@ static int db_getint(void *tagid, int argc, char **argv, char **azColName){
 	  *((int *)tagid)=atoi(argv[0]);
   return 0;
 }
-/*
-static int callback(void *NotUsed, int argc, char **argv, char **azColName){
+int callback(void *NotUsed, int argc, char **argv, char **azColName){
   int i;
   for(i=0; i<argc; i++){
     printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
   }
   printf("\n");
   return 0;
-}*/
-
+}
 int static db_really_exec(const char *query, sqlite3_callback callback, void *arg)
 {
 	char *zErrMsg = 0;
