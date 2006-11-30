@@ -84,9 +84,9 @@ struct _adj_t {
 
 struct _node_t {
 	object_t	 base;
-	double 		 lon;		/* longitude */
-	double 		 lat;		/* latitude */
-	double 		 alt;		/* altitude */
+	float 		 lon;		/* longitude */
+	float 		 lat;		/* latitude */
+	float 		 alt;		/* altitude */
 	char 		 visible;	/* node visible? 0 = no, 1 = yes, 2 = some sepcial object */
 	int 		 vid;		/* vertex id */
 /*	time_t time;*/
@@ -130,7 +130,7 @@ layer_t *parse_kismet(char *buf, int length);
 layer_t *load_kismet_file(char *filename);
 /* draw.c */
 void draw_all_layers();
-void calc_earth_to_eukl(double lon, double lat, double *x);
+void calc_earth_to_eukl(float lon, float lat, float *x);
 int draw_layer(layer_t *layer);
 /* nav.c */
 void nav_init();

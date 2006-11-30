@@ -38,8 +38,8 @@ int init(int argc, char **argv)
 	if (db_create()) return(-1);
 	if (process_args(argc,argv)) return(-1);
 	nav_init();
-	draw_all_layers();
 	nav_autocenter();
+	draw_all_layers();
 	return(0);
 }
 int quit()

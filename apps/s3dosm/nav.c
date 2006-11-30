@@ -1,5 +1,9 @@
 #include "s3dosm.h"
 #include <s3d.h>
+#include <string.h>	/* strcmp() */
+#include <stdlib.h>	/* strtod() */
+#include <stdio.h>	/* printf() */
+
 icon_t icons[ICON_NUM]={
 		{"objs/accesspoint.3ds",0},
 		{"objs/star.3ds",0},
@@ -25,27 +29,34 @@ void nav_init()
 /* center to given latitude longitude */
 void nav_center(float la, float lo)
 {
-	double x[3];
+	float x[3];
 	s3d_rotate(oidy,0,-lo,0);
 	s3d_rotate(oidx,-(90-la),0,0);
 	calc_earth_to_eukl(lo,la,x);
 	s3d_translate(oidx,0,-ESIZE*RESCALE,0);
 	s3d_scale(oidx,RESCALE);
 }
+
+int get_center(void *data, int argc, char **argv, char **azColName)
+{
+	float *med=(float *)data;
+	int i;
+	med[0]=0;
+	med[1]=0;
+	for(i=0; i<argc; i++){
+		if (argv[i]) {
+			if (0==strcmp(azColName[i],"la"))			med[0]=strtod(argv[i],NULL);
+			else if (0==strcmp(azColName[i],"lo"))		med[1]=strtod(argv[i],NULL);
+		}
+	}
+	return(0);
+}
 /* find some good center on our own */
 void nav_autocenter()
 {
-	int i;
-	float la, lo, n;
-	la=lo=n=0;
-	for (i=0;i<layerset.n;i++)
-		if (layerset.p[i]->visible)
-		{
-			la+=layerset.p[i]->center_la;
-			lo+=layerset.p[i]->center_lo;
-			n+=1;
-		}
-	if (n>0)
-		nav_center(la/n, lo/n);
-			
+	float med[2];
+	char query[]="SELECT avg(longitude) as lo, avg(latitude) as la FROM node; ";
+	db_exec(query,get_center,med);
+	nav_center(med[0],med[1]);
+	printf("center to %f,%f\n",med[0],med[1]);
 }

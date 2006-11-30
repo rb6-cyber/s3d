@@ -25,18 +25,18 @@
 #include <math.h>	/* sin(), cos() */
 #include <stdio.h>	/* printf() */
 #include <string.h>	/* strcmp() */
-#include <stdlib.h> /* atoi() */
+#include <stdlib.h> /* atoi(),malloc(), calloc(), free() */
 struct vdata{
 	layer_t *layer;
-	double lonsum,latsum;
+	float lonsum,latsum;
 	int n;
 	int oid;
 	int vnum;
 };
 
-void calc_earth_to_eukl(double lon, double lat, double *x)
+void calc_earth_to_eukl(float lon, float lat, float *x)
 {
-	double la,lo;
+	float la,lo;
 	la=lat*M_PI/180.0;
 	lo=lon*M_PI/180.0;
 	x[0]=ESIZE*sin(lo) *cos(la);
@@ -50,7 +50,7 @@ void draw_add_vertices(object_t *t, void *data)
 	
 	if (t->type==T_NODE)
 	{
-		double x[3];
+		float x[3];
 		node_t *node=NODE_T(t);
 		node->vid=v->vnum;
 		calc_earth_to_eukl(node->lon,node->lat,x);
@@ -90,80 +90,144 @@ void draw_add_vertices(object_t *t, void *data)
 	}
 }
 
-void draw_add_segments(object_t *t, void *data)
-{/*
-	struct vdata *v=data;
-	tag_t *tag;
-	int color;
-	
-	if (t->type==T_SEGMENT)
-	{
-		node_t *from, *to;
-		segment_t *seg=SEGMENT_T(t);
-		from=NODE_T(avl_find(v->layer->tree,seg->from));
-		to=NODE_T(avl_find(v->layer->tree,seg->to));
 
-		color=0;
-		/ * TODO: look at the ways using it, not the segments  * /
-		if (NULL!=(tag=tag_get(OBJECT_T(seg), "highway")))
-		{
-			if (0==(strcmp(tag->v,"motorway"))) color=1;
-			else if (0==(strcmp(tag->v,"motorway_link"))) color=2;
-			else if (0==(strcmp(tag->v,"primary"))) color=3;
-			else if (0==(strcmp(tag->v,"secondary"))) color=4;
-			else if (0==(strcmp(tag->v,"residential"))) color=5;
-		}
-		if (from!=NULL && to!=NULL)
-		{
-			s3d_push_line(v->oid,from->vid,to->vid,color);
-			v->layer->visible=1;
-		}
-	}*/
-}
-int draw_layer(layer_t *layer)
+static int lastid=-1;
+struct waylist {
+	int node_from,node_to;
+	int seg_id;
+	int node_from_l,node_from_r;	/* vertex id's for corners */
+	int node_to_l,node_to_r;
+	
+};
+struct nodelist {
+	float la,lo,alt;		
+};
+struct nodelist nodelist_p[2];
+int				nodelist_n=0;
+
+struct waylist 	*waylist_p=NULL;
+int 			waylist_n=0;
+int 			waylist_bufn=0;
+
+/* just fetches node information and puts it in some simple 6x float buffer */
+int insert_node(void *data, int argc, char **argv, char **azColName)
 {
-	struct vdata v;
-	int oid;
-	oid=s3d_new_object();
-	s3d_link(oid,oidy);
-	v.layer=layer;
-	v.oid=oid;
-	v.vnum=0;
-	v.n=0;
-	v.lonsum=v.latsum=0;
-	s3d_push_material(oid,1,1,1,		1,1,1,		1,1,1); /* default */
-	s3d_push_material(oid,0.3,0.3,1,	0.3,0.3,1.0,	0.3,0.3,1.0);	/* motorway */
-	s3d_push_material(oid,0.5,0.5,0.8,	0.5,0.5,0.8,	0.5,0.5,0.8);	/* motorway_link*/
-	s3d_push_material(oid,1.0,1.0,0.0,	1.0,1.0,0.0, 	1.0,1.0,0.0);	/* primary */
-	s3d_push_material(oid,0.8,0.8,0.2,	0.8,0.8,0.2, 	0.8,0.8,0.2);	/* secondary */
-	s3d_push_material(oid,0.7,0.7,0.4,	0.7,0.7,0.4, 	0.7,0.7,0.4);	/* secondary */
-	/*
-	avl_tree_trav(layer->tree,draw_add_vertices,(void *)&v);
-	avl_tree_trav(layer->tree,draw_add_segments,(void *)&v);*/
-	layer->center_lo=(v.lonsum)/v.n;
-	layer->center_la=(v.latsum)/v.n;	
-	s3d_flags_on(oid,S3D_OF_VISIBLE);
+	struct nodelist *np=data;	/* get the nodepointer */
+	int i;
+	for(i=0; i<argc; i++){
+		if (argv[i]) {
+			if (0==strcmp(azColName[i],"longitude"))			np[nodelist_n].lo=strtod(argv[i],NULL);
+			else if (0==strcmp(azColName[i],"latitude"))		np[nodelist_n].la=strtod(argv[i],NULL);
+			else if (0==strcmp(azColName[i],"altitude"))		np[nodelist_n].alt=strtod(argv[i],NULL);
+		}
+	}
+	nodelist_n++;
 	return(0);
 }
-static int lastid=-1;
-int way_group(void *NotUsed, int argc, char **argv, char **azColName){
+int select_waytype(void *data, int argc, char **argv, char **azColName)
+{
 	int i;
-	int id;
 	for(i=0; i<argc; i++){
-		if (argv[i])
-		if (0==strcmp(azColName[i],"way_id")){
-			id=(argv[i]==NULL)?-2:atoi(argv[i]);
+		if (argv[i]) {
+			if (0==strcmp(argv[i],"motorway"))				*((int *) data)=1;	
+			else if (0==strcmp(argv[i],"motorway_link"))	*((int *) data)=2;	
+			else if (0==strcmp(argv[i],"primary"))			*((int *) data)=3;	
+			else if (0==strcmp(argv[i],"secondary"))		*((int *) data)=4;	
+			else if (0==strcmp(argv[i],"residential"))		*((int *) data)=5;	
 		}
-		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL"); 
 	}
+	return(0);
+}
+/* draw waylist, clear the queue */
+void waylist_draw()
+{
+	char query[MAXQ];
+	float x[6];
+	int i,vert=0;
+	int way_obj;
+	int waytype=0;
+/*	printf("way: %d - %d segments\n",lastid,waylist_n);*/
+	way_obj=s3d_new_object();
+	if (lastid!=-1) {
+		snprintf(query,MAXQ,"SELECT tagvalue FROM tag WHERE tag_id=(SELECT tag_id FROM way WHERE way_id=%d) AND tagkey='highway';",lastid);
+		db_exec(query, select_waytype, &waytype);
+	}
+	switch (waytype)
+	{
+		case 1:s3d_push_material(way_obj,0.3,0.3,1,	0.3,0.3,1.0,	0.3,0.3,1.0);	/* motorway */
+		case 2:s3d_push_material(way_obj,0.5,0.5,0.8,	0.5,0.5,0.8,	0.5,0.5,0.8);	/* motorway_link*/
+		case 3:s3d_push_material(way_obj,1.0,0.6,0.2,	1.0,0.6,0.2, 	1.0,0.6,0.2);	/* primary */
+		case 4:s3d_push_material(way_obj,1.0,1.0,0.0,	1.0,1.0,0.0, 	1.0,1.0,0.0);	/* secondary */
+		case 5:s3d_push_material(way_obj,1.0,0.4,0.4,	1.0,0.4,0.4, 	1.0,0.4,0.4);	/* residential */
+		default:s3d_push_material(way_obj,1,1,1,		1,1,1,			1,1,1); /* default */
+	}
+
+	for (i=0;i<waylist_n;i++)
+	{
+		float len;
+		nodelist_n=0;
+		snprintf(query,MAXQ,"SELECT longitude, latitude, altitude FROM node WHERE node_id IN (%d,%d);",waylist_p[i].node_from,waylist_p[i].node_to);
+		db_exec(query, insert_node,(void *)nodelist_p);
+		calc_earth_to_eukl(nodelist_p[0].lo,nodelist_p[0].la,x);
+		calc_earth_to_eukl(nodelist_p[1].lo,nodelist_p[1].la,x+3);
+		s3d_push_vertices(way_obj,x,2);
+		s3d_push_line(way_obj, vert,vert+1, 0);
+		vert+=2;
+		len=sqrt( (x[0]-x[3])*(x[0]-x[3]) + (x[1]-x[4])*(x[1]-x[4]) + (x[2]-x[5])*(x[2]-x[5]));
+		if (len>1000.0)
+		{
+			printf("length of segment is %3.3f\n",len);
+			printf("segment id %d: from id %d to id %d\n",waylist_p[i].seg_id,waylist_p[i].node_from,waylist_p[i].node_to);
+			printf("segment no %d of way %d: %f %f %f -> ",i, lastid,nodelist_p[0].la, nodelist_p[0].lo, nodelist_p[0].alt);
+			printf("%f %f %f\n",nodelist_p[1].la, nodelist_p[1].lo, nodelist_p[1].alt);
+		}
+
+		s3d_link(way_obj,oidy);
+	}
+	s3d_flags_on(way_obj,S3D_OF_VISIBLE);
+	waylist_n=0;
+		
+}
+void waylist_add(struct waylist *p)
+{
+	if (waylist_n>=waylist_bufn) {
+		waylist_bufn+=64;
+		waylist_p=realloc(waylist_p,sizeof(struct waylist)*waylist_bufn);
+	}
+	waylist_p[waylist_n].node_to= p->node_to;
+	waylist_p[waylist_n].node_from= p->node_from;
+	waylist_n++;
+}
+
+int way_group(void *NotUsed, int argc, char **argv, char **azColName)
+{
+	int i;
+	int id=-1;
+	struct waylist p;
+	p.node_from=-1;
+	p.node_to=-1;
+	p.seg_id=-1;
+	for(i=0; i<argc; i++){
+		if (argv[i]) {
+			if (0==strcmp(azColName[i],"way_id"))				id=atoi(argv[i]);
+			else if (0==strcmp(azColName[i],"node_from"))		p.node_from=atoi(argv[i]);
+			else if (0==strcmp(azColName[i],"node_to"))			p.node_to=atoi(argv[i]);
+			else if (0==strcmp(azColName[i],"seg_id"))			p.seg_id=atoi(argv[i]);
+		}
+		/* 	printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");  */
+	}
+	if (p.node_from==p.node_to)	/* skip */
+		return(0);
 	if ((lastid!=id) && (id!=-1)) {
+		waylist_draw();
 		/* flush/draw the list, add new  */
-		printf("new list: %d\n",id);
+/*		printf("new list: %d\n",id);*/
+		waylist_add(&p);
 	} else {
 		/* add id to the list */
+		waylist_add(&p);
 	}
 	lastid=id;
-	sleep(1);
 		
 	return 0;
 }
@@ -171,15 +235,16 @@ int way_group(void *NotUsed, int argc, char **argv, char **azColName){
 void draw_ways(char *filter)
 {
 	char query[MAXQ];
-	snprintf(query,MAXQ,"SELECT * FROM segment JOIN node WHERE %s AND (node.node_id=segment.node_to OR node.node_id=segment.node_from) ORDER BY way_id;",filter);
-/*	snprintf(query,MAXQ,"SELECT DISTINCT way_id,segment.layer_id,node_id,node_from,node_to,longitude,latitude FROM segment JOIN node WHERE %s AND (node.node_id=segment.node_to OR node.node_id=segment.node_from) ORDER BY way_id;",filter);*/
-	printf("query: %s\n",query);
+	snprintf(query,MAXQ,"SELECT * FROM segment WHERE %s ORDER BY way_id;",filter);
+/*	snprintf(query,MAXQ,"SELECT DISTINCT way_id,segment.layer_id,node_id,node_from,node_to,longitude,latitude FROM segment JOIN node WHERE %s AND (node.node_id=segment.node_to OR node.node_id=segment.node_from) ORDER BY way_id;",filter);
+	printf("query: %s\n",query);*/
 	db_exec(query, way_group,0);
+	waylist_draw(); /* last way */
 	printf("[done]\n");
 }
 void draw_osm()
 {
-	draw_ways("segment.layer_id='osm'");
+	draw_ways("segment.layer_id=(SELECT layer_id FROM layer WHERE name='osm')");
 }
 void draw_all_layers()
 {
