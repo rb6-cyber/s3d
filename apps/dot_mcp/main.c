@@ -509,6 +509,7 @@ int main (int argc, char **argv)
 
 	if (!s3d_init(&argc,&argv,"mcp"))	
 	{
+		if (!((argc>1) && (0==strcmp(argv[1],"--notorus"))))
 		greentorus(); /* just call ... */
 
 		if (s3d_select_font("vera"))
