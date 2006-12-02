@@ -153,6 +153,11 @@ AM_CONDITIONAL([BUILD_S3DGPS], [test x$HAVE_GPS = xyes && test x$sim_ac_simage_a
 
 if test "x${HAVE_GPS}" = "xyes"; then
 	AC_DEFINE([HAVE_GPS], 1, [Have gps support])
+	GPS_CFLAGS=
+	GPS_LIBS="-lgps"
+	AC_SUBST(GPS_CFLAGS)
+	AC_SUBST(GPS_LIBS)
+
 fi
 
 AC_CHECK_LIB(Xtst, main, [HAVE_Xtst=yes], [HAVE_Xtst=no], [$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS])
