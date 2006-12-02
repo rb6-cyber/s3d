@@ -31,6 +31,8 @@ void mainloop()
 {
 	struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
 	nanosleep(&t,NULL); 
+	gps_main();
+	nav_main();
 }
 int init(int argc, char **argv)
 {
@@ -40,12 +42,14 @@ int init(int argc, char **argv)
 	nav_init();
 	nav_autocenter();
 	draw_all_layers();
+	gps_init("localhost");
 	return(0);
 }
 int quit()
 {
 	s3d_quit();
 	db_quit();
+	gps_quit();
 	return(0);
 }
 int main(int argc, char **argv)

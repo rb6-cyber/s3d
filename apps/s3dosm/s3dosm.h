@@ -1,6 +1,8 @@
 #include <sqlite3.h>
+#include "../../config.h"
 #define	ESIZE	637800		/* earth size */
-#define	RESCALE	1
+#define	RESCALE	0.5
+#define VIEWHEIGHT 3
 #define MAXQ	4096	
 #define QBUF	1024*128
 
@@ -46,6 +48,7 @@ enum {
 enum {
 	ICON_AP,
 	ICON_AP_OPEN,
+	ICON_ARROW,
 	ICON_NUM
 };
 enum {
@@ -130,12 +133,15 @@ layer_t *parse_kismet(char *buf, int length);
 layer_t *load_kismet_file(char *filename);
 /* draw.c */
 void draw_all_layers();
-void calc_earth_to_eukl(float lon, float lat, float *x);
 int draw_layer(layer_t *layer);
+void calc_earth_to_eukl(float lat, float lon, float *x);
+void draw_translate_icon(int user_icon, float la, float lo);
 /* nav.c */
+void nav_main();
 void nav_init();
 void nav_center(float la, float lo);
 void nav_autocenter();
+float get_heading(float la1, float lo1, float la2, float lo2);
 extern int oidy;
 /* tag.c */
 void tag_add(object_t *obj,char *k, char *v);
@@ -156,3 +162,7 @@ int db_create();
 int db_insert_layer(char *layer_name);
 void db_flush();
 int callback(void *NotUsed, int argc, char **argv, char **azColName);
+/* gps.c */
+int gps_init(char *gpshost);
+int gps_main();
+int gps_quit();

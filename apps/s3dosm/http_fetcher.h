@@ -29,7 +29,7 @@
 #define PORT_NUMBER 			80
 #define HTTP_VERSION 			"HTTP/1.1"
 #define DEFAULT_USER_AGENT		"HTTP Fetcher"
-#define	VERSION					"1.0"
+#define	HTTP_FETCHER_VERSION	"1.0"
 #define DEFAULT_READ_TIMEOUT	30		/* Seconds to wait before giving up
 										 *	when no data is arriving */
 	 

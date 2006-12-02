@@ -124,7 +124,7 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 		strcat(requestBuf, "User-Agent: ");
 		strcat(requestBuf, DEFAULT_USER_AGENT);
 		strcat(requestBuf, "/");
-		strcat(requestBuf, VERSION);
+		strcat(requestBuf, HTTP_FETCHER_VERSION);
 		strcat(requestBuf, "\r\n");
 		}
 	else if(!hideUserAgent)
@@ -379,7 +379,7 @@ int http_setAuth(const char *user, const char *pass)
 	char ec64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 	char *b64;
 	int i,j,c,len,n;
-	char o;
+	char o=0;
 	 /* base64 encode user and pass */
 	if ((user==NULL) || (pass==NULL)) /* bad input or request to clean up */
 	{

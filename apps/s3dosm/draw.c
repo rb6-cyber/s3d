@@ -34,7 +34,7 @@ struct vdata{
 	int vnum;
 };
 
-void calc_earth_to_eukl(float lon, float lat, float *x)
+void calc_earth_to_eukl(float lat, float lon, float *x)
 {
 	float la,lo;
 	la=lat*M_PI/180.0;
@@ -53,7 +53,7 @@ void draw_add_vertices(object_t *t, void *data)
 		float x[3];
 		node_t *node=NODE_T(t);
 		node->vid=v->vnum;
-		calc_earth_to_eukl(node->lon,node->lat,x);
+		calc_earth_to_eukl(node->lat,node->lon,x);
 		s3d_push_vertex(v->oid,x[0],x[1],x[2]);
 		if (node->visible==2) /* something special */
 		{
@@ -168,8 +168,8 @@ void waylist_draw()
 		nodelist_n=0;
 		snprintf(query,MAXQ,"SELECT longitude, latitude, altitude FROM node WHERE node_id IN (%d,%d);",waylist_p[i].node_from,waylist_p[i].node_to);
 		db_exec(query, insert_node,(void *)nodelist_p);
-		calc_earth_to_eukl(nodelist_p[0].lo,nodelist_p[0].la,x);
-		calc_earth_to_eukl(nodelist_p[1].lo,nodelist_p[1].la,x+3);
+		calc_earth_to_eukl(nodelist_p[0].la,nodelist_p[0].lo,x);
+		calc_earth_to_eukl(nodelist_p[1].la,nodelist_p[1].lo,x+3);
 		s3d_push_vertices(way_obj,x,2);
 		s3d_push_line(way_obj, vert,vert+1, 0);
 		vert+=2;
@@ -241,6 +241,13 @@ void draw_ways(char *filter)
 	db_exec(query, way_group,0);
 	waylist_draw(); /* last way */
 	printf("[done]\n");
+}
+void draw_translate_icon(int user_icon, float la, float lo)
+{
+	float x[3];
+	calc_earth_to_eukl(la,lo,x);
+	s3d_translate(user_icon,x[0],x[1],x[2]);
+	s3d_rotate(user_icon,(90-la),lo,0);
 }
 void draw_osm()
 {
