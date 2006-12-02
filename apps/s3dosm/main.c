@@ -36,6 +36,7 @@ void mainloop()
 }
 int init(int argc, char **argv)
 {
+	s3d_select_font("vera");
 	if (db_init(":memory:")) return(-1);
 	if (db_create()) return(-1);
 	if (process_args(argc,argv)) return(-1);

@@ -45,8 +45,10 @@ static struct gps_data_t 	*dgps;
 static int 					 frame=0;
 static int 					 lastfix=0;
 static int 					 gps_active=0;
+static int					 gps_info=-1;
 static float 				 lat,lon,tlat,tlon;	/* we have the same in nav.c, this one is for the user icon ... */
 static float				 lat_old,lon_old;
+static float				 speed_old=0.0;
 void 				 show_gpsdata(struct gps_data_t *dgps);
 void				 show_position(struct gps_data_t *dgps);
 
@@ -83,10 +85,12 @@ void show_gpsdata(struct gps_data_t *dgps)
 		case MODE_3D:		printf("mode: 3d fix\n");break;
 	}
 }
+#define BUFSIZE		1024
 void show_position(struct gps_data_t *dgps)
 {
 	int fix=1;
-	float la,lo,heading;
+	float la,lo,heading,speed,slen;
+	char buf[BUFSIZE+1];
 #ifdef GPS_NEW
 	if (!dgps->online) 
 		fix=0;
@@ -98,6 +102,8 @@ void show_position(struct gps_data_t *dgps)
 	
 	la=dgps->fix.latitude;
 	lo=dgps->fix.longitude;
+	heading=dgps->fix.track;
+	speed=dgps->fix.speed;
 
 #else
 	if (!dgps->online) 
@@ -109,13 +115,32 @@ void show_position(struct gps_data_t *dgps)
 	}
 	la=dgps->latitude;
 	lo=dgps->longitude;
+	heading=dgps->track;
+	speed=dgps->speed;
 #endif
 	tlat=la;tlon=lo;
 	nav_center(la,lo);
-	heading=get_heading(lat_old,lon_old,la,lo);
-	if (!lastfix && fix) 		{s3d_flags_on(user_icon,S3D_OF_VISIBLE);s3d_scale(user_icon,1.0);}
-	if (lastfix && !fix)		{s3d_scale(user_icon,0.3);lat=tlat;lon=tlon;}
-	if (finitef(heading))		s3d_rotate(user_icon,0,heading,0);
+	if (!finitef(heading)) {
+		heading=get_heading(lat_old,lon_old,la,lo);
+		if (!lastfix && fix) 		{s3d_flags_on(user_icon,S3D_OF_VISIBLE);s3d_scale(user_icon,1.0);}
+		if (lastfix && !fix)		{s3d_scale(user_icon,0.3);lat=tlat;lon=tlon;}
+		if (finitef(heading))		s3d_rotate(user_icon,0,heading,0);
+	}
+	if (finitef(speed)) {
+		/* print some information */
+		snprintf(buf,BUFSIZE,"speed: %3.2f km/h",speed*3.6);
+		speed_old=speed;
+	} else
+		snprintf(buf,BUFSIZE,"speed: NA (old: %3.2f km/h)",speed_old*3.6);
+
+	if (gps_info!=-1)	s3d_del_object(gps_info);
+	gps_info=s3d_draw_string(buf,&slen);
+	s3d_translate(gps_info,-slen/2,1,0);
+	s3d_link(gps_info, user_icon);
+	s3d_flags_on(gps_info,S3D_OF_VISIBLE);
+
+	
+	
 	lat_old=la;
 	lon_old=lo;
 	lastfix=fix;
@@ -166,8 +191,8 @@ int gps_main()
 			lat=tlat;
 			lon=tlon;
 		} else {
-			lat=(tlat+lat*3)/4;
-			lon=(tlon+lon*3)/4;
+			lat=(tlat+lat*7)/8;
+			lon=(tlon+lon*7)/8;
 		}
 	} else { tlat=lat;tlon=lon;}
 	draw_translate_icon(user_icon_rotator,lat,lon);
