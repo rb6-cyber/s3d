@@ -106,7 +106,7 @@ dnl ##################################### LIBS3D ###############################
 PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.1.0, [:], [AC_MSG_ERROR([Please install fontconfig (version 2.1.0 or higher)])])
 PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.5.0, [:], [AC_MSG_ERROR([Please install freetype2 (version 9.5.0 or higher)])])
 
-PKG_CHECK_MODULES(SQLITE3, sqlite3 >= 3.0, [HAVE_SQLITE3="yes"], [])
+PKG_CHECK_MODULES(SQLITE3, sqlite3 >= 3.0, [HAVE_SQLITE3="yes"], [HAVE_SQLITE3="no"])
 # libxml2
 AM_PATH_XML2(2.0.0, [HAVE_XML="yes"], [])
 
