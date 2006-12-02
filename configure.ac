@@ -121,7 +121,8 @@ dnl ##################################### EXAMPLES / APPS ######################
  ### Sorry, you lack the libxml2 library to compile the s3dosm application."
 
 fi
-		
+
+	
 if test x"${HAVE_SQLITE3}" = xyes ; then
 	LIBSQLITE3_CFLAGS=""
 	LIBSQLITE3_LIBS="-lsqlite3"
@@ -136,7 +137,6 @@ fi
 
 
 
-
 AM_CONDITIONAL([BUILD_S3DOSM], [test x"${HAVE_XML}" = xyes && test x"${HAVE_SQLITE3}" = xyes])
 
 SIM_AC_HAVE_SIMAGE_IFELSE([
@@ -148,7 +148,12 @@ SIM_AC_HAVE_SIMAGE_IFELSE([
 	WARNS="$WARNS
  ### Sorry, you lack the simage library to compile the s3dgps application."
 ])
+AC_CHECK_HEADER(gps.h, [HAVE_GPS=yes])
 AM_CONDITIONAL([BUILD_S3DGPS], [test x$HAVE_GPS = xyes && test x$sim_ac_simage_avail = xtrue])
+
+if test "x${HAVE_GPS}" = "xyes"; then
+	AC_DEFINE([HAVE_GPS], 1, [Have gps support])
+fi
 
 AC_CHECK_LIB(Xtst, main, [HAVE_Xtst=yes], [HAVE_Xtst=no], [$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS])
 if test x$HAVE_Xtst = xyes; then
@@ -167,7 +172,6 @@ HAVE_PTHREAD
 AC_ARG_WITH([examples], AS_HELP_STRING([--with-examples], [build examples]), [with_examples=$withval], [with_examples=yes])
 AM_CONDITIONAL([BUILD_EXAMPLES], [test x$with_examples = xyes])
 ########################################### LIBG3D ################
-AC_CONFIG_HEADERS(libs3d/libg3d/include/g3d/config.h)
 AM_PROG_LEX
 
 ## gtk-doc
@@ -216,7 +220,7 @@ if test x${ac_cv_func_signal} = xyes; then
 	AC_DEFINE([SIGS], 1, [Define if signal code should be compiled])
 fi
 
-AC_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS(libs3d/libg3d/include/g3d/config.h config.h)
 AC_CONFIG_FILES([
 	Makefile
 	server/Makefile
