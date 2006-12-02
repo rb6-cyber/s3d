@@ -24,7 +24,10 @@
 
 #include <s3d.h>
 #include <gps.h> 	/* gps_*() */
-#ifdef NMEA_CHANNELS
+#ifdef NMEA_CHANNELS 
+#define GPS_NEW
+#endif
+#ifdef SIRF_CHANNELS
 #define GPS_NEW
 #endif
 #include <stdio.h> 	/* printf() */
@@ -213,24 +216,35 @@ void load_icons()
 }
 void show_gpsdata(struct gps_data_t *dgps)
 {
-/*	if (!dgps->online) 
+	if (!dgps->online) 
 		printf("WARNING: no connection to gps device\n");
-	printf("[%d] lat/long: [%f|%f], altitude %f\n",frame,dgps->latitude,dgps->longitude,dgps->altitude);
-	printf("speed [kph]: %f",dgps->speed/KNOTS_TO_KPH);
+#ifdef GPS_NEW
+	printf("[%d] lat/long: [%f|%f], altitude %f\n",frame,dgps->fix.latitude,dgps->fix.longitude,dgps->fix.altitude);
+	printf("speed [kph]: %f\n",dgps->fix.speed/KNOTS_TO_KPH);
 	printf("used %d/%d satellits\n",dgps->satellites_used,dgps->satellites);
+#else
+	printf("[%d] lat/long: [%f|%f], altitude %f\n",frame,dgps->latitude,dgps->longitude,dgps->altitude);
+	printf("speed [kph]: %f\n",dgps->speed/KNOTS_TO_KPH);
+	printf("used %d/%d satellits\n",dgps->satellites_used,dgps->satellites);
+
+#endif
 	switch (dgps->status)
 	{
-		case STATUS_NO_FIX:		printf("status: no fix");break;
-		case STATUS_FIX:		printf("status: fix");break;
-		case STATUS_DGPS_FIX:	printf("status: dgps fix");break;
+		case STATUS_NO_FIX:		printf("status: no fix\n");break;
+		case STATUS_FIX:		printf("status: fix\n");break;
+		case STATUS_DGPS_FIX:	printf("status: dgps fix\n");break;
 	}
+#ifdef GPS_NEW
+	switch (dgps->fix.mode)
+#else 
 	switch (dgps->mode)
+#endif
 	{
 		case MODE_NOT_SEEN:	printf("mode: not seen yet\n");break;
 		case MODE_NO_FIX:	printf("mode: no fix\n");break;
 		case MODE_2D:		printf("mode: 2d fix\n");break;
 		case MODE_3D:		printf("mode: 3d fix\n");break;
-	}*/
+	}
 }
 int lastfix=0;
 void show_position(struct gps_data_t *dgps)
@@ -382,7 +396,7 @@ int main(int argc, char **argv)
 			
 			printf("connection established !!\n");
 			printf("query ...\n");
-			gps_query(dgps, "w+x\n");
+			gps_query(dgps, "rw+x\n");
 			printf("done\n");
 			s3d_mainloop(mainloop);
 			printf("done\n");
