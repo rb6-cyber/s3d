@@ -6,6 +6,7 @@ dist_objs_DATA = \
 	katze_tail.3ds \
 	sec_p.3ds \
 	arrow.3ds \
+	arrow2.3ds \
 	xyz.3ds \
 	geometry.3ds \
 	rotate.3ds \

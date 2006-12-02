@@ -384,7 +384,7 @@ int main(int argc, char **argv)
 				default:             	err_str = "Unknown"; break;
 			}
 			printf("no connection to gpsd\n");
-			fprintf( stderr, "xgps: no gpsd running or network error: %d, %s\n"	, errno, err_str);
+			fprintf( stderr, "%s: no gpsd running or network error: %d, %s\n"	, argv[0], errno, err_str);
 		} else {
 			parse_mapkoords();
 			load_icons();
