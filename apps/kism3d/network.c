@@ -56,10 +56,7 @@ struct wlan_network *get_wlan_network( char *bssid ) {
 
 	wlan_network->visible = 1;
 
-	wlan_network->pos_vec[0] = 0;
-	wlan_network->pos_vec[1] = 0;
-	wlan_network->pos_vec[2] = 0;
-	wlan_network->mov_vec[0] = wlan_network->mov_vec[1] = wlan_network->mov_vec[2] = 0.0;
+	wlan_network->pos_vec[0] = wlan_network->pos_vec[1] = wlan_network->pos_vec[2] = 0;
 
 	wlan_network->obj_id = -1;
 	wlan_network->bssid_id = -1;

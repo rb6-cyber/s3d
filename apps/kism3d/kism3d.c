@@ -30,6 +30,7 @@
 #include <errno.h>    /* errno */
 #include <unistd.h>   /* write() */
 #include <pthread.h>
+#include <sys/time.h> /* gettimeofday() */
 
 #include <sys/socket.h> /* inet_pton(), inet_aton() */
 #include <sys/types.h>
@@ -78,6 +79,18 @@ void *realloc_memory( void *ptr, int len ) {
 	memset( res, 0, len );
 
 	return res;
+
+}
+
+
+
+unsigned int get_time( void ) {
+
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+
+	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 
 }
 
@@ -228,7 +241,7 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 				pthread_mutex_unlock( &Network_list_mutex );
 
-// 				printf( "network found - bssid %s, type %s, channel %s, ssid '%s' <> '%s'\n", bssid, type, channel, ssid, wlan_network->ssid );
+				/* printf( "network found - bssid %s, type %s, channel %s, ssid '%s' <> '%s'\n", bssid, type, channel, ssid, wlan_network->ssid ); */
 
 			} else if ( strncmp( line_ptr, "*CLIENT: ", strlen( "*CLIENT: " ) ) == 0 ) {
 

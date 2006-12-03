@@ -28,6 +28,11 @@
 
 
 
+#define NETWORK_TEXT_SCALE 0.2
+#define CLIENT_TEXT_SCALE 0.2
+
+
+
 struct kismet_src {
 
 	struct list_head list;
@@ -53,10 +58,10 @@ struct wlan_network {
 	int props_changed;
 	int visible;
 	float pos_vec[3];
-	float mov_vec[3];
 	int obj_id;
 	int wrsphr_id;
 	int bssid_id;
+	int click_id;
 	int ssid_id;
 	int misc_id;
 	int rotation;
@@ -73,17 +78,21 @@ struct wlan_client {
 	char mac[18];
 	char ip[16];
 	struct wlan_network *wlan_network;
+	int props_changed;
 	int visible;
 	float pos_vec[3];
 	float mov_vec[3];
 	int obj_id;
-	int desc_id;
+	int symbol_id;
+	int ip_id;
+	float ip_len;
 
 };
 
 
 
 void *alloc_memory( int len );
+unsigned int get_time( void );
 struct wlan_network *get_wlan_network( char *bssid );
 struct wlan_network *find_wlan_network( char *bssid );
 struct wlan_client *get_wlan_client( char *mac );

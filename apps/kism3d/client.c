@@ -53,6 +53,8 @@ struct wlan_client *get_wlan_client( char *mac ) {
 	strncpy( wlan_client->mac, mac, 18 );
 	wlan_client->wlan_network = NULL;
 
+	wlan_client->props_changed = 1;
+
 	wlan_client->visible = 1;
 
 	wlan_client->pos_vec[0] = ( ( float ) 2.0 * rand() ) / RAND_MAX - 1.0;
@@ -61,13 +63,12 @@ struct wlan_client *get_wlan_client( char *mac ) {
 	wlan_client->mov_vec[0] = wlan_client->mov_vec[1] = wlan_client->mov_vec[2] = 0.0;
 
 	wlan_client->obj_id = -1;
-	wlan_client->desc_id = -1;
+	wlan_client->ip_id = -1;
 
 	list_add_tail(&wlan_client->list, &Client_list);
 
 	return wlan_client;
 
 }
-
 
 

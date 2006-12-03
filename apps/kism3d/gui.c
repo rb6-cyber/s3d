@@ -34,7 +34,14 @@
 
 
 
-float CamPosition[2][3];	/* CamPosition[trans|rot][x-z] */
+float CamPosition[2][3];          /* CamPosition[trans|rot][x-z] */
+
+int Last_Click_Oid = 0;
+int Last_Click_Time = 0;
+
+void *Cam_target = NULL;
+
+int Client_obj;
 
 
 
@@ -106,7 +113,7 @@ int wire_sphere(int slices, int stacks)
 	return(o);
 }
 
-#define BSSID_SCALE		0.2
+
 
 int handle_networks() {
 
@@ -131,7 +138,7 @@ int handle_networks() {
 			if ( wlan_network->obj_id == -1 ) {
 
 				wlan_network->obj_id = s3d_new_object();
-				wlan_network->wrsphr_id = wire_sphere(30,30);
+				wlan_network->wrsphr_id = wire_sphere( 30, 30 );
 				s3d_link( wlan_network->wrsphr_id, wlan_network->obj_id );
 				s3d_flags_on( wlan_network->wrsphr_id, S3D_OF_VISIBLE );
 
@@ -142,8 +149,8 @@ int handle_networks() {
 			s3d_translate( wlan_network->wrsphr_id, 0, /*-6 + wlan_network->scale_fac*/ 0, 0);
 			s3d_scale( wlan_network->obj_id, wlan_network->scale_fac );
 
-			real_node_pos_x = sin( 2.0* M_PI * network_index / ((float) Num_networks ) ) * ( ( ( 1 * Num_networks ) / 2 * M_PI ) );
-			real_node_pos_z = cos( 2.0* M_PI * network_index / ((float) Num_networks ) ) * ( ( ( 1 * Num_networks ) / 2 * M_PI ) );
+			real_node_pos_x = sin( 2.0 * M_PI * network_index / ((float) Num_networks ) ) * ( ( ( 1 * Num_networks ) / 2 * M_PI ) );
+			real_node_pos_z = cos( 2.0 * M_PI * network_index / ((float) Num_networks ) ) * ( ( ( 1 * Num_networks ) / 2 * M_PI ) );
 
 			if ( ( fabs( wlan_network->pos_vec[0] - real_node_pos_x ) > 0.5 ) || ( fabs( wlan_network->pos_vec[2] - real_node_pos_z ) > 0.5 ) ) {
 
@@ -172,9 +179,21 @@ int handle_networks() {
 
 					wlan_network->bssid_id = s3d_draw_string( wlan_network->bssid, &wlan_network->bssid_len );
 					s3d_link( wlan_network->bssid_id, wlan_network->obj_id );
-					s3d_translate( wlan_network->bssid_id, - wlan_network->bssid_len / 2, 2+ wlan_network->scale_fac, 0 );
-					s3d_scale( wlan_network->bssid_id, BSSID_SCALE );
+					s3d_translate( wlan_network->bssid_id, - wlan_network->bssid_len / 2, 2 + wlan_network->scale_fac, 0 );
+					s3d_scale( wlan_network->bssid_id, NETWORK_TEXT_SCALE );
 					s3d_flags_on( wlan_network->bssid_id, S3D_OF_VISIBLE );
+
+					wlan_network->click_id = s3d_new_object();
+					s3d_link( wlan_network->click_id, wlan_network->obj_id );
+					/* s3d_translate( wlan_network->bssid_id, - wlan_network->bssid_len / 2, 2+ wlan_network->scale_fac, 0 ); */
+					s3d_push_vertex( wlan_network->click_id, 0, 0, 0.1 );
+					s3d_push_vertex( wlan_network->click_id, wlan_network->bssid_len, 0, 0.1 );
+					s3d_push_vertex( wlan_network->click_id, wlan_network->bssid_len, 1, 0.1 );
+					s3d_push_vertex( wlan_network->click_id, 0, 1, 0.1 );
+					s3d_push_polygon( wlan_network->click_id, 0, 1, 2, 0 );
+					s3d_push_polygon( wlan_network->click_id, 0, 2, 3, 0 );
+
+					s3d_flags_on( wlan_network->click_id, S3D_OF_SELECTABLE | S3D_OF_VISIBLE );
 
 				}
 
@@ -211,7 +230,7 @@ int handle_networks() {
 
 			s3d_rotate( wlan_network->bssid_id, 0, angle , 0 );
 
-			s3d_translate( wlan_network->bssid_id, -cos(angle_rad) * BSSID_SCALE * wlan_network->bssid_len / 2 ,2 , sin(angle_rad) * BSSID_SCALE * wlan_network->bssid_len / 2 );
+			s3d_translate( wlan_network->bssid_id, -cos(angle_rad) * NETWORK_TEXT_SCALE * wlan_network->bssid_len / 2 ,2 , sin(angle_rad) * NETWORK_TEXT_SCALE * wlan_network->bssid_len / 2 );
 
 			wlan_network->rotation = ( wlan_network->rotation + 1 ) % 360;
 			s3d_rotate( wlan_network->wrsphr_id, 0, wlan_network->rotation, 0 );
@@ -222,6 +241,122 @@ int handle_networks() {
 
 
 	pthread_mutex_unlock( &Network_list_mutex );
+
+	return(0);
+
+}
+
+
+
+int handle_clients() {
+
+	struct list_head *client_pos;
+	struct wlan_client *wlan_client;
+	float tmp_mov_vec[3], desc_norm_vec[3] = { 0, 0, -1 };
+	float angle, angle_rad;
+
+
+	pthread_mutex_lock( &Client_list_mutex );
+
+	list_for_each(client_pos, &Client_list) {
+
+		wlan_client = list_entry(client_pos, struct wlan_client, list);
+
+		if ( wlan_client->visible ) {
+
+			if ( wlan_client->obj_id == -1 ) {
+
+				wlan_client->obj_id = s3d_new_object();
+				wlan_client->symbol_id = s3d_clone( Client_obj );
+				s3d_link( wlan_client->symbol_id, wlan_client->obj_id );
+				s3d_flags_on( wlan_client->symbol_id, S3D_OF_VISIBLE );
+
+			}
+
+			if ( wlan_client->props_changed ) {
+
+				wlan_client->props_changed = 0;
+
+				if ( wlan_client->ip_id != -1 )
+					s3d_del_object( wlan_client->ip_id );
+
+				wlan_client->ip_id = s3d_draw_string( wlan_client->ip, &wlan_client->ip_len );
+				s3d_link( wlan_client->ip_id, wlan_client->obj_id );
+				s3d_translate( wlan_client->ip_id, - wlan_client->ip_len / 2, 2, 0 );
+				s3d_scale( wlan_client->ip_id, CLIENT_TEXT_SCALE );
+				s3d_flags_on( wlan_client->ip_id, S3D_OF_VISIBLE );
+
+			}
+
+			/* rotate network description so that it is always readable */
+			tmp_mov_vec[0] = CamPosition[0][0] - wlan_client->pos_vec[0];
+			tmp_mov_vec[1] = 0;   /* we are not interested in the y value */
+			tmp_mov_vec[2] = CamPosition[0][2] - wlan_client->pos_vec[2];
+
+			angle = s3d_vector_angle( desc_norm_vec, tmp_mov_vec );
+
+			/* take care of inverse cosinus */
+			if ( tmp_mov_vec[0] > 0 ) {
+				angle_rad = 90.0/M_PI - angle;
+				angle = 180 - ( 180.0/M_PI * angle );
+			} else {
+				angle_rad = 90.0/M_PI + angle;
+				angle = 180 + ( 180.0/M_PI * angle );
+			}
+
+			s3d_rotate( wlan_client->ip_id, 0, angle , 0 );
+
+			s3d_translate( wlan_client->ip_id, -cos(angle_rad) * CLIENT_TEXT_SCALE * wlan_client->ip_len / 2 ,2 , sin(angle_rad) * CLIENT_TEXT_SCALE * wlan_client->ip_len / 2 );
+
+		}
+
+	}
+
+
+	pthread_mutex_unlock( &Client_list_mutex );
+
+	return(0);
+
+}
+
+
+
+/***
+ *
+ * eventhandler when object clicked
+ *
+ ***/
+
+int object_click(struct s3d_evt *evt) {
+
+	struct list_head *network_pos;
+	struct wlan_network *wlan_network;
+	int clicked_id = (int)*((uint32_t *)evt->buf);
+
+
+	s3dw_handle_click( evt );
+
+
+	/* emulate double click */
+	if ( ( Last_Click_Oid == clicked_id ) && ( Last_Click_Time + 250 > get_time() ) ) {
+
+		list_for_each( network_pos, &Network_list ) {
+
+			wlan_network = list_entry(network_pos, struct wlan_network, list);
+
+			if ( wlan_network->click_id == clicked_id ) {
+
+				Cam_target = wlan_network;
+				break;
+
+			}
+
+		}
+
+	}
+
+	Last_Click_Oid = clicked_id;
+	Last_Click_Time = get_time();
 
 	return(0);
 
@@ -267,6 +402,15 @@ void mainloop() {
 
 
 	handle_networks();
+	handle_clients();
+
+	if ( Cam_target != NULL ) {
+
+		/* move to network */
+		printf( "Moving to Network: %s, %s\n", ((struct wlan_network *)Cam_target)->bssid, ((struct wlan_network *)Cam_target)->ssid );
+		Cam_target = NULL;
+
+	}
 
 	if ( Kism3d_aborted )
 		s3d_quit();
@@ -288,6 +432,9 @@ int gui_main( void *unused ) {
 		} else {
 
 			s3d_set_callback( S3D_EVENT_OBJ_INFO, object_info );
+			s3d_set_callback( S3D_EVENT_OBJ_CLICK, object_click );
+
+			Client_obj = s3d_import_model_file( "objs/accesspoint.3ds" );
 
 			s3d_mainloop( mainloop );
 
