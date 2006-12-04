@@ -42,6 +42,7 @@ DEFINE_LIST_HEAD(kismet_src_list);
 DEFINE_LIST_HEAD(Network_list);
 DEFINE_LIST_HEAD(Client_list);
 
+pthread_t s3d_thread_id = NULL;
 pthread_mutex_t Network_list_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t Client_list_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -123,7 +124,7 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 			if ( strncmp( line_ptr, "*TIME: ", strlen( "*TIME: " ) ) == 0 ) {
 
-				if ( kismet_src->enable_level < 3 ) {
+				if ( kismet_src->enable_level < 4 ) {
 
 					switch ( kismet_src->enable_level ) {
 
@@ -153,6 +154,12 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 							}
 
+							break;
+
+						case 3:
+
+							if ( s3d_thread_id == NULL )
+								pthread_create( &s3d_thread_id, NULL, &gui_main, NULL );
 							break;
 
 					}
@@ -348,7 +355,7 @@ int main( int argc, char *argv[] ) {
 	/* struct wlan_network *wlan_network;
 	struct wlan_client *wlan_client; */
 	struct timeval tv;
-	pthread_t s3d_thread_id;
+// 	pthread_t s3d_thread_id;
 	int num_kismet_sources = 0, found_args = 1, max_sock = -1, res, status;
 	char *colon_ptr, buff[1000];
 	fd_set wait_sockets, tmp_wait_sockets;
@@ -455,9 +462,6 @@ int main( int argc, char *argv[] ) {
 		exit(EXIT_FAILURE);
 
 	}
-
-
-	pthread_create( &s3d_thread_id, NULL, &gui_main, NULL );
 
 
 	while ( ( num_kismet_sources > 0 ) && !( Kism3d_aborted ) ) {

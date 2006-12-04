@@ -5,17 +5,17 @@
  *
  * This file is part of the s3d API, the API of s3d (the 3d network display server).
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * The s3d API is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The s3d API is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with the s3d API; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -51,15 +51,15 @@ typedef int (*s3d_cb)(struct s3d_evt *);
 #define	S3D_OF_VISIBLE			0x00000001
 #define	S3D_OF_SELECTABLE		0x00000002
 #define S3D_OF_POINTABLE		0x00000004
-struct mcp_object 
+struct mcp_object
 {
 	uint32_t object;
 	float trans_x,trans_y,trans_z;
 	float r;
 #define MCP_NEW_OBJECT	1
-	char name[256]; 
+	char name[256];
 };
-struct s3d_obj_info 
+struct s3d_obj_info
 {
 	uint32_t object;
 	uint32_t flags;
@@ -67,7 +67,7 @@ struct s3d_obj_info
 	float rot_x,rot_y,rot_z;
 	float scale;
 	float r;
-	char name[256]; 
+	char name[256];
 };
 struct s3d_but_info
 {
@@ -90,20 +90,20 @@ int s3d_mainloop(void (*f)());
 /* object manipulations */
 int s3d_push_vertex(int object, float x, float y, float z);
 int s3d_push_vertices(int object, float *vbuf, uint16_t n);
-int s3d_push_material( int object, 
+int s3d_push_material( int object,
 						float amb_r, float amb_g, float amb_b,
 						float spec_r, float spec_g, float spec_b,
 						float diff_r, float diff_g, float diff_b);
-int s3d_pep_material( int object, 
+int s3d_pep_material( int object,
 						float amb_r, float amb_g, float amb_b,
 						float spec_r, float spec_g, float spec_b,
 						float diff_r, float diff_g, float diff_b);
-int s3d_push_material_a( int object, 
+int s3d_push_material_a( int object,
 						float amb_r, float amb_g, float amb_b, float amb_a,
 						float spec_r, float spec_g, float spec_b, float spec_a,
 						float diff_r, float diff_g, float diff_b, float diff_a);
 int s3d_push_materials_a(int object, float *mbuf, uint16_t n);
-int s3d_pep_material_a( int object, 
+int s3d_pep_material_a( int object,
 						float amb_r, float amb_g, float amb_b, float amb_a,
 						float spec_r, float spec_g, float spec_b, float spec_a,
 						float diff_r, float diff_g, float diff_b, float diff_a);
@@ -164,6 +164,7 @@ float s3d_vector_length( float vector[] );
 float s3d_vector_dot_product( float vector1[], float vector2[] );
 void s3d_vector_substract( float vector1[], float vector2[], float result_vector[] );
 float s3d_vector_angle( float vector1[], float vector2[] );
+float s3d_angle_to_cam( float obj_pos[], float cam_pos[], float *angle_rad );
 
 /* event handlers */
 void s3d_push_event(struct s3d_evt *newevt);

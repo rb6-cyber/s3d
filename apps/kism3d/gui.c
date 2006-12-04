@@ -119,7 +119,6 @@ int handle_networks() {
 
 	struct list_head *network_pos;
 	struct wlan_network *wlan_network;
-	float tmp_mov_vec[3], desc_norm_vec[3] = { 0, 0, -1 };
 	float real_node_pos_x, real_node_pos_z, angle, angle_rad;
 	int network_index = 0;
 	char label_str[101];	/* safe to do as long as we use strn* functions */
@@ -220,22 +219,7 @@ int handle_networks() {
 
 			}
 
-			/* rotate network description so that it is always readable */
-			tmp_mov_vec[0] = CamPosition[0][0] - wlan_network->pos_vec[0];
-			tmp_mov_vec[1] = 0;   /* we are not interested in the y value */
-			tmp_mov_vec[2] = CamPosition[0][2] - wlan_network->pos_vec[2];
-
-			angle = s3d_vector_angle( desc_norm_vec, tmp_mov_vec );
-
-			/* take care of inverse cosinus */
-			if ( tmp_mov_vec[0] > 0 ) {
-				angle_rad = 90.0/M_PI - angle;
-				angle = 180 - ( 180.0/M_PI * angle );
-			} else {
-				angle_rad = 90.0/M_PI + angle;
-				angle = 180 + ( 180.0/M_PI * angle );
-			}
-
+			angle = s3d_angle_to_cam( wlan_network->pos_vec, CamPosition[0], &angle_rad );
 			s3d_rotate( wlan_network->bssid_id, 0, angle , 0 );
 
 			s3d_translate( wlan_network->bssid_id, -cos(angle_rad) * NETWORK_TEXT_SCALE * wlan_network->bssid_len / 2 ,2 , sin(angle_rad) * NETWORK_TEXT_SCALE * wlan_network->bssid_len / 2 );
@@ -260,7 +244,6 @@ int handle_clients() {
 
 	struct list_head *client_pos;
 	struct wlan_client *wlan_client;
-	float tmp_mov_vec[3], desc_norm_vec[3] = { 0, 0, -1 };
 	float angle, angle_rad;
 
 
@@ -296,22 +279,7 @@ int handle_clients() {
 
 			}
 
-			/* rotate network description so that it is always readable */
-			tmp_mov_vec[0] = CamPosition[0][0] - wlan_client->pos_vec[0];
-			tmp_mov_vec[1] = 0;   /* we are not interested in the y value */
-			tmp_mov_vec[2] = CamPosition[0][2] - wlan_client->pos_vec[2];
-
-			angle = s3d_vector_angle( desc_norm_vec, tmp_mov_vec );
-
-			/* take care of inverse cosinus */
-			if ( tmp_mov_vec[0] > 0 ) {
-				angle_rad = 90.0/M_PI - angle;
-				angle = 180 - ( 180.0/M_PI * angle );
-			} else {
-				angle_rad = 90.0/M_PI + angle;
-				angle = 180 + ( 180.0/M_PI * angle );
-			}
-
+			angle = s3d_angle_to_cam( wlan_client->pos_vec, CamPosition[0], &angle_rad );
 			s3d_rotate( wlan_client->ip_id, 0, angle , 0 );
 
 			s3d_translate( wlan_client->ip_id, -cos(angle_rad) * CLIENT_TEXT_SCALE * wlan_client->ip_len / 2 ,2 , sin(angle_rad) * CLIENT_TEXT_SCALE * wlan_client->ip_len / 2 );
