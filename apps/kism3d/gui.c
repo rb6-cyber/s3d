@@ -122,7 +122,8 @@ int handle_networks() {
 	float tmp_mov_vec[3], desc_norm_vec[3] = { 0, 0, -1 };
 	float real_node_pos_x, real_node_pos_z, angle, angle_rad;
 	int network_index = 0;
-	char *label_str;
+	char label_str[101];	/* safe to do as long as we use strn* functions */
+	float maxlen,templen;
 
 
 	pthread_mutex_lock( &Network_list_mutex );
@@ -165,6 +166,12 @@ int handle_networks() {
 			}
 
 			if ( wlan_network->props_changed ) {
+				snprintf( label_str, 100, "Type: %s, CH: %i, Clients: %i", ( wlan_network->type == 0 ? "Managed" : ( wlan_network->type == 1 ? "Ad-Hoc" : ( wlan_network->type == 2 ? "Prober" : "unknown" ) ) ), wlan_network->chan, wlan_network->num_wlan_clients );
+
+				/* determine our longest string which we draw */
+				maxlen=s3d_strlen(label_str);
+				if ((templen=s3d_strlen(wlan_network->ssid))  > maxlen ) maxlen=templen;
+				if ((templen=s3d_strlen(wlan_network->bssid)) > maxlen ) maxlen=templen;
 
 				wlan_network->props_changed = 0;
 
@@ -177,23 +184,26 @@ int handle_networks() {
 
 				if ( wlan_network->bssid_id == -1 ) {
 
-					wlan_network->bssid_id = s3d_draw_string( wlan_network->bssid, &wlan_network->bssid_len );
+					wlan_network->bssid_id = s3d_draw_string( wlan_network->bssid, NULL );
+					/* NEW!! XXX NEW!! */
+					wlan_network->bssid_len= maxlen; /* we store maxlen here. the other strings might be longer, so we use the longest string for
+														calculating our rotation. TODO: maybe rename this field to something like textblock_width? :) */
 					s3d_link( wlan_network->bssid_id, wlan_network->obj_id );
-					s3d_translate( wlan_network->bssid_id, - wlan_network->bssid_len / 2, 2 + wlan_network->scale_fac, 0 );
+					s3d_translate( wlan_network->bssid_id, - maxlen / 2, 2 + wlan_network->scale_fac, 0 );
 					s3d_scale( wlan_network->bssid_id, NETWORK_TEXT_SCALE );
 					s3d_flags_on( wlan_network->bssid_id, S3D_OF_VISIBLE );
 
 					wlan_network->click_id = s3d_new_object();
-					s3d_link( wlan_network->click_id, wlan_network->obj_id );
-					/* s3d_translate( wlan_network->bssid_id, - wlan_network->bssid_len / 2, 2+ wlan_network->scale_fac, 0 ); */
-					s3d_push_vertex( wlan_network->click_id, 0, 0, 0.1 );
-					s3d_push_vertex( wlan_network->click_id, wlan_network->bssid_len, 0, 0.1 );
-					s3d_push_vertex( wlan_network->click_id, wlan_network->bssid_len, 1, 0.1 );
+					s3d_link( wlan_network->click_id, wlan_network->bssid_id );
+					s3d_push_material( wlan_network->click_id, 0,0,0,  0,0,0,  0,0,0);
 					s3d_push_vertex( wlan_network->click_id, 0, 1, 0.1 );
+					s3d_push_vertex( wlan_network->click_id, maxlen, 1, 0.1 );
+					s3d_push_vertex( wlan_network->click_id, maxlen, -2.5, 0.1 ); /* 3 lines of text + some mor space for low characters, like g,q,p ... */
+					s3d_push_vertex( wlan_network->click_id, 0, -2.5, 0.1 );
 					s3d_push_polygon( wlan_network->click_id, 0, 1, 2, 0 );
 					s3d_push_polygon( wlan_network->click_id, 0, 2, 3, 0 );
 
-					s3d_flags_on( wlan_network->click_id, S3D_OF_SELECTABLE | S3D_OF_VISIBLE );
+					s3d_flags_on( wlan_network->click_id, S3D_OF_SELECTABLE );
 
 				}
 
@@ -202,8 +212,6 @@ int handle_networks() {
 				s3d_translate( wlan_network->ssid_id, 0, -1, 0 );
 				s3d_flags_on( wlan_network->ssid_id, S3D_OF_VISIBLE );
 
-				label_str = alloc_memory( 100 );
-				snprintf( label_str, 100, "Type: %s, CH: %i, Clients: %i", ( wlan_network->type == 0 ? "Managed" : ( wlan_network->type == 1 ? "Ad-Hoc" : ( wlan_network->type == 2 ? "Prober" : "unknown" ) ) ), wlan_network->chan, wlan_network->num_wlan_clients );
 
 				wlan_network->misc_id = s3d_draw_string( label_str, NULL );
 				s3d_link( wlan_network->misc_id, wlan_network->ssid_id );
@@ -336,7 +344,7 @@ int object_click(struct s3d_evt *evt) {
 
 	s3dw_handle_click( evt );
 
-
+	printf("id which was clicked: %d\n",clicked_id);
 	/* emulate double click */
 	if ( ( Last_Click_Oid == clicked_id ) && ( Last_Click_Time + 250 > get_time() ) ) {
 

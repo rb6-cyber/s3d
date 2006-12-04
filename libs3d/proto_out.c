@@ -309,7 +309,7 @@ int s3d_push_texture(int object, uint16_t w, uint16_t h)
 }
 int s3d_push_textures(int object, uint16_t *tbuf, uint16_t n)
 {
-	uint16_t		buf[(MF_LEN+4)/2];
+	uint32_t		buf[(MF_LEN+4)/4];
 	uint16_t		*s,*d;
 
 	int					f,i,j,len=n*2*2;
@@ -320,7 +320,7 @@ int s3d_push_textures(int object, uint16_t *tbuf, uint16_t n)
 	f=len/(MF_LEN-4)+1;  /*  how many fragments? */
 
 	*((uint32_t *)buf)=htonl(object);
-	d=buf+2;
+	d=(uint16_t *)(buf+1);
 
 	for (i=0;i<f;i++)
 	{
