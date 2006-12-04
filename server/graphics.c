@@ -139,8 +139,7 @@ void render_virtual_object(struct t_obj *o)
 		{
 			if (ap->object[j]!=NULL)
 			{
-				if (ap->object[j]->oflags&OF_VISIBLE)
-				if ((select_mode ==0 ) || (ap->object[j]->oflags&OF_SELECTABLE)) /* either select mode is off or it's selectable */
+				if (((select_mode==0) && ap->object[j]->oflags&OF_VISIBLE) || ((select_mode ==1 ) && (ap->object[j]->oflags&OF_SELECTABLE))) /* either select mode is off or it's selectable */
 				{
 					x.x=x.y=x.z=0.0f;
 					mySetMatrix(ap->object[j]->m); /* get into position ... */
@@ -181,7 +180,7 @@ int render_by_mcp()
 		o=p->object[i];
 		if (o!=NULL)
 		{
-			if (o->oflags&OF_VISIBLE)   /*  it's even visible ;) */
+			if ((select_mode==0 && o->oflags&OF_VISIBLE) || (select_mode==1 && o->oflags&OF_SELECTABLE))  /*  it's even visible ;) */
 			{
 				if (o->oflags&OF_VIRTUAL)  /*  we have an app here. */
 				{
@@ -223,18 +222,15 @@ int render_by_mcp()
 					render_virtual_object(p->object[o->n_vertex]); 
 					glPopMatrix();
 				} else { /* it's a "regular" mcp object */
-					if ((select_mode ==0 ) || (p->object[i]->oflags&OF_SELECTABLE)) /* either select mode is off or it's selectable */
+					if (select_mode==1)
 					{
-						if (select_mode==1)
-						{
-							s3dprintf(VLOW,"mcp object no. %d",i);
-							glLoadName(-1);
-							glPushName(i);
-						}
-						obj_render(p,i);
-						if (select_mode==1)
-							glPopName();
+						s3dprintf(VLOW,"mcp object no. %d",i);
+						glLoadName(-1);
+						glPushName(i);
 					}
+					obj_render(p,i);
+					if (select_mode==1)
+						glPopName();
 				}
 			}
 		}

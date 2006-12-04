@@ -74,7 +74,7 @@ struct t_process *process_protinit(struct t_process *p, char *name)
 	/* register the new process in the mcp */
 		if (-1!=(mcp_oid=obj_new(&procs_p[MCP])))
 		{
-			mcp_p->object[mcp_oid]->oflags|=OF_VIRTUAL|OF_VISIBLE;
+			mcp_p->object[mcp_oid]->oflags|=OF_VIRTUAL|OF_VISIBLE|OF_SELECTABLE;
 			mcp_p->object[mcp_oid]->n_mat=p->id;
 			
 	/* 		mcp_p->object[mcp_oid]->p_mat=(struct t_material *)new_p; */
