@@ -66,7 +66,7 @@ struct wlan_network {
 	int misc_id;
 	int rotation;
 	int scale_fac;
-	float bssid_len;
+	float text_width;
 
 };
 

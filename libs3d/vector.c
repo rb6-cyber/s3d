@@ -108,7 +108,7 @@ float s3d_vector_angle( float vector1[], float vector2[] ) {
 
 float s3d_angle_to_cam( float obj_pos[], float cam_pos[], float *angle_rad ) {
 
-	float angle, tmp_mov_vec[3], desc_norm_vec[3] = { 0, 0, -1 };
+	float angle, tmp_mov_vec[3], desc_norm_vec[3] = { 0.0, 0.0, -1.0 };
 
 
 	tmp_mov_vec[0] = cam_pos[0] - obj_pos[0];

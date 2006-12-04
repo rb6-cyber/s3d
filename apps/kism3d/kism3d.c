@@ -42,10 +42,11 @@ DEFINE_LIST_HEAD(kismet_src_list);
 DEFINE_LIST_HEAD(Network_list);
 DEFINE_LIST_HEAD(Client_list);
 
-pthread_t s3d_thread_id = NULL;
+pthread_t s3d_thread_id;
 pthread_mutex_t Network_list_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t Client_list_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+int thread_running = 0;
 int Kism3d_aborted = 0;
 int Num_networks = 0;
 
@@ -158,8 +159,13 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 						case 3:
 
-							if ( s3d_thread_id == NULL )
+							if ( !thread_running ) {
+
+								thread_running++;
 								pthread_create( &s3d_thread_id, NULL, &gui_main, NULL );
+
+							}
+
 							break;
 
 					}
@@ -355,7 +361,6 @@ int main( int argc, char *argv[] ) {
 	/* struct wlan_network *wlan_network;
 	struct wlan_client *wlan_client; */
 	struct timeval tv;
-// 	pthread_t s3d_thread_id;
 	int num_kismet_sources = 0, found_args = 1, max_sock = -1, res, status;
 	char *colon_ptr, buff[1000];
 	fd_set wait_sockets, tmp_wait_sockets;

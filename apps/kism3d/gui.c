@@ -43,6 +43,8 @@ void *Cam_target = NULL;
 
 int Client_obj;
 
+struct timespec sleeptime = { 0, 100 * 1000 * 1000 };   /* 100 mili seconds */
+
 
 
 int wire_sphere(int slices, int stacks)
@@ -168,9 +170,13 @@ int handle_networks() {
 				snprintf( label_str, 100, "Type: %s, CH: %i, Clients: %i", ( wlan_network->type == 0 ? "Managed" : ( wlan_network->type == 1 ? "Ad-Hoc" : ( wlan_network->type == 2 ? "Prober" : "unknown" ) ) ), wlan_network->chan, wlan_network->num_wlan_clients );
 
 				/* determine our longest string which we draw */
-				maxlen=s3d_strlen(label_str);
-				if ((templen=s3d_strlen(wlan_network->ssid))  > maxlen ) maxlen=templen;
-				if ((templen=s3d_strlen(wlan_network->bssid)) > maxlen ) maxlen=templen;
+				maxlen = s3d_strlen( label_str );
+
+				if ( ( templen = s3d_strlen( wlan_network->ssid ) ) > maxlen )
+					maxlen = templen;
+
+				if ( ( templen = s3d_strlen( wlan_network->bssid ) ) > maxlen )
+					maxlen = templen;
 
 				wlan_network->props_changed = 0;
 
@@ -184,9 +190,7 @@ int handle_networks() {
 				if ( wlan_network->bssid_id == -1 ) {
 
 					wlan_network->bssid_id = s3d_draw_string( wlan_network->bssid, NULL );
-					/* NEW!! XXX NEW!! */
-					wlan_network->bssid_len= maxlen; /* we store maxlen here. the other strings might be longer, so we use the longest string for
-														calculating our rotation. TODO: maybe rename this field to something like textblock_width? :) */
+					wlan_network->text_width = maxlen; /* the other strings might be longer, so we use the longest string for calculating our rotation. */
 					s3d_link( wlan_network->bssid_id, wlan_network->obj_id );
 					s3d_translate( wlan_network->bssid_id, - maxlen / 2, 2 + wlan_network->scale_fac, 0 );
 					s3d_scale( wlan_network->bssid_id, NETWORK_TEXT_SCALE );
@@ -222,7 +226,7 @@ int handle_networks() {
 			angle = s3d_angle_to_cam( wlan_network->pos_vec, CamPosition[0], &angle_rad );
 			s3d_rotate( wlan_network->bssid_id, 0, angle , 0 );
 
-			s3d_translate( wlan_network->bssid_id, -cos(angle_rad) * NETWORK_TEXT_SCALE * wlan_network->bssid_len / 2 ,2 , sin(angle_rad) * NETWORK_TEXT_SCALE * wlan_network->bssid_len / 2 );
+			s3d_translate( wlan_network->bssid_id, -cos(angle_rad) * NETWORK_TEXT_SCALE * wlan_network->text_width / 2 ,2 , sin(angle_rad) * NETWORK_TEXT_SCALE * wlan_network->text_width / 2 );
 
 			wlan_network->rotation = ( wlan_network->rotation + 1 ) % 360;
 			s3d_rotate( wlan_network->wrsphr_id, 0, wlan_network->rotation, 0 );
@@ -312,7 +316,6 @@ int object_click(struct s3d_evt *evt) {
 
 	s3dw_handle_click( evt );
 
-	printf("id which was clicked: %d\n",clicked_id);
 	/* emulate double click */
 	if ( ( Last_Click_Oid == clicked_id ) && ( Last_Click_Time + 250 > get_time() ) ) {
 
@@ -374,7 +377,7 @@ int object_info(struct s3d_evt *hrmz) {
 
 void mainloop() {
 
-	struct timespec sleeptime = { 0, 100 * 1000 * 1000 };   /* 100 mili seconds */
+	float angle, diff_vec[3], tmp_vec[3] = { 0.0, 0.0, -1.0 };
 
 
 	handle_networks();
@@ -384,7 +387,25 @@ void mainloop() {
 
 		/* move to network */
 		printf( "Moving to Network: %s, %s\n", ((struct wlan_network *)Cam_target)->bssid, ((struct wlan_network *)Cam_target)->ssid );
-		Cam_target = NULL;
+
+		CamPosition[0][0] = ( CamPosition[0][0] * 4 + ((struct wlan_network *)Cam_target)->pos_vec[0] + 7 ) / 5;
+		CamPosition[0][1] = ( CamPosition[0][1] * 4 + ((struct wlan_network *)Cam_target)->pos_vec[1] ) / 5;
+		CamPosition[0][2] = ( CamPosition[0][2] * 4 + ((struct wlan_network *)Cam_target)->pos_vec[2] + 7 ) / 5;
+
+		diff_vec[0] = CamPosition[0][0] - ((struct wlan_network *)Cam_target)->pos_vec[0] + 7;
+		diff_vec[1] = 0.0;
+		diff_vec[2] = CamPosition[0][2] - ((struct wlan_network *)Cam_target)->pos_vec[2] + 7;
+
+		angle = s3d_vector_angle( diff_vec, tmp_vec );
+		/* angle = ( real_node_pos[0] > 0) ? ( 180 - ( 180 / M_PI * angle ) ) : ( 180 + ( 180 / M_PI * angle ) ); */
+		angle = 180 - ( 180 / M_PI * angle );
+		CamPosition[1][1] = ( CamPosition[1][1] * 4 + angle ) / 5;
+
+		s3d_translate( 0, CamPosition[1][0], CamPosition[1][1], CamPosition[1][2] );
+		s3d_rotate( 0, CamPosition[1][0], CamPosition[1][1], CamPosition[1][2] );
+
+		/* TODO: need an abort if target is reached
+			Cam_target = NULL; */
 
 	}
 
