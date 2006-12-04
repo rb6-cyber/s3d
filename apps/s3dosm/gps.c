@@ -116,29 +116,30 @@ void show_position(struct gps_data_t *dgps)
 	la=dgps->latitude;
 	lo=dgps->longitude;
 	heading=dgps->track;
-	speed=dgps->speed;
+	speed=dgps->speed*KNOTS_TO_MPH/METERS_TO_MILES/3600; /* speed in knots -> miles per hour -> meter per hour -> meter per secon */
 #endif
 	tlat=la;tlon=lo;
-	nav_center(la,lo);
-	if (!finitef(heading)) {
-		heading=get_heading(lat_old,lon_old,la,lo);
-		if (!lastfix && fix) 		{s3d_flags_on(user_icon,S3D_OF_VISIBLE);s3d_scale(user_icon,1.0);}
-		if (lastfix && !fix)		{s3d_scale(user_icon,0.3);lat=tlat;lon=tlon;}
-		if (finitef(heading))		s3d_rotate(user_icon,0,heading,0);
-	}
-	if (finitef(speed)) {
-		/* print some information */
-		snprintf(buf,BUFSIZE,"speed: %3.2f km/h",speed*3.6);
-		speed_old=speed;
-	} else
-		snprintf(buf,BUFSIZE,"speed: NA (old: %3.2f km/h)",speed_old*3.6);
-
-	if (gps_info!=-1)	s3d_del_object(gps_info);
-	gps_info=s3d_draw_string(buf,&slen);
-	s3d_translate(gps_info,-slen/2,1,0);
-	s3d_link(gps_info, user_icon);
-	s3d_flags_on(gps_info,S3D_OF_VISIBLE);
-
+/*	if (fix) {*/
+		nav_center(la,lo);
+		if (!finitef(heading)) {
+			heading=get_heading(lat_old,lon_old,la,lo);
+			if (!lastfix && fix) 		{s3d_scale(user_icon,1.0);}
+			if (lastfix && !fix)		{s3d_scale(user_icon,0.3);lat=tlat;lon=tlon;}
+			if (finitef(heading))		s3d_rotate(user_icon,0,heading,0);
+		}
+		if (finitef(speed)) {
+			/* print some information */
+			snprintf(buf,BUFSIZE,"speed: %3.2f km/h",speed*3.6);
+			speed_old=speed;
+		} else
+			snprintf(buf,BUFSIZE,"speed: NA (old: %3.2f km/h)",speed_old*3.6);
+	
+		if (gps_info!=-1)	s3d_del_object(gps_info);
+		gps_info=s3d_draw_string(buf,&slen);
+		s3d_translate(gps_info,-slen/2,1,0);
+		s3d_link(gps_info, user_icon);
+		s3d_flags_on(gps_info,S3D_OF_VISIBLE);
+/*	}*/
 	
 	
 	lat_old=la;
@@ -167,6 +168,7 @@ int gps_init(char *gpshost)
 	user_icon_rotator=s3d_new_object();
 	s3d_link(user_icon,user_icon_rotator);
 	s3d_link(user_icon_rotator,oidy); 
+	s3d_flags_on(user_icon,S3D_OF_VISIBLE);
 	tlat=lat=lat_old=0.0;
 	tlon=lon=lon_old=0.0;
 	gps_active=1;

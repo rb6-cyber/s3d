@@ -158,8 +158,8 @@ void waylist_draw()
 		case 2:s3d_push_material(way_obj,0.5,0.5,0.8,	0.5,0.5,0.8,	0.5,0.5,0.8);	/* motorway_link*/
 		case 3:s3d_push_material(way_obj,1.0,0.6,0.2,	1.0,0.6,0.2, 	1.0,0.6,0.2);	/* primary */
 		case 4:s3d_push_material(way_obj,1.0,1.0,0.0,	1.0,1.0,0.0, 	1.0,1.0,0.0);	/* secondary */
-		case 5:s3d_push_material(way_obj,1.0,0.4,0.4,	1.0,0.4,0.4, 	1.0,0.4,0.4);	/* residential */
-		default:s3d_push_material(way_obj,1,1,1,		1,1,1,			1,1,1); /* default */
+		case 5:s3d_push_material(way_obj,1.0,1.0,1.0,	1.0,1.0,1.0, 	1.0,1.0,1.0);	/* residential */
+		default:s3d_push_material(way_obj,1,0.5,1,		1,0.5,1,		1,0.5,1); /* default */
 	}
 
 	for (i=0;i<waylist_n;i++)
