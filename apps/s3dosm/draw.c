@@ -97,15 +97,26 @@ struct waylist {
 	int seg_id;
 	int node_from_l,node_from_r;	/* vertex id's for corners */
 	int node_to_l,node_to_r;
-	
 };
 struct nodelist {
-	float la,lo,alt;		
+	int node_id;			/* (external counting) */
+	float la,lo,alt;		/* earth coords */
+	float x[3];				/* euclid coords */
 };
+struct adjlist {
+	int node_id;			/* node to which the segment leads to */
+	int seg_id;				/* segment which is involved to the node (both internal counting) */
+};
+/*
 struct nodelist nodelist_p[2];
 int				nodelist_n=0;
+*/
 
 struct waylist 	*waylist_p=NULL;
+struct nodelist	*nodelist_p=NULL;
+struct adjlist	*adjlist_p=NULL;
+int				nodelist_n=0;
+int				adjlist_n=0;
 int 			waylist_n=0;
 int 			waylist_bufn=0;
 
@@ -144,6 +155,7 @@ void waylist_draw()
 	char query[MAXQ];
 	float x[6];
 	int i,vert=0;
+	int node_id;
 	int way_obj;
 	int waytype=0;
 /*	printf("way: %d - %d segments\n",lastid,waylist_n);*/
@@ -161,7 +173,66 @@ void waylist_draw()
 		case 5:s3d_push_material(way_obj,1.0,1.0,1.0,	1.0,1.0,1.0, 	1.0,1.0,1.0);	/* residential */
 		default:s3d_push_material(way_obj,1,0.5,1,		1,0.5,1,		1,0.5,1); /* default */
 	}
+	/* put nodes of the graph into a list */
+	for (i=0;i<waylist_n*2;i++) {
+		if (waylist_n%2)		node_id=waylist_p[i/2].node_from;
+		else					node_id=waylist_p[i/2].node_to;
+		for (j=0;j<nodelist_n;j++)
+			if (nodelist_p[j]==node_id) break;
+		if (j==nodelist_n) { /* we still need to add this node */
+			nodelist_p[j].node_id=node_id;
+			nodelist_n++;
+			snprintf(query,MAXQ,"SELECT longitude, latitude, altitude FROM node WHERE node_id=%d;",node_id);
+			db_exec(query, insert_node,(void *)(nodelist_p+j));
+			calc_earth_to_eukl(nodelist_p[j].la,nodelist_p[j].lo,nodelist_p[j].x);
+		}
+	}
+	/* iterate for all nodes */
+	for (i=0;i<nodelist_n;i++)
+	{
+		/* find adjacent segments */
+			/* TODO */
+		if (adjlist_n>1)	/* more than one adjacent, need to order and calculate intersections */
+		{
+			/* TODO: order adjlist */
+			for (j=0;j<=adjlist_n;j++)
+			{
+				int adj_segid;
+				/* TODO: calc segpoints for j and j+1%adjlist_n */
+				s3d_push_vertices(oid,segpoint,1);
+				adj_seg=adjlist[j].seg_id;
+				if (nodelist_p[i].node_id==waylist[adj_seg].node_from)		waylist[adj_seg].node_from_r=vert;
+					else													waylist[adj_seg].node_to_l=vert;
+				vert++;
+				adj_seg=adjlist[(j+1)%adjlist_n].seg_id;
+				if (nodelist_p[i].node_id==waylist[adj_seg].node_from)		waylist[adj_seg].node_from_l=vert;
+					else													waylist[adj_seg].node_to_r=vert;
+				vert++;
+				}
+			}
+			if (adjlist_n>3) {
+				/* TODO: fill the intersection polygon */
+			}
+		} else {
+			/* endpoint */
+			/* TODO calculate segpoint and set to/from pointers appropriate */
+			adj_seg=adjlist[j].seg_id;
+			if (nodelist_p[i].node_id==waylist[adj_seg].node_from)	{
+				waylist[adj_seg].node_from_l=a;
+				waylist[adj_seg].node_from_r=b;
+			} else {
+				waylist[adj_seg].node_to_l=b;
+				waylist[adj_seg].node_to_r=a;
 
+			}
+		}
+	}
+	s3d_link(way_obj,oidy);
+	s3d_flags_on(way_obj,S3D_OF_VISIBLE);
+	waylist_n=0;
+
+
+/*			
 	for (i=0;i<waylist_n;i++)
 	{
 		float len;
@@ -182,17 +253,16 @@ void waylist_draw()
 			printf("%f %f %f\n",nodelist_p[1].la, nodelist_p[1].lo, nodelist_p[1].alt);
 		}
 
-		s3d_link(way_obj,oidy);
 	}
-	s3d_flags_on(way_obj,S3D_OF_VISIBLE);
-	waylist_n=0;
-		
+*/		
 }
 void waylist_add(struct waylist *p)
 {
 	if (waylist_n>=waylist_bufn) {
 		waylist_bufn+=64;
 		waylist_p=realloc(waylist_p,sizeof(struct waylist)*waylist_bufn);
+		nodelist_p=realloc(nodelist_p,sizeof(struct nodelist)*waylist_bufn*2); /* we can have twice as many nodes as there are segments in a graph. */
+		adjlist_p=realloc(adjlist_p,sizeof(struct nodelist)*waylist_bufn*2);
 	}
 	waylist_p[waylist_n].node_to= p->node_to;
 	waylist_p[waylist_n].node_from= p->node_from;
