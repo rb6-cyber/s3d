@@ -119,7 +119,7 @@ void show_position(struct gps_data_t *dgps)
 	speed=dgps->speed*KNOTS_TO_MPH/METERS_TO_MILES/3600; /* speed in knots -> miles per hour -> meter per hour -> meter per secon */
 #endif
 	tlat=la;tlon=lo;
-/*	if (fix) {*/
+	if (fix) {
 		nav_center(la,lo);
 		if (!finitef(heading)) {
 			heading=get_heading(lat_old,lon_old,la,lo);
@@ -139,7 +139,7 @@ void show_position(struct gps_data_t *dgps)
 		s3d_translate(gps_info,-slen/2,1,0);
 		s3d_link(gps_info, user_icon);
 		s3d_flags_on(gps_info,S3D_OF_VISIBLE);
-/*	}*/
+	}
 	
 	
 	lat_old=la;

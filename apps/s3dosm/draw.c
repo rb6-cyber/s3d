@@ -94,6 +94,7 @@ void draw_add_vertices(object_t *t, void *data)
 static int lastid=-1;
 struct waylist {
 	int node_from,node_to;
+	int node_from_int,node_to_int;
 	int seg_id;
 	int node_from_l,node_from_r;	/* vertex id's for corners */
 	int node_to_l,node_to_r;
@@ -102,6 +103,8 @@ struct nodelist {
 	int node_id;			/* (external counting) */
 	float la,lo,alt;		/* earth coords */
 	float x[3];				/* euclid coords */
+	float normal[3];
+	float len;
 };
 struct adjlist {
 	int node_id;			/* node to which the segment leads to */
@@ -132,7 +135,6 @@ int insert_node(void *data, int argc, char **argv, char **azColName)
 			else if (0==strcmp(azColName[i],"altitude"))		np[nodelist_n].alt=strtod(argv[i],NULL);
 		}
 	}
-	nodelist_n++;
 	return(0);
 }
 int select_waytype(void *data, int argc, char **argv, char **azColName)
@@ -150,14 +152,15 @@ int select_waytype(void *data, int argc, char **argv, char **azColName)
 	return(0);
 }
 /* draw waylist, clear the queue */
-void waylist_draw()
+void waylist_draw(char *filter)
 {
+	float len;
 	char query[MAXQ];
-	float x[6];
-	int i,vert=0;
+	int i,j,k,vert=0;
 	int node_id;
 	int way_obj;
 	int waytype=0;
+	int adj_seg;
 /*	printf("way: %d - %d segments\n",lastid,waylist_n);*/
 	way_obj=s3d_new_object();
 	if (lastid!=-1) {
@@ -166,7 +169,7 @@ void waylist_draw()
 	}
 	switch (waytype)
 	{
-		case 1:s3d_push_material(way_obj,0.3,0.3,1,	0.3,0.3,1.0,	0.3,0.3,1.0);	/* motorway */
+		case 1:s3d_push_material(way_obj,0.3,0.3,1,		0.3,0.3,1.0,	0.3,0.3,1.0);	/* motorway */
 		case 2:s3d_push_material(way_obj,0.5,0.5,0.8,	0.5,0.5,0.8,	0.5,0.5,0.8);	/* motorway_link*/
 		case 3:s3d_push_material(way_obj,1.0,0.6,0.2,	1.0,0.6,0.2, 	1.0,0.6,0.2);	/* primary */
 		case 4:s3d_push_material(way_obj,1.0,1.0,0.0,	1.0,1.0,0.0, 	1.0,1.0,0.0);	/* secondary */
@@ -174,55 +177,122 @@ void waylist_draw()
 		default:s3d_push_material(way_obj,1,0.5,1,		1,0.5,1,		1,0.5,1); /* default */
 	}
 	/* put nodes of the graph into a list */
+	nodelist_n=0;
 	for (i=0;i<waylist_n*2;i++) {
-		if (waylist_n%2)		node_id=waylist_p[i/2].node_from;
+		if (i%2)				node_id=waylist_p[i/2].node_from;
 		else					node_id=waylist_p[i/2].node_to;
 		for (j=0;j<nodelist_n;j++)
-			if (nodelist_p[j]==node_id) break;
+			if (nodelist_p[j].node_id==node_id) break;
 		if (j==nodelist_n) { /* we still need to add this node */
+			printf("[way %d] add node %d to nodelist as %d\n",lastid, node_id, nodelist_n);
 			nodelist_p[j].node_id=node_id;
-			nodelist_n++;
-			snprintf(query,MAXQ,"SELECT longitude, latitude, altitude FROM node WHERE node_id=%d;",node_id);
-			db_exec(query, insert_node,(void *)(nodelist_p+j));
+			snprintf(query,MAXQ,"SELECT longitude, latitude, altitude FROM node WHERE %s AND node_id=%d;",filter, node_id);
+			db_exec(query, insert_node,(void *)(nodelist_p));
 			calc_earth_to_eukl(nodelist_p[j].la,nodelist_p[j].lo,nodelist_p[j].x);
-		}
+			len=sqrt(nodelist_p[j].x[0]*nodelist_p[j].x[0] + nodelist_p[j].x[1]*nodelist_p[j].x[1] + nodelist_p[j].x[2]*nodelist_p[j].x[2]);
+			nodelist_p[j].normal[0]=nodelist_p[j].x[0]/len;
+			nodelist_p[j].normal[1]=nodelist_p[j].x[1]/len;
+			nodelist_p[j].normal[2]=nodelist_p[j].x[2]/len;
+			nodelist_n++;
+		} 
+		if (i%2)				waylist_p[i/2].node_from_int=j;
+		else					waylist_p[i/2].node_to_int=j;
 	}
 	/* iterate for all nodes */
 	for (i=0;i<nodelist_n;i++)
 	{
 		/* find adjacent segments */
-			/* TODO */
+		adjlist_n=0;
+		node_id=nodelist_p[i].node_id;
+		for (j=0;j<=waylist_n;j++)	{
+			if (waylist_p[j].node_from==node_id) {
+				adjlist_p[adjlist_n].node_id=waylist_p[j].node_to_int;
+				adjlist_p[adjlist_n].seg_id=j;
+				adjlist_n++;
+			} else  if (waylist_p[j].node_to==node_id) {
+				adjlist_p[adjlist_n].node_id=waylist_p[j].node_from_int;
+				adjlist_p[adjlist_n].seg_id=j;
+				adjlist_n++;
+			}
+		}
+		printf("[way %d] node %d (num %d in list) has %d adjacent nodes\n",lastid,node_id,i,adjlist_n);
+			
 		if (adjlist_n>1)	/* more than one adjacent, need to order and calculate intersections */
 		{
-			/* TODO: order adjlist */
-			for (j=0;j<=adjlist_n;j++)
+			if (adjlist_n>2) /* no ordering needed for 2 incoming segments */
 			{
-				int adj_segid;
-				/* TODO: calc segpoints for j and j+1%adjlist_n */
-				s3d_push_vertices(oid,segpoint,1);
-				adj_seg=adjlist[j].seg_id;
-				if (nodelist_p[i].node_id==waylist[adj_seg].node_from)		waylist[adj_seg].node_from_r=vert;
-					else													waylist[adj_seg].node_to_l=vert;
-				vert++;
-				adj_seg=adjlist[(j+1)%adjlist_n].seg_id;
-				if (nodelist_p[i].node_id==waylist[adj_seg].node_from)		waylist[adj_seg].node_from_l=vert;
-					else													waylist[adj_seg].node_to_r=vert;
-				vert++;
+				/*
+				printf("[way %d] old order for node %d\n",lastid, node_id);
+				for (j=0;j<adjlist_n;j++) {
+					printf("adj %d: %d (real: %d)\n",j,adjlist_p[j].node_id,nodelist_p[adjlist_p[j].node_id].node_id);
 				}
+				*/
+				for (j=0;j<adjlist_n-2;j++)
+					for (k=j+2;k<adjlist_n;k++)
+					{
+						float test[3],normal[3],linevector[3];
+						/* (re)calc test direction */
+						s3d_vector_subtract(nodelist_p[adjlist_p[j].node_id].x,
+											nodelist_p[adjlist_p[j+1].node_id].x,
+												linevector);
+						s3d_vector_cross_product(
+												nodelist_p[adjlist_p[j].node_id].normal,
+												linevector,
+												normal); /* normal should look outside of our circle now. */
+						while (k<adjlist_n) {
+							/* determine on which side the point is. if its between our testvector, we'll need to swap. */
+							s3d_vector_subtract(nodelist_p[adjlist_p[j].node_id].x,
+												nodelist_p[adjlist_p[k].node_id].x,
+												test);
+							if (s3d_vector_dot_product(normal,test)>0) { /* same side, means adjacent line k is nearer to our point j
+																			than our point j+1 which is supposed to be the nearest point, 
+																			so we swap them and call a break to get the new test-normal */
+								struct adjlist swap;
+								memcpy(&swap,&(adjlist_p[j+1]),sizeof(struct adjlist));
+								memcpy(&(adjlist_p[j+1]),&(adjlist_p[k]),sizeof(struct adjlist));
+								memcpy(&(adjlist_p[k]),&swap,sizeof(struct adjlist));
+								break;
+							}
+							k++;
+						}
+					}
+				/*
+				printf("[way %d] new order for node %d\n",lastid, node_id);
+				for (j=0;j<adjlist_n;j++) {
+					printf("adj %d: %d (real: %d)\n",j,adjlist_p[j].node_id,nodelist_p[adjlist_p[j].node_id].node_id);
+				}
+				*/
+			}
+
+			for (j=0;j<adjlist_n;j++)
+			{
+				printf("calc intersection\n");
+				/* TODO: calc segpoints for j and j+1%adjlist_n */
+/*				s3d_push_vertices(way_obj,segpoint,1);*/
+				adj_seg=adjlist_p[j].seg_id;
+				if (nodelist_p[i].node_id==waylist_p[adj_seg].node_from)	waylist_p[adj_seg].node_from_r=vert;
+					else													waylist_p[adj_seg].node_to_l=vert;
+				vert++;
+				adj_seg=adjlist_p[(j+1)%adjlist_n].seg_id;
+				if (nodelist_p[i].node_id==waylist_p[adj_seg].node_from)	waylist_p[adj_seg].node_from_l=vert;
+					else													waylist_p[adj_seg].node_to_r=vert;
+				vert++;
 			}
 			if (adjlist_n>3) {
 				/* TODO: fill the intersection polygon */
 			}
 		} else {
+			int a,b;
+			printf("calc 2 endpoints\n");
 			/* endpoint */
 			/* TODO calculate segpoint and set to/from pointers appropriate */
-			adj_seg=adjlist[j].seg_id;
-			if (nodelist_p[i].node_id==waylist[adj_seg].node_from)	{
-				waylist[adj_seg].node_from_l=a;
-				waylist[adj_seg].node_from_r=b;
+			adj_seg=adjlist_p[0].seg_id;
+			if (nodelist_p[i].node_id==waylist_p[adj_seg].node_from)	{
+				waylist_p[adj_seg].node_from_l=a;
+				waylist_p[adj_seg].node_from_r=b;
 			} else {
-				waylist[adj_seg].node_to_l=b;
-				waylist[adj_seg].node_to_r=a;
+				waylist_p[adj_seg].node_to_l=b;
+				waylist_p[adj_seg].node_to_r=a;
 
 			}
 		}
@@ -269,12 +339,13 @@ void waylist_add(struct waylist *p)
 	waylist_n++;
 }
 
-int way_group(void *NotUsed, int argc, char **argv, char **azColName)
+int way_group(void *data, int argc, char **argv, char **azColName)
 {
 	int i;
 	int id=-1;
 	struct waylist p;
-	p.node_from=-1;
+	char *filter=(char *)data;
+	p.node_from=p.node_to=0;
 	p.node_to=-1;
 	p.seg_id=-1;
 	for(i=0; i<argc; i++){
@@ -288,8 +359,8 @@ int way_group(void *NotUsed, int argc, char **argv, char **azColName)
 	}
 	if (p.node_from==p.node_to)	/* skip */
 		return(0);
-	if ((lastid!=id) && (id!=-1)) {
-		waylist_draw();
+	if ((lastid!=id) && (id!=0)) {
+		waylist_draw(filter);
 		/* flush/draw the list, add new  */
 /*		printf("new list: %d\n",id);*/
 		waylist_add(&p);
@@ -308,8 +379,8 @@ void draw_ways(char *filter)
 	snprintf(query,MAXQ,"SELECT * FROM segment WHERE %s ORDER BY way_id;",filter);
 /*	snprintf(query,MAXQ,"SELECT DISTINCT way_id,segment.layer_id,node_id,node_from,node_to,longitude,latitude FROM segment JOIN node WHERE %s AND (node.node_id=segment.node_to OR node.node_id=segment.node_from) ORDER BY way_id;",filter);
 	printf("query: %s\n",query);*/
-	db_exec(query, way_group,0);
-	waylist_draw(); /* last way */
+	db_exec(query, way_group,filter);
+	waylist_draw(filter); /* last way */
 	printf("[done]\n");
 }
 void draw_translate_icon(int user_icon, float la, float lo)
@@ -321,7 +392,7 @@ void draw_translate_icon(int user_icon, float la, float lo)
 }
 void draw_osm()
 {
-	draw_ways("segment.layer_id=(SELECT layer_id FROM layer WHERE name='osm')");
+	draw_ways("layer_id=(SELECT layer_id FROM layer WHERE name='osm')");
 }
 void draw_all_layers()
 {
