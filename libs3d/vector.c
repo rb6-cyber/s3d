@@ -77,6 +77,22 @@ float s3d_vector_dot_product( float vector1[], float vector2[] ) {
 
 /***
  *
+ * calculate cross product of 2 vectors => http://en.wikipedia.org/wiki/Cross_product
+ *
+ *   vector1         =>   given vector1
+ *   vector2         =>   given vector2
+ *	 result_vector   =>   save resulting vector here
+ *   return dot product
+ *
+ ***/
+
+void s3d_vector_cross_product( float vector1[], float vector2[], float result_vector[] ) {
+	result_vector[0]=vector1[1] * vector2[2] - vector1[2] * vector2[1];
+	result_vector[1]=vector1[2] * vector2[0] - vector1[0] * vector2[2];
+	result_vector[2]=vector1[0] * vector2[1] - vector1[1] * vector2[0];
+}
+/***
+ *
  * calculate angle between 2 vectors => http://en.wikipedia.org/wiki/Vector_%28spatial%29#Dot_product
  *
  *   vector1   =>   given vector1
