@@ -162,7 +162,7 @@ float s3d_strlen( char *str);
 
 float s3d_vector_length( float vector[] );
 float s3d_vector_dot_product( float vector1[], float vector2[] );
-void s3d_vector_substract( float vector1[], float vector2[], float result_vector[] );
+void s3d_vector_subtract( float vector1[], float vector2[], float result_vector[] );
 float s3d_vector_angle( float vector1[], float vector2[] );
 float s3d_angle_to_cam( float obj_pos[], float cam_pos[], float *angle_rad );
 void s3d_vector_cross_product( float vector1[], float vector2[], float result_vector[] );

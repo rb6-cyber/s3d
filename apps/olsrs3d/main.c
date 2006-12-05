@@ -216,7 +216,7 @@ float dist(float p1[], float p2[])
 
 /***
  *
- * calculate distance between 2 vectors and substract vector1 from vector2
+ * calculate distance between 2 vectors and subtract vector1 from vector2
  *  => http://en.wikipedia.org/wiki/Vector_%28spatial%29#Vector_addition_and_subtraction
  *
  *   p1   =>   vector of node 1

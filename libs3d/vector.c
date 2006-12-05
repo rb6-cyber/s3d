@@ -52,7 +52,7 @@ float s3d_vector_length( float vector[] ) {
  *
  ***/
 
-void s3d_vector_substract( float vector1[], float vector2[], float result_vector[] ) {
+void s3d_vector_subtract( float vector1[], float vector2[], float result_vector[] ) {
 
 	result_vector[0] = vector2[0] - vector1[0];
 	result_vector[1] = vector2[1] - vector1[1];
