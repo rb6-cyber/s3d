@@ -151,6 +151,16 @@ int select_waytype(void *data, int argc, char **argv, char **azColName)
 	}
 	return(0);
 }
+static float temp;
+#define		V_COPY(a,b)		a[0]=b[0];	a[1]=b[1];	a[2]=b[2];
+#define 	V_ADD(a,b,c)	c[0]=a[0]+b[0];	c[1]=a[1]+b[1];	c[2]=a[2]+b[2];
+#define 	V_SUB(a,b,c)	c[0]=a[0]-b[0];	c[1]=a[1]-b[1];	c[2]=a[2]-b[2];
+#define		V_DOT(a,b)		a[0]*b[0] + a[1]*b[1] + a[2] * b[2]
+#define		V_CROSS(a,b,c)	c[0]=a[1]*b[2] - a[2]*b[1];		c[1]=a[2]*b[0] - a[0]*b[2]; 	c[2]=a[0]*b[1] - a[1]*b[0];
+#define		V_LEN(a)		sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2]);
+#define		V_SCAL(a,s)		a[0]=s*a[0];	a[1]=s*a[1];	a[2]=s*a[2];
+#define		V_NORM(a)		temp=V_LEN(a); V_SCAL(a,1/temp);
+
 /* draw waylist, clear the queue */
 void waylist_draw(char *filter)
 {
@@ -161,6 +171,13 @@ void waylist_draw(char *filter)
 	int way_obj;
 	int waytype=0;
 	int adj_seg;
+	float a[3],b[3],*left,*right,*swap;
+	float street_width=1; /* TODO: dynamically adjust? */
+	float an[3];		/* normal on the plane, orthogonal on the right side of the left segment */
+	float n[3];			/* the direction vector in which the intersecion should be placed */
+	float s[3];			/* intersection point */
+	float n_len,scale;
+
 /*	printf("way: %d - %d segments\n",lastid,waylist_n);*/
 	way_obj=s3d_new_object();
 	if (lastid!=-1) {
@@ -232,18 +249,11 @@ void waylist_draw(char *filter)
 					{
 						float test[3],normal[3],linevector[3];
 						/* (re)calc test direction */
-						s3d_vector_subtract(nodelist_p[adjlist_p[j].node_id].x,
-											nodelist_p[adjlist_p[j+1].node_id].x,
-												linevector);
-						s3d_vector_cross_product(
-												nodelist_p[adjlist_p[j].node_id].normal,
-												linevector,
-												normal); /* normal should look outside of our circle now. */
+						V_SUB(nodelist_p[adjlist_p[j].node_id].x,	nodelist_p[adjlist_p[j+1].node_id].x,	linevector);
+						V_CROSS(nodelist_p[adjlist_p[j].node_id].normal,	linevector,		normal); /* normal should look outside of our circle now. */
 						while (k<adjlist_n) {
 							/* determine on which side the point is. if its between our testvector, we'll need to swap. */
-							s3d_vector_subtract(nodelist_p[adjlist_p[j].node_id].x,
-												nodelist_p[adjlist_p[k].node_id].x,
-												test);
+							V_SUB(nodelist_p[adjlist_p[j].node_id].x,nodelist_p[adjlist_p[k].node_id].x,test);
 							if (s3d_vector_dot_product(normal,test)>0) { /* same side, means adjacent line k is nearer to our point j
 																			than our point j+1 which is supposed to be the nearest point, 
 																			so we swap them and call a break to get the new test-normal */
@@ -263,12 +273,37 @@ void waylist_draw(char *filter)
 				}
 				*/
 			}
+			left=a;
+			right=b;
+			V_SUB(nodelist_p[adjlist_p[0].node_id], nodelist_p[i].x, right);
+			V_NORM(right);
+
 
 			for (j=0;j<adjlist_n;j++)
 			{
+				swap=left;
+				left=right;			/* use last right segment as new left segment */
+				right=left;			/* get space for the next right segment */
+				V_SUB(nodelist_p[adjlist_p[(j+1)%adjlist_n].node_id], nodelist_p[i].x, right);
+				V_NORM(right);
+				V_CROSS(nodelist_p[i].normal, left ,an);	/* an is also normalized, as first and second argument are already length 1 */
+				V_ADD(left, right, n);						/* direction which our intersection is */
+				n_len=V_LEN(n);
+				if (n_len<0.001)
+				{	/* too low, don't use, just have intersection 90 degree of it. */
+					V_SCALE(an, street_width);		/* S = P + street_width * an */
+					V_ADD(nodelist_p[i].x, an, s);
+
+				} else {
+					V_COPY(s, nodelist_p[i].x);	/* s = P + (street_width/ ( n * an)) * n */
+					scale=V_DOT(n,an);	/* get cos (alpha/2), alpha is opposite angel of left and right segment */
+					V_SCALE(n,1/scale);
+					V_ADD(s, n, s);
+				}
+				
+				
 				printf("calc intersection\n");
-				/* TODO: calc segpoints for j and j+1%adjlist_n */
-/*				s3d_push_vertices(way_obj,segpoint,1);*/
+				s3d_push_vertices(way_obj,s,1);
 				adj_seg=adjlist_p[j].seg_id;
 				if (nodelist_p[i].node_id==waylist_p[adj_seg].node_from)	waylist_p[adj_seg].node_from_r=vert;
 					else													waylist_p[adj_seg].node_to_l=vert;
@@ -282,20 +317,38 @@ void waylist_draw(char *filter)
 				/* TODO: fill the intersection polygon */
 			}
 		} else {
-			int a,b;
 			printf("calc 2 endpoints\n");
 			/* endpoint */
-			/* TODO calculate segpoint and set to/from pointers appropriate */
+			V_SUB(nodelist_p[adjlist_p[0].node_id], nodelist_p[i].x, a);
+			V_NORM(a);
+			V_CROSS(nodelist_p[i].normal, a ,an);	/* an is also normalized, as first and second argument are already length 1 */
+
+			V_COPY(s,nodelist_p[i].normal);
+			V_ADD(s,an,s);
+			s3d_push_vertices(way_obj,an,s);
+			j=vert;
+			vert++;
+			V_SCAL(an,-1);
+			V_COPY(s,nodelist_p[i].normal);
+			V_ADD(s,an,s);
+			k=vert;
+			vert++;
+			
 			adj_seg=adjlist_p[0].seg_id;
 			if (nodelist_p[i].node_id==waylist_p[adj_seg].node_from)	{
-				waylist_p[adj_seg].node_from_l=a;
-				waylist_p[adj_seg].node_from_r=b;
+				waylist_p[adj_seg].node_from_l=j;
+				waylist_p[adj_seg].node_from_r=k;
 			} else {
-				waylist_p[adj_seg].node_to_l=b;
-				waylist_p[adj_seg].node_to_r=a;
-
+				waylist_p[adj_seg].node_to_l=k;
+				waylist_p[adj_seg].node_to_r=j;
 			}
 		}
+	}
+	for (i=0;i<waylist_n;i++) {
+		printf("drawing way from points %d %d %d %d\n",waylist_p[i].node_from_l, waylist_p[i].node_to_l, waylist_p[i].node_to_r,waylist_p[i].node_from_r);
+		s3d_push_polygon(way_obj, waylist_p[i].node_from_l, waylist_p[i].node_to_l, waylist_p[i].node_to_r, 0);
+		s3d_push_polygon(way_obj, waylist_p[i].node_from_l, waylist_p[i].node_to_r, waylist_p[i].node_from_r, 0);
+		
 	}
 	s3d_link(way_obj,oidy);
 	s3d_flags_on(way_obj,S3D_OF_VISIBLE);
