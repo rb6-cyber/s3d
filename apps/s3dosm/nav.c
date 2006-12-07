@@ -52,7 +52,7 @@ void nav_main()
 	} else { lat=tlat;lon=tlon;}
 	s3d_rotate(oidy,0,-lon,0);
 	s3d_rotate(oidx,-(90-lat),0,0);
-	calc_earth_to_eukl(lon,lat,x);
+	calc_earth_to_eukl(lon,lat,0,x);
 	s3d_translate(oidx,0,-ESIZE*RESCALE- VIEWHEIGHT,0);
 	s3d_scale(oidx,RESCALE);
 }
@@ -77,9 +77,9 @@ float get_heading(float la1, float lo1, float la2, float lo2) {
 	float dir[3],north[3];
 	float angle;
 	int i;
-	calc_earth_to_eukl(la1,lo1,p1);
-	calc_earth_to_eukl(la2,lo2,p2);
-	calc_earth_to_eukl(la1+1,lo1,p1_north);
+	calc_earth_to_eukl(la1,lo1,0,p1);
+	calc_earth_to_eukl(la2,lo2,0,p2);
+	calc_earth_to_eukl(la1+1,lo1,0,p1_north);
 	for (i=0;i<3;i++)		north[i]=p1_north[i]-p1[i];
 	for (i=0;i<3;i++)		dir[i]=p2[i]-p1[i];
 	angle=s3d_vector_angle(dir,north);

@@ -134,7 +134,7 @@ layer_t *load_kismet_file(char *filename);
 /* draw.c */
 void draw_all_layers();
 int draw_layer(layer_t *layer);
-void calc_earth_to_eukl(float lat, float lon, float *x);
+void calc_earth_to_eukl(float lat, float lon, float alt, float *x);
 void draw_translate_icon(int user_icon, float la, float lo);
 /* nav.c */
 void nav_main();

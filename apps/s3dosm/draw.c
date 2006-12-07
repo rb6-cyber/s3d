@@ -34,14 +34,14 @@ struct vdata{
 	int vnum;
 };
 
-void calc_earth_to_eukl(float lat, float lon, float *x)
+void calc_earth_to_eukl(float lat, float lon, float alt, float *x)
 {
 	float la,lo;
 	la=lat*M_PI/180.0;
 	lo=lon*M_PI/180.0;
-	x[0]=ESIZE*sin(lo) *cos(la);
-	x[1]=ESIZE*			sin(la);
-	x[2]=ESIZE*cos(lo) *cos(la);
+	x[0]=(ESIZE+alt)*sin(lo) *cos(la);
+	x[1]=(ESIZE+alt)*			sin(la);
+	x[2]=(ESIZE+alt)*cos(lo) *cos(la);
 }
 void draw_add_vertices(object_t *t, void *data)
 {
@@ -53,7 +53,7 @@ void draw_add_vertices(object_t *t, void *data)
 		float x[3];
 		node_t *node=NODE_T(t);
 		node->vid=v->vnum;
-		calc_earth_to_eukl(node->lat,node->lon,x);
+		calc_earth_to_eukl(node->lat,node->lon,0,x);
 		s3d_push_vertex(v->oid,x[0],x[1],x[2]);
 		if (node->visible==2) /* something special */
 		{
@@ -142,11 +142,11 @@ int select_waytype(void *data, int argc, char **argv, char **azColName)
 	int i;
 	for(i=0; i<argc; i++){
 		if (argv[i]) {
-			if (0==strcmp(argv[i],"motorway"))				*((int *) data)=1;	
-			else if (0==strcmp(argv[i],"motorway_link"))	*((int *) data)=2;	
+			if (0==strcmp(argv[i],"motorway"))				*((int *) data)=5;	
+			else if (0==strcmp(argv[i],"motorway_link"))	*((int *) data)=4;	
 			else if (0==strcmp(argv[i],"primary"))			*((int *) data)=3;	
-			else if (0==strcmp(argv[i],"secondary"))		*((int *) data)=4;	
-			else if (0==strcmp(argv[i],"residential"))		*((int *) data)=5;	
+			else if (0==strcmp(argv[i],"secondary"))		*((int *) data)=2;	
+			else if (0==strcmp(argv[i],"residential"))		*((int *) data)=1;	
 		}
 	}
 	return(0);
@@ -172,7 +172,7 @@ void waylist_draw(char *filter)
 	int waytype=0;
 	int adj_seg;
 	float a[3],b[3],*left,*right,*swap;
-	float street_width=1; /* TODO: dynamically adjust? */
+	float street_width; /* dynamically adjust? */
 	float an[3];		/* normal on the plane, orthogonal on the right side of the left segment */
 	float n[3];			/* the direction vector in which the intersecion should be placed */
 	float s[3];			/* intersection point */
@@ -186,13 +186,14 @@ void waylist_draw(char *filter)
 	}
 	switch (waytype)
 	{
-		case 1:s3d_push_material(way_obj,0.3,0.3,1,		0.3,0.3,1.0,	0.3,0.3,1.0);	/* motorway */
-		case 2:s3d_push_material(way_obj,0.5,0.5,0.8,	0.5,0.5,0.8,	0.5,0.5,0.8);	/* motorway_link*/
-		case 3:s3d_push_material(way_obj,1.0,0.6,0.2,	1.0,0.6,0.2, 	1.0,0.6,0.2);	/* primary */
-		case 4:s3d_push_material(way_obj,1.0,1.0,0.0,	1.0,1.0,0.0, 	1.0,1.0,0.0);	/* secondary */
-		case 5:s3d_push_material(way_obj,1.0,1.0,1.0,	1.0,1.0,1.0, 	1.0,1.0,1.0);	/* residential */
-		default:s3d_push_material(way_obj,1,0.5,1,		1,0.5,1,		1,0.5,1); /* default */
+		case 5:s3d_push_material(way_obj,0.2,0.2,0.6,		1.0,1.0,1.0,	0.3,0.3,1.0);	/* motorway */
+		case 4:s3d_push_material(way_obj,0.3,0.3,0.4,		1.0,1.0,1.0,	0.5,0.5,0.8);	/* motorway_link*/
+		case 3:s3d_push_material(way_obj,0.6,0.3,0.1,		1.0,1.0,1.0, 	1.0,0.6,0.2);	/* primary */
+		case 2:s3d_push_material(way_obj,0.6,0.6,0.0,		1.0,1.0,1.0, 	1.0,1.0,0.0);	/* secondary */
+		case 1:s3d_push_material(way_obj,0.6,0.6,0.6,		1.0,1.0,1.0, 	1.0,1.0,1.0);	/* residential */
+		default:s3d_push_material(way_obj,0.6,0.2,0.6,		1.0,1.0,1.0,	1.0,0.5,1.0); /* default */
 	}
+	street_width=0.5+waytype/10;
 	/* put nodes of the graph into a list */
 	nodelist_n=0;
 	for (i=0;i<waylist_n*2;i++) {
@@ -201,11 +202,11 @@ void waylist_draw(char *filter)
 		for (j=0;j<nodelist_n;j++)
 			if (nodelist_p[j].node_id==node_id) break;
 		if (j==nodelist_n) { /* we still need to add this node */
-			printf("[way %d] add node %d to nodelist as %d\n",lastid, node_id, nodelist_n);
+/*			printf("[way %d] add node %d to nodelist as %d\n",lastid, node_id, nodelist_n);*/
 			nodelist_p[j].node_id=node_id;
 			snprintf(query,MAXQ,"SELECT longitude, latitude, altitude FROM node WHERE %s AND node_id=%d;",filter, node_id);
 			db_exec(query, insert_node,(void *)(nodelist_p));
-			calc_earth_to_eukl(nodelist_p[j].la,nodelist_p[j].lo,nodelist_p[j].x);
+			calc_earth_to_eukl(nodelist_p[j].la,nodelist_p[j].lo,0+waytype/2,nodelist_p[j].x); /* elevate higher priority streets a little bit ... */
 			len=sqrt(nodelist_p[j].x[0]*nodelist_p[j].x[0] + nodelist_p[j].x[1]*nodelist_p[j].x[1] + nodelist_p[j].x[2]*nodelist_p[j].x[2]);
 			nodelist_p[j].normal[0]=nodelist_p[j].x[0]/len;
 			nodelist_p[j].normal[1]=nodelist_p[j].x[1]/len;
@@ -232,18 +233,11 @@ void waylist_draw(char *filter)
 				adjlist_n++;
 			}
 		}
-		printf("[way %d] node %d (num %d in list) has %d adjacent nodes\n",lastid,node_id,i,adjlist_n);
 			
 		if (adjlist_n>1)	/* more than one adjacent, need to order and calculate intersections */
 		{
 			if (adjlist_n>2) /* no ordering needed for 2 incoming segments */
 			{
-				/*
-				printf("[way %d] old order for node %d\n",lastid, node_id);
-				for (j=0;j<adjlist_n;j++) {
-					printf("adj %d: %d (real: %d)\n",j,adjlist_p[j].node_id,nodelist_p[adjlist_p[j].node_id].node_id);
-				}
-				*/
 				for (j=0;j<adjlist_n-2;j++)
 					for (k=j+2;k<adjlist_n;k++)
 					{
@@ -266,16 +260,10 @@ void waylist_draw(char *filter)
 							k++;
 						}
 					}
-				/*
-				printf("[way %d] new order for node %d\n",lastid, node_id);
-				for (j=0;j<adjlist_n;j++) {
-					printf("adj %d: %d (real: %d)\n",j,adjlist_p[j].node_id,nodelist_p[adjlist_p[j].node_id].node_id);
-				}
-				*/
 			}
 			left=a;
 			right=b;
-			V_SUB(nodelist_p[adjlist_p[0].node_id], nodelist_p[i].x, right);
+			V_SUB(nodelist_p[adjlist_p[0].node_id].x, nodelist_p[i].x, right);
 			V_NORM(right);
 
 
@@ -283,59 +271,63 @@ void waylist_draw(char *filter)
 			{
 				swap=left;
 				left=right;			/* use last right segment as new left segment */
-				right=left;			/* get space for the next right segment */
-				V_SUB(nodelist_p[adjlist_p[(j+1)%adjlist_n].node_id], nodelist_p[i].x, right);
+				right=swap;			/* get space for the next right segment */
+				V_SUB(nodelist_p[adjlist_p[(j+1)%adjlist_n].node_id].x, nodelist_p[i].x, right);
 				V_NORM(right);
 				V_CROSS(nodelist_p[i].normal, left ,an);	/* an is also normalized, as first and second argument are already length 1 */
 				V_ADD(left, right, n);						/* direction which our intersection is */
 				n_len=V_LEN(n);
-				if (n_len<0.001)
+
+				if (n_len<0.1)
 				{	/* too low, don't use, just have intersection 90 degree of it. */
-					V_SCALE(an, street_width);		/* S = P + street_width * an */
+					V_SCAL(an, -street_width);		/* S = P + street_width * an */
 					V_ADD(nodelist_p[i].x, an, s);
 
 				} else {
 					V_COPY(s, nodelist_p[i].x);	/* s = P + (street_width/ ( n * an)) * n */
+					V_SCAL(n,1/n_len);	/* normalize n first! */
 					scale=V_DOT(n,an);	/* get cos (alpha/2), alpha is opposite angel of left and right segment */
-					V_SCALE(n,1/scale);
+					V_SCAL(n,-street_width/scale);
 					V_ADD(s, n, s);
 				}
 				
 				
-				printf("calc intersection\n");
+/*				printf("calc intersection: %3.3f %3.3f %3.3f\n",s[0],s[1],s[2]);*/
 				s3d_push_vertices(way_obj,s,1);
-				adj_seg=adjlist_p[j].seg_id;
-				if (nodelist_p[i].node_id==waylist_p[adj_seg].node_from)	waylist_p[adj_seg].node_from_r=vert;
-					else													waylist_p[adj_seg].node_to_l=vert;
-				vert++;
-				adj_seg=adjlist_p[(j+1)%adjlist_n].seg_id;
-				if (nodelist_p[i].node_id==waylist_p[adj_seg].node_from)	waylist_p[adj_seg].node_from_l=vert;
-					else													waylist_p[adj_seg].node_to_r=vert;
+				adj_seg=adjlist_p[j].seg_id;				/* left segment */
+				if (i==waylist_p[adj_seg].node_from_int)	waylist_p[adj_seg].node_from_r=vert;
+					else									waylist_p[adj_seg].node_to_l=vert;
+				adj_seg=adjlist_p[(j+1)%adjlist_n].seg_id;	/* right segment */
+				if (i==waylist_p[adj_seg].node_from_int)	waylist_p[adj_seg].node_from_l=vert;
+					else									waylist_p[adj_seg].node_to_r=vert;
 				vert++;
 			}
-			if (adjlist_n>3) {
-				/* TODO: fill the intersection polygon */
+			if (adjlist_n>=3) {
+				/* we know that the last adjlist_n vertices set belong to our intersection here .. */
+				for (j=vert-adjlist_n+1;j<(vert-1);j++) 
+					s3d_push_polygon(way_obj, vert-adjlist_n, j, j+1,0 );
 			}
 		} else {
-			printf("calc 2 endpoints\n");
 			/* endpoint */
-			V_SUB(nodelist_p[adjlist_p[0].node_id], nodelist_p[i].x, a);
+			V_SUB(nodelist_p[adjlist_p[0].node_id].x, nodelist_p[i].x, a);
 			V_NORM(a);
 			V_CROSS(nodelist_p[i].normal, a ,an);	/* an is also normalized, as first and second argument are already length 1 */
+			V_SCAL(an, street_width);
 
-			V_COPY(s,nodelist_p[i].normal);
+			V_COPY(s,nodelist_p[i].x);
 			V_ADD(s,an,s);
-			s3d_push_vertices(way_obj,an,s);
+			s3d_push_vertices(way_obj,s,1);
 			j=vert;
 			vert++;
 			V_SCAL(an,-1);
-			V_COPY(s,nodelist_p[i].normal);
+			V_COPY(s,nodelist_p[i].x);
 			V_ADD(s,an,s);
+			s3d_push_vertices(way_obj,s,1);
 			k=vert;
 			vert++;
 			
 			adj_seg=adjlist_p[0].seg_id;
-			if (nodelist_p[i].node_id==waylist_p[adj_seg].node_from)	{
+			if (i==waylist_p[adj_seg].node_from_int)	{
 				waylist_p[adj_seg].node_from_l=j;
 				waylist_p[adj_seg].node_from_r=k;
 			} else {
@@ -345,7 +337,7 @@ void waylist_draw(char *filter)
 		}
 	}
 	for (i=0;i<waylist_n;i++) {
-		printf("drawing way from points %d %d %d %d\n",waylist_p[i].node_from_l, waylist_p[i].node_to_l, waylist_p[i].node_to_r,waylist_p[i].node_from_r);
+/*		printf("drawing way from points %d %d %d %d\n",waylist_p[i].node_from_l, waylist_p[i].node_to_l, waylist_p[i].node_to_r,waylist_p[i].node_from_r);*/
 		s3d_push_polygon(way_obj, waylist_p[i].node_from_l, waylist_p[i].node_to_l, waylist_p[i].node_to_r, 0);
 		s3d_push_polygon(way_obj, waylist_p[i].node_from_l, waylist_p[i].node_to_r, waylist_p[i].node_from_r, 0);
 		
@@ -353,31 +345,6 @@ void waylist_draw(char *filter)
 	s3d_link(way_obj,oidy);
 	s3d_flags_on(way_obj,S3D_OF_VISIBLE);
 	waylist_n=0;
-
-
-/*			
-	for (i=0;i<waylist_n;i++)
-	{
-		float len;
-		nodelist_n=0;
-		snprintf(query,MAXQ,"SELECT longitude, latitude, altitude FROM node WHERE node_id IN (%d,%d);",waylist_p[i].node_from,waylist_p[i].node_to);
-		db_exec(query, insert_node,(void *)nodelist_p);
-		calc_earth_to_eukl(nodelist_p[0].la,nodelist_p[0].lo,x);
-		calc_earth_to_eukl(nodelist_p[1].la,nodelist_p[1].lo,x+3);
-		s3d_push_vertices(way_obj,x,2);
-		s3d_push_line(way_obj, vert,vert+1, 0);
-		vert+=2;
-		len=sqrt( (x[0]-x[3])*(x[0]-x[3]) + (x[1]-x[4])*(x[1]-x[4]) + (x[2]-x[5])*(x[2]-x[5]));
-		if (len>1000.0)
-		{
-			printf("length of segment is %3.3f\n",len);
-			printf("segment id %d: from id %d to id %d\n",waylist_p[i].seg_id,waylist_p[i].node_from,waylist_p[i].node_to);
-			printf("segment no %d of way %d: %f %f %f -> ",i, lastid,nodelist_p[0].la, nodelist_p[0].lo, nodelist_p[0].alt);
-			printf("%f %f %f\n",nodelist_p[1].la, nodelist_p[1].lo, nodelist_p[1].alt);
-		}
-
-	}
-*/		
 }
 void waylist_add(struct waylist *p)
 {
@@ -408,14 +375,12 @@ int way_group(void *data, int argc, char **argv, char **azColName)
 			else if (0==strcmp(azColName[i],"node_to"))			p.node_to=atoi(argv[i]);
 			else if (0==strcmp(azColName[i],"seg_id"))			p.seg_id=atoi(argv[i]);
 		}
-		/* 	printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");  */
 	}
 	if (p.node_from==p.node_to)	/* skip */
 		return(0);
 	if ((lastid!=id) && (id!=0)) {
 		waylist_draw(filter);
 		/* flush/draw the list, add new  */
-/*		printf("new list: %d\n",id);*/
 		waylist_add(&p);
 	} else {
 		/* add id to the list */
@@ -430,8 +395,6 @@ void draw_ways(char *filter)
 {
 	char query[MAXQ];
 	snprintf(query,MAXQ,"SELECT * FROM segment WHERE %s ORDER BY way_id;",filter);
-/*	snprintf(query,MAXQ,"SELECT DISTINCT way_id,segment.layer_id,node_id,node_from,node_to,longitude,latitude FROM segment JOIN node WHERE %s AND (node.node_id=segment.node_to OR node.node_id=segment.node_from) ORDER BY way_id;",filter);
-	printf("query: %s\n",query);*/
 	db_exec(query, way_group,filter);
 	waylist_draw(filter); /* last way */
 	printf("[done]\n");
@@ -439,7 +402,7 @@ void draw_ways(char *filter)
 void draw_translate_icon(int user_icon, float la, float lo)
 {
 	float x[3];
-	calc_earth_to_eukl(la,lo,x);
+	calc_earth_to_eukl(la,lo,0,x);
 	s3d_translate(user_icon,x[0],x[1],x[2]);
 	s3d_rotate(user_icon,(90-la),lo,0);
 }
@@ -450,8 +413,4 @@ void draw_osm()
 void draw_all_layers()
 {
 	draw_osm();
-/*	int i;
-	for (i=0;i<layerset.n;i++)
-		draw_layer(layerset.p[i]);
-	*/
 }

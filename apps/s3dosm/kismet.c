@@ -37,7 +37,7 @@ object_t *parse_kismet_node(xmlNodePtr cur)
 	attr=cur->properties;
 
 	node->base.layerid=layerid;
-	node->base.id=-1;				/* let database decide */
+	node->base.id=0;				/* let database decide */
 	for (attr=cur->properties;attr;attr=attr->next)
 	{
 /*		if (0==strcmp((char *)attr->name,"number")) 		node->base.id=		strtol((char *)attr->children->content,NULL,10);

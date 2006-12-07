@@ -62,7 +62,7 @@ int db_insert_tags(int tag_n, tag_t *tag_p)
 		}
 		return(tagid);
 	} else 
-		return(-1);
+		return(0);
 }
 int db_insert_node(node_t *node)
 {
@@ -70,7 +70,7 @@ int db_insert_node(node_t *node)
 	char addquery[MAXQ];
 	tagid= db_insert_tags(node->base.tag_n,node->base.tag_p);
 	
-	if (node->base.id==-1) /* give own id */
+	if (node->base.id==0) /* give own id */
 		snprintf(addquery,MAXQ,"INSERT INTO node (layer_id, latitude, longitude, altitude, visible, tag_id) VALUES (%d, %f, %f, %f, %d, %d);",
 						(int)node->base.layerid,				node->lat,		node->lon,		node->alt,		node->visible, 		tagid);
 	else
@@ -87,7 +87,7 @@ int db_insert_segment(segment_t *seg)
 	char addquery[MAXQ];
 	tagid= db_insert_tags(seg->base.tag_n,seg->base.tag_p);
 
-/*	if (seg->base.id==-1) / * give own id * /
+/*	if (seg->base.id==0) / * give own id * /
 		snprintf(addquery,MAXQ,"INSERT INTO segment (layer_id, node_from, node_to, tag_id) VALUES (%d, %d, %d), %d;",
 						(int)seg->base.layerid,				(int)seg->from, (int)seg->to,	tagid );
 	else*/
