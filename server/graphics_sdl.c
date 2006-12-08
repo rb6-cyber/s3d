@@ -22,6 +22,7 @@
  */
 
 #include "global.h"
+#define	AA_LEVEL	4
 
 #include <SDL_opengl.h>
 #include <SDL.h>
@@ -32,6 +33,7 @@ int graphics_init_sdl()
     SDL_Surface *GLwin = NULL;
     SDL_VideoInfo *VideoInfo;
     int rgb_size[3]; 				 /*  for SDL_GL attributes */
+    int buffers, samples;
 	s3dprintf(MED,"Using SDL driver ...");
 	
     SDLFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE | SDL_RESIZABLE;
@@ -75,6 +77,11 @@ int graphics_init_sdl()
             default:
 				rgb_size[0] = 8;	rgb_size[1] = 8;	rgb_size[2] = 8;	break;
 	}
+	if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1 ))			s3dprintf(VHIGH,"error initializing multisampling");
+	if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, AA_LEVEL ))	s3dprintf(VHIGH,"no multisampling available");
+    SDL_GL_GetAttribute( SDL_GL_MULTISAMPLEBUFFERS, &buffers );
+    SDL_GL_GetAttribute( SDL_GL_MULTISAMPLESAMPLES, &samples );
+    s3dprintf(MED,"Buffers: %d Samples: %d", buffers, samples);
 
 	 /*  print some information */
 	s3dprintf(VLOW,"Screen BPP: %d", SDL_GetVideoSurface()->format->BitsPerPixel);
