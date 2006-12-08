@@ -44,7 +44,8 @@ int running;
 static char *rc=NULL;
 static char *homerc="~/.s3drc";
 static char *etcrc ="/etc/s3drc";
-static int father_done=0;
+/*static int father_done=0;*/
+extern int aa_level;
 char **s3drc[]={&rc,&homerc,&etcrc};
 
 static void mainloop(void);
@@ -210,14 +211,15 @@ int process_args(int argc, char **argv)
 	char				 c;
 	struct option long_options[] = 
 	{
-		{"help",0,0,'h'},
-		{"use-glut",0,0,'g'},
-		{"use-sdl",0,0,'s'},
-		{"rc",1,0,'r'},
-		{"no-rc",0,0,'n'},
+		{"multisample",		1,0,'m'},
+		{"rc",				1,0,'r'},
+		{"help",			0,0,'h'},
+		{"use-glut",		0,0,'g'},
+		{"use-sdl",			0,0,'s'},
+		{"no-rc",			0,0,'n'},
 		{0,0,0,0}
 	};
-	while (-1!=(c=getopt_long(argc,argv,"?hgsrn",long_options,&lopt_idx)))
+	while (-1!=(c=getopt_long(argc,argv,"?hgsnr:m:",long_options,&lopt_idx)))
 	{
 		switch (c)
 		{
@@ -240,6 +242,13 @@ int process_args(int argc, char **argv)
 					s3dprintf(VHIGH,"using rc file: %s",optarg);
 					rc=optarg;
 					break;
+				case 'm':
+					aa_level=atoi(optarg);
+					if (aa_level>=0 || aa_level<=16)
+						s3dprintf(VHIGH,"aa_level: %d",aa_level);
+					else
+						errsf("process_args()","bad multisampling level");
+					break;
 				case 'n':
 					s3dprintf(VHIGH,"Using no rc file!");
 					norc=1;
@@ -249,6 +258,9 @@ int process_args(int argc, char **argv)
 				case 'h':
 					s3dprintf(VHIGH,"usage: %s [options]",argv[0]);
 					s3dprintf(VHIGH,"s3d, the 3d server:");
+					s3dprintf(VHIGH," --multisample, -m:\tSpecify Multisampling level (antialiasing) if available.\n\t\t(value 1-16, default 4, 0 = off),");
+					s3dprintf(VHIGH," --rc, -r:\tspecify a rc (startup script)");
+					s3dprintf(VHIGH," --no-rc, -n:\tdon't use a rc file (useful for debugging mcp's)");
 #ifdef G_GLUT
 					s3dprintf(VHIGH," --use-glut, -g:\tuse GLUT as framework-system");
 #endif
