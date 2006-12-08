@@ -65,14 +65,24 @@ int graphics_init_sdl()
 /* 	SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5); */
 /* 	SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 ); */
 	SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-	if (aa_level>0) {
-		if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1 ))			s3dprintf(VHIGH,"error initializing multisampling");
-		if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, aa_level ))	s3dprintf(VHIGH,"no multisampling available");
-	}
+	do {
+		if (aa_level>0) {
+			if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1 ))			s3dprintf(VHIGH,"error initializing multisampling");
+			if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, aa_level ))	s3dprintf(VHIGH,"no multisampling available");
+		}
 
-	 /*  more opengl-init-stuff */
-	if ((GLwin = SDL_SetVideoMode(X_RES,Y_RES,16,SDLFlags))==NULL) 
-			errsf("SDL_SetVideoMode()",SDL_GetError());
+		 /*  more opengl-init-stuff */
+		if ((GLwin = SDL_SetVideoMode(X_RES,Y_RES,16,SDLFlags))==NULL) 
+		{
+			if (aa_level>0) {
+				s3dprintf(MED,"retry without multisampling");
+				aa_level=0;
+				SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0 );
+				SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 0 );
+			} else
+				errsf("SDL_SetVideoMode()",SDL_GetError());
+		}
+	} while (GLwin==0);
 	switch (SDL_GetVideoInfo()->vfmt->BitsPerPixel) {
 	    case 8:
 				rgb_size[0] = 3;	rgb_size[1] = 3;	rgb_size[2] = 2;	break;
@@ -82,10 +92,11 @@ int graphics_init_sdl()
             default:
 				rgb_size[0] = 8;	rgb_size[1] = 8;	rgb_size[2] = 8;	break;
 	}
-
-    SDL_GL_GetAttribute( SDL_GL_MULTISAMPLEBUFFERS, &buffers );
-    SDL_GL_GetAttribute( SDL_GL_MULTISAMPLESAMPLES, &samples );
-    s3dprintf(LOW,"Buffers: %d Samples: %d", buffers, samples);
+	if (aa_level >0) {
+	    SDL_GL_GetAttribute( SDL_GL_MULTISAMPLEBUFFERS, &buffers );
+	    SDL_GL_GetAttribute( SDL_GL_MULTISAMPLESAMPLES, &samples );
+	    s3dprintf(LOW,"Buffers: %d Samples: %d", buffers, samples);
+	}
 
 	 /*  print some information */
 	s3dprintf(VLOW,"Screen BPP: %d", SDL_GetVideoSurface()->format->BitsPerPixel);
