@@ -30,29 +30,10 @@
 static int layerid;
 int parse_osm_tags(object_t *obj, xmlNodePtr cur)
 {
-	
 	xmlNodePtr c;
 	xmlAttrPtr attr;
 	char *v,*k;
-	tag_t *t;
-	int n;
 	v=k=NULL;
-	n=0;
-	for (c=cur->children;c!=NULL; c=c->next)
-	{
-		if (0==strcmp((char *)c->name,"tag"))	{
-			for (attr=c->properties;attr;attr=attr->next)
-			{
-				if (0==strcmp((char *)attr->name,"k")) 				k=(char *)attr->children->content;
-				else if (0==strcmp((char *)attr->name,"v")) 		v=(char *)attr->children->content;
-			}
-			if (k==NULL || v==NULL)			printf("bad tag!!\n");
-			else 							n++;
-		}
-	}
-	obj->tag_n=n;
-	obj->tag_p=malloc(obj->tag_n*sizeof(tag_t));
-	n=0;
 	for (c=cur->children;c!=NULL; c=c->next)
 	{
 		if (0==strcmp((char *)c->name,"tag"))	{
@@ -62,141 +43,77 @@ int parse_osm_tags(object_t *obj, xmlNodePtr cur)
 				else if (0==strcmp((char *)attr->name,"v")) 		v=(char *)attr->children->content;
 			}
 			if (k!=NULL && v!=NULL)
-			{
-				t=&(obj->tag_p[n]);
-				t->ttype=TAG_UNKNOWN;
-				t->k=strdup(k);
-				t->v=strdup(v);
-				t->d.s=v;
-				if 		(0==strcmp(k,"name"))	t->ttype=TAG_NAME;
-
-				n++;
-			}
+				db_add_tag(obj, k, v);
 		}
 	}
-
-
-	
 	return(0);
 
 }
-object_t *parse_osm_way(xmlNodePtr cur)
+void parse_osm_way(xmlNodePtr cur)
 {
-	way_t *way;
+	way_t way;
 	xmlNodePtr kids;
 	xmlAttrPtr attr,kattr;
-	int n=0;
+	int seg;
 
-	way=way_new();
+	way_init(&way);
 	
-	way->base.layerid=layerid;
+	way.base.layerid=layerid;
 	for (attr=cur->properties;attr;attr=attr->next)
-		if (0==strcmp((char *)attr->name,"id")) 			way->base.id=	strtol((char *)attr->children->content,NULL,10);
-	/* count segments */
+		if (0==strcmp((char *)attr->name,"id")) 			way.base.id=	strtol((char *)attr->children->content,NULL,10);
+	db_insert_way_only(&way);
+	parse_osm_tags(OBJECT_T(&way),cur);
 	for (kids=cur->children;kids!=NULL;kids=kids->next)
 	{
-		if (0==strcmp((char *)kids->name,"seg"))			n++;
-	}
-	/* add segments in segment buffer */
-	if (n>0)
-	{
-		way->seg_n=n;
-		way->seg_p=malloc(sizeof(ID_T)*n);
-		n=0;
-		for (kids=cur->children;kids!=NULL;kids=kids->next)
-		{
-			if (0==strcmp((char *)kids->name,"seg"))	{
-				for (kattr=kids->properties;kattr;kattr=kattr->next)
-					if (0==strcmp((char *)kattr->name,"id")) 			way->seg_p[n]=	strtol((char *)kattr->children->content,NULL,10);
-				n++;
-			}
+		if (0==strcmp((char *)kids->name,"seg"))	{
+			seg=-1;
+			for (kattr=kids->properties;kattr;kattr=kattr->next)
+				if (0==strcmp((char *)kattr->name,"id")) 			seg=	strtol((char *)kattr->children->content,NULL,10);
+			db_insert_way_seg(&way,seg);
 		}
 	}
-
-	parse_osm_tags(OBJECT_T(way),cur);
-	if (way->base.id>0)
-		return(OBJECT_T(way));
-	else {
-		way_free(way);
-		return(NULL);
-	}
 }
-object_t *parse_osm_segment(xmlNodePtr cur)
+void parse_osm_segment(xmlNodePtr cur)
 {
-	segment_t *segment;
+	segment_t segment;
 	xmlAttrPtr attr;
 
-	segment=segment_new();
+	segment_init(&segment);
 	
-	segment->base.layerid=layerid;
+	segment.base.layerid=layerid;
 	for (attr=cur->properties;attr;attr=attr->next)
 	{
 		
-		if (0==strcmp((char *)attr->name,"id")) 			segment->base.id=	strtol((char *)attr->children->content,NULL,10);
-		else if (0==strcmp((char *)attr->name,"from")) 		segment->from=		strtod((char *)attr->children->content,NULL);
-		else if (0==strcmp((char *)attr->name,"to")) 		segment->to=		strtod((char *)attr->children->content,NULL);
+		if (0==strcmp((char *)attr->name,"id")) 			segment.base.id=	strtol((char *)attr->children->content,NULL,10);
+		else if (0==strcmp((char *)attr->name,"from")) 		segment.from=		strtod((char *)attr->children->content,NULL);
+		else if (0==strcmp((char *)attr->name,"to")) 		segment.to=			strtod((char *)attr->children->content,NULL);
 	}
-	parse_osm_tags(OBJECT_T(segment),cur);
-	if ((segment->base.id>0) && (segment->from>0) && (segment->to>0))
-		return(OBJECT_T(segment));
-	else {
-		segment_free(segment);
-		return(NULL);
+	if ((segment.base.id>0) && (segment.from>0) && (segment.to>0)) {
+		db_insert_segment(&segment);
+		parse_osm_tags(OBJECT_T(&segment),cur);
 	}
 }
-object_t *parse_osm_node(xmlNodePtr cur)
+void parse_osm_node(xmlNodePtr cur)
 {
-	node_t *node;
+	node_t node;
 	xmlAttrPtr attr;
 
-	node=node_new();
+	node_init(&node);
 	attr=cur->properties;
 	
-	node->base.layerid=layerid;
+	node.base.layerid=layerid;
 	for (attr=cur->properties;attr;attr=attr->next)
 	{
-		if (0==strcmp((char *)attr->name,"id")) 			node->base.id=		strtol((char *)attr->children->content,NULL,10);
-		else if (0==strcmp((char *)attr->name,"lat")) 		node->lat=			strtod((char *)attr->children->content,NULL);
-		else if (0==strcmp((char *)attr->name,"lon")) 		node->lon=			strtod((char *)attr->children->content,NULL);
-		else if (0==strcmp((char *)attr->name,"visible")) 	node->visible=		(0==strcmp((char *)attr->children->content,"true"))?1:0;
+		if (0==strcmp((char *)attr->name,"id")) 			node.base.id=		strtol((char *)attr->children->content,NULL,10);
+		else if (0==strcmp((char *)attr->name,"lat")) 		node.lat=			strtod((char *)attr->children->content,NULL);
+		else if (0==strcmp((char *)attr->name,"lon")) 		node.lon=			strtod((char *)attr->children->content,NULL);
+		else if (0==strcmp((char *)attr->name,"visible")) 	node.visible=		(0==strcmp((char *)attr->children->content,"true"))?1:0;
 		else if (0==strcmp((char *)attr->name,"time")) {}	/* TODO */
 	}
-	parse_osm_tags(OBJECT_T(node),cur);
-	if (node->base.id>0)
-		return(OBJECT_T(node));
-	else {
-		node_free(node);
-		return(NULL);
+	if (node.base.id>0) {
+		db_insert_node(&node);
+		parse_osm_tags(OBJECT_T(&node),cur);
 	}
-}
-
-void debug_obj(object_t *obj, void *dummy)
-{
-	int i;
-	way_t *way=WAY_T(obj);
-	node_t *node=NODE_T(obj);
-	segment_t *seg=SEGMENT_T(obj);
-	switch (obj->type)
-	{
-		case T_OBJECT:
-				printf("object %d\n",(int)obj->id);
-				break;
-		case T_NODE:
-				 printf("node %d [%f,%f,%f]\n",(int)obj->id,node->lon,node->lat,node->alt);
-				 break;
-		case T_SEGMENT:
-				 printf("segment %d [%d->%d]\n",(int)obj->id,(int)seg->from,(int)seg->to);
-				 break;
-		case T_WAY:
-				 printf("way %d [ ",(int)obj->id);
-				 for (i=0;i<way->seg_n;i++)
-					printf("%d ",(int)way->seg_p[i]);
-				 printf("]\n");
-				 break;
-				 
-	}
-	for (i=0;i<obj->tag_n;i++)
-		printf("tag %d: %s -> %s\n",i,obj->tag_p[i].k,obj->tag_p[i].v);
 }
 /* parse the osm input file */
 layer_t *parse_osm(char *buf, int length)
@@ -226,13 +143,9 @@ layer_t *parse_osm(char *buf, int length)
 		if (cur->type==XML_ELEMENT_NODE)
 		{
 			obj=NULL;
-			if (0==strcmp((char *)cur->name,"node"))				obj=parse_osm_node(cur);
-			else if (0==strcmp((char *)cur->name,"segment"))		obj=parse_osm_segment(cur);
-			else if (0==strcmp((char *)cur->name,"way"))			obj=parse_osm_way(cur);
-			if (obj!=NULL)
-				db_insert_object(obj);
-			else
-				fprintf(stderr,"bad object\n");
+			if (0==strcmp((char *)cur->name,"node"))				parse_osm_node(cur);
+			else if (0==strcmp((char *)cur->name,"segment"))		parse_osm_segment(cur);
+			else if (0==strcmp((char *)cur->name,"way"))			parse_osm_way(cur);
 			if ((i++)%100==0) {printf(".");fflush(stdout);}
 		}
 	}

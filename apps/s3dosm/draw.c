@@ -43,53 +43,46 @@ void calc_earth_to_eukl(float lat, float lon, float alt, float *x)
 	x[1]=(ESIZE+alt)*			sin(la);
 	x[2]=(ESIZE+alt)*cos(lo) *cos(la);
 }
-void draw_add_vertices(object_t *t, void *data)
+int draw_icon(void *data, int argc, char **argv, char **azColName) 
 {
-	struct vdata *v=data;
-	tag_t *tag;
+	int i,tagid=-1,oid;
+	char s[MAXQ];
+	float la, lo, alt;
+	float x[3];
+	la=lo=alt=0.0;
 	
-	if (t->type==T_NODE)
-	{
-		float x[3];
-		node_t *node=NODE_T(t);
-		node->vid=v->vnum;
-		calc_earth_to_eukl(node->lat,node->lon,0,x);
-		s3d_push_vertex(v->oid,x[0],x[1],x[2]);
-		if (node->visible==2) /* something special */
-		{
-			if (NULL!=(tag=tag_get(OBJECT_T(node), "amenity")))
-			{
-				if (0==(strcmp(tag->v,"wifi")))
-				{
-					tag_t *wtag,*ttag;
-					if (NULL!=(ttag=tag_get(OBJECT_T(node),"wifi_type"))) {
-						if (0==strcmp(ttag->v,"infrastructure"))
-						{	
-							if (NULL!=(wtag=tag_get(OBJECT_T(node), "wifi_wep")))
-								if (0==strcmp(wtag->v,"true"))
-									node->base.oid=s3d_clone(icons[ICON_AP_OPEN].oid);
-								else
-									node->base.oid=s3d_clone(icons[ICON_AP].oid);
-							else
-							node->base.oid=s3d_clone(icons[ICON_AP].oid);
-							s3d_translate(node->base.oid,x[0],x[1],x[2]);
-							s3d_link(node->base.oid,v->oid);
-							s3d_flags_on(node->base.oid,S3D_OF_VISIBLE);
-							s3d_rotate(node->base.oid,(90-node->lat),node->lon,0);
-							v->layer->visible=1;
-						} else { /* not an ap */
-						}
-					}
+	for(i=0; i<argc; i++) {
+		if (argv[i]) {
+			if (0==strcmp(azColName[i],"longitude"))			lo=strtod(argv[i],NULL);
+			else if (0==strcmp(azColName[i],"latitude"))		la=strtod(argv[i],NULL);
+			else if (0==strcmp(azColName[i],"altitude"))		alt=strtod(argv[i],NULL);
+			else if (0==strcmp(azColName[i],"tag_id")) 			tagid=atoi(argv[i]);
+		}
+	}
+	if (0==db_gettag(tagid, "amenity",s)) {
+		oid=-1;
+		if (0==strcmp(s,"wifi")) {					/* some wifi icon */
+			if (0==db_gettag(tagid, "wifi_type",s)) {
+				if (0==strcmp(s,"infrastructure")) {	/* access point */
+					if (0==db_gettag(tagid, "wifi_wep",s)) {
+						if (0==strcmp(s,"true"))	oid=s3d_clone(icons[ICON_AP_WPA].oid);
+						else						oid=s3d_clone(icons[ICON_AP_OPEN].oid);
+					} else oid=s3d_clone(icons[ICON_AP_OPEN].oid);	/* assuming open ap */
 				}
 			}
 		}
-		v->vnum++;
-		v->lonsum+=node->lon;
-		v->latsum+=node->lat;
-		v->n++;
-	}
+		if (oid!=-1) {
+			calc_earth_to_eukl(la,lo,0,x);
+			s3d_translate(oid,x[0],x[1],x[2]);
+			s3d_rotate(oid,(90-la),lo,0);
+			s3d_link(oid,oidy);
+			s3d_flags_on(oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+			/* TODO: update database */
+		}
+				
+	} 
+	return(0);
 }
-
 
 static int lastid=-1;
 struct waylist {
@@ -157,7 +150,7 @@ static float temp;
 #define 	V_SUB(a,b,c)	c[0]=a[0]-b[0];	c[1]=a[1]-b[1];	c[2]=a[2]-b[2];
 #define		V_DOT(a,b)		a[0]*b[0] + a[1]*b[1] + a[2] * b[2]
 #define		V_CROSS(a,b,c)	c[0]=a[1]*b[2] - a[2]*b[1];		c[1]=a[2]*b[0] - a[0]*b[2]; 	c[2]=a[0]*b[1] - a[1]*b[0];
-#define		V_LEN(a)		sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2]);
+#define		V_LEN(a)		sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2])
 #define		V_SCAL(a,s)		a[0]=s*a[0];	a[1]=s*a[1];	a[2]=s*a[2];
 #define		V_NORM(a)		temp=V_LEN(a); V_SCAL(a,1/temp);
 
@@ -193,7 +186,7 @@ void waylist_draw(char *filter)
 		case 1:s3d_push_material(way_obj,0.6,0.6,0.6,		1.0,1.0,1.0, 	1.0,1.0,1.0);	/* residential */
 		default:s3d_push_material(way_obj,0.6,0.2,0.6,		1.0,1.0,1.0,	1.0,0.5,1.0); /* default */
 	}
-	street_width=0.5+waytype/10;
+	street_width=(0.5+waytype/10)/RESCALE;
 	/* put nodes of the graph into a list */
 	nodelist_n=0;
 	for (i=0;i<waylist_n*2;i++) {
@@ -206,7 +199,7 @@ void waylist_draw(char *filter)
 			nodelist_p[j].node_id=node_id;
 			snprintf(query,MAXQ,"SELECT longitude, latitude, altitude FROM node WHERE %s AND node_id=%d;",filter, node_id);
 			db_exec(query, insert_node,(void *)(nodelist_p));
-			calc_earth_to_eukl(nodelist_p[j].la,nodelist_p[j].lo,0+waytype/2,nodelist_p[j].x); /* elevate higher priority streets a little bit ... */
+			calc_earth_to_eukl(nodelist_p[j].la,nodelist_p[j].lo,0,nodelist_p[j].x); /* elevate higher priority streets a little bit ... */
 			len=sqrt(nodelist_p[j].x[0]*nodelist_p[j].x[0] + nodelist_p[j].x[1]*nodelist_p[j].x[1] + nodelist_p[j].x[2]*nodelist_p[j].x[2]);
 			nodelist_p[j].normal[0]=nodelist_p[j].x[0]/len;
 			nodelist_p[j].normal[1]=nodelist_p[j].x[1]/len;
@@ -233,7 +226,7 @@ void waylist_draw(char *filter)
 				adjlist_n++;
 			}
 		}
-			
+
 		if (adjlist_n>1)	/* more than one adjacent, need to order and calculate intersections */
 		{
 			if (adjlist_n>2) /* no ordering needed for 2 incoming segments */
@@ -276,17 +269,22 @@ void waylist_draw(char *filter)
 				V_NORM(right);
 				V_CROSS(nodelist_p[i].normal, left ,an);	/* an is also normalized, as first and second argument are already length 1 */
 				V_ADD(left, right, n);						/* direction which our intersection is */
+
+				V_CROSS(nodelist_p[i].normal, n, s);
+				V_CROSS(s, nodelist_p[i].normal, n); /* get n on the plane which is spanned by the points normal */
+
 				n_len=V_LEN(n);
 
-				if (n_len<0.1)
+				V_COPY(s, nodelist_p[i].x);	/* s = P + (street_width/ ( n * an)) * n */
+				V_SCAL(n,1/n_len);	/* normalize n first! */
+				scale=V_DOT(n,an);	/* get cos (alpha/2), alpha is opposite angel of left and right segment */
+
+				if ((n_len<0.1) || (fabs(scale)<0.1))
 				{	/* too low, don't use, just have intersection 90 degree of it. */
 					V_SCAL(an, -street_width);		/* S = P + street_width * an */
 					V_ADD(nodelist_p[i].x, an, s);
 
 				} else {
-					V_COPY(s, nodelist_p[i].x);	/* s = P + (street_width/ ( n * an)) * n */
-					V_SCAL(n,1/n_len);	/* normalize n first! */
-					scale=V_DOT(n,an);	/* get cos (alpha/2), alpha is opposite angel of left and right segment */
 					V_SCAL(n,-street_width/scale);
 					V_ADD(s, n, s);
 				}
@@ -337,13 +335,21 @@ void waylist_draw(char *filter)
 		}
 	}
 	for (i=0;i<waylist_n;i++) {
-/*		printf("drawing way from points %d %d %d %d\n",waylist_p[i].node_from_l, waylist_p[i].node_to_l, waylist_p[i].node_to_r,waylist_p[i].node_from_r);*/
-		s3d_push_polygon(way_obj, waylist_p[i].node_from_l, waylist_p[i].node_to_l, waylist_p[i].node_to_r, 0);
-		s3d_push_polygon(way_obj, waylist_p[i].node_from_l, waylist_p[i].node_to_r, waylist_p[i].node_from_r, 0);
-		
+		uint32_t	polys[8];
+		/* printf("drawing way from points %d %d %d %d\n",waylist_p[i].node_from_l, waylist_p[i].node_to_l, waylist_p[i].node_to_r,waylist_p[i].node_from_r);*/
+		polys[0]=waylist_p[i].node_from_l;
+		polys[1]=waylist_p[i].node_to_l;
+		polys[2]=waylist_p[i].node_to_r;
+		polys[3]=0;
+		polys[4]=waylist_p[i].node_from_l;
+		polys[5]=waylist_p[i].node_to_r;
+		polys[6]=waylist_p[i].node_from_r;
+		polys[7]=0;
+
+		s3d_push_polygons(way_obj, polys, 2);
 	}
 	s3d_link(way_obj,oidy);
-	s3d_flags_on(way_obj,S3D_OF_VISIBLE);
+	s3d_flags_on(way_obj,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	waylist_n=0;
 }
 void waylist_add(struct waylist *p)
@@ -390,6 +396,13 @@ int way_group(void *data, int argc, char **argv, char **azColName)
 		
 	return 0;
 }
+void draw_translate_icon(int user_icon, float la, float lo)
+{
+	float x[3];
+	calc_earth_to_eukl(la,lo,1/RESCALE,x);
+	s3d_translate(user_icon,x[0],x[1],x[2]);
+	s3d_rotate(user_icon,(90-la),lo,0);
+}
 
 void draw_ways(char *filter)
 {
@@ -399,18 +412,23 @@ void draw_ways(char *filter)
 	waylist_draw(filter); /* last way */
 	printf("[done]\n");
 }
-void draw_translate_icon(int user_icon, float la, float lo)
-{
-	float x[3];
-	calc_earth_to_eukl(la,lo,0,x);
-	s3d_translate(user_icon,x[0],x[1],x[2]);
-	s3d_rotate(user_icon,(90-la),lo,0);
-}
 void draw_osm()
 {
+	printf("draw_osm()\n");
 	draw_ways("layer_id=(SELECT layer_id FROM layer WHERE name='osm')");
+}
+void draw_kismet()
+{
+	char query[MAXQ];
+	char filter[]="layer_id=(SELECT layer_id FROM layer WHERE name='kismet')";
+	printf("[draw kismet]\n");
+	snprintf(query,MAXQ,"SELECT * FROM node WHERE %s;",filter);
+	db_exec(query, draw_icon,filter);
+	waylist_draw(filter); /* last way */
+	printf("[done]\n");
 }
 void draw_all_layers()
 {
 	draw_osm();
+	draw_kismet();
 }

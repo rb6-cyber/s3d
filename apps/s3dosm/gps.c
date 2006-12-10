@@ -120,11 +120,12 @@ void show_position(struct gps_data_t *dgps)
 #endif
 	tlat=la;tlon=lo;
 	if (fix) {
+		printf("have a fix\n");
 		nav_center(la,lo);
 		if (!finitef(heading)) {
 			heading=get_heading(lat_old,lon_old,la,lo);
-			if (!lastfix && fix) 		{s3d_scale(user_icon,1.0);}
-			if (lastfix && !fix)		{s3d_scale(user_icon,0.3);lat=tlat;lon=tlon;}
+			if (!lastfix && fix) 		{s3d_scale(user_icon,1.0/RESCALE);}
+			if (lastfix && !fix)		{s3d_scale(user_icon,0.3/RESCALE);lat=tlat;lon=tlon;}
 			if (finitef(heading))		s3d_rotate(user_icon,0,heading,0);
 		}
 		if (finitef(speed)) {
@@ -169,6 +170,7 @@ int gps_init(char *gpshost)
 	s3d_link(user_icon,user_icon_rotator);
 	s3d_link(user_icon_rotator,oidy); 
 	s3d_flags_on(user_icon,S3D_OF_VISIBLE);
+	s3d_scale(user_icon,1.0/RESCALE);
 	tlat=lat=lat_old=0.0;
 	tlon=lon=lon_old=0.0;
 	gps_active=1;

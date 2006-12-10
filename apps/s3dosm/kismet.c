@@ -22,55 +22,58 @@
  */
 
 #include "s3dosm.h"
+#include <math.h>			/* fabs() */
 #include <string.h>			/* strcmp() */
 #include <stdlib.h>			/* strtof(),strtod(),strtol() */
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 static int layerid;
-object_t *parse_kismet_node(xmlNodePtr cur)
+void parse_kismet_node(xmlNodePtr cur)
 {
-	node_t *node;
+	node_t node;
 	xmlAttrPtr attr;
 	xmlNodePtr kids,gpskids;
 
-	node=node_new();
+	node_init(&node);
 	attr=cur->properties;
 
-	node->base.layerid=layerid;
-	node->base.id=0;				/* let database decide */
-	for (attr=cur->properties;attr;attr=attr->next)
-	{
-/*		if (0==strcmp((char *)attr->name,"number")) 		node->base.id=		strtol((char *)attr->children->content,NULL,10);
-		else */if (0==strcmp((char *)attr->name,"wep")) 		tag_add(OBJECT_T(node),"wifi_wep",(char *)attr->children->content);
-		else if (0==strcmp((char *)attr->name,"type")) 		tag_add(OBJECT_T(node),"wifi_type",(char *)attr->children->content);
-	}
+	node.base.layerid=layerid;
+	node.base.id=0;				/* let database decide */
+	node.visible=2;	/* something special */
 	for (kids=cur->children;kids;kids=kids->next)
 	{
-		if (0==strcmp((char *)kids->name,"SSID")) 			tag_add(OBJECT_T(node),"wifi_SSID",(char *)xmlNodeGetContent(kids->children));
-		if (0==strcmp((char *)kids->name,"BSSID")) 			tag_add(OBJECT_T(node),"wifi_BSSID",(char *)xmlNodeGetContent(kids->children));
 		if (0==strcmp((char *)kids->name,"gps-info"))
 		{
 			for (gpskids=kids->children;gpskids;gpskids=gpskids->next)
 			{
 				/* get median value */
-				if (0==strcmp((char *)gpskids->name,"min-lat")) 		node->lat=node->lat + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
-				if (0==strcmp((char *)gpskids->name,"max-lat")) 		node->lat=node->lat + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
-				if (0==strcmp((char *)gpskids->name,"min-lon")) 		node->lon=node->lon + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
-				if (0==strcmp((char *)gpskids->name,"max-lon")) 		node->lon=node->lon + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
-				if (0==strcmp((char *)gpskids->name,"min-alt")) 		node->alt=node->alt + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
-				if (0==strcmp((char *)gpskids->name,"max-alt")) 		node->alt=node->alt + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
+				if (0==strcmp((char *)gpskids->name,"min-lat")) 		node.lat=node.lat + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
+				if (0==strcmp((char *)gpskids->name,"max-lat")) 		node.lat=node.lat + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
+				if (0==strcmp((char *)gpskids->name,"min-lon")) 		node.lon=node.lon + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
+				if (0==strcmp((char *)gpskids->name,"max-lon")) 		node.lon=node.lon + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
+				if (0==strcmp((char *)gpskids->name,"min-alt")) 		node.alt=node.alt + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
+				if (0==strcmp((char *)gpskids->name,"max-alt")) 		node.alt=node.alt + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
 			}
 		}
 	}
-	node->visible=2;	/* something special */
-	tag_add(OBJECT_T(node), "amenity", "wifi");
-
-	if (node->base.id>0 && (node->lon!=0.0) && (node->lat!=0.0)) /* really, i don't want to discriminate anyone at 0 lat 0 lon running a wifi hotspot, even
+	if ((fabs(node.lon)>0.01) || (fabs(node.lat)>0.01)) /* really, i don't want to discriminate anyone at 0 lat 0 lon running a wifi hotspot, even
 																	if it's in the middle of the ocean. i'm very sorry. */
-		return(OBJECT_T(node));
-	else {
-		node_free(node);
-		return(NULL);
+	{
+
+		db_insert_node(&node);
+		for (kids=cur->children;kids;kids=kids->next)
+		{
+			if (0==strcmp((char *)kids->name,"SSID")) 			db_add_tag(OBJECT_T(&node),"wifi_SSID",(char *)xmlNodeGetContent(kids->children));
+			if (0==strcmp((char *)kids->name,"BSSID")) 			db_add_tag(OBJECT_T(&node),"wifi_BSSID",(char *)xmlNodeGetContent(kids->children));
+		}
+		for (attr=cur->properties;attr;attr=attr->next)
+		{
+	/*		if (0==strcmp((char *)attr->name,"number")) 		node->base.id=		strtol((char *)attr->children->content,NULL,10);
+			else */if (0==strcmp((char *)attr->name,"wep")) 	db_add_tag(OBJECT_T(&node),"wifi_wep",(char *)attr->children->content);
+			else if (0==strcmp((char *)attr->name,"type")) 		db_add_tag(OBJECT_T(&node),"wifi_type",(char *)attr->children->content);
+		}
+
+		db_add_tag(OBJECT_T(&node), "amenity", "wifi");
 	}
 }
 
@@ -80,7 +83,6 @@ layer_t *parse_kismet(char *buf, int length)
 	xmlDocPtr doc;
 	xmlNodePtr cur;
 	layer_t *layer=layer_new();
-	object_t *obj;
 	
 
 	doc = xmlReadMemory(buf, length, "noname.xml", NULL, 0);
@@ -102,9 +104,7 @@ layer_t *parse_kismet(char *buf, int length)
 		{
 			if (0==strcmp((char *)cur->name,"wireless-network"))
 			{
-				if (NULL!=(obj=parse_kismet_node(cur)))
-					db_insert_object(obj);
-				else fprintf(stderr,"bad node\n"); 
+				parse_kismet_node(cur);
 			} 
 		}
 	}

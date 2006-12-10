@@ -40,6 +40,7 @@ void object_init(object_t *nobj)
 	nobj->id=0;
 	nobj->oid=-1;
 	nobj->layerid=-1;
+	nobj->tagid=-1;
 	nobj->tag_n=0;
 	nobj->tag_p=NULL;
 	nobj->type=T_OBJECT;

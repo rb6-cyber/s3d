@@ -7,7 +7,8 @@
 
 icon_t icons[ICON_NUM]={
 		{"objs/accesspoint.3ds",0},
-		{"objs/star.3ds",0},
+		{"objs/noinetwep.3ds",0},
+		{"objs/noinetwpa.3ds",0},
 		{"objs/arrow2.3ds",0}
 	};
 int oidx, oidy;
@@ -18,6 +19,7 @@ void nav_loadicons()
 	int i;
 	for (i=0;i<ICON_NUM;i++)
 	{
+		printf("loading %s\n",icons[i].path);
 		icons[i].oid=s3d_import_model_file(icons[i].path);
 	}
 }

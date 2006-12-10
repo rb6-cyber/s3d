@@ -1,7 +1,7 @@
 #include <sqlite3.h>
 #include "../../config.h"
 #define	ESIZE	637800		/* earth size */
-#define	RESCALE	0.5
+#define	RESCALE	1
 #define VIEWHEIGHT 3
 #define MAXQ	4096	
 #define QBUF	1024*128
@@ -46,8 +46,9 @@ enum {
 	T_WAY
 };
 enum {
-	ICON_AP,
 	ICON_AP_OPEN,
+	ICON_AP_WEP,
+	ICON_AP_WPA,
 	ICON_ARROW,
 	ICON_NUM
 };
@@ -72,6 +73,7 @@ struct _tag_t {
 struct _object_t {
 	ID_T 		 id;		/* id of this object */
 	ID_T		 layerid;
+	ID_T		 tagid;
 	int 		 oid;		/* s3d oid */
 	int 		 type;		/* type of this object */
 	/* avl stuff */
@@ -152,9 +154,12 @@ char *read_file(char *fname, int *fsize);
 int process_args(int argc, char **argv);
 /* db.c */
 int db_exec(const char *query, sqlite3_callback callback, void *arg);
+int db_add_tag(object_t *obj, char *key, char *val);
+int db_gettag(int tagid, char *field, char *target);
 int db_insert_node(node_t *node);
 int db_insert_segment(segment_t *seg);
-int db_insert_way(way_t *way);
+int db_insert_way_only(way_t *way);
+int db_insert_way_seg(way_t *way, int seg_n);
 int db_insert_object(object_t *obj);
 int db_init(char *dbFile);
 int db_quit();
