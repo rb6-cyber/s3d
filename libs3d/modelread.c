@@ -49,6 +49,7 @@ int s3d_import_model_file(char *fname)
 	char searchpath[1024];
 	char path[1024];
 	int oid;
+	if (fname==NULL) return(-1);
 #ifndef OBJSDIR
 #define OBJSDIR 	":./:../:../../:/usr/local/share/s3d/:/usr/share/s3d/"
 #endif
