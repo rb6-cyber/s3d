@@ -49,7 +49,7 @@ extern int frame_mode;  /*  GLUT, SDL, ... ? */
 
 int graphics_init ()
 {
-	GLfloat shin[]={1.0};
+	GLfloat shin[]={16.0};
 	switch (frame_mode)
 	{
 #ifdef G_SDL
@@ -347,7 +347,7 @@ void graphics_main()
 	t_mtrx m;
 	GLfloat pos[]={0,50,50,1.0};
 	GLfloat light0_spec[]={0.7,0.7,0.7,0.0};
-	GLfloat light0_shininess[] ={10.0};
+	GLfloat light0_shininess[] ={1.0};
 	GLfloat light0_diff[]={0.5,0.5,0.5,1.0};
 	GLfloat light0_amb[]={1.0,1.0,1.0,1.0};
 	
