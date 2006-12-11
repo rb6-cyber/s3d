@@ -351,6 +351,8 @@ void waylist_draw(char *filter)
 	s3d_link(way_obj,oidy);
 	s3d_flags_on(way_obj,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	waylist_n=0;
+	printf("+");
+	fflush(stdout);
 }
 void waylist_add(struct waylist *p)
 {

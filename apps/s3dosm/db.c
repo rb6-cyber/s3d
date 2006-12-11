@@ -231,11 +231,14 @@ int db_quit()
 }
 int db_create()
 {
-	db_exec("CREATE TABLE node (layer_id INT, node_id INTEGER PRIMARY KEY, latitude DOUBLE PRECISION, longitude DOUBLE PRECISION, altitude DOUBLE PRECISION, visible BOOLEAN, tag_id INT, UNIQUE(layer_id,node_id));",NULL,0);
-	db_exec("CREATE TABLE segment (layer_id INT, seg_id INTEGER PRIMARY KEY, node_from INT, node_to INT, tag_id INT, way_id INT,UNIQUE(layer_id,seg_id));", NULL, 0);
-	db_exec("CREATE TABLE way (layer_id INTEGER, way_id INTEGER PRIMARY KEY, tag_id INT, UNIQUE(layer_id,way_id));", NULL, 0);
-	db_exec("CREATE TABLE layer (layer_id INTEGER PRIMARY KEY, name TEXT, UNIQUE(layer_id));", NULL, 0);
-	db_exec("CREATE TABLE tag (tag_id INT, tagkey TEXT, tagvalue TEXT);", NULL, 0);
+	db_exec("CREATE TABLE node (layer_id INT, node_id INTEGER , latitude DOUBLE PRECISION, longitude DOUBLE PRECISION, altitude DOUBLE PRECISION, visible BOOLEAN, tag_id INT, PRIMARY KEY(layer_id,node_id));",NULL,0);
+	db_exec("CREATE TABLE segment (layer_id INT, seg_id INTEGER, node_from INT, node_to INT, tag_id INT, way_id INT,PRIMARY KEY(layer_id,seg_id));", NULL, 0);
+	db_exec("CREATE TABLE way (layer_id INTEGER, way_id INTEGER, tag_id INT, PRIMARY KEY(layer_id,way_id));", NULL, 0);
+	db_exec("CREATE TABLE layer (layer_id INTEGER, name TEXT, PRIMARY KEY(layer_id));", NULL, 0);
+	db_exec("CREATE TABLE tag (tag_id INT, tagkey TEXT, tagvalue TEXT, PRIMARY KEY(tag_id, tagkey));", NULL, 0);
+	
+	db_exec("CREATE UNIQUE INDEX node_id_index ON node (node_id,layer_id);", NULL, 0);
+	db_exec("CREATE UNIQUE INDEX segment_id_index ON segment (seg_id,layer_id);", NULL, 0);
 	db_flush();
 	return(0);
 }
