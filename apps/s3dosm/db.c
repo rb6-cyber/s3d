@@ -237,8 +237,11 @@ int db_create()
 	db_exec("CREATE TABLE layer (layer_id INTEGER, name TEXT, PRIMARY KEY(layer_id));", NULL, 0);
 	db_exec("CREATE TABLE tag (tag_id INT, tagkey TEXT, tagvalue TEXT, PRIMARY KEY(tag_id, tagkey));", NULL, 0);
 	
+	/*
 	db_exec("CREATE UNIQUE INDEX node_id_index ON node (node_id,layer_id);", NULL, 0);
 	db_exec("CREATE UNIQUE INDEX segment_id_index ON segment (seg_id,layer_id);", NULL, 0);
+	db_exec("CREATE UNIQUE INDEX tag_id_index ON tag (tag_id,tagkey);", NULL, 0);
+	*/
 	db_flush();
 	return(0);
 }
