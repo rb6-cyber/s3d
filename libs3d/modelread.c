@@ -160,7 +160,11 @@ int model_load(char *file)
 
 
 
-			oface = object->faces;
+			if (NULL==(oface = object->faces)) {
+				voff += object->vertex_count; /* increase vertex offset */
+				oitem = oitem->next;
+				continue;
+			}
 			npoly=0;
 			oldflags = ((G3DFace *) (oface->data))->flags;
 
