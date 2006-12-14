@@ -210,6 +210,9 @@ int network_main(void);
 int n_readn(struct t_process *p, uint8_t *str,int s);
 int n_writen(struct t_process *p, uint8_t *str,int s);
 int n_remove(struct t_process *p);
+#ifdef G_SDL
+int	net_turn_off(int interval);
+#endif
 /* tcp.c */
 int tcp_init(void);
 int tcp_quit(void);

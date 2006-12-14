@@ -37,7 +37,7 @@ int graphics_init_sdl()
 	s3dprintf(MED,"Using SDL driver ...");
 	
     SDLFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE | SDL_RESIZABLE;
-    if (SDL_Init(SDL_INIT_VIDEO) < 0)  		
+    if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER) < 0)  		
 			errsf("SDL_Init()",SDL_GetError());
     if ((VideoInfo = (SDL_VideoInfo *)SDL_GetVideoInfo())==NULL)
 			errs("SDL_GetVIdeoInfo()",SDL_GetError());

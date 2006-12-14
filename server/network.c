@@ -28,6 +28,9 @@
 #include <errno.h>		 /*  errno() */
 #include <unistd.h>		/* close(), read(),write() */
 #include <signal.h>		/* SIGPIPE,SIG_ERR,SIGIO */
+#ifdef G_SDL
+#include <SDL.h>	/* SDL_SetTimer() */
+#endif
 #ifdef SIGS
   #include <signal.h>	 /*  sighandler_t SIG_PIPE */
 #endif
@@ -78,6 +81,14 @@ int network_init()
 #endif
    return(0);
 }
+int					 turn;
+int	net_turn_off(int interval)
+{
+	s3dprintf(HIGH,"Warning: High traffic on Network, interrupting read.");
+	turn=0;
+	return(0);
+}
+
 /*  this basicly polls for new connection */
 int network_main()
 {
@@ -87,7 +98,14 @@ int network_main()
 	{
 #endif
 		tcp_pollport();	/*  this polls for new processes */
-		while (tcp_pollproc());  /*  if there is new data, loop please. this is for testing now, and should be combined with timing later .. */
+#ifdef G_SDL
+		SDL_SetTimer(50,(SDL_TimerCallback) net_turn_off);
+#endif
+		while (turn && tcp_pollproc());  /*  if there is new data, loop please. this is for testing now, and should be combined with timing later .. */
+#ifdef G_SDL
+		SDL_SetTimer(0,NULL);
+#endif
+
 #ifdef SIGS
 		sigio=0;
 #endif

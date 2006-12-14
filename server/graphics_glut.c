@@ -29,6 +29,7 @@
 #include <stdio.h>		/* NULL */
 #include <GL/glut.h> 	 /*  all the glut functions */
 #include <GL/gl.h>		 /*  of course, the gl header */
+#include <stdlib.h>		/* atexit() */
 /*  glut version of graphics init ... */
 int graphics_init_glut()
 {

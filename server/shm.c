@@ -23,6 +23,9 @@
 
 
 #include "global.h"
+#ifdef G_SDL
+#include <SDL.h>	/* SDL_SetTimer() */
+#endif
 #ifdef SHM
 #include <stdio.h>  /* printf(),fopen(),fclose() */
 #include <unistd.h>	/* unlink(),usleep() */
@@ -38,6 +41,7 @@
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <time.h>	/* nanosleep() */
 
 extern uint8_t ibuf[MAXPLEN];
 extern struct t_process *procs_p;
@@ -166,6 +170,8 @@ int shm_remove(struct t_process *p)
 		errn("shm_quit():shmctl()",errno);
 	return(0);
 }
+
+extern int	turn;	/* set turn to 0 when timeslice is over */
 int shm_main()
 {
 	int 				 i/*,found*/;
@@ -174,8 +180,12 @@ int shm_main()
 	struct shmid_ds		 d;
 /*	do*/ {
 /*		found=0;*/
+		turn=1;
 		for (i=0;i<procs_n;i++)
 		{
+#ifdef G_SDL
+			SDL_SetTimer(20,(SDL_TimerCallback) net_turn_off);
+#endif
 			if (procs_p[i].con_type==CON_SHM)
 			{
 				dai=(struct buf_t *) procs_p[i].shmsock.data_ctos;
@@ -184,7 +194,10 @@ int shm_main()
 /*					found=1;*/
 					procs_p[i].shmsock.idle=0;
 					shm_prot_com_in(&procs_p[i]);
-					i--; /* evil hack: decrease i so it will be our turn again in the next round */
+					if (turn)
+						i--; /* evil hack: decrease i so it will be our turn again in the next round */
+					else
+						turn=1; /* don't decrease, it's next connections turn */
 				} else {
 					if (procs_p[i].shmsock.idle++>MAX_IDLE)
 					{ /* maybe the function timed out somehow ...? let's check ...*/
@@ -200,6 +213,9 @@ int shm_main()
 				}
 			}
 		}
+#ifdef G_SDL
+		SDL_SetTimer(0,NULL);
+#endif
 	} /*while (found);*/
 	if ((data[0]==0) && (data[1]==0))
 	{
@@ -231,7 +247,8 @@ int shm_prot_com_in(struct t_process *p)
 	}
 	return(0);
 }
-#define SHM_MAXLOOP		10000
+#define SHM_MAXLOOP		20
+static	struct timespec t={0,1000*1000}; /* 1 mili seconds */
 int shm_writen(struct buf_t *rb,uint8_t *buf, int n)
 {
 	int no_left,no_written,wait=0;
@@ -247,7 +264,8 @@ int shm_writen(struct buf_t *rb,uint8_t *buf, int n)
 		{
 			s3dprintf(HIGH,"shm_writen():waited too long ...");
 			return(-1);
-		}
+		} 
+		if (wait>10)		nanosleep(&t,NULL); 	
 	}
 	return(n - no_left);
 }
@@ -269,6 +287,7 @@ int shm_readn(struct buf_t *rb,uint8_t *buf, int n)
 			s3dprintf(HIGH,"shm_readn():waited too long ...");
 			return(-1);
 		}
+		if (wait>10)		nanosleep(&t,NULL); 	
 	}
 	return(n - no_left);
 }
