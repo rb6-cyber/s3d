@@ -126,8 +126,8 @@ void show_position(struct gps_data_t *dgps)
 			heading=get_heading(lat_old,lon_old,la,lo);
 			if (!lastfix && fix) 		{s3d_scale(user_icon,1.0/RESCALE);}
 			if (lastfix && !fix)		{s3d_scale(user_icon,0.3/RESCALE);lat=tlat;lon=tlon;}
-			if (finitef(heading))		s3d_rotate(user_icon,0,heading,0);
 		}
+		if (finitef(heading))		s3d_rotate(user_icon,0,heading,0); /* wrong rotation? */
 		if (finitef(speed)) {
 			/* print some information */
 			snprintf(buf,BUFSIZE,"speed: %3.2f km/h",speed*3.6);

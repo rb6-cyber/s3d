@@ -34,13 +34,12 @@
 #ifdef SHM
 
 #define SHM_SIZE 		sizeof(key_t)*2  		/* space for the keys */
-#define SHM_MAXLOOP		10000
+#define SHM_MAXLOOP		100
 #define RB_STD_SIZE		1024*512
-
 static struct buf_t *data_in,*data_out;
 static int shmid_in, shmid_out;
 static int shm_idle=0;
-struct timespec t={0,1*1000}; /* 1 micro second */
+struct timespec t={0,1000*1000}; /* 1 mili second */
 /* char ftoken[]="/tmp/.s3d_shm";*/
 
 int _shm_init(char *ftoken)
