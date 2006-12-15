@@ -169,6 +169,7 @@ void waylist_draw(char *filter)
 	float an[3];		/* normal on the plane, orthogonal on the right side of the left segment */
 	float n[3];			/* the direction vector in which the intersecion should be placed */
 	float s[3];			/* intersection point */
+	float point_zero[3]; /* we use point_zero so we don't have very big bounding spheres in s3d and speed up picking */
 	float n_len,scale;
 
 /*	printf("way: %d - %d segments\n",lastid,waylist_n);*/
@@ -209,6 +210,7 @@ void waylist_draw(char *filter)
 		if (i%2)				waylist_p[i/2].node_from_int=j;
 		else					waylist_p[i/2].node_to_int=j;
 	}
+	V_COPY(point_zero, nodelist_p[0].x);
 	/* iterate for all nodes */
 	for (i=0;i<nodelist_n;i++)
 	{
@@ -291,6 +293,7 @@ void waylist_draw(char *filter)
 				
 				
 /*				printf("calc intersection: %3.3f %3.3f %3.3f\n",s[0],s[1],s[2]);*/
+			V_SUB(s,point_zero,s);
 				s3d_push_vertices(way_obj,s,1);
 				adj_seg=adjlist_p[j].seg_id;				/* left segment */
 				if (i==waylist_p[adj_seg].node_from_int)	waylist_p[adj_seg].node_from_r=vert;
@@ -314,12 +317,14 @@ void waylist_draw(char *filter)
 
 			V_COPY(s,nodelist_p[i].x);
 			V_ADD(s,an,s);
+			V_SUB(s,point_zero,s); 
 			s3d_push_vertices(way_obj,s,1);
 			j=vert;
 			vert++;
 			V_SCAL(an,-1);
 			V_COPY(s,nodelist_p[i].x);
 			V_ADD(s,an,s);
+			V_SUB(s,point_zero,s);
 			s3d_push_vertices(way_obj,s,1);
 			k=vert;
 			vert++;
@@ -348,6 +353,7 @@ void waylist_draw(char *filter)
 
 		s3d_push_polygons(way_obj, polys, 2);
 	}
+	s3d_translate(way_obj,point_zero[0], point_zero[1], point_zero[2]); 
 	s3d_link(way_obj,oidy);
 	s3d_flags_on(way_obj,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	waylist_n=0;
