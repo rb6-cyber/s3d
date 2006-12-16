@@ -102,7 +102,7 @@ void show_position(struct gps_data_t *dgps)
 	
 	la=dgps->fix.latitude;
 	lo=dgps->fix.longitude;
-	heading=dgps->fix.track;
+	heading=-dgps->fix.track;
 	speed=dgps->fix.speed;
 
 #else
@@ -115,7 +115,7 @@ void show_position(struct gps_data_t *dgps)
 	}
 	la=dgps->latitude;
 	lo=dgps->longitude;
-	heading=dgps->track;
+	heading=-dgps->track;
 	speed=dgps->speed*KNOTS_TO_MPH/METERS_TO_MILES/3600; /* speed in knots -> miles per hour -> meter per hour -> meter per secon */
 #endif
 	tlat=la;tlon=lo;
