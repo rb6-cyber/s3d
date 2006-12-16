@@ -139,17 +139,7 @@ fi
 
 AM_CONDITIONAL([BUILD_S3DOSM], [test x"${HAVE_XML}" = xyes && test x"${HAVE_SQLITE3}" = xyes])
 
-SIM_AC_HAVE_SIMAGE_IFELSE([
-	SIMAGE_CFLAGS=$sim_ac_simage_cppflags
-	SIMAGE_LIBS="$sim_ac_simage_ldflags $sim_ac_simage_libs"
-	AC_SUBST(SIMAGE_CFLAGS)
-	AC_SUBST(SIMAGE_LIBS)
-],[
-	WARNS="$WARNS
- ### Sorry, you lack the simage library to compile the s3dgps application."
-])
 AC_CHECK_HEADER(gps.h, [HAVE_GPS=yes])
-AM_CONDITIONAL([BUILD_S3DGPS], [test x$HAVE_GPS = xyes && test x$sim_ac_simage_avail = xtrue])
 
 if test "x${HAVE_GPS}" = "xyes"; then
 	AC_DEFINE([HAVE_GPS], 1, [Have gps support])
@@ -234,7 +224,6 @@ AC_CONFIG_FILES([
 	apps/Makefile
 	apps/olsrs3d/Makefile
 	apps/s3d_x11gate/Makefile
-	apps/s3dgps/Makefile
 	apps/s3dvt/Makefile
 	apps/s3dfm/Makefile
 	apps/kism3d/Makefile
