@@ -25,6 +25,8 @@
 #include <s3dw.h>
 #include "s3dosm.h"
 #include <stdio.h>	/* NULL */
+#include <string.h> /* strcmp */
+#include <stdlib.h> /* atoi() */
 icon_t icons[ICON_NUM]={
 		{"objs/accesspoint.3ds",0},
 		{"objs/noinetwep.3ds",0},
@@ -44,13 +46,77 @@ static s3dw_surface *loadwindow=NULL;
 static s3dw_label   *loadlabel=NULL;
 static s3dw_label   *loadstatus=NULL;
 
+void key_button(s3dw_widget *button)
+{
+	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
+}
+
+int ui_getinfo_node(void *data, int argc, char **argv, char **azColName) {
+	int i,tagid=-1;
+	char type[MAXQ];
+	char name[MAXQ];
+	char string[128];
+	s3dw_surface *miniwin;
+	s3dw_button  *button;
+
+	for(i=0; i<argc; i++) {
+		if (argv[i]) {
+			if (0==strcmp(azColName[i],"tag_id")) 			tagid=atoi(argv[i]);
+		}
+	}
+	if (db_gettag(tagid, "amenity",type)) type[0]=0;
+	if (db_gettag(tagid, "name",name)) name[0]=0;
+	
+	miniwin=s3dw_surface_new("About node",30,6);
+	snprintf(string,128,"name: %s",name);
+	s3dw_label_new(miniwin,string,1,2);
+	snprintf(string,128,"type: %s",type);
+	s3dw_label_new(miniwin,string,1,4);
+	button=s3dw_button_new(miniwin,"OK",2,6);
+	button->onclick=key_button;
+	s3dw_show(S3DWIDGET(miniwin));
+
+	return(0);
+}
+int ui_getinfo_way(void *data, int argc, char **argv, char **azColName) {
+	int i,tagid=-1;
+	char name[MAXQ];
+	char string[128];
+	s3dw_surface *miniwin;
+	s3dw_button  *button;
+
+	for(i=0; i<argc; i++) {
+		if (argv[i]) {
+			if (0==strcmp(azColName[i],"tag_id")) 			tagid=atoi(argv[i]);
+		}
+	}
+	if (db_gettag(tagid, "name",name)) name[0]=0;
+	printf("reporting street %s\n",name);
+
+	miniwin=s3dw_surface_new("About street",30,6);
+	snprintf(string,128,"name: %s",name);
+	s3dw_label_new(miniwin,string,1,2);
+	button=s3dw_button_new(miniwin,"OK",2,4);
+	button->onclick=key_button;
+	s3dw_show(S3DWIDGET(miniwin));
+
+	return(0);
+}
+
 int ui_click(struct s3d_evt *evt)
 {
 	int oid=(int)*((uint32_t *)evt->buf);
+	char query[MAXQ];
 	if (s3dw_handle_click(evt)) {
 		printf("s3dw got it?!\n");
+	} else {
+		
+		snprintf(query,MAXQ,"SELECT * FROM node WHERE s3doid=%d;",oid);
+		db_exec(query, ui_getinfo_node, 0);
+		snprintf(query,MAXQ,"SELECT * FROM way WHERE s3doid=%d;",oid);
+		db_exec(query, ui_getinfo_way, 0);
+
 	}
-	printf("clicked object %d\n",oid);
 
 	return(0);
 }

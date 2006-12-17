@@ -85,6 +85,8 @@ void calc_earth_to_eukl(float lat, float lon, float alt, float *x)
 int draw_icon(void *data, int argc, char **argv, char **azColName) 
 {
 	int i,tagid=-1,oid;
+	int nodeid=-1, layerid=-1;
+	char query[MAXQ];
 	char s[MAXQ];
 	float la, lo, alt;
 	float x[3];
@@ -96,6 +98,8 @@ int draw_icon(void *data, int argc, char **argv, char **azColName)
 			else if (0==strcmp(azColName[i],"latitude"))		la=strtod(argv[i],NULL);
 			else if (0==strcmp(azColName[i],"altitude"))		alt=strtod(argv[i],NULL);
 			else if (0==strcmp(azColName[i],"tag_id")) 			tagid=atoi(argv[i]);
+			else if (0==strcmp(azColName[i],"node_id")) 		nodeid=atoi(argv[i]);
+			else if (0==strcmp(azColName[i],"layer_id")) 		layerid=atoi(argv[i]);
 		}
 	}
 	if (0==db_gettag(tagid, "amenity",s)) {
@@ -117,7 +121,8 @@ int draw_icon(void *data, int argc, char **argv, char **azColName)
 			s3d_link(oid,oidy);
 			s3d_flags_on(oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 			load_update_status((100.0*num_done)/(float)num_max);
-			/* TODO: update database */
+			snprintf(query,MAXQ,"UPDATE node SET s3doid=%d WHERE node_id=%d AND layer=%d;",oid,nodeid,layerid);
+			db_exec(query, NULL, 0);
 		}
 				
 	} 
@@ -174,7 +179,7 @@ void waylist_draw(char *filter)
 /*	printf("way: %d - %d segments\n",lastid,waylist_n);*/
 	way_obj=s3d_new_object();
 	if (lastid!=-1) {
-		snprintf(query,MAXQ,"SELECT tagvalue FROM tag WHERE tag_id=(SELECT tag_id FROM way WHERE way_id=%d) AND tagkey='highway';",lastid);
+		snprintf(query,MAXQ,"SELECT tagvalue FROM tag WHERE tag_id=(SELECT tag_id FROM way WHERE way_id=%d AND %s) AND tagkey='highway';",lastid,filter);
 		db_exec(query, select_waytype, &waytype);
 	}
 	switch (waytype)
@@ -355,6 +360,9 @@ void waylist_draw(char *filter)
 	s3d_translate(way_obj,point_zero[0], point_zero[1], point_zero[2]); 
 	s3d_link(way_obj,oidy);
 	s3d_flags_on(way_obj,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	snprintf(query,MAXQ,"UPDATE way SET s3doid=%d WHERE way_id=%d AND %s;",way_obj,lastid,filter);
+	db_exec(query, NULL, 0);
+
 	waylist_n=0;
 
 	load_update_status((100.0*num_done)/(float)num_max);

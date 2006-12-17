@@ -59,7 +59,7 @@ int db_insert_node(node_t *node)
 		snprintf(addquery,MAXQ,"INSERT INTO node (layer_id, latitude, longitude, altitude, visible, tag_id) VALUES (%d, %f, %f, %f, %d, %d);",
 						(int)node->base.layerid,				node->lat,		node->lon,		node->alt,		node->visible, 		(int)node->base.tagid);
 	else
-		snprintf(addquery,MAXQ,"INSERT INTO node VALUES (%d, %d, %f, %f, %f, %d, %d);",
+		snprintf(addquery,MAXQ,"INSERT INTO node (layer_id, node_id,latitude, longitude, altitude, visible, tag_id) VALUES (%d, %d, %f, %f, %f, %d, %d);",
 					(int)node->base.layerid,(int)node->base.id,	node->lat,		node->lon,		node->alt,		node->visible, 		(int)node->base.tagid);
 
 	db_exec(addquery, NULL, 0);
@@ -230,9 +230,9 @@ int db_quit()
 }
 int db_create()
 {
-	db_exec("CREATE TABLE node (layer_id INT, node_id INTEGER , latitude DOUBLE PRECISION, longitude DOUBLE PRECISION, altitude DOUBLE PRECISION, visible BOOLEAN, tag_id INT, PRIMARY KEY(layer_id,node_id));",NULL,0);
+	db_exec("CREATE TABLE node (layer_id INT, node_id INTEGER , latitude DOUBLE PRECISION, longitude DOUBLE PRECISION, altitude DOUBLE PRECISION, visible BOOLEAN, tag_id INT, s3doid INT, PRIMARY KEY(layer_id,node_id));",NULL,0);
 	db_exec("CREATE TABLE segment (layer_id INT, seg_id INTEGER, node_from INT, node_to INT, tag_id INT, way_id INT,PRIMARY KEY(layer_id,seg_id));", NULL, 0);
-	db_exec("CREATE TABLE way (layer_id INTEGER, way_id INTEGER, tag_id INT, PRIMARY KEY(layer_id,way_id));", NULL, 0);
+	db_exec("CREATE TABLE way (layer_id INTEGER, way_id INTEGER, tag_id INT, s3doid INT, PRIMARY KEY(layer_id,way_id));", NULL, 0);
 	db_exec("CREATE TABLE layer (layer_id INTEGER, name TEXT, PRIMARY KEY(layer_id));", NULL, 0);
 	db_exec("CREATE TABLE tag (tag_id INT, tagkey TEXT, tagvalue TEXT, PRIMARY KEY(tag_id, tagkey));", NULL, 0);
 	
