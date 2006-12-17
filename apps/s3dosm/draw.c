@@ -26,13 +26,52 @@
 #include <stdio.h>	/* printf() */
 #include <string.h>	/* strcmp() */
 #include <stdlib.h> /* atoi(),malloc(), calloc(), free() */
-struct vdata{
-	layer_t *layer;
-	float lonsum,latsum;
-	int n;
-	int oid;
-	int vnum;
+
+static float temp;
+#define		V_COPY(a,b)		a[0]=b[0];	a[1]=b[1];	a[2]=b[2];
+#define 	V_ADD(a,b,c)	c[0]=a[0]+b[0];	c[1]=a[1]+b[1];	c[2]=a[2]+b[2];
+#define 	V_SUB(a,b,c)	c[0]=a[0]-b[0];	c[1]=a[1]-b[1];	c[2]=a[2]-b[2];
+#define		V_DOT(a,b)		a[0]*b[0] + a[1]*b[1] + a[2] * b[2]
+#define		V_CROSS(a,b,c)	c[0]=a[1]*b[2] - a[2]*b[1];		c[1]=a[2]*b[0] - a[0]*b[2]; 	c[2]=a[0]*b[1] - a[1]*b[0];
+#define		V_LEN(a)		sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2])
+#define		V_SCAL(a,s)		a[0]=s*a[0];	a[1]=s*a[1];	a[2]=s*a[2];
+#define		V_NORM(a)		temp=V_LEN(a); V_SCAL(a,1/temp);
+
+
+static int num_max;		/* how many results in our query? to calculate pecent done ... */
+static int num_done;	/* how many already done */
+
+static int lastid=-1;
+/* list element of a segment which is on our way */
+struct waylist {
+	int node_from,node_to;
+	int node_from_int,node_to_int;
+	int seg_id;
+	int node_from_l,node_from_r;	/* vertex id's for corners */
+	int node_to_l,node_to_r;
 };
+/* list element of a node which is to be drawn */
+struct nodelist {
+	int node_id;			/* (external counting) */
+	float la,lo,alt;		/* earth coords */
+	float x[3];				/* euclid coords */
+	float normal[3];
+	float len;
+};
+/* list element for adjacent nodes */
+struct adjlist {
+	int node_id;			/* node to which the segment leads to */
+	int seg_id;				/* segment which is involved to the node (both internal counting) */
+};
+
+struct waylist 	*waylist_p=NULL;
+struct nodelist	*nodelist_p=NULL;
+struct adjlist	*adjlist_p=NULL;
+int				nodelist_n=0;
+int				adjlist_n=0;
+int 			waylist_n=0;
+int 			waylist_bufn=0;
+
 
 void calc_earth_to_eukl(float lat, float lon, float alt, float *x)
 {
@@ -50,7 +89,7 @@ int draw_icon(void *data, int argc, char **argv, char **azColName)
 	float la, lo, alt;
 	float x[3];
 	la=lo=alt=0.0;
-	
+	num_done++;
 	for(i=0; i<argc; i++) {
 		if (argv[i]) {
 			if (0==strcmp(azColName[i],"longitude"))			lo=strtod(argv[i],NULL);
@@ -77,45 +116,13 @@ int draw_icon(void *data, int argc, char **argv, char **azColName)
 			s3d_rotate(oid,(90-la),lo,0);
 			s3d_link(oid,oidy);
 			s3d_flags_on(oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+			load_update_status((100.0*num_done)/(float)num_max);
 			/* TODO: update database */
 		}
 				
 	} 
 	return(0);
 }
-
-static int lastid=-1;
-struct waylist {
-	int node_from,node_to;
-	int node_from_int,node_to_int;
-	int seg_id;
-	int node_from_l,node_from_r;	/* vertex id's for corners */
-	int node_to_l,node_to_r;
-};
-struct nodelist {
-	int node_id;			/* (external counting) */
-	float la,lo,alt;		/* earth coords */
-	float x[3];				/* euclid coords */
-	float normal[3];
-	float len;
-};
-struct adjlist {
-	int node_id;			/* node to which the segment leads to */
-	int seg_id;				/* segment which is involved to the node (both internal counting) */
-};
-/*
-struct nodelist nodelist_p[2];
-int				nodelist_n=0;
-*/
-
-struct waylist 	*waylist_p=NULL;
-struct nodelist	*nodelist_p=NULL;
-struct adjlist	*adjlist_p=NULL;
-int				nodelist_n=0;
-int				adjlist_n=0;
-int 			waylist_n=0;
-int 			waylist_bufn=0;
-
 /* just fetches node information and puts it in some simple 6x float buffer */
 int insert_node(void *data, int argc, char **argv, char **azColName)
 {
@@ -144,16 +151,6 @@ int select_waytype(void *data, int argc, char **argv, char **azColName)
 	}
 	return(0);
 }
-static float temp;
-#define		V_COPY(a,b)		a[0]=b[0];	a[1]=b[1];	a[2]=b[2];
-#define 	V_ADD(a,b,c)	c[0]=a[0]+b[0];	c[1]=a[1]+b[1];	c[2]=a[2]+b[2];
-#define 	V_SUB(a,b,c)	c[0]=a[0]-b[0];	c[1]=a[1]-b[1];	c[2]=a[2]-b[2];
-#define		V_DOT(a,b)		a[0]*b[0] + a[1]*b[1] + a[2] * b[2]
-#define		V_CROSS(a,b,c)	c[0]=a[1]*b[2] - a[2]*b[1];		c[1]=a[2]*b[0] - a[0]*b[2]; 	c[2]=a[0]*b[1] - a[1]*b[0];
-#define		V_LEN(a)		sqrt(a[0]*a[0] + a[1]*a[1] + a[2]*a[2])
-#define		V_SCAL(a,s)		a[0]=s*a[0];	a[1]=s*a[1];	a[2]=s*a[2];
-#define		V_NORM(a)		temp=V_LEN(a); V_SCAL(a,1/temp);
-
 /* draw waylist, clear the queue */
 void waylist_draw(char *filter)
 {
@@ -172,6 +169,8 @@ void waylist_draw(char *filter)
 	float point_zero[3]; /* we use point_zero so we don't have very big bounding spheres in s3d and speed up picking */
 	float n_len,scale;
 
+	if (waylist_n==0)	/* no nodes, no fun */
+		return;
 /*	printf("way: %d - %d segments\n",lastid,waylist_n);*/
 	way_obj=s3d_new_object();
 	if (lastid!=-1) {
@@ -357,8 +356,8 @@ void waylist_draw(char *filter)
 	s3d_link(way_obj,oidy);
 	s3d_flags_on(way_obj,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 	waylist_n=0;
-	printf("+");
-	fflush(stdout);
+
+	load_update_status((100.0*num_done)/(float)num_max);
 }
 void waylist_add(struct waylist *p)
 {
@@ -379,6 +378,7 @@ int way_group(void *data, int argc, char **argv, char **azColName)
 	int id=-1;
 	struct waylist p;
 	char *filter=(char *)data;
+	num_done++;
 	p.node_from=p.node_to=0;
 	p.node_to=-1;
 	p.seg_id=-1;
@@ -401,7 +401,6 @@ int way_group(void *data, int argc, char **argv, char **azColName)
 		waylist_add(&p);
 	}
 	lastid=id;
-		
 	return 0;
 }
 void draw_translate_icon(int user_icon, float la, float lo)
@@ -415,28 +414,33 @@ void draw_translate_icon(int user_icon, float la, float lo)
 void draw_ways(char *filter)
 {
 	char query[MAXQ];
+	num_done=0;
+	snprintf(query,MAXQ,"SELECT count(seg_id) FROM segment WHERE %s",filter);
+	db_exec(query, db_getint,&num_max);
 	snprintf(query,MAXQ,"SELECT * FROM segment WHERE %s ORDER BY way_id;",filter);
 	db_exec(query, way_group,filter);
 	waylist_draw(filter); /* last way */
-	printf("[done]\n");
 }
 void draw_osm()
 {
-	printf("draw_osm()\n");
+	load_window("Drawing Card ...");
 	draw_ways("layer_id=(SELECT layer_id FROM layer WHERE name='osm')");
 }
 void draw_kismet()
 {
 	char query[MAXQ];
 	char filter[]="layer_id=(SELECT layer_id FROM layer WHERE name='kismet')";
-	printf("[draw kismet]\n");
+	load_window("Drawing Access Points ...");
+	num_done=0;
+	snprintf(query,MAXQ,"SELECT count(node_id) FROM node WHERE %s",filter);
+	db_exec(query, db_getint,&num_max);
 	snprintf(query,MAXQ,"SELECT * FROM node WHERE %s;",filter);
 	db_exec(query, draw_icon,filter);
 	waylist_draw(filter); /* last way */
-	printf("[done]\n");
 }
 void draw_all_layers()
 {
 	draw_osm();
 	draw_kismet();
+	load_window_remove();
 }

@@ -119,9 +119,10 @@ void parse_osm_node(xmlNodePtr cur)
 layer_t *parse_osm(char *buf, int length)
 {
 	xmlDocPtr doc;
-	xmlNodePtr cur;
+	xmlNodePtr cur,c;
 	layer_t *layer=layer_new();
 	object_t *obj;
+	float n=0;
 	int i=0;
 	
 
@@ -137,7 +138,7 @@ layer_t *parse_osm(char *buf, int length)
 		return(NULL);
 	}
 	layerid=db_insert_layer("osm");
-	printf("osm layerid is %d\n",layerid);
+	for (c=cur->children;  c!=NULL;   c=c->next) 		n++; /* count */
 	for (cur=cur->children;cur!=NULL; cur=cur->next)
 	{
 		if (cur->type==XML_ELEMENT_NODE)
@@ -146,10 +147,9 @@ layer_t *parse_osm(char *buf, int length)
 			if (0==strcmp((char *)cur->name,"node"))				parse_osm_node(cur);
 			else if (0==strcmp((char *)cur->name,"segment"))		parse_osm_segment(cur);
 			else if (0==strcmp((char *)cur->name,"way"))			parse_osm_way(cur);
-			if ((i++)%100==0) {printf(".");fflush(stdout);}
 		}
+		if ((i++)%200==0) 	load_update_status(100*((float)i)/n); /* report status */
 	}
-	printf("\n");
 	xmlFreeDoc(doc);
 	db_flush();
 

@@ -81,8 +81,10 @@ void parse_kismet_node(xmlNodePtr cur)
 layer_t *parse_kismet(char *buf, int length)
 {
 	xmlDocPtr doc;
-	xmlNodePtr cur;
+	xmlNodePtr cur,c;
 	layer_t *layer=layer_new();
+	int i=0;
+	float n=0;
 	
 
 	doc = xmlReadMemory(buf, length, "noname.xml", NULL, 0);
@@ -97,7 +99,7 @@ layer_t *parse_kismet(char *buf, int length)
 		return(NULL);
 	}
 	layerid=db_insert_layer("kismet");
-	printf("kismet layerid is %d\n",layerid);
+	for (c=cur->children;  c!=NULL;   c=c->next) 		n++; /* count */
 	for (cur=cur->children;cur!=NULL; cur=cur->next)
 	{
 		if (cur->type==XML_ELEMENT_NODE)
@@ -107,6 +109,8 @@ layer_t *parse_kismet(char *buf, int length)
 				parse_kismet_node(cur);
 			} 
 		}
+		if ((i++)%10==0) load_update_status(100*((float)i)/n);
+
 	}
 	db_flush();
 	xmlFreeDoc(doc);

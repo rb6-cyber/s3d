@@ -5,29 +5,12 @@
 #include <stdio.h>	/* printf() */
 #include <math.h>	/* fabs() */
 
-icon_t icons[ICON_NUM]={
-		{"objs/accesspoint.3ds",0},
-		{"objs/noinetwep.3ds",0},
-		{"objs/noinetwpa.3ds",0},
-		{"objs/arrow2.3ds",0}
-	};
 int oidx, oidy;
 static float lat,lon,tlat,tlon;
-/* load icons, we want to clone each of them later */
-void nav_loadicons()
-{
-	int i;
-	for (i=0;i<ICON_NUM;i++)
-	{
-		printf("loading %s\n",icons[i].path);
-		icons[i].oid=s3d_import_model_file(icons[i].path);
-	}
-}
 /* load rotation centers */
 void nav_init()
 {
 	lat=lon=tlat=tlon=0.0;
-	nav_loadicons();
 	oidx=s3d_new_object();
 	oidy=s3d_new_object();
 	s3d_link(oidy,oidx);

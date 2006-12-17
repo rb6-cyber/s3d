@@ -34,7 +34,6 @@ static int tagid=1;		/* tagid, incremented with each new object */
 static sqlite3 *db;
 static char *dbFile=NULL;
 int db_exec(const char *query, sqlite3_callback callback, void *arg);
-static int db_getint(void *tagid, int argc, char **argv, char **azColName);
 
 /* TODO: remove '' for security reasons */
 void clean_string(char *clean, char *dirty, int n)
@@ -139,7 +138,7 @@ int db_insert_object(object_t *obj)
 	return(-1);
 }
 */
-static int db_getint(void *tagid, int argc, char **argv, char **azColName){
+int db_getint(void *tagid, int argc, char **argv, char **azColName){
   if (argv[0]!=NULL) 
 	  *((int *)tagid)=atoi(argv[0]);
   return 0;

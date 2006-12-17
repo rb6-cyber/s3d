@@ -53,6 +53,7 @@ int process_args(int argc, char **argv)
 	int					 lopt_idx,i;
 	char				 c;
 	float				 minlat, minlon, maxlat, maxlon;
+	char 				 info[1024];
 	struct option long_options[] = 
 	{
 		{"help",0,0,'h'},
@@ -88,8 +89,11 @@ int process_args(int argc, char **argv)
 	}
 	for (i=1;i<argc;i++)
 	{
-		if (strstr(argv[i],".osm")-argv[i]==strlen(argv[i])-4)
+		if (strstr(argv[i],".osm")-argv[i]==strlen(argv[i])-4) {
+			snprintf(info,1024,"loading OSM-File: %s",argv[i]);
+			load_window(info);
 			layerset_add(load_osm_file(argv[i]));
+		}
 		else if (strstr(argv[i],".xml")-argv[i]==strlen(argv[i])-4) /* might be osm or kismet xml */
 		{
 			char *file;
@@ -97,13 +101,20 @@ int process_args(int argc, char **argv)
 			if (NULL==(file=read_file(argv[i],&fsize)))				
 				break;
 			if (NULL!=strstr(file,"<!DOCTYPE detection-run SYSTEM \"http://kismetwireless.net"))
+			{
+				snprintf(info,1024,"loading Kismet-File: %s",argv[i]);
+				load_window(info);
 				layerset_add(parse_kismet(file,fsize));
-			else if (NULL!=strstr(file,"<osm "))
+			}
+			else if (NULL!=strstr(file,"<osm ")) {
+				snprintf(info,1024,"loading OSM-File: %s",argv[i]);
+				load_window(info);
 				layerset_add(parse_osm(file,fsize));
+			}
 			free(file);
-					
 		}
 	}
+	load_window_remove();
 	return(0);
 }
 

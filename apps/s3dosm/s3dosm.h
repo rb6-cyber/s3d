@@ -125,6 +125,8 @@ void 		 node_free(node_t *node);
 void 		 segment_free(segment_t *segment);
 void 		 way_free(way_t *way);
 void 		 layerset_add(layer_t *layer);
+/* main.c */
+void mainloop();
 /* osm.c */
 void debug_obj(object_t *obj, void *dummy);
 layer_t *parse_osm(char *buf, int length);
@@ -156,6 +158,7 @@ int process_args(int argc, char **argv);
 int db_exec(const char *query, sqlite3_callback callback, void *arg);
 int db_add_tag(object_t *obj, char *key, char *val);
 int db_gettag(int tagid, char *field, char *target);
+int db_getint(void *tagid, int argc, char **argv, char **azColName);
 int db_insert_node(node_t *node);
 int db_insert_segment(segment_t *seg);
 int db_insert_way_only(way_t *way);
@@ -171,3 +174,7 @@ int callback(void *NotUsed, int argc, char **argv, char **azColName);
 int gps_init(char *gpshost);
 int gps_main();
 int gps_quit();
+/* ui.c */
+int load_window(char *text);
+int load_window_remove();
+int load_update_status(float percent);
