@@ -71,9 +71,13 @@ void s3dw_ani_del(int i)
 /* well ... */
 void s3dw_ani_doit(s3dw_widget *f)
 {
-	s3d_translate(	f->oid, f->ax,f->ay,f->az);
-	s3d_rotate(		f->oid, f->arx,f->ary,f->arz);
-	s3d_scale(		f->oid, f->as);
+	if ((f->oid == 0) && (f->type!=S3DW_TCAM)) {
+		s3dprintf(HIGH,"assert failed: weird, moving cam but its not a cam obeject?");
+	} else {
+		s3d_translate(	f->oid, f->ax,f->ay,f->az);
+		s3d_rotate(		f->oid, f->arx,f->ary,f->arz);
+		s3d_scale(		f->oid, f->as);
+	}
 }
 
 /* finish an animation on the stack, stack index i */
