@@ -39,7 +39,6 @@ static int queue_size=0;			 	/*  the size of the object queue */
 static int requested;				 	/*  counter of how many addtional */
 									 	/*  objects have been requested */
 static struct timespec t={0,10*1000};	/* 10 micro seconds */
-extern int cb_lock;
 /*  initializes the object queue */
 int _queue_init()
 {
@@ -109,8 +108,6 @@ unsigned int _queue_want_object()
 			net_send(S3D_P_C_NEW_OBJ,NULL,0);
 			requested++;
 		}
-		if (!cb_lock)
-			cb_lock=1; /* please, no callbacks now. */
 		s3d_net_check();
 		nanosleep(&t,NULL); 
 	} while(j++<TIMEOUT);

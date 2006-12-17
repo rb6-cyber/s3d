@@ -89,6 +89,7 @@ int s3d_net_check()
 			break;
 #endif
 	}
+	s3d_process_stack();
 	return(0);
 }
 int s3d_net_init(char *urlc)

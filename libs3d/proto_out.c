@@ -40,7 +40,13 @@
 /*  creates a new object */
 int s3d_new_object()
 {
-	return(_queue_want_object());  /*  TODO: well ... */
+	int oid;
+	int old_cb_lock;
+	
+	cb_lock++; /* please, no callbacks now. */
+	oid=_queue_want_object();
+	cb_lock--; /* no new callbacks and nothing happened */
+	return(oid);
 }
 /*  clones an object */
 int s3d_clone(int oid)

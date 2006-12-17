@@ -33,6 +33,7 @@
 #include <errno.h>		 /*  errno */
 #include <sys/socket.h>  /*  socket() */
 #include <getopt.h>		 /*  getopt() */
+#include <time.h>		 /*  nanosleep() */
 #ifdef SIGS
 #include <fcntl.h>		 /*  fcntl() */
 #include <signal.h>		 /*  signal.h, SIG_PIPE */
@@ -48,6 +49,7 @@ extern int 				cb_lock;
 /*  this file is the client-lib-implementation which holds the function to connect and control the server. */
 #ifdef SIGS
 int _s3d_sigio=0;
+int _s3d_ready=0;
 void sigint_handler(int sig, int code)  /*  ... ? */
 {
 	/*s3d_quit();*/ /* TODO: sometimes no clean quit ?!*/
@@ -109,7 +111,10 @@ int s3d_init(int *argc, char ***argv, char *name)
 	char 				*s;
 	char 				 urlc[256];		 /*  this should be enough for an url */
 	char 				 buf[258]; 		 /*  server buffer */
+	int					 i;
+	struct timespec		 t={0,10*1000*1000}; /* 10 mili second */
 
+	cb_lock=1;	/* don't bother while initiating ... is set to 0 after INIT packet received. */
 	if (NULL!=(s=getenv("S3D")))
 	{
 		s3dprintf(VLOW,"at least we have the enviroment variable ... %s",s);
@@ -139,7 +144,6 @@ int s3d_init(int *argc, char ***argv, char *name)
 	}
 	strncpy(buf,name,256);  /*  copy the name ... */
 	net_send(S3D_P_C_INIT,buf,strlen(buf));
-	cb_lock=2;
 
 	_queue_init();
 #ifdef SIGS
@@ -147,9 +151,16 @@ int s3d_init(int *argc, char ***argv, char *name)
 		errdn(LOW,"s3d_init():signal()",errno);
     if (signal(SIGTERM, (sig_t)sigint_handler) == SIG_ERR)
 		errdn(LOW,"s3d_init():signal()",errno);
-
 #endif
-	return(0);
+	for (i=0;i<100;i++) {
+		s3d_net_check(); /* wait for init packet */
+		nanosleep(&t,NULL); 
+		if (_s3d_ready) {
+			cb_lock--;
+			return(0);
+		}
+	}
+	return(-1);
 }
 /*  shuts down the socket, clearing the stack */
 int s3d_quit()
@@ -179,15 +190,11 @@ int s3d_mainloop(void (*f)())
 {
 	while (con_type!=CON_NULL)
 	{
-		if (f!=NULL)
-			f();
-		s3d_net_check();
-		if (cb_lock==2)  /*  there were other callbacks? we process: */
-		{
-			cb_lock=0;
-			s3d_process_stack();
-		}
-
+		cb_lock++;			/* no callbacks while we are in mainloop */
+		if (f!=NULL)	f();
+		cb_lock--;
+		s3d_process_stack();
+		s3d_net_check(); 	/* get any other packets we might have missed */	
 	}
 	return(0);
 }
@@ -214,13 +221,13 @@ int s3d_open_file(char *fname, char **pointer)
 	if (fstat(fileno(fp),&bf))
 	{ errdn(VLOW,"s3d_open_file():fstat()",errno); return(-1);}
 	filesize=bf.st_size;
-	s3dprintf(VLOW, "opening %s, filesize is %d",fname, filesize);
+	s3dprintf(LOW, "opening %s, filesize is %d",fname, filesize);
 	if ((buf=malloc(filesize))==NULL)
 	{
 		errn("s3d_open_3ds_file():malloc()",errno);
 		exit(-1);
 	}
-	fread(buf, filesize, 1, fp);
+	fread(buf, 1, filesize, fp);
 	fclose(fp);
 	*pointer=buf;
 	return(filesize);

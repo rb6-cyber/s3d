@@ -28,7 +28,6 @@
 #include <netinet/in.h>  /*  htons(),htonl() */
 #include <errno.h>		 /*  errno */
 #include <stdlib.h>		 /*  malloc(), free() */
-extern int cb_lock;
 /*  this proccesses the commands and pushes s3d-events, or does other things ;) */
 int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 {
@@ -40,8 +39,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 	{
 		case S3D_P_S_INIT:
 			s3dprintf(MED,"S3D_P_S_INIT: init!!");
-			cb_lock=0;
-/*			s3d_process_stack();*/
+			_s3d_ready=1;
 			break;
 		case S3D_P_S_QUIT:
 			s3dprintf(MED,"S3D_P_S_QUIT: server wants us to go. well ...");

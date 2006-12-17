@@ -34,25 +34,20 @@ void s3d_push_event(struct s3d_evt *newevt)
 	struct s3d_evt *p;
 	s3d_cb cb;
 
-	s3dprintf(VLOW,"pushed event %d",newevt->event);
+	s3dprintf(VLOW,"pushed event %d, cb_lock = %d",newevt->event, cb_lock);
 	 /*  this will always be called for S3D_EVENT_NEW_OBJECT!! */
 	if (newevt->event==S3D_EVENT_NEW_OBJECT)
 	{
 		_queue_new_object(*((unsigned int *)newevt->buf));	
 	}
-	if (cb_lock)  /*  no recursive event-callbacks, please! */
+	if (cb_lock==0)  /*  no recursive event-callbacks, please! */
 	{	
-		cb_lock=2;  /*  we want our event processed after this finishs */
-	} else 	{
 		if (NULL!=(cb=s3d_get_callback(newevt->event)))
 		{
-			cb_lock=1;		 /*  on our way! lock it.. */
+			cb_lock++;		 /*  on our way! lock it.. */
 			cb(newevt);		 /*  .. and call it! */
-			if (cb_lock==2)  /*  there were other callbacks? we process: */
-			{
-				cb_lock=0;
-				s3d_process_stack();
-			}
+			cb_lock--;
+							 /* okay, no new callbacks, unlock now. */
 			free(newevt);
 			return;
 		}
@@ -110,40 +105,27 @@ int s3d_delete_event(struct s3d_evt *devt)
 /*  this function checks the stack for callbacks. */
 void s3d_process_stack()
 {
-	struct s3d_evt *p,*pre,*t;
+	struct s3d_evt *p;
 	s3d_cb cb;
-	p=s3d_stack;
-	pre=NULL;
-	if (cb_lock!=0) /* can't do that now. */
+	if (cb_lock>0) /* can't do that now. */
 	{
-		cb_lock=2; /* request later processing */
+		
+		s3dprintf(VLOW,"cb_lock = %d, processing later",cb_lock);
 		return;
 	}
 	s3dprintf(VLOW,"processing stack ...");
-	while (p!=NULL)
-	{
-		
-		if ((cb=s3d_get_callback(p->event))!=NULL)
-		{
-			cb_lock=1;
+	while (NULL!=(p=s3d_pop_event())) {
+		if ((cb=s3d_get_callback(p->event))!=NULL) {
+			cb_lock++;
 			cb(p);
-			cb_lock=0;
-			if (pre!=NULL)   /*  there is a previous element */
-				pre->next=p->next;
-			else			 /*  it's the first element */
-				s3d_stack=p->next;
-			t=p->next;
-			 /*  free */
-			if (p->length>0) 
-				free(p->buf);
-			free(p);	
-			p=t;
+			cb_lock--;
+		} else {
+			/* kick out unprocessed event */
 			
 		}
-		else 
-		{
-			pre=p;
-			p=p->next;
-		}
+		 /*  free */
+		if (p->length>0) 
+			free(p->buf);
+		free(p);	
 	}
 }

@@ -47,6 +47,9 @@
 #define RB_STD_SIZE		1024*512
 #define RB_OVERHEAD		sizeof(struct buf_t)
 /*  the callback buiffer: */
+extern int cb_lock;	/* holds the recursion depth */
+
+extern int _s3d_ready; /* is 1 after s3d_init() was sucessful */
 extern s3d_cb s3d_cb_list[MAX_CB];
 /*  some local prototypes: */
 /*  char *s3d_open_file(char *fname); */
