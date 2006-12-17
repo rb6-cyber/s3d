@@ -20,6 +20,8 @@
  * along with the s3d API; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+#ifndef LIBS3D_H
+#define LIBS3D_H
 
 #include <stdint.h>  /* [u]intXX_t type definitions*/
 /* definitions */
@@ -184,3 +186,4 @@ int s3d_mcp_focus(int object);
 
 /* for apps which don't employ s3d_mainloop() */
 int s3d_net_check();
+#endif

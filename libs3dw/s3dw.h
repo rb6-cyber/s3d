@@ -21,6 +21,11 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef LIBS3DW_H
+#define LIBS3DW_H
+#ifndef LIBS3D_H
+#include <s3d.h>
+#endif
 #include <stdint.h>  /* [u]intXX_t type definitions*/
 
 /* we want this widget visible, as long as the widgets below are also visible. 
@@ -160,6 +165,7 @@ s3dw_input 			*s3dw_input_new(s3dw_surface *surface, float width, float posx, fl
 s3dw_textbox 		*s3dw_textbox_new(s3dw_surface *surface, char *text, float posx, float posy, float width, float height);
 char 				*s3dw_input_gettext(s3dw_input *input);
 void 				 s3dw_input_change_text(s3dw_input *input, char *text);
+void 				 s3dw_label_change_text(s3dw_label *label, char *text);
 s3dw_surface 		*s3dw_surface_new(char *title, float width, float height);
 
 s3dw_widget 		*s3dw_getroot();
@@ -180,3 +186,4 @@ int 				 s3dw_handle_key(struct s3d_evt *evt);
 int 				 s3dw_object_info(struct s3d_evt *evt);
 
 void 				 s3dw_ani_mate();
+#endif

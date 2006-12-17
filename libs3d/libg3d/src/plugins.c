@@ -243,6 +243,7 @@ gboolean g3d_plugins_load_model(G3DContext *context, const gchar *filename,
 	G3DPlugin *plugin;
 	gchar *lcext, *basename, *dirname;
 	gboolean retval;
+	char olddir[4096];
 
 	lcext = g3d_plugins_get_filetype(filename);
 	if(lcext == NULL)
@@ -266,6 +267,7 @@ gboolean g3d_plugins_load_model(G3DContext *context, const gchar *filename,
 	basename = g_path_get_basename(filename);
 	dirname = g_path_get_dirname(filename);
 
+	getcwd(olddir,4096);
 	chdir(dirname);
 
 	retval = plugin->loadmodel_func(context, basename, model,
@@ -273,6 +275,7 @@ gboolean g3d_plugins_load_model(G3DContext *context, const gchar *filename,
 
 	g_free(basename);
 	g_free(dirname);
+	chdir(olddir);
 
 	return retval;
 }
