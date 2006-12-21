@@ -1,1 +1,0 @@
-SUBDIRS = g3d

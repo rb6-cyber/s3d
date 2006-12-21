@@ -19,6 +19,6 @@ s3d_SOURCES= \
 	shm.c shm_ringbuf.c tcp.c user.c
 
 s3d_LDADD=	@LIBM@ @GL_LIBS@ ${MAYBE_SDL_LIBS} ${MAYBE_GLUT_LIBS}
-s3d_CFLAGS=	@GL_CFLAGS@ ${MAYBE_SDL_CFLAGS} ${MAYBE_GLUT_CFLAGS} ${DEVEL_CFLAGS} -I$(top_srcdir)/libs3d
+s3d_CFLAGS=	@GL_CFLAGS@ ${MAYBE_SDL_CFLAGS} ${MAYBE_GLUT_CFLAGS} ${DEVEL_CFLAGS} 
 
 noinst_HEADERS=	config.h global.h proto.h

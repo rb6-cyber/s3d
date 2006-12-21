@@ -221,7 +221,7 @@ int s3d_open_file(char *fname, char **pointer)
 	if (fstat(fileno(fp),&bf))
 	{ errdn(VLOW,"s3d_open_file():fstat()",errno); return(-1);}
 	filesize=bf.st_size;
-	s3dprintf(LOW, "opening %s, filesize is %d",fname, filesize);
+/*	s3dprintf(LOW, "opening %s, filesize is %d",fname, filesize);*/
 	if ((buf=malloc(filesize))==NULL)
 	{
 		errn("s3d_open_3ds_file():malloc()",errno);

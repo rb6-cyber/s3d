@@ -24,8 +24,8 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AC_PATH_X
-AC_PATH_XTRA
+dnl AC_PATH_X
+dnl AC_PATH_XTRA
 AC_PROG_LIBTOOL
 
 AC_HEADER_DIRENT
@@ -44,8 +44,10 @@ AC_TYPE_SIGNAL
 AC_CHECK_FUNCS([select socket strerror strtod strtol shmget signal]) # XXX: the previous test should have established the existence of signal() already. just be safe here.
 
 WARNS=""
-CFLAGS="$CFLAGS $X_CFLAGS -Wall -pedantic"
-LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS"
+dnl CFLAGS="$CFLAGS $X_CFLAGS -Wall -pedantic"
+CFLAGS="$CFLAGS -Wall -pedantic"
+dnl LIBS="$X_PRE_LIBS $X_LIBS $X_EXTRA_LIBS $LIBS"
+LIBS="$LIBS"
 
 ###
 ### Optional features 
@@ -103,8 +105,10 @@ AM_CONDITIONAL([BUILD_GLUT], test x"${HAVE_glut}" = xyes)
 
 dnl ##################################### LIBS3D #######################################
 
+PKG_CHECK_MODULES(G3D, libg3d >= 0.0.6, [:], [AC_MSG_ERROR([Please install libg3d 0.0.6 or higher. (https://gna.org/projects/libg3d/)])])
 PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= 2.1.0, [:], [AC_MSG_ERROR([Please install fontconfig (version 2.1.0 or higher)])])
 PKG_CHECK_MODULES(FREETYPE, freetype2 >= 9.5.0, [:], [AC_MSG_ERROR([Please install freetype2 (version 9.5.0 or higher)])])
+AM_PATH_GLIB_2_0(2.0.0,,AC_MSG_ERROR([Please install glib >= 2.0]), gmodule gobject)
 
 PKG_CHECK_MODULES(SQLITE3, sqlite3 >= 3.0, [HAVE_SQLITE3="yes"], [HAVE_SQLITE3="no"])
 # libxml2
@@ -166,37 +170,14 @@ HAVE_PTHREAD
 
 AC_ARG_WITH([examples], AS_HELP_STRING([--with-examples], [build examples]), [with_examples=$withval], [with_examples=yes])
 AM_CONDITIONAL([BUILD_EXAMPLES], [test x$with_examples = xyes])
-########################################### LIBG3D ################
-AM_PROG_LEX
-
-## gtk-doc
-# GTK_DOC_CHECK
-
-# glib
-AM_PATH_GLIB_2_0(2.0.0,,AC_MSG_ERROR([glib >= 2.0 is needed]), gmodule gobject)
-
-# gdk-pixbuf
-#AM_PATH_GTK_2_0(2.0.0, have_gtk2=true)
-#if test "x$have_gtk2" = "xtrue" ; then
-#GDKPIXBUF_CFLAGS=$GTK_CFLAGS
-#GDKPIXBUF_LIBS=$GTK_LIBS
-#AC_SUBST(GDKPIXBUF_CFLAGS)
-#AC_SUBST(GDKPIXBUF_LIBS)
-#fi
-#AM_CONDITIONAL([HAVE_GDKPIXBUF], test "x$have_gtk2" = "xtrue")
-
-# AC_DEFINE_DIR(PLUGIN_DIR, libdir/$PACKAGE/plugins, [Plugin directory])
 
 AC_OUTPUT(
 )
 
-DBG_CFLAGS=""
-AC_SUBST(DBG_CFLAGS)
-DEBUG=0
-AC_SUBST(DEBUG)
-AC_DEFINE_DIR(PLUGIN_DIR, libdir/$PACKAGE/plugins, [Plugin directory])
-PLUGINS_LDFLAGS="-avoid-version -export-dynamic"
-AC_SUBST(PLUGINS_LDFLAGS)
+#DBG_CFLAGS=""
+#AC_SUBST(DBG_CFLAGS)
+#DEBUG=0
+#AC_SUBST(DEBUG)
 
 ###
 ### This part just defined some things in config.h
@@ -215,7 +196,7 @@ if test x${ac_cv_func_signal} = xyes; then
 	AC_DEFINE([SIGS], 1, [Define if signal code should be compiled])
 fi
 
-AC_CONFIG_HEADERS(libs3d/libg3d/include/g3d/config.h config.h)
+AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_FILES([
 	Makefile
 	server/Makefile
@@ -232,21 +213,9 @@ AC_CONFIG_FILES([
 	example/Makefile
 	objs/Makefile
 	Documentation/Makefile
-	libs3d/libg3d/Makefile
-	libs3d/libg3d/include/Makefile
-	libs3d/libg3d/include/g3d/Makefile
-	libs3d/libg3d/plugins/Makefile
-	libs3d/libg3d/plugins/image/Makefile
-	libs3d/libg3d/plugins/import/Makefile
-	libs3d/libg3d/src/Makefile
-	libs3d/libg3d/libg3d.pc
 	s3drc])
 AC_OUTPUT
-# libg3d
-#	libs3d/libg3d/doc/Makefile
-#	libs3d/libg3d/doc/api/Makefile
-#	libs3d/libg3d/m4/Makefile
-#	libs3d/libg3d/tests/Makefile
+
 if test "x$WARNS" != x; then
 echo "
 --------------------------------------------------------------------------------

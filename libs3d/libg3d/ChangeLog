@@ -1,6 +1,0 @@
-Changes since version 0.0.2:
-	* plugins: support (partly) for object trees
-	* imp_ac3d: hierarchical object support
-	* bugfixes
-
-Changes before 0.0.1: see G3DViewer ChangeLog

@@ -1,4 +1,3 @@
-SUBDIRS= libg3d
 lib_LTLIBRARIES=	libs3d.la
 
 libs3d_la_SOURCES=	modelread.c callback.c error.c event.c fontselect.c \
@@ -9,9 +8,12 @@ libs3d_la_SOURCES=	modelread.c callback.c error.c event.c fontselect.c \
 include_HEADERS= s3d.h s3d_keysym.h
 noinst_HEADERS=		config.h s3dlib.h sei_triangulate.h sei_interface.h
 
+
 libs3d_la_CPPFLAGS=	-I${top_srcdir}/server
-libs3d_la_CFLAGS=	@FONTCONFIG_CFLAGS@ @FREETYPE_CFLAGS@ -I$(top_srcdir)/libs3d/libg3d/include @GLIB_CFLAGS@
-libs3d_la_LIBADD=	@FONTCONFIG_LIBS@ @FREETYPE_LIBS@ @LIBM@ 
-libs3d_la_LDFLAGS=	$(top_builddir)/libs3d/libg3d/src/libg3d.la
+#fontconfig_lo_CFLAGS=	@FONTCONFIG_CFLAGS@
+#freetype_lo_CFLAGS=	@FREETYPE_CFLAGS@
+#modelread_lo_CFLAGS=	@GLIB_CFLAGS@ @G3D_CFLAGS@
+libs3d_la_CFLAGS=		@FONTCONFIG_CFLAGS@ @FREETYPE_CFLAGS@ @GLIB_CFLAGS@ @G3D_CFLAGS@
+libs3d_la_LIBADD=		@FONTCONFIG_LIBS@ @FREETYPE_LIBS@ @LIBM@ @G3D_LIBS@
 
 EXTRA_DIST=		lgpl.txt

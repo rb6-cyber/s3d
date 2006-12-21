@@ -136,7 +136,7 @@ int model_load(char *file)
 
 	context = g3d_context_new();
 	obj_id=-1;
-	model = g3d_model_load(context, file);
+	model = g3d_model_load_full(context, file, 0);
 
 	if ( model ) {
 

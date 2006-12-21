@@ -45,6 +45,11 @@ int s3dw_ani_onstack(s3dw_widget *f)
 /* add an item on the animation stack */
 void s3dw_ani_add(s3dw_widget *f)
 {
+
+	if ((f->oid == 0) && (f->type!=S3DW_TCAM)) {
+		s3dprintf(HIGH,"s3dw_ani_add() assert failed: weird, moving cam but its not a cam obeject?");
+		return;
+	}
 	if ((ani_n<MAXANI) && (animation_on))
 	{
 		if (s3dw_ani_onstack(f))
@@ -72,8 +77,11 @@ void s3dw_ani_del(int i)
 void s3dw_ani_doit(s3dw_widget *f)
 {
 	if ((f->oid == 0) && (f->type!=S3DW_TCAM)) {
-		s3dprintf(HIGH,"assert failed: weird, moving cam but its not a cam obeject?");
+		s3dprintf(HIGH,"s3dw_ani_doit() assert failed: weird, moving cam but its not a cam obeject?");
 	} else {
+		if (f->oid==0) {
+			s3dprintf(HIGH,"moving cam");
+		}
 		s3d_translate(	f->oid, f->ax,f->ay,f->az);
 		s3d_rotate(		f->oid, f->arx,f->ary,f->arz);
 		s3d_scale(		f->oid, f->as);

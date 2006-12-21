@@ -84,7 +84,7 @@ int network_init()
 int					 turn;
 int	net_turn_off(int interval)
 {
-	s3dprintf(HIGH,"Warning: High traffic on Network, interrupting read.");
+	s3dprintf(VLOW,"Warning: High traffic on Network, interrupting read.");
 	turn=0;
 	return(0);
 }

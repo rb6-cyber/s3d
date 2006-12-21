@@ -196,8 +196,10 @@ int shm_main()
 					shm_prot_com_in(&procs_p[i]);
 					if (turn)
 						i--; /* evil hack: decrease i so it will be our turn again in the next round */
-					else
+					else {
+						s3dprintf(MED,"client %d [%s] seems to want to keep us busy ... ",i, procs_p[i].name);
 						turn=1; /* don't decrease, it's next connections turn */
+					}
 				} else {
 					if (procs_p[i].shmsock.idle++>MAX_IDLE)
 					{ /* maybe the function timed out somehow ...? let's check ...*/

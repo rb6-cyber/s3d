@@ -6,8 +6,6 @@
 /* Use SDL */
 #undef G_SDL
 
-#undef HAVE_GPS
-
 /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
    */
 #undef HAVE_DIRENT_H
@@ -17,6 +15,9 @@
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
+
+/* Have gps support */
+#undef HAVE_GPS
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H

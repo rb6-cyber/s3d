@@ -177,10 +177,10 @@ void s3dw_arrange()
 	{
 		w1=root->pobj[i];
 		arranged=1;
-		for (j=0;j<root->nobj;j++)
-			if (i!=j)
+		for (j=0;j<root->nobj;j++) {
+			w2=root->pobj[j];
+			if ((i!=j) && ((w1->oid!=0) && (w2->oid!=0)))
 			{
-				w2=root->pobj[j];
 				s3dw_arr_widgetcenter(w1,f1);
 				s3dw_arr_widgetcenter(w2,f2);
 				len1=s3d_vector_length(f1);
@@ -225,6 +225,7 @@ void s3dw_arrange()
 					}
 				}
 			}
+		}
 		if (arranged)
 			w1->flags|=S3DW_ARRANGED;
 	}
