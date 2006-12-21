@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.5)
-AC_INIT([s3d], [0.1.1])
+AC_INIT([s3d], [0.2.0])
 AC_CONFIG_SRCDIR(server/main.c)
 
 AC_CANONICAL_HOST
@@ -213,6 +213,8 @@ AC_CONFIG_FILES([
 	example/Makefile
 	objs/Makefile
 	Documentation/Makefile
+	libs3d/libs3d.pc
+	libs3dw/libs3dw.pc
 	s3drc])
 AC_OUTPUT
 
