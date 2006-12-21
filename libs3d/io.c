@@ -166,23 +166,27 @@ int s3d_init(int *argc, char ***argv, char *name)
 int s3d_quit()
 {
 	struct s3d_evt *ret;
-	net_send(S3D_P_C_QUIT,NULL,0);
-	switch (con_type)
-	{
+	if (con_type!=CON_NULL && _s3d_ready) {
+		net_send(S3D_P_C_QUIT,NULL,0);
+		switch (con_type)
+		{
 #ifdef TCP
-		case CON_TCP:_tcp_quit();break;
+			case CON_TCP:_tcp_quit();break;
 #endif
 #ifdef SHM
-		case CON_SHM:_shm_quit();break;
+			case CON_SHM:_shm_quit();break;
 #endif
+		}
+		con_type=CON_NULL;
+		_s3d_ready=0;
+		_queue_quit();
+		while (NULL!=(ret=s3d_pop_event())) s3d_delete_event(ret);  /*  clear the stack ... */
+		cb_lock=0; /* we don't care about old callbacks, now we just quit! */
+		ret=malloc(sizeof(struct s3d_evt));
+		ret->event=S3D_EVENT_QUIT;
+		ret->length=0;
+		s3d_push_event(ret);
 	}
-	con_type=CON_NULL;
-	_queue_quit();
-	while (NULL!=(ret=s3d_pop_event())) s3d_delete_event(ret);  /*  clear the stack ... */
-	ret=malloc(sizeof(struct s3d_evt));
-	ret->event=S3D_EVENT_QUIT;
-	ret->length=0;
-	s3d_push_event(ret);
 	return(0);
 }
 /*  apps should use that as main loop for their programs. */
