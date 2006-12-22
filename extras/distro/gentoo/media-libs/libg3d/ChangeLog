@@ -1,0 +1,17 @@
+# ChangeLog for media-gfx/libg3d
+
+*libg3d-0.0.6.20061222 (22 Dec 2006)
+
+  22 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> libg3d-0.0.6.20061222.ebuild:
+  Add snapshot to build s3d-svn.
+
+*libg3d-0.0.3 (22 Dec 2006)
+
+  22 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> libg3d-0.0.3.ebuild:
+  Version bump.
+
+*libg3d-0.0.3 (22 Dec 2006)
+
+  22 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> libg3d-0.0.3.ebuild:
+  Initial import.
+

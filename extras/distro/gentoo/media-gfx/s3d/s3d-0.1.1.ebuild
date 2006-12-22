@@ -16,6 +16,7 @@ DEPEND="${RDEPEND}
 	>=sys-devel/libtool-1.5
 	"
 RDEPEND="!media-gfx/s3d-svn
+	!media-libs/libg3d
 	>=media-libs/libsdl-1.2.7
 	>=media-libs/freetype-2
 	>=dev-libs/glib-2

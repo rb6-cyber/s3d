@@ -1,6 +1,6 @@
 inherit subversion
 
-IUSE=""
+IUSE="gps"
 
 ESVN_REPO_URI="http://svn.berlios.de/svnroot/repos/s3d/trunk"
 ESVN_BOOTSTRAP="./autogen.sh --no-configure"
@@ -23,8 +23,10 @@ RDEPEND="!media-gfx/s3d
 	>=media-libs/libsdl-1.2.7
 	>=media-libs/freetype-2
 	>=dev-libs/glib-2
+	dev-libs/libxml2
 	media-fonts/ttf-bitstream-vera
 	media-libs/fontconfig
+	>=media-libs/libg3d-0.0.6
 	media-libs/mesa
 
 	|| ( 	(
@@ -36,6 +38,8 @@ RDEPEND="!media-gfx/s3d
 			x11-libs/libXt
 			x11-libs/libXtst )
 		virtual/x11 )
+
+	gps? ( sci-geosciences/gpsd )	
 
 	virtual/glut
 	"
