@@ -385,27 +385,26 @@ void mainloop() {
 
 	if ( Cam_target != NULL ) {
 
-		/* move to network */
-		printf( "Moving to Network: %s, %s\n", ((struct wlan_network *)Cam_target)->bssid, ((struct wlan_network *)Cam_target)->ssid );
+		/* move to target */
+		/* printf( "Moving to Network: %s, %s\n", ((struct wlan_network *)Cam_target)->bssid, ((struct wlan_network *)Cam_target)->ssid ); */
 
-		CamPosition[0][0] = ( CamPosition[0][0] * 4 + ((struct wlan_network *)Cam_target)->pos_vec[0] + 7 ) / 5;
+		CamPosition[0][0] = ( CamPosition[0][0] * 4 + ((struct wlan_network *)Cam_target)->pos_vec[0] + 10 ) / 5;
 		CamPosition[0][1] = ( CamPosition[0][1] * 4 + ((struct wlan_network *)Cam_target)->pos_vec[1] ) / 5;
-		CamPosition[0][2] = ( CamPosition[0][2] * 4 + ((struct wlan_network *)Cam_target)->pos_vec[2] + 7 ) / 5;
+		CamPosition[0][2] = ( CamPosition[0][2] * 4 + ((struct wlan_network *)Cam_target)->pos_vec[2] ) / 5;
 
-		diff_vec[0] = CamPosition[0][0] - ((struct wlan_network *)Cam_target)->pos_vec[0] + 7;
+		diff_vec[0] = CamPosition[0][0] - ((struct wlan_network *)Cam_target)->pos_vec[0];
 		diff_vec[1] = 0.0;
-		diff_vec[2] = CamPosition[0][2] - ((struct wlan_network *)Cam_target)->pos_vec[2] + 7;
+		diff_vec[2] = CamPosition[0][2] - ((struct wlan_network *)Cam_target)->pos_vec[2];
 
 		angle = s3d_vector_angle( diff_vec, tmp_vec );
-		/* angle = ( real_node_pos[0] > 0) ? ( 180 - ( 180 / M_PI * angle ) ) : ( 180 + ( 180 / M_PI * angle ) ); */
 		angle = 180 - ( 180 / M_PI * angle );
 		CamPosition[1][1] = ( CamPosition[1][1] * 4 + angle ) / 5;
 
-		s3d_translate( 0, CamPosition[1][0], CamPosition[1][1], CamPosition[1][2] );
+		s3d_translate( 0, CamPosition[0][0], CamPosition[0][1], CamPosition[0][2] );
 		s3d_rotate( 0, CamPosition[1][0], CamPosition[1][1], CamPosition[1][2] );
 
-		/* TODO: need an abort if target is reached
-			Cam_target = NULL; */
+		if ( ( fabs( diff_vec[0] ) < 11.0 ) && ( fabs( CamPosition[0][1] - ((struct wlan_network *)Cam_target)->pos_vec[1] ) < 1.0 ) && ( fabs( diff_vec[2] ) < 1.0 ) )
+			Cam_target = NULL;
 
 	}
 
