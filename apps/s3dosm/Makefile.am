@@ -1,12 +1,12 @@
 bin_PROGRAMS=	s3dosm
 s3dosmincludedir = ${pkgincludedir}/s3dosm
 s3dosminclude_HEADERS =  \
-	s3dosm.h
+	s3dosm.h olsrs3d.h structs.h search.h
 				  
 s3dosm_SOURCES =  \
 	main.c http_fetcher.c http_error_codes.c osm.c \
 	object.c draw.c kismet.c nav.c tag.c io.c db.c \
-	gps.c ui.c
+	gps.c ui.c olsrs3d.c process.c net.c search.c
 
 s3dosm_CPPFLAGS=	-pg -I$(top_srcdir)/libs3d -I$(top_srcdir)/libs3dw @LIBXML2_CFLAGS@ @LIBSQLITE3_CFLAGS@ @GPS_CFLAGS@
 s3dosm_LDADD=		$(top_builddir)/libs3d/libs3d.la $(top_builddir)/libs3dw/libs3dw.la @LIBXML2_LIBS@ @LIBSQLITE3_LIBS@ @GPS_LIBS@

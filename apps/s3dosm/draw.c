@@ -128,7 +128,7 @@ int draw_icon(void *data, int argc, char **argv, char **azColName)
 	} 
 	return(0);
 }
-/* just fetches node information and puts it in some simple 6x float buffer */
+/* just fetches node information and puts in the nodelist */
 int insert_node(void *data, int argc, char **argv, char **azColName)
 {
 	struct nodelist *np=data;	/* get the nodepointer */

@@ -21,6 +21,33 @@ void nav_center(float la, float lo)
 	tlat=la;
 	tlon=lo;
 }
+void nav_campos(float campos[3], float earthpos[3])
+{
+
+	float tmp1[3],tmp2[3];
+	float alpha;
+	
+	tmp1[0]=campos[0];
+	tmp1[1]=campos[1] + ESIZE*RESCALE +VIEWHEIGHT;
+	tmp1[2]=campos[2];
+	
+	alpha= (90-lat) *M_PI/180.0;
+	tmp2[0]=  tmp1[0];
+	tmp2[1]=  tmp1[1]*cos(alpha) - tmp1[2] * sin (alpha);
+	tmp2[2]=  tmp1[1]*sin(alpha) + tmp1[2] * cos (alpha);
+	
+	alpha= lon *M_PI/180.0;
+	tmp1[0]=  tmp2[0]*cos(alpha) + tmp2[2] * sin (alpha);
+	tmp1[1]=  tmp2[1];
+	tmp1[2]=  - tmp2[0]*sin(alpha) + tmp2[2] * cos (alpha);
+
+
+
+	earthpos[0]=tmp1[0];
+	earthpos[1]=tmp1[1];
+	earthpos[2]=tmp1[2];
+
+}
 void nav_main()
 {
 	float x[3];

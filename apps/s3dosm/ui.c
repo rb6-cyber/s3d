@@ -107,33 +107,30 @@ int ui_click(struct s3d_evt *evt)
 {
 	int oid=(int)*((uint32_t *)evt->buf);
 	char query[MAXQ];
-	if (s3dw_handle_click(evt)) {
-		printf("s3dw got it?!\n");
-	} else {
-		
-		snprintf(query,MAXQ,"SELECT * FROM node WHERE s3doid=%d;",oid);
-		db_exec(query, ui_getinfo_node, 0);
-		snprintf(query,MAXQ,"SELECT * FROM way WHERE s3doid=%d;",oid);
-		db_exec(query, ui_getinfo_way, 0);
-
-	}
+	if (s3dw_handle_click(evt)) return(0);
+	if (olsr_object_click(evt)) return(0);
+	snprintf(query,MAXQ,"SELECT * FROM node WHERE s3doid=%d;",oid);
+	db_exec(query, ui_getinfo_node, 0);
+	snprintf(query,MAXQ,"SELECT * FROM way WHERE s3doid=%d;",oid);
+	db_exec(query, ui_getinfo_way, 0);
 
 	return(0);
 }
 int ui_key(struct s3d_evt *evt)
 {
 /*	struct s3d_key_event *key=(struct s3d_key_event *)evt->buf;*/
-	s3dw_handle_key(evt);
+	if (s3dw_handle_key(evt)) return(0);
+	if (olsr_keypress(evt)) return(0);
 	return(0);
 }
 int ui_oinfo(struct s3d_evt *evt)
 {
 	s3dw_object_info(evt);	
+	olsr_object_info(evt);
 	return(0);
 }
 int ui_init()
 {
-	printf("ui_init() ...\n");
 	ui_loadicons();
 	s3d_set_callback(S3D_EVENT_OBJ_CLICK,ui_click);
 	s3d_set_callback(S3D_EVENT_KEY,ui_key);

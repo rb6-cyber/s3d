@@ -36,6 +36,7 @@ void mainloop()
 		nanosleep(&t,NULL); 
 		gps_main();
 		nav_main();
+		olsr_main();
 		s3dw_ani_mate();
 	} /* else {
 		s3d_net_check(); / * we are not yet in the mainloop of 
@@ -55,20 +56,23 @@ int init(int argc, char **argv)
 	ui_init();
 	if (db_init(":memory:")) return(-1);
 	if (db_create()) return(-1);
+	olsr_parse_args(argc, argv); /* if it returns !=0, it was -h and should also be handled by process_args itself */
 	if (process_args(argc,argv)) return(-1);
 	nav_init();
 	nav_autocenter();
 	draw_all_layers();
 	gps_init("localhost");
+	olsr_init();
 	ready=1;
 	return(0);
 }
 int quit() 
 {
 	ready=0;
+	olsr_quit();
+	gps_quit();
 	s3d_quit();
 	db_quit();
-	gps_quit();
 	return(0);
 }
 int main(int argc, char **argv)

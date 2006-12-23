@@ -39,6 +39,7 @@ int db_exec(const char *query, sqlite3_callback callback, void *arg);
 void clean_string(char *clean, char *dirty, int n)
 {
 	strncpy(clean, dirty, n);
+	clean[n-1]=0;
 }
 int db_add_tag(object_t *obj, char *key, char *val)
 {
@@ -121,33 +122,73 @@ int db_insert_layer(char *layer_name)
 	}
 	return(layerid);
 }
-/*
-int db_insert_object(object_t *obj)
-{
-	if (obj==NULL)
-	{
-		printf("NULL object, run away\n");
-		return(-1);
+static int found=0;
+/* tries to find node coordinates of ip, returns 1 if has found something */
+int db_olsr_check(char *ip, float *pos) {
+	char findquery[MAXQ];
+	char clean_ip[16];
+	float p[6];
+	char *s=NULL;
+	clean_string(clean_ip,ip,16);
+	if (NULL!=(s=strchr(clean_ip,'/')))  /* don't process ip's with subnet information */
+		*s=0; /* TERMINATING ZERO!! */
+	
+	snprintf(findquery, MAXQ, "SELECT latitude, longitude, altitude FROM node WHERE tag_id=(SELECT tag_id FROM tag WHERE tagkey='ip' AND tagvalue='%s');", clean_ip);
+	found=0;
+   	db_exec(findquery, db_getpoint, p);
+	if (found) { 
+		pos[0]=p[0];
+		pos[1]=p[1];
+		pos[2]=p[2];
 	}
-	switch (obj->type) {
-		case T_NODE:			return(db_insert_node((node_t *)obj));
-		case T_SEGMENT:			return(db_insert_segment((segment_t *)obj));
-		case T_WAY:				return(db_insert_way((way_t *)obj));
-		default:break;
-	}
-	return(-1);
+	return(found);	
 }
-*/
+/* initializes the starting point of nodes  by averaging its lon/lat */
+int db_olsr_node_init(float *pos) {
+   	db_exec("SELECT AVG(latitude) as latitude, AVG(longitude) as longitude, AVG(altitude) as altitude FROM node WHERE tag_id IN (SELECT tag_id FROM tag WHERE tagkey='ip');", db_getpoint, pos);
+	printf("pos = %3.3f %3.3f %3.3f\n",pos[0],pos[1],pos[2]);
+	return(0);	/* return 1 if something is found, 0 if pos[0] its still 0 */
+}
+
+
+/* expecting a 3x float vector, returns the points coordinates */
+int db_getpoint(void *data, int argc, char **argv, char **azColName)
+{
+	float lo=0.0,la=0.0,alt=0.0;
+	float *p=data;
+	int i;
+	for(i=0; i<argc; i++){
+		if (argv[i]) {
+			if (0==strcmp(azColName[i],"longitude"))			lo=strtod(argv[i],NULL);
+			else if (0==strcmp(azColName[i],"latitude"))		la=strtod(argv[i],NULL);
+			else if (0==strcmp(azColName[i],"altitude"))		alt=strtod(argv[i],NULL);
+		}
+	}
+	if (lo==0.0)	{	printf("missing lo\n");	exit(0);	}
+	if (la==0.0)	{	printf("missing la\n");	exit(0); 	}
+	calc_earth_to_eukl(la,lo,alt,p);
+	p[3]=la;
+	p[4]=lo;
+	p[5]=alt;
+	found=1;
+	return(0);
+}
+
+/* sqlite3-callback to get an integer of the database */
 int db_getint(void *tagid, int argc, char **argv, char **azColName){
   if (argv[0]!=NULL) 
 	  *((int *)tagid)=atoi(argv[0]);
   return 0;
 }
+
+/* sqlite3-callback to get a string of the database */
 static int db_getstr(void *string, int argc, char **argv, char **azColName) {
 	if (argv[0])
 		strncpy((char *)string,argv[0],MAXQ);
 	return(0);
 }
+/* get the value for a a certain tagid and keyvalue (field). Write into target, which has to be allocated with MAXQ bytes of space.
+ * Nothing is written when nothing is found. */
 int db_gettag(int tagid, char *field, char *target)
 {
 	char query[MAXQ];
@@ -176,6 +217,7 @@ int static db_really_exec(const char *query, sqlite3_callback callback, void *ar
 	}
 	return(SQLITE_OK!=rc); /* 0 = okay */
 }
+
 /* call this if you're finished with a few stackable operations */
 void db_flush()
 {

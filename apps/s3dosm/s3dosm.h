@@ -1,4 +1,5 @@
 #include <sqlite3.h>
+#include <s3d.h>	/* s3devt structure */
 #include "../../config.h"
 #define	ESIZE	637800		/* earth size */
 #define	RESCALE	1
@@ -145,6 +146,7 @@ void nav_main();
 void nav_init();
 void nav_center(float la, float lo);
 void nav_autocenter();
+void nav_campos(float campos[3], float earthpos[3]);
 float get_heading(float la1, float lo1, float la2, float lo2);
 extern int oidy;
 /* tag.c */
@@ -155,10 +157,13 @@ void tag_free(tag_t *tag);
 char *read_file(char *fname, int *fsize);
 int process_args(int argc, char **argv);
 /* db.c */
+int db_olsr_node_init(float *pos);
+int db_olsr_check(char *ip, float *pos);
 int db_exec(const char *query, sqlite3_callback callback, void *arg);
 int db_add_tag(object_t *obj, char *key, char *val);
 int db_gettag(int tagid, char *field, char *target);
 int db_getint(void *tagid, int argc, char **argv, char **azColName);
+int db_getpoint(void *data, int argc, char **argv, char **azColName);
 int db_insert_node(node_t *node);
 int db_insert_segment(segment_t *seg);
 int db_insert_way_only(way_t *way);
@@ -175,6 +180,17 @@ int gps_init(char *gpshost);
 int gps_main();
 int gps_quit();
 /* ui.c */
+int ui_init();
 int load_window(char *text);
 int load_window_remove();
 int load_update_status(float percent);
+/* olsrs3d.c */
+#define NODEHEIGHT	10
+int olsr_object_click(struct s3d_evt *evt);
+int olsr_object_info(struct s3d_evt *hrmz);
+int olsr_parse_args(int argc, char **argv);
+int olsr_keypress(struct s3d_evt *event);
+void olsr_main();
+int olsr_init();
+int olsr_quit();
+int olsr_parse_args(int argc, char **argv);
