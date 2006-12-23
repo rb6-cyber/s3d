@@ -230,14 +230,14 @@ float dirt(float p1[], float p2[], float p3[])
 {
 	float d;
 	d=dist(p1,p2);
-	if (d!=0.0)
-	{
-		p3[0]=p2[0]-p1[0];
-		p3[1]=p2[1]-p1[1];
-		p3[2]=p2[2]-p1[2];
-	} else {
-		p3[0]=p2[0]=p1[0]=0.0;
+	while (d==0.0) { /* jitter it a bit */
+		p1[0]+=(( float ) 0.2 * rand() ) / RAND_MAX - 0.1;
+		p1[1]+=(( float ) 0.2 * rand() ) / RAND_MAX - 0.1;
+		p1[2]+=(( float ) 0.2 * rand() ) / RAND_MAX - 0.1;
 	}
+	p3[0]=p2[0]-p1[0];
+	p3[1]=p2[1]-p1[1];
+	p3[2]=p2[2]-p1[2];
 	return(d);
 }
 
