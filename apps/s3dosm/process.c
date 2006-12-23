@@ -234,9 +234,6 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
 			/* pos_vec will be overwritten if there is a database hit */
 			(*olsr_node)->static_node=1;
 			/* little elevation over the earth */
-			(*olsr_node)->pos_vec[0] *= (ESIZE + 5) / ESIZE;
-			(*olsr_node)->pos_vec[1] *= (ESIZE + 5) / ESIZE;
-			(*olsr_node)->pos_vec[2] *= (ESIZE + 5) / ESIZE;
 		} 
 
 

@@ -122,6 +122,7 @@ int db_insert_layer(char *layer_name)
 	}
 	return(layerid);
 }
+#define MAGIC	1337 /* just to elevate the nodes a little bit */
 static int found=0;
 /* tries to find node coordinates of ip, returns 1 if has found something */
 int db_olsr_check(char *ip, float *pos) {
@@ -134,17 +135,21 @@ int db_olsr_check(char *ip, float *pos) {
 		*s=0; /* TERMINATING ZERO!! */
 	
 	snprintf(findquery, MAXQ, "SELECT latitude, longitude, altitude FROM node WHERE tag_id=(SELECT tag_id FROM tag WHERE tagkey='ip' AND tagvalue='%s');", clean_ip);
-	found=0;
+	found=MAGIC;
    	db_exec(findquery, db_getpoint, p);
-	if (found) { 
+	if (found==1) { 
 		pos[0]=p[0];
 		pos[1]=p[1];
 		pos[2]=p[2];
+		found=0;
+		return(1);
 	}
-	return(found);	
+	found=0;
+	return(0);	
 }
 /* initializes the starting point of nodes  by averaging its lon/lat */
 int db_olsr_node_init(float *pos) {
+	found=0;
    	db_exec("SELECT AVG(latitude) as latitude, AVG(longitude) as longitude, AVG(altitude) as altitude FROM node WHERE tag_id IN (SELECT tag_id FROM tag WHERE tagkey='ip');", db_getpoint, pos);
 	printf("pos = %3.3f %3.3f %3.3f\n",pos[0],pos[1],pos[2]);
 	return(0);	/* return 1 if something is found, 0 if pos[0] its still 0 */
@@ -166,6 +171,7 @@ int db_getpoint(void *data, int argc, char **argv, char **azColName)
 	}
 	if (lo==0.0)	{	printf("missing lo\n");	exit(0);	}
 	if (la==0.0)	{	printf("missing la\n");	exit(0); 	}
+	if (found==MAGIC) alt=2;
 	calc_earth_to_eukl(la,lo,alt,p);
 	p[3]=la;
 	p[4]=lo;
