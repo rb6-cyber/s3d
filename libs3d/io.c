@@ -76,6 +76,7 @@ static int parse_args(int *argc, char ***argv)
 		{0,0,0,0}
 	};
 	if ((argc==NULL) || (argv==NULL)) return(0); /* nothing to parse */
+	optind=0;
 	while (-1!=(c=getopt_long(*argc,*argv,"?h",long_options,&lopt_idx)))
 	{
 		switch (c)
@@ -97,6 +98,7 @@ static int parse_args(int *argc, char ***argv)
 			return(-1);
 		}
 	}
+	optind=0;
 	if (*argc>0)
 	{
 		*argc-=(optind-1); 				 /*  hide s3d-options */

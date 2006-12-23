@@ -60,6 +60,7 @@ int process_args(int argc, char **argv)
 		{"osm",1,0,'o'},
 		{0,0,0,0}
 	};
+	optind=0;
 	while (-1!=(c=getopt_long(argc,argv,"?ho",long_options,&lopt_idx)))
 	{
 		switch (c)
@@ -89,6 +90,7 @@ int process_args(int argc, char **argv)
 	}
 	for (i=1;i<argc;i++)
 	{
+		printf("argument %d: %s\n",i,argv[i]);
 		if (strstr(argv[i],".osm")-argv[i]==strlen(argv[i])-4) {
 			snprintf(info,1024,"loading OSM-File: %s",argv[i]);
 			load_window(info);
