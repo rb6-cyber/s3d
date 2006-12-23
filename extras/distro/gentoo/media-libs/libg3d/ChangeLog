@@ -1,17 +1,25 @@
 # ChangeLog for media-gfx/libg3d
 
+*libg3d-0.0.6 (23 Dec 2006)
+
+  23 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> +libg3d-0.0.6.20061222.ebuild,
+  -files/libg3d-0.0.6.20061222-missingflexheaders.patch.bz2,
+  -libg3d-0.0.6.20061222.ebuild:
+  Version bump. Remove old snapshot.
+
 *libg3d-0.0.6.20061222 (22 Dec 2006)
 
-  22 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> libg3d-0.0.6.20061222.ebuild:
+  22 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> +libg3d-0.0.6.20061222.ebuild,
+  +files/libg3d-0.0.6.20061222-missingflexheaders.patch.bz2:
   Add snapshot to build s3d-svn.
 
 *libg3d-0.0.3 (22 Dec 2006)
 
-  22 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> libg3d-0.0.3.ebuild:
+  22 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> +libg3d-0.0.3.ebuild:
   Version bump.
 
 *libg3d-0.0.3 (22 Dec 2006)
 
-  22 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> libg3d-0.0.3.ebuild:
+  22 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> +libg3d-0.0.3.ebuild:
   Initial import.
 
