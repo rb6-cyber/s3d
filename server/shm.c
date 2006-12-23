@@ -148,6 +148,7 @@ int shm_quit()
 	if (data!=NULL)
 	{
 		data[0]=data[1]=0;
+		data=0;
 		s3dprintf(MED,"shm_quit():removing init block");
 		if (shmdt(data) == -1) 
 			errn("shm_quit():shmdt()",errno);
