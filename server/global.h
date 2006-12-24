@@ -373,3 +373,16 @@ int  myInvert(void);
 /* cull.c */
 void cull_get_planes(void);
 int  cull_sphere_in_frustum(struct t_vertex *center, float radius);
+
+/* allocate.c */
+#if DEBUG <= VLOW
+#include <stdlib.h>
+void checkIntegrity(void);
+void checkLeak(void);
+void *debugMalloc(unsigned int length, int tag);
+void *debugRealloc(void *memory, unsigned int length, int tag);
+void debugFree(void *memoryParameter);
+#define malloc(x)		debugMalloc(x,42)
+#define free(x)			debugFree(x);
+#define realloc(x,y)	debugRealloc(x,y,42)
+#endif

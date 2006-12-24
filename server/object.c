@@ -1689,10 +1689,9 @@ int obj_render(struct t_process *p,uint32_t oid)
 /*	into_position(p,obj,0);*/
 	if (obj->oflags&OF_SYSTEM)		return(-1); 					/* can't render system objects */
 	if (obj->oflags&OF_CLONE)		obj=p->object[obj->n_vertex]; 	/* it's a clone - draw the clone! */
-	if (obj->dplist)				glCallList(obj->dplist);		/* we have done that before, call the GLList */
-	else {
+	if (!obj->dplist) {
 		obj->dplist=glGenLists(1);
-		if (obj->dplist)	glNewList(obj->dplist,GL_COMPILE_AND_EXECUTE);
+		if (obj->dplist)	glNewList(obj->dplist,GL_COMPILE); /* only compile and calling later should save time. maybe. */
 		 else 				s3dprintf(LOW,"couldn't get a new list :/");
 		omat=-1;
 		for (pn=0; pn<obj->n_poly; pn++)  /*  cycle throu our polygons ... */
@@ -1817,6 +1816,8 @@ int obj_render(struct t_process *p,uint32_t oid)
 		}
 		if (obj->dplist) glEndList();
 	}
+	if (obj->dplist)
+		glCallList(obj->dplist);		/* call the just compiled ore old display list */
 	glPopMatrix();
 	return(0);
 }

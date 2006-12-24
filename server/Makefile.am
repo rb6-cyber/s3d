@@ -16,7 +16,8 @@ s3d_SOURCES= \
 	$(MAYBE_GLUT) $(MAYBE_SDL) \
 	main.c matrix.c mcp.c navigation.c \
 	network.c object.c process.c proto.c \
-	shm.c shm_ringbuf.c tcp.c user.c
+	shm.c shm_ringbuf.c tcp.c user.c \
+	allocate.c
 
 s3d_LDADD=	@LIBM@ @GL_LIBS@ ${MAYBE_SDL_LIBS} ${MAYBE_GLUT_LIBS}
 s3d_CFLAGS=	@GL_CFLAGS@ ${MAYBE_SDL_CFLAGS} ${MAYBE_GLUT_CFLAGS} ${DEVEL_CFLAGS} 
