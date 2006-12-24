@@ -1,8 +1,11 @@
 # ChangeLog for media-gfx/libg3d
 
+  23 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> libg3d-0.0.6.ebuild:
+  Mark amd64 as stable.
+
 *libg3d-0.0.6 (23 Dec 2006)
 
-  23 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> +libg3d-0.0.6.20061222.ebuild,
+  23 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> +libg3d-0.0.6.ebuild,
   -files/libg3d-0.0.6.20061222-missingflexheaders.patch.bz2,
   -libg3d-0.0.6.20061222.ebuild:
   Version bump. Remove old snapshot.

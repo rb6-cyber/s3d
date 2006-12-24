@@ -6,7 +6,7 @@ DESCRIPTION="library for loading 3D models of many file types"
 HOMEPAGE="https://gna.org/projects/libg3d/"
 
 LICENSE="GPL-2 LGPL"
-KEYWORDS="x86"
+KEYWORDS="x86 amd64"
 SLOT="0"
 
 DEPEND="${RDEPEND}
