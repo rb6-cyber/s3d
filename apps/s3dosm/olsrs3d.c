@@ -1086,6 +1086,7 @@ int olsr_init()
 	if ( Debug )
 		printf( "debug mode enabled ...\n" );
 
+	if (net_init(Olsr_host)) return(1);
 	/* initialize obj2ip linked list */
 	lst_initialize();
 
@@ -1110,7 +1111,6 @@ int olsr_init()
 	s3d_link(ZeroPoint, oidy);
 
 	/* create_search_widget( 0, 0, 300 ); */
-	if (net_init(Olsr_host)) return(1);
 	olsr_ready=1;
 	return(0);
 
