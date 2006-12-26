@@ -171,8 +171,8 @@ HAVE_PTHREAD
 AC_ARG_WITH([examples], AS_HELP_STRING([--with-examples], [build examples]), [with_examples=$withval], [with_examples=yes])
 AM_CONDITIONAL([BUILD_EXAMPLES], [test x$with_examples = xyes])
 
-AC_OUTPUT(
-)
+#AC_OUTPUT(
+#)
 
 #DBG_CFLAGS=""
 #AC_SUBST(DBG_CFLAGS)
