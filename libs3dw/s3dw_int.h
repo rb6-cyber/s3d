@@ -27,11 +27,11 @@
 /* constructor and handler callbacks */
 typedef int (*s3dw_click_callback)(s3dw_widget *, uint32_t);
 typedef int (*s3dw_key_callback)(  s3dw_widget *, struct s3d_key_event *);
-s3dw_callback 		s3dwcb_show[S3DW_NTYPES];
-s3dw_callback 		s3dwcb_hide[S3DW_NTYPES];
-s3dw_callback 		s3dwcb_destroy[S3DW_NTYPES];
-s3dw_click_callback s3dwcb_click[S3DW_NTYPES];
-s3dw_key_callback	s3dwcb_key[S3DW_NTYPES];
+extern s3dw_callback 		s3dwcb_show[S3DW_NTYPES];
+extern s3dw_callback 		s3dwcb_hide[S3DW_NTYPES];
+extern s3dw_callback 		s3dwcb_destroy[S3DW_NTYPES];
+extern s3dw_click_callback s3dwcb_click[S3DW_NTYPES];
+extern s3dw_key_callback	s3dwcb_key[S3DW_NTYPES];
 
 /* root.c */
 s3dw_widget *s3dw_getroot();

@@ -26,6 +26,13 @@
 #include <s3dw_int.h>
 #include <stdlib.h> /* malloc() */
 #include <stdio.h>   /* printf() */
+s3dw_callback 		s3dwcb_show[S3DW_NTYPES];
+s3dw_callback 		s3dwcb_hide[S3DW_NTYPES];
+s3dw_callback 		s3dwcb_destroy[S3DW_NTYPES];
+s3dw_click_callback s3dwcb_click[S3DW_NTYPES];
+s3dw_key_callback	s3dwcb_key[S3DW_NTYPES];
+
+
 static s3dw_widget *root=NULL;
 extern s3dw_widget *_s3dw_cam;
 
