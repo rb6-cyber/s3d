@@ -48,11 +48,13 @@ int net_init(char *host)
     struct sockaddr_in their_addr; /* connector's address information  */
 
     if ((he=gethostbyname(host)) == NULL) {  /* get the host info  */
+		fprintf(stderr,"Can't connect to host %s\n",host);
         herror("olsr_net:gethostbyname");
         return(1);
     }
 
     if ((sockfd = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
+		fprintf(stderr,"Can't connect to host %s\n",host);
         perror("olsr_net:socket");
         return(1);
     }
