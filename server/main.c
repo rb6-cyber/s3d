@@ -147,9 +147,11 @@ void one_time()
 /*  this initalizes all components.  */
 int init() 
 {
+	/*
 #define	__APPLE__
 	NSApplicationLoad();
 #endif
+	*/
 #ifdef SIGS
 	if (!norc)
 		rc_init();
