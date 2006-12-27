@@ -161,7 +161,7 @@ int gps_init(char *gpshost)
 			case NL_NOCONNECT: 	err_str = "can't connect to host"; break;
 			default:           	err_str = "Unknown"; break;
 		}
-		printf("no connection to gpsd\n");
+/*		printf("no connection to gpsd\n");*/
 		fprintf(stderr, "s3dosm: no gpsd running or network error: %d, %s\n"	,  errno, err_str);
 		return(-1);
 	}

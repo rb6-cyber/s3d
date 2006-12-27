@@ -64,6 +64,7 @@ int net_init(char *host)
 
     if (connect(sockfd, (struct sockaddr *)&their_addr,
                                           sizeof(struct sockaddr)) == -1) {
+		fprintf(stderr,"Can't connect to host %s\n",host);
         perror("olsr_net:connect");
         return(1);
     }

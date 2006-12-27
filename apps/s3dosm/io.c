@@ -50,7 +50,7 @@ char *read_file(char *fname, int *fsize)
 
 int process_args(int argc, char **argv)
 {
-	int					 lopt_idx,i;
+	int					 lopt_idx=0,i;
 	char				 c;
 	float				 minlat, minlon, maxlat, maxlon;
 	char 				 info[1024];
@@ -61,6 +61,7 @@ int process_args(int argc, char **argv)
 		{0,0,0,0}
 	};
 	optind=0;
+	opterr=0;
 	while (-1!=(c=getopt_long(argc,argv,"?ho",long_options,&lopt_idx)))
 	{
 		switch (c)
@@ -74,8 +75,8 @@ int process_args(int argc, char **argv)
 						return(-1);
 					}
 					break;
-				case '?':
 				case 'h':
+				case '?':
 					printf("\nUSAGE: %s [options] [files]\n\n",argv[0]);
 					printf("options:\n");
 					printf("\t--osm, -o MINLAT,MINLON,MAXLAT,MAXLON:\n");
@@ -86,6 +87,8 @@ int process_args(int argc, char **argv)
 					printf("\t+ Opemstreetmap .osm files\n\n");
 					s3d_usage();	/* add s3d usage */
 					return(-1);
+				default:
+					break;
 		}
 	}
 	for (i=1;i<argc;i++)

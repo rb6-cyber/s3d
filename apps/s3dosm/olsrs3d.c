@@ -1059,6 +1059,7 @@ int olsr_parse_args(int argc, char **argv) {
 	int optchar;
 	strncpy( Olsr_host, "127.0.0.1", 256 );
 	lbuf[0] = '\0';   /* init lbuf */
+	opterr=0;
 
 	while ( ( optchar = getopt ( argc, argv, "dhH:" ) ) != -1 ) {
 
@@ -1076,6 +1077,9 @@ int olsr_parse_args(int argc, char **argv) {
 			default:
 				print_usage();
 				return (1);
+			case '?':
+				/* not handled by olsr-part */
+				break;
 		}
 
 	}
