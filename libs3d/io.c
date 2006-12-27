@@ -77,6 +77,7 @@ static int parse_args(int *argc, char ***argv)
 	};
 	if ((argc==NULL) || (argv==NULL)) return(0); /* nothing to parse */
 	optind=0;
+	opterr=0;	/* we don't want to be bothered if there is some error */
 	while (-1!=(c=getopt_long(*argc,*argv,"?h",long_options,&lopt_idx)))
 	{
 		switch (c)
@@ -91,11 +92,14 @@ static int parse_args(int *argc, char ***argv)
 				}
 			}
 			break;
-		case '?':
 		case 'h':
 			printf("usage: %s [options]",(*argv)[0]);
 			s3d_usage();
 			return(-1);
+		case '?':
+		default:
+			/* ignore args which are not for us, but maybe the app which builds on us */
+			break;
 		}
 	}
 	optind=0;
