@@ -86,7 +86,7 @@ int draw_icon(void *data, int argc, char **argv, char **azColName)
 {
 	int i,tagid=-1,oid;
 	int nodeid=-1, layerid=-1;
-	char query[MAXQ];
+/*	char query[MAXQ];*/
 	char s[MAXQ];
 	float la, lo, alt;
 	float x[3];
@@ -121,8 +121,8 @@ int draw_icon(void *data, int argc, char **argv, char **azColName)
 			s3d_link(oid,oidy);
 			s3d_flags_on(oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 			load_update_status((100.0*num_done)/(float)num_max);
-			snprintf(query,MAXQ,"UPDATE node SET s3doid=%d WHERE node_id=%d AND layer=%d;",oid,nodeid,layerid);
-			db_exec(query, NULL, 0);
+/*			snprintf(query,MAXQ,"UPDATE node SET s3doid=%d WHERE node_id=%d AND layer_id=%d;",oid,nodeid,layerid);
+			db_exec(query, NULL, 0);*/
 		}
 				
 	} 
@@ -423,7 +423,7 @@ void draw_ways(char *filter)
 {
 	char query[MAXQ];
 	num_done=0;
-	snprintf(query,MAXQ,"SELECT count(seg_id) FROM segment WHERE %s",filter);
+	snprintf(query,MAXQ,"SELECT count(seg_id) FROM segment WHERE %s;",filter);
 	db_exec(query, db_getint,&num_max);
 	snprintf(query,MAXQ,"SELECT * FROM segment WHERE %s ORDER BY way_id;",filter);
 	db_exec(query, way_group,filter);
@@ -440,11 +440,10 @@ void draw_kismet()
 	char filter[]="layer_id=(SELECT layer_id FROM layer WHERE name='kismet')";
 	load_window("Drawing Access Points ...");
 	num_done=0;
-	snprintf(query,MAXQ,"SELECT count(node_id) FROM node WHERE %s",filter);
+	snprintf(query,MAXQ,"SELECT count(node_id) FROM node WHERE %s;",filter);
 	db_exec(query, db_getint,&num_max);
 	snprintf(query,MAXQ,"SELECT * FROM node WHERE %s;",filter);
 	db_exec(query, draw_icon,filter);
-	waylist_draw(filter); /* last way */
 }
 void draw_all_layers()
 {
