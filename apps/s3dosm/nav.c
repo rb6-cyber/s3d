@@ -14,6 +14,8 @@ void nav_init()
 	oidx=s3d_new_object();
 	oidy=s3d_new_object();
 	s3d_link(oidy,oidx);
+	s3d_translate(oidx,0,-ESIZE*RESCALE- VIEWHEIGHT,0);
+	s3d_scale(oidx,RESCALE);
 }
 /* center to given latitude longitude */
 void nav_center(float la, float lo)
@@ -65,8 +67,6 @@ void nav_main()
 	s3d_rotate(oidy,0,-lon,0);
 	s3d_rotate(oidx,-(90-lat),0,0);
 	calc_earth_to_eukl(lon,lat,0,x);
-	s3d_translate(oidx,0,-ESIZE*RESCALE- VIEWHEIGHT,0);
-	s3d_scale(oidx,RESCALE);
 }
 
 int get_center(void *data, int argc, char **argv, char **azColName)

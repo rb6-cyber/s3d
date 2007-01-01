@@ -185,7 +185,7 @@ int shm_main()
 		for (i=0;i<procs_n;i++)
 		{
 #ifdef G_SDL
-			SDL_SetTimer(20,(SDL_TimerCallback) net_turn_off);
+			SDL_SetTimer(100,(SDL_TimerCallback) net_turn_off);
 #endif
 			if (procs_p[i].con_type==CON_SHM)
 			{
