@@ -2,8 +2,11 @@
  * allocate.c
  *
  * Copyright (C) 2006 	Marek Lindner <lindner_marek@yahoo.de>
+ * 						Thomas Lopatic
+ * 						Corinna 'Elektra' Aichele
+ * 						Axel Neumann
+ * 						Felix Fietkau
  * 						Simon Wunderlich <dotslash@packetmixer.de>
- * 						(probably more people from the batman project)
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.berlios.de/ for more updates.
