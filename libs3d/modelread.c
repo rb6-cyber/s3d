@@ -262,8 +262,8 @@ int model_load(char *file)
 			voff += object->vertex_count; /* increase vertex offset */
 			oitem = oitem->next;
 		}
+		g3d_model_free(model);
 	}
-	g3d_model_free(model);
 	g3d_context_free(context);
 
 	return(obj_id);
