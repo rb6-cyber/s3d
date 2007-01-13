@@ -26,7 +26,9 @@
 #include <stdlib.h>		 /*  malloc(),realloc(),free() */
 #include <string.h>		 /*  memcpy() */
 #include <GL/gl.h>		 /*  gl*, GL* */
+#ifndef _ISOC99_SOURCE	/* we want isnan() */
 #define _ISOC99_SOURCE
+#endif
 #include <math.h>		 /*  sin(),cos() */
 
 #define MAXLOOP	10

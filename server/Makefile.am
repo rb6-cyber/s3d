@@ -11,6 +11,8 @@ MAYBE_SDL_LIBS=	@SDL_LIBS@
 MAYBE_SDL_CFLAGS=	@SDL_CFLAGS@
 endif
 
+# for s3d_keysym.h
+s3d_CPPFLAGS= -I${top_srcdir}/libs3d
 s3d_SOURCES= \
 	cull.c error.c event.c graphics.c \
 	$(MAYBE_GLUT) $(MAYBE_SDL) \
