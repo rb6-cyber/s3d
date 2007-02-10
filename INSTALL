@@ -90,7 +90,7 @@ on TCP port 6066.
 Now it's time to test some things. on another terminal:
 
 $ cd examples
-$ ./3dsloader miu3ds/miu.3ds
+$ ./modelloader ../objs/miu.3ds
 
 now there should appear a rotating cat. you can move with with the middle 
 mouse-button pushed.
