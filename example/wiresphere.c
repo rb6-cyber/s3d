@@ -111,7 +111,7 @@ void mainloop()
 }
 int main (int argc, char **argv)
 {
-	if (!s3d_init(&argc,&argv,"clock"))	
+	if (!s3d_init(&argc,&argv,"wiresphere"))	
 	{
 		oid=wire_sphere(30,30);
 		s3d_scale(oid,10);

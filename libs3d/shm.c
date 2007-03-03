@@ -132,8 +132,8 @@ int shm_writen(char *str, int s)
 			s3dprintf(HIGH,"shm_writen():waited too long ...");
 			return(-1);
 		}
-		if (wait>10)
-			nanosleep(&t,NULL); 
+/*		if (wait>10)
+			nanosleep(&t,NULL); */
 	}
 	return(s - no_left);
 }
@@ -155,8 +155,8 @@ int shm_readn(char *str,int s)
 			s3dprintf(HIGH,"shm_readn():waited too long ...");
 			return(-1);
 		}
-		if (wait>10)
-			nanosleep(&t,NULL); 
+/*		if (wait>10)
+			nanosleep(&t,NULL); */
 	}
 	return(s - no_left);
 }

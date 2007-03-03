@@ -8,6 +8,7 @@ libs3d_la_SOURCES=	modelread.c callback.c error.c event.c fontselect.c \
 include_HEADERS= s3d.h s3d_keysym.h
 noinst_HEADERS=		config.h s3dlib.h sei_triangulate.h sei_interface.h
 
+# for proto.h
 
 libs3d_la_CPPFLAGS=	-I${top_srcdir}/server
 #fontconfig_lo_CFLAGS=	@FONTCONFIG_CFLAGS@

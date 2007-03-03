@@ -75,7 +75,9 @@ dnl ##################################### SERVER ###############################
 AC_CHECK_LIBM
 AC_SUBST(LIBM)
 
- MDL_HAVE_OPENGL
+dnl #### MDL_HAVE_OPENGL
+FRESCO_OPENGL_CHECK
+
 AC_SEARCH_LIBS(glutInit, glut, [
 HAVE_glut="yes"
 GLUT_CFLAGS=
