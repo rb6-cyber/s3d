@@ -77,6 +77,9 @@ AC_SUBST(LIBM)
 
 dnl #### MDL_HAVE_OPENGL
 FRESCO_OPENGL_CHECK
+if test "x$no_gl" = xyes ; then
+	AC_MSG_ERROR([Could not find OpenGL-Headers. Install OpenGL Headers or try --with-opengl-prefix])
+fi
 
 AC_SEARCH_LIBS(glutInit, glut, [
 HAVE_glut="yes"
