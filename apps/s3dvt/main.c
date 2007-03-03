@@ -583,7 +583,7 @@ int main (int argc, char **argv)
 	{
 		if (s3d_select_font("vera"))
 		{
-			printf("font not found");
+			printf("font not found\n");
 			exit(-1);
 		}
 		b=draw_background();
