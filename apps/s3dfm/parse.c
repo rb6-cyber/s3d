@@ -80,7 +80,7 @@ int parse_dir(t_node *dir)
 				strncpy(ndir,path,M_DIR);
 		    	strncat(ndir,namelist[n]->d_name,M_DIR);
 			    if ((namelist[n]->d_type==DT_DIR) || ((namelist[n]->d_type==DT_UNKNOWN)))
-					if ((dirhd=opendir(ndir))!=NULL))
+					if ((dirhd=opendir(ndir))!=NULL)
 					{
 						dir->sub[i]->type=T_FOLDER;
 						closedir(dirhd);
