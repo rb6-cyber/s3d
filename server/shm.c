@@ -226,9 +226,10 @@ int shm_main()
 		new_p->con_type=CON_SHM;
 		memcpy(&new_p->shmsock,&waiting_comblock,sizeof(struct t_shmcb));
 		s3dprintf(HIGH,"shm_main():registered new connection (keys %d, %d) as pid %d",new_p->shmsock.key_ctos,new_p->shmsock.key_stoc, new_p->id);
-			s3dprintf(LOW,"shm_main():new client attached! allocating shm block for further clients ...");
-			shm_new_comblock(data);
-		}
+		s3dprintf(LOW,"shm_main():new client attached! allocating shm block for further clients ...");
+		if (shm_new_comblock(data))
+			return(1);
+	}
 	return(0);
 }
 int shm_prot_com_in(struct t_process *p)

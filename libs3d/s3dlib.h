@@ -24,6 +24,12 @@
 
 #include <stdint.h>
 #include "../config.h"
+#ifdef __APPLE__ 
+#ifdef SHM
+#undef SHM
+#endif
+#endif 
+
 #define VLOW	1
 #define	LOW		2
 #define MED		3

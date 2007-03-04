@@ -23,6 +23,11 @@
 
 
 #include "config.h"
+#ifdef __APPLE__ 
+#ifdef SHM
+#undef SHM
+#endif
+#endif 
 #include <stdint.h>		 /*  integer types */
 #ifdef SHM
 	#include <sys/shm.h> /* key_t */
