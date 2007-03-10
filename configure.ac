@@ -209,6 +209,7 @@ AC_CONFIG_FILES([
 	libs3dw/Makefile
 	apps/Makefile
 	apps/olsrs3d/Makefile
+	apps/meshs3d/Makefile	
 	apps/s3d_x11gate/Makefile
 	apps/s3dvt/Makefile
 	apps/s3dfm/Makefile
