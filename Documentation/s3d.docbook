@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" [
+  <!ENTITY bookinfo SYSTEM "bookinfo.docbook">
+  <!ENTITY server SYSTEM "server/server.docbook">
+  <!ENTITY libs3d SYSTEM "libs3d/libs3d.docbook">
+  <!ENTITY libs3dw SYSTEM "libs3dw/libs3dw.docbook">
+  <!ENTITY misc SYSTEM "misc.docbook">
+]>
+<book id="s3d" lang="en">
+&bookinfo;
+&server;
+&libs3d;
+&libs3dw;
+&misc;
+
+</book>
