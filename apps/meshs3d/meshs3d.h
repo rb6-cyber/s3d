@@ -32,8 +32,8 @@
 /* linked list for the all connections */
 struct node_con
 {
-	int ip1;
-	int ip2;
+	unsigned int ip1;
+	unsigned int ip2;
 	float etx1;							/* etx of left olsr node */
 	float etx2;						/* etx of right olsr node */
 	float etx1_sqrt;					/* sqrt of etx of left olsr node */
@@ -55,7 +55,7 @@ struct olsr_neigh_list
 /* we contruct a binary tree to handle the nodes */
 struct node 
 {
-	int ip;
+	unsigned int ip;
 	char ip_string[NAMEMAX];		/* host ip */
 	int node_type;					/* normal = 0, internet gateway = 1, via hna announced network = 2 */
 	int node_type_modified;			/* node_type modified flag */

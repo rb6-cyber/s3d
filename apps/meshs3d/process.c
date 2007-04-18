@@ -113,10 +113,10 @@ void process_init()
 	return;
 }
 
-void handle_con( int ip1, int ip2, float etx )
+void handle_con( unsigned int ip1, unsigned int ip2, float etx )
 {
 
-	int ip[2];
+	unsigned int ip[2];
 	struct node_con *con;
 	struct hashtable_t *swaphash;
 
@@ -159,7 +159,7 @@ void handle_con( int ip1, int ip2, float etx )
 
 }
 
-void handle_mesh_node( int *ip, char *ip_string )
+void handle_mesh_node( unsigned int *ip, char *ip_string )
 {
 	struct node *orig_node;
 	struct hashtable_t *swaphash;
@@ -204,7 +204,7 @@ int process_main()
 	char *lbuf_ptr, *last_cr_ptr, *con_from, *con_from_end, *con_to, *con_to_end, *etx, *etx_end, *tmpChar;
 	struct node *node_from, *node_to;
 
-	int int_con_from=0, int_con_to=0;
+	unsigned int int_con_from=0, int_con_to=0;
 	char hna_name[NAMEMAX];
 	char hna_node[NAMEMAX];
 
