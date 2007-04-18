@@ -154,8 +154,8 @@ void calc_node_mov( void ) {
 	while ( NULL != ( hashit = hash_iterate( con_hash, hashit ) ) )
 	{
 		con = (struct node_con *) hashit->bucket->data;
-		first_node = hash_find( node_hash, &con->ip1 );
-		sec_node = hash_find( node_hash, &con->ip2 );
+		first_node = hash_find( node_hash, &con->ip[0] );
+		sec_node = hash_find( node_hash, &con->ip[1] );
 		distance = dirt( first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec );
 		f = ( ( con->etx1_sqrt + con->etx2_sqrt ) / 4.0 ) / distance;
 // 
@@ -186,8 +186,8 @@ void move_nodes( void ) {
 	while ( NULL != ( hashit = hash_iterate( con_hash, hashit ) ) )
 	{
 		con = (struct node_con *) hashit->bucket->data;
-		first_node = hash_find( node_hash, &con->ip1 );
-		sec_node = hash_find( node_hash, &con->ip2 );
+		first_node = hash_find( node_hash, &con->ip[0] );
+		sec_node = hash_find( node_hash, &con->ip[1] );
 		/* move left olsr node if it has not been moved yet */
 		if ( !( ( first_node->mov_vec[0] == 0 ) && ( first_node->mov_vec[1] == 0 ) && ( first_node->mov_vec[2] == 0 ) ) && first_node->visible ) {
 			distance = dirt( first_node->pos_vec, null_vec, tmp_mov_vec );

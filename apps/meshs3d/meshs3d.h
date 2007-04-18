@@ -32,8 +32,7 @@
 /* linked list for the all connections */
 struct node_con
 {
-	unsigned int ip1;
-	unsigned int ip2;
+	unsigned int ip[2];
 	float etx1;							/* etx of left olsr node */
 	float etx2;						/* etx of right olsr node */
 	float etx1_sqrt;					/* sqrt of etx of left olsr node */
@@ -42,7 +41,6 @@ struct node_con
 	int color;
 	float rgb;
 };
-
 
 /* linked list for the neighbours of each olsr node */
 struct olsr_neigh_list

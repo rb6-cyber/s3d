@@ -126,9 +126,9 @@ void handle_con( unsigned int ip1, unsigned int ip2, float etx )
 	con = ( struct node_con* ) hash_find( con_hash, ip);
 	if( con == NULL )
 	{
-		con = (struct node_con *) debugMalloc( sizeof(struct node_con), 102 );
-		con->ip1 = ip[0];
-		con->ip2 = ip[1];
+		con = ( struct node_con * ) debugMalloc( sizeof( struct node_con ), 102 );
+		con->ip[0] = ip[0];
+		con->ip[1] = ip[1];
 		con->color = 0;
 		con->obj_id = 0;
 		con->rgb = 0.00;
@@ -139,7 +139,7 @@ void handle_con( unsigned int ip1, unsigned int ip2, float etx )
 		hash_add( con_hash, con );
 	}
 
-	if( con->ip1 == ip1 )
+	if( con->ip[0] == ip1 )
 	{
 		con->etx1 = etx;
 		con->etx1_sqrt = sqrt( etx );
@@ -153,7 +153,7 @@ void handle_con( unsigned int ip1, unsigned int ip2, float etx )
 	{
 		swaphash = hash_resize( con_hash, con_hash->size * 2 );
 		if ( swaphash == NULL )
-			exit_error("Couldn't resize hash table \n" );
+			exit_error("Couldn't resize hash table \n");
 		con_hash = swaphash;
 	}
 
