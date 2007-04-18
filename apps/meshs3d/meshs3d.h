@@ -23,23 +23,21 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#define max(x,y) {((x)>(y)?(x):(y))}
-#define min(x,y) {((x)<(y)?(x):(y))}
+#define max(x,y) ((x)>(y)?(x):(y))
+#define min(x,y) ((x)<(y)?(x):(y))
 #define NAMEMAX		128
 #define MAXLINESIZE 1000		/* lines in a digraph just shouldn't get that longer ... */
 #define MAXDATASIZE 100			/* max number of bytes we can get at once  */
 
 /* linked list for the all connections */
-struct olsr_con 
+struct node_con
 {
-	struct olsr_con *next_olsr_con;			/* pointer to next connection */
-	struct olsr_con *prev_olsr_con;			/* pointer to previous connection */
-	struct olsr_node *left_olsr_node;		/* pointer to left end point of the connection */
-	struct olsr_node *right_olsr_node;		/* pointer to right end point of the connection */
-	float left_etx;							/* etx of left olsr node */
-	float right_etx;						/* etx of right olsr node */
-	float left_etx_sqrt;					/* sqrt of etx of left olsr node */
-	float right_etx_sqrt;					/* sqrt etx of right olsr node */
+	int ip1;
+	int ip2;
+	float etx1;							/* etx of left olsr node */
+	float etx2;						/* etx of right olsr node */
+	float etx1_sqrt;					/* sqrt of etx of left olsr node */
+	float etx2_sqrt;					/* sqrt etx of right olsr node */
 	int obj_id;								/* id of connection object in s3d */
 	int color;
 	float rgb;
@@ -55,11 +53,10 @@ struct olsr_neigh_list
 
 
 /* we contruct a binary tree to handle the nodes */
-struct olsr_node 
+struct node 
 {
-	struct olsr_node *left;
-	struct olsr_node *right;
-	char ip[NAMEMAX];				/* host ip */
+	int ip;
+	char ip_string[NAMEMAX];		/* host ip */
 	int node_type;					/* normal = 0, internet gateway = 1, via hna announced network = 2 */
 	int node_type_modified;			/* node_type modified flag */
 	int last_seen;					/* last seen counter */
@@ -69,7 +66,6 @@ struct olsr_node
 	int obj_id;						/* id of node object in s3d */
 	int desc_id;					/* id of node description object in s3d */
 	float desc_length;				/* length of node description object in s3d */
-	struct olsr_neigh_list *olsr_neigh_list;	/* pointer to first neighbour */
 };
 
 
@@ -93,6 +89,8 @@ struct glob {
 
 extern char lbuf[MAXLINESIZE];
 extern struct glob Global;
+extern struct hashtable_t *node_hash;
+extern struct hashtable_t *con_hash;
 
 /* process.c */
 //void lst_initialize();
@@ -102,6 +100,7 @@ extern struct glob Global;
 //void lst_out();
 //struct olsr_node *move_lst_ptr(int *id);
 //int process_main();
+void process_init();
 
 /* net.c */
 int net_init(char *host);
