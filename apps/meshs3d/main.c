@@ -139,10 +139,31 @@ void mov_add(float mov[], float p[], float fac)
 	mov[2]+=fac*p[2];
 }
 
+void move_meshnode( struct node *node ) {
+	float null_vec[3] = {0,0,0};
+	float tmp_mov_vec[3];
+	float distance;
+
+	if ( !( ( node->mov_vec[0] == 0 ) && ( node->mov_vec[1] == 0 ) && ( node->mov_vec[2] == 0 ) ) && node->visible ) {
+		distance = dirt( node->pos_vec, null_vec, tmp_mov_vec );
+		mov_add( node->mov_vec, tmp_mov_vec, distance / 100 ); /* move a little bit to point zero */
+		mov_add( node->mov_vec, tmp_mov_vec, 1 ); /* move a little bit to point zero */
+
+		if ( ( distance = dist( node->mov_vec, null_vec ) ) > 10.0 )
+			mov_add( node->pos_vec, node->mov_vec, 1.0 / ( ( float ) distance ) );
+		else
+			mov_add( node->pos_vec, node->mov_vec, 0.1 );
+
+		s3d_translate( node->obj_id, node->pos_vec[0], node->pos_vec[1], node->pos_vec[2] );
+			/* reset movement vector */
+		node->mov_vec[0] = node->mov_vec[1] = node->mov_vec[2] = 0.0;
+	}
+}
+
 void calc_node_mov( void ) {
 
 	float distance;
-	float tmp_mov_vec[3];
+	float tmp_mov_vec[3],vertex_buf[6];
 	float f;
 	int ip[2];
 	struct node_con *con;
@@ -169,17 +190,35 @@ void calc_node_mov( void ) {
 					f = ( ( con->etx1_sqrt + con->etx2_sqrt ) / 4.0 ) / distance;
 					mov_add( first_node->mov_vec, tmp_mov_vec,  1 / f - 1 );
 					mov_add( sec_node->mov_vec, tmp_mov_vec, -( 1 / f - 1 ) );
-					printf("connection %.2f %.2f %.2f\n", distance, 1 / f - 1 , -( 1 / f - 1 ) );
+					printf("------co---------\n%s %.2f %.2f %.2f\n%s %.2f %.2f %.2f\n", first_node->ip_string,first_node->mov_vec[0],first_node->mov_vec[1],first_node->mov_vec[2],
+						sec_node->ip_string,sec_node->mov_vec[0],sec_node->mov_vec[1],sec_node->mov_vec[2]  );
+
+					vertex_buf[0] = first_node->pos_vec[0];
+					vertex_buf[1] = first_node->pos_vec[1];
+					vertex_buf[2] = first_node->pos_vec[2];
+					vertex_buf[3] = sec_node->pos_vec[0];
+					vertex_buf[4] = sec_node->pos_vec[1];
+					vertex_buf[5] = sec_node->pos_vec[2];
+					s3d_pep_vertices( con->obj_id, vertex_buf, 2 );
+
+					s3d_pep_material( con->obj_id,
+						1.0,1.0,1.0,
+						1.0,1.0,1.0,
+						1.0,1.0,1.0
+					);
+
 				} else {
 					/* we have no connection */
 					if (distance < 0.1) distance = 0.1;
 					mov_add( first_node->mov_vec, tmp_mov_vec, 100 / ( distance * distance ) );
 					mov_add( sec_node->mov_vec, tmp_mov_vec, -100 / ( distance * distance ) );
-					printf("no connection %.2f %.2f %.2f\n", distance, 100 / ( distance * distance ), -100 / ( distance * distance ) );
+					printf("------nco---------\n%s %.2f %.2f %.2f\n%s %.2f %.2f %.2f\n", first_node->ip_string,first_node->mov_vec[0],first_node->mov_vec[1],first_node->mov_vec[2],
+						sec_node->ip_string,sec_node->mov_vec[0],sec_node->mov_vec[1],sec_node->mov_vec[2]  );
 				}
+				move_meshnode( first_node );
+				move_meshnode( sec_node );
 			}
 		}
-	
 // 		first_node = hash_find( node_hash, &con->ip[0] );
 // 		sec_node = hash_find( node_hash, &con->ip[1] );
 // 		distance = dirt( first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec );
@@ -194,193 +233,6 @@ void calc_node_mov( void ) {
 
 }
 
-void move_nodes( void ) {
-
-	float null_vec[3] = {0,0,0}, vertex_buf[6];
-	float tmp_mov_vec[3];
-	float distance, etx, rgb;
-	struct node_con *con;
-	struct node *first_node, *sec_node;
-	struct hash_it_t *hashit;
-
-	if( con_hash->elements == 0 )
-		return;
-	hashit = NULL;
-	while ( NULL != ( hashit = hash_iterate( con_hash, hashit ) ) )
-	{
-		con = (struct node_con *) hashit->bucket->data;
-		first_node = hash_find( node_hash, &con->ip[0] );
-		sec_node = hash_find( node_hash, &con->ip[1] );
-		/* move left olsr node if it has not been moved yet */
-		if ( !( ( first_node->mov_vec[0] == 0 ) && ( first_node->mov_vec[1] == 0 ) && ( first_node->mov_vec[2] == 0 ) ) && first_node->visible ) {
-			distance = dirt( first_node->pos_vec, null_vec, tmp_mov_vec );
-			mov_add( first_node->mov_vec, tmp_mov_vec, distance / 100 ); /* move a little bit to point zero */
-			mov_add( first_node->mov_vec, tmp_mov_vec, 1 ); /* move a little bit to point zero */
-
-			if ( ( distance = dist( first_node->mov_vec, null_vec ) ) > 10.0 ) {
-				mov_add( first_node->pos_vec, first_node->mov_vec, 1.0 / ( ( float ) distance ) );
-			} else {
-				mov_add( first_node->pos_vec, first_node->mov_vec, 0.1 );
-			}
-
-			s3d_translate( first_node->obj_id, first_node->pos_vec[0], first_node->pos_vec[1], first_node->pos_vec[2] );
-
-			/* reset movement vector */
-			first_node->mov_vec[0] = first_node->mov_vec[1] = first_node->mov_vec[2] = 0.0;
-
-		}
-
-		/* move right olsr node if it has not been moved yet */
-		if ( !( ( sec_node->mov_vec[0] == 0 ) && ( sec_node->mov_vec[1] == 0 ) && ( sec_node->mov_vec[2] == 0 ) ) && sec_node->visible ) {
-
-			distance = dirt( sec_node->pos_vec, null_vec, tmp_mov_vec );
-			mov_add( sec_node->mov_vec, tmp_mov_vec, distance / 100 ); /* move a little bit to point zero */
-			mov_add( sec_node->mov_vec, tmp_mov_vec, 1 ); /* move a little bit to point zero */
-
-			if ( ( distance = dist( sec_node->mov_vec, null_vec ) ) > 10.0 ) {
-				mov_add( sec_node->pos_vec, sec_node->mov_vec, 1.0 / ( ( float ) distance ) );
-			} else {
-				mov_add( sec_node->pos_vec, sec_node->mov_vec, 0.1 );
-			}
-
-			s3d_translate( sec_node->obj_id, sec_node->pos_vec[0], sec_node->pos_vec[1], sec_node->pos_vec[2] );
-
-			/* reset movement vector */
-			sec_node->mov_vec[0] = sec_node->mov_vec[1] = sec_node->mov_vec[2] = 0.0;
-
-		}
-
-
-		/* move connection between left and right olsr node */
-		vertex_buf[0] = first_node->pos_vec[0];
-		vertex_buf[1] = first_node->pos_vec[1];
-		vertex_buf[2] = first_node->pos_vec[2];
-		vertex_buf[3] = sec_node->pos_vec[0];
-		vertex_buf[4] = sec_node->pos_vec[1];
-		vertex_buf[5] = sec_node->pos_vec[2];
-
-		s3d_pep_vertices( con->obj_id, vertex_buf, 2 );
-
-
-// 		if ( ColorSwitch ) {
-// 
-// 			/* HNA */
-// 			if ( olsr_con->left_etx == -1000.00 ) {
-// 
-// 				if(olsr_con->color != 1) {
-// 					s3d_pep_material( olsr_con->obj_id,
-// 								   0.0,0.0,1.0,
-// 								   0.0,0.0,1.0,
-// 								   0.0,0.0,1.0);
-// 					olsr_con->color = 1;
-// 				}
-// 
-// 			} else {
-// 
-// 				etx = ( olsr_con->left_etx + olsr_con->right_etx ) / 2.0;
-// 
-// 				/* very good link - bright blue */
-// 				if ( ( etx >= 1.0 ) && ( etx < 1.5 ) ) {
-// 
-// 					if(olsr_con->color != 2) {
-// 						s3d_pep_material( olsr_con->obj_id,
-// 								0.5,1.0,1.0,
-// 								0.5,1.0,1.0,
-// 								0.5,1.0,1.0);
-// 						olsr_con->color = 2;
-// 					}
-// 
-// 				/* good link - bright yellow */
-// 				} else if ( ( etx >= 1.5 ) && ( etx < 2.0 ) ) {
-// 
-// 					rgb = 2.0 - etx;
-// 					if( olsr_con->color != 3 || (olsr_con->color == 3 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10))) {
-// 						s3d_pep_material( olsr_con->obj_id,
-// 								1.0,1.0,rgb,
-// 								1.0,1.0,rgb,
-// 								1.0,1.0,rgb);
-// 						olsr_con->color = 3;
-// 
-// 						olsr_con->rgb =  rgb;
-// 					}
-// 
-// 				/* not so good link - orange */
-// 				} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
-// 
-// 					rgb = 1.5 - ( etx / 2.0 );
-// 					if( olsr_con->color != 4 || (olsr_con->color == 4 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10))) {
-// 						s3d_pep_material( olsr_con->obj_id,
-// 								1.0,rgb,0.0,
-// 								1.0,rgb,0.0,
-// 								1.0,rgb,0.0);
-// 						olsr_con->color = 4;
-// 
-// 						olsr_con->rgb = rgb;
-// 					}
-// 
-// 				/* bad link (almost dead) - brown */
-// 				} else if ( ( etx >= 3.0 ) && ( etx < 5.0 ) ) {
-// 
-// 					rgb = 1.75 - ( etx / 4.0 );
-// 
-// 					if( olsr_con->color != 5 || (olsr_con->color == 5 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10)) ) {
-// 
-// 						s3d_pep_material( olsr_con->obj_id,
-// 								rgb,rgb - 0.5,0.0,
-// 								rgb,rgb - 0.5,0.0,
-// 								rgb,rgb - 0.5,0.0);
-// 						olsr_con->color = 5;
-// 
-// 						olsr_con->rgb = rgb;
-// 					}
-// 
-// 				/* zombie link - grey */
-// 				} else if ( ( etx >= 5.0 ) && ( etx < 1000.0 ) ) {
-// 
-// 					rgb = 1000.0 / ( 1500.0 + etx );
-// 
-// 					if( olsr_con->color != 6 || (olsr_con->color == 6 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10)) ) {
-// 
-// 						s3d_pep_material( olsr_con->obj_id,
-// 								rgb,rgb,rgb,
-// 								rgb,rgb,rgb,
-// 								rgb,rgb,rgb);
-// 						olsr_con->color = 6;
-// 
-// 						olsr_con->rgb = rgb;
-// 					}
-// 
-// 				/* wtf - dark grey */
-// 				} else {
-// 
-// 					if(olsr_con->color != 7) {
-// 						s3d_pep_material( olsr_con->obj_id,
-// 								0.3,0.3,0.3,
-// 								0.3,0.3,0.3,
-// 								0.3,0.3,0.3);
-// 						olsr_con->color = 7;
-// 					}
-// 
-// 				}
-// 
-// 			}
-// 
-// 		} else {
-
-// 			if( con->color == 0) {
-				s3d_pep_material( con->obj_id,
-							1.0,1.0,1.0,
-							1.0,1.0,1.0,
-							1.0,1.0,1.0);
-// 				con->color = 0;
-// 			}
-
-// 		}
-
-	}
-
-}
-
 void mainloop()
 {
 
@@ -388,7 +240,7 @@ void mainloop()
 
 	calc_node_mov();
 	handle_node();
-	move_nodes();
+// 	move_nodes();
 
 	while ( ( net_result = net_main() ) != 0 ) {
 		if ( net_result == -1 ) {
