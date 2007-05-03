@@ -144,29 +144,52 @@ void calc_node_mov( void ) {
 	float distance;
 	float tmp_mov_vec[3];
 	float f;
+	int ip[2];
 	struct node_con *con;
 	struct node *first_node, *sec_node;
-	struct hash_it_t *hashit;
+	struct hash_it_t *hashit1, *hashit2;
 
 	if( con_hash->elements == 0 )
 		return;
-	hashit = NULL;
-	while ( NULL != ( hashit = hash_iterate( con_hash, hashit ) ) )
+	hashit1 = hashit2 = NULL;
+	while ( NULL != ( hashit1 = hash_iterate( node_hash, hashit1 ) ) )
 	{
-		con = (struct node_con *) hashit->bucket->data;
-		first_node = hash_find( node_hash, &con->ip[0] );
-		sec_node = hash_find( node_hash, &con->ip[1] );
-		distance = dirt( first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec );
-		f = ( ( con->etx1_sqrt + con->etx2_sqrt ) / 4.0 ) / distance;
+		first_node = (struct node *) hashit1->bucket->data;
+		while ( NULL != ( hashit2 = hash_iterate( node_hash, hashit2 ) ) )
+		{
+			sec_node = (struct node *) hashit2->bucket->data;
+			if( first_node != sec_node )
+			{
+				ip[0] = max(first_node->ip, sec_node->ip);
+				ip[1] = min(first_node->ip, sec_node->ip);
+				distance = dirt( first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec );
+				if( NULL != ( con = hash_find(con_hash, ip ) ) )
+				{
+					/* we have a connection */
+					f = ( ( con->etx1_sqrt + con->etx2_sqrt ) / 4.0 ) / distance;
+					mov_add( first_node->mov_vec, tmp_mov_vec,  1 / f - 1 );
+					mov_add( sec_node->mov_vec, tmp_mov_vec, -( 1 / f - 1 ) );
+					printf("connection %.2f %.2f %.2f\n", distance, 1 / f - 1 , -( 1 / f - 1 ) );
+				} else {
+					/* we have no connection */
+					if (distance < 0.1) distance = 0.1;
+					mov_add( first_node->mov_vec, tmp_mov_vec, 100 / ( distance * distance ) );
+					mov_add( sec_node->mov_vec, tmp_mov_vec, -100 / ( distance * distance ) );
+					printf("no connection %.2f %.2f %.2f\n", distance, 100 / ( distance * distance ), -100 / ( distance * distance ) );
+				}
+			}
+		}
+	
+// 		first_node = hash_find( node_hash, &con->ip[0] );
+// 		sec_node = hash_find( node_hash, &con->ip[1] );
+// 		distance = dirt( first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec );
+// 		f = ( ( con->etx1_sqrt + con->etx2_sqrt ) / 4.0 ) / distance;
 // 
 // 		/***
 // 		 * drift factor - 0.0 < factor < 1.0 ( best results: 0.3 < factor < 0.9
 // 		 * small factor: fast and strong drift to neighbours
 // 		 ***/
 // 		if ( f < Factor ) f = Factor;
-
-		mov_add( first_node->mov_vec, tmp_mov_vec, 1 / f - 1 );
-		mov_add( sec_node->mov_vec, tmp_mov_vec, - ( 1 / f - 1 ) );
 	}
 
 }
@@ -344,13 +367,13 @@ void move_nodes( void ) {
 // 
 // 		} else {
 
-			if( con->color == 0) {
+// 			if( con->color == 0) {
 				s3d_pep_material( con->obj_id,
 							1.0,1.0,1.0,
 							1.0,1.0,1.0,
 							1.0,1.0,1.0);
-				con->color = 0;
-			}
+// 				con->color = 0;
+// 			}
 
 // 		}
 
