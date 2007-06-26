@@ -33,9 +33,12 @@
 #include <errno.h>		 /*  errno */
 #include <sys/socket.h>  /*  socket() */
 #include <getopt.h>		 /*  getopt() */
+#define _POSIX_C_SOURCE 199309		/* we want struct timespec to be defined */
+#define __USE_POSIX199309 1
 #include <time.h>		 /*  nanosleep() */
 #ifdef SIGS
 #include <fcntl.h>		 /*  fcntl() */
+#define __USE_BSD	1		/* we want sig_t to be defined */
 #include <signal.h>		 /*  signal.h, SIG_PIPE */
 #endif
 #include <netinet/in.h>  /*  htons(),htonl() */

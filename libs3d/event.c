@@ -67,7 +67,7 @@ struct s3d_evt *s3d_pop_event()
 		s3d_stack=s3d_stack->next;
 	return ret;
 }
-struct s3d_evt *s3d_find_event(u_int8_t event)
+struct s3d_evt *s3d_find_event(uint8_t event)
 {
 	struct s3d_evt *p;
 	p=s3d_stack;

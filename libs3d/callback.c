@@ -53,6 +53,7 @@ s3d_cb s3d_cb_list[MAX_CB]={
 static int _s3d_ignore(struct s3d_evt *evt)
 {
 	/* do plain nothing */
+	return(0);
 }
 /*  sets a callback */
 void s3d_set_callback(uint8_t event, s3d_cb func)

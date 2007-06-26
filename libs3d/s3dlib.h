@@ -23,7 +23,7 @@
 
 
 #include <stdint.h>
-#include "../config.h"
+#include "config.h"
 #ifdef __APPLE__ 
 #ifdef SHM
 #undef SHM
@@ -60,11 +60,20 @@ extern s3d_cb s3d_cb_list[MAX_CB];
 /*  some local prototypes: */
 /*  char *s3d_open_file(char *fname); */
 int net_prot_in(uint8_t opcode, uint16_t length, char *buf);
+#ifdef DEBUG
 void s3dprintf(int relevance, const char *fmt, ...);
-void errn(char *func,int en);
-void errs(char *func, char *msg);
 void errdn(int relevance, char *func,int en); 
 void errds(int relevance,char *func, const char *fmt, ...);
+
+#else 
+void static __inline__ s3dprintf(int relevance, const char *fmt, ...) {}
+void static __inline__ errdn(int relevance, char *func,int en) {}
+void static __inline__ errds(int relevance,char *func, const char *fmt, ...) {}
+
+#endif
+void errn(char *func,int en);
+void errs(char *func, char *msg);
+
 /*  fontselect.c */
 char *s3d_findfont(char *mask);
 /*  object_queue.c */
@@ -115,10 +124,4 @@ struct tessp_t
 };
 int _s3d_tesselate(struct tessp_t *t,struct t_buf *b);
 
-#include "config.h"
-#ifndef DEBUG
-#define s3dprintf(...) /* nothing */
-#define errdn(...) /* nothing */
-#define errds(...) /* nothing */
-#endif
 

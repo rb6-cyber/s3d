@@ -277,8 +277,8 @@ void errsf(char *func, char *msg);
 void errds(int relevance,char *func, const char *fmt, ...);
 void s3dprintf(int relevance, const char *msg, ...);
 #else
-static inline void errds(int relevance,char *func, const char *fmt, ...) {}
-static inline void s3dprintf(int relevance, const char *msg, ...) {}
+static void __inline__ errds(int relevance,char *func, const char *fmt, ...) {}
+static void __inline__ s3dprintf(int relevance, const char *msg, ...) {}
 #endif
 /*  graphics.c */
 int graphics_quit(void);
