@@ -103,7 +103,7 @@ int s3d_ft_load_font()
 int _s3d_clear_tessbuf()
 {
 	int i;
-	if (memory_font==NULL);
+
 	for (i=0; i<256;i++)
 	{
 		if (tess_buf[i].vbuf!=NULL) free(tess_buf[i].vbuf);

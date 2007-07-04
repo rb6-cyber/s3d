@@ -219,16 +219,17 @@ void calc_node_mov( void ) {
 				move_meshnode( sec_node );
 			}
 		}
-// 		first_node = hash_find( node_hash, &con->ip[0] );
-// 		sec_node = hash_find( node_hash, &con->ip[1] );
-// 		distance = dirt( first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec );
-// 		f = ( ( con->etx1_sqrt + con->etx2_sqrt ) / 4.0 ) / distance;
-// 
-// 		/***
-// 		 * drift factor - 0.0 < factor < 1.0 ( best results: 0.3 < factor < 0.9
-// 		 * small factor: fast and strong drift to neighbours
-// 		 ***/
-// 		if ( f < Factor ) f = Factor;
+		/* first_node = hash_find( node_hash, &con->ip[0] );
+		sec_node = hash_find( node_hash, &con->ip[1] );
+		distance = dirt( first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec );
+		f = ( ( con->etx1_sqrt + con->etx2_sqrt ) / 4.0 ) / distance; */
+
+		/***
+		 * drift factor - 0.0 < factor < 1.0 ( best results: 0.3 < factor < 0.9
+		 * small factor: fast and strong drift to neighbours
+		 ***/
+		/* if ( f < Factor ) f = Factor; */
+		
 	}
 
 }
@@ -240,7 +241,7 @@ void mainloop()
 
 	calc_node_mov();
 	handle_node();
-// 	move_nodes();
+	/* move_nodes(); */
 
 	while ( ( net_result = net_main() ) != 0 ) {
 		if ( net_result == -1 ) {
@@ -285,8 +286,8 @@ int main( int argc, char *argv[] ) {
 	if ( Global.debug )
 		printf( "debug mode enabled ...\n" );
 
-//	/* initialize obj2ip linked list */
-//	lst_initialize();
+	/* initialize obj2ip linked list */
+	/* lst_initialize(); */
 
 	/* delete olsrs3d options */
 	while ( ( optind < argc ) && ( argv[optind][0] != '-' ) ) optind++;		/* optind may point to ip addr of '-H' */
@@ -302,10 +303,10 @@ int main( int argc, char *argv[] ) {
 
 	if (!net_init(olsr_host))
 	{
-//		s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
-//		s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
-//		s3d_set_callback(S3D_EVENT_KEY,keypress);
-//		s3d_set_callback(S3D_EVENT_QUIT,stop);
+		/* s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
+		s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
+		s3d_set_callback(S3D_EVENT_KEY,keypress);
+		s3d_set_callback(S3D_EVENT_QUIT,stop); */
 
 		if (!s3d_init(&argc,&argv,"meshs3d"))
 		{
@@ -328,7 +329,7 @@ int main( int argc, char *argv[] ) {
 			/* create_search_widget( 0, 0, 300 ); */
 
 			Global.obj_zero_point = s3d_new_object();
-//			Output_border[0] = Output_border[1] = Output_border[2] = Output_border[3] = -1;
+			/* Output_border[0] = Output_border[1] = Output_border[2] = Output_border[3] = -1; */
 
 			s3d_mainloop(mainloop);
 			s3d_quit();

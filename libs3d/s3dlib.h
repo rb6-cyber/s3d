@@ -60,17 +60,22 @@ extern s3d_cb s3d_cb_list[MAX_CB];
 /*  some local prototypes: */
 /*  char *s3d_open_file(char *fname); */
 int net_prot_in(uint8_t opcode, uint16_t length, char *buf);
+
 #ifdef DEBUG
 void s3dprintf(int relevance, const char *fmt, ...);
 void errdn(int relevance, char *func,int en); 
 void errds(int relevance,char *func, const char *fmt, ...);
-
 #else 
-void static __inline__ s3dprintf(int relevance, const char *fmt, ...) {}
-void static __inline__ errdn(int relevance, char *func,int en) {}
-void static __inline__ errds(int relevance,char *func, const char *fmt, ...) {}
-
+static __inline__ void s3dprintf(int relevance  __attribute__((unused)),
+                                 const char *fmt __attribute__((unused)), ...) {}
+static __inline__ void errdn(int relevance __attribute__((unused)),
+                             char *func __attribute__((unused)),
+                             int en __attribute__((unused))) {}
+static __inline__ void errds(int relevance __attribute__((unused)),
+                             char *func __attribute__((unused)),
+                             const char *fmt __attribute__((unused)), ...) {}
 #endif
+
 void errn(char *func,int en);
 void errs(char *func, char *msg);
 
@@ -123,5 +128,3 @@ struct tessp_t
 	int next,prev,done;
 };
 int _s3d_tesselate(struct tessp_t *t,struct t_buf *b);
-
-

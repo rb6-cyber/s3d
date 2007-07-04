@@ -41,7 +41,6 @@
 int s3d_new_object()
 {
 	int oid;
-	int old_cb_lock;
 	
 	cb_lock++; /* please, no callbacks now. */
 	oid=_queue_want_object();

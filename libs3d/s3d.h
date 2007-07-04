@@ -83,7 +83,11 @@ struct s3d_key_event
 	uint16_t modifier;	/* any modifiers involved */
 	uint16_t state;		/* 0 = pressed, 1 = released */
 };
+
 /* framework functions */
+#ifdef HAVE_GCCVISIBILITY
+#pragma GCC visibility push(default) /* Only export following functions */
+#endif
 void s3d_usage();
 int s3d_init(int *argc, char ***argv, char *name);
 int s3d_quit();
@@ -186,4 +190,8 @@ int s3d_mcp_focus(int object);
 
 /* for apps which don't employ s3d_mainloop() */
 int s3d_net_check();
+#ifdef HAVE_GCCVISIBILITY
+#pragma GCC visibility pop
+#endif
+
 #endif

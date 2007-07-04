@@ -53,7 +53,7 @@ void s3dw_label_hide(s3dw_widget *widget)
 void s3dw_label_change_text(s3dw_label *label, char *text)
 {
 	s3dw_widget *widget=(s3dw_widget *)label;
-	uint32_t oid_text;
+
 	/* redraw the text ... */
 	free(label->text);
 	label->text=strdup(text);

@@ -1,6 +1,6 @@
 #include <sqlite3.h>
 #include <s3d.h>	/* s3devt structure */
-#include "../../config.h"
+#include <config-s3d.h>
 #define	ESIZE	637800		/* earth size */
 #define	RESCALE	1
 #define VIEWHEIGHT 3

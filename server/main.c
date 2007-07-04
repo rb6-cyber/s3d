@@ -118,7 +118,8 @@ int rc_init(void)
 		}
 		exit(1);
 	} else {
-		if (signal(SIGCHLD, sigchld_handler) == SIG_ERR);
+		if (signal(SIGCHLD, sigchld_handler) == SIG_ERR) {
+		}
 		/* father just returns */
 	}	
 #endif

@@ -1,0 +1,8 @@
+add_subdirectory(dot_mcp)
+add_subdirectory(kism3d)
+add_subdirectory(meshs3d)
+add_subdirectory(olsrs3d)
+add_subdirectory(s3dfm)
+add_subdirectory(s3dosm)
+add_subdirectory(s3dvt)
+add_subdirectory(s3d_x11gate)

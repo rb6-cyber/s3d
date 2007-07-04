@@ -277,8 +277,11 @@ void errsf(char *func, char *msg);
 void errds(int relevance,char *func, const char *fmt, ...);
 void s3dprintf(int relevance, const char *msg, ...);
 #else
-static void __inline__ errds(int relevance,char *func, const char *fmt, ...) {}
-static void __inline__ s3dprintf(int relevance, const char *msg, ...) {}
+static __inline__ void errds(int relevance __attribute__((unused)),
+                             char *func __attribute__((unused)),
+                             const char *fmt __attribute__((unused)), ...) {}
+static __inline__ void s3dprintf(int relevance __attribute__((unused)),
+                                 const char *msg __attribute__((unused)), ...) {}
 #endif
 /*  graphics.c */
 int graphics_quit(void);

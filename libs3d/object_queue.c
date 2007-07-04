@@ -26,9 +26,14 @@
 #include "s3dlib.h"
 #include "proto.h"	 
 #include <stdlib.h>	 /*  malloc(),free(), realloc() */
+
+#ifndef _POSIX_C_SOURCE
 #define _POSIX_C_SOURCE 199309		/* we want struct timespec to be defined */
+#endif
+#ifndef __USE_POSIX199309
 #define __USE_POSIX199309 1
-#include <time.h>		 /* nanosleep() */
+#endif
+#include <time.h>		 /*  nanosleep() */
 
 /*  objects are requested before beeing used for having fast  */
 /*  access when needed. this also makes things more asynchronous, */

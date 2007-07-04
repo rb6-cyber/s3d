@@ -30,9 +30,15 @@
 #include <sys/shm.h>
 #include <netinet/in.h>	/* ntohs() */
 #include <errno.h> 		/* errno */
+
+#ifndef _POSIX_C_SOURCE
 #define _POSIX_C_SOURCE 199309		/* we want struct timespec to be defined */
+#endif
+#ifndef __USE_POSIX199309
 #define __USE_POSIX199309 1
-#include <time.h>		/* nanosleep() */
+#endif
+#include <time.h>		 /*  nanosleep() */
+
 #ifdef SHM
 
 #define SHM_SIZE 		sizeof(key_t)*2  		/* space for the keys */

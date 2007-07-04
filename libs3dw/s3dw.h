@@ -159,6 +159,9 @@ struct _s3dw_style {
 	float title_text_mat[12];	/* material for the text on the title bar */
 };
 /* button.c */
+#ifdef HAVE_GCCVISIBILITY
+#pragma GCC visibility push(default) /* Only export following functions */
+#endif
 s3dw_button 		*s3dw_button_new(s3dw_surface *surface, char *text, float posx, float posy);
 s3dw_label	 		*s3dw_label_new(s3dw_surface *surface, char *text, float posx, float posy);
 s3dw_input 			*s3dw_input_new(s3dw_surface *surface, float width, float posx, float posy);
@@ -186,4 +189,8 @@ int 				 s3dw_handle_key(struct s3d_evt *evt);
 int 				 s3dw_object_info(struct s3d_evt *evt);
 
 void 				 s3dw_ani_mate();
+#ifdef HAVE_GCCVISIBILITY
+#pragma GCC visibility pop
+#endif
+
 #endif

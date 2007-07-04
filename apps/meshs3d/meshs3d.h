@@ -91,13 +91,15 @@ extern struct hashtable_t *node_hash;
 extern struct hashtable_t *con_hash;
 
 /* process.c */
-//void lst_initialize();
-//void lst_add(int id,struct olsr_node **olsr_node);
-//void lst_del(int id);
-//struct olsr_node *lst_search(int id);
-//void lst_out();
-//struct olsr_node *move_lst_ptr(int *id);
-//int process_main();
+/*
+void lst_initialize();
+void lst_add(int id,struct olsr_node **olsr_node);
+void lst_del(int id);
+struct olsr_node *lst_search(int id);
+void lst_out();
+struct olsr_node *move_lst_ptr(int *id);
+int process_main();
+*/
 void process_init();
 
 /* net.c */
@@ -106,7 +108,9 @@ int net_main();
 int net_quit();
 
 /* main */
-//void out_of_mem( void );
-//void print_etx( void );
-//float dist(float p1[], float p2[]);
-//void window_error(char *msg);
+/*
+void out_of_mem( void );
+void print_etx( void );
+float dist(float p1[], float p2[]);
+void window_error(char *msg);
+*/

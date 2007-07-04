@@ -201,12 +201,10 @@ int process_main()
 
 	int dn;
 	float f;
-	char *lbuf_ptr, *last_cr_ptr, *con_from, *con_from_end, *con_to, *con_to_end, *etx, *etx_end, *tmpChar;
-	struct node *node_from, *node_to;
+	char *lbuf_ptr, *last_cr_ptr, *con_from, *con_from_end, *con_to, *con_to_end, *etx, *etx_end;
+	/* struct node *node_from, *node_to; */
 
 	unsigned int int_con_from=0, int_con_to=0;
-	char hna_name[NAMEMAX];
-	char hna_node[NAMEMAX];
 
 	lbuf_ptr = lbuf;
 	last_cr_ptr = NULL;
@@ -253,7 +251,7 @@ int process_main()
 
 				(*con_from_end) = (*con_to_end) = (*etx_end) = '\0';
 
-// 				if( Global.debug ) printf( "con_from: %s, con_to: %s, etx: %s\n", con_from, con_to, etx );
+				/* if( Global.debug ) printf( "con_from: %s, con_to: %s, etx: %s\n", con_from, con_to, etx ); */
 
 				/* announced network via HNA */
 				if ( strncmp( etx, "HNA", NAMEMAX ) == 0 )
@@ -278,8 +276,8 @@ int process_main()
 					handle_mesh_node( &int_con_from, con_from );
 					handle_mesh_node( &int_con_to, con_to );
 					handle_con( int_con_from, int_con_to, f);
-// 					node_from = (struct node *) hash_find( node_hash, &int_con_from );
-// 					node_to = (struct node *) hash_find( node_hash, &int_con_to );
+					/* node_from = (struct node *) hash_find( node_hash, &int_con_from );
+					node_to = (struct node *) hash_find( node_hash, &int_con_to ); */
 				}
 				/* remove zerobyte */
 				(*con_from_end) = (*con_to_end) = (*etx_end) = '"';

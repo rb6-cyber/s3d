@@ -37,7 +37,7 @@
  */
 
 
-#include <sei_triangulate.h>
+#include "sei_triangulate.h"
 #include <math.h>
 #include <string.h> /* memset() */
 

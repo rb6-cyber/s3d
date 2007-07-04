@@ -1,0 +1,46 @@
+# Try to find Fontconfig
+#  FONTCONFIG_FOUND - If false, do not try to use FONTCONFIG.
+#  FONTCONFIG_INCLUDE_DIR - where to find fontconfig/fontconfig.h
+#  FONTCONFIG_LIBRARIES - the libraries to link against
+#  FONTCONFIG_DEFINITIONS - switches required for FONTCONFIG
+
+
+if (FONTCONFIG_LIBRARIES AND FONTCONFIG_INCLUDE_DIR)
+	# path set by user or was found in the past
+	set(FONTCONFIG_FOUND TRUE)
+else (FONTCONFIG_LIBRARIES AND FONTCONFIG_INCLUDE_DIR)
+	include(UsePkgConfig)
+
+	pkgconfig(fontconfig _IncDir _LinkDir _LinkFlags _CFlags)
+	set(FONTCONFIG_DEFINITIONS ${_CFlags})
+	
+	find_path(FONTCONFIG_INCLUDE_DIR
+		NAMES fontconfig/fontconfig.h
+		PATHS
+			${_IncDir}
+	)
+
+	find_library(FONTCONFIG_LIBRARIES
+		NAMES fontconfig
+		PATHS ${_LinkDir}
+	)
+
+	if (FONTCONFIG_INCLUDE_DIR AND FONTCONFIG_LIBRARIES)
+		set(FONTCONFIG_FOUND TRUE)
+	endif (FONTCONFIG_INCLUDE_DIR AND FONTCONFIG_LIBRARIES)
+
+	if (FONTCONFIG_FOUND)
+		if (NOT FONTCONFIG_FIND_QUIETLY)
+			message(STATUS "Found FONTCONFIG: ${FONTCONFIG_LIBRARIES}")
+		endif (NOT FONTCONFIG_FIND_QUIETLY)
+	else (FONTCONFIG_FOUND)
+		if (FONTCONFIG_FIND_REQUIRED)
+			message(FATAL_ERROR "Could not find FONTCONFIG")
+		endif (FONTCONFIG_FIND_REQUIRED)
+	endif (FONTCONFIG_FOUND)
+
+	# set visibility in cache
+	set(FONTCONFIG_DEFINITIONS ${FONTCONFIG_DEFINITIONS} CACHE STRING "Defines for compilation." FORCE)
+ 	mark_as_advanced(FONTCONFIG_INCLUDE_DIR FONTCONFIG_LIBRARIES FONTCONFIG_DEFINITIONS)
+
+endif (FONTCONFIG_LIBRARIES AND FONTCONFIG_INCLUDE_DIR)

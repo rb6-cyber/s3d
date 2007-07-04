@@ -24,6 +24,7 @@
  */
 
 #include <math.h>		/* sqrt() */
+#include "s3d.h"
 
 /***
  *

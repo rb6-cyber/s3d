@@ -23,7 +23,7 @@
 
 
 /* use the global config.h */
-#include "../config.h" 
+#include <config-s3d.h>
 
 /*  this is definitly the better way to pick fonts. */
 
