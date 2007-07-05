@@ -3,7 +3,6 @@ inherit subversion
 IUSE="gps"
 
 ESVN_REPO_URI="http://svn.berlios.de/svnroot/repos/s3d/trunk"
-ESVN_BOOTSTRAP="./autogen.sh --no-configure"
 
 DESCRIPTION="a 3d network display server"
 HOMEPAGE="http://s3d.berlios.de/"
@@ -13,11 +12,9 @@ KEYWORDS="~x86 ~amd64"
 SLOT="0"
 
 DEPEND="${RDEPEND}
-	>=sys-devel/autoconf-2.59
-	>=sys-devel/automake-1.9
 	sys-devel/flex
-	>=sys-devel/libtool-1.5
 	>=dev-db/sqlite-3
+	>=dev-util/cmake-2.4.4
 	"
 RDEPEND="!media-gfx/s3d
 	>=media-libs/libsdl-1.2.7
@@ -45,14 +42,12 @@ RDEPEND="!media-gfx/s3d
 	"
 
 src_compile() {
-	econf \
-		--prefix=/usr/ \
-		|| die "econf failed"
-
+	cmake -DCMAKE_INSTALL_PREFIX=/usr/ ${cmake_opts} || die "cmake failed"
 	emake || die "emake failed"
 }
 
 src_install() {
 	emake DESTDIR="${D}" install || die
+	dodoc ChangeLog README TODO
 }
 
