@@ -79,6 +79,13 @@ if (SQLITE3_FOUND)
 endif (SQLITE3_FOUND)
 
 
+# try to find lib and add include dir for PThreads
+find_package(PThreads)
+if (PTHREADS_FOUND)
+	include_directories(${PTHREADS_INCLUDE_DIR})
+endif (PTHREADS_FOUND)
+
+
 # test for shm
 include(TestForSHM)
 if (HAVE_SHM)
