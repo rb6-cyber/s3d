@@ -34,3 +34,6 @@ add_subdirectory(libs3dw)
 add_subdirectory(objs)
 add_subdirectory(server)
 
+# Generate s3drc
+configure_file(s3drc.cmake ${CMAKE_CURRENT_BINARY_DIR}/s3drc)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/s3drc DESTINATION /etc)
