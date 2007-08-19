@@ -1,33 +1,50 @@
+include(LateErrors)
+
 # find required lib and add include dir for FREETYPE
-find_package(FREETYPE REQUIRED)
-include_directories(${FREETYPE_INCLUDE_DIR})
+find_package(FREETYPE)
+if (FREETYPE_FOUND)
+	include_directories(${FREETYPE_INCLUDE_DIR})
+else (FREETYPE_FOUND)
+	PkgError_Later("Could not find FreeType (pkg name: libfreetype6-dev)")
+endif (FREETYPE_FOUND)
 
 
 # find required lib and add include dir for FONTCONFIG
-find_package(Fontconfig REQUIRED)
-include_directories(${FONTCONFIG_INCLUDE_DIR})
+find_package(Fontconfig)
+if (FONTCONFIG_FOUND)
+	include_directories(${FONTCONFIG_INCLUDE_DIR})
+else (FONTCONFIG_FOUND)
+	PkgError_Later("Could not find Fontconfig (pkg name: libfontconfig-dev)")
+endif (FONTCONFIG_FOUND)
 
 
 # find required lib and add include dir for GLIB
-find_package(GLIB REQUIRED)
-include_directories(${GLIB2_INCLUDE_DIR})
-add_definitions(${GLIB2_DEFINITIONS})
+find_package(GLIB)
+if (GLIB2_FOUND)
+	include_directories(${GLIB2_INCLUDE_DIR})
+	add_definitions(${GLIB2_DEFINITIONS})
+else (GLIB2_FOUND)
+	PkgError_Later("Could not find GLIB (pkg name: libglib-dev)")
+endif (GLIB2_FOUND)
 
 
 # find required lib and add include dir for G3D
-find_package(G3D REQUIRED)
-include_directories(${G3D_INCLUDE_DIR})
-add_definitions(${G3D_DEFINITIONS})
+find_package(G3D)
+if (G3D_FOUND)
+	include_directories(${G3D_INCLUDE_DIR})
+	add_definitions(${G3D_DEFINITIONS})
+else (G3D_FOUND)
+	PkgError_Later("Could not find G3D (pkg name: libg3d-dev)")
+endif (G3D_FOUND)
 
 
 # find required lib and add include dir for OPENGL
-find_package(OpenGL REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIR})
-
-## FindOpenGL.cmake doesnt support REQUIRED in cmake 2.4
-if (NOT OPENGL_FOUND)
-	message(FATAL_ERROR "Could not find OpenGL-Header and/or OpenGL-Libs")
-endif (NOT OPENGL_FOUND)
+find_package(OpenGL)
+if (OPENGL_FOUND)
+	include_directories(${OPENGL_INCLUDE_DIR})
+else (OPENGL_FOUND)
+	PkgError_Later("Could not find OpenGL libs and headers")
+endif (OPENGL_FOUND)
 
 
 # try to find lib and add include dir for GLUT
@@ -46,7 +63,7 @@ endif (SDL_FOUND)
 
 # we need SDL and/or GLUT
 if (NOT SDL_FOUND AND NOT GLUT_FOUND)
-	message(FATAL_ERROR "Could NOT find SDL or GLUT")
+	PkgError_Later("Could not find SDL (pkg name: libsdl-dev) or GLUT (pkg name: libglut-dev)")
 endif (NOT SDL_FOUND AND NOT GLUT_FOUND)
 
 
@@ -114,6 +131,9 @@ include(TestGCCVisibility)
 # link always against math library
 link_libraries(m)
 
+
+# print errors (if found)
+Collected_PkgErrors()
 
 # Create config.h and add path to config.h to include search path
 configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-s3d.h)
