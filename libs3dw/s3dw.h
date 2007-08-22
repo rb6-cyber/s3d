@@ -82,6 +82,7 @@ struct _s3dw_widget {
 	float 		 width,height;	/* width and height of the widget, outer size */
 	uint32_t	 oid;			/* the main object which is used for transformations etc ...*/
 	/* public */
+	void		*ptr;			/* a pointer to a user structure, to use in callbacks etc */
 	float 		 x,y,z;			/* position, relative to the surface usually */
 	float 		 s;				/* scale factor */
 	float 		 rx,ry,rz;		/* rotation around the axis */

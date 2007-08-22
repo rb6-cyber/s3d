@@ -41,6 +41,7 @@ s3dw_widget *s3dw_widget_new(s3dw_widget *widget)
 	widget->nobj=0;
 	widget->pobj=NULL;
 	widget->parent=NULL;
+	widget->ptr=NULL;
 	widget->focus=-1;
 	widget->flags=S3DW_ACTIVE;
 	widget->oid=-1;
