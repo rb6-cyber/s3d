@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 2.4.4)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 
 # set path to objects
-set(OBJECTPATH "${CMAKE_INSTALL_PREFIX}/share/s3d/objs:${CMAKE_CURRENT_SOURCE_DIR}/objs")
+set(OBJECTPATH "${CMAKE_INSTALL_PREFIX}/share/s3d/objs:${s3d_SOURCE_DIR}/objs")
 
 # set debug level with -DDEBUG=level
 include(SetDebugLevel)
@@ -35,5 +35,5 @@ add_subdirectory(objs)
 add_subdirectory(server)
 
 # Generate s3drc
-configure_file(s3drc.cmake ${CMAKE_CURRENT_BINARY_DIR}/s3drc)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/s3drc DESTINATION /etc)
+configure_file(s3drc.cmake ${s3d_BINARY_DIR}/s3drc)
+install(FILES ${s3d_BINARY_DIR}/s3drc DESTINATION /etc)

@@ -1,4 +1,4 @@
-include_directories(${CMAKE_SOURCE_DIR}/libs3d)
+include_directories(${s3d_SOURCE_DIR}/libs3d)
 
 # base files
 set(server_src allocate.c cull.c error.c event.c graphics.c

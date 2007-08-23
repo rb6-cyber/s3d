@@ -1,4 +1,4 @@
-include_directories(${CMAKE_SOURCE_DIR}/server)
+include_directories(${s3d_SOURCE_DIR}/server)
 
 add_library(s3d SHARED callback.c error.c event.c fontselect.c freetype.c
 	io.c modelread.c network.c object_queue.c proto_in.c proto_out.c

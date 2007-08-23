@@ -2,7 +2,7 @@
 option(EXAMPLES "Enable/disable compilation of examples" ON)
 
 if (EXAMPLES)
-	include_directories(${CMAKE_SOURCE_DIR}/libs3d ${CMAKE_SOURCE_DIR}/libs3dw)
+	include_directories(${s3d_SOURCE_DIR}/libs3d ${s3d_SOURCE_DIR}/libs3dw)
 	
 	add_executable(filebrowser filebrowser.c)
 	target_link_libraries(filebrowser s3d)

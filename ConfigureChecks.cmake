@@ -136,5 +136,5 @@ link_libraries(m)
 Collected_PkgErrors()
 
 # Create config.h and add path to config.h to include search path
-configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-s3d.h)
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
+configure_file(config.h.cmake ${s3d_BINARY_DIR}/config-s3d.h)
+include_directories(${s3d_BINARY_DIR})
