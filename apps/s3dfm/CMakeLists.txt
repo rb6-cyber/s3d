@@ -1,5 +1,7 @@
+project(s3dfm)
+
 if (PTHREADS_FOUND)
-	include_directories(${CMAKE_SOURCE_DIR}/libs3d ${CMAKE_SOURCE_DIR}/libs3dw)
+	include_directories(${s3d_SOURCE_DIR}/libs3d ${s3d_SOURCE_DIR}/libs3dw)
 
 	add_executable(s3dfm animation.c box.c dialog.c event.c fly.c focus.c fs.c
 		icon.c main.c node.c parse.c string.c)
