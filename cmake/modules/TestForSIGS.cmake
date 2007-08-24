@@ -1,1 +1,2 @@
+include(CheckFunctionExists)
 check_function_exists(signal HAVE_SIGS)
