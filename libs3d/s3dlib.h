@@ -62,9 +62,16 @@ extern s3d_cb s3d_cb_list[MAX_CB];
 int net_prot_in(uint8_t opcode, uint16_t length, char *buf);
 
 #ifdef DEBUG
+#ifdef HAVE_GCCVISIBILITY
+#pragma GCC visibility push(default) /* Only export following functions */
+#endif
 void s3dprintf(int relevance, const char *fmt, ...);
 void errdn(int relevance, char *func,int en); 
 void errds(int relevance,char *func, const char *fmt, ...);
+#ifdef HAVE_GCCVISIBILITY
+#pragma GCC visibility pop
+#endif
+
 #else 
 static __inline__ void s3dprintf(int relevance  __attribute__((unused)),
                                  const char *fmt __attribute__((unused)), ...) {}
