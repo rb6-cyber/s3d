@@ -21,46 +21,27 @@
 Before being able to install s3d and the sample programs, you need to prepare
 the build, and compile s3d. 
 
-1.1. Subversion Checkout
-------------------------
+You will need to setup CMake first. The following assumes that cmake 2.4.4 or
+better is available and installed into a directory listed in the $PATH
+environment variable. It is possible to run cmake direct from the source
+directory, but we recommend to create a directory from where you start cmake.
 
-If you are using a version directly checked out from subversion, you will need
-to setup the GNU autotools first. The following assumes that 
+$ mkdir build
+$ cd build
+$ cmake .. [-DPROFILING=ON|OFF] [-DDEBUG=VLOW|LOW|MED|HIGH|VHIGH] \
+           [-DCMAKE_INSTALL_PREFIX=...] [-DEXAMPLES=ON|OFF]
 
-* automake 1.9 (1.4 is too old!)
-* autoconf 2.59 
-* libtool 1.5
+This will configure s3d. Use the -DCMAKE_INSTALL_PREFIX command line argument to
+select a different prefix to install s3d into. The default is /usr/local, so
+binaries will get installed into /usr/local/bin, libraries into /usr/local/lib,
+and documentation into /usr/local/share/doc/s3d-version. If you are intending to
+work on s3d, you can use the -DDEBUG argument to enable building a debug
+version. Likewise, --enable-profiling will enable a version compiled for
+profiling.
 
-are available and installed into a directory listed in the $PATH
-environment variable.
+You can use ccmake to ccmake to set additional cmake cache variables.
 
-$ ./autogen.sh [--prefix=/some/where] [--disable-debug] [--enable-profiling]
-
-This will create configure, and run it. Use the --prefix command line argument
-to select a different prefix to install s3d into. The default is /usr/local, so
-binaries will get installed into /usr/local/bin, libraries into
-/usr/local/lib, and documentation into /usr/local/share/doc/s3d-version.
-If you are not intending to work on s3d, you can use the --disable-debug
-argument to disable building a debug version. Likewise, --enable-profiling
-will enable a version compiled for profiling.
-
-After configure has been created, you can also use
-
-$ ./configure --help
-
-to learn about more configuration parameters.
-
-1.2 Preparing a Released Version
---------------------------------
-
-A released version of s3d contains a pregenerated configure script, which you
-can run directly:
-
-$ ./configure [--prefix=/somewhere] [--enable-debug] [--enable-profiling]
-
-Releases do not have debugging or profiling enabled by default, if you want these
-features you have to enable them with --enable-debug and --enable-profiling,
-respectively.
+$ ccmake ..
 
 2. Building
 -----------
@@ -69,30 +50,29 @@ After configure has finished, you can start the build of s3d:
 
 $ make
 
-in the root directory will compile server, client-lib and the examples
-for you.
+in the build directory will compile server, client-lib and the examples for you.
 
 
 3. Installing
 -------------
 
-Because of the new plugins, things need to be installed before you can test. 
+Because of the new plugins, things need to be installed before you can test.
 
 $ make install
 
-installs s3d in the selected prefix (default /usr/local/*), you may need to become 
-root first.
+installs s3d in the selected prefix (default /usr/local/*), you may need to
+become root first.
 
 $ s3d --no-rc
 
-fires up the server. Uf you're lucky, a X11 window appears. Now the s3d is listening 
-on TCP port 6066. 
+fires up the server. Uf you're lucky, a X11 window appears. Now the s3d is
+listening on TCP port 6066. 
 Now it's time to test some things. on another terminal:
 
 $ cd examples
 $ ./modelloader ../objs/miu.3ds
 
-now there should appear a rotating cat. you can move with with the middle 
+now there should appear a rotating cat. you can move with with the middle
 mouse-button pushed.
 now you can try the MCP, which is something like a windowmanager in X:
 
