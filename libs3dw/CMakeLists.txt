@@ -10,3 +10,7 @@ install(TARGETS s3dw
 )
 
 install(FILES s3dw.h DESTINATION include/)
+
+#pkg config
+configure_file(libs3dw.pc.cmake ${s3d_BINARY_DIR}/libs3dw/libs3dw.pc @ONLY)
+install(FILES ${s3d_BINARY_DIR}/libs3dw/libs3dw.pc DESTINATION lib/pkgconfig/)

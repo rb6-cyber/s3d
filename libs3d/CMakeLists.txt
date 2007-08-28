@@ -13,3 +13,7 @@ install(TARGETS s3d
 )
 
 install(FILES s3d.h s3d_keysym.h DESTINATION include/)
+
+#pkg config
+configure_file(libs3d.pc.cmake ${s3d_BINARY_DIR}/libs3d/libs3d.pc @ONLY)
+install(FILES ${s3d_BINARY_DIR}/libs3d/libs3d.pc DESTINATION lib/pkgconfig/)
