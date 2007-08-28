@@ -212,7 +212,7 @@ int callback(void *NotUsed, int argc, char **argv, char **azColName){
   printf("\n");
   return 0;
 }
-int static db_really_exec(const char *query, sqlite3_callback callback, void *arg)
+static int db_really_exec(const char *query, sqlite3_callback callback, void *arg)
 {
 	char *zErrMsg = 0;
 	int rc;
