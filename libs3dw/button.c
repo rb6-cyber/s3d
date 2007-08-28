@@ -119,7 +119,7 @@ void s3dw_button_destroy(s3dw_widget *widget)
 	free(button);
 }
 /* handle key events */
-int s3dw_button_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
+int s3dw_button_event_key(s3dw_widget *S3DUNUSED(widget), struct s3d_key_event *S3DUNUSED(keys))
 {
 	return(0);
 }

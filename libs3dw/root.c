@@ -42,14 +42,14 @@ void s3dw_root_destroy(s3dw_widget *widget)
 	free(widget);
 }
 /*  do plain nothing. interesting, isn't it? ;) */
-void s3dw_nothing(s3dw_widget *widget)
+void s3dw_nothing(s3dw_widget *S3DUNUSED(widget))
 {
 }
-int s3dw_click_nothing(s3dw_widget *widget, uint32_t dummy)
+int s3dw_click_nothing(s3dw_widget *S3DUNUSED(widget), uint32_t S3DUNUSED(dummy))
 {
 	return(0);
 }
-int s3dw_key_nothing(s3dw_widget *widget, struct s3d_key_event *dummy)
+int s3dw_key_nothing(s3dw_widget *S3DUNUSED(widget), struct s3d_key_event *S3DUNUSED(dummy))
 {
 	return(0);
 }
