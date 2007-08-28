@@ -30,6 +30,16 @@
 #endif
 #endif 
 
+#ifndef S3DUNUSED
+	#if defined(UNUSEDPARAM_ATTRIBUTE)
+		#define S3DUNUSED(x) (x)__attribute__((unused))
+	#elif defined(UNUSEDPARAM_OMIT)
+		#define S3DUNUSED(x) /* x */
+	#else
+		#define S3DUNUSED(x) x
+	#endif
+#endif
+
 #define VLOW	1
 #define	LOW		2
 #define MED		3
@@ -73,14 +83,14 @@ void errds(int relevance,char *func, const char *fmt, ...);
 #endif
 
 #else 
-static __inline__ void s3dprintf(int relevance  __attribute__((unused)),
-                                 const char *fmt __attribute__((unused)), ...) {}
-static __inline__ void errdn(int relevance __attribute__((unused)),
-                             char *func __attribute__((unused)),
-                             int en __attribute__((unused))) {}
-static __inline__ void errds(int relevance __attribute__((unused)),
-                             char *func __attribute__((unused)),
-                             const char *fmt __attribute__((unused)), ...) {}
+static __inline__ void s3dprintf(int S3DUNUSED(relevance),
+                                 const char *S3DUNUSED(fmt), ...) {}
+static __inline__ void errdn(int S3DUNUSED(relevance),
+                             char *S3DUNUSED(func),
+                             int S3DUNUSED(en)) {}
+static __inline__ void errds(int S3DUNUSED(relevance),
+                             char *S3DUNUSED(func),
+                             const char *S3DUNUSED(fmt), ...) {}
 #endif
 
 void errn(char *func,int en);

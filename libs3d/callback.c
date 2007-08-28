@@ -50,7 +50,7 @@ s3d_cb s3d_cb_list[MAX_CB]={
 			NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL, NULL,NULL,NULL,NULL
 			};
 /* the ignore-handler ;) */
-static int _s3d_ignore(struct s3d_evt *evt)
+static int _s3d_ignore(struct s3d_evt *S3DUNUSED(evt))
 {
 	/* do plain nothing */
 	return(0);
