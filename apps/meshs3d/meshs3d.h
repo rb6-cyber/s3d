@@ -98,8 +98,8 @@ void lst_del(int id);
 struct olsr_node *lst_search(int id);
 void lst_out();
 struct olsr_node *move_lst_ptr(int *id);
-int process_main();
 */
+int process_main();
 void process_init();
 
 /* net.c */
