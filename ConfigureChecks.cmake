@@ -127,6 +127,9 @@ endif (HAVE_TCP)
 # test for -fvisibility=hidden
 include(TestGCCVisibility)
 
+# test how to mark parameter as explicit unused
+include(TestUnusedParam)
+
 
 # link always against math library
 link_libraries(m)

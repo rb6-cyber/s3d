@@ -16,4 +16,7 @@
 /* set debug level (can be changed by -DDEBUG=vlow|low|med|high|vhigh )*/
 #cmakedefine DEBUG ${DEBUG_LEVEL}
 
+#cmakedefine UNUSEDPARAM_ATTRIBUTE 1
+#cmakedefine UNUSEDPARAM_OMIT 1
+
 #endif /* _CONFIG_H_ */
