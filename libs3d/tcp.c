@@ -42,6 +42,8 @@ extern int _s3d_sigio;
 #endif
 
 int s3d_socket;		 /*  this is the socket which holds the tcp-socket .... */
+
+#ifdef SIGS
 void sigpipe_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? */
 {
 	errs("sigpipe_handler()","there is a broken pipe somewhere");
@@ -50,7 +52,7 @@ void sigio_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? */
 {
 	_s3d_sigio=1;
 }
-
+#endif
 
 int _tcp_init(char *sv, int pn)
 {
