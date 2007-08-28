@@ -51,12 +51,12 @@ char **s3drc[]={&rc,&homerc,&etcrc};
 static void mainloop(void);
 #ifdef SIGS
 /*  handles the SIGINT command. maybe put signals in a special file? */
-void sigint_handler(int sig)
+void sigint_handler(int S3DUNUSED(sig))
 {
 	s3dprintf(HIGH,"oh my gosh there is a sigint/term signal! running away ...");
 	quit();
 }
-void sigchld_handler(int sig)
+void sigchld_handler(int S3DUNUSED(sig))
 {
 	if (kidpid!=0)
 	{
@@ -66,7 +66,7 @@ void sigchld_handler(int sig)
 	}
 }
 #endif
-void sigusr_handler(int sig)
+void sigusr_handler(int S3DUNUSED(sig))
 {
 	s3dprintf(HIGH,"father told use he's done, so lets start to think about the rc file ...");
 	running=1;

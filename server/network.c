@@ -48,12 +48,12 @@ int sigio=0;
 #endif 
 
 #ifdef SIGS
-void sigpipe_handler(int unused)  
+void sigpipe_handler(int S3DUNUSED(unused))  
 {
 	errs("sigpip_handler()","there is a broken pipe somewhere");
 }
 
-void sigio_handler(int unused)
+void sigio_handler(int S3DUNUSED(unused))
 {
 	sigio=1;
 }
@@ -82,7 +82,7 @@ int network_init()
    return(0);
 }
 int					 turn;
-int	net_turn_off(int interval)
+int	net_turn_off(int S3DUNUSED(interval))
 {
 	s3dprintf(VLOW,"Warning: High traffic on Network, interrupting read.");
 	turn=0;

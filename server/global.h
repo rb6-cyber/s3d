@@ -36,6 +36,15 @@
 extern int frame_mode; 	 /*  GLUT, SDL, ... ? */
 extern int running;		 /*  server running flag */
 /*  relevance macros */
+#ifndef S3DUNUSED
+	#if defined(UNUSEDPARAM_ATTRIBUTE)
+		#define S3DUNUSED(x) (x)__attribute__((unused))
+	#elif defined(UNUSEDPARAM_OMIT)
+		#define S3DUNUSED(x) /* x */
+	#else
+		#define S3DUNUSED(x) x
+	#endif
+#endif
 #define NAME_MAX	256		 /*  limit for names [e.g. process names] */
 #define MCP			0		 /*  the mcp's pid	 */
 #define TEXTURE_MAX_W	2048

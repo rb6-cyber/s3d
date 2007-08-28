@@ -873,7 +873,7 @@ int obj_load_mat(struct t_process *p, uint32_t oid, float *x, uint32_t start, ui
 	return(0);
 }
 /* the interal texture updating function ... this is for opengl*/
-static void obj_update_tex(struct t_tex *tex,u_int16_t x,u_int16_t y,u_int16_t w,u_int16_t h,u_int8_t *pixbuf)
+static void obj_update_tex(struct t_tex *tex,u_int16_t S3DUNUSED(x),u_int16_t S3DUNUSED(y),u_int16_t S3DUNUSED(w),u_int16_t S3DUNUSED(h),u_int8_t *S3DUNUSED(pixbuf))
 {
 	GLuint t;
 	if ((t=tex->gl_texnum)!=-1)
