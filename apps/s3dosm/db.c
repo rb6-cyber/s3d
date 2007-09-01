@@ -1,5 +1,5 @@
 /*
- * kismet.c
+ * db.c
  * 
  * Copyright (C) 2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
