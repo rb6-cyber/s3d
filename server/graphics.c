@@ -123,7 +123,7 @@ void render_virtual_object(struct t_obj *o)
 {
 	struct t_process *ap;
 	struct t_vertex x,y;
-	uint32_t j,k;
+	int32_t j,k;
 	t_mtrx m;
 
 	glPushMatrix();
@@ -171,11 +171,11 @@ void render_virtual_object(struct t_obj *o)
 int render_by_mcp()
 {
 	struct t_process *p=get_proc_by_pid(MCP);
-	uint32_t i;
+	int32_t i;
 	struct t_obj *o;
 	struct t_vertex x,y;
 	int k;
-	for (i=0;i<p->n_obj;i++)
+	for (i=0 ; i < p->n_obj ; i++)
 	{   /* check all mcp objects ... */
 		o=p->object[i];
 		if (o!=NULL)
@@ -247,9 +247,10 @@ int graphics_pick_obj(int x, int y)
 	GLint viewport[4];
 	GLfloat xpos,ypos;
 	float big,z1,z2;
-	uint32_t mcp_o,o;
+	int32_t mcp_o,o;
 	struct t_process *p=get_proc_by_pid(MCP);
-	GLuint select_buf[SBSIZE],*ptr,names,hits;
+	GLuint select_buf[SBSIZE],*ptr;
+	int hits, names;
 	t_mtrx m;
 
 	select_mode=1;
@@ -286,14 +287,14 @@ int graphics_pick_obj(int x, int y)
 	render_by_mcp();
 	glFlush();
 	hits=glRenderMode(GL_RENDER);
-	if (hits>0)
+	if ( hits > 0 )
 	{
 		big=INFINITY;
 		s3dprintf(LOW,"had %d hits",hits);
 		ptr=select_buf;
-		mcp_o=o=names=-1;
+		mcp_o= o= names= -1;
 		/* check all the hits, only select the nearest ... */
-		for (i=0;i<hits;i++)
+		for (i=0 ; i < hits ; i++)
 		{
 			names=*ptr;						ptr++;
 			z1=(float)*ptr/0x7fffffff;		ptr++;

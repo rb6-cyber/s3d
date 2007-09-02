@@ -39,14 +39,14 @@ extern int focus_oid;
 
 
 static void obj_update_tex(struct t_tex *tex,u_int16_t x,u_int16_t y,u_int16_t w,u_int16_t h,u_int8_t *pixbuf);
-void obj_sys_update(struct t_process *p, uint32_t oid);
+void obj_sys_update(struct t_process *p, int32_t oid);
 
 /*  debugging function for objects, prints out some stuff known about it... */
-int obj_debug			(struct t_process *p, uint32_t oid)
+int obj_debug			(struct t_process *p, int32_t oid)
 {
 	struct t_obj *o;
 	s3dprintf(HIGH,"about pid %d/obj %d:",p->id,oid);
-	if (obj_valid(p,oid,o))
+	if (OBJ_VALID(p,oid,o))
 	{
 		s3dprintf(HIGH,"vertices: %d, polygons: %d, materials: %d, textures: %d, flags: %010x",o->n_vertex,o->n_poly, o->n_mat, o->n_tex,o->oflags);
 		s3dprintf(HIGH,"linkid %d, displaylist %d",o->linkid,o->dplist);
@@ -68,16 +68,16 @@ int obj_debug			(struct t_process *p, uint32_t oid)
 	return(0);
 }
 /*  push a few new vertices onto the stack. */
-int obj_push_vertex		(struct t_process *p, uint32_t oid, float *x, uint32_t n)
+int obj_push_vertex		(struct t_process *p, int32_t oid, float *x, int32_t n)
 {
-	uint32_t i,m;
+	int32_t i,m;
 	struct t_vertex *p_vertex;
 	struct t_vertex *a;
 	struct t_obj *obj;
 	float *px;
 	float r;
 	int is_clnsrc;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if (obj->oflags&OF_NODATA)
 		{
@@ -149,13 +149,13 @@ int obj_push_vertex		(struct t_process *p, uint32_t oid, float *x, uint32_t n)
 }
 
 
-int obj_push_mat		(struct t_process *p, uint32_t oid, float *x, uint32_t n)
+int obj_push_mat		(struct t_process *p, int32_t oid, float *x, int32_t n)
 {
-	uint32_t i,m;
+	int32_t i,m;
 	struct t_mat *p_mat;
 	struct t_obj *obj;
 	float *px;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if (obj->oflags&OF_NODATA)
 		{
@@ -199,13 +199,13 @@ int obj_push_mat		(struct t_process *p, uint32_t oid, float *x, uint32_t n)
 }
 
 /*  its always the same ... this time we push some polys on the stack */
-int obj_push_poly(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
+int obj_push_poly(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 {
-	uint32_t i,m;
+	int32_t i,m;
 	struct t_poly *p_poly;
 	struct t_obj *obj;
 	uint32_t *px;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if (obj->oflags&OF_NODATA)
 		{
@@ -246,13 +246,13 @@ int obj_push_poly(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
 	return(0);
 }
 /*  its always the same ... this time we push some lines on the stack */
-int obj_push_line(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
+int obj_push_line(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 {
-	uint32_t i,m;
+	int32_t i,m;
 	struct t_line *p_line;
 	struct t_obj *obj;
 	uint32_t *px;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if (obj->oflags&OF_NODATA)
 		{
@@ -289,14 +289,14 @@ int obj_push_line(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
 }
 /* creates n new textures on the texture stack, of object oid, with (w,h)
  * given through *x */
-int obj_push_tex(struct t_process *p, uint32_t oid, uint16_t *x, uint32_t n)
+int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 {
-	uint32_t i,m;
+	int32_t i,m;
 	double d;
 	struct t_tex *p_tex;
 	struct t_obj *obj;
 	uint16_t *px,hm;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if (obj->oflags&OF_NODATA)
 		{
@@ -365,13 +365,13 @@ int obj_push_tex(struct t_process *p, uint32_t oid, uint16_t *x, uint32_t n)
 	return(0);
 }
 /*  add some normal information to the polygon buffer */
-int obj_pep_poly_normal(struct t_process *p, uint32_t oid, float *x, uint32_t n)
+int obj_pep_poly_normal(struct t_process *p, int32_t oid, float *x, int32_t n)
 {
-	uint32_t i,j,m;
+	int32_t i,j,m;
 	struct t_obj *obj;
 	float *px;
  	float len; 
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		m=obj->n_poly;
 		if (m<n)	 /*  saving the first number of polys */
@@ -415,13 +415,13 @@ int obj_pep_poly_normal(struct t_process *p, uint32_t oid, float *x, uint32_t n)
 	return(0);
 }
 /*  add some normal information to the line buffer */
-int obj_pep_line_normal(struct t_process *p, uint32_t oid, float *x, uint32_t n)
+int obj_pep_line_normal(struct t_process *p, int32_t oid, float *x, int32_t n)
 {
-	uint32_t i,j,m;
+	int32_t i,j,m;
 	struct t_obj *obj;
 	float *px;
 	float len;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		m=obj->n_line;
 		if (m<n)	 /*  saving the first number of lines */
@@ -467,12 +467,12 @@ int obj_pep_line_normal(struct t_process *p, uint32_t oid, float *x, uint32_t n)
 }
 
 /*  add textures coordinates to each vertex of the polygon(s) */
-int obj_pep_poly_texc(struct t_process *p, uint32_t oid, float *x, uint32_t n)
+int obj_pep_poly_texc(struct t_process *p, int32_t oid, float *x, int32_t n)
 {
-	uint32_t i,j,m;
+	int32_t i,j,m;
 	struct t_obj *obj;
 	float *px;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if (obj->oflags&OF_NODATA)
 		{
@@ -508,12 +508,12 @@ int obj_pep_poly_texc(struct t_process *p, uint32_t oid, float *x, uint32_t n)
 	return(0);
 }
 /*  overwrite n latest materials with some other materials */
-int obj_pep_mat(struct t_process *p, uint32_t oid, float *x, uint32_t n)
+int obj_pep_mat(struct t_process *p, int32_t oid, float *x, int32_t n)
 {
-	uint32_t i,m;
+	int32_t i,m;
 	struct t_obj *obj;
 	float *px;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		m=obj->n_mat;	 /*  saving the first number of materials */
 		if (m<n)	
@@ -554,12 +554,12 @@ int obj_pep_mat(struct t_process *p, uint32_t oid, float *x, uint32_t n)
 	return(0);
 }
 /*  overwrite n latest lines with some other lines */
-int obj_pep_line(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
+int obj_pep_line(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 {
-	uint32_t i,m;
+	int32_t i,m;
 	struct t_obj *obj;
 	uint32_t *px;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		m=obj->n_line;	 /*  saving the first number of lines */
 		if (m<n)	
@@ -595,15 +595,15 @@ int obj_pep_line(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
 
 
 /*  overwrite n latest vertices with some other vertices */
-int obj_pep_vertex(struct t_process *p, uint32_t oid, float *x, uint32_t n)
+int obj_pep_vertex(struct t_process *p, int32_t oid, float *x, int32_t n)
 {
-	uint32_t i,m;
+	int32_t i,m;
 	float r;
 	struct t_vertex *a;
 	struct t_obj *obj;
 	float *px;
 	int is_clnsrc;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		m=obj->n_vertex;	 /*  saving the first number of vertices */
 		if (m<n)	 
@@ -665,12 +665,12 @@ int obj_pep_vertex(struct t_process *p, uint32_t oid, float *x, uint32_t n)
 	return(0);
 }
 /*  assign textures to the last n materials */
-int obj_pep_mat_tex(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
+int obj_pep_mat_tex(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 {
-	uint32_t i,m;
+	int32_t i,m;
 	struct t_obj *obj;
 	uint32_t *px;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		m=obj->n_mat;	 /*  saving the first number of vertices */
 		if (m<n)	 /*  saving the first number of polys */
@@ -698,14 +698,15 @@ int obj_pep_mat_tex(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n)
 	return(0);
 }
 /*  add some normal information to the polygon buffer */
-int obj_load_poly_normal(struct t_process *p, uint32_t oid, float *x, uint32_t start, uint32_t n)
+int obj_load_poly_normal(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n)
 {
-	uint32_t i,j,m;
+	int32_t i,j,m;
 	struct t_obj *obj;
 	float *px;
 	float len;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
+		if (start < 0) return(-1);
 		m=obj->n_poly;
 		if (m<(start+n))	
 			n=m-start; 
@@ -745,14 +746,15 @@ int obj_load_poly_normal(struct t_process *p, uint32_t oid, float *x, uint32_t s
 	return(0);
 }
 /*  add some normal information to the line  buffer */
-int obj_load_line_normal(struct t_process *p, uint32_t oid, float *x, uint32_t start, uint32_t n)
+int obj_load_line_normal(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n)
 {
-	uint32_t i,j,m;
+	int32_t i,j,m;
 	struct t_obj *obj;
 	float *px;
 	float len;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
+		if (start < 0) return(-1);
 		m=obj->n_line;
 		if (m<(start+n))	
 			n=m-start; 
@@ -792,13 +794,14 @@ int obj_load_line_normal(struct t_process *p, uint32_t oid, float *x, uint32_t s
 	return(0);
 }
 /*  add textures coordinates to each vertex of the polygon(s) */
-int obj_load_poly_texc(struct t_process *p, uint32_t oid, float *x, uint32_t start, uint32_t n)
+int obj_load_poly_texc(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n)
 {
-	uint32_t i,j,m;
+	int32_t i,j,m;
 	struct t_obj *obj;
 	float *px;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
+		if (start < 0) return(-1);
 		m=obj->n_poly;
 		if (m<(start+n))	
 			n=m-start; 
@@ -830,13 +833,14 @@ int obj_load_poly_texc(struct t_process *p, uint32_t oid, float *x, uint32_t sta
 
 
 /*  load at position start n materials, overwriting old ones */
-int obj_load_mat(struct t_process *p, uint32_t oid, float *x, uint32_t start, uint32_t n)
+int obj_load_mat(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n)
 {
-	uint32_t i,m;
+	int32_t i,m;
 	struct t_obj *obj;
 	float *px;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
+		if (start < 0) return(-1);
 		m=obj->n_mat;	
 		if (m<(start+n))	
 			n=m-start; 
@@ -876,8 +880,9 @@ int obj_load_mat(struct t_process *p, uint32_t oid, float *x, uint32_t start, ui
 static void obj_update_tex(struct t_tex *tex,u_int16_t S3DUNUSED(x),u_int16_t S3DUNUSED(y),u_int16_t S3DUNUSED(w),u_int16_t S3DUNUSED(h),u_int8_t *S3DUNUSED(pixbuf))
 {
 	GLuint t;
-	if ((t=tex->gl_texnum)!=-1)
+	if ((tex->gl_texnum)!=-1)
 	{
+		t= tex->gl_texnum;
 /* s3dprintf(MED,"updating texture %d at [%d %d] with a [%d %d] pixbuf",t,x,y,w,h); */
 /* 		glTexSubImage2D(t,0,x,y,w,h,GL_RGBA,GL_UNSIGNED_BYTE,pixbuf); */
 
@@ -886,20 +891,21 @@ static void obj_update_tex(struct t_tex *tex,u_int16_t S3DUNUSED(x),u_int16_t S3
 	}
 }
 /*  loads some data into the pixbuf */
-int obj_load_tex		(struct t_process *p, uint32_t oid, uint32_t tex, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *pixbuf)
+int obj_load_tex		(struct t_process *p, int32_t oid, int32_t tex, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *pixbuf)
 {
 	struct t_obj *obj;
 	struct t_tex *t;
-	uint32_t i,p1,p2,m;
+	int32_t i,p1,p2,m;
 	int16_t mw;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if (obj->oflags&OF_NODATA)
 		{
 			errds(MED,"obj_load_tex()","error: no data on object allowed!");
 			return(-1);
 		}
-		if (tex<obj->n_tex)
+		if ( tex < 0 ) return(-1);
+		if ( tex < obj->n_tex)
 		{
 			t=&obj->p_tex[tex];
 			if (t->buf!=NULL)
@@ -937,13 +943,13 @@ int obj_load_tex		(struct t_process *p, uint32_t oid, uint32_t tex, uint16_t x, 
 	} 
 	return(-1);
 }
-int obj_toggle_flags(struct t_process *p, uint32_t oid, uint8_t type, uint32_t flags)
+int obj_toggle_flags(struct t_process *p, int32_t oid, uint8_t type, uint32_t flags)
 {
 	struct t_obj *obj;
 	uint32_t f;
 
 	f=flags&OF_MASK;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		switch (type)
 		{
@@ -957,12 +963,12 @@ int obj_toggle_flags(struct t_process *p, uint32_t oid, uint8_t type, uint32_t f
 	return(0);
 }
 /*  deletes the last n vertices of the stack. if n>=n_vertex, delete all vertices */
-int obj_del_vertex(struct t_process *p, uint32_t oid, uint32_t n)
+int obj_del_vertex(struct t_process *p, int32_t oid, int32_t n)
 {
-	uint32_t m;
+	int32_t m;
 	struct t_vertex *p_vertex;
 	struct t_obj *obj;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if (obj->oflags&OF_NODATA)
 		{
@@ -1001,12 +1007,12 @@ int obj_del_vertex(struct t_process *p, uint32_t oid, uint32_t n)
 	return(0);
 }
 /*  deletes the last n materials of the stack. if n>=n_mat, delete all materials */
-int obj_del_mat(struct t_process *p, uint32_t oid, uint32_t n)
+int obj_del_mat(struct t_process *p, int32_t oid, int32_t n)
 {
-	uint32_t m;
+	int32_t m;
 	struct t_mat *p_mat;
 	struct t_obj *obj;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if (obj->oflags&OF_NODATA)
 		{
@@ -1040,12 +1046,12 @@ int obj_del_mat(struct t_process *p, uint32_t oid, uint32_t n)
 	return(0);
 }
 /*  deletes the last n polys of the stack. if n>=n_poly, delete all polys */
-int obj_del_poly(struct t_process *p, uint32_t oid, uint32_t n)
+int obj_del_poly(struct t_process *p, int32_t oid, int32_t n)
 {
-	uint32_t m;
+	int32_t m;
 	struct t_poly *p_poly;
 	struct t_obj *obj;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if (obj->oflags&OF_NODATA)
 		{
@@ -1079,12 +1085,12 @@ int obj_del_poly(struct t_process *p, uint32_t oid, uint32_t n)
 	return(0);
 }
 /*  deletes the last n lines of the stack. if n>=n_line, delete all lines */
-int obj_del_line(struct t_process *p, uint32_t oid, uint32_t n)
+int obj_del_line(struct t_process *p, int32_t oid, int32_t n)
 {
-	uint32_t m;
+	int32_t m;
 	struct t_line *p_line;
 	struct t_obj *obj;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if (obj->oflags&OF_NODATA)
 		{
@@ -1118,14 +1124,14 @@ int obj_del_line(struct t_process *p, uint32_t oid, uint32_t n)
 	return(0);
 }
 /*  delete texture object */
-int obj_del_tex(struct t_process *p, uint32_t oid, uint32_t n)
+int obj_del_tex(struct t_process *p, int32_t oid, int32_t n)
 {
-	uint32_t m;
-	uint32_t i;
+	int32_t m;
+	int32_t i;
 	struct t_tex *p_tex;
 	struct t_obj *obj;
 	GLuint t;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if (obj->oflags&OF_NODATA)
 		{
@@ -1182,12 +1188,12 @@ int obj_del_tex(struct t_process *p, uint32_t oid, uint32_t n)
 }
 
 /*  from proto.c, translates the object. */
-int obj_translate(struct t_process *p, uint32_t oid, float *transv)
+int obj_translate(struct t_process *p, int32_t oid, float *transv)
 {
 	struct t_obj *obj;
 	struct t_process *mcp_p=get_proc_by_pid(MCP);
 	float v[3];
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if (isnan(transv[0])||isinf(transv[0])) return(-1);
 		if (isnan(transv[1])||isinf(transv[1])) return(-1);
@@ -1218,13 +1224,13 @@ int obj_translate(struct t_process *p, uint32_t oid, float *transv)
 	return(0);
 }
 /*  set rotate vector .... */
-int obj_rotate(struct t_process *p, uint32_t oid, float *rotv)
+int obj_rotate(struct t_process *p, int32_t oid, float *rotv)
 {
 	struct t_obj *obj;
 	struct t_process *mcp_p=get_proc_by_pid(MCP);
 	float v[3];
 	float f;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if (isnan(rotv[0])||isinf(rotv[0])) return(-1);
 		if (isnan(rotv[1])||isinf(rotv[1])) return(-1);
@@ -1258,10 +1264,10 @@ int obj_rotate(struct t_process *p, uint32_t oid, float *rotv)
 	return(0);
 }
 /*  and scaling ! */
-int obj_scale(struct t_process *p, uint32_t oid, float scav)
+int obj_scale(struct t_process *p, int32_t oid, float scav)
 {
 	struct t_obj *obj;
-	if (obj_valid(p,oid,obj))
+	if (OBJ_VALID(p,oid,obj))
 	{
 		if ((p->id==MCP) || (!(obj->oflags&OF_SYSTEM)))
 		if (!isinf(scav) && !isnan(scav) && !((scav<1.0e-10) && (scav>-1.0e-10))) /* ignore very low values */
@@ -1284,7 +1290,7 @@ void into_position(struct t_process *p, struct t_obj *obj, int depth)
 	if ((obj->oflags&OF_LINK) && (depth<p->n_obj))
 	{
 		/* TODO: only MultMatrix if m_uptodate ?! */
-		if (obj_valid(p,obj->linkid,on))
+		if (OBJ_VALID(p,obj->linkid,on))
 		{
 			into_position(p,on,depth+1);
 		} else {
@@ -1303,15 +1309,15 @@ void into_position(struct t_process *p, struct t_obj *obj, int depth)
 	glScalef(obj->scale,obj->scale,obj->scale);
 }
 
-void obj_size_update(struct t_process *p, uint32_t oid)
+void obj_size_update(struct t_process *p, int32_t oid)
 {
 	struct t_obj *o,*o2;
 	struct t_vertex *a,*vp;
 	float r;
 	int vn,is_clnsrc;
-	uint32_t i;
+	int32_t i;
 	if (p->id==MCP) return; /*  mcp does not need that. */
-	if (obj_valid(p,oid,o))
+	if (OBJ_VALID(p,oid,o))
 	{
 		if (o->oflags&OF_SYSTEM)
 		{
@@ -1345,7 +1351,7 @@ void obj_size_update(struct t_process *p, uint32_t oid)
 				{
 					if (p->object[i]!=NULL)
 					{
-						if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->n_vertex==oid))
+						if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->n_vertex== oid))
 						{ /* if it's pointing to our object ... */
 							is_clnsrc=1;
 							p->object[i]->r=o->r*(p->object[i]->r/o->scale); /* give it the new radius too! */
@@ -1361,12 +1367,12 @@ void obj_size_update(struct t_process *p, uint32_t oid)
 }
 /*  checks if the object is (still) the biggest object. assumes that oid */
 /*  is valid */
-void obj_check_biggest_object(struct t_process *p, uint32_t oid)
+void obj_check_biggest_object(struct t_process *p, int32_t oid)
 {
 	struct t_obj *o,*mcp_o;
 	struct t_process *mcp_p;
 	float r,r2;
-	uint32_t i;
+	int32_t i;
 	int found;
 	mcp_p=get_proc_by_pid(MCP);
 	mcp_o=mcp_p->object[p->mcp_oid];
@@ -1408,7 +1414,7 @@ void obj_check_biggest_object(struct t_process *p, uint32_t oid)
 	}
 }
 /* calculates and saves the transformation matrix, if needed */
-void obj_recalc_tmat(struct t_process *p, uint32_t oid)
+void obj_recalc_tmat(struct t_process *p, int32_t oid)
 {
 	GLint matrixmode;
 	if (!p->object[oid]->m_uptodate)
@@ -1424,7 +1430,7 @@ void obj_recalc_tmat(struct t_process *p, uint32_t oid)
 		p->object[oid]->m_uptodate=1;
 	}
 }
-void obj_sys_update(struct t_process *p, uint32_t oid)
+void obj_sys_update(struct t_process *p, int32_t oid)
 {
 	struct t_process *mcp_p=get_proc_by_pid(MCP);
 	struct t_obj	 *o;
@@ -1480,7 +1486,7 @@ void obj_sys_update(struct t_process *p, uint32_t oid)
 	obj_pos_update(p,oid,oid); /* now also update the matrix and the objects linking to our sys-object ... */
 }
 /*  recalculate the position of an object. this assumes that oid is valid. */
-void obj_pos_update(struct t_process *p, uint32_t oid, uint32_t first_oid)
+void obj_pos_update(struct t_process *p, int32_t oid, int32_t first_oid)
 {
 	float v[3];
 	struct t_obj 		*ao,*o;
@@ -1500,12 +1506,12 @@ void obj_pos_update(struct t_process *p, uint32_t oid, uint32_t first_oid)
 	} else 
 		if (o->oflags&OF_SYSTEM) /* TODO: what will we do if $sys_object is linked to another? */
 		{ /* a system object changed position? let's update the focus'ed sys-objects */
-			if (obj_valid(p,focus_oid,ao))
+			if (OBJ_VALID(p,focus_oid,ao))
 				if (NULL!=(ap=get_proc_by_pid(ao->n_mat)))
 				{
 					if (OF_POINTER==(o->oflags&0xF0000000))
 					{ /* we dont have to do that much in this case ... */
-						if (obj_valid(ap,get_pointer(ap),ao)) /* we can redefine ao here -> ao = focused app's pointer*/
+						if (OBJ_VALID(ap,get_pointer(ap),ao)) /* we can redefine ao here -> ao = focused app's pointer*/
 						{
 							ao->rotate.x=o->rotate.x;
 							ao->rotate.y=o->rotate.y;
@@ -1545,13 +1551,13 @@ int calc_normal(struct t_obj *obj, uint32_t pn)
 {
 	struct t_vertex a,b,n;
 	struct t_vertex *v[3];
-	uint32_t vp,i;
+	int32_t vp,i;
 	
 	float len;
 	for (i=0;i<3;i++)  /*  set and check */
 	{
 		vp= obj->p_poly[pn].v[i];  /*  ... get the vertices ... */
-		if (vp<obj->n_vertex)
+		if ( vp < obj->n_vertex)
 			v[i]=&(obj->p_vertex[vp]);
 		else return(-1);
 	}
@@ -1589,7 +1595,7 @@ int calc_normal(struct t_obj *obj, uint32_t pn)
 	return(0);
 }
 
-/* checks if a normal is set for a line object, or set some default oif not */
+/* checks if a normal is set for a line object, or set some default if not */
 int check_line_normal(struct t_obj *obj, uint32_t pn)
 {
 	struct t_vertex *v[2];
@@ -1597,7 +1603,7 @@ int check_line_normal(struct t_obj *obj, uint32_t pn)
 	for (i=0;i<2;i++)  /*  set and check */
 	{
 		vp= obj->p_line[pn].v[i];  /*  ... get the vertices ... */
-		if (vp<obj->n_vertex)
+		if (vp < (int)obj->n_vertex)
 			v[i]=&(obj->p_vertex[vp]);
 		else return(-1);
 	}
@@ -1623,7 +1629,7 @@ static struct t_tex *get_texture(struct t_obj *obj,struct t_mat *m)
 	struct t_tex *tex=NULL;
 	GLfloat matgl[4];
 /* 	int i,j; */
-	if (m->tex<obj->n_tex)
+	if (m->tex < obj->n_tex)
 	{
 		tex=&obj->p_tex[m->tex];
 		if (tex->buf!=NULL)
@@ -1672,18 +1678,18 @@ static struct t_tex *get_texture(struct t_obj *obj,struct t_mat *m)
 	return(tex);
 }
 /*  finally, the rendering portion. */
-int obj_render(struct t_process *p,uint32_t oid)
+int obj_render(struct t_process *p,int32_t oid)
 {
-	uint32_t pn;
-	uint32_t mat,omat=-1;
-	uint32_t v;
+	int32_t pn;
+	int32_t mat,omat=-1;
+	int32_t v;
 /* 	int link_obj; */
 	struct t_vertex *on;
 	struct t_obj *obj;
 	struct t_mat *m;
 	struct t_tex *tex=NULL;
 	GLfloat matgl[4];
-	uint32_t i;
+	int32_t i;
 
 	obj=p->object[oid];
 	glPushMatrix();
@@ -1825,20 +1831,20 @@ int obj_render(struct t_process *p,uint32_t oid)
 }
 
 /* remove the oid out of the link chain */
-void link_delete(struct t_process *p, uint32_t oid)
+void link_delete(struct t_process *p, int32_t oid)
 {
 	struct t_obj *o,*o2;
-	if (obj_valid(p,oid,o))
+	if (OBJ_VALID(p,oid,o))
 	{
 		s3dprintf(VLOW,"link_delete(): [%d] unlinking %d from %d",p->id, oid, o->linkid);
 		if (o->linkid!=-1) 
 		{
 			if (o->lprev!=-1)
-				if (obj_valid(p,o->lprev,o2))
+				if (OBJ_VALID(p,o->lprev,o2))
 				{ /* we have a previous pointer linking to us */
 					o2->lnext=o->lnext; /* might also be -1 */
 				}
-			if (obj_valid(p,o->linkid,o2))
+			if (OBJ_VALID(p,o->linkid,o2))
 			{
 				if (o2->lsub==oid)
 				{/* parent is having oid as it's first link in chain */
@@ -1846,7 +1852,7 @@ void link_delete(struct t_process *p, uint32_t oid)
 				}
 			}
 			if (o->lnext!=-1)
-				if (obj_valid(p,o->lnext,o2))
+				if (OBJ_VALID(p,o->lnext,o2))
 				{ /* fixing next's previous pointer */
 					o2->lprev=o->lprev;
 				}
@@ -1858,16 +1864,16 @@ void link_delete(struct t_process *p, uint32_t oid)
 	}
 }
 /* add an element into the link chain */
-void link_insert(struct t_process *p, uint32_t oid, uint32_t target)
+void link_insert(struct t_process *p, int32_t oid, int32_t target)
 {
 	struct t_obj *o,*ot,*o2;
-	if (obj_valid(p,oid,o) && obj_valid(p,target,ot))
+	if (OBJ_VALID(p,oid,o) && OBJ_VALID(p,target,ot))
 	{
 		s3dprintf(VLOW,"link_insert(): [%d] linking %d to %d",p->id, oid, target);
 		o->oflags|=OF_LINK;
 		o->linkid=target;
 		o->lnext=ot->lsub; /* we have a new "first" element */
-		if (o->lnext!=-1) if (obj_valid(p,o->lnext,o2))  /* if we already had an element
+		if (o->lnext!=-1) if (OBJ_VALID(p,o->lnext,o2))  /* if we already had an element
 														  in the chain, create the backlink */
 		{
 			o2->lprev=oid;
@@ -1877,10 +1883,10 @@ void link_insert(struct t_process *p, uint32_t oid, uint32_t target)
 }
 /*  creates a link from object from an object to another  */
 /*  to have a translation or anything move with other things */
-int obj_link(struct t_process *p, uint32_t oid_from, uint32_t oid_to)
+int obj_link(struct t_process *p, int32_t oid_from, int32_t oid_to)
 {
 	struct t_obj *o,*o2;
-	if (obj_valid(p,oid_from,o) && obj_valid(p,oid_to,o2))
+	if (OBJ_VALID(p,oid_from,o) && OBJ_VALID(p,oid_to,o2))
 	{
 		if (oid_to==oid_from)
 		{
@@ -1921,10 +1927,10 @@ int obj_link(struct t_process *p, uint32_t oid_from, uint32_t oid_to)
 	return(-1);
 }
 /*  this unlinks an object ... */
-int obj_unlink(struct t_process *p, uint32_t oid)
+int obj_unlink(struct t_process *p, int32_t oid)
 {
 	struct t_obj *o;
-	if (obj_valid(p,oid,o))
+	if (OBJ_VALID(p,oid,o))
 	{
 		if (OF_POINTER==(o->oflags&0xF0000000))
 		{
@@ -1943,7 +1949,7 @@ int obj_unlink(struct t_process *p, uint32_t oid)
 int obj_new(struct t_process *p)
 {
 	struct t_obj *obj;
-	uint32_t pos,reuse=0;
+	int32_t pos,reuse=0;
 	obj=malloc(sizeof(struct t_obj));  /*  get an object and define it with our data */
 	memset(obj,0,sizeof(struct t_obj));
 	obj->linkid=-1;
@@ -1961,7 +1967,7 @@ int obj_new(struct t_process *p)
 	if (p!=NULL)
 	{
 		 /*  look for an old object for reuse ... */
-		for (pos=0;pos<p->n_obj;pos++)
+		for (pos=0; pos < p->n_obj ; pos++)
 		{
 			if (p->object[pos]==NULL)
 			{
@@ -1989,12 +1995,12 @@ int obj_new(struct t_process *p)
 
 /*  this changes the clone-target or sets up a new clone link. */
 /*  this will check and supress looplinks and clonechains */
-int obj_clone_change(struct t_process *p, uint32_t oid, uint32_t toid)
+int obj_clone_change(struct t_process *p, int32_t oid, int32_t toid)
 {
 	struct t_obj *o,*no;
 	int already_clone,is_clnsrc;
-	uint32_t i;
-	if (obj_valid(p,oid,o) && obj_valid(p,toid,no))
+	int32_t i;
+	if (OBJ_VALID(p,oid,o) && OBJ_VALID(p,toid,no))
 	{
 		if ((o->oflags&OF_SYSTEM) || (no->oflags&OF_SYSTEM))
 		{
@@ -2052,15 +2058,15 @@ int obj_clone_change(struct t_process *p, uint32_t oid, uint32_t toid)
 
 
 /*  object-deletion request from proto.c */
-int obj_del(struct t_process *p, uint32_t oid)
+int obj_del(struct t_process *p, int32_t oid)
 {
 	struct t_process *mcp_p;
 	struct t_obj *o;
 	float r,mr;
-	uint32_t i;
-	uint32_t mcp_oid=-1;
+	int32_t i;
+	int32_t mcp_oid=-1;
 	mcp_p=get_proc_by_pid(MCP);
-	if (obj_valid(p,oid,o))
+	if (OBJ_VALID(p,oid,o))
 	{
 		if (o->oflags&OF_SYSTEM)
 		{
@@ -2080,7 +2086,7 @@ int obj_del(struct t_process *p, uint32_t oid)
 		} else 
 			mcp_oid=p->mcp_oid;
 
-		if (obj_valid(p,oid,o))
+		if (OBJ_VALID(p,oid,o))
 		{
 			obj_free(p,oid);
 			if ((p->id!=MCP) && (p->biggest_obj==oid))
@@ -2121,9 +2127,9 @@ int obj_del(struct t_process *p, uint32_t oid)
 }
 
 /*  this is the "direct" freeing function, without checking for perfomance */
-int obj_free(struct t_process *p,uint32_t oid)
+int obj_free(struct t_process *p,int32_t oid)
 {
-	uint32_t i;
+	int32_t i;
 	GLuint t;
 	struct t_obj *o=p->object[oid];
 	s3dprintf(HIGH,"deleting object %d of process %d",oid,p->id);
@@ -2180,9 +2186,9 @@ int obj_free(struct t_process *p,uint32_t oid)
 	return(0);
 }
 /* get the object of the pointer (that's 1, usually */
-uint32_t get_pointer(struct t_process *p)
+int32_t get_pointer(struct t_process *p)
 {
-	uint32_t i;
+	int32_t i;
 	for (i=0;i<p->n_obj;i++)
 	{
 

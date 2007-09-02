@@ -35,7 +35,7 @@ extern int focus_oid;
 extern int winw,winh; /* to give aspect ratio to the program */
 /*  I don't plan to keep this until the end, but it can show us how */
 /*  to interact ... */
-int event_obj_click(struct t_process *p, uint32_t oid)
+int event_obj_click(struct t_process *p, int32_t oid)
 {
 	uint32_t moid=htonl(oid);
 	s3dprintf(MED,"telling client that oid %d got clicked",oid);
@@ -53,7 +53,7 @@ int event_key_pressed(uint16_t key, uint16_t uni, uint16_t mod,int state)
 	k[1]=htons(uni);
 	k[2]=htons(mod);
 	k[3]=htons(state);
-	if (obj_valid(get_proc_by_pid(MCP),focus_oid,o))
+	if (OBJ_VALID(get_proc_by_pid(MCP),focus_oid,o))
 		prot_com_out(get_proc_by_pid(o->n_mat), S3D_P_S_KEY, (uint8_t *)k, 8);
 	prot_com_out(get_proc_by_pid(MCP),S3D_P_S_KEY,(uint8_t *)k, 8); /* mcp always gets a copy */
 	return(0);
@@ -67,7 +67,7 @@ int event_mbutton_clicked(uint8_t button, uint8_t state)
 	uint8_t b[2];
 	b[0]=button;
 	b[1]=state;
-	if (obj_valid(get_proc_by_pid(MCP),focus_oid,o))
+	if (OBJ_VALID(get_proc_by_pid(MCP),focus_oid,o))
 		prot_com_out(get_proc_by_pid(o->n_mat), S3D_P_S_MBUTTON, (uint8_t *)&b, 2);
 	prot_com_out(get_proc_by_pid(MCP),S3D_P_S_MBUTTON,(uint8_t *)&b, 2); /* mcp always gets a copy */
 	return(0);
@@ -95,7 +95,7 @@ int event_cam_changed()
 	struct t_obj	 *o;
 	p=get_proc_by_pid(MCP);
 	event_obj_info(p,0);
-	if (obj_valid(p,focus_oid,o))
+	if (OBJ_VALID(p,focus_oid,o))
 		event_obj_info(get_proc_by_pid(o->n_mat),0);
 	return(0);
 }
@@ -106,7 +106,7 @@ int event_ptr_changed()
 	struct t_obj	 *o;
 	p=get_proc_by_pid(MCP);
 	event_obj_info(p,get_pointer(p));
-	if (obj_valid(p,focus_oid,o))
+	if (OBJ_VALID(p,focus_oid,o))
 	{
 		p=get_proc_by_pid(o->n_mat); /* focused program pointer*/
 		event_obj_info(p,get_pointer(p));
@@ -115,12 +115,12 @@ int event_ptr_changed()
 }
 
 /* this should replace the mcp_rep_object() function later ... */
-int event_obj_info(struct t_process *p, uint32_t oid)
+int event_obj_info(struct t_process *p, int32_t oid)
 {
 	struct t_obj_info mo;
 	struct t_process *ap;
 	struct t_obj *o;
-	if (obj_valid(p,oid,o))
+	if (OBJ_VALID(p,oid,o))
 	{
 		mo.object=htonl(oid);
 		mo.trans_x=p->object[oid]->translate.x;

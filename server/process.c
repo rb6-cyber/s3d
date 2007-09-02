@@ -38,7 +38,7 @@ int process_sys_init(struct t_process *p);
 struct t_process *process_protinit(struct t_process *p, char *name)
 {
 	int con_type;
-	uint32_t mcp_oid;
+	int32_t mcp_oid;
 	if ((strncmp(name,"sys_",4)==0))
 	{ /* we don't like "sys_"-apps, kicking this */
 		errds(VHIGH,"process_protinit()","appnames starting with 'sys_' not allowed.");
@@ -72,7 +72,7 @@ struct t_process *process_protinit(struct t_process *p, char *name)
 		process_sys_init(p);
 
 	/* register the new process in the mcp */
-		if (-1!=(mcp_oid=obj_new(&procs_p[MCP])))
+		if (-1!=(mcp_oid= obj_new(&procs_p[MCP])))
 		{
 			mcp_p->object[mcp_oid]->oflags|=OF_VIRTUAL|OF_VISIBLE|OF_SELECTABLE;
 			mcp_p->object[mcp_oid]->n_mat=p->id;
@@ -111,7 +111,7 @@ int process_sys_init(struct t_process *p)
 		/* TODO: ... get the cam and ptr position of the mcp, somehow */
 		p->object[cam]->oflags=OF_CAM;
 		
-		if (obj_valid(mcp_p,get_pointer(mcp_p),o)) /* get parent pointer, copy parent */
+		if (OBJ_VALID(mcp_p,get_pointer(mcp_p),o)) /* get parent pointer, copy parent */
 		{
 			p->object[ptr]->rotate.x=o->rotate.x;
 			p->object[ptr]->rotate.y=o->rotate.y;
@@ -206,7 +206,7 @@ static int p_del(struct t_process *p)
 			for (j=0;j<mcp_p->n_obj;j++)	 /*  remove clones and links pointing on this app-object ... */
 				if (mcp_p->object[j]!=NULL)
 				{
-					if ((mcp_p->object[j]->oflags&OF_CLONE) && (mcp_p->object[j]->n_vertex==p->mcp_oid))  /*  it's linking to our object! */
+					if ((mcp_p->object[j]->oflags&OF_CLONE) && (mcp_p->object[j]->n_vertex == p->mcp_oid))  /*  it's linking to our object! */
 					{
 						mcp_p->object[j]->oflags&=~OF_CLONE;  	 /*  disable clone flag */
 						mcp_p->object[j]->n_vertex=0; 			 /*  and "clone reference" to 0 */

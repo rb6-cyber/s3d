@@ -30,7 +30,7 @@ int shm_write(struct buf_t *rb,char *buf, int n)
 {
 	int wrap=0;
 	int rs;
-	uint32_t e,s,size;
+	int32_t e,s,size;
 	char *data;
 
 	e=rb->end;
@@ -40,7 +40,7 @@ int shm_write(struct buf_t *rb,char *buf, int n)
 	if (e<s) {
 		wrap=1;
 	} 
-	while ((((s+size*(1-wrap))-e)<(n+1))) /* checking free space */
+	while ((((s+size*(1-wrap))-e) < (n+1))) /* checking free space */
 	{
 		if /*((size*2)>RB_MAX_SIZE)*/ (1)
 		{
@@ -79,7 +79,7 @@ int shm_read(struct buf_t *rb,char *buf, int n)
 	int wrap=0;
 	int mn=n;
 	int rs;
-	uint32_t e,s,size;
+	int32_t e,s,size;
 	char *data;
 
 	e=rb->end;

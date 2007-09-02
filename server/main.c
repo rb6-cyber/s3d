@@ -92,7 +92,7 @@ int rc_init(void)
 		 * and all his sockets up */
 		while (!running)  
 			nanosleep(&t,NULL); 	
-		for (i=0;i<(sizeof(s3drc)/sizeof(char **));i++)
+		for (i=0 ; i < ((int)(sizeof(s3drc)/sizeof(char **))) ; i++)
 		{
 			if ((*s3drc[i])!=NULL)
 			{

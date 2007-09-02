@@ -63,7 +63,7 @@ extern int running;		 /*  server running flag */
 
 #define RB_OVERHEAD		sizeof(struct buf_t)
 
-#define obj_valid(p,oid,o)	((oid<p->n_obj) && ((o=p->object[oid])!=NULL))
+#define OBJ_VALID(p,oid,o)	(oid >= 0) && ((oid < p->n_obj) && ((o=p->object[oid])!=NULL))
 typedef float t_mtrx[16];
 
 struct buf_t
@@ -104,7 +104,7 @@ struct t_mat
 	float amb_r,amb_g,amb_b,amb_a, 			 /*  ambience */
 		  spec_r,spec_g,spec_b,spec_a,	 	 /*  specualar */
 		  diff_r,diff_g,diff_b,diff_a;		 /*  diffusion */
-	uint32_t tex;							 /*  texture index, -1 if there is no */
+	int32_t tex;							 /*  texture index, -1 if there is no */
 };
 /*  this defines a texture */
 struct t_tex
@@ -114,7 +114,7 @@ struct t_tex
 	uint8_t *buf;		 /*  the data */
 	float xs,ys;		 /*  scale data for gl-implementations which require 2^x */
 						 /*  texture sizes. */
-	uint32_t gl_texnum;	 /*  the gl texture number. */
+	int32_t gl_texnum;	 /*  the gl texture number. */
 };
 /*  the object type */
 struct t_obj
@@ -145,13 +145,13 @@ struct t_obj
 #define OF_3DPOINTER	0xB0000000
 
 #define OF_MASK			0x00FFFFFF
-		uint32_t n_vertex, n_mat, n_poly, n_tex, n_line;
+		int32_t n_vertex, n_mat, n_poly, n_tex, n_line;
 					 /*  if OF_VIRTUAL is set, n_mat contains the pid */
 					 /*  if OF_CLONE is set, n_vertex contains the original oid */
 					 /*  I know this is dirty, but it would a waste of data if I don't do so ... */
-		uint32_t dplist;	 /*  opengl display list number */
-		uint32_t linkid;	 /*  linking target, -1 if there is none */
-		uint32_t lsub,lnext,lprev;
+		int32_t dplist;		 /*  opengl display list number */
+		int32_t linkid;		 /*  linking target, -1 if there is none */
+		int32_t lsub,lnext,lprev;
 		 /*  pointer to our objects; */
 		struct t_vertex *p_vertex;
 		struct t_mat	*p_mat;
@@ -179,9 +179,9 @@ struct t_process
 {
 	char 				  name[NAME_MAX];		 /*  process name */
 	struct t_obj		**object;				 /*  initial pointer to object list */
-	uint32_t			  n_obj;				 /*  number of objects */
-	uint32_t			  biggest_obj;			 /*  the biggest object */
-	uint32_t			  mcp_oid;				 /*  oid in mcp */
+	int32_t				  n_obj;				 /*  number of objects */
+	int32_t				  biggest_obj;			 /*  the biggest object */
+	int32_t				  mcp_oid;				 /*  oid in mcp */
 	int 				  id;					 /*  pid */
 	int					  con_type;				 /*  type of connection, one of following: */
 #define CON_NULL	0
@@ -197,7 +197,7 @@ struct t_process
 
 struct t_obj_info 
 {
-	uint32_t object;
+	int32_t object;
 	uint32_t flags;
 	float trans_x,trans_y,trans_z;
 	float rot_x,rot_y,rot_z;
@@ -252,8 +252,8 @@ int shm_read(struct buf_t *rb,char *buf, int n);
 int prot_com_in(struct t_process *p, uint8_t *pbuf);
 int prot_com_out(struct t_process *p, uint8_t opcode, uint8_t *buf, uint16_t length);
 /* event.c */
-int event_obj_info(struct t_process *p, uint32_t oid);
-int event_obj_click(struct t_process *p, uint32_t oid);
+int event_obj_info(struct t_process *p, int32_t oid);
+int event_obj_click(struct t_process *p, int32_t oid);
 int event_key_pressed(uint16_t key, uint16_t uni, uint16_t mod, int state);
 int event_mbutton_clicked(uint8_t button, uint8_t state);
 int event_cam_changed(void);
@@ -328,53 +328,53 @@ int process_quit(void);
 struct t_process *process_protinit(struct t_process *p, char *name);
 struct t_process *get_proc_by_pid(int pid);
 /*  object.c */
-int obj_debug			(struct t_process *p, uint32_t oid);
+int obj_debug			(struct t_process *p, int32_t oid);
 int obj_new				(struct t_process *p);
-int obj_clone			(struct t_process *p, uint32_t oid);
-int obj_clone_change	(struct t_process *p, uint32_t oid, uint32_t toid);
-int obj_link			(struct t_process *p, uint32_t oid_from, uint32_t oid_to);
-int obj_unlink			(struct t_process *p, uint32_t oid);
-int obj_del				(struct t_process *p, uint32_t oid);
-int obj_push_vertex		(struct t_process *p, uint32_t oid, float *x, uint32_t n);
-int obj_push_mat		(struct t_process *p, uint32_t oid, float *x, uint32_t n);
-int obj_push_poly		(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n);
-int obj_push_line		(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n);
-int obj_push_tex		(struct t_process *p, uint32_t oid, uint16_t *x, uint32_t n);
-int obj_pep_poly_normal	(struct t_process *p, uint32_t oid, float *x, uint32_t n);
-int obj_pep_line_normal (struct t_process *p, uint32_t oid, float *x, uint32_t n);
-int obj_pep_poly_texc	(struct t_process *p, uint32_t oid, float *x, uint32_t  n);
-int obj_pep_mat			(struct t_process *p, uint32_t oid, float *x, uint32_t n);
-int obj_pep_mat_tex		(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n);
-int obj_pep_vertex		(struct t_process *p, uint32_t oid, float *x, uint32_t n);
-int obj_pep_line		(struct t_process *p, uint32_t oid, uint32_t *x, uint32_t n);
-int obj_load_poly_normal(struct t_process *p, uint32_t oid, float *x, uint32_t start, uint32_t n);
-int obj_load_line_normal(struct t_process *p, uint32_t oid, float *x, uint32_t start, uint32_t n);
-int obj_load_poly_texc	(struct t_process *p, uint32_t oid, float *x, uint32_t start, uint32_t n);
-int obj_load_mat		(struct t_process *p, uint32_t oid, float *x, uint32_t start, uint32_t n);
-int obj_load_tex		(struct t_process *p, uint32_t oid, uint32_t tex, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *pixbuf);
-int obj_del_vertex		(struct t_process *p, uint32_t oid, uint32_t n);
-int obj_del_mat			(struct t_process *p, uint32_t oid, uint32_t n);
-int obj_del_poly		(struct t_process *p, uint32_t oid, uint32_t n);
-int obj_del_line		(struct t_process *p, uint32_t oid, uint32_t n);
-int obj_del_tex			(struct t_process *p, uint32_t oid, uint32_t n);
-int obj_toggle_flags	(struct t_process *p, uint32_t oid, uint8_t type, uint32_t flags);
-int obj_translate		(struct t_process *p, uint32_t oid, float *transv);
-int obj_rotate			(struct t_process *p, uint32_t oid, float *rotv);
-int obj_scale			(struct t_process *p, uint32_t oid, float scav);
-int obj_render			(struct t_process *p, uint32_t oid);
-int obj_free			(struct t_process *p, uint32_t oid);
+int obj_clone			(struct t_process *p, int32_t oid);
+int obj_clone_change	(struct t_process *p, int32_t oid, int32_t toid);
+int obj_link			(struct t_process *p, int32_t oid_from, int32_t oid_to);
+int obj_unlink			(struct t_process *p, int32_t oid);
+int obj_del				(struct t_process *p, int32_t oid);
+int obj_push_vertex		(struct t_process *p, int32_t oid, float *x, int32_t n);
+int obj_push_mat		(struct t_process *p, int32_t oid, float *x, int32_t n);
+int obj_push_poly		(struct t_process *p, int32_t oid, uint32_t *x, int32_t n);
+int obj_push_line		(struct t_process *p, int32_t oid, uint32_t *x, int32_t n);
+int obj_push_tex		(struct t_process *p, int32_t oid, uint16_t *x, int32_t n);
+int obj_pep_poly_normal	(struct t_process *p, int32_t oid, float *x, int32_t n);
+int obj_pep_line_normal (struct t_process *p, int32_t oid, float *x, int32_t n);
+int obj_pep_poly_texc	(struct t_process *p, int32_t oid, float *x, int32_t  n);
+int obj_pep_mat			(struct t_process *p, int32_t oid, float *x, int32_t n);
+int obj_pep_mat_tex		(struct t_process *p, int32_t oid, uint32_t *x, int32_t n);
+int obj_pep_vertex		(struct t_process *p, int32_t oid, float *x, int32_t n);
+int obj_pep_line		(struct t_process *p, int32_t oid, uint32_t *x, int32_t n);
+int obj_load_poly_normal(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n);
+int obj_load_line_normal(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n);
+int obj_load_poly_texc	(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n);
+int obj_load_mat		(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n);
+int obj_load_tex		(struct t_process *p, int32_t oid, int32_t tex, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *pixbuf);
+int obj_del_vertex		(struct t_process *p, int32_t oid, int32_t n);
+int obj_del_mat			(struct t_process *p, int32_t oid, int32_t n);
+int obj_del_poly		(struct t_process *p, int32_t oid, int32_t n);
+int obj_del_line		(struct t_process *p, int32_t oid, int32_t n);
+int obj_del_tex			(struct t_process *p, int32_t oid, int32_t n);
+int obj_toggle_flags	(struct t_process *p, int32_t oid, uint8_t type, uint32_t flags);
+int obj_translate		(struct t_process *p, int32_t oid, float *transv);
+int obj_rotate			(struct t_process *p, int32_t oid, float *rotv);
+int obj_scale			(struct t_process *p, int32_t oid, float scav);
+int obj_render			(struct t_process *p, int32_t oid);
+int obj_free			(struct t_process *p, int32_t oid);
 void obj_get_maximum	(struct t_process *p, struct t_obj *obj);
 void into_position		(struct t_process *p, struct t_obj *obj, int depth);
-void obj_recalc_tmat	(struct t_process *p, uint32_t oid);
-void obj_size_update	(struct t_process *p, uint32_t oid);
-void obj_pos_update(struct t_process *p, uint32_t oid, uint32_t first_oid);
-void obj_check_biggest_object(struct t_process *p, uint32_t oid);
-uint32_t get_pointer(struct t_process *p);
-void link_delete(struct t_process *p, uint32_t oid);
-void link_insert(struct t_process *p, uint32_t oid, uint32_t target);
+void obj_recalc_tmat	(struct t_process *p, int32_t oid);
+void obj_size_update	(struct t_process *p, int32_t oid);
+void obj_pos_update(struct t_process *p, int32_t oid, int32_t first_oid);
+void obj_check_biggest_object(struct t_process *p, int32_t oid);
+int32_t get_pointer(struct t_process *p);
+void link_delete(struct t_process *p, int32_t oid);
+void link_insert(struct t_process *p, int32_t oid, int32_t target);
 /*  mcp.c */
-int mcp_rep_object(uint32_t mcp_oid);
-int mcp_del_object(uint32_t mcp_oid);
+int mcp_rep_object(int32_t mcp_oid);
+int mcp_del_object(int32_t mcp_oid);
 int mcp_init(void);
 int mcp_focus(int oid);
 /*  matrix.c */

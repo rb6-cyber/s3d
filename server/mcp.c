@@ -68,7 +68,7 @@ int mcp_init()
 	return(0);
 }
 /*  report the mcp about our object */
-int mcp_rep_object(uint32_t mcp_oid)
+int mcp_rep_object(int32_t mcp_oid)
 {
 	struct mcp_object mo;
 	struct t_process *p,*ap;
@@ -85,9 +85,9 @@ int mcp_rep_object(uint32_t mcp_oid)
 	return(0);
 }
 /* tells the mcp that some program vanished ... */
-int mcp_del_object(uint32_t mcp_oid)
+int mcp_del_object(int32_t mcp_oid)
 {
-	uint32_t oid=htonl(mcp_oid);
+	int32_t oid=htonl(mcp_oid);
 	if (mcp_oid==focus_oid)
 	{
 		s3dprintf(MED,"lost the focus of mcp-oid %d",mcp_oid);
@@ -104,7 +104,7 @@ int mcp_focus(int oid)
 	focus_oid=-1;
 	p=get_proc_by_pid(MCP);
 	s3dprintf(MED,"request to focus %d",oid);
-	if (obj_valid(p,oid,o))
+	if (OBJ_VALID(p,oid,o))
 		if (o->oflags&OF_VIRTUAL)
 		{
 			focus_oid=oid;

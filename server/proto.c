@@ -51,7 +51,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 	uint16_t w,h,x,y;
 	uint32_t oid,toid;
 	uint8_t	type;
-	uint32_t flags,mcp_oid=-1;
+	int32_t flags,mcp_oid=-1;
 	command=pbuf[0];
 	if (p->id!=0)
 	{
