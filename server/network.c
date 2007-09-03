@@ -108,8 +108,8 @@ int network_main()
 
 #ifdef SIGS
 		sigio=0;
-#endif
 	}
+#endif
 #endif
 #ifdef SHM
 	shm_main();
