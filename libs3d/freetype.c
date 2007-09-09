@@ -283,6 +283,7 @@ int _s3d_add_tessbuf(uint16_t a)
 	return(0);
 }
 
+/* draws one charachter a */
 int _s3d_draw_tessbuf(int oid,uint16_t a,int *voff, float *xoff)
 {
 	float *vbuf;
@@ -290,38 +291,42 @@ int _s3d_draw_tessbuf(int oid,uint16_t a,int *voff, float *xoff)
 	int i;
 	if (!(tess_buf[a].vbuf && tess_buf[a].pbuf))
 		_s3d_add_tessbuf(a);
-	vbuf=malloc(sizeof(float)*3*tess_buf[a].vn);
-	pbuf=malloc(sizeof(uint32_t)*4*tess_buf[a].pn);
-	memcpy(vbuf,tess_buf[a].vbuf,sizeof(float)*3*tess_buf[a].vn);
-	memcpy(pbuf,tess_buf[a].pbuf,sizeof(uint32_t)*4*tess_buf[a].pn);
-	 /*  prepare the buffs ... */
-/* 	s3dprintf(LOW,"drawing [%c] (%d vertices, %d polys",a,tess_buf[a].vn,tess_buf[a].pn); */
-	for (i=0;i<tess_buf[a].vn;i++)
-	{
-		vbuf[i*3]+=*xoff;
-/*		s3dprintf(LOW,"vertex [%c:%d] %f %f %f",a,i,
-						vbuf[i*3],
-						vbuf[i*3+1],
-						vbuf[i*3+2]);*/
+	/* only draw if it has some information in it */
+	if ((tess_buf[a].pn != 0) && (tess_buf[a].vn != 0)) {
+	
+		vbuf=malloc(sizeof(float)*3*tess_buf[a].vn);
+		pbuf=malloc(sizeof(uint32_t)*4*tess_buf[a].pn);
+		memcpy(vbuf,tess_buf[a].vbuf,sizeof(float)*3*tess_buf[a].vn);
+		memcpy(pbuf,tess_buf[a].pbuf,sizeof(uint32_t)*4*tess_buf[a].pn);
+		 /*  prepare the buffs ... */
+	/* 	s3dprintf(LOW,"drawing [%c] (%d vertices, %d polys",a,tess_buf[a].vn,tess_buf[a].pn); */
+		for (i=0;i<tess_buf[a].vn;i++)
+		{
+			vbuf[i*3]+=*xoff;
+	/*		s3dprintf(LOW,"vertex [%c:%d] %f %f %f",a,i,
+							vbuf[i*3],
+							vbuf[i*3+1],
+							vbuf[i*3+2]);*/
+		}
+		for (i=0;i<tess_buf[a].pn;i++)
+		{
+			pbuf[i*4]+=*voff;
+			pbuf[i*4+1]+=*voff;
+			pbuf[i*4+2]+=*voff;
+	/*		s3dprintf(LOW,"poly [%c:%d] %d %d %d | %d (voff %d)",a,i,
+							pbuf[i*4],
+							pbuf[i*4+1],
+							pbuf[i*4+2],
+							pbuf[i*4+3],*voff);*/
+		}
+		s3dprintf(VLOW,"commiting %d vertices, %d polygons",tess_buf[a].vn,tess_buf[a].pn);
+		s3d_push_vertices(oid,vbuf,tess_buf[a].vn);
+		s3d_push_polygons(oid,pbuf,tess_buf[a].pn);
+		*voff+=tess_buf[a].vn;
+		free(vbuf);
+		free(pbuf);
 	}
-	for (i=0;i<tess_buf[a].pn;i++)
-	{
-		pbuf[i*4]+=*voff;
-		pbuf[i*4+1]+=*voff;
-		pbuf[i*4+2]+=*voff;
-/*		s3dprintf(LOW,"poly [%c:%d] %d %d %d | %d (voff %d)",a,i,
-						pbuf[i*4],
-						pbuf[i*4+1],
-						pbuf[i*4+2],
-						pbuf[i*4+3],*voff);*/
-	}
-	s3dprintf(VLOW,"commiting %d vertices, %d polygons",tess_buf[a].vn,tess_buf[a].pn);
-	s3d_push_vertices(oid,vbuf,tess_buf[a].vn);
-	s3d_push_polygons(oid,pbuf,tess_buf[a].pn);
 	*xoff+=tess_buf[a].xoff;  /*  xoffset */
-	*voff+=tess_buf[a].vn;
-	free(vbuf);
-	free(pbuf);
 	return(0);
 }
 int s3d_select_font(char *path)
