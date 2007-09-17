@@ -1,21 +1,21 @@
 /*
  * shm.c
- * 
+ *
  * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3d is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with s3d; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -34,9 +34,9 @@
 #include <signal.h>	/* signal() */
 #include <errno.h>	/* errno */
 #ifdef WIN32  /*  sohn wars */
-	#include <winsock2.h>
+#include <winsock2.h>
 #else  /* sohn wars */
-	#include <netinet/in.h>  /* ntohs(),htons(),htonl(),ntohl() */
+#include <netinet/in.h>  /* ntohs(),htons(),htonl(),ntohl() */
 #endif   /*  sohn wars */
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -63,7 +63,7 @@ int shm_init()
 {
 	FILE *fp;
 	key_t key;
-	
+
 	/* create an empty token file */
 	fp=fopen(ftoken,"w");
 	fclose(fp);
@@ -87,7 +87,7 @@ int shm_init()
 		return(1);
 	}
 	shm_new_comblock(data);
-	return(0);	
+	return(0);
 }
 void comblock_init(struct t_shmcb *p_cb)
 {
@@ -137,7 +137,7 @@ static int shm_new_comblock(key_t *data)
 	data[1]=mycb->key_stoc;
 	mycb->idle=0;
 	s3dprintf(LOW,"shm_open_comblock():data: %08x, %08x",data[0],data[1]);
-	return(0);	
+	return(0);
 }
 
 int shm_quit()
@@ -145,14 +145,13 @@ int shm_quit()
 	/* detach from the segment: */
 	s3dprintf(LOW,"shm_quit()...");
 	unlink(ftoken);
-	if (data!=NULL)
-	{
+	if (data!=NULL) {
 		data[0]=data[1]=0;
 		data=0;
 		s3dprintf(MED,"shm_quit():removing init block");
-		if (shmdt(data) == -1) 
+		if (shmdt(data) == -1)
 			errn("shm_quit():shmdt()",errno);
-		if (shmctl(shmid, IPC_RMID, NULL) == -1) 
+		if (shmctl(shmid, IPC_RMID, NULL) == -1)
 			errn("shm_quit():shmctl()",errno);
 	}
 	return(0);
@@ -161,13 +160,13 @@ int shm_remove(struct t_process *p)
 {
 	s3dprintf(MED,"shm_remove(): removing pid %d",p->id);
 	s3dprintf(MED,"shm_remove():freeing keys: %08x, %08x",p->shmsock.key_ctos,p->shmsock.key_stoc);
-	if (shmdt(p->shmsock.data_ctos) == -1) 
+	if (shmdt(p->shmsock.data_ctos) == -1)
 		errn("shm_rmove():shmdt()",errno);
-	if (shmctl(p->shmsock.shmid_ctos, IPC_RMID, NULL) == -1) 
+	if (shmctl(p->shmsock.shmid_ctos, IPC_RMID, NULL) == -1)
 		errn("shm_quit():shmctl()",errno);
-	if (shmdt(p->shmsock.data_stoc) == -1) 
+	if (shmdt(p->shmsock.data_stoc) == -1)
 		errn("shm_quit():shmdt()",errno);
-	if (shmctl(p->shmsock.shmid_stoc, IPC_RMID, NULL) == -1) 
+	if (shmctl(p->shmsock.shmid_stoc, IPC_RMID, NULL) == -1)
 		errn("shm_quit():shmctl()",errno);
 	return(0);
 }
@@ -179,20 +178,18 @@ int shm_main()
 	struct buf_t 		*dai; /* data in, data out */
 	struct t_process	*new_p;
 	struct shmid_ds		 d;
-/*	do*/ {
-/*		found=0;*/
+	/*	do*/
+	{
+		/*		found=0;*/
 		turn=1;
-		for (i=0;i<procs_n;i++)
-		{
+		for (i=0;i<procs_n;i++) {
 #ifdef G_SDL
 			SDL_SetTimer(100,(SDL_TimerCallback) net_turn_off);
 #endif
-			if (procs_p[i].con_type==CON_SHM)
-			{
+			if (procs_p[i].con_type==CON_SHM) {
 				dai=(struct buf_t *) procs_p[i].shmsock.data_ctos;
-				if (dai->start!=dai->end)
-				{
-/*					found=1;*/
+				if (dai->start!=dai->end) {
+					/*					found=1;*/
 					procs_p[i].shmsock.idle=0;
 					shm_prot_com_in(&procs_p[i]);
 					if (turn)
@@ -202,11 +199,9 @@ int shm_main()
 						turn=1; /* don't decrease, it's next connections turn */
 					}
 				} else {
-					if (procs_p[i].shmsock.idle++>MAX_IDLE)
-					{ /* maybe the function timed out somehow ...? let's check ...*/
+					if (procs_p[i].shmsock.idle++>MAX_IDLE) { /* maybe the function timed out somehow ...? let's check ...*/
 						shmctl(procs_p[i].shmsock.shmid_ctos,IPC_STAT,&d);
-						if (d.shm_nattch==1) /* we're all alone ... remove it!! */
-						{
+						if (d.shm_nattch==1) { /* we're all alone ... remove it!! */
 							s3dprintf(MED,"client [%s] detached, removing ... ",procs_p[i].name);
 							process_del(procs_p[i].id);
 						} else {
@@ -220,8 +215,7 @@ int shm_main()
 		SDL_SetTimer(0,NULL);
 #endif
 	} /*while (found);*/
-	if ((data[0]==0) && (data[1]==0))
-	{
+	if ((data[0]==0) && (data[1]==0)) {
 		new_p=process_add();
 		new_p->con_type=CON_SHM;
 		memcpy(&new_p->shmsock,&waiting_comblock,sizeof(struct t_shmcb));
@@ -238,38 +232,36 @@ int shm_prot_com_in(struct t_process *p)
 	struct buf_t *dai;
 	dai=(struct buf_t *)p->shmsock.data_ctos;
 	if (dai!=NULL)
-/*	if ((pid=get_proc_by_dai( */
-	if (3==shm_readn(dai,ibuf,3))
-	{
-		length=ntohs(*((uint16_t *)((uint8_t *)ibuf+1)));
-		s3dprintf(VLOW,"command %d, length %d",ibuf[0], length);
-		if (length>0)
-		{
-			shm_readn(dai,ibuf+3,length);	  
+		/*	if ((pid=get_proc_by_dai( */
+		if (3==shm_readn(dai,ibuf,3)) {
+			length=ntohs(*((uint16_t *)((uint8_t *)ibuf+1)));
+			s3dprintf(VLOW,"command %d, length %d",ibuf[0], length);
+			if (length>0) {
+				shm_readn(dai,ibuf+3,length);
+			}
+			prot_com_in(p,ibuf);
 		}
-		prot_com_in(p,ibuf);
-	}
 	return(0);
 }
 #define SHM_MAXLOOP		20
-static	struct timespec t={0,1000*1000}; /* 1 mili seconds */
+static	struct timespec t= {
+	0,1000*1000
+}; /* 1 mili seconds */
 int shm_writen(struct buf_t *rb,uint8_t *buf, int n)
 {
 	int no_left,no_written,wait=0;
 	no_left = n;
-	while (no_left > 0) 
-    { 
+	while (no_left > 0) {
 		no_written = shm_write(rb,(char *)buf,no_left);
- 		if(no_written <=0)  
+		if (no_written <=0)
 			return(no_written);
 		no_left -= no_written;
 		buf += no_written;
-		if (wait++>SHM_MAXLOOP) 
-		{
+		if (wait++>SHM_MAXLOOP) {
 			s3dprintf(HIGH,"shm_writen():waited too long ...");
 			return(-1);
-		} 
-		if (wait>10)		nanosleep(&t,NULL); 	
+		}
+		if (wait>10)		nanosleep(&t,NULL);
 	}
 	return(n - no_left);
 }
@@ -277,21 +269,19 @@ int shm_readn(struct buf_t *rb,uint8_t *buf, int n)
 {
 	int no_left,no_read,wait=0;
 	no_left = n;
-	while (no_left > 0) 
-	{ 
+	while (no_left > 0) {
 		no_read = shm_read(rb,(char *)buf,no_left);
-		if(no_read <0)  
+		if (no_read <0)
 			return(no_read);
-		if (no_read == 0) 
+		if (no_read == 0)
 			break;
 		no_left -= no_read;
 		buf += no_read;
-		if (wait++>SHM_MAXLOOP) 
-		{
+		if (wait++>SHM_MAXLOOP) {
 			s3dprintf(HIGH,"shm_readn():waited too long ...");
 			return(-1);
 		}
-		if (wait>10)		nanosleep(&t,NULL); 	
+		if (wait>10)		nanosleep(&t,NULL);
 	}
 	return(n - no_left);
 }

@@ -4,7 +4,7 @@
 #define	ESIZE	637800		/* earth size */
 #define	RESCALE	1
 #define VIEWHEIGHT 3
-#define MAXQ	4096	
+#define MAXQ	4096
 #define QBUF	1024*128
 
 /* stack it */
@@ -95,7 +95,7 @@ struct _node_t {
 	float 		 alt;		/* altitude */
 	char 		 visible;	/* node visible? 0 = no, 1 = yes, 2 = some sepcial object */
 	int 		 vid;		/* vertex id */
-/*	time_t time;*/
+	/*	time_t time;*/
 	int 		 adj_n;		/* adjacence list */
 	adj_t 		*adj_p;
 };

@@ -5,17 +5,17 @@
  *
  * This file is part of the s3d Widgets, a Widget Library for s3d.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3d Widgets is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3d Widgets is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with the s3d Widgets; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -42,12 +42,12 @@ void s3dw_label_draw(s3dw_widget *widget)
 /* show the label */
 void s3dw_label_show(s3dw_widget *widget)
 {
-    s3d_flags_on(widget->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	s3d_flags_on(widget->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 }
 /* hides the label */
 void s3dw_label_hide(s3dw_widget *widget)
 {
-    s3d_flags_off(widget->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	s3d_flags_off(widget->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 }
 /* change label text */
 void s3dw_label_change_text(s3dw_label *label, char *text)
@@ -102,8 +102,7 @@ int s3dw_label_event_key(s3dw_widget *S3DUNUSED(widget), struct s3d_key_event *S
 int s3dw_label_event_click(s3dw_widget *widget, uint32_t oid)
 {
 	s3dw_label *label=(s3dw_label *)widget;
-	if (widget->oid==oid)
-	{
+	if (widget->oid==oid) {
 		label->onclick(widget);
 		return(1);
 	}

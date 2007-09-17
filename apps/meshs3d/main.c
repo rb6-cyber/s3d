@@ -40,7 +40,9 @@
 
 /* global vars */
 struct glob Global;
-static struct timespec sleep_time = { 0, 100 * 1000 * 1000 };   /* 100 mili seconds */
+static struct timespec sleep_time = {
+	0, 100 * 1000 * 1000
+};   /* 100 mili seconds */
 
 
 void init_globals( void )
@@ -52,7 +54,7 @@ void init_globals( void )
 	Global.obj_btn_close = 0;
 	Global.obj_s3d_url = 0;
 	Global.obj_zero_point = 0;
-		
+
 }
 
 
@@ -98,17 +100,15 @@ void handle_node()
 	struct node *node;
 	struct hash_it_t *hashit;
 
-	if( node_hash->elements == 0 )
+	if ( node_hash->elements == 0 )
 		return;
 	hashit = NULL;
-	while ( NULL != ( hashit = hash_iterate( node_hash, hashit ) ) )
-	{
+	while ( NULL != ( hashit = hash_iterate( node_hash, hashit ) ) ) {
 		node = (struct node *) hashit->bucket->data;
-		if( node->node_type_modified ) {
-			
+		if ( node->node_type_modified ) {
+
 			node->node_type_modified = 0;
-			if ( node->obj_id != -1 )
-			{
+			if ( node->obj_id != -1 ) {
 				s3d_del_object( node->obj_id );
 			}
 
@@ -131,15 +131,16 @@ void handle_node()
 
 void mov_add(float mov[], float p[], float fac)
 {
-/*	if (fac>1000)
-		return;
-	fac=1000; */
+	/*	if (fac>1000)
+			return;
+		fac=1000; */
 	mov[0]+=fac*p[0];
 	mov[1]+=fac*p[1];
 	mov[2]+=fac*p[2];
 }
 
-void move_meshnode( struct node *node ) {
+void move_meshnode( struct node *node )
+{
 	float null_vec[3] = {0,0,0};
 	float tmp_mov_vec[3];
 	float distance;
@@ -155,12 +156,13 @@ void move_meshnode( struct node *node ) {
 			mov_add( node->pos_vec, node->mov_vec, 0.1 );
 
 		s3d_translate( node->obj_id, node->pos_vec[0], node->pos_vec[1], node->pos_vec[2] );
-			/* reset movement vector */
+		/* reset movement vector */
 		node->mov_vec[0] = node->mov_vec[1] = node->mov_vec[2] = 0.0;
 	}
 }
 
-void calc_node_mov( void ) {
+void calc_node_mov( void )
+{
 
 	float distance;
 	float tmp_mov_vec[3],vertex_buf[6];
@@ -170,28 +172,24 @@ void calc_node_mov( void ) {
 	struct node *first_node, *sec_node;
 	struct hash_it_t *hashit1, *hashit2;
 
-	if( con_hash->elements == 0 )
+	if ( con_hash->elements == 0 )
 		return;
 	hashit1 = hashit2 = NULL;
-	while ( NULL != ( hashit1 = hash_iterate( node_hash, hashit1 ) ) )
-	{
+	while ( NULL != ( hashit1 = hash_iterate( node_hash, hashit1 ) ) ) {
 		first_node = (struct node *) hashit1->bucket->data;
-		while ( NULL != ( hashit2 = hash_iterate( node_hash, hashit2 ) ) )
-		{
+		while ( NULL != ( hashit2 = hash_iterate( node_hash, hashit2 ) ) ) {
 			sec_node = (struct node *) hashit2->bucket->data;
-			if( first_node != sec_node )
-			{
+			if ( first_node != sec_node ) {
 				ip[0] = max(first_node->ip, sec_node->ip);
 				ip[1] = min(first_node->ip, sec_node->ip);
 				distance = dirt( first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec );
-				if( NULL != ( con = hash_find(con_hash, ip ) ) )
-				{
+				if ( NULL != ( con = hash_find(con_hash, ip ) ) ) {
 					/* we have a connection */
 					f = ( ( con->etx1_sqrt + con->etx2_sqrt ) / 4.0 ) / distance;
 					mov_add( first_node->mov_vec, tmp_mov_vec,  1 / f - 1 );
 					mov_add( sec_node->mov_vec, tmp_mov_vec, -( 1 / f - 1 ) );
 					printf("------co---------\n%s %.2f %.2f %.2f\n%s %.2f %.2f %.2f\n", first_node->ip_string,first_node->mov_vec[0],first_node->mov_vec[1],first_node->mov_vec[2],
-						sec_node->ip_string,sec_node->mov_vec[0],sec_node->mov_vec[1],sec_node->mov_vec[2]  );
+					       sec_node->ip_string,sec_node->mov_vec[0],sec_node->mov_vec[1],sec_node->mov_vec[2]  );
 
 					vertex_buf[0] = first_node->pos_vec[0];
 					vertex_buf[1] = first_node->pos_vec[1];
@@ -202,10 +200,10 @@ void calc_node_mov( void ) {
 					s3d_pep_vertices( con->obj_id, vertex_buf, 2 );
 
 					s3d_pep_material( con->obj_id,
-						1.0,1.0,1.0,
-						1.0,1.0,1.0,
-						1.0,1.0,1.0
-					);
+					                  1.0,1.0,1.0,
+					                  1.0,1.0,1.0,
+					                  1.0,1.0,1.0
+					                );
 
 				} else {
 					/* we have no connection */
@@ -213,7 +211,7 @@ void calc_node_mov( void ) {
 					mov_add( first_node->mov_vec, tmp_mov_vec, 100 / ( distance * distance ) );
 					mov_add( sec_node->mov_vec, tmp_mov_vec, -100 / ( distance * distance ) );
 					printf("------nco---------\n%s %.2f %.2f %.2f\n%s %.2f %.2f %.2f\n", first_node->ip_string,first_node->mov_vec[0],first_node->mov_vec[1],first_node->mov_vec[2],
-						sec_node->ip_string,sec_node->mov_vec[0],sec_node->mov_vec[1],sec_node->mov_vec[2]  );
+					       sec_node->ip_string,sec_node->mov_vec[0],sec_node->mov_vec[1],sec_node->mov_vec[2]  );
 				}
 				move_meshnode( first_node );
 				move_meshnode( sec_node );
@@ -229,7 +227,7 @@ void calc_node_mov( void ) {
 		 * small factor: fast and strong drift to neighbours
 		 ***/
 		/* if ( f < Factor ) f = Factor; */
-		
+
 	}
 
 }
@@ -254,10 +252,11 @@ void mainloop()
 }
 
 
-int main( int argc, char *argv[] ) {
+int main( int argc, char *argv[] )
+{
 	int optchar;
 	char olsr_host[256];
-	
+
 	init_globals();
 	strncpy( olsr_host, "127.0.0.1", 256 );
 	lbuf[0] = '\0';
@@ -266,18 +265,18 @@ int main( int argc, char *argv[] ) {
 
 		switch ( optchar ) {
 
-			case 'd':
-				Global.debug = 1;
-				break;
+		case 'd':
+			Global.debug = 1;
+			break;
 
-			case 'H':
-				strncpy( olsr_host, optarg, 256 );
-				break;
+		case 'H':
+			strncpy( olsr_host, optarg, 256 );
+			break;
 
-			case 'h':
-			default:
-				print_usage();
-				return (0);
+		case 'h':
+		default:
+			print_usage();
+			return (0);
 
 		}
 
@@ -301,15 +300,13 @@ int main( int argc, char *argv[] ) {
 
 	process_init();
 
-	if (!net_init(olsr_host))
-	{
+	if (!net_init(olsr_host)) {
 		/* s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
 		s3d_set_callback(S3D_EVENT_KEY,keypress);
 		s3d_set_callback(S3D_EVENT_QUIT,stop); */
 
-		if (!s3d_init(&argc,&argv,"meshs3d"))
-		{
+		if (!s3d_init(&argc,&argv,"meshs3d")) {
 
 			if (s3d_select_font("vera"))
 				printf("font not found\n");

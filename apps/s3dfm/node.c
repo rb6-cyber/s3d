@@ -1,21 +1,21 @@
 /*
  * node.c
- * 
+ *
  * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3dfm, a s3d file manager.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3dfm is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3dfm is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with s3dfm; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -32,10 +32,9 @@ t_node *node_getbypath(char *path)
 	char *s,*match;
 	t_node *cur;
 	int i;
-	
+
 	if (path==NULL) return NULL;
-	if (path[0]=='/')
-	{
+	if (path[0]=='/') {
 		strncpy(p,path,M_DIR-1);
 		s=p+1;
 		cur=&root;
@@ -44,8 +43,7 @@ t_node *node_getbypath(char *path)
 	printf("processing rest of string %s\n",s);
 	match=s;
 	while (*s!=0) { /* while search string is not empty */
-		if ((s=index(s,'/'))!=NULL)
-		{
+		if ((s=index(s,'/'))!=NULL) {
 			s[0]=0; /* mark the slash with space */
 			s++;	/* move to the next */
 		} else {
@@ -54,8 +52,7 @@ t_node *node_getbypath(char *path)
 		/* parse ... */
 		printf("looking for a match for %s, rest is %s\n",match,s);
 		for (i=0;i<cur->n_sub;i++)
-			if (0==strcmp(cur->sub[i]->name,match))
-			{ /* found !! */
+			if (0==strcmp(cur->sub[i]->name,match)) { /* found !! */
 				cur=cur->sub[i]; /* forward */
 				match=s; /* select next */
 				break;
@@ -87,8 +84,7 @@ t_node *node_getbyoid(t_node *t, int oid)
 /* writes the path of dir into *path. path should be of type path[M_DIR] */
 void node_path(t_node *dir, char *path)
 {
-	if (dir->parent!=NULL)
-	{
+	if (dir->parent!=NULL) {
 		node_path(dir->parent,path);
 		if (dir->parent->parent!=NULL)
 			mstrncat(path,"/",M_DIR);
@@ -110,7 +106,7 @@ int node_init(t_node *dir)
 	dir->objs.title=-1;
 	dir->objs.titlestr=-1;
 	dir->objs.strlen=0;
-	
+
 	dir->disp=D_NONE;
 	dir->parsed=0;
 
@@ -128,11 +124,15 @@ int node_init(t_node *dir)
 /* general undisplay routine. does not handle anything recursively... */
 int node_undisplay(t_node *dir)
 {
-	switch (dir->disp)
-	{
-		case D_DIR: return(box_undisplay(dir));break;
-		case D_ICON:return(icon_undisplay(dir));break;
-		default:	return(-1);
+	switch (dir->disp) {
+	case D_DIR:
+		return(box_undisplay(dir));
+		break;
+	case D_ICON:
+		return(icon_undisplay(dir));
+		break;
+	default:
+		return(-1);
 	}
 	dir->disp=0;
 }
@@ -141,8 +141,7 @@ int node_undisplay(t_node *dir)
 int node_delete(t_node *dir)
 {
 	int i;
-	if (dir->parent==NULL) 
-	{
+	if (dir->parent==NULL) {
 		printf("won't delete root window!\n");
 		return(-1);
 	}
@@ -154,10 +153,11 @@ int node_delete(t_node *dir)
 	}
 	/* move focus upward, this should go up with the recursion */
 	if (focus==dir)	focus_set(dir->parent); /* do this before deleting the contents, its better ... */
-	switch (dir->disp)
-	{
-			case D_DIR:  box_undisplay(dir);
-			case D_ICON: icon_undisplay(dir);
+	switch (dir->disp) {
+	case D_DIR:
+		box_undisplay(dir);
+	case D_ICON:
+		icon_undisplay(dir);
 	}
 
 	if (-1!=(i=ani_onstack(dir))) ani_del(i); /* tell animation stack too */
@@ -167,40 +167,40 @@ int node_delete(t_node *dir)
 /* node select handles click on the detach button. selected items can be moved, copied etc.*/
 void node_select(t_node *dir)
 {
-		
+
 	dir->detached=dir->detached?0:1; /* swapping, not sure if !dir->detached would do the same .. */
-	switch (dir->disp)
-	{
-		case D_DIR:
-			if (focus!=dir)
-			{
-				dir->detached=dir->detached?0:1; /* swap again, we actually don't want to have it detachedf now. */
-				focus_set(dir);
-			}
-			if (dir->parent!=NULL)
-				box_order_subdirs(dir->parent);
-			break;
-		case D_ICON:
-			if (dir->type==T_FOLDER)
-			{
-				dir->detached=0;
-				if (!parse_dir(dir))
-					box_expand(dir);
-			} else {
-				dir->pz=dir->detached*0.2+1.0;
-				ani_add(dir);
-			}
+	switch (dir->disp) {
+	case D_DIR:
+		if (focus!=dir) {
+			dir->detached=dir->detached?0:1; /* swap again, we actually don't want to have it detachedf now. */
 			focus_set(dir);
-			break;
+		}
+		if (dir->parent!=NULL)
+			box_order_subdirs(dir->parent);
+		break;
+	case D_ICON:
+		if (dir->type==T_FOLDER) {
+			dir->detached=0;
+			if (!parse_dir(dir))
+				box_expand(dir);
+		} else {
+			dir->pz=dir->detached*0.2+1.0;
+			ani_add(dir);
+		}
+		focus_set(dir);
+		break;
 	}
 }
 /* change color etc if a node is focused */
 void node_focus_color(t_node *node, int on)
 {
-	switch (node->disp)
-	{
-		case D_DIR:  box_focus_color(node,on);	break;
-		case D_ICON: icon_focus_color(node,on); break;
+	switch (node->disp) {
+	case D_DIR:
+		box_focus_color(node,on);
+		break;
+	case D_ICON:
+		icon_focus_color(node,on);
+		break;
 	}
 }
 /* get the directory of a node */

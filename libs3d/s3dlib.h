@@ -5,17 +5,17 @@
  *
  * This file is part of the s3d API, the API of s3d (the 3d network display server).
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * The s3d API is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The s3d API is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with the s3d API; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -24,20 +24,20 @@
 
 #include <stdint.h>
 #include "config.h"
-#ifdef __APPLE__ 
+#ifdef __APPLE__
 #ifdef SHM
 #undef SHM
 #endif
-#endif 
+#endif
 
 #ifndef S3DUNUSED
-	#if defined(UNUSEDPARAM_ATTRIBUTE)
-		#define S3DUNUSED(x) (x)__attribute__((unused))
-	#elif defined(UNUSEDPARAM_OMIT)
-		#define S3DUNUSED(x) /* x */
-	#else
-		#define S3DUNUSED(x) x
-	#endif
+#if defined(UNUSEDPARAM_ATTRIBUTE)
+#define S3DUNUSED(x) (x)__attribute__((unused))
+#elif defined(UNUSEDPARAM_OMIT)
+#define S3DUNUSED(x) /* x */
+#else
+#define S3DUNUSED(x) x
+#endif
 #endif
 
 #define VLOW	1
@@ -54,7 +54,7 @@
 #define TIMEOUT			100000
 #define MAX_CB			256		 /*  as much as there are callbacks */
 #ifndef NULL
-	#define NULL	0
+#define NULL	0
 #endif
 #define CON_NULL	0
 #define CON_SHM		1
@@ -76,13 +76,13 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf);
 #pragma GCC visibility push(default) /* Only export following functions */
 #endif
 void s3dprintf(int relevance, const char *fmt, ...);
-void errdn(int relevance, char *func,int en); 
+void errdn(int relevance, char *func,int en);
 void errds(int relevance,char *func, const char *fmt, ...);
 #ifdef HAVE_GCCVISIBILITY
 #pragma GCC visibility pop
 #endif
 
-#else 
+#else
 static __inline__ void s3dprintf(int S3DUNUSED(relevance),
                                  const char *S3DUNUSED(fmt), ...) {}
 static __inline__ void errdn(int S3DUNUSED(relevance),
@@ -117,8 +117,7 @@ int tcp_readn(char *str,int s);
 #endif
 /* shm_ringbuf.c */
 #ifdef SHM
-struct buf_t
-{
+struct buf_t {
 	uint32_t start,end,bufsize;	/* start/end of the data */
 };
 int shm_write(struct buf_t *rb,char *buf, int n);
@@ -131,8 +130,7 @@ int shm_writen(char *str,int s);
 int shm_readn(char *str,int s);
 #endif
 /* freetype.c */
-struct t_buf
-{
+struct t_buf {
 	float *vbuf;
 	uint32_t *pbuf;
 	int pn,vn;
@@ -140,8 +138,7 @@ struct t_buf
 };
 
 /* tesselate.c */
-struct tessp_t
-{
+struct tessp_t {
 	int next,prev,done;
 };
 int _s3d_tesselate(struct tessp_t *t,struct t_buf *b);

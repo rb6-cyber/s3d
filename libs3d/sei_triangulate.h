@@ -1,9 +1,9 @@
 /*
  * sei_triangulate.h
- * 
+ *
  * Copyright (C) 2006 Simon Wunderlich
  * Copyright (C) 1994 A. Narkhede and D .Manocha, who released their code
- * for public domain: 
+ * for public domain:
  * <snip>
  *
  * This code is in the public domain. Specifically, we give to the public
@@ -20,17 +20,17 @@
  *
  * This file is part of the s3d API, the API of s3d (the 3d network display server).
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * The s3d API is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The s3d API is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with the s3d API; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -47,59 +47,59 @@
 #include "s3dlib.h"
 
 typedef struct {
-  double x, y;
+	double x, y;
 } point_t, vector_t;
 
 
 /* Segment attributes */
 
-typedef struct {	
-  point_t v0, v1;		/* two endpoints */
-  int is_inserted;		/* inserted in trapezoidation yet ? */
-  int root0, root1;		/* root nodes in Q */
-  int next;			/* Next logical segment */
-  int prev;			/* Previous segment */
+typedef struct {
+	point_t v0, v1;		/* two endpoints */
+	int is_inserted;		/* inserted in trapezoidation yet ? */
+	int root0, root1;		/* root nodes in Q */
+	int next;			/* Next logical segment */
+	int prev;			/* Previous segment */
 } segment_t;
 
 
 /* Trapezoid attributes */
 
 typedef struct {
-  int lseg, rseg;		/* two adjoining segments */
-  point_t hi, lo;		/* max/min y-values */
-  int u0, u1;
-  int d0, d1;
-  int sink;			/* pointer to corresponding in Q */
-  int usave, uside;		/* I forgot what this means */
-  int state;
+	int lseg, rseg;		/* two adjoining segments */
+	point_t hi, lo;		/* max/min y-values */
+	int u0, u1;
+	int d0, d1;
+	int sink;			/* pointer to corresponding in Q */
+	int usave, uside;		/* I forgot what this means */
+	int state;
 } trap_t;
 
 
 /* Node attributes for every node in the query structure */
 
 typedef struct {
-  int nodetype;			/* Y-node or S-node */
-  int segnum;
-  point_t yval;
-  int trnum;
-  int parent;			/* doubly linked DAG */
-  int left, right;		/* children */
+	int nodetype;			/* Y-node or S-node */
+	int segnum;
+	point_t yval;
+	int trnum;
+	int parent;			/* doubly linked DAG */
+	int left, right;		/* children */
 } node_t;
 
 
 typedef struct {
-  int vnum;
-  int next;			/* Circularly linked list  */
-  int prev;			/* describing the monotone */
-  int marked;			/* polygon */
-} monchain_t;			
+	int vnum;
+	int next;			/* Circularly linked list  */
+	int prev;			/* describing the monotone */
+	int marked;			/* polygon */
+} monchain_t;
 
 
 typedef struct {
-  point_t pt;
-  int vnext[4];			/* next vertices for the 4 chains */
-  int vpos[4];			/* position of v in the 4 chains */
-  int nextfree;
+	point_t pt;
+	int vnext[4];			/* next vertices for the 4 chains */
+	int vpos[4];			/* position of v in the 4 chains */
+	int nextfree;
 } vertexchain_t;
 
 #ifdef DEBUG
@@ -113,10 +113,10 @@ typedef struct {
 
 
 #define SEGSIZE SEI_SS	/* max# of segments. Determines how */
-						/* many points can be specified as */
-						/* input. If your datasets have large */
-						/* number of points, increase this */
-						/* value accordingly. */
+/* many points can be specified as */
+/* input. If your datasets have large */
+/* number of points, increase this */
+/* value accordingly. */
 
 #define QSIZE   8*SEGSIZE	/* maximum table sizes */
 #define TRSIZE  4*SEGSIZE	/* max# trapezoids */
@@ -126,16 +126,16 @@ typedef struct {
 #define FALSE 0
 
 
-#define FIRSTPT 1		/* checking whether pt. is inserted */ 
+#define FIRSTPT 1		/* checking whether pt. is inserted */
 #define LASTPT  2
 
 
 #define INFINITY 1<<30
 #define C_EPS 1.0e-7		/* tolerance value: Used for making */
-							/* all decisions about collinearity or */
-							/* left/right of segment. Decrease */
-							/* this value if the input points are */
-							/* spaced very close together */
+/* all decisions about collinearity or */
+/* left/right of segment. Decrease */
+/* this value if the input points are */
+/* spaced very close together */
 
 
 #define S_LEFT 1		/* for merge-direction */
@@ -153,7 +153,7 @@ typedef struct {
 #define SP_2UP_RIGHT   5
 #define SP_2DN_LEFT    6
 #define SP_2DN_RIGHT   7
-#define SP_NOSPLIT    -1	
+#define SP_NOSPLIT    -1
 
 #define TR_FROM_UP 1		/* for traverse-direction */
 #define TR_FROM_DN 2

@@ -44,34 +44,35 @@ char buf[MAXDATASIZE];
 int sockfd, numbytes;
 int net_init(char *host)
 {
-    struct hostent *he;
-    struct sockaddr_in their_addr; /* connector's address information  */
+	struct hostent *he;
+	struct sockaddr_in their_addr; /* connector's address information  */
 
-    if ((he=gethostbyname(host)) == NULL) {  /* get the host info  */
-        herror("gethostbyname");
-        return(1);
-    }
+	if ((he=gethostbyname(host)) == NULL) {  /* get the host info  */
+		herror("gethostbyname");
+		return(1);
+	}
 
-    if ((sockfd = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
-        perror("socket");
-        return(1);
-    }
+	if ((sockfd = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
+		perror("socket");
+		return(1);
+	}
 
-    their_addr.sin_family = AF_INET;    /* host byte order  */
-    their_addr.sin_port = htons(PORT);  /* short, network byte order  */
-    their_addr.sin_addr = *((struct in_addr *)he->h_addr);
-    memset(&(their_addr.sin_zero), '\0', 8);  /* zero the rest of the struct */
+	their_addr.sin_family = AF_INET;    /* host byte order  */
+	their_addr.sin_port = htons(PORT);  /* short, network byte order  */
+	their_addr.sin_addr = *((struct in_addr *)he->h_addr);
+	memset(&(their_addr.sin_zero), '\0', 8);  /* zero the rest of the struct */
 
-    if (connect(sockfd, (struct sockaddr *)&their_addr,
-                                          sizeof(struct sockaddr)) == -1) {
-        perror("connect");
-        return(1);
-    }
+	if (connect(sockfd, (struct sockaddr *)&their_addr,
+	                sizeof(struct sockaddr)) == -1) {
+		perror("connect");
+		return(1);
+	}
 	fcntl(sockfd,F_SETFL, O_NONBLOCK);
 	return(0);
 }
 
-int net_main() {
+int net_main()
+{
 
 	if ((numbytes=recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
 		if (errno==EAGAIN)
@@ -121,9 +122,9 @@ int net_main() {
 
 int net_quit()
 {
-    close(sockfd);
+	close(sockfd);
 
-    return 0;
+	return 0;
 }
 
 

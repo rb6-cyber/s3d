@@ -1,21 +1,21 @@
 /*
  * icon.c
- * 
+ *
  * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3dfm, a s3d file manager.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3dfm is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3dfm is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with s3dfm; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -27,14 +27,15 @@
 #include <string.h>  /* strlen() */
 #include <stdlib.h>  /* memcpy() */
 float icon_colors[T_TYPENUM][12]={
-		/* T_DUNO */
+	/* T_DUNO */
 	{	0,0,0.5,1.0,
 		0,0,0.5,1.0,
 		0,0,0.5,1.0 },
-		/* T_FOLDER */
+	/* T_FOLDER */
 	{	0.4,0.4,0,1.0,
-		0.4,0.4,0,1.0,
-		0.4,0.4,0,1.0}};
+	  0.4,0.4,0,1.0,
+	  0.4,0.4,0,1.0}
+};
 
 /* gives another color for the focused item */
 void icon_focus_color(t_node *dir, int on)
@@ -42,31 +43,32 @@ void icon_focus_color(t_node *dir, int on)
 	float color[12];
 	int i;
 	memcpy(color,icon_colors[dir->type],sizeof(color));
-	if (on) for(i=0;i<3;i++) {
+	if (on) for (i=0;i<3;i++) {
 			color[i*4 + 0]+=0.3;
 			color[i*4 + 1]+=0.3;
 			color[i*4 + 2]+=0.3;
-	}
+		}
 	s3d_pep_materials_a(dir->oid,color,1);
 }
 /* draws icon dir */
 int icon_draw(t_node *dir)
 {
 	float vertices[]={	-1,-0.5,0,
-						-1, 0.5,0,
-						 1, 0.5,0,
-						 1,-0.5,0,
-						-1,-0.5,-1,
-						-1, 0.5,-1,
-						 1, 0.5,-1,
-						 1,-0.5,-1};
+	                   -1, 0.5,0,
+	                   1, 0.5,0,
+	                   1,-0.5,0,
+	                   -1,-0.5,-1,
+	                   -1, 0.5,-1,
+	                   1, 0.5,-1,
+	                   1,-0.5,-1
+	                 };
 	uint32_t polys[]={
-				1,3,0,0,				2,3,1,0,
-				5,6,2,0,				1,5,2,0,
-				2,6,7,0,				2,7,3,0,
-				0,3,7,0,				0,7,4,0,
-				5,1,0,0,				5,0,4,0	
-				};
+		1,3,0,0,				2,3,1,0,
+		5,6,2,0,				1,5,2,0,
+		2,6,7,0,				2,7,3,0,
+		0,3,7,0,				0,7,4,0,
+		5,1,0,0,				5,0,4,0
+	};
 	float len;
 	/* find position for the new block in our directory box */
 	/* create the block */
@@ -76,8 +78,7 @@ int icon_draw(t_node *dir)
 	s3d_push_polygons(dir->oid,polys,10);
 
 	/* draw and position the string */
-	if (dir->objs.str==-1)
-	{
+	if (dir->objs.str==-1) {
 		dir->objs.str=s3d_draw_string(dir->name,&len);
 		if (len<2) len=2;
 		dir->objs.strlen=len;
@@ -91,13 +92,11 @@ int icon_draw(t_node *dir)
 }
 int icon_undisplay(t_node *dir)
 {
-	if (dir->oid!=-1)
-	{
+	if (dir->oid!=-1) {
 		s3d_del_object(dir->oid);
 		dir->oid=-1;
 	}
-	if (dir->objs.str!=-1)
-	{
+	if (dir->objs.str!=-1) {
 		s3d_del_object(dir->objs.str);
 		dir->objs.str=-1;
 	}

@@ -5,17 +5,17 @@
  *
  * This file is part of s3dfm, a s3d file manager.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3dfm is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3dfm is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with s3dfm; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -51,11 +51,9 @@ int get_selected(filelist *fp, t_node *dir)
 {
 	int i;
 	char *s;
-	for (i=0;i<dir->n_sub;i++)
-	{
+	for (i=0;i<dir->n_sub;i++) {
 		if (dir->sub[i]->sub!=NULL)	get_selected(fp,dir->sub[i]); /* scan subdir */
-		if (dir->sub[i]->detached)
-		{
+		if (dir->sub[i]->detached) {
 			fp->n++;
 			fp->p=realloc(fp->p,sizeof(t_file) * fp->n);
 			s=malloc(M_DIR);
@@ -67,7 +65,7 @@ int get_selected(filelist *fp, t_node *dir)
 				fp->p[fp->n - 1].anode=NULL;
 			fp->p[fp->n - 1].size=0; /*TODO: later */
 			fp->p[fp->n - 1].state=STATE_NONE;
-	
+
 		}
 	}
 	return(0);
@@ -114,7 +112,7 @@ void window_fs_confirm_error(s3dw_widget *button)
 {
 	fs_err.state=ESTATE_NONE;
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
-	
+
 }
 void window_fs_errno(char *errmsg)
 {
@@ -134,8 +132,7 @@ void window_fs_errno(char *errmsg)
 void window_fs_abort(s3dw_widget *button)
 {
 	/* delete a filelist, if there was any */
-	if (fp!=NULL)
-	{
+	if (fp!=NULL) {
 		fl_del(fp);
 		fp=NULL;
 	}
@@ -145,23 +142,22 @@ void window_fs_abort(s3dw_widget *button)
 }
 void *thread_start(void *ptr)
 {
-	switch (fs_lock)
-	{
-		case TYPE_COPY: 
-			printf("starting a copy process in the thread ... \n");
-			destnode=node_getbypath(destdir);
-			fs_fl_copy(fp,destdir);
-			printf("done\n");
-			break;
-		case TYPE_UNLINK:
-			printf("unlinking some files ... \n");
-			fs_fl_unlink(fp);
-			printf("done\n");
-			break;
+	switch (fs_lock) {
+	case TYPE_COPY:
+		printf("starting a copy process in the thread ... \n");
+		destnode=node_getbypath(destdir);
+		fs_fl_copy(fp,destdir);
+		printf("done\n");
+		break;
+	case TYPE_UNLINK:
+		printf("unlinking some files ... \n");
+		fs_fl_unlink(fp);
+		printf("done\n");
+		break;
 	}
 	fs_lock=TYPE_FINISHED;
 	return(NULL);
-	
+
 }
 /* start the thread, as filesystem stuff is locked ... */
 void window_fs(s3dw_widget *button)
@@ -177,18 +173,25 @@ void window_copy(char *path)
 
 	int i,m;
 
-	if (fs_lock) 	{	window_fs_another(); 	return; }
+	if (fs_lock) 	{
+		window_fs_another();
+		return;
+	}
 	fs_lock=TYPE_COPY;
 	fp=malloc(sizeof(filelist));
 	fp->n=0;
 	fp->p=NULL;
 	get_selected(fp,&root);
 	printf("selected %d nodes\n",fp->n);
-	if (fp->n == 0)	{	window_fs_nothing();	free(fp); fp=NULL;return;	}
+	if (fp->n == 0)	{
+		window_fs_nothing();
+		free(fp);
+		fp=NULL;
+		return;
+	}
 	/* get the longest item on the list */
 	m=10;
-	for (i=0;i<fp->n;i++)
-	{
+	for (i=0;i<fp->n;i++) {
 		if (strlen(fp->p[i].name)>m) m=strlen(fp->p[i].name);
 		printf("%d: %s\n",i,fp->p[i].name);
 	}
@@ -220,14 +223,22 @@ void window_unlink()
 
 	int i,m;
 
-	if (fs_lock) 	{	window_fs_another(); 	return; }
+	if (fs_lock) 	{
+		window_fs_another();
+		return;
+	}
 	fs_lock=TYPE_UNLINK;
 	fp=malloc(sizeof(filelist));
 	fp->n=0;
 	fp->p=NULL;
 	get_selected(fp,&root);
 	printf("selected %d nodes\n",fp->n);
-	if (fp->n == 0)	{	window_fs_nothing();	free(fp); fp=NULL;return;	}
+	if (fp->n == 0)	{
+		window_fs_nothing();
+		free(fp);
+		fp=NULL;
+		return;
+	}
 	/* get the longest item on the list */
 	m=10;
 	for (i=0;i<fp->n;i++)
@@ -258,12 +269,11 @@ void window_fs_mkdir(s3dw_widget *button)
 	else {
 		/* success, now refresh it */
 		item=node_getbypath(dir);
-		if (item==NULL)
-		{
+		if (item==NULL) {
 			printf("cannot refresh\n");
 		} else {
 			printf("refreshing %s\n",item->name);
-/*			parse_again(item);*/
+			/*			parse_again(item);*/
 		}
 	}
 	fs_lock=0;
@@ -276,7 +286,10 @@ void window_mkdir(char *path)
 	s3dw_button  *okbutton,*abortbutton;
 	char string1[M_DIR];
 	float l;
-	if (fs_lock) {window_fs_another(); return; }
+	if (fs_lock) {
+		window_fs_another();
+		return;
+	}
 	snprintf(string1,M_DIR,"Create Directory in %s",path);
 	l=strlen(string1)*0.7;
 	infwin=s3dw_surface_new("Create Directory",l,8);
@@ -298,7 +311,10 @@ void window_move(char *path)
 {
 	s3dw_surface *infwin;
 	s3dw_button  *button;
-	if (fs_lock) {window_fs_another(); return; }
+	if (fs_lock) {
+		window_fs_another();
+		return;
+	}
 	infwin=s3dw_surface_new("Info Window",20,8);
 	s3dw_label_new(infwin,"Sorry, moving is not implemented yet.. :(",1,2);
 	button=s3dw_button_new(infwin,"Too bad",7,5);
@@ -320,9 +336,9 @@ void window_info(char *path)
 	fs_approx(path, &f, &d, &b);
 	dotted_int(bd,b);
 	snprintf(string2 ,M_DIR,"%s bytes in %d files and %d Directories",bd,f,d);
-	
+
 	l=((strlen(string1)>strlen(string2)) ? strlen(string1) :strlen(string2))*0.7;
-	
+
 	infwin=s3dw_surface_new("Info Window",l,12);
 
 	s3dw_label_new(infwin,string1,1,2);
@@ -341,8 +357,7 @@ void window_fsani()
 	t_node *node, dummy;
 	if (fs_lock!=TYPE_NONE)	{
 		/* get current position of our destination node */
-		if (destnode!=NULL)
-		{
+		if (destnode!=NULL) {
 			node=destnode;
 			node_init(&dummy);
 			dummy.parent = node->parent;
@@ -360,30 +375,28 @@ void window_fsani()
 		}
 		if (fp!=NULL) {
 			for (i=0;i<fp->n;i++) {
-				if (fp->p[i].state==STATE_FINISHED)
-				{ /* we can go and clean up now. */
-					if (NULL!=(node=node_getbypath(fp->p[i].name)))
-					{
+				if (fp->p[i].state==STATE_FINISHED) { /* we can go and clean up now. */
+					if (NULL!=(node=node_getbypath(fp->p[i].name))) {
 						printf("[CLEANUP] for node %s (%s)\n",node->name,fp->p[i].name);
 						node->detached=0;
-						if (node->parent!=NULL)
-						{
+						if (node->parent!=NULL) {
 							parse_dir(node->parent);
-							switch (node->disp)
-							{
-								case D_ICON:	box_order_icons(node->parent);					break;
-								case D_DIR:		box_order_subdirs(node->parent);				break;
+							switch (node->disp) {
+							case D_ICON:
+								box_order_icons(node->parent);
+								break;
+							case D_DIR:
+								box_order_subdirs(node->parent);
+								break;
 							}
 						}
-					} else 
+					} else
 						printf("node %s already vanished ...\n",fp->p[i].name);
-							
+
 					fp->p[i].state=STATE_CLEANED;
 				}
-				if (fp->p[i].state>STATE_NONE)
-				{
-					if (destnode!=NULL)
-					{
+				if (fp->p[i].state>STATE_NONE) {
+					if (destnode!=NULL) {
 						fp->p[i].anode->px=dummy.px;
 						fp->p[i].anode->py=dummy.py;
 						fp->p[i].anode->pz=dummy.pz;
@@ -395,23 +408,20 @@ void window_fsani()
 		}
 		if (fs_lock==TYPE_FINISHED)	{
 			printf("filesystem stuff is finisheed, cleaning up");
-			if (fp!=NULL)
-			{
+			if (fp!=NULL) {
 				fl_del(fp);
 				fp=NULL;
 			}
 			typeinput=0;
 			fs_lock=TYPE_NONE;
 			if (destnode!=NULL)
-				if (destnode->disp==D_DIR) /* it usually is opened */
-				{
+				if (destnode->disp==D_DIR) { /* it usually is opened */
 					printf("reordering icons on destnode ...\n");
-					box_order_icons(destnode);	
+					box_order_icons(destnode);
 				}
 			destnode=NULL;
 		}
-		if (fs_err.state==ESTATE_RISE)
-		{
+		if (fs_err.state==ESTATE_RISE) {
 			s3dw_surface *infwin;
 			s3dw_button  *button;
 			char errmsg[M_DIR];

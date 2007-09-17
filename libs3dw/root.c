@@ -5,17 +5,17 @@
  *
  * This file is part of the s3d Widgets, a Widget Library for s3d.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3d Widgets is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3d Widgets is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with the s3d Widgets; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -57,8 +57,7 @@ int s3dw_key_nothing(s3dw_widget *S3DUNUSED(widget), struct s3d_key_event *S3DUN
 /* get the root .... if it's NULL, the lib is not initialized, so do this too ... */
 s3dw_widget *s3dw_getroot()
 {
-	if (root==NULL)
-	{
+	if (root==NULL) {
 		root=(s3dw_widget *)malloc(sizeof(s3dw_widget));
 		root=s3dw_widget_new(root);
 		root->type=S3DW_TROOT;
@@ -93,7 +92,7 @@ s3dw_widget *s3dw_getroot()
 		s3dwcb_hide[S3DW_TINPUT]=		s3dw_input_hide;
 		s3dwcb_hide[S3DW_TTEXTBOX]=		s3dw_textbox_hide;
 		s3dwcb_hide[S3DW_TSCROLLBAR]=	s3dw_scrollbar_hide;
-		
+
 		s3dwcb_destroy[S3DW_TROOT]=		s3dw_root_destroy;
 		s3dwcb_destroy[S3DW_TCAM]=		s3dw_root_destroy;
 		s3dwcb_destroy[S3DW_TSURFACE]=	s3dw_surface_destroy;
@@ -121,7 +120,7 @@ s3dw_widget *s3dw_getroot()
 		s3dwcb_key[S3DW_TTEXTBOX]=		s3dw_key_nothing;
 		s3dwcb_key[S3DW_TSCROLLBAR]=	s3dw_key_nothing;
 
-	} 
+	}
 	return root;
 }
 

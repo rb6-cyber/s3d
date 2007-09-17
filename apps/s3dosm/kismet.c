@@ -1,21 +1,21 @@
 /*
  * kismet.c
- * 
+ *
  * Copyright (C) 2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3dosm, a gps card application for s3d.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3dosm is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3dosm is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with s3dosm; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -40,12 +40,9 @@ void parse_kismet_node(xmlNodePtr cur)
 	node.base.layerid=layerid;
 	node.base.id=0;				/* let database decide */
 	node.visible=2;	/* something special */
-	for (kids=cur->children;kids;kids=kids->next)
-	{
-		if (0==strcmp((char *)kids->name,"gps-info"))
-		{
-			for (gpskids=kids->children;gpskids;gpskids=gpskids->next)
-			{
+	for (kids=cur->children;kids;kids=kids->next) {
+		if (0==strcmp((char *)kids->name,"gps-info")) {
+			for (gpskids=kids->children;gpskids;gpskids=gpskids->next) {
 				/* get median value */
 				if (0==strcmp((char *)gpskids->name,"min-lat")) 		node.lat=node.lat + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
 				if (0==strcmp((char *)gpskids->name,"max-lat")) 		node.lat=node.lat + strtod((char *)xmlNodeGetContent(gpskids->children),NULL)/2;
@@ -61,15 +58,14 @@ void parse_kismet_node(xmlNodePtr cur)
 	{
 
 		db_insert_node(&node);
-		for (kids=cur->children;kids;kids=kids->next)
-		{
+		for (kids=cur->children;kids;kids=kids->next) {
 			if (0==strcmp((char *)kids->name,"SSID")) 			db_add_tag(OBJECT_T(&node),"wifi_SSID",(char *)xmlNodeGetContent(kids->children));
 			if (0==strcmp((char *)kids->name,"BSSID")) 			db_add_tag(OBJECT_T(&node),"wifi_BSSID",(char *)xmlNodeGetContent(kids->children));
 		}
-		for (attr=cur->properties;attr;attr=attr->next)
-		{
-	/*		if (0==strcmp((char *)attr->name,"number")) 		node->base.id=		strtol((char *)attr->children->content,NULL,10);
-			else */if (0==strcmp((char *)attr->name,"wep")) 	db_add_tag(OBJECT_T(&node),"wifi_wep",(char *)attr->children->content);
+		for (attr=cur->properties;attr;attr=attr->next) {
+			/*		if (0==strcmp((char *)attr->name,"number")) 		node->base.id=		strtol((char *)attr->children->content,NULL,10);
+					else */
+			if (0==strcmp((char *)attr->name,"wep")) 	db_add_tag(OBJECT_T(&node),"wifi_wep",(char *)attr->children->content);
 			else if (0==strcmp((char *)attr->name,"type")) 		db_add_tag(OBJECT_T(&node),"wifi_type",(char *)attr->children->content);
 		}
 
@@ -85,7 +81,7 @@ layer_t *parse_kismet(char *buf, int length)
 	layer_t *layer=layer_new();
 	int i=0;
 	float n=0;
-	
+
 
 	doc = xmlReadMemory(buf, length, "noname.xml", NULL, 0);
 	if (doc == NULL) {
@@ -100,14 +96,11 @@ layer_t *parse_kismet(char *buf, int length)
 	}
 	layerid=db_insert_layer("kismet");
 	for (c=cur->children;  c!=NULL;   c=c->next) 		n++; /* count */
-	for (cur=cur->children;cur!=NULL; cur=cur->next)
-	{
-		if (cur->type==XML_ELEMENT_NODE)
-		{
-			if (0==strcmp((char *)cur->name,"wireless-network"))
-			{
+	for (cur=cur->children;cur!=NULL; cur=cur->next) {
+		if (cur->type==XML_ELEMENT_NODE) {
+			if (0==strcmp((char *)cur->name,"wireless-network")) {
 				parse_kismet_node(cur);
-			} 
+			}
 		}
 		if ((i++)%10==0) load_update_status(100*((float)i)/n);
 

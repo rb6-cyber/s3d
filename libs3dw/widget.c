@@ -5,17 +5,17 @@
  *
  * This file is part of the s3d Widgets, a Widget Library for s3d.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3d Widgets is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3d Widgets is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with the s3d Widgets; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -86,8 +86,7 @@ void s3dw_widget_remove(s3dw_widget *widget)
 	if (parent==NULL) return;
 
 	for (i=0;i<parent->nobj;i++) /* search ... */
-		if (parent->pobj[i]==widget) /* ... and destroy */
-		{
+		if (parent->pobj[i]==widget) { /* ... and destroy */
 			if (parent->focus==i)					parent->focus=-1;
 			if (parent->focus==(parent->nobj-1))	parent->focus=i;
 			parent->pobj[i]=parent->pobj[parent->nobj-1]; /* swap last element to the to be deleted one */
@@ -114,8 +113,7 @@ void s3dw_focus(s3dw_widget *focus)
 {
 	int i;
 	for (i=0;i<focus->parent->nobj;i++)
-		if (focus->parent->pobj[i]==focus)
-		{
+		if (focus->parent->pobj[i]==focus) {
 			focus->parent->focus=i;
 			return;
 		}
@@ -126,8 +124,7 @@ void s3dw_widget_visible(s3dw_widget *widget)
 {
 	int i;
 	s3dw_widget *kid;
-	for (i=0;i<widget->nobj;i++)
-	{
+	for (i=0;i<widget->nobj;i++) {
 		kid=widget->pobj[i];
 		if (widget->flags&S3DW_VISIBLE)
 			s3dw_widget_visible(kid);

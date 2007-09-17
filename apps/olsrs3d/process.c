@@ -50,7 +50,8 @@ char lbuf[MAXLINESIZE];
  *
  ***/
 
-int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float etx ) {
+int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float etx )
+{
 
 	struct olsr_con **olsr_con = &Con_begin;
 	struct olsr_con *prev_olsr_con = NULL;   /* previous olsr connection */
@@ -95,9 +96,9 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
 		/* add connection color */
 		(*olsr_con)->color = 0;
 		s3d_push_material( (*olsr_con)->obj_id,
-				  1.0,1.0,1.0,
-				  1.0,1.0,1.0,
-				  1.0,1.0,1.0);
+		                   1.0,1.0,1.0,
+		                   1.0,1.0,1.0,
+		                   1.0,1.0,1.0);
 
 		/* add connection endpoints */
 		s3d_push_vertex( (*olsr_con)->obj_id, (*olsr_con)->left_olsr_node->pos_vec[0], (*olsr_con)->left_olsr_node->pos_vec[1], (*olsr_con)->left_olsr_node->pos_vec[2] );
@@ -163,7 +164,8 @@ int add_olsr_con( struct olsr_node *con_from, struct olsr_node *con_to, float et
  *
  ***/
 
-void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
+void *get_olsr_node( struct olsr_node **olsr_node, char *ip )
+{
 
 	int result;   /* result of strcmp */
 
@@ -247,10 +249,11 @@ void *get_olsr_node( struct olsr_node **olsr_node, char *ip ) {
  *
  */
 
-void lst_initialize() {
+void lst_initialize()
+{
 	Obj_to_ip_head = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
 	Obj_to_ip_end = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
-	if(Obj_to_ip_head == NULL || Obj_to_ip_end == NULL)
+	if (Obj_to_ip_head == NULL || Obj_to_ip_end == NULL)
 		out_of_mem();
 	Obj_to_ip_head->id = 0;
 	Obj_to_ip_end->id = 0;
@@ -267,10 +270,11 @@ void lst_initialize() {
  *
  */
 
-void lst_add(int id,struct olsr_node **olsr_node) {
+void lst_add(int id,struct olsr_node **olsr_node)
+{
 	struct Obj_to_ip *new;
 	new = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
-	if(new == NULL)
+	if (new == NULL)
 		out_of_mem();
 	new->id = id;
 	new->olsr_node = *olsr_node;
@@ -289,11 +293,11 @@ void lst_add(int id,struct olsr_node **olsr_node) {
  *
  */
 
-void lst_del(int id) {
+void lst_del(int id)
+{
 	struct Obj_to_ip *del;
 	move_lst_ptr(&id);
-	if(id != List_ptr->id)
-	{
+	if (id != List_ptr->id) {
 		printf("obj2ip: remove id %d failed move_lst_ptr return id %d\n",id,List_ptr->next->id);
 	} else {
 		del = List_ptr;
@@ -314,19 +318,19 @@ void lst_del(int id) {
 struct olsr_node *move_lst_ptr(int *id) {
 	/* printf("obj2ip: move for %d\n",*id); */
 	/* head to point at end or id lass then first element in linked list*/
-	if(Obj_to_ip_head->next == Obj_to_ip_head || *id < Obj_to_ip_head->next->id) {
+	if (Obj_to_ip_head->next == Obj_to_ip_head || *id < Obj_to_ip_head->next->id) {
 		List_ptr = Obj_to_ip_head;
 		return NULL;
- 	/* id is greather then last element in linked list */
-	} else if(*id > Obj_to_ip_end->prev->id) {
+		/* id is greather then last element in linked list */
+	} else if (*id > Obj_to_ip_end->prev->id) {
 		List_ptr = Obj_to_ip_end->prev;
 		return NULL;
 	} else {
 		/* printf("obj2ip: ok i search deeper ;-) for id=%d\n",*id); */
-		if((*id - (int) Obj_to_ip_head->next->id) <= ((int)(Obj_to_ip_end->prev->id)-*id)) {
+		if ((*id - (int) Obj_to_ip_head->next->id) <= ((int)(Obj_to_ip_end->prev->id)-*id)) {
 			List_ptr = Obj_to_ip_head;
 			/* printf("obj2ip: start at head id %d - %d <= %d - %d \n",*id,Obj_to_ip_head->next->id,Obj_to_ip_end->prev->id,*id); */
-			while(*id >= List_ptr->next->id) {
+			while (*id >= List_ptr->next->id) {
 				/* printf("obj2ip: %d > %d move to ",*id,List_ptr->id); */
 				List_ptr = List_ptr->next;
 				/* printf("%d\n",List_ptr->id); */
@@ -335,7 +339,7 @@ struct olsr_node *move_lst_ptr(int *id) {
 			List_ptr = Obj_to_ip_end;
 			/* printf("obj2ip: start at end id %d - %d > %d - %d \n",*id,Obj_to_ip_head->next->id,Obj_to_ip_end->prev->id,*id);  */
 			/*  do List_ptr = List_ptr->prev; while(*id > List_ptr->prev->id); */
-			while(*id < List_ptr->prev->id) {
+			while (*id < List_ptr->prev->id) {
 				/* printf("obj2ip: %d < %d move to ",*id,List_ptr->id); */
 				List_ptr = List_ptr->prev;
 				/* printf("%d\n",List_ptr->id); */
@@ -371,16 +375,18 @@ struct olsr_node *lst_search(int id) {
 
 }
 
-void lst_out() {
+void lst_out()
+{
 	struct Obj_to_ip *ptr;
 	ptr = Obj_to_ip_head;
-	while(ptr != ptr->next) {
+	while (ptr != ptr->next) {
 		printf("id-> %d\n",ptr->id);
 		ptr = ptr->next;
 	}
 }
 
-int process_main() {
+int process_main()
+{
 
 	int dn;
 	float f;
@@ -415,24 +421,24 @@ int process_main() {
 
 			switch ( dn ) {
 
-				case 0:
-					con_from = lbuf_ptr + 1;
-					break;
-				case 1:
-					con_from_end = lbuf_ptr;
-					break;
-				case 2:
-					con_to = lbuf_ptr + 1;
-					break;
-				case 3:
-					con_to_end = lbuf_ptr;
-					break;
-				case 4:
-					etx = lbuf_ptr + 1;
-					break;
-				case 5:
-					etx_end = lbuf_ptr;
-					break;
+			case 0:
+				con_from = lbuf_ptr + 1;
+				break;
+			case 1:
+				con_from_end = lbuf_ptr;
+				break;
+			case 2:
+				con_to = lbuf_ptr + 1;
+				break;
+			case 3:
+				con_to_end = lbuf_ptr;
+				break;
+			case 4:
+				etx = lbuf_ptr + 1;
+				break;
+			case 5:
+				etx_end = lbuf_ptr;
+				break;
 
 			}
 
@@ -459,11 +465,10 @@ int process_main() {
 
 						}
 
-					/* normal HNA */
+						/* normal HNA */
 					} else {
 						memmove(hna_node,con_to,NAMEMAX);
-						if( (tmpChar = strchr(hna_node, (int)'/')))
-						{
+						if ( (tmpChar = strchr(hna_node, (int)'/'))) {
 							tmpChar++;
 							address = (int)-inet_network(tmpChar);
 							sprintf(hna_name,"%d",(int)(32 - ceil(log(address)/log(2))));
@@ -485,7 +490,7 @@ int process_main() {
 
 					}
 
-				/* normal node */
+					/* normal node */
 				} else {
 
 					olsr_node1 = get_olsr_node( &Olsr_root, con_from );

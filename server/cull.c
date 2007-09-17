@@ -1,23 +1,23 @@
 /*
  * cull.c
- * 
+ *
  * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
- * code originated from  http://www.racer.nl/reference/vfc.htm 
+ * code originated from  http://www.racer.nl/reference/vfc.htm
  * which is (C) Ruud van Gaal
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3d is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with s3d; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -44,7 +44,7 @@ void cull_get_planes()
 	struct t_plane *p;
 	int i;
 	float d;
-	
+
 
 	/* get matrices from opengl */
 	glGetFloatv(GL_MODELVIEW_MATRIX,mmodel);
@@ -91,12 +91,10 @@ void cull_get_planes()
 	p->d=m[15]+m[14];
 
 	/* Normalize all plane normals */
-	for(i=0;i<6;i++)
-	{
+	for (i=0;i<6;i++) {
 		p=&frustumPlane[i];
 		d=sqrt(p->n.x*p->n.x + p->n.y*p->n.y + p->n.z*p->n.z);
-		if (d!=0.0)
-		{
+		if (d!=0.0) {
 			p->n.x/=d;
 			p->n.y/=d;
 			p->n.z/=d;
@@ -109,13 +107,11 @@ int cull_sphere_in_frustum(struct t_vertex *center, float radius)
 {
 	int i;
 	struct t_plane *p;
-	for(i=0;i<6;i++)
-	{
+	for (i=0;i<6;i++) {
 		p=&frustumPlane[i];
-		if (p->n.x*center->x+p->n.y*center->y+p->n.z*center->z+p->d <= -radius)
-		{
-/*			s3dprintf(MED,"out of %d plane (n %f %f %f |d %f)",i,p->n.x,p->n.y,p->n.z,p->d);*/
-			 return 0; /* sorry, no ... */
+		if (p->n.x*center->x+p->n.y*center->y+p->n.z*center->z+p->d <= -radius) {
+			/*			s3dprintf(MED,"out of %d plane (n %f %f %f |d %f)",i,p->n.x,p->n.y,p->n.z,p->d);*/
+			return 0; /* sorry, no ... */
 		}
 	}
 	return 1; /* it's inside */

@@ -1,21 +1,21 @@
 /*
  * main.c
- * 
+ *
  * Copyright (C) 2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3dosm, a gps card application for s3d.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3dosm is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3dosm is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with s3dosm; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -31,17 +31,19 @@ static int ready=0;
 
 void mainloop()
 {
-	struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
+	struct timespec t= {
+		0,100*1000*1000
+	}; /* 100 mili seconds */
 	if (ready) {
-		nanosleep(&t,NULL); 
+		nanosleep(&t,NULL);
 		gps_main();
 		nav_main();
 		s3dw_ani_mate();
 	} /* else {
-		s3d_net_check(); / * we are not yet in the mainloop of 
-							s3d_mainloop(), because ready==0, 
+		s3d_net_check(); / * we are not yet in the mainloop of
+							s3d_mainloop(), because ready==0,
 							so we check protocol things ourselves.
-							This just prevents timing out from the server 
+							This just prevents timing out from the server
 							because map loading takes so long, you shouldn't take
 							this as good example and write proper threaded or
 							timesliced loaders :) * /
@@ -63,7 +65,7 @@ int init(int argc, char **argv)
 	ready=1;
 	return(0);
 }
-int quit() 
+int quit()
 {
 	ready=0;
 	gps_quit();
@@ -73,8 +75,7 @@ int quit()
 }
 int main(int argc, char **argv)
 {
-	if (!s3d_init(&argc,&argv,"s3dosm"))
-	{
+	if (!s3d_init(&argc,&argv,"s3dosm")) {
 		if (!init(argc, argv)) s3d_mainloop(mainloop);
 		quit();
 	} else return(-1);

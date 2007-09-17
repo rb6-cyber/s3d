@@ -5,17 +5,17 @@
  *
  * This file is part of the s3d Widgets, a Widget Library for s3d.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3d Widgets is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3d Widgets is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with the s3d Widgets; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -50,23 +50,20 @@ void s3dw_ani_add(s3dw_widget *f)
 		s3dprintf(HIGH,"s3dw_ani_add() assert failed: weird, moving cam but its not a cam obeject?");
 		return;
 	}
-	if ((ani_n<MAXANI) && (animation_on))
-	{
+	if ((ani_n<MAXANI) && (animation_on)) {
 		if (s3dw_ani_onstack(f))
 			return;		/* already in list */
 		ani_s[ani_n]=f;
 		s3dw_ani_iterate(f);
 		ani_n++;
-	}
-	else /* no place, finish now */
+	} else /* no place, finish now */
 		s3dw_ani_finish(f,-1);
 }
 /* delete an item from the animation stack */
 void s3dw_ani_del(int i)
 {
-	if ((i>=0) && (i<ani_n))
-	{
-/*		printf("[A]ni DEL %d\n",i);*/
+	if ((i>=0) && (i<ani_n)) {
+		/*		printf("[A]ni DEL %d\n",i);*/
 		ani_n--;
 		ani_s[i]=ani_s[ani_n]; /* that should also work if i is the last one */
 	} else {
@@ -133,11 +130,10 @@ int s3dw_ani_check(s3dw_widget *f)
 void s3dw_ani_needarr()
 {
 	ani_need_arr=1;
-	if (!animation_on)	
-	{
+	if (!animation_on) {
 		while (ani_need_arr) s3dw_arrange();
 	}
-		
+
 }
 /* doing the whole animation thing */
 void s3dw_ani_mate()
@@ -146,12 +142,10 @@ void s3dw_ani_mate()
 	s3dw_widget *f;
 	animation_on=1;			/* animation is activated */
 	if (ani_need_arr) s3dw_arrange();
-	for (i=0;i<ani_n;i++)
-	{
+	for (i=0;i<ani_n;i++) {
 		f=ani_s[i];
 		s3dw_ani_iterate(f);
-		if (s3dw_ani_check(f))
-		{
+		if (s3dw_ani_check(f)) {
 			s3dw_ani_finish(f,i);
 			i--; /* a new widget is here now, take care in the next iteration */
 		} else {

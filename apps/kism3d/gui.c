@@ -43,7 +43,9 @@ void *Cam_target = NULL;
 
 int Client_obj;
 
-struct timespec sleeptime = { 0, 100 * 1000 * 1000 };   /* 100 mili seconds */
+struct timespec sleeptime = {
+	0, 100 * 1000 * 1000
+};   /* 100 mili seconds */
 
 
 
@@ -73,8 +75,7 @@ int wire_sphere(int slices, int stacks)
 	i=0;
 	for (x=0;x<slices;x++) {
 		for (y=0;y<stacks;y++) {
-			if ((y!=0) && (y!=stacks)) /* no horizontal lines at the poles */
-			{
+			if ((y!=0) && (y!=stacks)) { /* no horizontal lines at the poles */
 				l[i*3+0]=(x*(stacks+1))+y;
 				l[i*3+1]=(((x+1)%slices)*(stacks+1))+y;
 				l[i*3+2]=0;
@@ -104,8 +105,8 @@ int wire_sphere(int slices, int stacks)
 	}
 	o=s3d_new_object();
 	s3d_push_material(o,0,0,1,
-			  1,0,0,
-			  0,1,0);
+	                  1,0,0,
+	                  0,1,0);
 	s3d_push_vertices(o,v,num_v);
 	s3d_push_lines(o,l,num_l);
 	s3d_load_line_normals(o,n,0,num_l);
@@ -117,7 +118,8 @@ int wire_sphere(int slices, int stacks)
 
 
 
-int handle_networks() {
+int handle_networks()
+{
 
 	struct list_head *network_pos;
 	struct wlan_network *wlan_network;
@@ -244,7 +246,8 @@ int handle_networks() {
 
 
 
-int handle_clients() {
+int handle_clients()
+{
 
 	struct list_head *client_pos;
 	struct wlan_client *wlan_client;
@@ -307,7 +310,8 @@ int handle_clients() {
  *
  ***/
 
-int object_click(struct s3d_evt *evt) {
+int object_click(struct s3d_evt *evt)
+{
 
 	struct list_head *network_pos;
 	struct wlan_network *wlan_network;
@@ -350,7 +354,8 @@ int object_click(struct s3d_evt *evt) {
  *
  ***/
 
-int object_info(struct s3d_evt *hrmz) {
+int object_info(struct s3d_evt *hrmz)
+{
 
 	struct s3d_obj_info *inf;
 
@@ -375,7 +380,8 @@ int object_info(struct s3d_evt *hrmz) {
 
 
 
-void mainloop() {
+void mainloop()
+{
 
 	float angle, diff_vec[3], tmp_vec[3] = { 0.0, 0.0, -1.0 };
 
@@ -417,7 +423,8 @@ void mainloop() {
 
 
 
-void* gui_main( void *unused ) {
+void* gui_main( void *unused )
+{
 
 	if ( !s3d_init( NULL, NULL, "kism3d" ) ) {
 

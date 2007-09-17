@@ -28,16 +28,16 @@ void nav_campos(float campos[3], float earthpos[3])
 
 	float tmp1[3],tmp2[3];
 	float alpha;
-	
+
 	tmp1[0]=campos[0];
 	tmp1[1]=campos[1] + ESIZE*RESCALE +VIEWHEIGHT;
 	tmp1[2]=campos[2];
-	
+
 	alpha= (90-lat) *M_PI/180.0;
 	tmp2[0]=  tmp1[0];
 	tmp2[1]=  tmp1[1]*cos(alpha) - tmp1[2] * sin (alpha);
 	tmp2[2]=  tmp1[1]*sin(alpha) + tmp1[2] * cos (alpha);
-	
+
 	alpha= lon *M_PI/180.0;
 	tmp1[0]=  tmp2[0]*cos(alpha) + tmp2[2] * sin (alpha);
 	tmp1[1]=  tmp2[1];
@@ -53,17 +53,18 @@ void nav_campos(float campos[3], float earthpos[3])
 void nav_main()
 {
 	float x[3];
-	if ((fabs(tlat-lat)>0.00001) && (fabs(tlon-lon)>0.00001))
-	{
-		if (lat==0.0 && lon==0.0)
-		{
+	if ((fabs(tlat-lat)>0.00001) && (fabs(tlon-lon)>0.00001)) {
+		if (lat==0.0 && lon==0.0) {
 			lat=tlat;
 			lon=tlon;
 		} else {
 			lat=(tlat+lat*15)/16;
 			lon=(tlon+lon*15)/16;
 		}
-	} else { lat=tlat;lon=tlon;}
+	} else {
+		lat=tlat;
+		lon=tlon;
+	}
 	s3d_rotate(oidy,0,-lon,0);
 	s3d_rotate(oidx,-(90-lat),0,0);
 	calc_earth_to_eukl(lon,lat,0,x);
@@ -75,7 +76,7 @@ int get_center(void *data, int argc, char **argv, char **azColName)
 	int i;
 	med[0]=0;
 	med[1]=0;
-	for(i=0; i<argc; i++){
+	for (i=0; i<argc; i++) {
 		if (argv[i]) {
 			if (0==strcmp(azColName[i],"la"))			med[0]=strtod(argv[i],NULL);
 			else if (0==strcmp(azColName[i],"lo"))		med[1]=strtod(argv[i],NULL);
@@ -84,7 +85,8 @@ int get_center(void *data, int argc, char **argv, char **azColName)
 	return(0);
 }
 /* returns the heading in degress of position P1 -> P2 */
-float get_heading(float la1, float lo1, float la2, float lo2) {
+float get_heading(float la1, float lo1, float la2, float lo2)
+{
 	float p1_north[3], p1[3], p2[3];
 	float dir[3],north[3];
 	float angle;

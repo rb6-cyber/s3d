@@ -1,21 +1,21 @@
 /*
  * s3dclock.c
- * 
+ *
  * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3d is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with s3d; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -26,7 +26,9 @@
 #include <stdio.h>  /*  NULL, sprintf() */
 #include <time.h>	 /*  nanosleep(), struct tm, time_t...  */
 #include <string.h>  /*  strlen() */
-static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
+static struct timespec t= {
+	0,100*1000*1000
+}; /* 100 mili seconds */
 int big_p,lil_p,bg,sec_p;
 int str_oid=-1, o_str_oid;
 struct tm *mytime;
@@ -42,10 +44,9 @@ void mainloop()
 {
 	onow=now;
 	now=time(NULL);
-	if (now!=onow)
-	{
+	if (now!=onow) {
 		o_str_oid=str_oid;
-		mytime=localtime(&now);	
+		mytime=localtime(&now);
 		s3d_rotate(lil_p,0,0,-((mytime->tm_hour%12)/12.0)*360.0);
 		s3d_rotate(big_p,0,0,-(mytime->tm_min/60.0)*360.0);
 		s3d_rotate(sec_p,0,0,-(mytime->tm_sec/60.0)*360.0);
@@ -57,14 +58,13 @@ void mainloop()
 		if (str_oid!=-1)
 			s3d_del_object(o_str_oid);
 	}
-/* 	printf("now it's %s\n",time_str); */
-	nanosleep(&t,NULL); 
+	/* 	printf("now it's %s\n",time_str); */
+	nanosleep(&t,NULL);
 
 }
 int main (int argc, char **argv)
 {
-	if (!s3d_init(&argc,&argv,"clock"))	
-	{
+	if (!s3d_init(&argc,&argv,"clock")) {
 		lil_p=s3d_import_model_file("objs/lil_p.3ds");
 		big_p=s3d_import_model_file("objs/big_p.3ds");
 		sec_p=s3d_import_model_file("objs/sec_p.3ds");
@@ -79,7 +79,7 @@ int main (int argc, char **argv)
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK,	(s3d_cb)stop);
 		s3d_set_callback(S3D_EVENT_QUIT,		(s3d_cb)stop);
 		s3d_mainloop(mainloop);
-		 /*  wait for some object to be clicked */
+		/*  wait for some object to be clicked */
 		s3d_quit();
 	}
 	return(0);

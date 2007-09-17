@@ -53,16 +53,14 @@ typedef int (*s3d_cb)(struct s3d_evt *);
 #define	S3D_OF_VISIBLE			0x00000001
 #define	S3D_OF_SELECTABLE		0x00000002
 #define S3D_OF_POINTABLE		0x00000004
-struct mcp_object
-{
+struct mcp_object {
 	uint32_t object;
 	float trans_x,trans_y,trans_z;
 	float r;
 #define MCP_NEW_OBJECT	1
 	char name[256];
 };
-struct s3d_obj_info
-{
+struct s3d_obj_info {
 	uint32_t object;
 	uint32_t flags;
 	float trans_x,trans_y,trans_z;
@@ -71,13 +69,11 @@ struct s3d_obj_info
 	float r;
 	char name[256];
 };
-struct s3d_but_info
-{
+struct s3d_but_info {
 	uint8_t button; /* 0 = left, 1 = middle, 2 = right */
 	uint8_t state;  /* 0 = down, 1 = up, 2 = moving */
 };
-struct s3d_key_event
-{
+struct s3d_key_event {
 	uint16_t keysym;		/* the symbol, use this with s3d_keysym.h */
 	uint16_t unicode;		/* the unicode or "actually typed" character */
 	uint16_t modifier;	/* any modifiers involved */
@@ -97,22 +93,22 @@ int s3d_mainloop(void (*f)());
 int s3d_push_vertex(int object, float x, float y, float z);
 int s3d_push_vertices(int object, float *vbuf, uint16_t n);
 int s3d_push_material( int object,
-						float amb_r, float amb_g, float amb_b,
-						float spec_r, float spec_g, float spec_b,
-						float diff_r, float diff_g, float diff_b);
+                       float amb_r, float amb_g, float amb_b,
+                       float spec_r, float spec_g, float spec_b,
+                       float diff_r, float diff_g, float diff_b);
 int s3d_pep_material( int object,
-						float amb_r, float amb_g, float amb_b,
-						float spec_r, float spec_g, float spec_b,
-						float diff_r, float diff_g, float diff_b);
+                      float amb_r, float amb_g, float amb_b,
+                      float spec_r, float spec_g, float spec_b,
+                      float diff_r, float diff_g, float diff_b);
 int s3d_push_material_a( int object,
-						float amb_r, float amb_g, float amb_b, float amb_a,
-						float spec_r, float spec_g, float spec_b, float spec_a,
-						float diff_r, float diff_g, float diff_b, float diff_a);
+                         float amb_r, float amb_g, float amb_b, float amb_a,
+                         float spec_r, float spec_g, float spec_b, float spec_a,
+                         float diff_r, float diff_g, float diff_b, float diff_a);
 int s3d_push_materials_a(int object, float *mbuf, uint16_t n);
 int s3d_pep_material_a( int object,
-						float amb_r, float amb_g, float amb_b, float amb_a,
-						float spec_r, float spec_g, float spec_b, float spec_a,
-						float diff_r, float diff_g, float diff_b, float diff_a);
+                        float amb_r, float amb_g, float amb_b, float amb_a,
+                        float spec_r, float spec_g, float spec_b, float spec_a,
+                        float diff_r, float diff_g, float diff_b, float diff_a);
 
 int s3d_pep_materials_a(int object, float *mbuf, uint16_t n);
 int s3d_load_materials_a(int object, float *mbuf, uint32_t start, uint16_t n);

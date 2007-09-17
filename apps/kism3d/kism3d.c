@@ -52,7 +52,8 @@ int Num_networks = 0;
 
 
 
-void *alloc_memory( int len ) {
+void *alloc_memory( int len )
+{
 
 	void *res = malloc( len );
 
@@ -69,7 +70,8 @@ void *alloc_memory( int len ) {
 
 
 
-void *realloc_memory( void *ptr, int len ) {
+void *realloc_memory( void *ptr, int len )
+{
 
 	void *res = realloc( ptr, len );
 
@@ -86,7 +88,8 @@ void *realloc_memory( void *ptr, int len ) {
 
 
 
-unsigned int get_time( void ) {
+unsigned int get_time( void )
+{
 
 	struct timeval tv;
 
@@ -98,7 +101,8 @@ unsigned int get_time( void ) {
 
 
 
-void parse_buffer( struct kismet_src *kismet_src ) {
+void parse_buffer( struct kismet_src *kismet_src )
+{
 
 	struct wlan_network *wlan_network;
 	struct wlan_client *wlan_client;
@@ -129,44 +133,44 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 					switch ( kismet_src->enable_level ) {
 
-						case 0:
-							if ( write( kismet_src->sock, enable_alert, sizeof( enable_alert ) ) < 0 ) {
+					case 0:
+						if ( write( kismet_src->sock, enable_alert, sizeof( enable_alert ) ) < 0 ) {
 
-								printf( "Warning - can't send ENABLE ALERT message to kismet server (%s:%i): %s\n", kismet_src->kismet_ip, kismet_src->port, strerror(errno) );
+							printf( "Warning - can't send ENABLE ALERT message to kismet server (%s:%i): %s\n", kismet_src->kismet_ip, kismet_src->port, strerror(errno) );
 
-							}
+						}
 
-							break;
+						break;
 
-						case 1:
-							if ( write( kismet_src->sock, enable_client, sizeof( enable_client ) ) < 0 ) {
+					case 1:
+						if ( write( kismet_src->sock, enable_client, sizeof( enable_client ) ) < 0 ) {
 
-								printf( "Warning - can't send ENABLE CLIENT message to kismet server (%s:%i): %s\n", kismet_src->kismet_ip, kismet_src->port, strerror(errno) );
+							printf( "Warning - can't send ENABLE CLIENT message to kismet server (%s:%i): %s\n", kismet_src->kismet_ip, kismet_src->port, strerror(errno) );
 
-							}
+						}
 
-							break;
+						break;
 
-						case 2:
+					case 2:
 
-							if ( write( kismet_src->sock, enable_network, sizeof( enable_network ) ) < 0 ) {
+						if ( write( kismet_src->sock, enable_network, sizeof( enable_network ) ) < 0 ) {
 
-								printf( "Warning - can't send ENABLE NETWORK message to kismet server (%s:%i): %s\n", kismet_src->kismet_ip, kismet_src->port, strerror(errno) );
+							printf( "Warning - can't send ENABLE NETWORK message to kismet server (%s:%i): %s\n", kismet_src->kismet_ip, kismet_src->port, strerror(errno) );
 
-							}
+						}
 
-							break;
+						break;
 
-						case 3:
+					case 3:
 
-							if ( !thread_running ) {
+						if ( !thread_running ) {
 
-								thread_running++;
-								pthread_create( &s3d_thread_id, NULL, &gui_main, NULL );
+							thread_running++;
+							pthread_create( &s3d_thread_id, NULL, &gui_main, NULL );
 
-							}
+						}
 
-							break;
+						break;
 
 					}
 
@@ -188,33 +192,33 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 						switch ( count ) {
 
-							case 0:
-								bssid = parse_begin_ptr;
-								break;
+						case 0:
+							bssid = parse_begin_ptr;
+							break;
 
-							case 1:
-								type = parse_begin_ptr;
-								break;
+						case 1:
+							type = parse_begin_ptr;
+							break;
 
-							case 2:
-								channel = parse_begin_ptr;
-								break;
+						case 2:
+							channel = parse_begin_ptr;
+							break;
 
-							case 3:
-								/* ssids with spaces are quoted by kismet */
-								if ( parse_begin_ptr[0] == '\001' ) {
+						case 3:
+							/* ssids with spaces are quoted by kismet */
+							if ( parse_begin_ptr[0] == '\001' ) {
 
-									parse_begin_ptr++;
+								parse_begin_ptr++;
 
-									parse_end_ptr = strchr( parse_begin_ptr, '\001' );
-									*parse_end_ptr = '\0';
+								parse_end_ptr = strchr( parse_begin_ptr, '\001' );
+								*parse_end_ptr = '\0';
 
-									count++;
+								count++;
 
-								}
+							}
 
-								ssid = parse_begin_ptr;
-								break;
+							ssid = parse_begin_ptr;
+							break;
 
 						}
 
@@ -267,17 +271,17 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 						switch ( count ) {
 
-							case 0:
-								bssid = parse_begin_ptr;
-								break;
+						case 0:
+							bssid = parse_begin_ptr;
+							break;
 
-							case 1:
-								mac = parse_begin_ptr;
-								break;
+						case 1:
+							mac = parse_begin_ptr;
+							break;
 
-							case 2:
-								ip = parse_begin_ptr;
-								break;
+						case 2:
+							ip = parse_begin_ptr;
+							break;
 
 						}
 
@@ -353,7 +357,8 @@ void parse_buffer( struct kismet_src *kismet_src ) {
 
 
 
-int main( int argc, char *argv[] ) {
+int main( int argc, char *argv[] )
+{
 
 	struct in_addr tmp_ip_holder;
 	struct kismet_src *kismet_src;

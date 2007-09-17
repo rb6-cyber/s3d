@@ -57,21 +57,17 @@ int s3d_import_model_file(char *fname)
 	strncpy(searchpath,OBJSDIR,1023);
 	searchpath[1023]=0;							/* just in case */
 	next=ptr=searchpath;
-	while (next!=NULL)
-	{
+	while (next!=NULL) {
 		next=NULL;
 
-		if (NULL!=(next=strchr(ptr,':')))
-		{
+		if (NULL!=(next=strchr(ptr,':'))) {
 			*next=0; 							/* clear the delimiter */
 			next+=1;							/* move to the beginner of the next dir */
 		}
-		if ((strlen(ptr)+strlen(fname))<1024) 	/* only try if this fits */
-		{
+		if ((strlen(ptr)+strlen(fname))<1024) {	/* only try if this fits */
 			strcpy(path,ptr); 					/* can use "unsafe" functions because size was verified above */
 			strcat(path,fname);
-			if (s3d_open_file(path,&buf)!=-1)  /* found something */
-			{
+			if (s3d_open_file(path,&buf)!=-1) { /* found something */
 				free(buf); /* TODO: badbadbad ... */
 				if (-1!=(oid=model_load(path))) return(oid);
 
@@ -84,7 +80,8 @@ int s3d_import_model_file(char *fname)
 	return(-1); /* nothing in search path ... */
 }
 
-void *get_mat2tex( struct material2texture **mat2tex, void *mat_ptr ) {
+void *get_mat2tex( struct material2texture **mat2tex, void *mat_ptr )
+{
 
 	while ( (*mat2tex) != NULL ) {
 
@@ -175,8 +172,8 @@ int model_load(char *file)
 
 				if ( mat2tex->material_id == -1 ) { /* create a new texture if nothing found */
 					s3d_push_material_a( obj_id, 	face->material->r, face->material->g, face->material->b,face->material->a,
-													face->material->specular[0], face->material->specular[1], face->material->specular[2], face->material->specular[3],
-													face->material->r, face->material->g, face->material->b, face->material->a );
+					                     face->material->specular[0], face->material->specular[1], face->material->specular[2], face->material->specular[3],
+					                     face->material->r, face->material->g, face->material->b, face->material->a );
 
 					mat2tex->material_id = material_count;
 					material_count++;
@@ -211,8 +208,7 @@ int model_load(char *file)
 
 					}
 				}
-				if (face->flags != oldflags || npoly>=PMAX)
-				{
+				if (face->flags != oldflags || npoly>=PMAX) {
 					/* push things so far */
 					s3d_push_polygons(obj_id, polybuf, npoly);
 					if (oldflags & G3D_FLAG_FAC_NORMALS)		s3d_pep_polygon_normals(obj_id, normalbuf, 		npoly);
@@ -238,8 +234,7 @@ int model_load(char *file)
 					normalbuf[ npoly*9 + 7] = -face->normals[ 5 ];
 					normalbuf[ npoly*9 + 8] =  face->normals[ 4 ];
 				}
-				if ( face->flags & G3D_FLAG_FAC_TEXMAP )
-				{
+				if ( face->flags & G3D_FLAG_FAC_TEXMAP ) {
 					texcoordbuf[ npoly*6 + 0] = face->tex_vertex_data[ 0 ];
 					texcoordbuf[ npoly*6 + 1] = face->tex_vertex_data[ 1 ];
 					texcoordbuf[ npoly*6 + 2] = face->tex_vertex_data[ 4 ];
@@ -251,8 +246,7 @@ int model_load(char *file)
 				oface = oface->next;
 			}
 			/* push the last packets in buffer */
-			if (npoly > 0)
-			{
+			if (npoly > 0) {
 				s3d_push_polygons(obj_id, polybuf, npoly);
 				if (oldflags & G3D_FLAG_FAC_NORMALS)		s3d_pep_polygon_normals(obj_id, normalbuf, 		npoly);
 				if (oldflags & G3D_FLAG_FAC_TEXMAP)			s3d_pep_polygon_tex_coords( obj_id, texcoordbuf, npoly);

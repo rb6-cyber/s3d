@@ -5,17 +5,17 @@
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3d is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with s3d; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,27 +23,27 @@
 
 
 #include "config.h"
-#ifdef __APPLE__ 
+#ifdef __APPLE__
 #ifdef SHM
 #undef SHM
 #endif
-#endif 
+#endif
 #include <stdint.h>		 /*  integer types */
 #ifdef SHM
-	#include <sys/shm.h> /* key_t */
+#include <sys/shm.h> /* key_t */
 #endif
 /*  variables and defines */
 extern int frame_mode; 	 /*  GLUT, SDL, ... ? */
 extern int running;		 /*  server running flag */
 /*  relevance macros */
 #ifndef S3DUNUSED
-	#if defined(UNUSEDPARAM_ATTRIBUTE)
-		#define S3DUNUSED(x) (x)__attribute__((unused))
-	#elif defined(UNUSEDPARAM_OMIT)
-		#define S3DUNUSED(x) /* x */
-	#else
-		#define S3DUNUSED(x) x
-	#endif
+#if defined(UNUSEDPARAM_ATTRIBUTE)
+#define S3DUNUSED(x) (x)__attribute__((unused))
+#elif defined(UNUSEDPARAM_OMIT)
+#define S3DUNUSED(x) /* x */
+#else
+#define S3DUNUSED(x) x
+#endif
 #endif
 #define NAME_MAX	256		 /*  limit for names [e.g. process names] */
 #define MCP			0		 /*  the mcp's pid	 */
@@ -66,60 +66,52 @@ extern int running;		 /*  server running flag */
 #define OBJ_VALID(p,oid,o)	(oid >= 0) && ((oid < p->n_obj) && ((o=p->object[oid])!=NULL))
 typedef float t_mtrx[16];
 
-struct buf_t
-{
+struct buf_t {
 	uint32_t start,end,bufsize;	/* start/end of the data */
 };
 
 /*  some graphic simple prototypes, they might get into some headerfile later ... */
 /*  our lovely vertex list ... */
-struct t_vertex 
-{
+struct t_vertex {
 	float x,y,z;
 };
-struct t_texc
-{
+struct t_texc {
 	float x,y;
 };
 /*  polygon definition; */
 /*  it's all handled via list types as usually we have only one surface for many polygons, */
 /*  and many vertexes have 2 or more polygons connected. OpenGL will optimize the lists for us */
 /*  anyways, so we shouldn't care ... */
-struct t_poly
-{
+struct t_poly {
 	uint32_t v[3]; 				 /*  we define a poly as set of 3 vertexes, as its usual */
 	struct t_vertex n[3]; 		 /*  normal vectors */
 	uint32_t mat;  				 /*  material index */
 	struct t_texc tc[3];		 /*  texture coords */
 };
-struct t_line
-{
+struct t_line {
 	uint32_t v[2];
 	struct t_vertex n[2];		 /* normal vectors */
 	uint32_t mat;
 };
 /*  material of surfaces, as it's usual in the OpenGL standard */
-struct t_mat
-{
+struct t_mat {
 	float amb_r,amb_g,amb_b,amb_a, 			 /*  ambience */
-		  spec_r,spec_g,spec_b,spec_a,	 	 /*  specualar */
-		  diff_r,diff_g,diff_b,diff_a;		 /*  diffusion */
+	spec_r,spec_g,spec_b,spec_a,	 	 /*  specualar */
+	diff_r,diff_g,diff_b,diff_a;		 /*  diffusion */
 	int32_t tex;							 /*  texture index, -1 if there is no */
 };
 /*  this defines a texture */
-struct t_tex
-{
+struct t_tex {
 	uint16_t w,h;		 /*  width and height */
 	uint16_t tw,th;		 /*  texture width */
 	uint8_t *buf;		 /*  the data */
 	float xs,ys;		 /*  scale data for gl-implementations which require 2^x */
-						 /*  texture sizes. */
+	/*  texture sizes. */
 	int32_t gl_texnum;	 /*  the gl texture number. */
 };
 /*  the object type */
-struct t_obj
-{
-		uint32_t oflags;			 /*  flags, like this object beeing input etc. */
+struct t_obj {
+	uint32_t oflags;			 /*  flags, like this object beeing input etc. */
 #define OF_TURN_ON 		1
 #define OF_TURN_OFF 	2
 #define OF_TURN_SWAP 	3
@@ -138,31 +130,31 @@ struct t_obj
 
 #define OF_CLONE		0x10000000
 #define OF_VIRTUAL		0x20000000
-		
+
 #define OF_SYSTEM		0x80000000
 #define OF_CAM			0x90000000
 #define OF_POINTER		0xA0000000
 #define OF_3DPOINTER	0xB0000000
 
 #define OF_MASK			0x00FFFFFF
-		int32_t n_vertex, n_mat, n_poly, n_tex, n_line;
-					 /*  if OF_VIRTUAL is set, n_mat contains the pid */
-					 /*  if OF_CLONE is set, n_vertex contains the original oid */
-					 /*  I know this is dirty, but it would a waste of data if I don't do so ... */
-		int32_t dplist;		 /*  opengl display list number */
-		int32_t linkid;		 /*  linking target, -1 if there is none */
-		int32_t lsub,lnext,lprev;
-		 /*  pointer to our objects; */
-		struct t_vertex *p_vertex;
-		struct t_mat	*p_mat;
-		struct t_poly	*p_poly;
-		struct t_line   *p_line;
-		struct t_tex	*p_tex;
-		struct t_vertex translate,rotate;
-		float 			scale;
-		t_mtrx			m;
-		int				m_uptodate;	 
-		float r,or;					 /*  radius, object radius */
+	int32_t n_vertex, n_mat, n_poly, n_tex, n_line;
+	/*  if OF_VIRTUAL is set, n_mat contains the pid */
+	/*  if OF_CLONE is set, n_vertex contains the original oid */
+	/*  I know this is dirty, but it would a waste of data if I don't do so ... */
+	int32_t dplist;		 /*  opengl display list number */
+	int32_t linkid;		 /*  linking target, -1 if there is none */
+	int32_t lsub,lnext,lprev;
+	/*  pointer to our objects; */
+	struct t_vertex *p_vertex;
+	struct t_mat	*p_mat;
+	struct t_poly	*p_poly;
+	struct t_line   *p_line;
+	struct t_tex	*p_tex;
+	struct t_vertex translate,rotate;
+	float 			scale;
+	t_mtrx			m;
+	int				m_uptodate;
+	float r,or;					 /*  radius, object radius */
 };
 #ifdef SHM
 struct t_shmcb {
@@ -175,8 +167,7 @@ struct t_shmcb {
 #endif
 
 /*  l_* is a list-type, t_* is the type itself */
-struct t_process
-{
+struct t_process {
 	char 				  name[NAME_MAX];		 /*  process name */
 	struct t_obj		**object;				 /*  initial pointer to object list */
 	int32_t				  n_obj;				 /*  number of objects */
@@ -195,15 +186,14 @@ struct t_process
 #endif
 };
 
-struct t_obj_info 
-{
+struct t_obj_info {
 	int32_t object;
 	uint32_t flags;
 	float trans_x,trans_y,trans_z;
 	float rot_x,rot_y,rot_z;
 	float scale;
 	float r;
-	char name[NAME_MAX]; 
+	char name[NAME_MAX];
 };
 enum {
 	zero,

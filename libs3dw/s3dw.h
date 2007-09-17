@@ -5,17 +5,17 @@
  *
  * This file is part of the s3d Widgets, a Widget Library for s3d.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3d Widgets is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3d Widgets is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with the s3d Widgets; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -28,8 +28,8 @@
 #endif
 #include <stdint.h>  /* [u]intXX_t type definitions*/
 
-/* we want this widget visible, as long as the widgets below are also visible. 
- * on for all widgets, except surfaces which have to be switched visible 
+/* we want this widget visible, as long as the widgets below are also visible.
+ * on for all widgets, except surfaces which have to be switched visible
  * with s3dw_show() */
 #define		S3DW_VISIBLE	1
 /* widget should accept input. that's on by default. */
@@ -70,7 +70,7 @@ typedef void (*s3dw_callback)(s3dw_widget *);
 struct _s3dw_widget {
 	/* private .. */
 	int   		 type;
-	s3dw_widget *parent; 
+	s3dw_widget *parent;
 	s3dw_style  *style;
 	int 				  nobj; /* number of children objects */
 	s3dw_widget		 	**pobj; /* pointer to list of children objects */
@@ -103,7 +103,7 @@ struct _s3dw_label {
 	char 			*text;
 	/* public */
 	s3dw_callback 	 onclick;
-	
+
 };
 struct _s3dw_scrollbar {
 	/* private */
@@ -114,20 +114,20 @@ struct _s3dw_scrollbar {
 	/* public */
 	s3dw_callback 	 lonclick;
 	s3dw_callback 	 ronclick;
-	
+
 };
 
 struct _s3dw_textbox {
 	/* private */
 	s3dw_widget 	 widget;
 	s3dw_scrollbar	*scroll_vertical,
-					*scroll_horizontal;
+	*scroll_horizontal;
 	char 			*text;
 	int				n_lineoids,*p_lineoids;
 	int				window_x,window_y;
 	/* public */
 	s3dw_callback 	 onclick;
-	
+
 };
 
 struct _s3dw_input {

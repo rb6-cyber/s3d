@@ -1,21 +1,21 @@
 /*
  * s3dfm.h
- * 
+ *
  * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3dfm, a s3d file manager.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3dfm is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3dfm is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with s3dfm; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -60,13 +60,13 @@ struct _t_node {
 	int				 parsed,detached;					/* Flags for parsed/detached (selected) nodes ... */
 	int 			 oid;								/* main oid, e.g the block or icons oid */
 	int 			 pindex;							/* the index in parents structure */
-	struct 			 {	
+	struct 			 {
 		/* some objects which might be used ... if not, should be -1 */
 		int 		 close,select,title,titlestr; /* box decorations. */
 		int 		 str;						  /* the name of the nodeas s3d object */
 		float		 strlen;					  /* the length of this string */
-		
-		
+
+
 	} 				 objs;
 	int 			 check;							    /* check marker, for internal things */
 };
@@ -93,8 +93,8 @@ enum {
 	ESTATE_NONE,
 	ESTATE_RISE,
 	ESTATE_WAIT_FOR_CONFIRM
-		/* TODO: more states should be added and handed back to the filesystem processor, like 
-		 * skip, abort, retry ... */
+	/* TODO: more states should be added and handed back to the filesystem processor, like
+	 * skip, abort, retry ... */
 };
 typedef struct _filelist filelist;
 typedef struct _t_node   t_node;

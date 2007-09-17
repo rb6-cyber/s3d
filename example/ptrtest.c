@@ -1,21 +1,21 @@
 /*
  * ptrtest.c
- * 
+ *
  * Copyright (C) 2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3d is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with s3d; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,7 +33,9 @@ float left=-1.0;
 float asp=1.0;
 float len=1.0;
 int alpha=0;
-static struct timespec t={0,10*1000*1000}; /* 100 mili seconds */
+static struct timespec t= {
+	0,10*1000*1000
+}; /* 100 mili seconds */
 int stop(struct s3d_evt *evt)
 {
 	s3d_quit();
@@ -48,20 +50,17 @@ void mainloop()
 	a=(((float)alpha)*M_PI/180);
 	s3d_translate(0,sin(a)*30,0,30+cos(a)*30);
 	s3d_rotate(0,sin(a)*30,alpha,0);
-	nanosleep(&t,NULL); 
+	nanosleep(&t,NULL);
 }
 int object_info(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
 	inf=(struct s3d_obj_info *)hrmz->buf;
-	if (inf->object==0)
-	{
-		if (asp!=inf->scale)
-		{
+	if (inf->object==0) {
+		if (asp!=inf->scale) {
 			asp=inf->scale;
 			printf("screen aspect: %f\n",asp);
-			if (asp>1.0) /* wide screen */
-			{
+			if (asp>1.0) { /* wide screen */
 				bottom=-1.0;
 				left=-asp;
 			} else {  /* high screen */
@@ -70,8 +69,7 @@ int object_info(struct s3d_evt *hrmz)
 			}
 		}
 	}
-	if (inf->object==1)
-	{ /* of course, a link s3d_link(o,1 would be much easier ... */
+	if (inf->object==1) { /* of course, a link s3d_link(o,1 would be much easier ... */
 		s3d_translate(o,(inf->trans_x)*2.0,(inf->trans_y)*2.0,-2);
 	}
 	return(0);
@@ -88,15 +86,14 @@ int mbutton_press(struct s3d_evt *hrmz)
 	s3d_translate(o,0,0,-2);
 	s3d_scale(o,0.2);
 	s3d_link(o,0);			/* link to cam */
-/*	s3d_link(o,1);*/
+	/*	s3d_link(o,1);*/
 	s3d_flags_on(o,S3D_OF_VISIBLE);
 	return(0);
 }
 int main (int argc, char **argv)
 {
 	i=0;
-	if (!s3d_init(&argc,&argv,"ptr and cam test"))	
-	{
+	if (!s3d_init(&argc,&argv,"ptr and cam test")) {
 		s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
 		s3d_set_callback(S3D_EVENT_MBUTTON,mbutton_press);
 		s3d_set_callback(S3D_EVENT_QUIT,stop);
@@ -105,11 +102,11 @@ int main (int argc, char **argv)
 		o=s3d_draw_string("hello",&len);
 		s3d_translate(o,0,0,-2);
 		s3d_link(o,0);			/* link to cam */
-/*		s3d_link(o,1);*/
+		/*		s3d_link(o,1);*/
 		s3d_scale(o,0.2);
 		s3d_flags_on(o,S3D_OF_VISIBLE);
 		s3d_mainloop(mainloop);
-		 /*  wait for some object to be clicked */
+		/*  wait for some object to be clicked */
 		s3d_quit();
 	}
 	return(0);

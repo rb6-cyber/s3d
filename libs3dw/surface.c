@@ -5,17 +5,17 @@
  *
  * This file is part of the s3d Widgets, a Widget Library for s3d.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3d Widgets is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3d Widgets is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with the s3d Widgets; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -65,14 +65,12 @@ void s3dw_surface_draw(s3dw_widget *widget)
 	surface->oid_tbar=s3d_new_object();
 	s3d_select_font("vera");
 	surface->oid_title=s3d_draw_string(surface->title,&length);
-	while (length > (widget->width+1))
-	{
+	while (length > (widget->width+1)) {
 		s3dprintf(HIGH,"%f > %f",length,widget->width+1);
 		textlen=strlen(surface->title);
 		if (length>((widget->width+1)*1.3))
 			textlen=textlen*((widget->width+1)*1.1/length);
-		if (textlen>4)
-		{
+		if (textlen>4) {
 			surface->title[textlen-2]=0;
 			surface->title[textlen-3]='.';
 			surface->title[textlen-4]='.';
@@ -82,9 +80,8 @@ void s3dw_surface_draw(s3dw_widget *widget)
 			break;
 		}
 	}
- 	/* prepare vertices */
-	for (i=0;i<8;i++)
-	{
+	/* prepare vertices */
+	for (i=0;i<8;i++) {
 		sver[i*3 + 0]=vertices[i*3+0] * widget->width;
 		sver[i*3 + 1]=vertices[i*3+1] * -widget->height;
 		sver[i*3 + 2]=vertices[i*3+2] * -1;
@@ -93,12 +90,11 @@ void s3dw_surface_draw(s3dw_widget *widget)
 		tver[i*3 + 2]=vertices[i*3+2] * -1;
 	}
 	/* swap */
-	for (i=0;i<10;i++)
-	{
-	   tpol[i*4 + 0]=polygon[i*4 + 1];
-	   tpol[i*4 + 1]=polygon[i*4 + 0];
-	   tpol[i*4 + 2]=polygon[i*4 + 2];
-	   tpol[i*4 + 3]=polygon[i*4 + 3];
+	for (i=0;i<10;i++) {
+		tpol[i*4 + 0]=polygon[i*4 + 1];
+		tpol[i*4 + 1]=polygon[i*4 + 0];
+		tpol[i*4 + 2]=polygon[i*4 + 2];
+		tpol[i*4 + 3]=polygon[i*4 + 3];
 	}
 	s3d_push_vertices(widget->oid,sver,8);
 	s3d_push_vertices(surface->oid_tbar,tver,8);
@@ -118,17 +114,17 @@ void s3dw_surface_draw(s3dw_widget *widget)
 void s3dw_surface_show(s3dw_widget *widget)
 {
 	s3dw_surface *surface=(s3dw_surface *)widget;
-    s3d_flags_on(widget->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-    s3d_flags_on(surface->oid_title,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-    s3d_flags_on(surface->oid_tbar,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	s3d_flags_on(widget->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	s3d_flags_on(surface->oid_title,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	s3d_flags_on(surface->oid_tbar,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 }
 /* hides the surface */
 void s3dw_surface_hide(s3dw_widget *widget)
 {
 	s3dw_surface *surface=(s3dw_surface *)widget;
-    s3d_flags_off(widget->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-    s3d_flags_off(surface->oid_title,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-    s3d_flags_off(surface->oid_tbar,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	s3d_flags_off(widget->oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	s3d_flags_off(surface->oid_title,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+	s3d_flags_off(surface->oid_tbar,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 }
 /* create a new surface */
 s3dw_surface *s3dw_surface_new(char *title, float width, float height)
@@ -136,7 +132,7 @@ s3dw_surface *s3dw_surface_new(char *title, float width, float height)
 	s3dw_surface *surface;
 	s3dw_widget  *widget;
 	float f1[3];
-			
+
 	surface=(s3dw_surface *)malloc(sizeof(s3dw_surface));
 	surface->title=strdup(title);
 	widget=s3dw_widget_new((s3dw_widget *)surface);
@@ -183,14 +179,12 @@ int s3dw_surface_event_key(s3dw_widget *S3DUNUSED(widget), struct s3d_key_event 
 int s3dw_surface_event_click(s3dw_widget *widget, uint32_t oid)
 {
 	s3dw_surface *surface=(s3dw_surface *)widget;
-	if (widget->oid==oid)
-	{
+	if (widget->oid==oid) {
 		s3dw_focus(widget);
 		s3dprintf(MED,"body %s clicked",surface->title);
 		return(1);
 	}
-	if ((surface->oid_tbar==oid) || (surface->oid_title==oid))
-	{
+	if ((surface->oid_tbar==oid) || (surface->oid_title==oid)) {
 		s3dw_focus(widget);
 		s3dprintf(MED,"title %s clicked",surface->title);
 		return(1);

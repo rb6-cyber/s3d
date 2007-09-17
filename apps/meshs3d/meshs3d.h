@@ -30,8 +30,7 @@
 #define MAXDATASIZE 100			/* max number of bytes we can get at once  */
 
 /* linked list for the all connections */
-struct node_con
-{
+struct node_con {
 	unsigned int ip[2];
 	float etx1;							/* etx of left olsr node */
 	float etx2;						/* etx of right olsr node */
@@ -43,16 +42,14 @@ struct node_con
 };
 
 /* linked list for the neighbours of each olsr node */
-struct olsr_neigh_list
-{
+struct olsr_neigh_list {
 	struct olsr_neigh_list *next_olsr_neigh_list;		/* pointer to next neighbour */
 	struct olsr_con *olsr_con;							/* pointer to the connection */
 };
 
 
 /* we contruct a binary tree to handle the nodes */
-struct node 
-{
+struct node {
 	unsigned int ip;
 	char ip_string[NAMEMAX];		/* host ip */
 	int node_type;					/* normal = 0, internet gateway = 1, via hna announced network = 2 */
@@ -67,8 +64,7 @@ struct node
 };
 
 
-struct obj_to_ip
-{
+struct obj_to_ip {
 	int id;
 	struct olsr_node *olsr_node;
 	struct obj_to_ip *next;

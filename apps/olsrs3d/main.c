@@ -41,7 +41,9 @@
 
 #define SPEED		10.0
 
-static struct timespec sleep_time = { 0, 100 * 1000 * 1000 };   /* 100 mili seconds */
+static struct timespec sleep_time = {
+	0, 100 * 1000 * 1000
+};   /* 100 mili seconds */
 
 int Debug = 0;
 
@@ -96,7 +98,8 @@ float Title_len;
  *
  ***/
 
-void print_usage( void ) {
+void print_usage( void )
+{
 
 	printf( "Usage is olsrs3d [options] [-- [s3d options]]\n" );
 	printf( "olsrs3d options:\n" );
@@ -108,13 +111,15 @@ void print_usage( void ) {
 }
 
 
-void close_win(s3dw_widget *button) {
+void close_win(s3dw_widget *button)
+{
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
 
 
 
-void window_help() {
+void window_help()
+{
 
 	s3dw_surface *infwin;
 	s3dw_button  *button;
@@ -149,7 +154,8 @@ void window_help() {
 }
 
 
-void window_error(char *msg) {
+void window_error(char *msg)
+{
 
 	s3dw_surface *infwin;
 	s3dw_button  *button;
@@ -170,7 +176,8 @@ void window_error(char *msg) {
  *
  ***/
 
-void out_of_mem( void ) {
+void out_of_mem( void )
+{
 
 	printf( "Sorry - you ran out of memory !\n" );
 	exit(8);
@@ -179,7 +186,8 @@ void out_of_mem( void ) {
 
 
 
-unsigned int get_time(void) {
+unsigned int get_time(void)
+{
 
 	struct timeval tv;
 
@@ -258,9 +266,9 @@ float dirt(float p1[], float p2[], float p3[])
 
 void mov_add(float mov[], float p[], float fac)
 {
-/*	if (fac>1000)
-		return;
-	fac=1000; */
+	/*	if (fac>1000)
+			return;
+		fac=1000; */
 	mov[0]+=fac*p[0];
 	mov[1]+=fac*p[1];
 	mov[2]+=fac*p[2];
@@ -276,7 +284,8 @@ void mov_add(float mov[], float p[], float fac)
  *
  ***/
 
-void handle_olsr_node( struct olsr_node *olsr_node ) {
+void handle_olsr_node( struct olsr_node *olsr_node )
+{
 
 	float distance, angle, angle_rad;
 	float tmp_mov_vec[3], desc_norm_vec[3] = {0,0,-1};
@@ -489,7 +498,8 @@ void handle_olsr_node( struct olsr_node *olsr_node ) {
  *
  ***/
 
-void calc_olsr_node_mov( void ) {
+void calc_olsr_node_mov( void )
+{
 
 	float distance;
 	float tmp_mov_vec[3];
@@ -524,7 +534,8 @@ void calc_olsr_node_mov( void ) {
  *
  ***/
 
-void move_olsr_nodes( void ) {
+void move_olsr_nodes( void )
+{
 
 	float null_vec[3] = {0,0,0}, vertex_buf[6];
 	float tmp_mov_vec[3];
@@ -590,11 +601,11 @@ void move_olsr_nodes( void ) {
 			/* HNA */
 			if ( olsr_con->left_etx == -1000.00 ) {
 
-				if(olsr_con->color != 1) {
+				if (olsr_con->color != 1) {
 					s3d_pep_material( olsr_con->obj_id,
-								   0.0,0.0,1.0,
-								   0.0,0.0,1.0,
-								   0.0,0.0,1.0);
+					                  0.0,0.0,1.0,
+					                  0.0,0.0,1.0,
+					                  0.0,0.0,1.0);
 					olsr_con->color = 1;
 				}
 
@@ -605,82 +616,82 @@ void move_olsr_nodes( void ) {
 				/* very good link - bright blue */
 				if ( ( etx >= 1.0 ) && ( etx < 1.5 ) ) {
 
-					if(olsr_con->color != 2) {
+					if (olsr_con->color != 2) {
 						s3d_pep_material( olsr_con->obj_id,
-								0.5,1.0,1.0,
-								0.5,1.0,1.0,
-								0.5,1.0,1.0);
+						                  0.5,1.0,1.0,
+						                  0.5,1.0,1.0,
+						                  0.5,1.0,1.0);
 						olsr_con->color = 2;
 					}
 
-				/* good link - bright yellow */
+					/* good link - bright yellow */
 				} else if ( ( etx >= 1.5 ) && ( etx < 2.0 ) ) {
 
 					rgb = 2.0 - etx;
-					if( olsr_con->color != 3 || (olsr_con->color == 3 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10))) {
+					if ( olsr_con->color != 3 || (olsr_con->color == 3 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10))) {
 						s3d_pep_material( olsr_con->obj_id,
-								1.0,1.0,rgb,
-								1.0,1.0,rgb,
-								1.0,1.0,rgb);
+						                  1.0,1.0,rgb,
+						                  1.0,1.0,rgb,
+						                  1.0,1.0,rgb);
 						olsr_con->color = 3;
 
 						olsr_con->rgb =  rgb;
 					}
 
-				/* not so good link - orange */
+					/* not so good link - orange */
 				} else if ( ( etx >= 2.0 ) && ( etx < 3.0 ) ) {
 
 					rgb = 1.5 - ( etx / 2.0 );
-					if( olsr_con->color != 4 || (olsr_con->color == 4 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10))) {
+					if ( olsr_con->color != 4 || (olsr_con->color == 4 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10))) {
 						s3d_pep_material( olsr_con->obj_id,
-								1.0,rgb,0.0,
-								1.0,rgb,0.0,
-								1.0,rgb,0.0);
+						                  1.0,rgb,0.0,
+						                  1.0,rgb,0.0,
+						                  1.0,rgb,0.0);
 						olsr_con->color = 4;
 
 						olsr_con->rgb = rgb;
 					}
 
-				/* bad link (almost dead) - brown */
+					/* bad link (almost dead) - brown */
 				} else if ( ( etx >= 3.0 ) && ( etx < 5.0 ) ) {
 
 					rgb = 1.75 - ( etx / 4.0 );
 
-					if( olsr_con->color != 5 || (olsr_con->color == 5 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10)) ) {
+					if ( olsr_con->color != 5 || (olsr_con->color == 5 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10)) ) {
 
 						s3d_pep_material( olsr_con->obj_id,
-								rgb,rgb - 0.5,0.0,
-								rgb,rgb - 0.5,0.0,
-								rgb,rgb - 0.5,0.0);
+						                  rgb,rgb - 0.5,0.0,
+						                  rgb,rgb - 0.5,0.0,
+						                  rgb,rgb - 0.5,0.0);
 						olsr_con->color = 5;
 
 						olsr_con->rgb = rgb;
 					}
 
-				/* zombie link - grey */
+					/* zombie link - grey */
 				} else if ( ( etx >= 5.0 ) && ( etx < 1000.0 ) ) {
 
 					rgb = 1000.0 / ( 1500.0 + etx );
 
-					if( olsr_con->color != 6 || (olsr_con->color == 6 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10)) ) {
+					if ( olsr_con->color != 6 || (olsr_con->color == 6 && (int) rintf(olsr_con->rgb * 10) !=  (int) rintf(rgb * 10)) ) {
 
 						s3d_pep_material( olsr_con->obj_id,
-								rgb,rgb,rgb,
-								rgb,rgb,rgb,
-								rgb,rgb,rgb);
+						                  rgb,rgb,rgb,
+						                  rgb,rgb,rgb,
+						                  rgb,rgb,rgb);
 						olsr_con->color = 6;
 
 						olsr_con->rgb = rgb;
 					}
 
-				/* wtf - dark grey */
+					/* wtf - dark grey */
 				} else {
 
-					if(olsr_con->color != 7) {
+					if (olsr_con->color != 7) {
 						s3d_pep_material( olsr_con->obj_id,
-								0.3,0.3,0.3,
-								0.3,0.3,0.3,
-								0.3,0.3,0.3);
+						                  0.3,0.3,0.3,
+						                  0.3,0.3,0.3,
+						                  0.3,0.3,0.3);
 						olsr_con->color = 7;
 					}
 
@@ -690,11 +701,11 @@ void move_olsr_nodes( void ) {
 
 		} else {
 
-			if(olsr_con->color != 0) {
+			if (olsr_con->color != 0) {
 				s3d_pep_material( olsr_con->obj_id,
-							1.0,1.0,1.0,
-							1.0,1.0,1.0,
-							1.0,1.0,1.0);
+				                  1.0,1.0,1.0,
+				                  1.0,1.0,1.0,
+				                  1.0,1.0,1.0);
 				olsr_con->color = 0;
 			}
 
@@ -709,7 +720,8 @@ void move_olsr_nodes( void ) {
 
 
 
-void mainloop() {
+void mainloop()
+{
 
 	int net_result;   /* result of function net_main */
 	char nc_str[20];
@@ -755,7 +767,7 @@ void mainloop() {
 	}
 
 	/* rotate modus */
-	if(RotateSwitch) {
+	if (RotateSwitch) {
 		Zp_rotate = ( Zp_rotate + RotateSpeed ) > 360 ? 0.0 : ( Zp_rotate + RotateSpeed );
 		s3d_rotate(ZeroPoint,0,Zp_rotate,0);
 	}
@@ -766,16 +778,15 @@ void mainloop() {
 	CamPosition2[0][2]=  CamPosition[0][0]*sin(Zp_rotate*M_PI/180.0) + CamPosition[0][2] * cos (Zp_rotate*M_PI/180.0);
 
 	/* check search status */
-/*	if( get_search_status() == WIDGET )
-		move_to_search_widget( CamPosition[0], CamPosition[1] );*/
-	if( get_search_status() == FOLLOW )
+	/*	if( get_search_status() == WIDGET )
+			move_to_search_widget( CamPosition[0], CamPosition[1] );*/
+	if ( get_search_status() == FOLLOW )
 		follow_node( CamPosition[0], CamPosition[1], Zp_rotate );
-/*	if( get_search_status() == ABORT )
-		move_to_return_point( CamPosition[0], CamPosition[1] );*/
+	/*	if( get_search_status() == ABORT )
+			move_to_return_point( CamPosition[0], CamPosition[1] );*/
 
 
-	if( Olsr_ip_label_obj != -1 )
-	{
+	if ( Olsr_ip_label_obj != -1 ) {
 		print_etx();
 	}
 	s3dw_ani_mate();
@@ -786,7 +797,8 @@ void mainloop() {
 
 }
 
-int stop() {
+int stop()
+{
 	s3d_quit();
 	net_quit();
 	return(0);
@@ -798,90 +810,86 @@ int stop() {
  *
  ***/
 
-int keypress(struct s3d_evt *event) {
+int keypress(struct s3d_evt *event)
+{
 
 	struct s3d_key_event *key=(struct s3d_key_event *)event->buf;
-	if( get_search_status() != WIDGET )
-	{
-		switch(key->keysym)
-		{
-			case S3DK_F1: /* help */
+	if ( get_search_status() != WIDGET ) {
+		switch (key->keysym) {
+		case S3DK_F1: /* help */
 
-				window_help();
-				break;
+			window_help();
+			break;
 
-			case S3DK_ESCAPE: /* abort action */
+		case S3DK_ESCAPE: /* abort action */
 
-				set_search_status( get_search_status() == WIDGET ? ABORT : NOTHING );
-				break;
+			set_search_status( get_search_status() == WIDGET ? ABORT : NOTHING );
+			break;
 
-			case S3DK_s: /* move to search widget, give widget focus */
+		case S3DK_s: /* move to search widget, give widget focus */
 
-				set_search_status(WIDGET);							/* set status for mainloop */
-				set_node_root( Olsr_root );
-				show_search_window();
-/*				set_return_point(CamPosition[0],CamPosition[1]);	/ * save the return position * /
-				set_node_root( Olsr_root );*/
+			set_search_status(WIDGET);							/* set status for mainloop */
+			set_node_root( Olsr_root );
+			show_search_window();
+			/*				set_return_point(CamPosition[0],CamPosition[1]);	/ * save the return position * /
+							set_node_root( Olsr_root );*/
 
-				break;
+			break;
 
-			case S3DK_c: /* color on/off */
+		case S3DK_c: /* color on/off */
 
-				ColorSwitch =  ColorSwitch ? 0 : 1;
-				break;
+			ColorSwitch =  ColorSwitch ? 0 : 1;
+			break;
 
-			case S3DK_r: /* rotate start/stop*/
+		case S3DK_r: /* rotate start/stop*/
 
-				RotateSwitch = RotateSwitch ? 0 : 1;
-				break;
+			RotateSwitch = RotateSwitch ? 0 : 1;
+			break;
 
-			case S3DK_PLUS: /* rotate speed increase */
+		case S3DK_PLUS: /* rotate speed increase */
 
-				if(RotateSwitch && RotateSpeed < 5)
-				{
-					if(RotateSpeed >= 1.0)
-						RotateSpeed += 1.0;
-					else
-						RotateSpeed += 0.1;
+			if (RotateSwitch && RotateSpeed < 5) {
+				if (RotateSpeed >= 1.0)
+					RotateSpeed += 1.0;
+				else
+					RotateSpeed += 0.1;
+			}
+			break;
+
+		case S3DK_MINUS: /* - -> rotate speed decrease */
+
+			if (RotateSwitch) {
+				if ( RotateSpeed >= 2.0 )
+					RotateSpeed -= 1.0;
+				else {
+					if (RotateSpeed > 0.2)
+						RotateSpeed -= 0.1;
 				}
-				break;
+			}
+			break;
 
-			case S3DK_MINUS: /* - -> rotate speed decrease */
+		case S3DK_p: /* strg + p -> reset nodes ( zeroPoint to 0,0,0 ) */
+			if (key->modifier&(S3D_KMOD_LCTRL|S3D_KMOD_RCTRL)) {
+				s3d_rotate(ZeroPoint, 0, 0, 0);
+				Zp_rotate = 0.0;
+			}
+			break;
 
-				if(RotateSwitch)
-				{
-					if( RotateSpeed >= 2.0 )
-						RotateSpeed -= 1.0;
-					else {
-						if(RotateSpeed > 0.2)
-							RotateSpeed -= 0.1;
-					}
-				}
-				break;
+		case S3DK_PAGEUP: /* change factor in calc_olsr_node_mov */
 
-			case S3DK_p: /* strg + p -> reset nodes ( zeroPoint to 0,0,0 ) */
-				if (key->modifier&(S3D_KMOD_LCTRL|S3D_KMOD_RCTRL))
-				{
-					s3d_rotate(ZeroPoint, 0, 0, 0);
-					Zp_rotate = 0.0;
-				}
-				break;
+			if (Factor < 0.9)
+				Factor += 0.1;
+			break;
 
-			case S3DK_PAGEUP: /* change factor in calc_olsr_node_mov */
+		case S3DK_PAGEDOWN: /* change factor in calc_olsr_node_mov */
 
-				if(Factor < 0.9)
-					Factor += 0.1;
-				break;
-
-			case S3DK_PAGEDOWN: /* change factor in calc_olsr_node_mov */
-
-				if(Factor > 0.3)
-					Factor -= 0.1;
-				break;
+			if (Factor > 0.3)
+				Factor -= 0.1;
+			break;
 
 		}
 	} else {
-		if( (key->keysym >= S3DK_PERIOD && key->keysym <= S3DK_9) || key->keysym == S3DK_COMMA || key->keysym == S3DK_RETURN || key->keysym == S3DK_BACKSPACE )
+		if ( (key->keysym >= S3DK_PERIOD && key->keysym <= S3DK_9) || key->keysym == S3DK_COMMA || key->keysym == S3DK_RETURN || key->keysym == S3DK_BACKSPACE )
 			search_widget_write( key->keysym );
 	}
 	return(0);
@@ -895,18 +903,18 @@ int keypress(struct s3d_evt *event) {
 
 int object_click(struct s3d_evt *evt)
 {
-/*	int i
-	char ip_str[50];
-	struct timeval tv;*/
+	/*	int i
+		char ip_str[50];
+		struct timeval tv;*/
 	struct olsr_node *olsr_node;
 	int oid;
 
 	s3dw_handle_click(evt);
-/*	if( get_search_status() == WIDGET )
-	{
-		s3dw_handle_click(evt);
-		return;
-	}*/
+	/*	if( get_search_status() == WIDGET )
+		{
+			s3dw_handle_click(evt);
+			return;
+		}*/
 
 	oid=(int)*((uint32_t *)evt->buf);
 
@@ -924,55 +932,55 @@ int object_click(struct s3d_evt *evt)
 	Last_Click_Time = get_time();
 
 
-/*	if( oid == Btn_close_id )
-	{
-		s3d_del_object(Btn_close_id);
-		s3d_del_object(Olsr_ip_label_obj);
-		Btn_close_id = Olsr_ip_label_obj = -1;
-		for(i=0; i < Size; i++)
-			s3d_del_object( Olsr_neighbour_label_obj[i] );
-		free(Olsr_neighbour_label_obj);
-		Olsr_neighbour_label_obj = NULL;
-		for(i = 0; i < 4; i++)
+	/*	if( oid == Btn_close_id )
 		{
-			if(Output_border[i] != -1)
-				s3d_del_object(Output_border[i]);
-			Output_border[i] = -1;
-		}
-		return;
-	}
-
-	Olsr_node_pEtx = *lst_search(oid);
-
-	if( Olsr_node_pEtx != NULL )
-	{
-		if( Btn_close_id == -1 )
-		{
-			Btn_close_id = s3d_clone( Btn_close_obj );
-			s3d_link(Btn_close_id,0);
-			s3d_flags_on(Btn_close_id,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-			s3d_scale( Btn_close_id, 0.10 );
-			s3d_translate( Btn_close_id,-Left*3.0-0.150, -Bottom*3.0-0.9, -3.0 );
+			s3d_del_object(Btn_close_id);
+			s3d_del_object(Olsr_ip_label_obj);
+			Btn_close_id = Olsr_ip_label_obj = -1;
+			for(i=0; i < Size; i++)
+				s3d_del_object( Olsr_neighbour_label_obj[i] );
+			free(Olsr_neighbour_label_obj);
+			Olsr_neighbour_label_obj = NULL;
+			for(i = 0; i < 4; i++)
+			{
+				if(Output_border[i] != -1)
+					s3d_del_object(Output_border[i]);
+				Output_border[i] = -1;
+			}
+			return;
 		}
 
-		if ( Olsr_ip_label_obj != -1 ) s3d_del_object( Olsr_ip_label_obj );
-		snprintf( ip_str, 35, "ip: %s", Olsr_node_pEtx->ip );
-		Olsr_ip_label_obj = s3d_draw_string( ip_str, &Title_len );
-		s3d_link( Olsr_ip_label_obj, 0 );
-		s3d_flags_on( Olsr_ip_label_obj, S3D_OF_VISIBLE );
-		s3d_scale( Olsr_ip_label_obj, 0.2 );
-		s3d_translate( Olsr_ip_label_obj,-Left*3.0-(Title_len * 0.2)-0.15, -Bottom*3.0-1.2, -3.0 );
+		Olsr_node_pEtx = *lst_search(oid);
 
-		cam_go=1;
-		if ( Olsr_ip_label_obj != -1 ) s3d_del_object( Olsr_ip_label_obj );
-		snprintf( ip_str, 35, "ip: %s", Olsr_node_pEtx->ip );
-		Olsr_ip_label_obj = s3d_draw_string( ip_str, &Title_len );
-		s3d_link( Olsr_ip_label_obj, 0 );
-		s3d_flags_on( Olsr_ip_label_obj, S3D_OF_VISIBLE );
-		s3d_scale( Olsr_ip_label_obj, 0.2 );
-		s3d_translate( Olsr_ip_label_obj,-Left*3.0-(Title_len * 0.2)-0.15, -Bottom*3.0-1.0, -3.0 );
+		if( Olsr_node_pEtx != NULL )
+		{
+			if( Btn_close_id == -1 )
+			{
+				Btn_close_id = s3d_clone( Btn_close_obj );
+				s3d_link(Btn_close_id,0);
+				s3d_flags_on(Btn_close_id,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+				s3d_scale( Btn_close_id, 0.10 );
+				s3d_translate( Btn_close_id,-Left*3.0-0.150, -Bottom*3.0-0.9, -3.0 );
+			}
 
-	}*/
+			if ( Olsr_ip_label_obj != -1 ) s3d_del_object( Olsr_ip_label_obj );
+			snprintf( ip_str, 35, "ip: %s", Olsr_node_pEtx->ip );
+			Olsr_ip_label_obj = s3d_draw_string( ip_str, &Title_len );
+			s3d_link( Olsr_ip_label_obj, 0 );
+			s3d_flags_on( Olsr_ip_label_obj, S3D_OF_VISIBLE );
+			s3d_scale( Olsr_ip_label_obj, 0.2 );
+			s3d_translate( Olsr_ip_label_obj,-Left*3.0-(Title_len * 0.2)-0.15, -Bottom*3.0-1.2, -3.0 );
+
+			cam_go=1;
+			if ( Olsr_ip_label_obj != -1 ) s3d_del_object( Olsr_ip_label_obj );
+			snprintf( ip_str, 35, "ip: %s", Olsr_node_pEtx->ip );
+			Olsr_ip_label_obj = s3d_draw_string( ip_str, &Title_len );
+			s3d_link( Olsr_ip_label_obj, 0 );
+			s3d_flags_on( Olsr_ip_label_obj, S3D_OF_VISIBLE );
+			s3d_scale( Olsr_ip_label_obj, 0.2 );
+			s3d_translate( Olsr_ip_label_obj,-Left*3.0-(Title_len * 0.2)-0.15, -Bottom*3.0-1.0, -3.0 );
+
+		}*/
 	return(0);
 }
 
@@ -983,10 +991,9 @@ void print_etx()
 	int i;
 	float len = 0.0, max_len=0.0;
 
-	if( Olsr_neighbour_label_obj != NULL )
-	{
+	if ( Olsr_neighbour_label_obj != NULL ) {
 		/* int n = sizeof(Olsr_neighbour_label_obj) / sizeof(int);*/
-		for(i=0; i < Size; i++)
+		for (i=0; i < Size; i++)
 			s3d_del_object( Olsr_neighbour_label_obj[i] );
 		free(Olsr_neighbour_label_obj);
 		Olsr_neighbour_label_obj = NULL;
@@ -995,8 +1002,7 @@ void print_etx()
 	tmpNeighbour = Olsr_node_pEtx->olsr_neigh_list;
 
 	Size = 0;
-	while(tmpNeighbour != NULL)
-	{
+	while (tmpNeighbour != NULL) {
 		Size++;
 		tmpNeighbour = tmpNeighbour->next_olsr_neigh_list;
 	}
@@ -1004,12 +1010,11 @@ void print_etx()
 	Olsr_neighbour_label_obj = malloc(Size*sizeof(int));
 	tmpNeighbour = Olsr_node_pEtx->olsr_neigh_list;
 
-	for(i = 0; i < Size ;i++)
-	{
+	for (i = 0; i < Size ;i++) {
 		char nIpStr[60];
 		float mEtx = ( tmpNeighbour->olsr_con->left_etx + tmpNeighbour->olsr_con->right_etx ) / 2;
 
-		if( mEtx != -1000 )
+		if ( mEtx != -1000 )
 			snprintf(nIpStr, 60, "%15s --> %.2f",(strcmp(Olsr_node_pEtx->ip,tmpNeighbour->olsr_con->right_olsr_node->ip)?tmpNeighbour->olsr_con->right_olsr_node->ip:tmpNeighbour->olsr_con->left_olsr_node->ip),mEtx);
 		else
 			snprintf(nIpStr, 60, "%15s --> HNA",(strcmp(Olsr_node_pEtx->ip,tmpNeighbour->olsr_con->right_olsr_node->ip)?tmpNeighbour->olsr_con->right_olsr_node->ip:tmpNeighbour->olsr_con->left_olsr_node->ip));
@@ -1026,17 +1031,14 @@ void print_etx()
 		/* printf("title: %f len: %f maxlen: %f %s\n",Title_len,len,max_len-0.2,nIpStr);*/
 	}
 
-	if( Btn_close_id != -1)
-	{
-		if( Output_border[0] == -1 )
-		{
-			for(i = 0; i < 4; i++)
-			{
+	if ( Btn_close_id != -1) {
+		if ( Output_border[0] == -1 ) {
+			for (i = 0; i < 4; i++) {
 				Output_border[i] = s3d_new_object();
 				s3d_push_material( Output_border[i],
-					1.0,1.0,1.0,
-					1.0,1.0,1.0,
-					1.0,1.0,1.0);
+				                   1.0,1.0,1.0,
+				                   1.0,1.0,1.0,
+				                   1.0,1.0,1.0);
 			}
 			s3d_push_vertex(Output_border[0], -Left*3.0-0.2,			-Bottom*3.0-0.9, -3.0);
 			s3d_push_vertex(Output_border[0], -Left*3.0-(max_len*0.2),	-Bottom*3.0-0.9, -3.0);
@@ -1098,8 +1100,7 @@ int object_info(struct s3d_evt *hrmz)
 	struct s3d_obj_info *inf;
 	inf=(struct s3d_obj_info *)hrmz->buf;
 	s3dw_object_info(hrmz);
-	if (inf->object==0)
-	{
+	if (inf->object==0) {
 		CamPosition[0][0] = inf->trans_x;
 		CamPosition[0][1] = inf->trans_y;
 		CamPosition[0][2] = inf->trans_z;
@@ -1107,8 +1108,7 @@ int object_info(struct s3d_evt *hrmz)
 		CamPosition[1][1] = inf->rot_y;
 		CamPosition[1][2] = inf->rot_z;
 		Asp=inf->scale;
-		if (Asp>1.0) /* wide screen */
-		{
+		if (Asp>1.0) { /* wide screen */
 			Bottom=-1.0;
 			Left=-Asp;
 		} else {  /* high screen */
@@ -1130,7 +1130,8 @@ int mbutton_press(struct s3d_evt *hrmz)
 	return(0);
 }
 
-int main( int argc, char *argv[] ) {
+int main( int argc, char *argv[] )
+{
 
 	int optchar;
 	strncpy( Olsr_host, "127.0.0.1", 256 );
@@ -1140,18 +1141,18 @@ int main( int argc, char *argv[] ) {
 
 		switch ( optchar ) {
 
-			case 'd':
-				Debug = 1;
-				break;
+		case 'd':
+			Debug = 1;
+			break;
 
-			case 'H':
-				strncpy( Olsr_host, optarg, 256 );
-				break;
+		case 'H':
+			strncpy( Olsr_host, optarg, 256 );
+			break;
 
-			case 'h':
-			default:
-				print_usage();
-				return (0);
+		case 'h':
+		default:
+			print_usage();
+			return (0);
 
 		}
 
@@ -1174,15 +1175,13 @@ int main( int argc, char *argv[] ) {
 	optind = 0;
 
 
-	if (!net_init(Olsr_host))
-	{
+	if (!net_init(Olsr_host)) {
 		s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
 		s3d_set_callback(S3D_EVENT_KEY,keypress);
 		s3d_set_callback(S3D_EVENT_QUIT,stop);
 
-		if (!s3d_init(&argc,&argv,"olsrs3d"))
-		{
+		if (!s3d_init(&argc,&argv,"olsrs3d")) {
 
 			if (s3d_select_font("vera"))
 				printf("font not found\n");

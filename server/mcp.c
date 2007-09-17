@@ -1,21 +1,21 @@
 /*
  * mcp.c
- * 
+ *
  * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3d is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with s3d; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -25,9 +25,9 @@
 #include "global.h"
 #include "proto.h" 			 /*  for S3D_P_OBJECT, to be integrated in proto.c */
 #ifdef WIN32
-	#include <winsock2.h>
+#include <winsock2.h>
 #else
-	#include <netinet/in.h> 	 /*  htonl() */
+#include <netinet/in.h> 	 /*  htonl() */
 #endif
 #include <string.h>			 /*  strncpy() */
 
@@ -35,13 +35,12 @@
 extern int 		   focus_oid;		 /*  the focused program */
 
 /*  this interacts with the actual mcp client */
-struct mcp_object 
-{
+struct mcp_object {
 	uint32_t object;
 	float trans_x,trans_y,trans_z;
 	float r;
-/* 	char event; */
-	char name[NAME_MAX]; 
+	/* 	char event; */
+	char name[NAME_MAX];
 };
 #define MCP_NEW_OBJECT	1
 /*  call when a new mcp connects */
@@ -51,18 +50,16 @@ int mcp_init()
 	uint32_t i;
 	p=get_proc_by_pid(MCP);
 	i=p->n_obj;
-	while (i--)
-	{
+	while (i--) {
 		if (p->object[i]!=NULL)
-		switch (p->object[i]->oflags&OF_TYPE)
-		{
+			switch (p->object[i]->oflags&OF_TYPE) {
 			case OF_VIRTUAL:
-					mcp_rep_object(i);
-					break;
+				mcp_rep_object(i);
+				break;
 			case OF_CAM:
-					event_obj_info(p,i);
-					break;
-		}
+				event_obj_info(p,i);
+				break;
+			}
 	}
 	mcp_focus(-1);
 	return(0);
@@ -78,7 +75,7 @@ int mcp_rep_object(int32_t mcp_oid)
 	mo.trans_y=p->object[mcp_oid]->translate.y;
 	mo.trans_z=p->object[mcp_oid]->translate.z;
 	mo.r=p->object[mcp_oid]->r;
-/* 	mo.event=MCP_NEW_OBJECT; */
+	/* 	mo.event=MCP_NEW_OBJECT; */
 	ap=get_proc_by_pid(p->object[mcp_oid]->n_mat);
 	strncpy(mo.name,ap->name,NAME_MAX);
 	prot_com_out(p,S3D_P_MCP_OBJECT,(uint8_t *)&mo,sizeof(struct mcp_object));
@@ -88,8 +85,7 @@ int mcp_rep_object(int32_t mcp_oid)
 int mcp_del_object(int32_t mcp_oid)
 {
 	int32_t oid=htonl(mcp_oid);
-	if (mcp_oid==focus_oid)
-	{
+	if (mcp_oid==focus_oid) {
 		s3dprintf(MED,"lost the focus of mcp-oid %d",mcp_oid);
 		mcp_focus(-1);
 	}
@@ -105,8 +101,7 @@ int mcp_focus(int oid)
 	p=get_proc_by_pid(MCP);
 	s3dprintf(MED,"request to focus %d",oid);
 	if (OBJ_VALID(p,oid,o))
-		if (o->oflags&OF_VIRTUAL)
-		{
+		if (o->oflags&OF_VIRTUAL) {
 			focus_oid=oid;
 			obj_pos_update(p,0,0);
 		}

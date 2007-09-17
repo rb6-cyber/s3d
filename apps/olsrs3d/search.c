@@ -50,10 +50,10 @@ void _abort_search(s3dw_widget *dummy);
 void follow_node(float cam_position_t[], float cam_position_r[],float rotate)
 {
 	float real_node_pos[3],
-		  cam_target[3],
-		  tmp_vec[3],
-		  diff_vec[3],
-		  angle;
+	cam_target[3],
+	tmp_vec[3],
+	diff_vec[3],
+	angle;
 
 	real_node_pos[0] =  (*search_node)->pos_vec[0] * cos( rotate * M_PI / 180.0 ) - (*search_node)->pos_vec[2] * -sin ( rotate * M_PI / 180.0 );
 	real_node_pos[1] =  (*search_node)->pos_vec[1];
@@ -147,7 +147,9 @@ void create_search_widget(float x, float y, float z)
 /* public */
 void move_search_widget(float x, float y, float z)
 {
-	_search_widget->x = x; _search_widget->y = y; _search_widget->z = z;
+	_search_widget->x = x;
+	_search_widget->y = y;
+	_search_widget->z = z;
 	s3dw_moveit( _search_widget );
 }
 
@@ -164,27 +166,27 @@ void move_to_search_widget(float cam_position_t[], float cam_position_r[])
 	target = _search_widget->arx;
 	current = cam_position_r[0];
 
-	if( _search_widget->arx - cam_position_r[0] > 180 )
+	if ( _search_widget->arx - cam_position_r[0] > 180 )
 		target -= 360;
-	if( _search_widget->arx - cam_position_r[0] < -180 )
+	if ( _search_widget->arx - cam_position_r[0] < -180 )
 		current -= 360;
 	cam_position_r[0] = ( cam_position_r[0] * 4 + target ) / 5;
 
 	target = _search_widget->ary;
 	current = cam_position_r[1];
 
-	if( _search_widget->ary - cam_position_r[1] > 180 )
+	if ( _search_widget->ary - cam_position_r[1] > 180 )
 		target -= 360;
-	if( _search_widget->ary - cam_position_r[1] < -180 )
+	if ( _search_widget->ary - cam_position_r[1] < -180 )
 		current -= 360;
 	cam_position_r[1] = ( cam_position_r[1] * 4 + target ) / 5;
 
 	target = _search_widget->arz;
 	current = cam_position_r[2];
 
-	if( _search_widget->arz - cam_position_r[2] > 180 )
+	if ( _search_widget->arz - cam_position_r[2] > 180 )
 		target -= 360;
-	if( _search_widget->arz - cam_position_r[2] < -180 )
+	if ( _search_widget->arz - cam_position_r[2] < -180 )
 		current -= 360;
 	cam_position_r[2] = ( cam_position_r[2] * 4 + target ) / 5;
 
@@ -192,9 +194,8 @@ void move_to_search_widget(float cam_position_t[], float cam_position_r[])
 	s3d_rotate(0,cam_position_r[0],cam_position_r[1],cam_position_r[2]);
 
 	if ( sqrt(  (( cam_position_t[0] - _search_widget->x)*( cam_position_t[0] - _search_widget->x)) +
-				(( cam_position_t[1] - _search_widget->y)*( cam_position_t[1] - _search_widget->y)) +
-				(( cam_position_t[2] - _search_widget->z)*( cam_position_t[2] - _search_widget->z)) ) < 0.2 )
-	{
+	                (( cam_position_t[1] - _search_widget->y)*( cam_position_t[1] - _search_widget->y)) +
+	                (( cam_position_t[2] - _search_widget->z)*( cam_position_t[2] - _search_widget->z)) ) < 0.2 ) {
 		s3d_translate( 0, _search_widget->x, _search_widget->y, ( _search_widget->z - 10 ) );
 		s3d_rotate( 0, _search_widget->arx, _search_widget->ary, _search_widget->arz );
 	}
@@ -212,27 +213,27 @@ void move_to_return_point(float cam_position_t[], float cam_position_r[])
 	target = _return_point[1][0];
 	current = cam_position_r[0];
 
-	if( _return_point[1][0] - cam_position_r[0] > 180 )
+	if ( _return_point[1][0] - cam_position_r[0] > 180 )
 		target -= 360;
-	if( _return_point[1][0] - cam_position_r[0] < -180 )
+	if ( _return_point[1][0] - cam_position_r[0] < -180 )
 		current -= 360;
 	cam_position_r[0] = ( cam_position_r[0] * 4 + target ) / 5;
 
 	target = _return_point[1][1];
 	current = cam_position_r[1];
 
-	if( _return_point[1][1] - cam_position_r[1] > 180 )
+	if ( _return_point[1][1] - cam_position_r[1] > 180 )
 		target -= 360;
-	if( _return_point[1][1] - cam_position_r[1] < -180 )
+	if ( _return_point[1][1] - cam_position_r[1] < -180 )
 		current -= 360;
 	cam_position_r[1] = ( cam_position_r[1] * 4 + target ) / 5;
 
 	target = _return_point[1][2];
 	current = cam_position_r[2];
 
-	if( _return_point[1][2] - cam_position_r[2] > 180 )
+	if ( _return_point[1][2] - cam_position_r[2] > 180 )
 		target -= 360;
-	if( _return_point[1][2] - cam_position_r[2] < -180 )
+	if ( _return_point[1][2] - cam_position_r[2] < -180 )
 		current -= 360;
 	cam_position_r[2] = ( cam_position_r[2] * 4 + target ) / 5;
 
@@ -240,9 +241,8 @@ void move_to_return_point(float cam_position_t[], float cam_position_r[])
 	s3d_rotate(0,cam_position_r[0],cam_position_r[1],cam_position_r[2]);
 
 	if ( sqrt(  (( cam_position_t[0] - _return_point[0][0])*( cam_position_t[0] - _return_point[0][0])) +
-				(( cam_position_t[1] - _return_point[0][1])*( cam_position_t[1] - _return_point[0][1])) +
-				(( cam_position_t[2] - _return_point[0][2])*( cam_position_t[2] - _return_point[0][2])) ) < 0.2 )
-	{
+	                (( cam_position_t[1] - _return_point[0][1])*( cam_position_t[1] - _return_point[0][1])) +
+	                (( cam_position_t[2] - _return_point[0][2])*( cam_position_t[2] - _return_point[0][2])) ) < 0.2 ) {
 		s3d_translate( 0, _return_point[0][0], _return_point[0][1], _return_point[0][2] );
 		s3d_rotate( 0, _return_point[1][0], _return_point[1][1], _return_point[1][2] );
 		set_search_status(NOTHING);
@@ -260,16 +260,14 @@ void search_widget_write(int key)
 	static char s[20];
 	int ln = strlen(s);
 
-	if( key == S3DK_COMMA ) key = S3DK_PERIOD;
+	if ( key == S3DK_COMMA ) key = S3DK_PERIOD;
 
-	if( key != S3DK_RETURN )
-	{
-		if( key == S3DK_BACKSPACE )
-		{
-			if( ln > 0 )
+	if ( key != S3DK_RETURN ) {
+		if ( key == S3DK_BACKSPACE ) {
+			if ( ln > 0 )
 				s[ln-1] = '\0';
 		} else {
-			if( ln < 20 )
+			if ( ln < 20 )
 				s[ln] = key;
 		}
 		s3dw_input_change_text( _search_input, s );
@@ -282,9 +280,9 @@ void search_widget_write(int key)
 void set_return_point(float cam_position_t[], float cam_position_r[])
 {
 	int i;
-	for( i = 0; i < 3; i++ )
+	for ( i = 0; i < 3; i++ )
 		_return_point[0][i] = cam_position_t[i];
-	for( i = 0; i < 3; i++ )
+	for ( i = 0; i < 3; i++ )
 		_return_point[1][i] = cam_position_r[i];
 }
 
@@ -316,8 +314,7 @@ void _new_search_node(s3dw_widget *dummy)
 
 	ip = s3dw_input_gettext( _search_input );
 
-	while ( (*search_node) != NULL )
-	{
+	while ( (*search_node) != NULL ) {
 
 		result = strncmp( (*search_node)->ip, ip, NAMEMAX );
 
@@ -335,18 +332,16 @@ void _new_search_node(s3dw_widget *dummy)
 	_search_widget=NULL;
 
 
-	if( (*search_node) != NULL )
-	{
+	if ( (*search_node) != NULL ) {
 		set_search_status( FOLLOW );
-	}
-	else
-	{
+	} else {
 		window_error("Sorry, could not find...");
 		set_search_status( NOTHING );
 	}
 }
 /* public */
-void follow_node_by_click(struct olsr_node *olsr_node) {
+void follow_node_by_click(struct olsr_node *olsr_node)
+{
 	search_node = &_node_root;
 	(*search_node) = olsr_node;
 	set_search_status( FOLLOW );
@@ -362,8 +357,7 @@ void _search_node(s3dw_widget *dummy)
 
 	ip = s3dw_input_gettext( _search_input );
 
-	while ( (*search_node) != NULL )
-	{
+	while ( (*search_node) != NULL ) {
 
 		result = strncmp( (*search_node)->ip, ip, NAMEMAX );
 
@@ -376,7 +370,7 @@ void _search_node(s3dw_widget *dummy)
 			(*search_node) = (*search_node)->left;
 	}
 
-	if( (*search_node) != NULL )
+	if ( (*search_node) != NULL )
 		set_search_status( FOLLOW );
 }
 

@@ -28,8 +28,7 @@
 #define MAXDATASIZE 100			/* max number of bytes we can get at once  */
 
 /* linked list for the all connections */
-struct olsr_con 
-{
+struct olsr_con {
 	struct olsr_con *next_olsr_con;			/* pointer to next connection */
 	struct olsr_con *prev_olsr_con;			/* pointer to previous connection */
 	struct olsr_node *left_olsr_node;		/* pointer to left end point of the connection */
@@ -45,16 +44,14 @@ struct olsr_con
 
 
 /* linked list for the neighbours of each olsr node */
-struct olsr_neigh_list
-{
+struct olsr_neigh_list {
 	struct olsr_neigh_list *next_olsr_neigh_list;		/* pointer to next neighbour */
 	struct olsr_con *olsr_con;							/* pointer to the connection */
 };
 
 
 /* we contruct a binary tree to handle the nodes */
-struct olsr_node 
-{
+struct olsr_node {
 	struct olsr_node *left;
 	struct olsr_node *right;
 	char ip[NAMEMAX];				/* host ip */
@@ -71,8 +68,7 @@ struct olsr_node
 };
 
 
-struct Obj_to_ip
-{
+struct Obj_to_ip {
 	int id;
 	struct olsr_node *olsr_node;
 	struct Obj_to_ip *next;

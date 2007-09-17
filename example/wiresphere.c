@@ -1,21 +1,21 @@
 /*
  * wiresphere.c
- * 
+ *
  * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * s3d is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * s3d is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with s3d; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -27,7 +27,9 @@
 #include <time.h>	/* nanosleep()  */
 #include <math.h>	/* M_PI, cos(), sin() */
 #include <stdlib.h>	/* malloc(), free() */
-static struct timespec t={0,100*1000*1000}; /* 100 mili seconds */
+static struct timespec t= {
+	0,100*1000*1000
+}; /* 100 mili seconds */
 int oid;
 int r;
 int wire_sphere(int slices, int stacks)
@@ -56,8 +58,7 @@ int wire_sphere(int slices, int stacks)
 	i=0;
 	for (x=0;x<slices;x++) {
 		for (y=0;y<stacks;y++) {
-			if ((y!=0) && (y!=stacks)) /* no horizontal lines at the poles */
-			{
+			if ((y!=0) && (y!=stacks)) { /* no horizontal lines at the poles */
 				l[i*3+0]=(x*(stacks+1))+y;
 				l[i*3+1]=(((x+1)%slices)*(stacks+1))+y;
 				l[i*3+2]=0;
@@ -86,9 +87,9 @@ int wire_sphere(int slices, int stacks)
 		}
 	}
 	o=s3d_new_object();
-	s3d_push_material(o,0,0,1, 
-						1,0,0, 
-						0,1,0);
+	s3d_push_material(o,0,0,1,
+	                  1,0,0,
+	                  0,1,0);
 	s3d_push_vertices(o,v,num_v);
 	s3d_push_lines(o,l,num_l);
 	s3d_load_line_normals(o,n,0,num_l);
@@ -106,20 +107,19 @@ void mainloop()
 {
 	r=(r+1)%360;
 	s3d_rotate(oid,0,r,0);
-	nanosleep(&t,NULL); 
+	nanosleep(&t,NULL);
 
 }
 int main (int argc, char **argv)
 {
-	if (!s3d_init(&argc,&argv,"wiresphere"))	
-	{
+	if (!s3d_init(&argc,&argv,"wiresphere")) {
 		oid=wire_sphere(30,30);
 		s3d_scale(oid,10);
 		s3d_flags_on(oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK,	(s3d_cb)stop);
 		s3d_set_callback(S3D_EVENT_QUIT,		(s3d_cb)stop);
 		s3d_mainloop(mainloop);
-		 /*  wait for some object to be clicked */
+		/*  wait for some object to be clicked */
 		s3d_quit();
 	}
 	return(0);

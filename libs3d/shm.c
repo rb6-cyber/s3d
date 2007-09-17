@@ -5,17 +5,17 @@
  *
  * This file is part of the s3d API, the API of s3d (the 3d network display server).
  * See http://s3d.berlios.de/ for more updates.
- * 
+ *
  * The s3d API is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2.1 of the License, or
  * (at your option) any later version.
- * 
+ *
  * The s3d API is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License
  * along with the s3d API; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -47,16 +47,18 @@
 static struct buf_t *data_in,*data_out;
 static int shmid_in, shmid_out;
 static int shm_idle=0;
-struct timespec t={0,10*1000*1000}; /* 10 mili second */
+struct timespec t= {
+	0,10*1000*1000
+}; /* 10 mili second */
 /* char ftoken[]="/tmp/.s3d_shm";*/
 
 int _shm_init(char *ftoken)
 {
 	int shmid;
 	uint32_t *next_key;
-/*	struct shmid_ds *buf; */
+	/*	struct shmid_ds *buf; */
 	key_t key,key_out,key_in;
-	
+
 	s3dprintf(MED,"connecting to shm token %s",ftoken);
 	/* make the key: */
 	if ((key = ftok(ftoken, 'R')) == -1) {
@@ -64,7 +66,7 @@ int _shm_init(char *ftoken)
 		return(1);
 	}
 	s3dprintf(MED,"init key is 0x%08x",key);
-	
+
 	/* connect to the segment: */
 	if ((shmid = shmget(key, SHM_SIZE, 0644 )) == -1) {
 		errn("shm_init():shmget()",errno);
@@ -82,7 +84,7 @@ int _shm_init(char *ftoken)
 	next_key[0]=next_key[1]=0;
 	s3dprintf(MED,"right now, next_keys are: %08x, %08x",key_in,key_out);
 	/* as we have the new key, we  can detach here now. */
-	if (shmdt(next_key) == -1) { 
+	if (shmdt(next_key) == -1) {
 		errn("shm_init():shmdt()",errno);
 		return(1);
 	}
@@ -108,7 +110,7 @@ int _shm_init(char *ftoken)
 		errn("shm_init():shmat()",errno);
 		return(1);
 	}
-	return(0);	
+	return(0);
 }
 int _shm_quit()
 {
@@ -128,20 +130,18 @@ int shm_writen(char *str, int s)
 {
 	int no_left,no_written,wait=0;
 	no_left = s;
-	while (no_left > 0) 
-    { 
+	while (no_left > 0) {
 		no_written = shm_write(data_out,str,no_left);
- 		if (no_written <0)  
+		if (no_written <0)
 			return(no_written);
 		no_left -= no_written;
 		str += no_written;
-		if (wait++>SHM_MAXLOOP) 
-		{
+		if (wait++>SHM_MAXLOOP) {
 			s3dprintf(HIGH,"shm_writen():waited too long ...");
 			return(-1);
 		}
-/*		if (wait>10)
-			nanosleep(&t,NULL); */
+		/*		if (wait>10)
+					nanosleep(&t,NULL); */
 	}
 	return(s - no_left);
 }
@@ -149,22 +149,20 @@ int shm_readn(char *str,int s)
 {
 	int no_left,no_read,wait=0;
 	no_left = s;
-	while (no_left > 0) 
-	{ 
+	while (no_left > 0) {
 		no_read = shm_read(data_in,str,no_left);
-		if(no_read <0)  
+		if (no_read <0)
 			return(no_read);
-		if (no_read == 0) 
+		if (no_read == 0)
 			break;
 		no_left -= no_read;
 		str += no_read;
-		if (wait++>SHM_MAXLOOP) 
-		{
+		if (wait++>SHM_MAXLOOP) {
 			s3dprintf(HIGH,"shm_readn():waited too long ...");
 			return(-1);
 		}
-/*		if (wait>10)
-			nanosleep(&t,NULL); */
+		/*		if (wait>10)
+					nanosleep(&t,NULL); */
 	}
 	return(s - no_left);
 }
@@ -174,13 +172,11 @@ int _shm_net_receive()
 	char				 opcode,*buf;
 	u_int16_t		 length;
 	struct shmid_ds		 d;
-	
+
 	if (data_in==NULL)
 		return(found);
-	if (data_in->start!=data_in->end)
-	{
-		if (1==shm_readn(&opcode,1))
-		{
+	if (data_in->start!=data_in->end) {
+		if (1==shm_readn(&opcode,1)) {
 			shm_readn((char *)&length,2);
 			length=ntohs(length);
 			buf=malloc(length);
@@ -192,14 +188,12 @@ int _shm_net_receive()
 			s3d_quit();
 		}
 	} else {
-		if (shm_idle++>SHM_MAX_IDLE)
-		{
+		if (shm_idle++>SHM_MAX_IDLE) {
 			shmctl(shmid_in,IPC_STAT,&d);
-			if (d.shm_nattch==1) /* we're all alone ... remove it!! */
-			{
+			if (d.shm_nattch==1) { /* we're all alone ... remove it!! */
 				s3dprintf(MED,"server vanished ... ");
 				s3d_quit();
-			} else 
+			} else
 				shm_idle=0;
 		}
 	}

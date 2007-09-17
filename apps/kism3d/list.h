@@ -76,8 +76,8 @@ struct list_head {
  * the prev/next entries already!
  */
 static inline void __list_add(struct list_head *new,
-			      struct list_head *prev,
-			      struct list_head *next)
+                              struct list_head *prev,
+                              struct list_head *next)
 {
 	next->prev = new;
 	new->next = next;

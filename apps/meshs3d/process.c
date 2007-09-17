@@ -57,8 +57,7 @@ int long_choose(void *data, int32_t size)
 	uint32_t hash = 0;
 	size_t i;
 
-	for (i = 0; i < 8; i++)
-	{
+	for (i = 0; i < 8; i++) {
 		hash += key[i];
 		hash += (hash << 10);
 		hash ^= (hash >> 6);
@@ -124,8 +123,7 @@ void handle_con( unsigned int ip1, unsigned int ip2, float etx )
 	ip[1] = min(ip1,ip2);
 
 	con = ( struct node_con* ) hash_find( con_hash, ip);
-	if( con == NULL )
-	{
+	if ( con == NULL ) {
 		con = ( struct node_con * ) debugMalloc( sizeof( struct node_con ), 102 );
 		con->ip[0] = ip[0];
 		con->ip[1] = ip[1];
@@ -139,8 +137,7 @@ void handle_con( unsigned int ip1, unsigned int ip2, float etx )
 		hash_add( con_hash, con );
 	}
 
-	if( con->ip[0] == ip1 )
-	{
+	if ( con->ip[0] == ip1 ) {
 		con->etx1 = etx;
 		con->etx1_sqrt = sqrt( etx );
 	} else {
@@ -149,8 +146,7 @@ void handle_con( unsigned int ip1, unsigned int ip2, float etx )
 	}
 
 
-	if ( con_hash->elements * 4 > con_hash->size )
-	{
+	if ( con_hash->elements * 4 > con_hash->size ) {
 		swaphash = hash_resize( con_hash, con_hash->size * 2 );
 		if ( swaphash == NULL )
 			exit_error("Couldn't resize hash table \n");
@@ -164,8 +160,7 @@ void handle_mesh_node( unsigned int *ip, char *ip_string )
 	struct node *orig_node;
 	struct hashtable_t *swaphash;
 
-	if ( node_hash->elements * 4 > node_hash->size )
-	{
+	if ( node_hash->elements * 4 > node_hash->size ) {
 		swaphash = hash_resize( node_hash, node_hash->size * 2 );
 		if ( swaphash == NULL )
 			exit_error("Couldn't resize hash table \n" );
@@ -173,8 +168,7 @@ void handle_mesh_node( unsigned int *ip, char *ip_string )
 	}
 	orig_node = (struct node *) hash_find( node_hash, ip );
 
-	if( NULL == orig_node )
-	{
+	if ( NULL == orig_node ) {
 		orig_node = (struct node *)debugMalloc( sizeof(struct node), 101 );
 		orig_node->ip = *ip;
 		strncpy( orig_node->ip_string, ip_string, NAMEMAX );
@@ -213,63 +207,55 @@ int process_main()
 	dn = 0;
 
 
-	while ( (*lbuf_ptr) != '\0' )
-	{
-		if ( (*lbuf_ptr) == '\n' )
-		{
+	while ( (*lbuf_ptr) != '\0' ) {
+		if ( (*lbuf_ptr) == '\n' ) {
 			last_cr_ptr = lbuf_ptr;
 			con_from = con_from_end = con_to = con_to_end = etx = etx_end = NULL;
 			dn = 0;
 		}
 
-		if ( (*lbuf_ptr) == '"' )
-		{
-			switch ( dn )
-			{
-				case 0:
-					con_from = lbuf_ptr + 1;
-					break;
-				case 1:
-					con_from_end = lbuf_ptr;
-					break;
-				case 2:
-					con_to = lbuf_ptr + 1;
-					break;
-				case 3:
-					con_to_end = lbuf_ptr;
-					break;
-				case 4:
-					etx = lbuf_ptr + 1;
-					break;
-				case 5:
-					etx_end = lbuf_ptr;
-					break;
+		if ( (*lbuf_ptr) == '"' ) {
+			switch ( dn ) {
+			case 0:
+				con_from = lbuf_ptr + 1;
+				break;
+			case 1:
+				con_from_end = lbuf_ptr;
+				break;
+			case 2:
+				con_to = lbuf_ptr + 1;
+				break;
+			case 3:
+				con_to_end = lbuf_ptr;
+				break;
+			case 4:
+				etx = lbuf_ptr + 1;
+				break;
+			case 5:
+				etx_end = lbuf_ptr;
+				break;
 			}
 
-			if ( ++dn == 6 )
-			{
+			if ( ++dn == 6 ) {
 
 				(*con_from_end) = (*con_to_end) = (*etx_end) = '\0';
 
 				/* if( Global.debug ) printf( "con_from: %s, con_to: %s, etx: %s\n", con_from, con_to, etx ); */
 
 				/* announced network via HNA */
-				if ( strncmp( etx, "HNA", NAMEMAX ) == 0 )
-				{
+				if ( strncmp( etx, "HNA", NAMEMAX ) == 0 ) {
 
 				} else {
 
 					f = strtod(etx,NULL);
 					if ( f < 1.0 )
 						f = 999.0;
-				
-					if( inet_pton(AF_INET, con_from, &int_con_from ) < 1 )
-					{
+
+					if ( inet_pton(AF_INET, con_from, &int_con_from ) < 1 ) {
 						printf("%s is not a valid ip address\n", con_from );
 						continue;
 					}
-					if( inet_pton(AF_INET, con_to, &int_con_to ) < 1 )
-					{
+					if ( inet_pton(AF_INET, con_to, &int_con_to ) < 1 ) {
 						printf("%s is not a valid ip address\n", con_to );
 						continue;
 					}
