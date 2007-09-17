@@ -26,135 +26,135 @@
 #include "s3dlib.h"
 #include <proto.h>
 #include <netinet/in.h>  /*  htons(),htonl() */
-#include <errno.h>		 /*  errno */
-#include <stdlib.h>		 /*  malloc(), free() */
+#include <errno.h>   /*  errno */
+#include <stdlib.h>   /*  malloc(), free() */
 /*  this proccesses the commands and pushes s3d-events, or does other things ;) */
 int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 {
-	uint32_t oid=-1;
-	struct s3d_evt *s3devt=NULL;
+	uint32_t oid = -1;
+	struct s3d_evt *s3devt = NULL;
 	struct mcp_object *mo;
 	struct s3d_obj_info *oi;
 	switch (opcode) {
 	case S3D_P_S_INIT:
-		s3dprintf(MED,"S3D_P_S_INIT: init!!");
-		_s3d_ready=1;
+		s3dprintf(MED, "S3D_P_S_INIT: init!!");
+		_s3d_ready = 1;
 		break;
 	case S3D_P_S_QUIT:
-		s3dprintf(MED,"S3D_P_S_QUIT: server wants us to go. well ...");
+		s3dprintf(MED, "S3D_P_S_QUIT: server wants us to go. well ...");
 		s3d_quit();
 		break;
 	case S3D_P_S_CLICK:
-		if (length==4) {
-			oid=ntohl(*((uint32_t *)buf));
-			if (NULL!=(s3devt=malloc(sizeof(struct s3d_evt)))) {
-				*((uint32_t *)buf)=oid;  /*  reuse buffer ... */
-				s3devt->event=S3D_EVENT_OBJ_CLICK;
-				s3devt->length=4;
-				s3devt->buf=buf;
+		if (length == 4) {
+			oid = ntohl(*((uint32_t *)buf));
+			if (NULL != (s3devt = malloc(sizeof(struct s3d_evt)))) {
+				*((uint32_t *)buf) = oid;  /*  reuse buffer ... */
+				s3devt->event = S3D_EVENT_OBJ_CLICK;
+				s3devt->length = 4;
+				s3devt->buf = buf;
 			}
-			s3dprintf(MED,"S3D_P_S_CLICK: %d got clicked ....",oid);
+			s3dprintf(MED, "S3D_P_S_CLICK: %d got clicked ....", oid);
 		}
 		break;
 	case S3D_P_S_NEWOBJ:
-		if (length==4) {
-			oid=ntohl(*((uint32_t *)buf));
+		if (length == 4) {
+			oid = ntohl(*((uint32_t *)buf));
 			_queue_new_object(oid);
 			/*
 			if (NULL!=(s3devt=malloc(sizeof(struct s3d_evt))))
 			{
-				*((uint32_t *)buf)=oid;  / *  reuse buffer ... * /
-				s3devt->event=S3D_EVENT_NEW_OBJECT;
-				s3devt->length=4;
-				s3devt->buf=buf;
-				_queue_new_object(*((unsigned int *)newevt->buf));
+			 *((uint32_t *)buf)=oid;  / *  reuse buffer ... * /
+			 s3devt->event=S3D_EVENT_NEW_OBJECT;
+			 s3devt->length=4;
+			 s3devt->buf=buf;
+			 _queue_new_object(*((unsigned int *)newevt->buf));
 			}*/
-			s3dprintf(VLOW,"S3D_P_S_NEWOBJ: new object %d",oid);
+			s3dprintf(VLOW, "S3D_P_S_NEWOBJ: new object %d", oid);
 		}
 		break;
 	case S3D_P_S_KEY:
-		if (length==8) {
-			if (NULL!=(s3devt=malloc(sizeof(struct s3d_evt)))) {
+		if (length == 8) {
+			if (NULL != (s3devt = malloc(sizeof(struct s3d_evt)))) {
 				struct s3d_key_event *keyevent;
-				s3devt->length=2;
-				keyevent=(struct s3d_key_event *)buf;
-				keyevent->keysym=ntohs(keyevent->keysym);
-				keyevent->unicode=ntohs(keyevent->unicode);
-				keyevent->modifier=ntohs(keyevent->modifier);
-				keyevent->state=ntohs(keyevent->state);
-				s3devt->buf=buf;
-				s3devt->event=(keyevent->state==0)?S3D_EVENT_KEYDOWN:S3D_EVENT_KEYUP;
+				s3devt->length = 2;
+				keyevent = (struct s3d_key_event *)buf;
+				keyevent->keysym = ntohs(keyevent->keysym);
+				keyevent->unicode = ntohs(keyevent->unicode);
+				keyevent->modifier = ntohs(keyevent->modifier);
+				keyevent->state = ntohs(keyevent->state);
+				s3devt->buf = buf;
+				s3devt->event = (keyevent->state == 0) ? S3D_EVENT_KEYDOWN : S3D_EVENT_KEYUP;
 			}
-			s3dprintf(VLOW,"S3D_P_S_KEY: key %d hit!!",*((uint16_t *)s3devt->buf));
+			s3dprintf(VLOW, "S3D_P_S_KEY: key %d hit!!", *((uint16_t *)s3devt->buf));
 		}
 		break;
 	case S3D_P_S_MBUTTON:
-		if (length==2) {
-			if (NULL!=(s3devt=malloc(sizeof(struct s3d_evt)))) {
-				s3devt->event=S3D_EVENT_MBUTTON;
-				s3devt->length=2;
-				s3devt->buf=buf;
+		if (length == 2) {
+			if (NULL != (s3devt = malloc(sizeof(struct s3d_evt)))) {
+				s3devt->event = S3D_EVENT_MBUTTON;
+				s3devt->length = 2;
+				s3devt->buf = buf;
 			}
-			s3dprintf(VLOW,"S3D_P_S_MBUTTON: mbutton %d, state %d !!",*((uint8_t *)s3devt->buf), *(1+(uint8_t *)s3devt->buf));
+			s3dprintf(VLOW, "S3D_P_S_MBUTTON: mbutton %d, state %d !!", *((uint8_t *)s3devt->buf), *(1 + (uint8_t *)s3devt->buf));
 		}
 		break;
 	case S3D_P_MCP_OBJECT:
-		if (length==sizeof(struct mcp_object)) {
-			/* 				oid=htonl(*((uint32_t *)buf)); */
-			if (NULL!=(s3devt=malloc(sizeof(struct s3d_evt)))) {
-				/* 					*((uint32_t *)buf)=oid;  / *  reuse buffer ... * / */
-				s3devt->event=S3D_MCP_OBJECT;
-				s3devt->length=length;
-				mo=(struct mcp_object *)buf;
-				*((uint32_t *)buf)=ntohl(*((uint32_t *)buf));  /*  revert oid */
+		if (length == sizeof(struct mcp_object)) {
+			/*     oid=htonl(*((uint32_t *)buf)); */
+			if (NULL != (s3devt = malloc(sizeof(struct s3d_evt)))) {
+				/*      *((uint32_t *)buf)=oid;  / *  reuse buffer ... * / */
+				s3devt->event = S3D_MCP_OBJECT;
+				s3devt->length = length;
+				mo = (struct mcp_object *)buf;
+				*((uint32_t *)buf) = ntohl(*((uint32_t *)buf));  /*  revert oid */
 
-				buf[length-1]='\0';  /*  put a null byte at the end  */
+				buf[length-1] = '\0';  /*  put a null byte at the end  */
 				/*  for the not so careful users */
-				s3devt->buf=buf;
-				s3dprintf(VLOW,"S3D_P_MCP_OBEJCT: something is happening to object %d, name %s", 	mo->object, mo->name);
+				s3devt->buf = buf;
+				s3dprintf(VLOW, "S3D_P_MCP_OBEJCT: something is happening to object %d, name %s",  mo->object, mo->name);
 
 			}
-		} else s3dprintf(MED,"wrong length for S3D_P_MCP_OBJECT length %d != %d",length,sizeof(struct mcp_object));
+		} else s3dprintf(MED, "wrong length for S3D_P_MCP_OBJECT length %d != %d", length, sizeof(struct mcp_object));
 		break;
 	case S3D_P_S_OINFO:
-		if (length==sizeof(struct s3d_obj_info)) {
-			/* 				oid=htonl(*((uint32_t *)buf)); */
-			if (NULL!=(s3devt=malloc(sizeof(struct s3d_evt)))) {
-				/* 					*((uint32_t *)buf)=oid;  / *  reuse buffer ... * / */
-				s3devt->event=S3D_EVENT_OBJ_INFO;
-				s3devt->length=length;
-				oi=(struct s3d_obj_info *)buf;
-				oi->object	=ntohl(oi->object);
-				oi->flags	=ntohl(oi->flags);
+		if (length == sizeof(struct s3d_obj_info)) {
+			/*     oid=htonl(*((uint32_t *)buf)); */
+			if (NULL != (s3devt = malloc(sizeof(struct s3d_evt)))) {
+				/*      *((uint32_t *)buf)=oid;  / *  reuse buffer ... * / */
+				s3devt->event = S3D_EVENT_OBJ_INFO;
+				s3devt->length = length;
+				oi = (struct s3d_obj_info *)buf;
+				oi->object = ntohl(oi->object);
+				oi->flags = ntohl(oi->flags);
 
-				buf[length-1]='\0';  /*  put a null byte at the end  */
+				buf[length-1] = '\0';  /*  put a null byte at the end  */
 				/*  for the not so careful users */
-				s3devt->buf=buf;
-				s3dprintf(VLOW,"S3D_P_S_OINFO: something is happening to object %d, name %s",
+				s3devt->buf = buf;
+				s3dprintf(VLOW, "S3D_P_S_OINFO: something is happening to object %d, name %s",
 				          oi->object,
 				          oi->name
 				         );
 
 			}
-		} else s3dprintf(MED,"wrong length for S3D_P_S_OINFO length %d != %d",length,sizeof(struct s3d_obj_info));
+		} else s3dprintf(MED, "wrong length for S3D_P_S_OINFO length %d != %d", length, sizeof(struct s3d_obj_info));
 		break;
 
 	case S3D_P_MCP_DEL_OBJECT:
-		if (length==4) {
-			if (NULL!=(s3devt=malloc(sizeof(struct s3d_evt)))) {
-				s3devt->event=S3D_MCP_DEL_OBJECT;
-				s3devt->length=length;
-				*((uint32_t *)buf)=ntohl(*((uint32_t *)buf));  /*  revert oid */
-				s3dprintf(MED,"S3D_P_MCP_DEL_OBEJCT: deleting object %d",*((uint32_t *)buf));
-				s3devt->buf=buf;
+		if (length == 4) {
+			if (NULL != (s3devt = malloc(sizeof(struct s3d_evt)))) {
+				s3devt->event = S3D_MCP_DEL_OBJECT;
+				s3devt->length = length;
+				*((uint32_t *)buf) = ntohl(*((uint32_t *)buf));  /*  revert oid */
+				s3dprintf(MED, "S3D_P_MCP_DEL_OBEJCT: deleting object %d", *((uint32_t *)buf));
+				s3devt->buf = buf;
 			}
 		}
 		break;
 	default:
-		s3dprintf(MED,"don't know command %d",opcode);
-		if (buf!=NULL) free(buf);
+		s3dprintf(MED, "don't know command %d", opcode);
+		if (buf != NULL) free(buf);
 	}
-	if (s3devt!=NULL) {
+	if (s3devt != NULL) {
 
 		s3d_push_event(s3devt);
 	}

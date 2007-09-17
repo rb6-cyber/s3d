@@ -1,14 +1,14 @@
 #include <sqlite3.h>
-#include <s3d.h>	/* s3devt structure */
+#include <s3d.h> /* s3devt structure */
 #include <config-s3d.h>
-#define	ESIZE	637800		/* earth size */
-#define	RESCALE	1
+#define ESIZE 637800  /* earth size */
+#define RESCALE 1
 #define VIEWHEIGHT 3
-#define MAXQ	4096
-#define QBUF	1024*128
+#define MAXQ 4096
+#define QBUF 1024*128
 
 /* stack it */
-/* #define DB_STACK	1*/
+/* #define DB_STACK 1*/
 
 typedef struct _layer_t layer_t;
 typedef struct _adj_t adj_t;
@@ -20,10 +20,10 @@ typedef struct _way_t way_t;
 typedef struct _tag_t tag_t;
 typedef struct _icon_t icon_t;
 typedef unsigned long ID_T;
-#define OBJECT_T(x)		((object_t *)x)
-#define NODE_T(x)		((node_t *)x)
-#define SEGMENT_T(x)	((segment_t *)x)
-#define WAY_T(x)		((way_t *)x)
+#define OBJECT_T(x)  ((object_t *)x)
+#define NODE_T(x)  ((node_t *)x)
+#define SEGMENT_T(x) ((segment_t *)x)
+#define WAY_T(x)  ((way_t *)x)
 struct _layerset_t {
 	int n;
 	layer_t **p;
@@ -72,60 +72,60 @@ struct _tag_t {
 };
 
 struct _object_t {
-	ID_T 		 id;		/* id of this object */
-	ID_T		 layerid;
-	ID_T		 tagid;
-	int 		 oid;		/* s3d oid */
-	int 		 type;		/* type of this object */
+	ID_T    id;  /* id of this object */
+	ID_T   layerid;
+	ID_T   tagid;
+	int    oid;  /* s3d oid */
+	int    type;  /* type of this object */
 	/* avl stuff */
-	char 		 bal;
-	int			 tag_n;
-	tag_t		*tag_p;
-	object_t 	*left,*right;
+	char    bal;
+	int    tag_n;
+	tag_t  *tag_p;
+	object_t  *left, *right;
 };
 
 struct _adj_t {
-	ID_T 		 to,seg;	/* destination and segment to use */
+	ID_T    to, seg; /* destination and segment to use */
 };
 
 struct _node_t {
-	object_t	 base;
-	float 		 lon;		/* longitude */
-	float 		 lat;		/* latitude */
-	float 		 alt;		/* altitude */
-	char 		 visible;	/* node visible? 0 = no, 1 = yes, 2 = some sepcial object */
-	int 		 vid;		/* vertex id */
-	/*	time_t time;*/
-	int 		 adj_n;		/* adjacence list */
-	adj_t 		*adj_p;
+	object_t  base;
+	float    lon;  /* longitude */
+	float    lat;  /* latitude */
+	float    alt;  /* altitude */
+	char    visible; /* node visible? 0 = no, 1 = yes, 2 = some sepcial object */
+	int    vid;  /* vertex id */
+	/* time_t time;*/
+	int    adj_n;  /* adjacence list */
+	adj_t   *adj_p;
 };
 struct _segment_t {
-	object_t	 base;
-	ID_T		 from;
-	ID_T		 to;
+	object_t  base;
+	ID_T   from;
+	ID_T   to;
 };
 struct _way_t {
-	object_t	 base;
-	int 		 seg_n;
-	ID_T		*seg_p;
+	object_t  base;
+	int    seg_n;
+	ID_T  *seg_p;
 };
 
 /* public functions */
 
 /* object.c */
-void 		 object_init(object_t *nobj);
-void 		 node_init(node_t *nnode);
-void 		 segment_init(segment_t *nsegment);
-void 		 way_init(way_t *nway);
-object_t 	*object_new(int key);
-node_t 		*node_new();
-segment_t 	*segment_new();
-layer_t 	*layer_new();
-way_t 		*way_new();
-void 		 node_free(node_t *node);
-void 		 segment_free(segment_t *segment);
-void 		 way_free(way_t *way);
-void 		 layerset_add(layer_t *layer);
+void    object_init(object_t *nobj);
+void    node_init(node_t *nnode);
+void    segment_init(segment_t *nsegment);
+void    way_init(way_t *nway);
+object_t  *object_new(int key);
+node_t   *node_new();
+segment_t  *segment_new();
+layer_t  *layer_new();
+way_t   *way_new();
+void    node_free(node_t *node);
+void    segment_free(segment_t *segment);
+void    way_free(way_t *way);
+void    layerset_add(layer_t *layer);
 /* main.c */
 void mainloop();
 /* osm.c */
@@ -150,7 +150,7 @@ void nav_campos(float campos[3], float earthpos[3]);
 float get_heading(float la1, float lo1, float la2, float lo2);
 extern int oidy;
 /* tag.c */
-void tag_add(object_t *obj,char *k, char *v);
+void tag_add(object_t *obj, char *k, char *v);
 tag_t *tag_get(object_t *obj, char *k);
 void tag_free(tag_t *tag);
 /* io.c */
@@ -185,7 +185,7 @@ int load_window(char *text);
 int load_window_remove();
 int load_update_status(float percent);
 /* olsrs3d.c */
-#define NODEHEIGHT	10
+#define NODEHEIGHT 10
 int olsr_object_click(struct s3d_evt *evt);
 int olsr_object_info(struct s3d_evt *hrmz);
 int olsr_parse_args(int argc, char **argv);

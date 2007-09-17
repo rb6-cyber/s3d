@@ -24,17 +24,17 @@
 
 #include <s3d.h>
 #include <stdio.h>  /*  NULL*/
-#include <time.h>	/* nanosleep() */
-#include <math.h>	/* sin(), cos() */
+#include <time.h> /* nanosleep() */
+#include <math.h> /* sin(), cos() */
 int i;
 int o;
-float bottom=-1.0;
-float left=-1.0;
-float asp=1.0;
-float len=1.0;
-int alpha=0;
-static struct timespec t= {
-	0,10*1000*1000
+float bottom = -1.0;
+float left = -1.0;
+float asp = 1.0;
+float len = 1.0;
+int alpha = 0;
+static struct timespec t = {
+	0, 10*1000*1000
 }; /* 100 mili seconds */
 int stop(struct s3d_evt *evt)
 {
@@ -45,32 +45,32 @@ int stop(struct s3d_evt *evt)
 void mainloop()
 {
 	float a;
-	alpha=(alpha+1)%360;
-	s3d_rotate(o,alpha,0,0);
-	a=(((float)alpha)*M_PI/180);
-	s3d_translate(0,sin(a)*30,0,30+cos(a)*30);
-	s3d_rotate(0,sin(a)*30,alpha,0);
-	nanosleep(&t,NULL);
+	alpha = (alpha + 1) % 360;
+	s3d_rotate(o, alpha, 0, 0);
+	a = (((float)alpha) * M_PI / 180);
+	s3d_translate(0, sin(a)*30, 0, 30 + cos(a)*30);
+	s3d_rotate(0, sin(a)*30, alpha, 0);
+	nanosleep(&t, NULL);
 }
 int object_info(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
-	inf=(struct s3d_obj_info *)hrmz->buf;
-	if (inf->object==0) {
-		if (asp!=inf->scale) {
-			asp=inf->scale;
-			printf("screen aspect: %f\n",asp);
-			if (asp>1.0) { /* wide screen */
-				bottom=-1.0;
-				left=-asp;
+	inf = (struct s3d_obj_info *)hrmz->buf;
+	if (inf->object == 0) {
+		if (asp != inf->scale) {
+			asp = inf->scale;
+			printf("screen aspect: %f\n", asp);
+			if (asp > 1.0) { /* wide screen */
+				bottom = -1.0;
+				left = -asp;
 			} else {  /* high screen */
-				bottom=(-1.0/asp);
-				left=-1.0;
+				bottom = (-1.0 / asp);
+				left = -1.0;
 			}
 		}
 	}
-	if (inf->object==1) { /* of course, a link s3d_link(o,1 would be much easier ... */
-		s3d_translate(o,(inf->trans_x)*2.0,(inf->trans_y)*2.0,-2);
+	if (inf->object == 1) { /* of course, a link s3d_link(o,1 would be much easier ... */
+		s3d_translate(o, (inf->trans_x)*2.0, (inf->trans_y)*2.0, -2);
 	}
 	return(0);
 }
@@ -78,33 +78,33 @@ int mbutton_press(struct s3d_evt *hrmz)
 {
 	struct s3d_but_info *inf;
 	char s[256];
-	inf=(struct s3d_but_info *)hrmz->buf;
-	snprintf(s,256,"please, watch your stomach! button %d, state %d", inf->button,inf->state);
-	printf("button %d, state %d\n", inf->button,inf->state);
+	inf = (struct s3d_but_info *)hrmz->buf;
+	snprintf(s, 256, "please, watch your stomach! button %d, state %d", inf->button, inf->state);
+	printf("button %d, state %d\n", inf->button, inf->state);
 	s3d_del_object(o);
-	o=s3d_draw_string(s,&len);
-	s3d_translate(o,0,0,-2);
-	s3d_scale(o,0.2);
-	s3d_link(o,0);			/* link to cam */
-	/*	s3d_link(o,1);*/
-	s3d_flags_on(o,S3D_OF_VISIBLE);
+	o = s3d_draw_string(s, &len);
+	s3d_translate(o, 0, 0, -2);
+	s3d_scale(o, 0.2);
+	s3d_link(o, 0);  /* link to cam */
+	/* s3d_link(o,1);*/
+	s3d_flags_on(o, S3D_OF_VISIBLE);
 	return(0);
 }
-int main (int argc, char **argv)
+int main(int argc, char **argv)
 {
-	i=0;
-	if (!s3d_init(&argc,&argv,"ptr and cam test")) {
-		s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
-		s3d_set_callback(S3D_EVENT_MBUTTON,mbutton_press);
-		s3d_set_callback(S3D_EVENT_QUIT,stop);
-		s3d_set_callback(S3D_EVENT_OBJ_CLICK,stop);
+	i = 0;
+	if (!s3d_init(&argc, &argv, "ptr and cam test")) {
+		s3d_set_callback(S3D_EVENT_OBJ_INFO, object_info);
+		s3d_set_callback(S3D_EVENT_MBUTTON, mbutton_press);
+		s3d_set_callback(S3D_EVENT_QUIT, stop);
+		s3d_set_callback(S3D_EVENT_OBJ_CLICK, stop);
 		s3d_select_font("vera");
-		o=s3d_draw_string("hello",&len);
-		s3d_translate(o,0,0,-2);
-		s3d_link(o,0);			/* link to cam */
-		/*		s3d_link(o,1);*/
-		s3d_scale(o,0.2);
-		s3d_flags_on(o,S3D_OF_VISIBLE);
+		o = s3d_draw_string("hello", &len);
+		s3d_translate(o, 0, 0, -2);
+		s3d_link(o, 0);  /* link to cam */
+		/*  s3d_link(o,1);*/
+		s3d_scale(o, 0.2);
+		s3d_flags_on(o, S3D_OF_VISIBLE);
 		s3d_mainloop(mainloop);
 		/*  wait for some object to be clicked */
 		s3d_quit();

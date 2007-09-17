@@ -24,9 +24,9 @@
 
 #include "global.h"
 /*  this file reads user input */
-static int ox,oy;
+static int ox, oy;
 static int pressed;
-int but=-1;
+int but = -1;
 int user_init()
 {
 	switch (frame_mode) {
@@ -43,8 +43,8 @@ int user_init()
 	default:
 		return(-1);
 	}
-	pressed=0;
-	ox=oy=0xFFFFFF;
+	pressed = 0;
+	ox = oy = 0xFFFFFF;
 	return(0);
 }
 int user_main()
@@ -65,7 +65,7 @@ int user_main()
 }
 void user_key(uint16_t key, uint16_t unicode, uint16_t mod, int state)
 {
-	event_key_pressed(key,unicode,mod,state);
+	event_key_pressed(key, unicode, mod, state);
 }
 void user_mouse(int button, int state, int x, int y)
 {
@@ -73,15 +73,15 @@ void user_mouse(int button, int state, int x, int y)
 	case 0: /*  mouse_down ... */
 		switch (button) {
 		case 0:
-			graphics_pick_obj(x,y);
+			graphics_pick_obj(x, y);
 			break;
 		case 1:
-			if ((ox!=0xFFFFFF) && (oy!=0xFFFFFF))
-				navi_pos(ox-x,oy-y);
+			if ((ox != 0xFFFFFF) && (oy != 0xFFFFFF))
+				navi_pos(ox - x, oy - y);
 			break;
 		case 2:
-			if ((ox!=0xFFFFFF) && (oy!=0xFFFFFF))
-				navi_rot(ox-x,oy-y);
+			if ((ox != 0xFFFFFF) && (oy != 0xFFFFFF))
+				navi_rot(ox - x, oy - y);
 			break;
 		case 3:
 			navi_fwd();
@@ -90,26 +90,26 @@ void user_mouse(int button, int state, int x, int y)
 			navi_back();
 			break;
 		default:
-			s3dprintf(VLOW,"button is ... %d", button);
+			s3dprintf(VLOW, "button is ... %d", button);
 		}
-		ox=x;
-		oy=y;
-		event_mbutton_clicked(button,state);
+		ox = x;
+		oy = y;
+		event_mbutton_clicked(button, state);
 		break;
 	case 1:  /*  mouse up */
-		ox=oy=0xFFFFFF;
-		event_mbutton_clicked(button,state);
-		/*		s3dprintf(LOW,"state is: %d,button is %d",state,button);*/
+		ox = oy = 0xFFFFFF;
+		event_mbutton_clicked(button, state);
+		/*  s3dprintf(LOW,"state is: %d,button is %d",state,button);*/
 		break;
-	case 2:	 /*  mouse still down */
+	case 2:  /*  mouse still down */
 		switch (button) {
 		case 1:
-			if ((ox!=0xFFFFFF) && (oy!=0xFFFFFF))
-				navi_pos(ox-x,oy-y);
+			if ((ox != 0xFFFFFF) && (oy != 0xFFFFFF))
+				navi_pos(ox - x, oy - y);
 			break;
 		case 2:
-			if ((ox!=0xFFFFFF) && (oy!=0xFFFFFF))
-				navi_rot(ox-x,oy-y);
+			if ((ox != 0xFFFFFF) && (oy != 0xFFFFFF))
+				navi_rot(ox - x, oy - y);
 			break;
 		case 3:
 			navi_fwd();
@@ -118,15 +118,15 @@ void user_mouse(int button, int state, int x, int y)
 			navi_back();
 			break;
 		default:
-			s3dprintf(VLOW,"button is ... %d", button);
+			s3dprintf(VLOW, "button is ... %d", button);
 		}
-		ox=x;
-		oy=y;
+		ox = x;
+		oy = y;
 		break;
 	}
-	but=button;
+	but = button;
 	/* mouse changed? */
-	ptr_move(x,y);
+	ptr_move(x, y);
 }
 int user_quit()
 {

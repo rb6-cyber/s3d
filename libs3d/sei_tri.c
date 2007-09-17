@@ -65,12 +65,12 @@ int n;
  *
  * ncontours: #contours
  * cntr: An array describing the number of points in each
- *	 contour. Thus, cntr[i] = #points in the i'th contour.
+ *  contour. Thus, cntr[i] = #points in the i'th contour.
  * vertices: Input array of vertices. Vertices for each contour
  *           immediately follow those for previous one. Array location
  *           vertices[0] must NOT be used (i.e. i/p starts from
  *           vertices[1] instead. The output triangles are
- *	     specified  w.r.t. the indices of these vertices.
+ *      specified  w.r.t. the indices of these vertices.
  * triangles: Output array to hold triangles.
  *
  * Enough space must be allocated for all the arrays before calling
@@ -81,7 +81,7 @@ int n;
 int sei_triangulate_polygon(ncontours, cntr, vertices, triangles)
 int ncontours;
 int cntr[];
-double (*vertices)[2];
+double(*vertices)[2];
 int (*triangles)[3];
 {
 	register int i;
@@ -105,15 +105,15 @@ int (*triangles)[3];
 
 			if (i == last) {
 				seg[i].next = first;
-				seg[i].prev = i-1;
+				seg[i].prev = i - 1;
 				seg[i-1].v1 = seg[i].v0;
 			} else if (i == first) {
-				seg[i].next = i+1;
+				seg[i].next = i + 1;
 				seg[i].prev = last;
 				seg[last].v1 = seg[i].v0;
 			} else {
-				seg[i].prev = i-1;
-				seg[i].next = i+1;
+				seg[i].prev = i - 1;
+				seg[i].next = i + 1;
 				seg[i-1].v1 = seg[i].v0;
 			}
 
@@ -124,7 +124,7 @@ int (*triangles)[3];
 	}
 
 	genus = ncontours - 1;
-	n = i-1;
+	n = i - 1;
 
 	initialise(n);
 	construct_trapezoids(n);

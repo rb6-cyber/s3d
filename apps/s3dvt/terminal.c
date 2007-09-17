@@ -24,113 +24,113 @@
 
 
 #include "s3dvt.h"
-#include <stdio.h> 		 /*  NULL,perror() */
-#include <string.h>		 /*  memcpy() */
-#include <stdlib.h>		 /*  atoi() */
-#define MOVE_RIGHT 	1
-#define MOVE_LEFT 	2
-#define MOVE_UP	 	3
-#define MOVE_DOWN 	4
+#include <stdio.h>    /*  NULL,perror() */
+#include <string.h>   /*  memcpy() */
+#include <stdlib.h>   /*  atoi() */
+#define MOVE_RIGHT  1
+#define MOVE_LEFT  2
+#define MOVE_UP   3
+#define MOVE_DOWN  4
 
 
-int cx=0,cy=0;
+int cx = 0, cy = 0;
 
-int gotnewdata=1;
+int gotnewdata = 1;
 t_line line[MAX_LINES+1];
-static int isansi=0;
-static int isansi2=0;
+static int isansi = 0;
+static int isansi2 = 0;
 
-static int bottom=MAX_LINES-1;
-static int top=0;
+static int bottom = MAX_LINES - 1;
+static int top = 0;
 
-static int curfgcolor=DEFAULT_FGCOLOR;
-static int curbgcolor=DEFAULT_BGCOLOR;
+static int curfgcolor = DEFAULT_FGCOLOR;
+static int curbgcolor = DEFAULT_BGCOLOR;
 
 void move_all_lines_up()
 {
-	t_line *pfirstline=(t_line*)&line;
-	t_line *psecondline=(t_line*)&line+1;
+	t_line *pfirstline = (t_line*) & line;
+	t_line *psecondline = (t_line*) & line + 1;
 	t_line tmpline[MAX_LINES];
-	memcpy(&tmpline, psecondline, (MAX_LINES-1)*sizeof(struct line_struct));
-	memcpy(pfirstline, &tmpline, (MAX_LINES-1)*sizeof(struct line_struct));
+	memcpy(&tmpline, psecondline, (MAX_LINES - 1)*sizeof(struct line_struct));
+	memcpy(pfirstline, &tmpline, (MAX_LINES - 1)*sizeof(struct line_struct));
 }
 
 void clear_char(int lineid, int charid)
 {
-	line[lineid].chars[charid].character=0;
-	line[lineid].chars[charid].fgcolor=DEFAULT_FGCOLOR;
-	line[lineid].chars[charid].bgcolor=DEFAULT_BGCOLOR;
+	line[lineid].chars[charid].character = 0;
+	line[lineid].chars[charid].fgcolor = DEFAULT_FGCOLOR;
+	line[lineid].chars[charid].bgcolor = DEFAULT_BGCOLOR;
 }
 
 void clear_line(int lineid)
 {
 	int i;
-	for (i=0;i<MAX_CHARS;i++)
+	for (i = 0;i < MAX_CHARS;i++)
 		clear_char(lineid, i);
 }
 
 void clear_line_after_lastchar()
 {
 	int i;
-	for (i=cx;i<MAX_CHARS;i++)
+	for (i = cx;i < MAX_CHARS;i++)
 		clear_char(cy, i);
 }
 
 t_line *line_is_full()
 {
-	t_line *pcurline=(t_line*)&line+cy;
+	t_line *pcurline = (t_line*) & line + cy;
 	cy++;
-	if (cy>=MAX_LINES) {       /*  damn it ... our display is filled ... let's move everything upwards */
-		cy=MAX_LINES-1;
-		pcurline=(t_line*)&line+cy;
+	if (cy >= MAX_LINES) {     /*  damn it ... our display is filled ... let's move everything upwards */
+		cy = MAX_LINES - 1;
+		pcurline = (t_line*) & line + cy;
 		move_all_lines_up();
 		clear_line(cy);
-		gotnewdata=1;
+		gotnewdata = 1;
 	} else {
-		pcurline=(t_line*)&line+cy;
+		pcurline = (t_line*) & line + cy;
 	}
-	cx=0;
+	cx = 0;
 	return pcurline;
 }
 
 void add_char_append(char toappend)
 {
-	int shouldinc=1;
-	t_line *pcurline=(t_line*)&line+cy;
-	if (cx==MAX_CHARS-1) {
-		pcurline=line_is_full();
-		shouldinc=0;
+	int shouldinc = 1;
+	t_line *pcurline = (t_line*) & line + cy;
+	if (cx == MAX_CHARS - 1) {
+		pcurline = line_is_full();
+		shouldinc = 0;
 	}  /*  our line is full */
-	pcurline->chars[cx].character=toappend;
-	pcurline->chars[cx].fgcolor=curfgcolor;
-	pcurline->chars[cx].bgcolor=curbgcolor;
+	pcurline->chars[cx].character = toappend;
+	pcurline->chars[cx].fgcolor = curfgcolor;
+	pcurline->chars[cx].bgcolor = curbgcolor;
 	if (shouldinc)
 		cx++;
 }
 
 void backspace()
 {
-	if (cx>0)
+	if (cx > 0)
 		cx--;
 	else
-		cx=0;
+		cx = 0;
 }
 
 void endansi()
 {
 	printf(" [/ANSI(%d)]\n", isansi2);
-	isansi=0;
-	isansi2=0;
+	isansi = 0;
+	isansi2 = 0;
 }
 
 /*
               Parameter                              Parameter Meaning
 
-	      0                                      Attributes off
-	      1                                      Bold or increased intensity
-	      4                                      Underscore
-	      5                                      Blink
-	      7                                      Negative (reverse) image
+       0                                      Attributes off
+       1                                      Bold or increased intensity
+       4                                      Underscore
+       5                                      Blink
+       7                                      Negative (reverse) image
 */
 
 void ansi_change_graphic(char **args)
@@ -138,26 +138,26 @@ void ansi_change_graphic(char **args)
 	int curcol;
 	int i;
 
-	if (args[0][0]=='\0') {
-		args[0][0]='0';
-		args[0][1]='\0';
+	if (args[0][0] == '\0') {
+		args[0][0] = '0';
+		args[0][1] = '\0';
 	}
 
-	for (i=0;i<5;i++) {
+	for (i = 0;i < 5;i++) {
 		if (args[i][0]) {
-			curcol=atoi(args[i]);
+			curcol = atoi(args[i]);
 
 			switch (curcol) {
 			case 0:
-				curbgcolor=DEFAULT_BGCOLOR;
-				curfgcolor=DEFAULT_FGCOLOR;
+				curbgcolor = DEFAULT_BGCOLOR;
+				curfgcolor = DEFAULT_FGCOLOR;
 				break;
-			case 1:	 /*  Bold or increased intensity */
-			case 4:	 /*  Underscore */
-			case 5:	 /*  Blink */
-			case 7:	 /*  Negative (reverse) image */
-			case 10:	 /*  primary font */
-			case 11:	 /*  alternate font */
+			case 1:  /*  Bold or increased intensity */
+			case 4:  /*  Underscore */
+			case 5:  /*  Blink */
+			case 7:  /*  Negative (reverse) image */
+			case 10:  /*  primary font */
+			case 11:  /*  alternate font */
 				break;
 			case 30:
 			case 31:
@@ -167,10 +167,10 @@ void ansi_change_graphic(char **args)
 			case 35:
 			case 36:
 			case 37:
-				curfgcolor=curcol-30;
+				curfgcolor = curcol - 30;
 				break;
 			case 39:
-				curbgcolor=DEFAULT_FGCOLOR;
+				curbgcolor = DEFAULT_FGCOLOR;
 				break;
 			case 40:
 			case 41:
@@ -180,11 +180,11 @@ void ansi_change_graphic(char **args)
 			case 45:
 			case 46:
 			case 47:
-				curbgcolor=curcol-40;
+				curbgcolor = curcol - 40;
 				break;
 
 			case 49:
-				curbgcolor=DEFAULT_BGCOLOR;
+				curbgcolor = DEFAULT_BGCOLOR;
 				break;
 
 			default:
@@ -202,18 +202,18 @@ void move_up_x_lines(char *arg)
 	int amount;
 	int i;
 
-	if (arg[0]) amount=atoi(arg);
-	else amount=0;
+	if (arg[0]) amount = atoi(arg);
+	else amount = 0;
 
 	printf("moving up %d lines", amount);
 
-	for (i=0;i<amount;i++) {
+	for (i = 0;i < amount;i++) {
 
-		pfirstline=(t_line*)&line+cy;
-		psecondline=pfirstline+1;
+		pfirstline = (t_line*) & line + cy;
+		psecondline = pfirstline + 1;
 
-		memcpy(&tmpline, psecondline, (bottom-top)*sizeof(struct line_struct));
-		memcpy(pfirstline, &tmpline,  (bottom-top)*sizeof(struct line_struct));
+		memcpy(&tmpline, psecondline, (bottom - top)*sizeof(struct line_struct));
+		memcpy(pfirstline, &tmpline, (bottom - top)*sizeof(struct line_struct));
 
 	}
 }
@@ -226,17 +226,17 @@ void move_down_x_lines(char *arg)
 	int amount;
 	int i;
 
-	if (arg[0]) amount=atoi(arg);
-	else amount=0;
+	if (arg[0]) amount = atoi(arg);
+	else amount = 0;
 
 	printf("moving down %d lines", amount);
 
-	for (i=0;i<amount;i++) {
-		pfirstline=(t_line*)&line+cy;
-		psecondline=pfirstline+1;
+	for (i = 0;i < amount;i++) {
+		pfirstline = (t_line*) & line + cy;
+		psecondline = pfirstline + 1;
 
-		memcpy(&tmpline, pfirstline, (bottom-top)*sizeof(struct line_struct));
-		memcpy(psecondline, &tmpline,  (bottom-top)*sizeof(struct line_struct));
+		memcpy(&tmpline, pfirstline, (bottom - top)*sizeof(struct line_struct));
+		memcpy(psecondline, &tmpline, (bottom - top)*sizeof(struct line_struct));
 	}
 }
 void delete_x_letters(char *arg1)
@@ -244,13 +244,13 @@ void delete_x_letters(char *arg1)
 	int tmpint;
 	t_line *pcurline;
 	int i;
-	if (arg1[0]) tmpint=atoi(arg1);
-	else	    tmpint=1;
-	pcurline=(t_line*)&line+cy;
-	if (tmpint+cx>MAX_CHARS)
-		tmpint=MAX_CHARS-cx;
-	for (i=cx;i<cx+tmpint;i++)
-		clear_char(cy,i);
+	if (arg1[0]) tmpint = atoi(arg1);
+	else     tmpint = 1;
+	pcurline = (t_line*) & line + cy;
+	if (tmpint + cx > MAX_CHARS)
+		tmpint = MAX_CHARS - cx;
+	for (i = cx;i < cx + tmpint;i++)
+		clear_char(cy, i);
 }
 void move_x_letters(int mode, char *arg1)
 {
@@ -258,27 +258,27 @@ void move_x_letters(int mode, char *arg1)
 	t_line *pcurline;
 	int i;
 	if (arg1[0])
-		tmpint=atoi(arg1);
+		tmpint = atoi(arg1);
 	else
-		tmpint=1;
-	pcurline=(t_line*)&line+cy;
+		tmpint = 1;
+	pcurline = (t_line*) & line + cy;
 	switch (mode) {
 	case MOVE_RIGHT:
-		for (i=0;i<tmpint;i++) {
-			/*	    	    pcurline->nextchar++;
-							lastchar++;*/
+		for (i = 0;i < tmpint;i++) {
+			/*          pcurline->nextchar++;
+			    lastchar++;*/
 			cx++;
-			if (cx==MAX_CHARS)
-				pcurline=line_is_full();  /*  our line is full */
+			if (cx == MAX_CHARS)
+				pcurline = line_is_full();  /*  our line is full */
 		}
 		break;
 	case MOVE_LEFT:
-		for (i=0;i<tmpint;i++) {
+		for (i = 0;i < tmpint;i++) {
 			cx--;
-			if (cx==-1) {
+			if (cx == -1) {
 				cy--;
-				pcurline=(t_line*)&line+cy;
-				cx=MAX_CHARS-1;
+				pcurline = (t_line*) & line + cy;
+				cx = MAX_CHARS - 1;
 			}  /*  need to go up one line */
 		}
 		break;
@@ -294,26 +294,26 @@ void move_x_letters(int mode, char *arg1)
 }
 void remove_beginning_from_curpos()
 {
-	int i,j=cx;
-	for (i=cy;i<MAX_LINES;i++) {
-		for (;j<MAX_CHARS;j++) {
-			clear_char(i,j);
+	int i, j = cx;
+	for (i = cy;i < MAX_LINES;i++) {
+		for (;j < MAX_CHARS;j++) {
+			clear_char(i, j);
 		}
-		j=0;
+		j = 0;
 	}
 }
 
 int parseansi(char curchar)
 {
-	static char arg1[16]="";
-	static char arg2[16]="";
-	static char arg3[16]="";
-	static char arg4[16]="";
-	static char arg5[16]="";
-	static char curindex=0;
-	static char curarg=0;
-	static char *args[]={arg1,arg2,arg3,arg4,arg5};
-	/* 	static char *args[]={&arg1,&arg2,&arg3,&arg4,&arg5}; */
+	static char arg1[16] = "";
+	static char arg2[16] = "";
+	static char arg3[16] = "";
+	static char arg4[16] = "";
+	static char arg5[16] = "";
+	static char curindex = 0;
+	static char curarg = 0;
+	static char *args[] = {arg1, arg2, arg3, arg4, arg5};
+	/*  static char *args[]={&arg1,&arg2,&arg3,&arg4,&arg5}; */
 	printf("%c", curchar);
 	switch (isansi2) {
 	case 1:
@@ -328,38 +328,38 @@ int parseansi(char curchar)
 		case '7':
 		case '8':
 		case '9':  /*  we got an argument */
-			args[(int)curarg][(int)curindex]=curchar;
+			args[(int)curarg][(int)curindex] = curchar;
 			curindex++;
-			args[(int)curarg][(int)curindex]='\0';
+			args[(int)curarg][(int)curindex] = '\0';
 			break;
 		case ';':  /*  some arg is finished */
 			curarg++;
-			curindex=0;
-			args[(int)curarg][0]='\0';
+			curindex = 0;
+			args[(int)curarg][0] = '\0';
 			break;
 		case 'J':  /*  remove beginning from current cursor to end of screen */
 			remove_beginning_from_curpos();
-			gotnewdata=1;
+			gotnewdata = 1;
 			break;
 		case 'K':  /*  remove everything in line beginning from lastchar */
 			clear_line_after_lastchar();
 			break;
 		case 'H':  /*  move to position x=arg1 y=arg2 */
-			if (arg1[0]) cy=atoi(arg1)-1;
-			else 	cy=0;
-			if (arg2[0]) cx=atoi(arg2)-1;
-			else 	cx=0;
+			if (arg1[0]) cy = atoi(arg1) - 1;
+			else  cy = 0;
+			if (arg2[0]) cx = atoi(arg2) - 1;
+			else  cx = 0;
 			break;
 		case 'G':  /*  move to position x=arg1 y=MAX */
-			if (arg1[0]) cx=atoi(arg1)-1;
-			else cx=-1;
-			cy=bottom-1;
+			if (arg1[0]) cx = atoi(arg1) - 1;
+			else cx = -1;
+			cy = bottom - 1;
 			break;
 		case 'd':  /*  move to position x=MAX y=arg1 */
-			if (arg1[0]) cy=atoi(arg1)-1;
-			else cy=0;
-			cy=top+cy;
-			cx=MAX_CHARS-1;
+			if (arg1[0]) cy = atoi(arg1) - 1;
+			else cy = 0;
+			cy = top + cy;
+			cx = MAX_CHARS - 1;
 			break;
 		case 'm':  /*  change graphic */
 			ansi_change_graphic(args);
@@ -371,23 +371,23 @@ int parseansi(char curchar)
 			move_down_x_lines(arg1);
 			break;
 		case 'l':
-			/*		RM -- Reset Mode
-					
-					ESC [ Ps ; Ps ; . . . ; Ps l                                                                                                          default value: none
-					
-					Resets one or more VT100 modes as specified by each selective parameter in the parameter string. Each mode to be reset is specified by a separate
-					parameter. [See Set Mode (SM) control sequence]. (See Modes following this section).*/
+			/*  RM -- Reset Mode
+			  
+			  ESC [ Ps ; Ps ; . . . ; Ps l                                                                                                          default value: none
+			  
+			  Resets one or more VT100 modes as specified by each selective parameter in the parameter string. Each mode to be reset is specified by a separate
+			  parameter. [See Set Mode (SM) control sequence]. (See Modes following this section).*/
 
 			/*  mc only resets the '4' !?! => IRM (Insert/Replacement-Mode) */
 			/*  perhaps Set Cursor to Block mode ? */
 			break;
 		case 'r':  /*  define scroll-range  */
-			if (arg1[0]) top=atoi(arg1);
-			else top=0;
-			if (arg2[0]) bottom=atoi(arg2);
-			else bottom=0;
-			cy=0;
-			cx=0;
+			if (arg1[0]) top = atoi(arg1);
+			else top = 0;
+			if (arg2[0]) bottom = atoi(arg2);
+			else bottom = 0;
+			cy = 0;
+			cx = 0;
 			break;
 		case 'a':
 		case 'A':  /*  move x letters up */
@@ -406,35 +406,35 @@ int parseansi(char curchar)
 			delete_x_letters(arg1);
 			break;
 		case '?':
-			isansi2=4;
+			isansi2 = 4;
 			return 0;
 		default:
 			printf("***unknown***");
 		}
-		if (!((curchar>='0' && curchar<='9') || curchar==';')) { /*  clean our args */
-			args[0][0]='\0';
-			args[1][0]='\0';
-			args[2][0]='\0';
-			args[3][0]='\0';
-			args[4][0]='\0';
-			curindex=0;
-			curarg=0;
+		if (!((curchar >= '0' && curchar <= '9') || curchar == ';')) { /*  clean our args */
+			args[0][0] = '\0';
+			args[1][0] = '\0';
+			args[2][0] = '\0';
+			args[3][0] = '\0';
+			args[4][0] = '\0';
+			curindex = 0;
+			curarg = 0;
 			endansi();
 		}
 		break;
 	case 0:
 		switch (curchar) {
 		case '[':
-			isansi2=1;
+			isansi2 = 1;
 			break;
 		case '(':
-			isansi2=2;
+			isansi2 = 2;
 			break;
 		case ')':
-			isansi2=3;
+			isansi2 = 3;
 			break;
 		case ']':
-			isansi2=5;
+			isansi2 = 5;
 			break;
 		default:
 			endansi();
@@ -442,11 +442,11 @@ int parseansi(char curchar)
 		}
 		break;
 	case 4:
-		if (curchar>'9' || curchar<'0')
+		if (curchar > '9' || curchar < '0')
 			endansi();
 		break;
 	case 5:
-		if (curchar==7) endansi(); /* FIXME: Window Title*/
+		if (curchar == 7) endansi(); /* FIXME: Window Title*/
 		break;
 	default:
 		endansi();
@@ -460,9 +460,9 @@ void AddChar(char *_toadd)
 	char *toadd;
 	char curchar;
 
-	for (toadd=_toadd;toadd[0];toadd++) {
-		curchar=toadd[0];
-		/*	printf("%.3d (", curchar);*/
+	for (toadd = _toadd;toadd[0];toadd++) {
+		curchar = toadd[0];
+		/* printf("%.3d (", curchar);*/
 		if (isansi)
 			parseansi(curchar);
 		else {
@@ -477,7 +477,7 @@ void AddChar(char *_toadd)
 			case 27:
 				/*  ANSI */
 				printf("<ESC>[ANSI] ");
-				isansi=1;
+				isansi = 1;
 				break;
 			case 10:
 				printf("<LF>\n");/* get onto the next line */
@@ -485,33 +485,33 @@ void AddChar(char *_toadd)
 				break;
 			case 13:
 				printf("<CR>\n");/* carriage return, get back */
-				if (cx==MAX_CHARS-1)
+				if (cx == MAX_CHARS - 1)
 					line_is_full();
-				cx=0;
+				cx = 0;
 				break;
 			default:
-				if ((curchar>=32) && (curchar<127)) {
-					/*	    printf("%c", curchar);*/
+				if ((curchar >= 32) && (curchar < 127)) {
+					/*     printf("%c", curchar);*/
 					add_char_append(curchar);
 				}
 				break;
 			}
-			/*	printf(")\n");*/
+			/* printf(")\n");*/
 		}
 	}
-	gotnewdata=1;
+	gotnewdata = 1;
 }
 void init_line()
 {
 	int i;
-	for (i=0;i<MAX_LINES;i++) {
+	for (i = 0;i < MAX_LINES;i++) {
 		clear_line(i);
 	}
 }
 void term_addstring(char *toprint)
 {
 	char *ns;
-	for (ns=toprint;ns[0];ns++) {
+	for (ns = toprint;ns[0];ns++) {
 		term_addchar(ns[0]);
 	}  /*  better method */
 }

@@ -37,12 +37,12 @@ extern struct olsr_con *Con_begin;   /* begin of connection list */
 extern struct olsr_node *Olsr_root;   /* top of olsr node tree */
 extern struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end, *List_ptr;   /* struct list */
 
-extern int	Olsr_node_obj;
-extern int	Olsr_node_inet_obj;
-extern int	Olsr_node_hna_net;
-extern int	Btn_close_obj;
-extern int	S3d_obj;
-extern int	Btn_close_id;
+extern int Olsr_node_obj;
+extern int Olsr_node_inet_obj;
+extern int Olsr_node_hna_net;
+extern int Btn_close_obj;
+extern int S3d_obj;
+extern int Btn_close_id;
 extern int Olsr_node_count_obj;
 extern int Olsr_node_count;
 extern int Last_olsr_node_count;
@@ -58,7 +58,7 @@ extern int move_cam_to;
 
 /* process */
 void lst_initialize();
-void lst_add(int id,struct olsr_node **olsr_node);
+void lst_add(int id, struct olsr_node **olsr_node);
 void lst_del(int id);
 struct olsr_node *lst_search(int id);
 void lst_out();
@@ -69,7 +69,7 @@ int net_init(char *host);
 int net_main();
 int net_quit();
 /* main */
-void out_of_mem( void );
-void print_etx( void );
+void out_of_mem(void);
+void print_etx(void);
 float dist(float p1[], float p2[]);
 void window_error(char *msg);

@@ -22,18 +22,18 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#define MAX_LINES	50
-#define MAX_CHARS	80
+#define MAX_LINES 50
+#define MAX_CHARS 80
 #define DEFAULT_FGCOLOR 2
 #define DEFAULT_BGCOLOR 0
-#define X_RATIO		0.75
-#define CS			0.1
+#define X_RATIO  0.75
+#define CS   0.1
 
-#define M_PIPE		1
-#define M_PTY		2
+#define M_PIPE  1
+#define M_PTY  2
 
-/* #define M_LINE		1 */
-#define M_CHAR		1
+/* #define M_LINE  1 */
+#define M_CHAR  1
 
 typedef struct char_struct {
 	char character;
@@ -53,4 +53,4 @@ void term_addchar(char toprint);
 void AddChar(char *_toadd);
 
 extern int gotnewdata;
-extern int cx,cy;
+extern int cx, cy;

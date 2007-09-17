@@ -23,7 +23,7 @@
 
 
 #include "global.h"
-#include <GL/glut.h> 	 /*  all the glut functions */
+#include <GL/glut.h>   /*  all the glut functions */
 #include <s3d_keysym.h> /* our very own (haha) keysyms */
 /*  local prototypes */
 void keyboard(uint8_t key, int x, int y);
@@ -34,10 +34,10 @@ extern int but;
 /*  init user input things for glut */
 int user_init_glut()
 {
-	s3dprintf(MED,"using GLUT for user input");
-	glutKeyboardFunc (keyboard);
-	glutSpecialFunc (special);
-	glutMouseFunc (user_mouse);
+	s3dprintf(MED, "using GLUT for user input");
+	glutKeyboardFunc(keyboard);
+	glutSpecialFunc(special);
+	glutMouseFunc(user_mouse);
 	glutMotionFunc(mouse_motion);
 	glutPassiveMotionFunc(passive_mouse_motion);
 	return(0);
@@ -45,89 +45,89 @@ int user_init_glut()
 
 void keyboard(uint8_t key, int x, int y)
 {
-	user_key(key,key,0,0);
-	user_key(key,key,0,1);
+	user_key(key, key, 0, 0);
+	user_key(key, key, 0, 1);
 }
 void special(int skey, int x, int y)
 {
 	uint16_t mkey;
 	switch (skey) { /* handle special keys */
 	case GLUT_KEY_F1:
-		mkey=S3DK_F1;
+		mkey = S3DK_F1;
 		break;
 	case GLUT_KEY_F2:
-		mkey=S3DK_F2;
+		mkey = S3DK_F2;
 		break;
 	case GLUT_KEY_F3:
-		mkey=S3DK_F3;
+		mkey = S3DK_F3;
 		break;
 	case GLUT_KEY_F4:
-		mkey=S3DK_F4;
+		mkey = S3DK_F4;
 		break;
 	case GLUT_KEY_F5:
-		mkey=S3DK_F5;
+		mkey = S3DK_F5;
 		break;
 	case GLUT_KEY_F6:
-		mkey=S3DK_F6;
+		mkey = S3DK_F6;
 		break;
 	case GLUT_KEY_F7:
-		mkey=S3DK_F7;
+		mkey = S3DK_F7;
 		break;
 	case GLUT_KEY_F8:
-		mkey=S3DK_F8;
+		mkey = S3DK_F8;
 		break;
 	case GLUT_KEY_F9:
-		mkey=S3DK_F9;
+		mkey = S3DK_F9;
 		break;
 	case GLUT_KEY_F10:
-		mkey=S3DK_F10;
+		mkey = S3DK_F10;
 		break;
 	case GLUT_KEY_F11:
-		mkey=S3DK_F11;
+		mkey = S3DK_F11;
 		break;
 	case GLUT_KEY_F12:
-		mkey=S3DK_F12;
+		mkey = S3DK_F12;
 		break;
 	case GLUT_KEY_LEFT:
-		mkey=S3DK_LEFT;
+		mkey = S3DK_LEFT;
 		break;
 	case GLUT_KEY_RIGHT:
-		mkey=S3DK_RIGHT;
+		mkey = S3DK_RIGHT;
 		break;
 	case GLUT_KEY_UP:
-		mkey=S3DK_UP;
+		mkey = S3DK_UP;
 		break;
 	case GLUT_KEY_DOWN:
-		mkey=S3DK_DOWN;
+		mkey = S3DK_DOWN;
 		break;
 	case GLUT_KEY_PAGE_UP:
-		mkey=S3DK_PAGEUP;
+		mkey = S3DK_PAGEUP;
 		break;
 	case GLUT_KEY_PAGE_DOWN:
-		mkey=S3DK_PAGEDOWN;
+		mkey = S3DK_PAGEDOWN;
 		break;
 	case GLUT_KEY_HOME:
-		mkey=S3DK_HOME;
+		mkey = S3DK_HOME;
 		break;
 	case GLUT_KEY_END:
-		mkey=S3DK_END;
+		mkey = S3DK_END;
 		break;
 	case GLUT_KEY_INSERT:
-		mkey=S3DK_INSERT;
+		mkey = S3DK_INSERT;
 		break;
 	default:
-		mkey=skey;
+		mkey = skey;
 		break;
 	}
-	s3dprintf(MED,"special(): %d -> %d",skey,mkey);
-	user_key(mkey,0,0,0);
-	user_key(mkey,0,0,1);
+	s3dprintf(MED, "special(): %d -> %d", skey, mkey);
+	user_key(mkey, 0, 0, 0);
+	user_key(mkey, 0, 0, 1);
 }
 void mouse_motion(int x, int y)
 {
-	user_mouse(but,2,x,y);
+	user_mouse(but, 2, x, y);
 }
 void passive_mouse_motion(int x, int y)
 {
-	user_mouse(-1,-1,x,y);
+	user_mouse(-1, -1, x, y);
 }

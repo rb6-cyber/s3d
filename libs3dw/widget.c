@@ -28,41 +28,41 @@
 #include <string.h> /* strdup() */
 s3dw_widget *s3dw_widget_new(s3dw_widget *widget)
 {
-	widget->type=-1;
-	widget->x=widget->ax=0;
-	widget->y=widget->ay=0;
-	widget->z=widget->az=0;
-	widget->rx=widget->arx=0;
-	widget->ry=widget->ary=0;
-	widget->rz=widget->arz=0;
-	widget->s=widget->as=1;
-	widget->width=0;
-	widget->height=0;
-	widget->nobj=0;
-	widget->pobj=NULL;
-	widget->parent=NULL;
-	widget->ptr=NULL;
-	widget->focus=-1;
-	widget->flags=S3DW_ACTIVE;
-	widget->oid=-1;
+	widget->type = -1;
+	widget->x = widget->ax = 0;
+	widget->y = widget->ay = 0;
+	widget->z = widget->az = 0;
+	widget->rx = widget->arx = 0;
+	widget->ry = widget->ary = 0;
+	widget->rz = widget->arz = 0;
+	widget->s = widget->as = 1;
+	widget->width = 0;
+	widget->height = 0;
+	widget->nobj = 0;
+	widget->pobj = NULL;
+	widget->parent = NULL;
+	widget->ptr = NULL;
+	widget->focus = -1;
+	widget->flags = S3DW_ACTIVE;
+	widget->oid = -1;
 	return(widget);
 }
 /* widget clicked, call specific function and check kids */
 int s3dw_widget_event_click(s3dw_widget *widget, uint32_t oid)
 {
 	int i;
-	s3dprintf(VLOW,"processing click event for widget %010p of type %d, oid %d (%d), subobjects: %d",widget,widget->type, widget->oid, oid, widget->nobj);
-	if (s3dwcb_click[widget->type](widget,oid)) return(1);
-	for (i=0;i<widget->nobj;i++)
-		if (s3dw_widget_event_click(widget->pobj[i],oid)) return(1);
+	s3dprintf(VLOW, "processing click event for widget %010p of type %d, oid %d (%d), subobjects: %d", widget, widget->type, widget->oid, oid, widget->nobj);
+	if (s3dwcb_click[widget->type](widget, oid)) return(1);
+	for (i = 0;i < widget->nobj;i++)
+		if (s3dw_widget_event_click(widget->pobj[i], oid)) return(1);
 	return(0);
 }
 /* widget received key,,call specific function and check (focused) kids */
 int s3dw_widget_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 {
-	if (s3dwcb_key[widget->type](widget,keys)) return(1);
-	if (widget->focus!=-1)
-		if (s3dw_widget_event_key(widget->pobj[widget->focus],keys)) return(1);
+	if (s3dwcb_key[widget->type](widget, keys)) return(1);
+	if (widget->focus != -1)
+		if (s3dw_widget_event_key(widget->pobj[widget->focus], keys)) return(1);
 	return(0);
 }
 
@@ -71,25 +71,25 @@ int s3dw_widget_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 void s3dw_widget_append(s3dw_widget *parent, s3dw_widget *widget)
 {
 	parent->nobj++;
-	parent->pobj=realloc(parent->pobj,sizeof(s3dw_widget **) * (parent->nobj));
-	parent->pobj[parent->nobj-1]=widget;
-	widget->parent=parent;
-	widget->style=parent->style;
+	parent->pobj = realloc(parent->pobj, sizeof(s3dw_widget **) * (parent->nobj));
+	parent->pobj[parent->nobj-1] = widget;
+	widget->parent = parent;
+	widget->style = parent->style;
 	if (!(parent->flags&S3DW_VISIBLE))
-		widget->flags|=S3DW_VISIBLE;
+		widget->flags |= S3DW_VISIBLE;
 }
 /* removes an widget from it's parent, should have been appended before */
 void s3dw_widget_remove(s3dw_widget *widget)
 {
-	s3dw_widget *parent=widget->parent;
+	s3dw_widget *parent = widget->parent;
 	int i;
-	if (parent==NULL) return;
+	if (parent == NULL) return;
 
-	for (i=0;i<parent->nobj;i++) /* search ... */
-		if (parent->pobj[i]==widget) { /* ... and destroy */
-			if (parent->focus==i)					parent->focus=-1;
-			if (parent->focus==(parent->nobj-1))	parent->focus=i;
-			parent->pobj[i]=parent->pobj[parent->nobj-1]; /* swap last element to the to be deleted one */
+	for (i = 0;i < parent->nobj;i++) /* search ... */
+		if (parent->pobj[i] == widget) { /* ... and destroy */
+			if (parent->focus == i)     parent->focus = -1;
+			if (parent->focus == (parent->nobj - 1)) parent->focus = i;
+			parent->pobj[i] = parent->pobj[parent->nobj-1]; /* swap last element to the to be deleted one */
 			parent->nobj--;
 		}
 }
@@ -98,23 +98,23 @@ void s3dw_delete(s3dw_widget *widget)
 {
 	s3dw_widget_remove(widget);
 	/* remove kids */
-	while (widget->nobj>0) /* will decrease as child-delete will call s3dw_widget_remove() */
+	while (widget->nobj > 0) /* will decrease as child-delete will call s3dw_widget_remove() */
 		s3dw_delete(widget->pobj[0]);
 	free(widget->pobj);
-	s3dwcb_destroy[widget->type](widget);	/* type-specific destroy */
+	s3dwcb_destroy[widget->type](widget); /* type-specific destroy */
 }
 /* toggle a widget visible and show it */
 void s3dw_show(s3dw_widget *widget)
 {
-	widget->flags|=S3DW_VISIBLE;
+	widget->flags |= S3DW_VISIBLE;
 	s3dw_widget_visible(widget);
 }
 void s3dw_focus(s3dw_widget *focus)
 {
 	int i;
-	for (i=0;i<focus->parent->nobj;i++)
-		if (focus->parent->pobj[i]==focus) {
-			focus->parent->focus=i;
+	for (i = 0;i < focus->parent->nobj;i++)
+		if (focus->parent->pobj[i] == focus) {
+			focus->parent->focus = i;
 			return;
 		}
 }
@@ -124,16 +124,16 @@ void s3dw_widget_visible(s3dw_widget *widget)
 {
 	int i;
 	s3dw_widget *kid;
-	for (i=0;i<widget->nobj;i++) {
-		kid=widget->pobj[i];
+	for (i = 0;i < widget->nobj;i++) {
+		kid = widget->pobj[i];
 		if (widget->flags&S3DW_VISIBLE)
 			s3dw_widget_visible(kid);
 	}
-	widget->flags|=S3DW_ONSCREEN;
+	widget->flags |= S3DW_ONSCREEN;
 	s3dwcb_show[widget->type](widget);
 }
 /* apply the moves ... */
-void				 s3dw_moveit(s3dw_widget *widget)
+void     s3dw_moveit(s3dw_widget *widget)
 {
 	s3dw_ani_add(widget);
 }

@@ -22,16 +22,16 @@
  */
 
 #include <s3dlib.h> /* s3dprintf() */
-#define MAXANI		128
-#define ZOOMS		5
+#define MAXANI  128
+#define ZOOMS  5
 /* constructor and handler callbacks */
 typedef int (*s3dw_click_callback)(s3dw_widget *, uint32_t);
-typedef int (*s3dw_key_callback)(  s3dw_widget *, struct s3d_key_event *);
-extern s3dw_callback 		s3dwcb_show[S3DW_NTYPES];
-extern s3dw_callback 		s3dwcb_hide[S3DW_NTYPES];
-extern s3dw_callback 		s3dwcb_destroy[S3DW_NTYPES];
+typedef int (*s3dw_key_callback)(s3dw_widget *, struct s3d_key_event *);
+extern s3dw_callback   s3dwcb_show[S3DW_NTYPES];
+extern s3dw_callback   s3dwcb_hide[S3DW_NTYPES];
+extern s3dw_callback   s3dwcb_destroy[S3DW_NTYPES];
 extern s3dw_click_callback s3dwcb_click[S3DW_NTYPES];
-extern s3dw_key_callback	s3dwcb_key[S3DW_NTYPES];
+extern s3dw_key_callback s3dwcb_key[S3DW_NTYPES];
 
 /* root.c */
 s3dw_widget *s3dw_getroot();
@@ -93,8 +93,8 @@ int s3dw_textbox_event_key(s3dw_widget *widget, struct s3d_key_event *keys);
 int s3dw_textbox_event_click(s3dw_widget *widget, uint32_t oid);
 
 /* scrollbar.c */
-#define S3DW_SBAR_HORI		0
-#define S3DW_SBAR_VERT		1
+#define S3DW_SBAR_HORI  0
+#define S3DW_SBAR_VERT  1
 s3dw_scrollbar *s3dw_scrollbar_new(s3dw_widget *parent, int type, float posx, float posy, float length);
 void s3dw_scrollbar_show(s3dw_widget *widget);
 void s3dw_scrollbar_hide(s3dw_widget *widget);

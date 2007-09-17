@@ -45,7 +45,7 @@ static struct timespec sleep_time = {
 };   /* 100 mili seconds */
 
 
-void init_globals( void )
+void init_globals(void)
 {
 	Global.debug = 1;
 	Global.obj_node_hna = 0;
@@ -58,39 +58,39 @@ void init_globals( void )
 }
 
 
-void print_usage( void )
+void print_usage(void)
 {
 
-	printf( "Usage is olsrs3d [options] [-- [s3d options]]\n" );
-	printf( "olsrs3d options:\n" );
-	printf( "   -h\tprint this short help\n" );
-	printf( "   -d\tenable debug mode\n" );
-	printf( "   -H\tconnect to olsr node [default: localhost]\n" );
+	printf("Usage is olsrs3d [options] [-- [s3d options]]\n");
+	printf("olsrs3d options:\n");
+	printf("   -h\tprint this short help\n");
+	printf("   -d\tenable debug mode\n");
+	printf("   -H\tconnect to olsr node [default: localhost]\n");
 	s3d_usage();
 }
 
 float dist(float p1[], float p2[])
 {
 	float p[3];
-	p[0]=p1[0]-p2[0];
-	p[1]=p1[1]-p2[1];
-	p[2]=p1[2]-p2[2];
+	p[0] = p1[0] - p2[0];
+	p[1] = p1[1] - p2[1];
+	p[2] = p1[2] - p2[2];
 	return (sqrt(p[0]*p[0]   +  p[1]*p[1]  +  p[2]*p[2]));
 }
 
 float dirt(float p1[], float p2[], float p3[])
 {
 	float d;
-	d=dist(p1,p2);
-	if (d==0) {
-		p3[0]=(( float ) 0.2 * rand() ) / RAND_MAX - 0.1;
-		p3[1]=(( float ) 0.2 * rand() ) / RAND_MAX - 0.1;
-		p3[2]=(( float ) 0.2 * rand() ) / RAND_MAX - 0.1;
-		d=s3d_vector_length(p3);
+	d = dist(p1, p2);
+	if (d == 0) {
+		p3[0] = ((float) 0.2 * rand()) / RAND_MAX - 0.1;
+		p3[1] = ((float) 0.2 * rand()) / RAND_MAX - 0.1;
+		p3[2] = ((float) 0.2 * rand()) / RAND_MAX - 0.1;
+		d = s3d_vector_length(p3);
 	} else {
-		p3[0]=p2[0]-p1[0];
-		p3[1]=p2[1]-p1[1];
-		p3[2]=p2[2]-p1[2];
+		p3[0] = p2[0] - p1[0];
+		p3[1] = p2[1] - p1[1];
+		p3[2] = p2[2] - p1[2];
 	}
 	return(d);
 }
@@ -100,29 +100,29 @@ void handle_node()
 	struct node *node;
 	struct hash_it_t *hashit;
 
-	if ( node_hash->elements == 0 )
+	if (node_hash->elements == 0)
 		return;
 	hashit = NULL;
-	while ( NULL != ( hashit = hash_iterate( node_hash, hashit ) ) ) {
+	while (NULL != (hashit = hash_iterate(node_hash, hashit))) {
 		node = (struct node *) hashit->bucket->data;
-		if ( node->node_type_modified ) {
+		if (node->node_type_modified) {
 
 			node->node_type_modified = 0;
-			if ( node->obj_id != -1 ) {
-				s3d_del_object( node->obj_id );
+			if (node->obj_id != -1) {
+				s3d_del_object(node->obj_id);
 			}
 
-			if ( node->desc_id != -1 ) s3d_del_object( node->desc_id );
+			if (node->desc_id != -1) s3d_del_object(node->desc_id);
 
-			if ( node->node_type == 1 ) {
-				node->obj_id = s3d_clone( Global.obj_node_inet );
-			} else if ( node->node_type == 2 ) {
-				node->obj_id = s3d_clone( Global.obj_node_hna );
+			if (node->node_type == 1) {
+				node->obj_id = s3d_clone(Global.obj_node_inet);
+			} else if (node->node_type == 2) {
+				node->obj_id = s3d_clone(Global.obj_node_hna);
 			} else {
-				node->obj_id = s3d_clone( Global.obj_node_normal );
+				node->obj_id = s3d_clone(Global.obj_node_normal);
 			}
 
-			s3d_flags_on( node->obj_id, S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+			s3d_flags_on(node->obj_id, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 
 		}
 	}
@@ -131,65 +131,65 @@ void handle_node()
 
 void mov_add(float mov[], float p[], float fac)
 {
-	/*	if (fac>1000)
-			return;
-		fac=1000; */
-	mov[0]+=fac*p[0];
-	mov[1]+=fac*p[1];
-	mov[2]+=fac*p[2];
+	/* if (fac>1000)
+	  return;
+	 fac=1000; */
+	mov[0] += fac * p[0];
+	mov[1] += fac * p[1];
+	mov[2] += fac * p[2];
 }
 
-void move_meshnode( struct node *node )
+void move_meshnode(struct node *node)
 {
-	float null_vec[3] = {0,0,0};
+	float null_vec[3] = {0, 0, 0};
 	float tmp_mov_vec[3];
 	float distance;
 
-	if ( !( ( node->mov_vec[0] == 0 ) && ( node->mov_vec[1] == 0 ) && ( node->mov_vec[2] == 0 ) ) && node->visible ) {
-		distance = dirt( node->pos_vec, null_vec, tmp_mov_vec );
-		mov_add( node->mov_vec, tmp_mov_vec, distance / 100 ); /* move a little bit to point zero */
-		mov_add( node->mov_vec, tmp_mov_vec, 1 ); /* move a little bit to point zero */
+	if (!((node->mov_vec[0] == 0) && (node->mov_vec[1] == 0) && (node->mov_vec[2] == 0)) && node->visible) {
+		distance = dirt(node->pos_vec, null_vec, tmp_mov_vec);
+		mov_add(node->mov_vec, tmp_mov_vec, distance / 100);   /* move a little bit to point zero */
+		mov_add(node->mov_vec, tmp_mov_vec, 1);   /* move a little bit to point zero */
 
-		if ( ( distance = dist( node->mov_vec, null_vec ) ) > 10.0 )
-			mov_add( node->pos_vec, node->mov_vec, 1.0 / ( ( float ) distance ) );
+		if ((distance = dist(node->mov_vec, null_vec)) > 10.0)
+			mov_add(node->pos_vec, node->mov_vec, 1.0 / ((float) distance));
 		else
-			mov_add( node->pos_vec, node->mov_vec, 0.1 );
+			mov_add(node->pos_vec, node->mov_vec, 0.1);
 
-		s3d_translate( node->obj_id, node->pos_vec[0], node->pos_vec[1], node->pos_vec[2] );
+		s3d_translate(node->obj_id, node->pos_vec[0], node->pos_vec[1], node->pos_vec[2]);
 		/* reset movement vector */
 		node->mov_vec[0] = node->mov_vec[1] = node->mov_vec[2] = 0.0;
 	}
 }
 
-void calc_node_mov( void )
+void calc_node_mov(void)
 {
 
 	float distance;
-	float tmp_mov_vec[3],vertex_buf[6];
+	float tmp_mov_vec[3], vertex_buf[6];
 	float f;
 	int ip[2];
 	struct node_con *con;
 	struct node *first_node, *sec_node;
 	struct hash_it_t *hashit1, *hashit2;
 
-	if ( con_hash->elements == 0 )
+	if (con_hash->elements == 0)
 		return;
 	hashit1 = hashit2 = NULL;
-	while ( NULL != ( hashit1 = hash_iterate( node_hash, hashit1 ) ) ) {
+	while (NULL != (hashit1 = hash_iterate(node_hash, hashit1))) {
 		first_node = (struct node *) hashit1->bucket->data;
-		while ( NULL != ( hashit2 = hash_iterate( node_hash, hashit2 ) ) ) {
+		while (NULL != (hashit2 = hash_iterate(node_hash, hashit2))) {
 			sec_node = (struct node *) hashit2->bucket->data;
-			if ( first_node != sec_node ) {
+			if (first_node != sec_node) {
 				ip[0] = max(first_node->ip, sec_node->ip);
 				ip[1] = min(first_node->ip, sec_node->ip);
-				distance = dirt( first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec );
-				if ( NULL != ( con = hash_find(con_hash, ip ) ) ) {
+				distance = dirt(first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec);
+				if (NULL != (con = hash_find(con_hash, ip))) {
 					/* we have a connection */
-					f = ( ( con->etx1_sqrt + con->etx2_sqrt ) / 4.0 ) / distance;
-					mov_add( first_node->mov_vec, tmp_mov_vec,  1 / f - 1 );
-					mov_add( sec_node->mov_vec, tmp_mov_vec, -( 1 / f - 1 ) );
-					printf("------co---------\n%s %.2f %.2f %.2f\n%s %.2f %.2f %.2f\n", first_node->ip_string,first_node->mov_vec[0],first_node->mov_vec[1],first_node->mov_vec[2],
-					       sec_node->ip_string,sec_node->mov_vec[0],sec_node->mov_vec[1],sec_node->mov_vec[2]  );
+					f = ((con->etx1_sqrt + con->etx2_sqrt) / 4.0) / distance;
+					mov_add(first_node->mov_vec, tmp_mov_vec,  1 / f - 1);
+					mov_add(sec_node->mov_vec, tmp_mov_vec, -(1 / f - 1));
+					printf("------co---------\n%s %.2f %.2f %.2f\n%s %.2f %.2f %.2f\n", first_node->ip_string, first_node->mov_vec[0], first_node->mov_vec[1], first_node->mov_vec[2],
+					       sec_node->ip_string, sec_node->mov_vec[0], sec_node->mov_vec[1], sec_node->mov_vec[2]);
 
 					vertex_buf[0] = first_node->pos_vec[0];
 					vertex_buf[1] = first_node->pos_vec[1];
@@ -197,24 +197,24 @@ void calc_node_mov( void )
 					vertex_buf[3] = sec_node->pos_vec[0];
 					vertex_buf[4] = sec_node->pos_vec[1];
 					vertex_buf[5] = sec_node->pos_vec[2];
-					s3d_pep_vertices( con->obj_id, vertex_buf, 2 );
+					s3d_pep_vertices(con->obj_id, vertex_buf, 2);
 
-					s3d_pep_material( con->obj_id,
-					                  1.0,1.0,1.0,
-					                  1.0,1.0,1.0,
-					                  1.0,1.0,1.0
+					s3d_pep_material(con->obj_id,
+					                 1.0, 1.0, 1.0,
+					                 1.0, 1.0, 1.0,
+					                 1.0, 1.0, 1.0
 					                );
 
 				} else {
 					/* we have no connection */
 					if (distance < 0.1) distance = 0.1;
-					mov_add( first_node->mov_vec, tmp_mov_vec, 100 / ( distance * distance ) );
-					mov_add( sec_node->mov_vec, tmp_mov_vec, -100 / ( distance * distance ) );
-					printf("------nco---------\n%s %.2f %.2f %.2f\n%s %.2f %.2f %.2f\n", first_node->ip_string,first_node->mov_vec[0],first_node->mov_vec[1],first_node->mov_vec[2],
-					       sec_node->ip_string,sec_node->mov_vec[0],sec_node->mov_vec[1],sec_node->mov_vec[2]  );
+					mov_add(first_node->mov_vec, tmp_mov_vec, 100 / (distance * distance));
+					mov_add(sec_node->mov_vec, tmp_mov_vec, -100 / (distance * distance));
+					printf("------nco---------\n%s %.2f %.2f %.2f\n%s %.2f %.2f %.2f\n", first_node->ip_string, first_node->mov_vec[0], first_node->mov_vec[1], first_node->mov_vec[2],
+					       sec_node->ip_string, sec_node->mov_vec[0], sec_node->mov_vec[1], sec_node->mov_vec[2]);
 				}
-				move_meshnode( first_node );
-				move_meshnode( sec_node );
+				move_meshnode(first_node);
+				move_meshnode(sec_node);
 			}
 		}
 		/* first_node = hash_find( node_hash, &con->ip[0] );
@@ -241,36 +241,36 @@ void mainloop()
 	handle_node();
 	/* move_nodes(); */
 
-	while ( ( net_result = net_main() ) != 0 ) {
-		if ( net_result == -1 ) {
+	while ((net_result = net_main()) != 0) {
+		if (net_result == -1) {
 			s3d_quit();
 			break;
 		}
 	}
-	nanosleep( &sleep_time, NULL );
+	nanosleep(&sleep_time, NULL);
 	return;
 }
 
 
-int main( int argc, char *argv[] )
+int main(int argc, char *argv[])
 {
 	int optchar;
 	char olsr_host[256];
 
 	init_globals();
-	strncpy( olsr_host, "127.0.0.1", 256 );
+	strncpy(olsr_host, "127.0.0.1", 256);
 	lbuf[0] = '\0';
 
-	while ( ( optchar = getopt ( argc, argv, "dhH:" ) ) != -1 ) {
+	while ((optchar = getopt(argc, argv, "dhH:")) != -1) {
 
-		switch ( optchar ) {
+		switch (optchar) {
 
 		case 'd':
 			Global.debug = 1;
 			break;
 
 		case 'H':
-			strncpy( olsr_host, optarg, 256 );
+			strncpy(olsr_host, optarg, 256);
 			break;
 
 		case 'h':
@@ -282,17 +282,17 @@ int main( int argc, char *argv[] )
 
 	}
 
-	if ( Global.debug )
-		printf( "debug mode enabled ...\n" );
+	if (Global.debug)
+		printf("debug mode enabled ...\n");
 
 	/* initialize obj2ip linked list */
 	/* lst_initialize(); */
 
 	/* delete olsrs3d options */
-	while ( ( optind < argc ) && ( argv[optind][0] != '-' ) ) optind++;		/* optind may point to ip addr of '-H' */
+	while ((optind < argc) && (argv[optind][0] != '-')) optind++;        /* optind may point to ip addr of '-H' */
 	optind--;
-	argv[optind] = argv[0];		/* save program path */
-	argc -= optind;				/* jump over olsrs3d options */
+	argv[optind] = argv[0];  /* save program path */
+	argc -= optind;    /* jump over olsrs3d options */
 	argv += optind;
 
 	/* set extern int optind = 0 for parse_args in io.c */
@@ -306,22 +306,22 @@ int main( int argc, char *argv[] )
 		s3d_set_callback(S3D_EVENT_KEY,keypress);
 		s3d_set_callback(S3D_EVENT_QUIT,stop); */
 
-		if (!s3d_init(&argc,&argv,"meshs3d")) {
+		if (!s3d_init(&argc, &argv, "meshs3d")) {
 
 			if (s3d_select_font("vera"))
 				printf("font not found\n");
 
-			Global.obj_node_normal = s3d_import_model_file( "objs/accesspoint.3ds" );
-			Global.obj_node_inet = s3d_import_model_file( "objs/accesspoint_inet.3ds" );
-			Global.obj_node_hna = s3d_import_model_file( "objs/internet.3ds" );
-			Global.obj_btn_close = s3d_import_model_file( "objs/btn_close.3ds" );
+			Global.obj_node_normal = s3d_import_model_file("objs/accesspoint.3ds");
+			Global.obj_node_inet = s3d_import_model_file("objs/accesspoint_inet.3ds");
+			Global.obj_node_hna = s3d_import_model_file("objs/internet.3ds");
+			Global.obj_btn_close = s3d_import_model_file("objs/btn_close.3ds");
 
-			Global.obj_s3d_url = s3d_import_model_file( "objs/s3d_berlios_de.3ds" );
+			Global.obj_s3d_url = s3d_import_model_file("objs/s3d_berlios_de.3ds");
 
-			s3d_translate( Global.obj_s3d_url, 0.75, -0.75, -1 );
-			s3d_scale( Global.obj_s3d_url, 0.07 );
-			s3d_link( Global.obj_s3d_url, 0 );
-			s3d_flags_on( Global.obj_s3d_url, S3D_OF_VISIBLE );
+			s3d_translate(Global.obj_s3d_url, 0.75, -0.75, -1);
+			s3d_scale(Global.obj_s3d_url, 0.07);
+			s3d_link(Global.obj_s3d_url, 0);
+			s3d_flags_on(Global.obj_s3d_url, S3D_OF_VISIBLE);
 
 			/* create_search_widget( 0, 0, 300 ); */
 

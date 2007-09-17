@@ -21,10 +21,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#define NOTHING 0		/* nothing ;) */
-#define ABORT 1			/* widget has no focus */
-#define WIDGET 2		/* focus on widget */
-#define FOLLOW 3		/* follow search result */
+#define NOTHING 0  /* nothing ;) */
+#define ABORT 1   /* widget has no focus */
+#define WIDGET 2  /* focus on widget */
+#define FOLLOW 3  /* follow search result */
 
 void create_search_widget(float x, float y, float z);
 void move_search_widget(float x, float y, float z);
@@ -35,7 +35,7 @@ int get_search_status(void);
 void set_search_status(int stat);
 void search_widget_write(int key);
 void set_node_root(struct olsr_node *root);
-void follow_node(float cam_position_t[], float cam_position_r[],float rotate);
+void follow_node(float cam_position_t[], float cam_position_r[], float rotate);
 void follow_node_by_click(struct olsr_node *olsr_node);
 
 void show_search_window();

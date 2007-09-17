@@ -23,7 +23,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <math.h>		/* sqrt() */
+#include <math.h>  /* sqrt() */
 #include "s3d.h"
 
 /***
@@ -36,10 +36,10 @@
  *
  ***/
 
-float s3d_vector_length( float vector[] )
+float s3d_vector_length(float vector[])
 {
 
-	return ( sqrt( vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2] ) );
+	return (sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2]));
 
 }
 
@@ -54,7 +54,7 @@ float s3d_vector_length( float vector[] )
  *
  ***/
 
-void s3d_vector_subtract( float vector1[], float vector2[], float result_vector[] )
+void s3d_vector_subtract(float vector1[], float vector2[], float result_vector[])
 {
 
 	result_vector[0] = vector2[0] - vector1[0];
@@ -74,9 +74,9 @@ void s3d_vector_subtract( float vector1[], float vector2[], float result_vector[
  *
  ***/
 
-float s3d_vector_dot_product( float vector1[], float vector2[] )
+float s3d_vector_dot_product(float vector1[], float vector2[])
 {
-	return ( vector1[0] * vector2[0] + vector1[1] * vector2[1] + vector1[2] * vector2[2] );
+	return (vector1[0] * vector2[0] + vector1[1] * vector2[1] + vector1[2] * vector2[2]);
 }
 
 /***
@@ -85,16 +85,16 @@ float s3d_vector_dot_product( float vector1[], float vector2[] )
  *
  *   vector1         =>   given vector1
  *   vector2         =>   given vector2
- *	 result_vector   =>   save resulting vector here
+ *  result_vector   =>   save resulting vector here
  *   return dot product
  *
  ***/
 
-void s3d_vector_cross_product( float vector1[], float vector2[], float result_vector[] )
+void s3d_vector_cross_product(float vector1[], float vector2[], float result_vector[])
 {
-	result_vector[0]=vector1[1] * vector2[2] - vector1[2] * vector2[1];
-	result_vector[1]=vector1[2] * vector2[0] - vector1[0] * vector2[2];
-	result_vector[2]=vector1[0] * vector2[1] - vector1[1] * vector2[0];
+	result_vector[0] = vector1[1] * vector2[2] - vector1[2] * vector2[1];
+	result_vector[1] = vector1[2] * vector2[0] - vector1[0] * vector2[2];
+	result_vector[2] = vector1[0] * vector2[1] - vector1[1] * vector2[0];
 }
 /***
  *
@@ -109,10 +109,10 @@ void s3d_vector_cross_product( float vector1[], float vector2[], float result_ve
  *
  ***/
 
-float s3d_vector_angle( float vector1[], float vector2[] )
+float s3d_vector_angle(float vector1[], float vector2[])
 {
 
-	return ( acos( s3d_vector_dot_product( vector1, vector2 ) / ( s3d_vector_length( vector1 ) * s3d_vector_length( vector2 ) ) ) );
+	return (acos(s3d_vector_dot_product(vector1, vector2) / (s3d_vector_length(vector1) * s3d_vector_length(vector2))));
 
 }
 
@@ -128,7 +128,7 @@ float s3d_vector_angle( float vector1[], float vector2[] )
  *
  ***/
 
-float s3d_angle_to_cam( float obj_pos[], float cam_pos[], float *angle_rad )
+float s3d_angle_to_cam(float obj_pos[], float cam_pos[], float *angle_rad)
 {
 
 	float angle, tmp_mov_vec[3], desc_norm_vec[3] = { 0.0, 0.0, -1.0 };
@@ -138,15 +138,15 @@ float s3d_angle_to_cam( float obj_pos[], float cam_pos[], float *angle_rad )
 	tmp_mov_vec[1] = 0;   /* we are not interested in the y value */
 	tmp_mov_vec[2] = cam_pos[2] - obj_pos[2];
 
-	angle = s3d_vector_angle( desc_norm_vec, tmp_mov_vec );
+	angle = s3d_vector_angle(desc_norm_vec, tmp_mov_vec);
 
 	/* take care of inverse cosinus */
-	if ( tmp_mov_vec[0] > 0 ) {
-		*angle_rad = 90.0/M_PI - angle;
-		angle = 180 - ( 180.0/M_PI * angle );
+	if (tmp_mov_vec[0] > 0) {
+		*angle_rad = 90.0 / M_PI - angle;
+		angle = 180 - (180.0 / M_PI * angle);
 	} else {
-		*angle_rad = 90.0/M_PI + angle;
-		angle = 180 + ( 180.0/M_PI * angle );
+		*angle_rad = 90.0 / M_PI + angle;
+		angle = 180 + (180.0 / M_PI * angle);
 	}
 
 	return angle;

@@ -22,34 +22,34 @@
  */
 
 
-#include <stdio.h>		 /*  snprintf(), printf(), NULL */
+#include <stdio.h>   /*  snprintf(), printf(), NULL */
 #include <s3d.h>
 #include <s3dw.h>
 #include "s3dosm.h"
-#include <time.h>	 /*  nanosleep(), struct tm, time_t...  */
-static int ready=0;
+#include <time.h>  /*  nanosleep(), struct tm, time_t...  */
+static int ready = 0;
 
 void mainloop()
 {
-	struct timespec t= {
-		0,100*1000*1000
+	struct timespec t = {
+		0, 100*1000*1000
 	}; /* 100 mili seconds */
 	if (ready) {
-		nanosleep(&t,NULL);
+		nanosleep(&t, NULL);
 		gps_main();
 		nav_main();
 		s3dw_ani_mate();
 	} /* else {
-		s3d_net_check(); / * we are not yet in the mainloop of
-							s3d_mainloop(), because ready==0,
-							so we check protocol things ourselves.
-							This just prevents timing out from the server
-							because map loading takes so long, you shouldn't take
-							this as good example and write proper threaded or
-							timesliced loaders :) * /
-		s3d_process_stack();
-	}
-	s3dw_ani_mate();*/
+  s3d_net_check(); / * we are not yet in the mainloop of
+       s3d_mainloop(), because ready==0,
+       so we check protocol things ourselves.
+       This just prevents timing out from the server
+       because map loading takes so long, you shouldn't take
+       this as good example and write proper threaded or
+       timesliced loaders :) * /
+  s3d_process_stack();
+ }
+ s3dw_ani_mate();*/
 }
 int init(int argc, char **argv)
 {
@@ -57,17 +57,17 @@ int init(int argc, char **argv)
 	ui_init();
 	if (db_init(":memory:")) return(-1);
 	if (db_create()) return(-1);
-	if (process_args(argc,argv)) return(-1);
+	if (process_args(argc, argv)) return(-1);
 	nav_init();
 	nav_autocenter();
 	draw_all_layers();
 	gps_init("localhost");
-	ready=1;
+	ready = 1;
 	return(0);
 }
 int quit()
 {
-	ready=0;
+	ready = 0;
 	gps_quit();
 	s3d_quit();
 	db_quit();
@@ -75,7 +75,7 @@ int quit()
 }
 int main(int argc, char **argv)
 {
-	if (!s3d_init(&argc,&argv,"s3dosm")) {
+	if (!s3d_init(&argc, &argv, "s3dosm")) {
 		if (!init(argc, argv)) s3d_mainloop(mainloop);
 		quit();
 	} else return(-1);

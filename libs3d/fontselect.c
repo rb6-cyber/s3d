@@ -27,7 +27,7 @@
 /*  version would be nice too, to be implemented :) */
 #include "s3d.h"
 #include "s3dlib.h"
-#include <dirent.h> 	 /*  dirent */
+#include <dirent.h>   /*  dirent */
 #include <X11/Xlib.h>  /*  Display type, XOpenDisplay(), XCloseDIsplay etc. */
 #ifdef WITH_FONTCONFIG
 #include "ft2build.h"
@@ -46,13 +46,13 @@ char *s3d_findfont(char *mask)
 	FcResult result;
 
 	pattern = FcNameParse((FcChar8 *)mask);
-	FcConfigSubstitute(0,pattern,FcMatchPattern);
+	FcConfigSubstitute(0, pattern, FcMatchPattern);
 	FcDefaultSubstitute(pattern);
-	s3dprintf(LOW,"Looking for font %s",mask);
+	s3dprintf(LOW, "Looking for font %s", mask);
 
-	if (!(match=FcFontMatch(0,pattern,&result)))
+	if (!(match = FcFontMatch(0, pattern, &result)))
 		return NULL;
-	if (FcPatternGetString(match,FC_FILE,0,&file)!=FcResultMatch)
+	if (FcPatternGetString(match, FC_FILE, 0, &file) != FcResultMatch)
 		return NULL;
 	return (char *)file;
 }
@@ -64,36 +64,36 @@ char *s3d_findfont(char *mask)
 {
 	char **flist = NULL;
 	int fnum = 0;
-	char *disp=NULL;
+	char *disp = NULL;
 	int n;
 	char *fname;
-	char *good=NULL;
+	char *good = NULL;
 	struct dirent **namelist;
 	Display *dpy;
 
 	dpy = XOpenDisplay(disp);  /*  Open display and check for success */
 	if (dpy == NULL)
-		errds(VHIGH, "s3d_findfont()","unable to open display %s", XDisplayName (disp));
+		errds(VHIGH, "s3d_findfont()", "unable to open display %s", XDisplayName(disp));
 	else {
-		if (!(flist = XGetFontPath (dpy, &fnum))) {
-			errds(VHIGH, "s3d_findfont():XGetFontPath()","unable to get font path.");
+		if (!(flist = XGetFontPath(dpy, &fnum))) {
+			errds(VHIGH, "s3d_findfont():XGetFontPath()", "unable to get font path.");
 		} else
 			while (fnum--) {
-				/*  now scan the directories	 */
+				/*  now scan the directories  */
 				n =  scandir(flist[fnum], &namelist, 0, alphasort);
-				while (n-->0) {
-					fname=namelist[n]->d_name;
-					if (strlen(fname)>(strlen(mask)+3)) { /*  there should be enough space for the .ttf ending */
+				while (n-- > 0) {
+					fname = namelist[n]->d_name;
+					if (strlen(fname) > (strlen(mask) + 3)) { /*  there should be enough space for the .ttf ending */
 						/*  check for the first n characters */
-						if (0==strncasecmp(fname,mask,strlen(mask))) {
+						if (0 == strncasecmp(fname, mask, strlen(mask))) {
 							/*  name matches! now check for the end... */
-							if (0==strncasecmp(fname+(strlen(fname)-3),"ttf",3)) { /*  check if it has a ttf-ending */
-								if (good==NULL)
-									good=malloc(256);
-								strncpy(good,flist[fnum],255);
-								good[256]=0; 									/* just in case */
-								strncat(good,fname,255-strlen(good));
-								if ((strlen(mask)+4)==strlen(fname)) {
+							if (0 == strncasecmp(fname + (strlen(fname) - 3), "ttf", 3)) { /*  check if it has a ttf-ending */
+								if (good == NULL)
+									good = malloc(256);
+								strncpy(good, flist[fnum], 255);
+								good[256] = 0;        /* just in case */
+								strncat(good, fname, 255 - strlen(good));
+								if ((strlen(mask) + 4) == strlen(fname)) {
 									return(good);
 								}
 							}
@@ -101,7 +101,7 @@ char *s3d_findfont(char *mask)
 					}
 				}
 			}
-		XCloseDisplay (dpy);
+		XCloseDisplay(dpy);
 	}
 	return(good);
 }

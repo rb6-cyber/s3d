@@ -24,10 +24,10 @@
 
 #include <s3d.h>
 #include "s3dosm.h"
-#include <stdio.h> 	/* printf() */
-int user_icon=-1,user_icon_rotator=-1;
+#include <stdio.h>  /* printf() */
+int user_icon = -1, user_icon_rotator = -1;
 #ifdef HAVE_GPS
-#include <gps.h> 	/* gps_*() */
+#include <gps.h>  /* gps_*() */
 #ifdef NMEA_CHANNELS
 #define GPS_NEW
 #endif
@@ -36,35 +36,35 @@ int user_icon=-1,user_icon_rotator=-1;
 #endif
 
 #include <errno.h>  /* errno */
-#include <stdlib.h>	/* malloc(), free() */
+#include <stdlib.h> /* malloc(), free() */
 #include <string.h> /* strlen() */
-#include <stdio.h>		 /*  snprintf(), printf(), NULL */
-#include <time.h>	 /*  nanosleep(), struct tm, time_t...  */
-#include <math.h>	/* fabs(), finite () */
-static struct gps_data_t 	*dgps;
-static int 					 frame=0;
-static int 					 lastfix=0;
-static int 					 gps_active=0;
-static int					 gps_info=-1;
-static float 				 lat,lon,tlat,tlon;	/* we have the same in nav.c, this one is for the user icon ... */
-static float				 lat_old,lon_old;
-static float				 speed_old=0.0;
-void 				 show_gpsdata(struct gps_data_t *dgps);
-void				 show_position(struct gps_data_t *dgps);
+#include <stdio.h>   /*  snprintf(), printf(), NULL */
+#include <time.h>  /*  nanosleep(), struct tm, time_t...  */
+#include <math.h> /* fabs(), finite () */
+static struct gps_data_t  *dgps;
+static int       frame = 0;
+static int       lastfix = 0;
+static int       gps_active = 0;
+static int      gps_info = -1;
+static float      lat, lon, tlat, tlon; /* we have the same in nav.c, this one is for the user icon ... */
+static float     lat_old, lon_old;
+static float     speed_old = 0.0;
+void      show_gpsdata(struct gps_data_t *dgps);
+void     show_position(struct gps_data_t *dgps);
 
 void show_gpsdata(struct gps_data_t *dgps)
 {
 	if (!dgps->online)
 		printf("WARNING: no connection to gps device\n");
 #ifdef GPS_NEW
-	printf("[%d] lat/long: [%f|%f], altitude %f\n",frame,dgps->fix.latitude,dgps->fix.longitude,dgps->fix.altitude);
-	printf("speed [kph]: %f\n",dgps->fix.speed/KNOTS_TO_KPH);
-	printf("used %d/%d satellits\n",dgps->satellites_used,dgps->satellites);
-	printf("################## = %f %f %f\n",dgps->fix.pitch, dgps->fix.roll, dgps->fix.dip);
+	printf("[%d] lat/long: [%f|%f], altitude %f\n", frame, dgps->fix.latitude, dgps->fix.longitude, dgps->fix.altitude);
+	printf("speed [kph]: %f\n", dgps->fix.speed / KNOTS_TO_KPH);
+	printf("used %d/%d satellits\n", dgps->satellites_used, dgps->satellites);
+	printf("################## = %f %f %f\n", dgps->fix.pitch, dgps->fix.roll, dgps->fix.dip);
 #else
-	printf("[%d] lat/long: [%f|%f], altitude %f\n",frame,dgps->latitude,dgps->longitude,dgps->altitude);
-	printf("speed [kph]: %f\n",dgps->speed/KNOTS_TO_KPH);
-	printf("used %d/%d satellits\n",dgps->satellites_used,dgps->satellites);
+	printf("[%d] lat/long: [%f|%f], altitude %f\n", frame, dgps->latitude, dgps->longitude, dgps->altitude);
+	printf("speed [kph]: %f\n", dgps->speed / KNOTS_TO_KPH);
+	printf("used %d/%d satellits\n", dgps->satellites_used, dgps->satellites);
 
 #endif
 	switch (dgps->status) {
@@ -98,87 +98,87 @@ void show_gpsdata(struct gps_data_t *dgps)
 		break;
 	}
 }
-#define BUFSIZE		1024
+#define BUFSIZE  1024
 void show_position(struct gps_data_t *dgps)
 {
-	int fix=1;
-	float la,lo,heading,speed,slen;
+	int fix = 1;
+	float la, lo, heading, speed, slen;
 	char buf[BUFSIZE+1];
 #ifdef GPS_NEW
 	if (!dgps->online)
-		fix=0;
+		fix = 0;
 	switch (dgps->fix.mode) {
 	case MODE_NOT_SEEN:
-		fix=0;
+		fix = 0;
 		break;
 	case MODE_NO_FIX:
-		fix=0;
+		fix = 0;
 		break;
 	}
 
-	la=dgps->fix.latitude;
-	lo=dgps->fix.longitude;
-	heading=-dgps->fix.track;
-	speed=dgps->fix.speed;
+	la = dgps->fix.latitude;
+	lo = dgps->fix.longitude;
+	heading = -dgps->fix.track;
+	speed = dgps->fix.speed;
 
 #else
 	if (!dgps->online)
-		fix=0;
+		fix = 0;
 	switch (dgps->mode) {
 	case MODE_NOT_SEEN:
-		fix=0;
+		fix = 0;
 		break;
 	case MODE_NO_FIX:
-		fix=0;
+		fix = 0;
 		break;
 	}
-	la=dgps->latitude;
-	lo=dgps->longitude;
-	heading=-dgps->track;
-	speed=dgps->speed*KNOTS_TO_MPH/METERS_TO_MILES/3600; /* speed in knots -> miles per hour -> meter per hour -> meter per secon */
+	la = dgps->latitude;
+	lo = dgps->longitude;
+	heading = -dgps->track;
+	speed = dgps->speed * KNOTS_TO_MPH / METERS_TO_MILES / 3600; /* speed in knots -> miles per hour -> meter per hour -> meter per secon */
 #endif
-	tlat=la;
-	tlon=lo;
+	tlat = la;
+	tlon = lo;
 	if (fix) {
 		printf("have a fix\n");
-		nav_center(la,lo);
+		nav_center(la, lo);
 		if (!finitef(heading)) {
-			heading=get_heading(lat_old,lon_old,la,lo);
-			if (!lastfix && fix) 		{
-				s3d_scale(user_icon,1.0/RESCALE);
+			heading = get_heading(lat_old, lon_old, la, lo);
+			if (!lastfix && fix)   {
+				s3d_scale(user_icon, 1.0 / RESCALE);
 			}
-			if (lastfix && !fix)		{
-				s3d_scale(user_icon,0.3/RESCALE);
-				lat=tlat;
-				lon=tlon;
+			if (lastfix && !fix)  {
+				s3d_scale(user_icon, 0.3 / RESCALE);
+				lat = tlat;
+				lon = tlon;
 			}
 		}
-		if (finitef(heading))		s3d_rotate(user_icon,0,heading,0); /* wrong rotation? */
+		if (finitef(heading))  s3d_rotate(user_icon, 0, heading, 0); /* wrong rotation? */
 		if (finitef(speed)) {
 			/* print some information */
-			snprintf(buf,BUFSIZE,"speed: %3.2f km/h",speed*3.6);
-			speed_old=speed;
+			snprintf(buf, BUFSIZE, "speed: %3.2f km/h", speed*3.6);
+			speed_old = speed;
 		} else
-			snprintf(buf,BUFSIZE,"speed: NA (old: %3.2f km/h)",speed_old*3.6);
+			snprintf(buf, BUFSIZE, "speed: NA (old: %3.2f km/h)", speed_old*3.6);
 
-		if (gps_info!=-1)	s3d_del_object(gps_info);
-		gps_info=s3d_draw_string(buf,&slen);
-		s3d_translate(gps_info,-slen/2,1,0);
+		if (gps_info != -1) s3d_del_object(gps_info);
+		gps_info = s3d_draw_string(buf, &slen);
+		s3d_translate(gps_info, -slen / 2, 1, 0);
 		s3d_link(gps_info, user_icon);
-		s3d_flags_on(gps_info,S3D_OF_VISIBLE);
+		s3d_flags_on(gps_info, S3D_OF_VISIBLE);
 	}
 
 
-	lat_old=la;
-	lon_old=lo;
-	lastfix=fix;
+	lat_old = la;
+	lon_old = lo;
+	lastfix = fix;
 }
 int gps_init(char *gpshost)
 {
 	char *err_str;
-	dgps=gps_open(gpshost,"2947");
-	if (dgps==NULL) {
-		switch ( errno ) {
+	dgps = gps_open(gpshost, "2947");
+	if (dgps == NULL) {
+		switch (errno) {
 		case NL_NOSERVICE:
 			err_str = "can't get service entry";
 			break;
@@ -201,25 +201,25 @@ int gps_init(char *gpshost)
 			err_str = "Unknown";
 			break;
 		}
-		/*		printf("no connection to gpsd\n");*/
-		fprintf(stderr, "s3dosm: no gpsd running or network error: %d, %s\n"	,  errno, err_str);
+		/*  printf("no connection to gpsd\n");*/
+		fprintf(stderr, "s3dosm: no gpsd running or network error: %d, %s\n" ,  errno, err_str);
 		return(-1);
 	}
-	user_icon=s3d_clone(icons[ICON_ARROW].oid);
-	user_icon_rotator=s3d_new_object();
-	s3d_link(user_icon,user_icon_rotator);
-	s3d_link(user_icon_rotator,oidy);
-	s3d_flags_on(user_icon,S3D_OF_VISIBLE);
-	s3d_scale(user_icon,1.0/RESCALE);
-	tlat=lat=lat_old=0.0;
-	tlon=lon=lon_old=0.0;
-	gps_active=1;
+	user_icon = s3d_clone(icons[ICON_ARROW].oid);
+	user_icon_rotator = s3d_new_object();
+	s3d_link(user_icon, user_icon_rotator);
+	s3d_link(user_icon_rotator, oidy);
+	s3d_flags_on(user_icon, S3D_OF_VISIBLE);
+	s3d_scale(user_icon, 1.0 / RESCALE);
+	tlat = lat = lat_old = 0.0;
+	tlon = lon = lon_old = 0.0;
+	gps_active = 1;
 	gps_query(dgps, "w+x\n");
 	return(0);
 }
 int gps_main()
 {
-	if (gps_active && ((frame%6)==0)) {
+	if (gps_active && ((frame % 6) == 0)) {
 		if (gps_poll(dgps) < 0) {
 			printf("read error on server socket\n");
 			gps_quit();
@@ -228,19 +228,19 @@ int gps_main()
 		/*show_gpsdata(dgps);*/
 		show_position(dgps);
 	}
-	if ((fabs(tlat-lat)>0.00001) && (fabs(tlon-lon)>0.00001)) {
-		if (lat==0.0 && lon==0.0) {
-			lat=tlat;
-			lon=tlon;
+	if ((fabs(tlat - lat) > 0.00001) && (fabs(tlon - lon) > 0.00001)) {
+		if (lat == 0.0 && lon == 0.0) {
+			lat = tlat;
+			lon = tlon;
 		} else {
-			lat=(tlat+lat*7)/8;
-			lon=(tlon+lon*7)/8;
+			lat = (tlat + lat * 7) / 8;
+			lon = (tlon + lon * 7) / 8;
 		}
 	} else {
-		tlat=lat;
-		tlon=lon;
+		tlat = lat;
+		tlon = lon;
 	}
-	draw_translate_icon(user_icon_rotator,lat,lon);
+	draw_translate_icon(user_icon_rotator, lat, lon);
 	frame++;
 	return(0);
 }
@@ -248,7 +248,7 @@ int gps_quit()
 {
 	if (gps_active) {
 		printf("deactivating gps-connection ...\n");
-		gps_active=0;
+		gps_active = 0;
 		gps_close(dgps);
 	}
 	return(0);

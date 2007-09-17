@@ -92,12 +92,12 @@ struct wlan_client {
 
 
 
-void *alloc_memory( int len );
-unsigned int get_time( void );
-struct wlan_network *get_wlan_network( char *bssid );
-struct wlan_network *find_wlan_network( char *bssid );
-struct wlan_client *get_wlan_client( char *mac );
-void* gui_main( void *unused );
+void *alloc_memory(int len);
+unsigned int get_time(void);
+struct wlan_network *get_wlan_network(char *bssid);
+struct wlan_network *find_wlan_network(char *bssid);
+struct wlan_client *get_wlan_client(char *mac);
+void* gui_main(void *unused);
 
 
 

@@ -25,42 +25,42 @@
 
 #define max(x,y) ((x)>(y)?(x):(y))
 #define min(x,y) ((x)<(y)?(x):(y))
-#define NAMEMAX		128
-#define MAXLINESIZE 1000		/* lines in a digraph just shouldn't get that longer ... */
-#define MAXDATASIZE 100			/* max number of bytes we can get at once  */
+#define NAMEMAX  128
+#define MAXLINESIZE 1000  /* lines in a digraph just shouldn't get that longer ... */
+#define MAXDATASIZE 100   /* max number of bytes we can get at once  */
 
 /* linked list for the all connections */
 struct node_con {
 	unsigned int ip[2];
-	float etx1;							/* etx of left olsr node */
-	float etx2;						/* etx of right olsr node */
-	float etx1_sqrt;					/* sqrt of etx of left olsr node */
-	float etx2_sqrt;					/* sqrt etx of right olsr node */
-	int obj_id;								/* id of connection object in s3d */
+	float etx1;       /* etx of left olsr node */
+	float etx2;      /* etx of right olsr node */
+	float etx1_sqrt;     /* sqrt of etx of left olsr node */
+	float etx2_sqrt;     /* sqrt etx of right olsr node */
+	int obj_id;        /* id of connection object in s3d */
 	int color;
 	float rgb;
 };
 
 /* linked list for the neighbours of each olsr node */
 struct olsr_neigh_list {
-	struct olsr_neigh_list *next_olsr_neigh_list;		/* pointer to next neighbour */
-	struct olsr_con *olsr_con;							/* pointer to the connection */
+	struct olsr_neigh_list *next_olsr_neigh_list;  /* pointer to next neighbour */
+	struct olsr_con *olsr_con;       /* pointer to the connection */
 };
 
 
 /* we contruct a binary tree to handle the nodes */
 struct node {
 	unsigned int ip;
-	char ip_string[NAMEMAX];		/* host ip */
-	int node_type;					/* normal = 0, internet gateway = 1, via hna announced network = 2 */
-	int node_type_modified;			/* node_type modified flag */
-	int last_seen;					/* last seen counter */
-	int visible;					/* is this node visible or vanished */
-	float pos_vec[3];				/* position vector in 3d "space" */
-	float mov_vec[3];				/* move vector */
-	int obj_id;						/* id of node object in s3d */
-	int desc_id;					/* id of node description object in s3d */
-	float desc_length;				/* length of node description object in s3d */
+	char ip_string[NAMEMAX];  /* host ip */
+	int node_type;     /* normal = 0, internet gateway = 1, via hna announced network = 2 */
+	int node_type_modified;   /* node_type modified flag */
+	int last_seen;     /* last seen counter */
+	int visible;     /* is this node visible or vanished */
+	float pos_vec[3];    /* position vector in 3d "space" */
+	float mov_vec[3];    /* move vector */
+	int obj_id;      /* id of node object in s3d */
+	int desc_id;     /* id of node description object in s3d */
+	float desc_length;    /* length of node description object in s3d */
 };
 
 
@@ -73,11 +73,11 @@ struct obj_to_ip {
 
 struct glob {
 	int debug;
-	int	obj_node_normal;
-	int	obj_node_inet;
-	int	obj_node_hna;
-	int	obj_btn_close;
-	int	obj_s3d_url;
+	int obj_node_normal;
+	int obj_node_inet;
+	int obj_node_hna;
+	int obj_btn_close;
+	int obj_s3d_url;
 	int obj_zero_point;
 };
 

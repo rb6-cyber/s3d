@@ -29,23 +29,23 @@
 
 
 
-struct wlan_network *get_wlan_network( char *bssid ) {
+struct wlan_network *get_wlan_network(char *bssid) {
 
 	struct wlan_network *wlan_network;
 
 
-	wlan_network = find_wlan_network( bssid );
+	wlan_network = find_wlan_network(bssid);
 
-	if ( wlan_network != NULL )
+	if (wlan_network != NULL)
 		return wlan_network;
 
 
 	/* we reached the end of the list and must create a new wlan_network */
-	wlan_network = alloc_memory( sizeof( struct wlan_network ) );
+	wlan_network = alloc_memory(sizeof(struct wlan_network));
 
 	INIT_LIST_HEAD(&wlan_network->list);
 
-	strncpy( wlan_network->bssid, bssid, 18 );
+	strncpy(wlan_network->bssid, bssid, 18);
 
 	wlan_network->type = -1;
 	wlan_network->chan = -1;
@@ -78,7 +78,7 @@ struct wlan_network *get_wlan_network( char *bssid ) {
 
 
 
-struct wlan_network *find_wlan_network( char *bssid ) {
+struct wlan_network *find_wlan_network(char *bssid) {
 
 	struct list_head *network_pos;
 	struct wlan_network *wlan_network;
@@ -88,7 +88,7 @@ struct wlan_network *find_wlan_network( char *bssid ) {
 
 		wlan_network = list_entry(network_pos, struct wlan_network, list);
 
-		if ( strncmp( wlan_network->bssid, bssid, 18 ) == 0 )
+		if (strncmp(wlan_network->bssid, bssid, 18) == 0)
 			return wlan_network;
 
 	}

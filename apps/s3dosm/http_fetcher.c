@@ -1,22 +1,22 @@
 /* http_fetcher.c - HTTP handling functions
 
-	Copyright (C) 2001 Lyle Hanson (lhanson@cs.nmu.edu)
+ Copyright (C) 2001 Lyle Hanson (lhanson@cs.nmu.edu)
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Library General Public
-	License as published by the Free Software Foundation; either
-	version 2 of the License, or (at your option) any later version.
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Library General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later version.
 
-	This library is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Library General Public License for more details.
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Library General Public License for more details.
 
-	See included LICENSE file for details
+ See included LICENSE file for details
 
-	Changes:
-		Simon Wunderlich <dotslash@packetmixer.de>
-		+ added http_setAuth() to support basic http-authentication and some minor fixes
+ Changes:
+  Simon Wunderlich <dotslash@packetmixer.de>
+  + added http_setAuth() to support basic http-authentication and some minor fixes
 
  */
 
@@ -38,21 +38,21 @@ char *referer = NULL;
 char *auth = NULL;
 int hideUserAgent = 0;
 int hideReferer = 1;
-extern const char *http_errlist[];	/* Array of HTTP Fetcher error messages */
-extern char convertedError[128];	/* Buffer to used when errors contain %d */
+extern const char *http_errlist[]; /* Array of HTTP Fetcher error messages */
+extern char convertedError[128]; /* Buffer to used when errors contain %d */
 static int errorSource = 0;
 static int http_errno = 0;
-static int errorInt = 0;			/* When the error message has a %d in it,
-									 *	this variable is inserted */
+static int errorInt = 0;   /* When the error message has a %d in it,
+          * this variable is inserted */
 static int freeOldAgent = 0; /* Indicates previous malloc's */
 static int freeOldReferer = 0; /* Indicated previous malloc's */
 
 
 /*
  * Actually downloads the page, registering a hit (donation)
- *	If the fileBuf passed in is NULL, the url is downloaded and then
- *	freed; otherwise the necessary space is allocated for fileBuf.
- *	Returns size of download on success, -1 on error is set,
+ * If the fileBuf passed in is NULL, the url is downloaded and then
+ * freed; otherwise the necessary space is allocated for fileBuf.
+ * Returns size of download on success, -1 on error is set,
  */
 int http_fetch(const char *url_tmp, char **fileBuf)
 {
@@ -72,7 +72,7 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 	}
 
 	/* Copy the url passed in into a buffer we can work with, change, etc. */
-	url = malloc(strlen(url_tmp)+1);
+	url = malloc(strlen(url_tmp) + 1);
 	if (url == NULL) {
 		errorSource = ERRNO;
 		return -1;
@@ -94,7 +94,7 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 	/* Compose a request string */
 	if (charIndex == NULL)
 		/* The url has no '/' in it, assume the user is making a root-level
-		 *	request */
+		 * request */
 		sprintf(requestBuf, "GET / %s\r\n", HTTP_VERSION);
 	else
 		sprintf(requestBuf, "GET %s %s\r\n", charIndex, HTTP_VERSION);
@@ -107,7 +107,7 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 	strcat(requestBuf, "\r\n");
 
 
-	if (!hideReferer && referer != NULL) {	/* NO default referer */
+	if (!hideReferer && referer != NULL) { /* NO default referer */
 		strcat(requestBuf, "Referer: ");
 		strcat(requestBuf, referer);
 		strcat(requestBuf, "\r\n");
@@ -124,7 +124,7 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 		strcat(requestBuf, userAgent);
 		strcat(requestBuf, "\r\n");
 	}
-	if (auth!=NULL) {
+	if (auth != NULL) {
 		strcat(requestBuf, "Authorization: Basic ");
 		strcat(requestBuf, auth);
 		strcat(requestBuf, "\r\n");
@@ -132,7 +132,7 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 	strcat(requestBuf, "\r\n");
 
 	printf("[HTTP] creating connection ...\n");
-	sock = makeSocket(host);			/* errorSource set within makeSocket */
+	sock = makeSocket(host);   /* errorSource set within makeSocket */
 	if (sock == -1) {
 		free(url);
 		return -1;
@@ -147,7 +147,7 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 
 	printf("[HTTP] receiving header\n");
 	/* Grab enough of the response to get the metadata */
-	ret = _http_read_header(sock, headerBuf);	/* errorSource set within */
+	ret = _http_read_header(sock, headerBuf); /* errorSource set within */
 	if (ret < 0) {
 		close(sock);
 		free(url);
@@ -176,10 +176,10 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 		http_errno = HF_CRETURNCODE;
 		return -1;
 	}
-	if (i<200 || i>299) {
+	if (i < 200 || i > 299) {
 		close(sock);
 		free(url);
-		errorInt = i;	/* Status code, to be inserted in error string */
+		errorInt = i; /* Status code, to be inserted in error string */
 		errorSource = FETCHER_ERROR;
 		http_errno = HF_STATUSCODE;
 		return -1;
@@ -187,9 +187,9 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 
 	/*
 	 * Parse out about how big the data segment is.
-	 *	Note that under current HTTP standards (1.1 and prior), the
-	 *	Content-Length field is not guaranteed to be accurate or even present.
-	 *	I just use it here so I can allocate a ballpark amount of memory.
+	 * Note that under current HTTP standards (1.1 and prior), the
+	 * Content-Length field is not guaranteed to be accurate or even present.
+	 * I just use it here so I can allocate a ballpark amount of memory.
 	 *
 	 * Note that some servers use different capitalization
 	 */
@@ -213,7 +213,7 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 	if (contentLength == -1)
 		contentLength = DEFAULT_PAGE_BUF_SIZE;
 
-	pageBuf = (char *)malloc(contentLength+1);
+	pageBuf = (char *)malloc(contentLength + 1);
 	if (pageBuf == NULL) {
 		close(sock);
 		free(url);
@@ -229,9 +229,9 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 		tv.tv_usec = 0;
 
 		if (timeout >= 0)
-			selectRet = select(sock+1, &rfds, NULL, NULL, &tv);
-		else		/* No timeout, can block indefinately */
-			selectRet = select(sock+1, &rfds, NULL, NULL, NULL);
+			selectRet = select(sock + 1, &rfds, NULL, NULL, &tv);
+		else  /* No timeout, can block indefinately */
+			selectRet = select(sock + 1, &rfds, NULL, NULL, NULL);
 
 		if (selectRet == 0 && timeout < 0) {
 			errorSource = FETCHER_ERROR;
@@ -262,8 +262,8 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 
 		if (ret > 0) {
 			/* To be tolerant of inaccurate Content-Length fields, we'll
-			 *	allocate another read-sized chunk to make sure we have
-			 *	enough room.
+			 * allocate another read-sized chunk to make sure we have
+			 * enough room.
 			 */
 			pageBuf = (char *)realloc(pageBuf, bytesRead + contentLength);
 			if (pageBuf == NULL) {
@@ -274,7 +274,7 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 				return -1;
 			}
 		}
-		printf("[HTTP] read %d bytes\n",ret);
+		printf("[HTTP] read %d bytes\n", ret);
 	}
 
 	/*
@@ -282,9 +282,9 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 	 */
 	pageBuf = (char *)realloc(pageBuf, bytesRead);
 	/* pageBuf shouldn't be null, since we're _shrinking_ the buffer,
-	 *	and if it DID fail, we could go on with the too-large buffer,
-	 *	but something would DEFINATELY be wrong, so we'll just give
-	 *	an error message */
+	 * and if it DID fail, we could go on with the too-large buffer,
+	 * but something would DEFINATELY be wrong, so we'll just give
+	 * an error message */
 	if (pageBuf == NULL) {
 		close(sock);
 		free(url);
@@ -293,7 +293,7 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 		return -1;
 	}
 
-	if (fileBuf == NULL)	/* They just wanted us to "hit" the url */
+	if (fileBuf == NULL) /* They just wanted us to "hit" the url */
 		free(pageBuf);
 	else
 		*fileBuf = pageBuf;
@@ -363,46 +363,46 @@ int http_setReferer(const char *newReferer)
 int http_setAuth(const char *user, const char *pass)
 {
 	unsigned char plain[1024];
-	char ec64[]="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+	char ec64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 	char *b64;
-	int i,j,c,len,n;
-	char o=0;
+	int i, j, c, len, n;
+	char o = 0;
 	/* base64 encode user and pass */
-	if ((user==NULL) || (pass==NULL)) { /* bad input or request to clean up */
-		if (auth!=NULL)	free(auth); /* free old auth */
-		auth=NULL;
+	if ((user == NULL) || (pass == NULL)) { /* bad input or request to clean up */
+		if (auth != NULL) free(auth); /* free old auth */
+		auth = NULL;
 		return(-1);
 	}
 
-	snprintf((char *)plain,1024,"%s:%s",user,pass);
-	len=strlen((char *)plain);
-	b64=malloc(len*4+1);
-	i=j=c=0;
-	while (i<len || c!=0) {
+	snprintf((char *)plain, 1024, "%s:%s", user, pass);
+	len = strlen((char *)plain);
+	b64 = malloc(len * 4 + 1);
+	i = j = c = 0;
+	while (i < len || c != 0) {
 		switch (c) {
 		case 0:
-			o=ec64[ n=plain[i] >> 2 ];
+			o = ec64[ n=plain[i] >> 2 ];
 			i++;
 			break;
 		case 1:
-			o=ec64[ n=((plain[i-1]&0x3)<<4) | (plain[i]>>4) ];
+			o = ec64[ n=((plain[i-1] & 0x3) << 4) | (plain[i] >> 4)];
 			i++;
 			break;
 		case 2:
-			o=(i>=len)?'=':ec64[ n=((plain[i-1]&0xf)<<2) | (plain[i]>>6) ];
+			o = (i >= len) ? '=' : ec64[ n=((plain[i-1] & 0xf) << 2) | (plain[i] >> 6)];
 			break;
 		case 3:
-			o=(i>=len)?'=':ec64[ n=(plain[i]&0x3f) ];
+			o = (i >= len) ? '=' : ec64[ n=(plain[i] & 0x3f)];
 			i++;
 			break;
 		}
-		b64[j]=o;
-		c=(c+1)%4;
+		b64[j] = o;
+		c = (c + 1) % 4;
 		j++;
 	}
-	b64[j]=0;
-	if (auth!=NULL)	free(auth); /* free old auth */
-	auth=b64;
+	b64[j] = 0;
+	if (auth != NULL) free(auth); /* free old auth */
+	auth = b64;
 	return(0);
 
 
@@ -413,7 +413,7 @@ int http_setAuth(const char *user, const char *pass)
 
 /*
  * Changes the amount of time that HTTP Fetcher will wait for data
- *	before timing out on reads
+ * before timing out on reads
  */
 void http_setTimeout(int seconds)
 {
@@ -425,10 +425,10 @@ void http_setTimeout(int seconds)
 /*
  * Puts the filename portion of the url into 'filename'.
  * Returns:
- *	0 on success
- *	1 when url contains no end filename (i.e., 'www.foo.com/'),
- *		and **filename should not be assumed to be valid
- *	-1 on error
+ * 0 on success
+ * 1 when url contains no end filename (i.e., 'www.foo.com/'),
+ *  and **filename should not be assumed to be valid
+ * -1 on error
  */
 int http_parseFilename(const char *url, char **filename)
 {
@@ -461,7 +461,7 @@ int http_parseFilename(const char *url, char **filename)
 
 
 /* Depending on the source of error, calls either perror() or prints
- *	an HTTP Fetcher error message to stdout */
+ * an HTTP Fetcher error message to stdout */
 void http_perror(const char *string)
 {
 	if (errorSource == ERRNO)
@@ -479,13 +479,13 @@ void http_perror(const char *string)
 		} else {
 			/* The error string has a %d in it, we need to insert errorInt */
 			stringIndex = (char *)http_errlist[http_errno];
-			while (*stringIndex != '%') {		/* Print up to the %d */
+			while (*stringIndex != '%') {  /* Print up to the %d */
 				fputc(*stringIndex, stderr);
 				stringIndex++;
 			}
-			fprintf(stderr, "%d", errorInt);	/* Print the number */
-			stringIndex += 2;					/* Skip past the %d */
-			while (*stringIndex != 0) {		/* Print up to the end NULL */
+			fprintf(stderr, "%d", errorInt); /* Print the number */
+			stringIndex += 2;     /* Skip past the %d */
+			while (*stringIndex != 0) {  /* Print up to the end NULL */
 				fputc(*stringIndex, stderr);
 				stringIndex++;
 			}
@@ -498,9 +498,9 @@ void http_perror(const char *string)
 
 /*
  * Returns a pointer to the current error description message. The
- *	message pointed to is only good until the next call to http_strerror(),
- *	so if you need to hold on to the message for a while you should make
- *	a copy of it
+ * message pointed to is only good until the next call to http_strerror(),
+ * so if you need to hold on to the message for a while you should make
+ * a copy of it
  */
 const char *http_strerror()
 {
@@ -513,33 +513,33 @@ const char *http_strerror()
 			return http_errlist[http_errno];
 		else {
 			/* The error string has a %d in it, we need to insert errorInt.
-			 *	convertedError[128] has been declared for that purpose */
+			 * convertedError[128] has been declared for that purpose */
 			char *stringIndex, *originalError;
 
 			originalError = (char *)http_errlist[http_errno];
-			convertedError[0] = 0;		/* Start off with NULL */
+			convertedError[0] = 0;  /* Start off with NULL */
 			stringIndex = strstr(originalError, "%d");
-			strncat(convertedError, originalError,		/* Copy up to %d */
+			strncat(convertedError, originalError,  /* Copy up to %d */
 			        abs(stringIndex - originalError));
-			sprintf(&convertedError[strlen(convertedError)],"%d",errorInt);
-			stringIndex += 2;		/* Skip past the %d */
+			sprintf(&convertedError[strlen(convertedError)], "%d", errorInt);
+			stringIndex += 2;  /* Skip past the %d */
 			strcat(convertedError, stringIndex);
 
 			return convertedError;
 		}
 	}
 
-	return http_errlist[HF_METAERROR];	/* Should NEVER happen */
+	return http_errlist[HF_METAERROR]; /* Should NEVER happen */
 }
 
 
 /*
  * Reads the metadata of an HTTP response.
  * Perhaps a little inefficient, as it reads 1 byte at a time, but
- *	I don't think it's that much of a loss (most headers aren't HUGE).
+ * I don't think it's that much of a loss (most headers aren't HUGE).
  * Returns:
- *	# of bytes read on success, or
- *	-1 on error
+ * # of bytes read on success, or
+ * -1 on error
  */
 int _http_read_header(int sock, char *headerPtr)
 {
@@ -554,9 +554,9 @@ int _http_read_header(int sock, char *headerPtr)
 		tv.tv_usec = 0;
 
 		if (timeout >= 0)
-			selectRet = select(sock+1, &rfds, NULL, NULL, &tv);
-		else		/* No timeout, can block indefinately */
-			selectRet = select(sock+1, &rfds, NULL, NULL, NULL);
+			selectRet = select(sock + 1, &rfds, NULL, NULL, &tv);
+		else  /* No timeout, can block indefinately */
+			selectRet = select(sock + 1, &rfds, NULL, NULL, NULL);
 
 		if (selectRet == 0 && timeout < 0) {
 			errorSource = FETCHER_ERROR;
@@ -575,12 +575,12 @@ int _http_read_header(int sock, char *headerPtr)
 		}
 		bytesRead++;
 
-		if (*headerPtr == '\r') {		/* Ignore CR */
+		if (*headerPtr == '\r') {  /* Ignore CR */
 			/* Basically do nothing special, just don't set newlines
-			 *	to 0 */
+			 * to 0 */
 			headerPtr++;
 			continue;
-		} else if (*headerPtr == '\n')		/* LF is the separator */
+		} else if (*headerPtr == '\n')  /* LF is the separator */
 			newlines++;
 		else
 			newlines = 0;
@@ -588,7 +588,7 @@ int _http_read_header(int sock, char *headerPtr)
 		headerPtr++;
 	}
 
-	headerPtr -= 3;		/* Snip the trailing LF's */
+	headerPtr -= 3;  /* Snip the trailing LF's */
 	*headerPtr = '\0';
 	return bytesRead;
 }
@@ -598,14 +598,14 @@ int _http_read_header(int sock, char *headerPtr)
 /*
  * Opens a TCP socket and returns the descriptor
  * Returns:
- *	socket descriptor, or
- *	-1 on error
+ * socket descriptor, or
+ * -1 on error
  */
 int makeSocket(const char *host)
 {
-	int sock;										/* Socket descriptor */
-	struct sockaddr_in sa;							/* Socket address */
-	struct hostent *hp;								/* Host entity */
+	int sock;          /* Socket descriptor */
+	struct sockaddr_in sa;       /* Socket address */
+	struct hostent *hp;        /* Host entity */
 	int ret;
 
 	hp = gethostbyname(host);
@@ -616,8 +616,8 @@ int makeSocket(const char *host)
 
 	/* Copy host address from hostent to (server) socket address */
 	memcpy((char *)&sa.sin_addr, (char *)hp->h_addr, hp->h_length);
-	sa.sin_family = hp->h_addrtype;		/* Set service sin_family to PF_INET */
-	sa.sin_port = htons(PORT_NUMBER);	/* Put portnum into sockaddr */
+	sa.sin_family = hp->h_addrtype;  /* Set service sin_family to PF_INET */
+	sa.sin_port = htons(PORT_NUMBER); /* Put portnum into sockaddr */
 
 	sock = socket(hp->h_addrtype, SOCK_STREAM, 0);
 	if (sock == -1) {
@@ -625,7 +625,7 @@ int makeSocket(const char *host)
 		return -1;
 	}
 
-	ret = connect(sock, (struct sockaddr *)&sa, sizeof(sa));
+	ret = connect(sock, (struct sockaddr *) & sa, sizeof(sa));
 	if (ret == -1) {
 		errorSource = ERRNO;
 		return -1;

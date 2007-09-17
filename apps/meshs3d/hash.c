@@ -18,7 +18,7 @@
  */
 
 
-#include <stdio.h>		/* NULL */
+#include <stdio.h>  /* NULL */
 #include "hash.h"
 #include "allocate.h"
 
@@ -27,8 +27,8 @@
 void hash_init(struct hashtable_t *hash)
 {
 	int i;
-	hash->elements=0;
-	for (i=0 ; i<hash->size ; i++) {
+	hash->elements = 0;
+	for (i = 0 ; i < hash->size ; i++) {
 		hash->table[i] = NULL;
 	}
 }
@@ -42,16 +42,16 @@ void hash_delete(struct hashtable_t *hash, hashdata_free_cb free_cb)
 	struct element_t *bucket, *last_bucket;
 	int i;
 
-	for (i=0; i<hash->size; i++) {
+	for (i = 0; i < hash->size; i++) {
 
-		bucket= hash->table[i];
+		bucket = hash->table[i];
 		while (bucket != NULL) {
 
-			if (free_cb!=NULL)
-				free_cb( bucket->data );
+			if (free_cb != NULL)
+				free_cb(bucket->data);
 
-			last_bucket= bucket;
-			bucket= bucket->next;
+			last_bucket = bucket;
+			bucket = bucket->next;
 			debugFree(last_bucket, 1301);
 
 		}
@@ -66,8 +66,8 @@ void hash_delete(struct hashtable_t *hash, hashdata_free_cb free_cb)
 void hash_destroy(struct hashtable_t *hash)
 {
 
-	debugFree( hash->table, 1302 );
-	debugFree( hash, 1303 );
+	debugFree(hash->table, 1302);
+	debugFree(hash, 1303);
 
 }
 
@@ -80,24 +80,24 @@ struct hash_it_t *hash_iterate(struct hashtable_t *hash, struct hash_it_t *iter_
 	struct hash_it_t *iter;
 
 	if (iter_in == NULL) {
-		iter= debugMalloc(sizeof(struct hash_it_t), 301);
+		iter = debugMalloc(sizeof(struct hash_it_t), 301);
 		iter->index =  -1;
 		iter->bucket = NULL;
 		iter->prev_bucket = NULL;
 	} else
-		iter= iter_in;
+		iter = iter_in;
 
 	/* sanity checks first (if our bucket got deleted in the last iteration): */
-	if (iter->bucket!=NULL) {
+	if (iter->bucket != NULL) {
 		if (iter->first_bucket != NULL) {
 
 			/* we're on the first element and it got removed after the last iteration. */
 			if ((*iter->first_bucket) != iter->bucket) {
 
 				/* there are still other elements in the list */
-				if ( (*iter->first_bucket) != NULL ) {
+				if ((*iter->first_bucket) != NULL) {
 					iter->prev_bucket = NULL;
-					iter->bucket= (*iter->first_bucket);
+					iter->bucket = (*iter->first_bucket);
 					iter->first_bucket = &hash->table[ iter->index ];
 					return(iter);
 				} else {
@@ -106,23 +106,23 @@ struct hash_it_t *hash_iterate(struct hashtable_t *hash, struct hash_it_t *iter_
 
 			}
 
-		} else if ( iter->prev_bucket != NULL ) {
+		} else if (iter->prev_bucket != NULL) {
 
 			/* we're not on the first element, and the bucket got removed after the last iteration.
 			* the last bucket's next pointer is not pointing to our actual bucket anymore.
 			* select the next. */
-			if ( iter->prev_bucket->next != iter->bucket )
-				iter->bucket= iter->prev_bucket;
+			if (iter->prev_bucket->next != iter->bucket)
+				iter->bucket = iter->prev_bucket;
 
 		}
 
 	}
 
 	/* now as we are sane, select the next one if there is some */
-	if (iter->bucket!=NULL) {
-		if (iter->bucket->next!=NULL) {
-			iter->prev_bucket= iter->bucket;
-			iter->bucket= iter->bucket->next;
+	if (iter->bucket != NULL) {
+		if (iter->bucket->next != NULL) {
+			iter->prev_bucket = iter->bucket;
+			iter->bucket = iter->bucket->next;
 			iter->first_bucket = NULL;
 			return(iter);
 		}
@@ -130,14 +130,14 @@ struct hash_it_t *hash_iterate(struct hashtable_t *hash, struct hash_it_t *iter_
 	/* if not returned yet, we've reached the last one on the index and have to search forward */
 
 	iter->index++;
-	while ( iter->index < hash->size ) {		/* go through the entries of the hash table */
+	while (iter->index < hash->size) {    /* go through the entries of the hash table */
 		if ((hash->table[ iter->index ]) != NULL) {
 			iter->prev_bucket = NULL;
 			iter->bucket = hash->table[ iter->index ];
 			iter->first_bucket = &hash->table[ iter->index ];
-			return(iter);						/* if this table entry is not null, return it */
+			return(iter);      /* if this table entry is not null, return it */
 		} else
-			iter->index++;						/* else, go to the next */
+			iter->index++;      /* else, go to the next */
 	}
 	/* nothing to iterate over anymore */
 	debugFree(iter, 1304);
@@ -149,19 +149,19 @@ struct hash_it_t *hash_iterate(struct hashtable_t *hash, struct hash_it_t *iter_
 struct hashtable_t *hash_new(int size, hashdata_compare_cb compare, hashdata_choose_cb choose) {
 	struct hashtable_t *hash;
 
-	hash= debugMalloc( sizeof(struct hashtable_t) , 302);
-	if ( hash == NULL ) 			/* could not allocate the hash control structure */
+	hash = debugMalloc(sizeof(struct hashtable_t) , 302);
+	if (hash == NULL)      /* could not allocate the hash control structure */
 		return (NULL);
 
-	hash->size= size;
-	hash->table= debugMalloc( sizeof(struct element_t *) * size, 303);
-	if ( hash->table == NULL ) {	/* could not allocate the table */
+	hash->size = size;
+	hash->table = debugMalloc(sizeof(struct element_t *) * size, 303);
+	if (hash->table == NULL) {   /* could not allocate the table */
 		debugFree(hash, 1305);
 		return(NULL);
 	}
 	hash_init(hash);
-	hash->compare= compare;
-	hash->choose= choose;
+	hash->compare = compare;
+	hash->choose = choose;
 	return(hash);
 }
 
@@ -172,26 +172,26 @@ int hash_add(struct hashtable_t *hash, void *data)
 	int index;
 	struct element_t *bucket, *prev_bucket = NULL;
 
-	index = hash->choose( data, hash->size );
+	index = hash->choose(data, hash->size);
 	bucket = hash->table[index];
 
-	while ( bucket!=NULL ) {
-		if (0 == hash->compare( bucket->data, data ))
+	while (bucket != NULL) {
+		if (0 == hash->compare(bucket->data, data))
 			return(-1);
 
 		prev_bucket = bucket;
-		bucket= bucket->next;
+		bucket = bucket->next;
 	}
 
 	/* found the tail of the list, add new element */
-	if (NULL == (bucket= debugMalloc(sizeof(struct element_t),304)))
+	if (NULL == (bucket = debugMalloc(sizeof(struct element_t), 304)))
 		return(-1); /* debugMalloc failed */
 
-	bucket->data= data;				/* init the new bucket */
-	bucket->next= NULL;
+	bucket->data = data;   /* init the new bucket */
+	bucket->next = NULL;
 
 	/* and link it */
-	if ( prev_bucket == NULL ) {
+	if (prev_bucket == NULL) {
 		hash->table[index] = bucket;
 	} else {
 		prev_bucket->next = bucket;
@@ -207,14 +207,14 @@ void *hash_find(struct hashtable_t *hash, void *keydata)
 	int index;
 	struct element_t *bucket;
 
-	index = hash->choose( keydata , hash->size );
+	index = hash->choose(keydata , hash->size);
 	bucket = hash->table[index];
 
-	while ( bucket!=NULL ) {
-		if (0 == hash->compare( bucket->data, keydata ))
-			return( bucket->data );
+	while (bucket != NULL) {
+		if (0 == hash->compare(bucket->data, keydata))
+			return(bucket->data);
 
-		bucket= bucket->next;
+		bucket = bucket->next;
 	}
 
 	return(NULL);
@@ -228,18 +228,18 @@ void *hash_remove_bucket(struct hashtable_t *hash, struct hash_it_t *hash_it_t)
 {
 	void *data_save;
 
-	data_save = hash_it_t->bucket->data;	/* save the pointer to the data */
+	data_save = hash_it_t->bucket->data; /* save the pointer to the data */
 
-	if ( hash_it_t->prev_bucket != NULL ) {
+	if (hash_it_t->prev_bucket != NULL) {
 		hash_it_t->prev_bucket->next = hash_it_t->bucket->next;
-	} else if ( hash_it_t->first_bucket != NULL ) {
+	} else if (hash_it_t->first_bucket != NULL) {
 		(*hash_it_t->first_bucket) = hash_it_t->bucket->next;
 	}
 
 	debugFree(hash_it_t->bucket, 1306);
 
 	hash->elements--;
-	return( data_save );
+	return(data_save);
 
 }
 
@@ -252,18 +252,18 @@ void *hash_remove(struct hashtable_t *hash, void *data)
 {
 	struct hash_it_t hash_it_t;
 
-	hash_it_t.index = hash->choose( data, hash->size );
+	hash_it_t.index = hash->choose(data, hash->size);
 	hash_it_t.bucket = hash->table[hash_it_t.index];
 	hash_it_t.prev_bucket = NULL;
 
-	while ( hash_it_t.bucket!=NULL ) {
-		if (0 == hash->compare( hash_it_t.bucket->data, data )) {
+	while (hash_it_t.bucket != NULL) {
+		if (0 == hash->compare(hash_it_t.bucket->data, data)) {
 			hash_it_t.first_bucket = (hash_it_t.bucket == hash->table[hash_it_t.index] ? &hash->table[ hash_it_t.index ] : NULL);
-			return( hash_remove_bucket(hash, &hash_it_t) );
+			return(hash_remove_bucket(hash, &hash_it_t));
 		}
 
 		hash_it_t.prev_bucket = hash_it_t.bucket;
-		hash_it_t.bucket= hash_it_t.bucket->next;
+		hash_it_t.bucket = hash_it_t.bucket->next;
 	}
 
 	return(NULL);
@@ -278,20 +278,20 @@ struct hashtable_t *hash_resize(struct hashtable_t *hash, int size) {
 	int i;
 
 	/* initialize a new hash with the new size */
-	if (NULL == (new_hash= hash_new(size, hash->compare, hash->choose)))
+	if (NULL == (new_hash = hash_new(size, hash->compare, hash->choose)))
 		return(NULL);
 
 	/* copy the elements */
-	for (i=0; i<hash->size; i++) {
-		bucket= hash->table[i];
+	for (i = 0; i < hash->size; i++) {
+		bucket = hash->table[i];
 		while (bucket != NULL) {
-			hash_add( new_hash, bucket->data );
-			bucket= bucket->next;
+			hash_add(new_hash, bucket->data);
+			bucket = bucket->next;
 		}
 	}
-	hash_delete(hash, NULL);	/* remove hash and eventual overflow buckets but not the content itself. */
+	hash_delete(hash, NULL); /* remove hash and eventual overflow buckets but not the content itself. */
 
-	return( new_hash);
+	return(new_hash);
 
 }
 
@@ -302,13 +302,13 @@ void hash_debug(struct hashtable_t *hash)
 	int i;
 	struct element_t *bucket;
 
-	for (i=0; i<hash->size;i++) {
-		printf("[%d] ",i);
-		bucket= hash->table[i];
+	for (i = 0; i < hash->size;i++) {
+		printf("[%d] ", i);
+		bucket = hash->table[i];
 
 		while (bucket != NULL) {
 			printf("-> [%10p] ", (void *)bucket);
-			bucket= bucket->next;
+			bucket = bucket->next;
 		}
 
 		printf("\n");

@@ -31,19 +31,19 @@
 /* we want this widget visible, as long as the widgets below are also visible.
  * on for all widgets, except surfaces which have to be switched visible
  * with s3dw_show() */
-#define		S3DW_VISIBLE	1
+#define  S3DW_VISIBLE 1
 /* widget should accept input. that's on by default. */
-#define 	S3DW_ACTIVE		2
+#define  S3DW_ACTIVE  2
 /* tells us if the widget is currently displayed */
-#define		S3DW_ONSCREEN	256
+#define  S3DW_ONSCREEN 256
 /* if the surface (or widget) is already properly arranged */
-#define 	S3DW_ARRANGED	512
+#define  S3DW_ARRANGED 512
 /* follow the camera */
-#define 	S3DW_FOLLOW_CAM	1024
+#define  S3DW_FOLLOW_CAM 1024
 /* turn to the camera */
-#define 	S3DW_TURN_CAM	2048
+#define  S3DW_TURN_CAM 2048
 /* just a typecaster to beatify code. use it if you like */
-#define 	S3DWIDGET(x)	((s3dw_widget *)x)
+#define  S3DWIDGET(x) ((s3dw_widget *)x)
 
 enum {
 	S3DW_TROOT,
@@ -56,140 +56,140 @@ enum {
 	S3DW_TSCROLLBAR,
 	S3DW_NTYPES
 };
-typedef struct _s3dw_widget 	s3dw_widget;
-typedef struct _s3dw_button 	s3dw_button;
-typedef struct _s3dw_label  	s3dw_label;
-typedef struct _s3dw_textbox  	s3dw_textbox;
-typedef struct _s3dw_scrollbar 	s3dw_scrollbar;
-typedef struct _s3dw_input  	s3dw_input;
-typedef struct _s3dw_surface  	s3dw_surface;
-typedef struct _s3dw_style  	s3dw_style;
+typedef struct _s3dw_widget  s3dw_widget;
+typedef struct _s3dw_button  s3dw_button;
+typedef struct _s3dw_label   s3dw_label;
+typedef struct _s3dw_textbox   s3dw_textbox;
+typedef struct _s3dw_scrollbar  s3dw_scrollbar;
+typedef struct _s3dw_input   s3dw_input;
+typedef struct _s3dw_surface   s3dw_surface;
+typedef struct _s3dw_style   s3dw_style;
 typedef void (*s3dw_callback)(s3dw_widget *);
 
 
 struct _s3dw_widget {
 	/* private .. */
-	int   		 type;
+	int      type;
 	s3dw_widget *parent;
 	s3dw_style  *style;
-	int 				  nobj; /* number of children objects */
-	s3dw_widget		 	**pobj; /* pointer to list of children objects */
-	int 		 focus;			/* index of the widget focused in pobj */
-	int   		 flags;			/* flags like visibility */
-	float 		 ax,ay,az;		/* current position for animation */
-	float 		 as;			/* current scale factor */
-	float 		 arx,ary,arz;   /* current rotation */
-	float 		 width,height;	/* width and height of the widget, outer size */
-	uint32_t	 oid;			/* the main object which is used for transformations etc ...*/
+	int       nobj; /* number of children objects */
+	s3dw_widget    **pobj; /* pointer to list of children objects */
+	int    focus;   /* index of the widget focused in pobj */
+	int      flags;   /* flags like visibility */
+	float    ax, ay, az;  /* current position for animation */
+	float    as;   /* current scale factor */
+	float    arx, ary, arz; /* current rotation */
+	float    width, height; /* width and height of the widget, outer size */
+	uint32_t  oid;   /* the main object which is used for transformations etc ...*/
 	/* public */
-	void		*ptr;			/* a pointer to a user structure, to use in callbacks etc */
-	float 		 x,y,z;			/* position, relative to the surface usually */
-	float 		 s;				/* scale factor */
-	float 		 rx,ry,rz;		/* rotation around the axis */
+	void  *ptr;   /* a pointer to a user structure, to use in callbacks etc */
+	float    x, y, z; /* position, relative to the surface usually */
+	float    s;    /* scale factor */
+	float    rx, ry, rz;  /* rotation around the axis */
 };
 
 
 struct _s3dw_button {
 	/* private */
-	s3dw_widget 	 widget;
-	char 			*text;
-	uint32_t  		  oid_text;
+	s3dw_widget   widget;
+	char    *text;
+	uint32_t      oid_text;
 	/* public */
-	s3dw_callback 	 onclick;
+	s3dw_callback   onclick;
 };
 struct _s3dw_label {
 	/* private */
-	s3dw_widget 	 widget;
-	char 			*text;
+	s3dw_widget   widget;
+	char    *text;
 	/* public */
-	s3dw_callback 	 onclick;
+	s3dw_callback   onclick;
 
 };
 struct _s3dw_scrollbar {
 	/* private */
-	s3dw_widget 	 widget;
-	float			 pos,max;
-	int				 type; /* 0 = horizontal, 1 = vertical */
-	int				 loid,roid,baroid;
+	s3dw_widget   widget;
+	float    pos, max;
+	int     type; /* 0 = horizontal, 1 = vertical */
+	int     loid, roid, baroid;
 	/* public */
-	s3dw_callback 	 lonclick;
-	s3dw_callback 	 ronclick;
+	s3dw_callback   lonclick;
+	s3dw_callback   ronclick;
 
 };
 
 struct _s3dw_textbox {
 	/* private */
-	s3dw_widget 	 widget;
-	s3dw_scrollbar	*scroll_vertical,
+	s3dw_widget   widget;
+	s3dw_scrollbar *scroll_vertical,
 	*scroll_horizontal;
-	char 			*text;
-	int				n_lineoids,*p_lineoids;
-	int				window_x,window_y;
+	char    *text;
+	int    n_lineoids, *p_lineoids;
+	int    window_x, window_y;
 	/* public */
-	s3dw_callback 	 onclick;
+	s3dw_callback   onclick;
 
 };
 
 struct _s3dw_input {
 	/* private */
-	s3dw_widget 	 widget;
-	char 			*text;
-	uint32_t   	 oid_text;
+	s3dw_widget   widget;
+	char    *text;
+	uint32_t     oid_text;
 	/* public */
-	s3dw_callback 	 onclick;
-	s3dw_callback 	 onedit;
+	s3dw_callback   onclick;
+	s3dw_callback   onedit;
 };
 
 struct _s3dw_surface {
 	/* private */
-	s3dw_widget 		  widget;
-	uint32_t			  oid_title;
-	uint32_t			  oid_tbar;
-	char				 *title;
+	s3dw_widget     widget;
+	uint32_t     oid_title;
+	uint32_t     oid_tbar;
+	char     *title;
 };
 
 /* style */
 struct _s3dw_style {
-	char *name;					/* name of the style ... kind of redundant */
-	char *fontface;				/* font face for all used fonts */
-	float surface_mat[12];		/* material for the surface background */
-	float input_mat[12];		/* material for buttonboxes and other widgets */
-	float inputback_mat[12];	/* material for inputfield background */
-	float text_mat[12];			/* material for the text on buttons and inputs */
-	float title_mat[12];		/* material for the title bar */
-	float title_text_mat[12];	/* material for the text on the title bar */
+	char *name;     /* name of the style ... kind of redundant */
+	char *fontface;    /* font face for all used fonts */
+	float surface_mat[12];  /* material for the surface background */
+	float input_mat[12];  /* material for buttonboxes and other widgets */
+	float inputback_mat[12]; /* material for inputfield background */
+	float text_mat[12];   /* material for the text on buttons and inputs */
+	float title_mat[12];  /* material for the title bar */
+	float title_text_mat[12]; /* material for the text on the title bar */
 };
 /* button.c */
 #ifdef HAVE_GCCVISIBILITY
 #pragma GCC visibility push(default) /* Only export following functions */
 #endif
-s3dw_button 		*s3dw_button_new(s3dw_surface *surface, char *text, float posx, float posy);
-s3dw_label	 		*s3dw_label_new(s3dw_surface *surface, char *text, float posx, float posy);
-s3dw_input 			*s3dw_input_new(s3dw_surface *surface, float width, float posx, float posy);
-s3dw_textbox 		*s3dw_textbox_new(s3dw_surface *surface, char *text, float posx, float posy, float width, float height);
-char 				*s3dw_input_gettext(s3dw_input *input);
-void 				 s3dw_input_change_text(s3dw_input *input, char *text);
-void 				 s3dw_label_change_text(s3dw_label *label, char *text);
-s3dw_surface 		*s3dw_surface_new(char *title, float width, float height);
+s3dw_button   *s3dw_button_new(s3dw_surface *surface, char *text, float posx, float posy);
+s3dw_label    *s3dw_label_new(s3dw_surface *surface, char *text, float posx, float posy);
+s3dw_input    *s3dw_input_new(s3dw_surface *surface, float width, float posx, float posy);
+s3dw_textbox   *s3dw_textbox_new(s3dw_surface *surface, char *text, float posx, float posy, float width, float height);
+char     *s3dw_input_gettext(s3dw_input *input);
+void      s3dw_input_change_text(s3dw_input *input, char *text);
+void      s3dw_label_change_text(s3dw_label *label, char *text);
+s3dw_surface   *s3dw_surface_new(char *title, float width, float height);
 
-s3dw_widget 		*s3dw_getroot();
-void				 s3dw_moveit(s3dw_widget *widget);
-void 				 s3dw_delete(s3dw_widget *widget);
-void 				 s3dw_show(s3dw_widget *widget);
-void 				 s3dw_focus(s3dw_widget *focus);
+s3dw_widget   *s3dw_getroot();
+void     s3dw_moveit(s3dw_widget *widget);
+void      s3dw_delete(s3dw_widget *widget);
+void      s3dw_show(s3dw_widget *widget);
+void      s3dw_focus(s3dw_widget *focus);
 
-void 				 s3dw_textbox_scrollup(s3dw_textbox *textbox);
-void 				 s3dw_textbox_scrolldown(s3dw_textbox *textbox);
-void 				 s3dw_textbox_scrollleft(s3dw_textbox *textbox);
-void 				 s3dw_textbox_scrollright(s3dw_textbox *textbox);
-void 				 s3dw_textbox_scrollto(s3dw_textbox *textbox, int x, int y);
-void 				 s3dw_textbox_change_text(s3dw_textbox *textbox, char *text);
+void      s3dw_textbox_scrollup(s3dw_textbox *textbox);
+void      s3dw_textbox_scrolldown(s3dw_textbox *textbox);
+void      s3dw_textbox_scrollleft(s3dw_textbox *textbox);
+void      s3dw_textbox_scrollright(s3dw_textbox *textbox);
+void      s3dw_textbox_scrollto(s3dw_textbox *textbox, int x, int y);
+void      s3dw_textbox_change_text(s3dw_textbox *textbox, char *text);
 
-int 				 s3dw_handle_click(struct s3d_evt *evt);
-int 				 s3dw_handle_key(struct s3d_evt *evt);
-int 				 s3dw_object_info(struct s3d_evt *evt);
+int      s3dw_handle_click(struct s3d_evt *evt);
+int      s3dw_handle_key(struct s3d_evt *evt);
+int      s3dw_object_info(struct s3d_evt *evt);
 
-void 				 s3dw_ani_mate();
+void      s3dw_ani_mate();
 #ifdef HAVE_GCCVISIBILITY
 #pragma GCC visibility pop
 #endif

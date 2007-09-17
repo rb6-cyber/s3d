@@ -34,37 +34,37 @@ struct s3d_evt {
 
 typedef int (*s3d_cb)(struct s3d_evt *);
 
-#define S3D_EVENT_OBJ_CLICK		1
-#define S3D_EVENT_KEY			2
-#define S3D_EVENT_KEYDOWN		2
-#define S3D_EVENT_MBUTTON		3
-#define S3D_EVENT_KEYUP			4
-#define S3D_EVENT_NEW_OBJECT	16
-#define S3D_EVENT_OBJ_INFO		17
+#define S3D_EVENT_OBJ_CLICK  1
+#define S3D_EVENT_KEY   2
+#define S3D_EVENT_KEYDOWN  2
+#define S3D_EVENT_MBUTTON  3
+#define S3D_EVENT_KEYUP   4
+#define S3D_EVENT_NEW_OBJECT 16
+#define S3D_EVENT_OBJ_INFO  17
 
-#define S3D_EVENT_QUIT			255
+#define S3D_EVENT_QUIT   255
 
 /* TODO: don't keep _MCP_ events .. they're ugly */
-#define S3D_MCP_OBJECT			32
-#define S3D_MCP_DEL_OBJECT		33
+#define S3D_MCP_OBJECT   32
+#define S3D_MCP_DEL_OBJECT  33
 
-#define S3D_PORT				6066
+#define S3D_PORT    6066
 
-#define	S3D_OF_VISIBLE			0x00000001
-#define	S3D_OF_SELECTABLE		0x00000002
-#define S3D_OF_POINTABLE		0x00000004
+#define S3D_OF_VISIBLE   0x00000001
+#define S3D_OF_SELECTABLE  0x00000002
+#define S3D_OF_POINTABLE  0x00000004
 struct mcp_object {
 	uint32_t object;
-	float trans_x,trans_y,trans_z;
+	float trans_x, trans_y, trans_z;
 	float r;
-#define MCP_NEW_OBJECT	1
+#define MCP_NEW_OBJECT 1
 	char name[256];
 };
 struct s3d_obj_info {
 	uint32_t object;
 	uint32_t flags;
-	float trans_x,trans_y,trans_z;
-	float rot_x,rot_y,rot_z;
+	float trans_x, trans_y, trans_z;
+	float rot_x, rot_y, rot_z;
 	float scale;
 	float r;
 	char name[256];
@@ -74,10 +74,10 @@ struct s3d_but_info {
 	uint8_t state;  /* 0 = down, 1 = up, 2 = moving */
 };
 struct s3d_key_event {
-	uint16_t keysym;		/* the symbol, use this with s3d_keysym.h */
-	uint16_t unicode;		/* the unicode or "actually typed" character */
-	uint16_t modifier;	/* any modifiers involved */
-	uint16_t state;		/* 0 = pressed, 1 = released */
+	uint16_t keysym;  /* the symbol, use this with s3d_keysym.h */
+	uint16_t unicode;  /* the unicode or "actually typed" character */
+	uint16_t modifier; /* any modifiers involved */
+	uint16_t state;  /* 0 = pressed, 1 = released */
 };
 
 /* framework functions */
@@ -92,23 +92,23 @@ int s3d_mainloop(void (*f)());
 /* object manipulations */
 int s3d_push_vertex(int object, float x, float y, float z);
 int s3d_push_vertices(int object, float *vbuf, uint16_t n);
-int s3d_push_material( int object,
-                       float amb_r, float amb_g, float amb_b,
-                       float spec_r, float spec_g, float spec_b,
-                       float diff_r, float diff_g, float diff_b);
-int s3d_pep_material( int object,
+int s3d_push_material(int object,
                       float amb_r, float amb_g, float amb_b,
                       float spec_r, float spec_g, float spec_b,
                       float diff_r, float diff_g, float diff_b);
-int s3d_push_material_a( int object,
-                         float amb_r, float amb_g, float amb_b, float amb_a,
-                         float spec_r, float spec_g, float spec_b, float spec_a,
-                         float diff_r, float diff_g, float diff_b, float diff_a);
-int s3d_push_materials_a(int object, float *mbuf, uint16_t n);
-int s3d_pep_material_a( int object,
+int s3d_pep_material(int object,
+                     float amb_r, float amb_g, float amb_b,
+                     float spec_r, float spec_g, float spec_b,
+                     float diff_r, float diff_g, float diff_b);
+int s3d_push_material_a(int object,
                         float amb_r, float amb_g, float amb_b, float amb_a,
                         float spec_r, float spec_g, float spec_b, float spec_a,
                         float diff_r, float diff_g, float diff_b, float diff_a);
+int s3d_push_materials_a(int object, float *mbuf, uint16_t n);
+int s3d_pep_material_a(int object,
+                       float amb_r, float amb_g, float amb_b, float amb_a,
+                       float spec_r, float spec_g, float spec_b, float spec_a,
+                       float diff_r, float diff_g, float diff_b, float diff_a);
 
 int s3d_pep_materials_a(int object, float *mbuf, uint16_t n);
 int s3d_load_materials_a(int object, float *mbuf, uint32_t start, uint16_t n);
@@ -124,17 +124,17 @@ int s3d_pop_material(int object, uint32_t n);
 int s3d_pop_texture(int object, uint32_t n);
 int s3d_pop_polygon(int object, uint32_t n);
 int s3d_pop_line(int object, uint32_t n);
-int s3d_pep_line_normals(int object, float *nbuf,uint16_t n);
-int s3d_pep_polygon_normals(int object, float *nbuf,uint16_t n);
+int s3d_pep_line_normals(int object, float *nbuf, uint16_t n);
+int s3d_pep_polygon_normals(int object, float *nbuf, uint16_t n);
 int s3d_pep_polygon_tex_coord(int object, float x1, float y1, float x2, float y2, float x3, float y3);
-int s3d_pep_polygon_tex_coords(int object, float *tbuf,uint16_t n);
+int s3d_pep_polygon_tex_coords(int object, float *tbuf, uint16_t n);
 int s3d_pep_material_texture(int object, uint32_t tex);
 int s3d_pep_vertex(int object, float x, float y, float z);
-int s3d_pep_vertices(int object, float *vbuf,uint16_t n);
+int s3d_pep_vertices(int object, float *vbuf, uint16_t n);
 int s3d_pep_line(int object, int v1, int v2, int material);
-int s3d_pep_lines(int object, uint32_t *lbuf,uint16_t n);
-int s3d_load_line_normals(int object, float *nbuf,uint32_t start, uint16_t n);
-int s3d_load_polygon_normals(int object, float *nbuf,uint32_t start, uint16_t n);
+int s3d_pep_lines(int object, uint32_t *lbuf, uint16_t n);
+int s3d_load_line_normals(int object, float *nbuf, uint32_t start, uint16_t n);
+int s3d_load_polygon_normals(int object, float *nbuf, uint32_t start, uint16_t n);
 int s3d_load_polygon_tex_coords(int object, float *tbuf, uint32_t start, uint16_t n);
 int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h, uint8_t *data);
 
@@ -157,17 +157,17 @@ int s3d_scale(int object, float s);
 int s3d_import_model_file(char *fname);
 int s3d_open_file(char *fname, char **pointer);
 int s3d_select_font(char *mask);
-int s3d_draw_string( char *str, float *xlen);
-float s3d_strlen( char *str);
+int s3d_draw_string(char *str, float *xlen);
+float s3d_strlen(char *str);
 
 /* some vector calculation helpers */
 
-float s3d_vector_length( float vector[] );
-float s3d_vector_dot_product( float vector1[], float vector2[] );
-void s3d_vector_subtract( float vector1[], float vector2[], float result_vector[] );
-float s3d_vector_angle( float vector1[], float vector2[] );
-float s3d_angle_to_cam( float obj_pos[], float cam_pos[], float *angle_rad );
-void s3d_vector_cross_product( float vector1[], float vector2[], float result_vector[] );
+float s3d_vector_length(float vector[]);
+float s3d_vector_dot_product(float vector1[], float vector2[]);
+void s3d_vector_subtract(float vector1[], float vector2[], float result_vector[]);
+float s3d_vector_angle(float vector1[], float vector2[]);
+float s3d_angle_to_cam(float obj_pos[], float cam_pos[], float *angle_rad);
+void s3d_vector_cross_product(float vector1[], float vector2[], float result_vector[]);
 
 /* event handlers */
 void s3d_push_event(struct s3d_evt *newevt);

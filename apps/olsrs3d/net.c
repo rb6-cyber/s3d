@@ -27,17 +27,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>	/* close() */
+#include <unistd.h> /* close() */
 #include <errno.h>
-#include <string.h> 	/* strlen(), memmove(), strncpy(), strncat() */
+#include <string.h>  /* strlen(), memmove(), strncpy(), strncat() */
 #include <netdb.h>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include <fcntl.h>		/* fnctl() */
+#include <fcntl.h>  /* fnctl() */
 #include "olsrs3d.h"
 
-#define PORT 2004 		/* the port client will be connecting to  */
+#define PORT 2004   /* the port client will be connecting to  */
 char buf[MAXDATASIZE];
 
 
@@ -47,7 +47,7 @@ int net_init(char *host)
 	struct hostent *he;
 	struct sockaddr_in their_addr; /* connector's address information  */
 
-	if ((he=gethostbyname(host)) == NULL) {  /* get the host info  */
+	if ((he = gethostbyname(host)) == NULL) {  /* get the host info  */
 		herror("gethostbyname");
 		return(1);
 	}
@@ -67,21 +67,21 @@ int net_init(char *host)
 		perror("connect");
 		return(1);
 	}
-	fcntl(sockfd,F_SETFL, O_NONBLOCK);
+	fcntl(sockfd, F_SETFL, O_NONBLOCK);
 	return(0);
 }
 
 int net_main()
 {
 
-	if ((numbytes=recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
-		if (errno==EAGAIN)
+	if ((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) == -1) {
+		if (errno == EAGAIN)
 			return(0); /* well, that's okay ... */
 		perror("recv");
 		return(-1);
 	}
 
-	if (numbytes==0) {
+	if (numbytes == 0) {
 		printf("connection reset\n");
 		return(-1);
 	}
@@ -89,22 +89,22 @@ int net_main()
 	buf[numbytes] = '\0';
 
 	/* check for potential buffer overflow */
-	if ( ( strlen( lbuf ) + strlen( buf ) ) < MAXLINESIZE ) {
+	if ((strlen(lbuf) + strlen(buf)) < MAXLINESIZE) {
 
-		strncat( lbuf, buf, MAXLINESIZE );
+		strncat(lbuf, buf, MAXLINESIZE);
 
 	} else {
 
 		/* hope that carriage return is now in buf */
-		if ( strlen( lbuf ) < MAXLINESIZE ) {
+		if (strlen(lbuf) < MAXLINESIZE) {
 
-			if ( Debug ) printf( "WARNING: lbuf almost filled without *any* carriage return within that data !\nAppending truncated buf to lbuf to prevent buffer overflow.\n" );
-			strncat( lbuf, buf, MAXLINESIZE - strlen( lbuf ) );
+			if (Debug) printf("WARNING: lbuf almost filled without *any* carriage return within that data !\nAppending truncated buf to lbuf to prevent buffer overflow.\n");
+			strncat(lbuf, buf, MAXLINESIZE - strlen(lbuf));
 
 		} else {
 
-			if ( Debug ) printf( "ERROR: lbuf filled without *any* carriage return within that data !\nClearing lbuf to prevent buffer overflow.\n" );
-			strncpy( lbuf, buf, MAXLINESIZE );
+			if (Debug) printf("ERROR: lbuf filled without *any* carriage return within that data !\nClearing lbuf to prevent buffer overflow.\n");
+			strncpy(lbuf, buf, MAXLINESIZE);
 
 		}
 
@@ -112,7 +112,7 @@ int net_main()
 
 	process_main();
 
-	if ( ++Net_read_count > 5 ) {
+	if (++Net_read_count > 5) {
 		return(0);   /* continue mainloop */
 	} else {
 		return(1);   /* continue reading data from socket */

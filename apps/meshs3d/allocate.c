@@ -60,15 +60,15 @@ struct memoryUsage {
 };
 
 
-void addMemory( uint32_t length, int32_t tag )
+void addMemory(uint32_t length, int32_t tag)
 {
 
 	struct memoryUsage *walker;
 
 
-	for ( walker = memoryList; walker != NULL; walker = walker->next ) {
+	for (walker = memoryList; walker != NULL; walker = walker->next) {
 
-		if ( walker->tag == tag ) {
+		if (walker->tag == tag) {
 
 			walker->counter++;
 			break;
@@ -77,9 +77,9 @@ void addMemory( uint32_t length, int32_t tag )
 
 	}
 
-	if ( walker == NULL ) {
+	if (walker == NULL) {
 
-		walker = malloc( sizeof(struct memoryUsage) );
+		walker = malloc(sizeof(struct memoryUsage));
 
 		walker->length = length;
 		walker->tag = tag;
@@ -93,19 +93,19 @@ void addMemory( uint32_t length, int32_t tag )
 }
 
 
-void removeMemory( int32_t tag, int32_t freetag )
+void removeMemory(int32_t tag, int32_t freetag)
 {
 
 	struct memoryUsage *walker;
 
 
-	for ( walker = memoryList; walker != NULL; walker = walker->next ) {
+	for (walker = memoryList; walker != NULL; walker = walker->next) {
 
-		if ( walker->tag == tag ) {
+		if (walker->tag == tag) {
 
-			if ( walker->counter == 0 ) {
+			if (walker->counter == 0) {
 
-				fprintf( stderr, "Freeing more memory than was allocated: malloc tag = %d, free tag = %d\n", tag, freetag );
+				fprintf(stderr, "Freeing more memory than was allocated: malloc tag = %d, free tag = %d\n", tag, freetag);
 				exit(1);
 
 			}
@@ -117,9 +117,9 @@ void removeMemory( int32_t tag, int32_t freetag )
 
 	}
 
-	if ( walker == NULL ) {
+	if (walker == NULL) {
 
-		fprintf( stderr, "Freeing memory that was never allocated: malloc tag = %d, free tag = %d\n", tag, freetag );
+		fprintf(stderr, "Freeing memory that was never allocated: malloc tag = %d, free tag = %d\n", tag, freetag);
 		exit(1);
 
 	}
@@ -141,12 +141,12 @@ void checkIntegrity(void)
 
 	struct memoryUsage *memoryWalker;
 
-	fprintf( stderr, " \nMemory usage information:\n" );
+	fprintf(stderr, " \nMemory usage information:\n");
 
-	for ( memoryWalker = memoryList; memoryWalker != NULL; memoryWalker = memoryWalker->next ) {
+	for (memoryWalker = memoryList; memoryWalker != NULL; memoryWalker = memoryWalker->next) {
 
-		if ( memoryWalker->counter != 0 )
-			fprintf( stderr, "   tag: %d, num malloc: %4i, bytes per malloc: %u, total: %6i\n", memoryWalker->tag, memoryWalker->counter, memoryWalker->length, memoryWalker->counter * memoryWalker->length );
+		if (memoryWalker->counter != 0)
+			fprintf(stderr, "   tag: %d, num malloc: %4i, bytes per malloc: %u, total: %6i\n", memoryWalker->tag, memoryWalker->counter, memoryWalker->length, memoryWalker->counter * memoryWalker->length);
 
 	}
 
@@ -209,7 +209,7 @@ void *debugMalloc(uint32_t length, int32_t tag)
 
 #if defined MEMORY_USAGE
 
-	addMemory( length, tag );
+	addMemory(length, tag);
 
 #endif
 
@@ -302,7 +302,7 @@ void debugFree(void *memoryParameter, int tag)
 
 #if defined MEMORY_USAGE
 
-	removeMemory( chunkHeader->tag, tag );
+	removeMemory(chunkHeader->tag, tag);
 
 #endif
 

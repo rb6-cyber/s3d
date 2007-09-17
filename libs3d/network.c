@@ -24,15 +24,15 @@
 
 #include "s3d.h"
 #include "s3dlib.h"
-#include <string.h> 	 /*  memcpy() */
-#include <stdlib.h>		 /*  malloc(), free() */
-#include <unistd.h>		 /*  read(), write() */
-#include <errno.h>		 /*  errno */
+#include <string.h>   /*  memcpy() */
+#include <stdlib.h>   /*  malloc(), free() */
+#include <unistd.h>   /*  read(), write() */
+#include <errno.h>   /*  errno */
 #include <netinet/in.h>  /*  htons(),htonl() */
 #ifdef SIGS
 extern int _s3d_sigio;
 #endif
-int con_type=CON_NULL;
+int con_type = CON_NULL;
 #ifdef TCP
 static int _s3d_net_receive();
 #endif
@@ -40,22 +40,22 @@ static int _s3d_net_receive();
 int net_send(u_int8_t opcode, char *buf, u_int16_t length)
 {
 	char *ptr;
-	/* 	char *buff; */
+	/*  char *buff; */
 	char buff[65539];  /*  u_int16_t really shouldn't be bigger ;) */
-	*(buff)=opcode;
-	ptr=buff+1;
-	*((u_int16_t *) ptr)=htons(length);
-	if (length!=0)
-		memcpy(buff+3,buf,length);
+	*(buff) = opcode;
+	ptr = buff + 1;
+	*((u_int16_t *) ptr) = htons(length);
+	if (length != 0)
+		memcpy(buff + 3, buf, length);
 	switch (con_type) {
 #ifdef SHM
 	case CON_SHM:
-		shm_writen(buff,length+3);
+		shm_writen(buff, length + 3);
 		break;
 #endif
 #ifdef TCP
 	case CON_TCP:
-		tcp_writen(buff,length+3);
+		tcp_writen(buff, length + 3);
 		break;
 #endif
 	}
@@ -79,7 +79,7 @@ int s3d_net_check()
 #endif
 			while (_s3d_net_receive());
 #ifdef SIGS
-			_s3d_sigio=0;
+			_s3d_sigio = 0;
 		}
 #endif
 		break;
@@ -95,64 +95,64 @@ int s3d_net_check()
 }
 int s3d_net_init(char *urlc)
 {
-	char				*s,*sv,*port=NULL;
-	char				*first_slash=NULL;
+	char    *s, *sv, *port = NULL;
+	char    *first_slash = NULL;
 #ifdef TCP
-	int					 pn=0;
+	int      pn = 0;
 #endif
-	int					 tcp,shm;
-	tcp=shm=1; /* everything is possible, yet */
+	int      tcp, shm;
+	tcp = shm = 1; /* everything is possible, yet */
 
 	/*  doing a very bad server/port extraction, but I think it'll work ... */
-	s=sv=urlc+6;  /*  getting to the "real" thing */
+	s = sv = urlc + 6;  /*  getting to the "real" thing */
 	/* while (((*s!='/') && (*s!=0)) && (s<(urlc-6))) */
-	while (*s!=0) {
-		if (*s=='/') {
-			if (first_slash==NULL)
-				first_slash=s;
-			if (port!=NULL)
+	while (*s != 0) {
+		if (*s == '/') {
+			if (first_slash == NULL)
+				first_slash = s;
+			if (port != NULL)
 				break;
 		}
-		if (*s==':') { /*  there is a port in here */
-			port=s+1;
-			*s=0;	 /*  NULL the port  */
+		if (*s == ':') { /*  there is a port in here */
+			port = s + 1;
+			*s = 0;  /*  NULL the port  */
 		}
 		s++;
 	}
 
-	*s=0;
-	if (port==NULL) {
-		shm=0;
-		if (first_slash!=NULL)
-			*first_slash=0;
+	*s = 0;
+	if (port == NULL) {
+		shm = 0;
+		if (first_slash != NULL)
+			*first_slash = 0;
 	} else {
-		if (first_slash<port)
-			tcp=0;
+		if (first_slash < port)
+			tcp = 0;
 		else
-			if (first_slash!=NULL)
-				*first_slash=0;
-		if (!strncmp(port, "shm",3)) {
-			tcp=0; /* null the others */
+			if (first_slash != NULL)
+				*first_slash = 0;
+		if (!strncmp(port, "shm", 3)) {
+			tcp = 0; /* null the others */
 		} else {
-			shm=0;
+			shm = 0;
 		}
 	}
 #ifdef SHM
 	if (shm) {
-		if (!strncmp(port, "shm",3))
-			if (!_shm_init(sv)) return(con_type=CON_SHM);
+		if (!strncmp(port, "shm", 3))
+			if (!_shm_init(sv)) return(con_type = CON_SHM);
 	}
 #endif
 #ifdef TCP
 	if (tcp) {
-		pn=6066;
-		if (port!=NULL) {
-			if (!(pn=atoi(port))) { /*  I hope atoi is safe enough. */
-				errn("s3d_init():atoi()",errno);
-				pn=6066;
+		pn = 6066;
+		if (port != NULL) {
+			if (!(pn = atoi(port))) { /*  I hope atoi is safe enough. */
+				errn("s3d_init():atoi()", errno);
+				pn = 6066;
 			}
 		}
-		if (!_tcp_init(sv,pn)) return(con_type=CON_TCP);
+		if (!_tcp_init(sv, pn)) return(con_type = CON_TCP);
 	}
 #endif
 	return(CON_NULL);

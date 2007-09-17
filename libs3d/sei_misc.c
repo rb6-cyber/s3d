@@ -46,7 +46,7 @@ static int choose_idx;
 static int permute[SEGSIZE];
 double mlog2(double x)
 {
-	return log(x)/log(2);
+	return log(x) / log(2);
 }
 
 /* Generate a random permutation of the segments 1..n */
@@ -79,7 +79,7 @@ int n;
 /* segments in S */
 int choose_segment()
 {
-	errds(VLOW,"sei:choose_segment()","%d", permute[choose_idx]);
+	errds(VLOW, "sei:choose_segment()", "%d", permute[choose_idx]);
 	return permute[choose_idx++];
 }
 
@@ -107,5 +107,5 @@ int h;
 	for (i = 0, v = (int) n; i < h; i++)
 		v = mlog2(v);
 
-	return (int) ceil((double) 1.0*n/v);
+	return (int) ceil((double) 1.0*n / v);
 }

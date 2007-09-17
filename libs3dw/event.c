@@ -27,28 +27,28 @@
 extern s3dw_widget *_s3dw_cam;
 int s3dw_handle_click(struct s3d_evt *evt)
 {
-	uint32_t oid=*((uint32_t *)evt->buf);
-	return(s3dw_widget_event_click(s3dw_getroot(),oid));
+	uint32_t oid = *((uint32_t *)evt->buf);
+	return(s3dw_widget_event_click(s3dw_getroot(), oid));
 }
 int s3dw_handle_key(struct s3d_evt *evt)
 {
-	struct s3d_key_event *keys=(struct s3d_key_event *)evt->buf;
-	return(s3dw_widget_event_key(s3dw_getroot(),keys));
+	struct s3d_key_event *keys = (struct s3d_key_event *)evt->buf;
+	return(s3dw_widget_event_key(s3dw_getroot(), keys));
 }
 
 int s3dw_object_info(struct s3d_evt *evt)
 {
-	struct s3d_obj_info *info=(struct s3d_obj_info *)evt->buf;
-	if (info->object==0) { /* the _s3dw_cam */
-		if (_s3dw_cam==NULL)	s3dw_getroot(); /* init, get _s3dw_cam */
-		_s3dw_cam->ax=_s3dw_cam->x=info->trans_x;
-		_s3dw_cam->ay=_s3dw_cam->y=info->trans_y;
-		_s3dw_cam->az=_s3dw_cam->z=info->trans_z;
-		_s3dw_cam->arx=_s3dw_cam->rx=info->rot_x;
-		_s3dw_cam->ary=_s3dw_cam->ry=info->rot_y;
-		_s3dw_cam->arz=_s3dw_cam->rz=info->rot_z;
+	struct s3d_obj_info *info = (struct s3d_obj_info *)evt->buf;
+	if (info->object == 0) { /* the _s3dw_cam */
+		if (_s3dw_cam == NULL) s3dw_getroot(); /* init, get _s3dw_cam */
+		_s3dw_cam->ax = _s3dw_cam->x = info->trans_x;
+		_s3dw_cam->ay = _s3dw_cam->y = info->trans_y;
+		_s3dw_cam->az = _s3dw_cam->z = info->trans_z;
+		_s3dw_cam->arx = _s3dw_cam->rx = info->rot_x;
+		_s3dw_cam->ary = _s3dw_cam->ry = info->rot_y;
+		_s3dw_cam->arz = _s3dw_cam->rz = info->rot_z;
 
-		_s3dw_cam->flags&=~S3DW_ARRANGED;
+		_s3dw_cam->flags &= ~S3DW_ARRANGED;
 		s3dw_ani_needarr();
 	}
 	return(0);

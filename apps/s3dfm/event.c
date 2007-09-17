@@ -27,17 +27,17 @@
 
 
 
-int typeinput=0;
+int typeinput = 0;
 
 /* info packets handler, we're just interested in the cam */
 int event_oinfo(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
-	inf=(struct s3d_obj_info *)hrmz->buf;
-	if ((inf->object==0) && (!ani_onstack(&cam))) {
-		cam.dpx=inf->trans_x;
-		cam.dpy=inf->trans_y;
-		cam.dpz=inf->trans_z;
+	inf = (struct s3d_obj_info *)hrmz->buf;
+	if ((inf->object == 0) && (!ani_onstack(&cam))) {
+		cam.dpx = inf->trans_x;
+		cam.dpy = inf->trans_y;
+		cam.dpz = inf->trans_z;
 	}
 	s3dw_object_info(hrmz);
 	return(0);
@@ -46,14 +46,14 @@ int event_oinfo(struct s3d_evt *hrmz)
 /* keyevent handler */
 int event_key(struct s3d_evt *evt)
 {
-	struct s3d_key_event *keys=(struct s3d_key_event *)evt->buf;
+	struct s3d_key_event *keys = (struct s3d_key_event *)evt->buf;
 	char path[M_DIR];
-	if (typeinput) {	/* we have some inputfield now and want the s3dw to handle our input */
+	if (typeinput) { /* we have some inputfield now and want the s3dw to handle our input */
 		printf("inputting text ...\n");
 		s3dw_handle_key(evt);
 		return(0);
 	}
-	node_path(node_getdir(focus),path);
+	node_path(node_getdir(focus), path);
 	switch (keys->keysym) {
 	case 'i':
 	case 'I': {
@@ -63,8 +63,8 @@ int event_key(struct s3d_evt *evt)
 	case 'r':
 	case 'R': {/* refresh this window ... */
 		t_node *node;
-		node=node_getdir(focus);
-		printf("[R]efreshing %s\n",node->name);
+		node = node_getdir(focus);
+		printf("[R]efreshing %s\n", node->name);
 		parse_dir(node);
 		box_draw_icons(node);
 		box_order_icons(node);
@@ -103,10 +103,10 @@ int event_key(struct s3d_evt *evt)
 		node_select(focus);
 		break;
 	case S3DK_BACKSPACE:
-		if (focus->disp==D_DIR)
-			box_close(focus,1);
-		else if (focus->parent!=NULL)
-			box_close(focus->parent,1);
+		if (focus->disp == D_DIR)
+			box_close(focus, 1);
+		else if (focus->parent != NULL)
+			box_close(focus->parent, 1);
 		break;
 
 	}
@@ -120,20 +120,20 @@ int event_click(struct s3d_evt *evt)
 	int oid;
 	t_node *f;
 	s3dw_handle_click(evt);
-	oid=(int)*((u_int32_t *)evt->buf);
-	if (NULL!=(f=node_getbyoid(&root,oid))) {
-		if (f->objs.close==oid) {
-			box_close(f,1);
+	oid = (int) * ((u_int32_t *)evt->buf);
+	if (NULL != (f = node_getbyoid(&root, oid))) {
+		if (f->objs.close == oid) {
+			box_close(f, 1);
 			return(0);
 		}
-		if (f->objs.select==oid) {
-			printf("[S]electing %s\n",f->name);
+		if (f->objs.select == oid) {
+			printf("[S]electing %s\n", f->name);
 			node_select(f);
 			return(0);
 		}
 		node_select(f);
 	} else {
-		/*		printf("[C]ould not find :/\n");*/
+		/*  printf("[C]ould not find :/\n");*/
 	}
 	return(0);
 }

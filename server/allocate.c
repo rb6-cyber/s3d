@@ -1,12 +1,12 @@
 /*
  * allocate.c
  *
- * Copyright (C) 2006 	Marek Lindner <lindner_marek@yahoo.de>
- * 						Thomas Lopatic
- * 						Corinna 'Elektra' Aichele
- * 						Axel Neumann
- * 						Felix Fietkau
- * 						Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2006  Marek Lindner <lindner_marek@yahoo.de>
+ *       Thomas Lopatic
+ *       Corinna 'Elektra' Aichele
+ *       Axel Neumann
+ *       Felix Fietkau
+ *       Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.berlios.de/ for more updates.
@@ -93,7 +93,7 @@ void *debugMalloc(unsigned int length, int tag)
 	struct chunkTrailer *chunkTrailer;
 	unsigned char *chunk;
 
-	/* 	printf("sizeof(struct chunkHeader) = %u, sizeof (struct chunkTrailer) = %u\n", sizeof (struct chunkHeader), sizeof (struct chunkTrailer)); */
+	/*  printf("sizeof(struct chunkHeader) = %u, sizeof (struct chunkTrailer) = %u\n", sizeof (struct chunkHeader), sizeof (struct chunkTrailer)); */
 
 	memory = malloc(length + sizeof(struct chunkHeader) + sizeof(struct chunkTrailer));
 

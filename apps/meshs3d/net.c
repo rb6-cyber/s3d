@@ -46,7 +46,7 @@ int net_init(char *host)
 	struct hostent *he;
 	struct sockaddr_in their_addr; /* connector's address information  */
 
-	if ((he=gethostbyname(host)) == NULL) {  /* get the host info  */
+	if ((he = gethostbyname(host)) == NULL) {  /* get the host info  */
 		herror("gethostbyname");
 		return(1);
 	}
@@ -66,7 +66,7 @@ int net_init(char *host)
 		perror("connect");
 		return(1);
 	}
-	fcntl(sockfd,F_SETFL, O_NONBLOCK);
+	fcntl(sockfd, F_SETFL, O_NONBLOCK);
 	return(0);
 }
 
@@ -74,14 +74,14 @@ int net_main()
 {
 	static int net_read_count = 0;
 
-	if ((numbytes=recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
-		if (errno==EAGAIN)
+	if ((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) == -1) {
+		if (errno == EAGAIN)
 			return(0); /* well, that's okay ... */
 		perror("recv");
 		return(-1);
 	}
 
-	if (numbytes==0) {
+	if (numbytes == 0) {
 		printf("connection reset\n");
 		return(-1);
 	}
@@ -89,22 +89,22 @@ int net_main()
 	buf[numbytes] = '\0';
 
 	/* check for potential buffer overflow */
-	if ( ( strlen( lbuf ) + strlen( buf ) ) < MAXLINESIZE ) {
+	if ((strlen(lbuf) + strlen(buf)) < MAXLINESIZE) {
 
-		strncat( lbuf, buf, MAXLINESIZE );
+		strncat(lbuf, buf, MAXLINESIZE);
 
 	} else {
 
 		/* hope that carriage return is now in buf */
-		if ( strlen( lbuf ) < MAXLINESIZE ) {
+		if (strlen(lbuf) < MAXLINESIZE) {
 
-			if ( Global.debug ) printf( "WARNING: lbuf almost filled without *any* carriage return within that data !\nAppending truncated buf to lbuf to prevent buffer overflow.\n" );
-			strncat( lbuf, buf, MAXLINESIZE - strlen( lbuf ) );
+			if (Global.debug) printf("WARNING: lbuf almost filled without *any* carriage return within that data !\nAppending truncated buf to lbuf to prevent buffer overflow.\n");
+			strncat(lbuf, buf, MAXLINESIZE - strlen(lbuf));
 
 		} else {
 
-			if ( Global.debug ) printf( "ERROR: lbuf filled without *any* carriage return within that data !\nClearing lbuf to prevent buffer overflow.\n" );
-			strncpy( lbuf, buf, MAXLINESIZE );
+			if (Global.debug) printf("ERROR: lbuf filled without *any* carriage return within that data !\nClearing lbuf to prevent buffer overflow.\n");
+			strncpy(lbuf, buf, MAXLINESIZE);
 
 		}
 
@@ -112,7 +112,7 @@ int net_main()
 
 	process_main();
 
-	if ( ++net_read_count > 5 ) {
+	if (++net_read_count > 5) {
 		net_read_count = 0;
 		return(0);   /* continue mainloop */
 	} else {

@@ -55,7 +55,7 @@ static vertexchain_t vert[SEGSIZE]; /* chain init. information. This */
 /* polygons touching at the same */
 /* vertex  */
 
-static int mon[SEGSIZE];	/* contains position of any vertex in */
+static int mon[SEGSIZE]; /* contains position of any vertex in */
 /* the monotone chain for the polygon */
 static int visited[TRSIZE];
 static int chain_idx, op_idx, mon_idx;
@@ -111,10 +111,10 @@ point_t *vp1;
 	v1.x = vp1->x - vp0->x;
 	v1.y = vp1->y - vp0->y;
 
-	if (CROSS_SINE(v0, v1) >= 0)	/* sine is positive */
-		return DOT(v0, v1)/LENGTH(v0)/LENGTH(v1);
+	if (CROSS_SINE(v0, v1) >= 0) /* sine is positive */
+		return DOT(v0, v1) / LENGTH(v0) / LENGTH(v1);
 	else
-		return (-1.0 * DOT(v0, v1)/LENGTH(v0)/LENGTH(v1) - 2);
+		return (-1.0 * DOT(v0, v1) / LENGTH(v0) / LENGTH(v1) - 2);
 }
 
 
@@ -197,7 +197,7 @@ int v1;
 	/* At this stage, we have got the positions of v0 and v1 in the */
 	/* desired chain. Now modify the linked lists */
 
-	i = new_chain_element();	/* for the new list */
+	i = new_chain_element(); /* for the new list */
 	j = new_chain_element();
 
 	mchain[i].vnum = v0;
@@ -226,8 +226,8 @@ int v1;
 	vp0->nextfree++;
 	vp1->nextfree++;
 
-	errds(VLOW,"sei:make_poly()",": mcur = %d, (v0, v1) = (%d, %d)", mcur, v0, v1);
-	errds(VLOW,"sei:make_poly()","next posns = (p, q) = (%d, %d)", p, q);
+	errds(VLOW, "sei:make_poly()", ": mcur = %d, (v0, v1) = (%d, %d)", mcur, v0, v1);
+	errds(VLOW, "sei:make_poly()", "next posns = (p, q) = (%d, %d)", p, q);
 
 	mon[mcur] = p;
 	mon[mnew] = i;
@@ -265,8 +265,8 @@ int n;
 		mchain[i].next = i + 1;
 		mchain[i].vnum = i;
 		vert[i].pt = seg[i].v0;
-		vert[i].vnext[0] = i + 1;	/* next vertex */
-		vert[i].vpos[0] = i;	/* locn. of next vertex */
+		vert[i].vnext[0] = i + 1; /* next vertex */
+		vert[i].vpos[0] = i; /* locn. of next vertex */
 		vert[i].nextfree = 1;
 	}
 	mchain[1].prev = n;
@@ -275,7 +275,7 @@ int n;
 	vert[n].vpos[0] = n;
 	chain_idx = n;
 	mon_idx = 0;
-	mon[0] = 1;			/* position of any vertex in the first */
+	mon[0] = 1;   /* position of any vertex in the first */
 	/* chain  */
 
 #else
@@ -286,13 +286,13 @@ int n;
 		mchain[i].vnum = i;
 		vert[i].pt = seg[i].v0;
 		vert[i].vnext[0] = seg[i].next; /* next vertex */
-		vert[i].vpos[0] = i;	/* locn. of next vertex */
+		vert[i].vpos[0] = i; /* locn. of next vertex */
 		vert[i].nextfree = 1;
 	}
 
 	chain_idx = n;
 	mon_idx = 0;
-	mon[0] = 1;			/* position of any vertex in the first */
+	mon[0] = 1;   /* position of any vertex in the first */
 	/* chain  */
 
 #endif
@@ -351,7 +351,7 @@ int dir;
 				traverse_polygon(mnew, t->d1, trnum, TR_FROM_UP);
 			}
 		} else {
-			retval = SP_NOSPLIT;	/* Just traverse all neighbours */
+			retval = SP_NOSPLIT; /* Just traverse all neighbours */
 			traverse_polygon(mcur, t->u0, trnum, TR_FROM_DN);
 			traverse_polygon(mcur, t->u1, trnum, TR_FROM_DN);
 			traverse_polygon(mcur, t->d0, trnum, TR_FROM_UP);
@@ -374,7 +374,7 @@ int dir;
 				traverse_polygon(mnew, t->u1, trnum, TR_FROM_DN);
 			}
 		} else {
-			retval = SP_NOSPLIT;	/* Just traverse all neighbours */
+			retval = SP_NOSPLIT; /* Just traverse all neighbours */
 			traverse_polygon(mcur, t->u0, trnum, TR_FROM_DN);
 			traverse_polygon(mcur, t->u1, trnum, TR_FROM_DN);
 			traverse_polygon(mcur, t->d0, trnum, TR_FROM_UP);
@@ -402,7 +402,7 @@ int dir;
 				traverse_polygon(mnew, t->u1, trnum, TR_FROM_DN);
 				traverse_polygon(mnew, t->d1, trnum, TR_FROM_UP);
 			}
-		} else {		/* only downward cusp */
+		} else {  /* only downward cusp */
 			if (_equal_to(&t->lo, &seg[t->lseg].v1)) {
 				v0 = tr[t->u0].rseg;
 				v1 = seg[t->lseg].next;
@@ -482,7 +482,7 @@ int dir;
 					traverse_polygon(mnew, t->d1, trnum, TR_FROM_UP);
 				}
 			}
-		} else {		/* no cusp */
+		} else {  /* no cusp */
 			if (_equal_to(&t->hi, &seg[t->lseg].v0) &&
 			                _equal_to(&t->lo, &seg[t->rseg].v0)) {
 				v0 = t->rseg;
@@ -522,7 +522,7 @@ int dir;
 					traverse_polygon(mnew, t->u0, trnum, TR_FROM_DN);
 					traverse_polygon(mnew, t->u1, trnum, TR_FROM_DN);
 				}
-			} else {		/* no split possible */
+			} else {  /* no split possible */
 				retval = SP_NOSPLIT;
 				traverse_polygon(mcur, t->u0, trnum, TR_FROM_DN);
 				traverse_polygon(mcur, t->d0, trnum, TR_FROM_UP);
@@ -564,7 +564,7 @@ int op[][3];
 		while ((v = mchain[p].vnum) != vfirst) {
 			if (mchain[p].marked) {
 				processed = TRUE;
-				break;		/* break from while */
+				break;  /* break from while */
 			} else
 				mchain[p].marked = TRUE;
 
@@ -580,17 +580,17 @@ int op[][3];
 			vcount++;
 		}
 
-		if (processed)		/* Go to next polygon */
+		if (processed)  /* Go to next polygon */
 			continue;
 
-		if (vcount == 3) {	/* already a triangle */
+		if (vcount == 3) { /* already a triangle */
 			op[op_idx][0] = mchain[p].vnum;
 			op[op_idx][1] = mchain[mchain[p].next].vnum;
 			op[op_idx][2] = mchain[mchain[p].prev].vnum;
 			op_idx++;
-		} else {		/* triangulate the polygon */
+		} else {  /* triangulate the polygon */
 			v = mchain[mchain[posmax].next].vnum;
-			if (_equal_to(&vert[v].pt, &ymin)) {			/* LHS is a single line */
+			if (_equal_to(&vert[v].pt, &ymin)) {   /* LHS is a single line */
 				triangulate_single_polygon(nvert, posmax, TRI_LHS, op);
 			} else
 				triangulate_single_polygon(nvert, posmax, TRI_RHS, op);
@@ -598,7 +598,7 @@ int op[][3];
 	}
 
 	for (i = 0; i < op_idx; i++)
-		errds(VLOW,"sei:triangulate_monotone_polygons()","tri #%d: (%d, %d, %d)\n", i, op[i][0], op[i][1],
+		errds(VLOW, "sei:triangulate_monotone_polygons()", "tri #%d: (%d, %d, %d)\n", i, op[i][0], op[i][1],
 		      op[i][2]);
 	return op_idx;
 }
@@ -615,10 +615,10 @@ int side;
 int op[][3];
 {
 	register int v;
-	int rc[SEGSIZE], ri = 0;	/* reflex chain */
+	int rc[SEGSIZE], ri = 0; /* reflex chain */
 	int endv, tmp, vpos;
 
-	if (side == TRI_RHS) {	/* RHS segment is a single segment */
+	if (side == TRI_RHS) { /* RHS segment is a single segment */
 		rc[0] = mchain[posmax].vnum;
 		tmp = mchain[posmax].next;
 		rc[1] = mchain[tmp].vnum;
@@ -629,7 +629,7 @@ int op[][3];
 
 		if ((endv = mchain[mchain[posmax].prev].vnum) == 0)
 			endv = nvert;
-	} else {			/* LHS is a single segment */
+	} else {   /* LHS is a single segment */
 		tmp = mchain[posmax].next;
 		rc[0] = mchain[tmp].vnum;
 		tmp = mchain[tmp].next;
@@ -643,23 +643,23 @@ int op[][3];
 	}
 
 	while ((v != endv) || (ri > 1)) {
-		if (ri > 0) {	/* reflex chain is non-empty */
+		if (ri > 0) { /* reflex chain is non-empty */
 			if (CROSS(vert[v].pt, vert[rc[ri - 1]].pt,
-			                vert[rc[ri]].pt) > 0) {			/* convex corner: cut if off */
+			                vert[rc[ri]].pt) > 0) {   /* convex corner: cut if off */
 				op[op_idx][0] = rc[ri - 1];
 				op[op_idx][1] = rc[ri];
 				op[op_idx][2] = v;
 				op_idx++;
 				ri--;
-			} else		/* non-convex */
-			{		/* add v to the chain */
+			} else  /* non-convex */
+			{  /* add v to the chain */
 				ri++;
 				rc[ri] = v;
 				vpos = mchain[vpos].next;
 				v = mchain[vpos].vnum;
 			}
-		} else			/* reflex-chain empty: add v to the */
-		{			/* reflex chain and advance it  */
+		} else   /* reflex-chain empty: add v to the */
+		{   /* reflex chain and advance it  */
 			rc[++ri] = v;
 			vpos = mchain[vpos].next;
 			v = mchain[vpos].vnum;

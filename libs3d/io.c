@@ -25,40 +25,40 @@
 #include "s3d.h"
 #include "s3dlib.h"
 #include "proto.h"
-#include <stdio.h>  	 /*  fopen(),fclose(),fileno() */
-#include <string.h> 	 /*  strncpy(),strncmp(),memcpy() */
-#include <stdlib.h>		 /*  atoi(),malloc(),free() */
-#include <sys/stat.h>	 /*  fstat() */
-#include <unistd.h>		 /*  getpid(), fstat() */
-#include <errno.h>		 /*  errno */
+#include <stdio.h>    /*  fopen(),fclose(),fileno() */
+#include <string.h>   /*  strncpy(),strncmp(),memcpy() */
+#include <stdlib.h>   /*  atoi(),malloc(),free() */
+#include <sys/stat.h>  /*  fstat() */
+#include <unistd.h>   /*  getpid(), fstat() */
+#include <errno.h>   /*  errno */
 #include <sys/socket.h>  /*  socket() */
-#include <getopt.h>		 /*  getopt() */
+#include <getopt.h>   /*  getopt() */
 
 #ifndef _POSIX_C_SOURCE
-#define _POSIX_C_SOURCE 199309		/* we want struct timespec to be defined */
+#define _POSIX_C_SOURCE 199309  /* we want struct timespec to be defined */
 #endif
 #ifndef __USE_POSIX199309
 #define __USE_POSIX199309 1
 #endif
-#include <time.h>		 /*  nanosleep() */
+#include <time.h>   /*  nanosleep() */
 
 #ifdef SIGS
-#include <fcntl.h>		 /*  fcntl() */
-#define __USE_BSD	1		/* we want sig_t to be defined */
-#include <signal.h>		 /*  signal.h, SIG_PIPE */
+#include <fcntl.h>   /*  fcntl() */
+#define __USE_BSD 1  /* we want sig_t to be defined */
+#include <signal.h>   /*  signal.h, SIG_PIPE */
 #endif
 #include <netinet/in.h>  /*  htons(),htonl() */
 #ifndef WIN32
-#include <netdb.h>		 /*  gethostbyname()  */
+#include <netdb.h>   /*  gethostbyname()  */
 #endif
 
-static char				*url=NULL;
-extern int 				con_type;
-extern int 				cb_lock;
+static char    *url = NULL;
+extern int     con_type;
+extern int     cb_lock;
 /*  this file is the client-lib-implementation which holds the function to connect and control the server. */
 #ifdef SIGS
-int _s3d_sigio=0;
-int _s3d_ready=0;
+int _s3d_sigio = 0;
+int _s3d_ready = 0;
 void sigint_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? */
 {
 	/*s3d_quit();*/ /* TODO: sometimes no clean quit ?!*/
@@ -75,27 +75,27 @@ void s3d_usage()
 
 static int parse_args(int *argc, char ***argv)
 {
-	char				 c;
-	int					 lopt_idx;
+	char     c;
+	int      lopt_idx;
 	struct option long_options[] = {
-		{"s3d-url",1,0,0
-		}, {"help",0,0,'h'}, {"s3d-help",0,0,'h'}, {0,0,0,0}
+		{"s3d-url", 1, 0, 0
+		}, {"help", 0, 0, 'h'}, {"s3d-help", 0, 0, 'h'}, {0, 0, 0, 0}
 	};
-	if ((argc==NULL) || (argv==NULL)) return(0); /* nothing to parse */
-	optind=0;
-	opterr=0;	/* we don't want to be bothered if there is some error */
-	while (-1!=(c=getopt_long(*argc,*argv,"?h",long_options,&lopt_idx))) {
+	if ((argc == NULL) || (argv == NULL)) return(0); /* nothing to parse */
+	optind = 0;
+	opterr = 0; /* we don't want to be bothered if there is some error */
+	while (-1 != (c = getopt_long(*argc, *argv, "?h", long_options, &lopt_idx))) {
 		switch (c) {
 		case 0:
-			if (0==strcmp(long_options[lopt_idx].name,"s3d-url")) {
+			if (0 == strcmp(long_options[lopt_idx].name, "s3d-url")) {
 				if (optarg) {
-					url=optarg;
-					s3dprintf(HIGH,"connecting to %s",url);
+					url = optarg;
+					s3dprintf(HIGH, "connecting to %s", url);
 				}
 			}
 			break;
 		case 'h':
-			printf("usage: %s [options]",(*argv)[0]);
+			printf("usage: %s [options]", (*argv)[0]);
 			s3d_usage();
 			return(-1);
 		case '?':
@@ -104,62 +104,62 @@ static int parse_args(int *argc, char ***argv)
 			break;
 		}
 	}
-	optind=0;
-	if (*argc>0) {
-		*argc-=(optind-1); 				 /*  hide s3d-options */
-		(*argv)[optind-1]=(*argv)[0]; 	 /*  restore program path */
-		*argv+=(optind-1); 				 /*  set the string pointer at the right position */
+	optind = 0;
+	if (*argc > 0) {
+		*argc -= (optind - 1);  /*  hide s3d-options */
+		(*argv)[optind-1] = (*argv)[0]; /*  restore program path */
+		*argv += (optind - 1);  /*  set the string pointer at the right position */
 	}
 	return(0);
 }
 /*  external functions go here ... */
 int s3d_init(int *argc, char ***argv, char *name)
 {
-	char 				*s;
-	char 				 urlc[256];		 /*  this should be enough for an url */
-	char 				 buf[258]; 		 /*  server buffer */
-	int					 i;
-	struct timespec		 t= {
-		0,10*1000*1000
+	char     *s;
+	char      urlc[256];   /*  this should be enough for an url */
+	char      buf[258];    /*  server buffer */
+	int      i;
+	struct timespec   t = {
+		0, 10*1000*1000
 	}; /* 10 mili second */
 
-	cb_lock=1;	/* don't bother while initiating ... is set to 0 after INIT packet received. */
-	if (NULL!=(s=getenv("S3D"))) {
-		s3dprintf(VLOW,"at least we have the enviroment variable ... %s",s);
-		url=s;
+	cb_lock = 1; /* don't bother while initiating ... is set to 0 after INIT packet received. */
+	if (NULL != (s = getenv("S3D"))) {
+		s3dprintf(VLOW, "at least we have the enviroment variable ... %s", s);
+		url = s;
 	}
-	parse_args(argc,argv);
-	if (url==NULL) { /* no url specified or obtained through arguments */
+	parse_args(argc, argv);
+	if (url == NULL) { /* no url specified or obtained through arguments */
 		/* trying standard ways to connect */
-		strncpy(urlc,"s3d:///tmp/.s3d:shm/",256);
-		if (s3d_net_init(urlc)==CON_NULL) {
-			strncpy(urlc,"s3d://127.0.0.1:6066/",256);
-			if (s3d_net_init(urlc)==CON_NULL)
+		strncpy(urlc, "s3d:///tmp/.s3d:shm/", 256);
+		if (s3d_net_init(urlc) == CON_NULL) {
+			strncpy(urlc, "s3d://127.0.0.1:6066/", 256);
+			if (s3d_net_init(urlc) == CON_NULL)
 				return(-1);
 		}
 	} else {
-		strncpy(urlc,url,256);	 /*  this should keep buffer overflows away, maybe */
-		urlc[256]=0;			 /*  just to make sure */
-		if (!strncmp(urlc, "s3d:// ",6)) {
-			if (s3d_net_init(urlc)==CON_NULL) return(-1);
+		strncpy(urlc, url, 256);  /*  this should keep buffer overflows away, maybe */
+		urlc[256] = 0;  /*  just to make sure */
+		if (!strncmp(urlc, "s3d:// ", 6)) {
+			if (s3d_net_init(urlc) == CON_NULL) return(-1);
 		} else {
-			errs("s3d_init()","invalid url");
+			errs("s3d_init()", "invalid url");
 			return(-1);
 		}
 	}
-	strncpy(buf,name,256);  /*  copy the name ... */
-	net_send(S3D_P_C_INIT,buf,strlen(buf));
+	strncpy(buf, name, 256);  /*  copy the name ... */
+	net_send(S3D_P_C_INIT, buf, strlen(buf));
 
 	_queue_init();
 #ifdef SIGS
 	if (signal(SIGINT, (sig_t)sigint_handler) == SIG_ERR)
-		errdn(LOW,"s3d_init():signal()",errno);
+		errdn(LOW, "s3d_init():signal()", errno);
 	if (signal(SIGTERM, (sig_t)sigint_handler) == SIG_ERR)
-		errdn(LOW,"s3d_init():signal()",errno);
+		errdn(LOW, "s3d_init():signal()", errno);
 #endif
-	for (i=0;i<100;i++) {
+	for (i = 0;i < 100;i++) {
 		s3d_net_check(); /* wait for init packet */
-		nanosleep(&t,NULL);
+		nanosleep(&t, NULL);
 		if (_s3d_ready) {
 			cb_lock--;
 			return(0);
@@ -171,8 +171,8 @@ int s3d_init(int *argc, char ***argv, char *name)
 int s3d_quit()
 {
 	struct s3d_evt *ret;
-	if (con_type!=CON_NULL && _s3d_ready) {
-		net_send(S3D_P_C_QUIT,NULL,0);
+	if (con_type != CON_NULL && _s3d_ready) {
+		net_send(S3D_P_C_QUIT, NULL, 0);
 		switch (con_type) {
 #ifdef TCP
 		case CON_TCP:
@@ -185,14 +185,14 @@ int s3d_quit()
 			break;
 #endif
 		}
-		con_type=CON_NULL;
-		_s3d_ready=0;
+		con_type = CON_NULL;
+		_s3d_ready = 0;
 		_queue_quit();
-		while (NULL!=(ret=s3d_pop_event())) s3d_delete_event(ret);  /*  clear the stack ... */
-		cb_lock=0; /* we don't care about old callbacks, now we just quit! */
-		ret=malloc(sizeof(struct s3d_evt));
-		ret->event=S3D_EVENT_QUIT;
-		ret->length=0;
+		while (NULL != (ret = s3d_pop_event())) s3d_delete_event(ret);  /*  clear the stack ... */
+		cb_lock = 0; /* we don't care about old callbacks, now we just quit! */
+		ret = malloc(sizeof(struct s3d_evt));
+		ret->event = S3D_EVENT_QUIT;
+		ret->length = 0;
 		s3d_push_event(ret);
 	}
 	return(0);
@@ -200,12 +200,12 @@ int s3d_quit()
 /*  apps should use that as main loop for their programs. */
 int s3d_mainloop(void (*f)())
 {
-	while (con_type!=CON_NULL) {
-		cb_lock++;			/* no callbacks while we are in mainloop */
-		if (f!=NULL)	f();
+	while (con_type != CON_NULL) {
+		cb_lock++;   /* no callbacks while we are in mainloop */
+		if (f != NULL) f();
 		cb_lock--;
 		s3d_process_stack();
-		s3d_net_check(); 	/* get any other packets we might have missed */
+		s3d_net_check();  /* get any other packets we might have missed */
 	}
 	return(0);
 }
@@ -214,35 +214,35 @@ int s3d_mainloop(void (*f)())
 int s3d_open_file(char *fname, char **pointer)
 {
 	FILE *fp;
-	char *buf=NULL;
+	char *buf = NULL;
 	int filesize;
 	struct stat bf;
-	*pointer=NULL;
-	/*	if ((fp = fopen(fname, "rt")) == NULL)
-		{ errn("s3d_open_file():fopen()",errno); return(0);}
-		if (fseek(fp, 0, SEEK_END) != 0)
-		{ errn("s3d_open_file():fseek()",errno); return(0);}
-		if ((filesize = (int)ftell(fp)) == (long)-1)
-		{ errn("s3d_open_file():ftell()",errno); return(0);}
-		if (fseek(fp, 0, SEEK_SET) != 0)
-		{ errn("s3d_open_file():fseek()",errno); return(0);}*/
+	*pointer = NULL;
+	/* if ((fp = fopen(fname, "rt")) == NULL)
+	 { errn("s3d_open_file():fopen()",errno); return(0);}
+	 if (fseek(fp, 0, SEEK_END) != 0)
+	 { errn("s3d_open_file():fseek()",errno); return(0);}
+	 if ((filesize = (int)ftell(fp)) == (long)-1)
+	 { errn("s3d_open_file():ftell()",errno); return(0);}
+	 if (fseek(fp, 0, SEEK_SET) != 0)
+	 { errn("s3d_open_file():fseek()",errno); return(0);}*/
 
 	if ((fp = fopen(fname, "rt")) == NULL) {
-		errdn(VLOW,"s3d_open_file():fopen()",errno);
+		errdn(VLOW, "s3d_open_file():fopen()", errno);
 		return(-1);
 	}
-	if (fstat(fileno(fp),&bf)) {
-		errdn(VLOW,"s3d_open_file():fstat()",errno);
+	if (fstat(fileno(fp), &bf)) {
+		errdn(VLOW, "s3d_open_file():fstat()", errno);
 		return(-1);
 	}
-	filesize=bf.st_size;
-	/*	s3dprintf(LOW, "opening %s, filesize is %d",fname, filesize);*/
-	if ((buf=malloc(filesize))==NULL) {
-		errn("s3d_open_3ds_file():malloc()",errno);
+	filesize = bf.st_size;
+	/* s3dprintf(LOW, "opening %s, filesize is %d",fname, filesize);*/
+	if ((buf = malloc(filesize)) == NULL) {
+		errn("s3d_open_3ds_file():malloc()", errno);
 		exit(-1);
 	}
 	fread(buf, 1, filesize, fp);
 	fclose(fp);
-	*pointer=buf;
+	*pointer = buf;
 	return(filesize);
 }
