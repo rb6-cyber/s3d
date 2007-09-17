@@ -41,6 +41,7 @@ void clean_string(char *clean, char *dirty, int n)
 	strncpy(clean, dirty, n);
 	clean[n-1]=0;
 }
+
 int db_add_tag(object_t *obj, char *key, char *val)
 {
 	char tagquery[MAXQ];
@@ -51,6 +52,7 @@ int db_add_tag(object_t *obj, char *key, char *val)
 	db_exec(tagquery, NULL, 0);
 	return(0);
 }
+
 int db_insert_node(node_t *node)
 {
 	char addquery[MAXQ];
@@ -87,6 +89,7 @@ int db_insert_segment(segment_t *seg)
 
 	return(0);
 }
+
 int db_insert_way_only(way_t *way)
 {
 	char addquery[MAXQ];
@@ -103,6 +106,7 @@ int db_insert_way_seg(way_t *way, int seg_n)
 	db_exec(addquery, NULL, 0);
 	return(0);
 }
+
 int db_insert_layer(char *layer_name)
 {
 	char findquery[MAXQ];
@@ -121,6 +125,7 @@ int db_insert_layer(char *layer_name)
 	}
 	return(layerid);
 }
+
 #define MAGIC	1337 /* just to elevate the nodes a little bit */
 static int found=0;
 /* tries to find node coordinates of ip, returns 1 if has found something */
@@ -147,6 +152,7 @@ int db_olsr_check(char *ip, float *pos)
 	found=0;
 	return(0);
 }
+
 /* initializes the starting point of nodes  by averaging its lon/lat */
 int db_olsr_node_init(float *pos)
 {
@@ -202,6 +208,7 @@ static int db_getstr(void *string, int argc, char **argv, char **azColName)
 		strncpy((char *)string,argv[0],MAXQ);
 	return(0);
 }
+
 /* get the value for a a certain tagid and keyvalue (field). Write into target, which has to be allocated with MAXQ bytes of space.
  * Nothing is written when nothing is found. */
 int db_gettag(int tagid, char *field, char *target)
@@ -222,6 +229,7 @@ int callback(void *NotUsed, int argc, char **argv, char **azColName)
 	printf("\n");
 	return 0;
 }
+
 static int db_really_exec(const char *query, sqlite3_callback callback, void *arg)
 {
 	char *zErrMsg = 0;
@@ -242,11 +250,12 @@ void db_flush()
 	qbuf[0]=0;
 	qlen=0;
 }
+
 int db_exec(const char *query, sqlite3_callback callback, void *arg)
 {
 	int ret;
 #ifdef DB_STACK
-	if (callback==NULL) { /* we can stack it */
+	if (callback == NULL) { /* we can stack it */
 		int len;
 		len=strlen(query);
 		if (len+qlen>=QBUF)
@@ -255,11 +264,14 @@ int db_exec(const char *query, sqlite3_callback callback, void *arg)
 		qlen+=strlen(query);
 		ret=0;
 	} else
-#endif {
+#endif
+
+	{
 		ret=db_really_exec(query,callback,arg);		/* pass it to the real function */
+	}
+	return(ret);
 }
-return(ret);
-}
+
 int db_init(char *dbFile)
 {
 	int rc;
@@ -276,6 +288,7 @@ int db_init(char *dbFile)
 	}
 	return(0);
 }
+
 int db_quit()
 {
 	sqlite3_close(db);
@@ -284,6 +297,7 @@ int db_quit()
 			perror("db_quit()");
 	return(0);
 }
+
 int db_create()
 {
 	db_exec("CREATE TABLE node (layer_id INT, node_id INTEGER , latitude DOUBLE PRECISION, longitude DOUBLE PRECISION, altitude DOUBLE PRECISION, visible BOOLEAN, tag_id INT, s3doid INT, PRIMARY KEY(layer_id,node_id));",NULL,0);
