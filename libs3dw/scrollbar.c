@@ -372,11 +372,11 @@ int s3dw_scrollbar_event_key(s3dw_widget *S3DUNUSED(widget), struct s3d_key_even
 int s3dw_scrollbar_event_click(s3dw_widget *widget, uint32_t oid)
 {
 	s3dw_scrollbar *scrollbar = (s3dw_scrollbar *)widget;
-	if (scrollbar->loid == oid) {
+	if (scrollbar->loid == (int)oid) {
 		scrollbar->lonclick(widget);
 		return(1);
 	}
-	if (scrollbar->roid == oid) {
+	if (scrollbar->roid == (int)oid) {
 		scrollbar->ronclick(widget);
 		return(1);
 	}

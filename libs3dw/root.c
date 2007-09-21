@@ -54,6 +54,21 @@ int s3dw_key_nothing(s3dw_widget *S3DUNUSED(widget), struct s3d_key_event *S3DUN
 	return(0);
 }
 
+char *s3dw_get_type_string(int type) 
+{
+	switch (type) {
+	case S3DW_TROOT: 		return("root");
+	case S3DW_TCAM: 		return("cam");
+	case S3DW_TSURFACE:		return("surface");
+	case S3DW_TBUTTON: 		return("button");
+	case S3DW_TLABEL: 		return("label");
+	case S3DW_TINPUT: 		return("input");
+	case S3DW_TTEXTBOX: 	return("textbox");
+	case S3DW_TSCROLLBAR: 	return("scrollbar");
+	}
+	return(NULL);
+}
+
 /* get the root .... if it's NULL, the lib is not initialized, so do this too ... */
 s3dw_widget *s3dw_getroot()
 {

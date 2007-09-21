@@ -82,7 +82,11 @@ void s3dw_widget_append(s3dw_widget *parent, s3dw_widget *widget)
 void s3dw_widget_remove(s3dw_widget *widget)
 {
 	s3dw_widget *parent = widget->parent;
-	int i;
+	int i, stackpos;
+
+    stackpos = s3dw_ani_stackpos(widget);
+	if (stackpos != -1 )
+		s3dw_ani_del(stackpos);
 	if (parent == NULL) return;
 
 	for (i = 0;i < parent->nobj;i++) /* search ... */

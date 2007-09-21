@@ -124,7 +124,7 @@ void s3dw_textbox_drawtext(s3dw_widget *widget)
 	rest = text = strdup(textbox->text);
 	while (NULL != (linefeedpos = strchr(rest, '\n'))) { /* process every line */
 		linefeedpos[0] = 0;
-		if ((x < strlen(rest)) && ((y >= 0) && y < textbox->n_lineoids)) { /* don't bother, if it's not visible anyway */
+		if ((x < (int)strlen(rest)) && ((y >= 0) && y < textbox->n_lineoids)) { /* don't bother, if it's not visible anyway */
 			rest += x; /* ignore the first x chars because we've scrolled a bit right */
 			while ((strlen(rest) > 0) && (s3d_strlen(rest) > width))
 				rest[strlen(rest)-1] = 0; /* remove last character and try again until it fits */

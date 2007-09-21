@@ -33,25 +33,26 @@ static int animation_on = 0;
 int ani_need_arr = 0;
 
 /* is item f already on stack? */
-int s3dw_ani_onstack(s3dw_widget *f)
+int s3dw_ani_stackpos(s3dw_widget *f)
 {
 	int i;
 	for (i = 0;i < ani_n;i++)
 		if (ani_s[i] == f)
-			return(1);  /* already in list */
-	return(0);
+			return(i);  /* already in list */
+	return(-1);
 
 }
 /* add an item on the animation stack */
 void s3dw_ani_add(s3dw_widget *f)
 {
 
+	s3dprintf(VLOW, "[A]ni ADD (%010p), oid = %d, ani_n = %d, type is %s\n", f, f->oid, ani_n, s3dw_get_type_string(f->type));
 	if ((f->oid == 0) && (f->type != S3DW_TCAM)) {
-		s3dprintf(HIGH, "s3dw_ani_add() assert failed: weird, moving cam but its not a cam obeject?");
+		s3dprintf(HIGH, "s3dw_ani_add() assert failed: weird, moving cam but its not a cam object?");
 		return;
 	}
 	if ((ani_n < MAXANI) && (animation_on)) {
-		if (s3dw_ani_onstack(f))
+		if (s3dw_ani_stackpos(f) != -1)
 			return;  /* already in list */
 		ani_s[ani_n] = f;
 		s3dw_ani_iterate(f);
@@ -63,18 +64,18 @@ void s3dw_ani_add(s3dw_widget *f)
 void s3dw_ani_del(int i)
 {
 	if ((i >= 0) && (i < ani_n)) {
-		/*  printf("[A]ni DEL %d\n",i);*/
+		s3dprintf(VLOW, "[A]ni DEL %d, ani_n = %d\n",i, ani_n);
 		ani_n--;
 		ani_s[i] = ani_s[ani_n]; /* that should also work if i is the last one */
 	} else {
 		s3dprintf(MED, "[F]ATAL: can't delete animation!\n");
 	}
 }
-/* well ... */
+/* apply the animation */
 void s3dw_ani_doit(s3dw_widget *f)
 {
 	if ((f->oid == 0) && (f->type != S3DW_TCAM)) {
-		s3dprintf(HIGH, "s3dw_ani_doit() assert failed: weird, moving cam but its not a cam obeject?");
+		s3dprintf(HIGH, "s3dw_ani_doit() assert failed: weird, moving cam but its not a cam object?");
 	} else {
 		if (f->oid == 0) {
 			s3dprintf(HIGH, "moving cam");
@@ -99,6 +100,7 @@ void s3dw_ani_finish(s3dw_widget *f, int i)
 	if (i != -1)
 		s3dw_ani_del(i);
 }
+/* do one step of the animation */
 void s3dw_ani_iterate(s3dw_widget *f)
 {
 	f->ax = (f->x + f->ax * ZOOMS) / (ZOOMS + 1);

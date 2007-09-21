@@ -39,6 +39,7 @@ void s3dw_nothing(s3dw_widget *widget);
 int s3dw_click_nothing(s3dw_widget *widget, uint32_t dummy);
 int s3dw_key_nothing(s3dw_widget *widget, struct s3d_key_event *dummy);
 void s3dw_root_destroy(s3dw_widget *widget);
+char *s3dw_get_type_string(int type);
 /* widget.c */
 s3dw_widget *s3dw_widget_new();
 void s3dw_widget_append(s3dw_widget *parent, s3dw_widget *widget);
@@ -105,7 +106,7 @@ int s3dw_scrollbar_event_click(s3dw_widget *widget, uint32_t oid);
 /* style.c */
 extern s3dw_style def_style;
 /* animate.c */
-int  s3dw_ani_onstack(s3dw_widget *f);
+int  s3dw_ani_stackpos(s3dw_widget *f);
 void s3dw_ani_add(s3dw_widget *f);
 void s3dw_ani_del(int i);
 void s3dw_ani_doit(s3dw_widget *f);
