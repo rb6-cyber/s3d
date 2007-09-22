@@ -24,11 +24,11 @@
 #include "global.h"
 #include <stdlib.h>   /*  malloc() */
 #include <string.h>   /*  memcpy() */
-/*
+
 #ifdef G_GLUT
-#include <GL/glut.h>   *  glutWireTorus() -  to be removed later *
+#include <GL/glut.h>   /*  glutSwapBuffers() */
 #endif
-*/
+
 #include <GL/gl.h>   /*  GLint */
 #ifdef G_SDL
 #include <SDL.h>  /*  SDL_GL_SwapBuffers */
