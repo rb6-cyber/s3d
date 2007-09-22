@@ -53,6 +53,24 @@ gpl.txt for the GPL and client/lgpl.txt for the LGPL are included too.
 if I'm mistaken in any ownership-concerns, please tell me and don't be 
 too mad at me, as I have had no idea of licensing at all.
 
+Applications (GPLv2 or later):
+* apps/dot_mcp
+* apps/kism3d
+* apps/olsrs3d
+* apps/s3d_x11gate
+* apps/s3dfm
+* apps/s3dosm
+* apps/s3dvt
+* example/*
+* server
+
+Applications (GPLv2):
+* apps/meshs3d
+
+Librarys (LGPLv2.1 or later)
+* libs3d
+* libs3dw
+
 5. DOCUMENTATION
 ----------------
 
