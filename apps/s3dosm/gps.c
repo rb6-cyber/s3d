@@ -41,6 +41,8 @@ int user_icon = -1, user_icon_rotator = -1;
 #include <stdio.h>   /*  snprintf(), printf(), NULL */
 #include <time.h>  /*  nanosleep(), struct tm, time_t...  */
 #include <math.h> /* fabs(), finite () */
+#include <fcntl.h>  /* fcntl() */
+#include <unistd.h> /* fcntl() */
 static struct gps_data_t  *dgps;
 static int       frame = 0;
 static int       lastfix = 0;
@@ -175,6 +177,7 @@ void show_position(struct gps_data_t *dgps)
 }
 int gps_init(char *gpshost)
 {
+	int sock_opts;
 	char *err_str;
 	dgps = gps_open(gpshost, "2947");
 	if (dgps == NULL) {
@@ -205,6 +208,9 @@ int gps_init(char *gpshost)
 		fprintf(stderr, "s3dosm: no gpsd running or network error: %d, %s\n" ,  errno, err_str);
 		return(-1);
 	}
+	sock_opts = fcntl(dgps->gps_fd, F_GETFL, 0);
+	fcntl(dgps->gps_fd, F_SETFL, sock_opts | O_NONBLOCK);
+
 	user_icon = s3d_clone(icons[ICON_ARROW].oid);
 	user_icon_rotator = s3d_new_object();
 	s3d_link(user_icon, user_icon_rotator);
@@ -221,8 +227,11 @@ int gps_main()
 {
 	if (gps_active && ((frame % 6) == 0)) {
 		if (gps_poll(dgps) < 0) {
-			printf("read error on server socket\n");
-			gps_quit();
+			if (errno != EWOULDBLOCK) {
+
+				printf("read error on server socket\n");
+				gps_quit();
+			}
 		}
 
 		/*show_gpsdata(dgps);*/

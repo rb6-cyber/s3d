@@ -39,17 +39,7 @@ void mainloop()
 		gps_main();
 		nav_main();
 		s3dw_ani_mate();
-	} /* else {
-  s3d_net_check(); / * we are not yet in the mainloop of
-       s3d_mainloop(), because ready==0,
-       so we check protocol things ourselves.
-       This just prevents timing out from the server
-       because map loading takes so long, you shouldn't take
-       this as good example and write proper threaded or
-       timesliced loaders :) * /
-  s3d_process_stack();
- }
- s3dw_ani_mate();*/
+	}
 }
 int init(int argc, char **argv)
 {
