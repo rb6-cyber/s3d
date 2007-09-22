@@ -56,6 +56,7 @@ too mad at me, as I have had no idea of licensing at all.
 Applications (GPLv2 or later):
 * apps/dot_mcp
 * apps/kism3d
+* apps/meshs3d
 * apps/olsrs3d
 * apps/s3d_x11gate
 * apps/s3dfm
@@ -63,9 +64,6 @@ Applications (GPLv2 or later):
 * apps/s3dvt
 * example/*
 * server
-
-Applications (GPLv2):
-* apps/meshs3d
 
 Librarys (LGPLv2.1 or later)
 * libs3d
