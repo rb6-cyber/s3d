@@ -64,7 +64,7 @@ void s3dw_ani_add(s3dw_widget *f)
 void s3dw_ani_del(int i)
 {
 	if ((i >= 0) && (i < ani_n)) {
-		s3dprintf(VLOW, "[A]ni DEL %d, ani_n = %d\n",i, ani_n);
+		s3dprintf(VLOW, "[A]ni DEL %d, ani_n = %d\n", i, ani_n);
 		ani_n--;
 		ani_s[i] = ani_s[ani_n]; /* that should also work if i is the last one */
 	} else {

@@ -84,8 +84,8 @@ void s3dw_widget_remove(s3dw_widget *widget)
 	s3dw_widget *parent = widget->parent;
 	int i, stackpos;
 
-    stackpos = s3dw_ani_stackpos(widget);
-	if (stackpos != -1 )
+	stackpos = s3dw_ani_stackpos(widget);
+	if (stackpos != -1)
 		s3dw_ani_del(stackpos);
 	if (parent == NULL) return;
 
