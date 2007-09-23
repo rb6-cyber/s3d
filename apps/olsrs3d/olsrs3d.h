@@ -24,12 +24,20 @@
  */
 
 #include "structs.h"
-
+#include <config-s3d.h>
 
 #define max(x,y)((x)>(y)?(x):(y))
 #define min(x,y)((x)<(y)?(x):(y))
 
-
+#ifndef OLSRS3DUNUSED
+#if defined(UNUSEDPARAM_ATTRIBUTE)
+#define OLSRS3DUNUSED(x) (x)__attribute__((unused))
+#elif defined(UNUSEDPARAM_OMIT)
+#define OLSRS3DUNUSED(x) /* x */
+#else
+#define OLSRS3DUNUSED(x) x
+#endif
+#endif
 
 extern int Debug;
 

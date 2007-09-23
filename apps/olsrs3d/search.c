@@ -115,7 +115,7 @@ void show_search_window()
 }
 
 /* public */
-void create_search_widget(float x, float y, float z)
+void create_search_widget(float OLSRS3DUNUSED(x), float OLSRS3DUNUSED(y), float OLSRS3DUNUSED(z))
 {
 	s3dw_button *search_button, *abort_button;
 
@@ -348,7 +348,7 @@ void follow_node_by_click(struct olsr_node *olsr_node)
 }
 
 /* private */
-void _search_node(s3dw_widget *dummy)
+void _search_node(s3dw_widget *OLSRS3DUNUSED(dummy))
 {
 	char *ip;
 	int result;
@@ -375,7 +375,7 @@ void _search_node(s3dw_widget *dummy)
 }
 
 /* private */
-void _abort_search(s3dw_widget *dummy)
+void _abort_search(s3dw_widget *OLSRS3DUNUSED(dummy))
 {
 	set_search_status(ABORT);
 }
