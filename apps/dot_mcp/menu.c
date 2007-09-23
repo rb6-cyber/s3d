@@ -76,7 +76,8 @@ void menu_click(int oid)
 }
 int menu_init()
 {
-	int i, menu_o;
+	unsigned int i;
+	int menu_o;
 	menu_o = s3d_new_object();
 	act = 0; /* menu deactived */
 	go = s3d_import_model_file("objs/s3dstart.3ds");

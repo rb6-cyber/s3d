@@ -44,7 +44,7 @@ struct tver campos, camrot;
 float xdif = 0, ydif = 0;
 
 struct app {
-	unsigned int oid, oid_c;
+	int oid, oid_c;
 	float r;
 	int init;
 	float trans_x, trans_y, trans_z;
@@ -65,7 +65,7 @@ int rot_flag = 0;
 struct app *focus = NULL;
 float focus_r = 0;
 float alpha = 0;
-unsigned int min_but, rotate, close_but, sphere, reset, menu = -1;
+int rotate, reset, min_but, close_but, sphere, menu = -1;
 
 void place_apps();
 
@@ -349,8 +349,9 @@ int mcp_del_object(struct s3d_evt *hrmz)
 int object_click(struct s3d_evt *hrmz)
 {
 	struct app *a;
-	unsigned int i, oid;
-	oid = *((unsigned int *)hrmz->buf);
+	unsigned int i;
+	int oid;
+	oid = *((int *)hrmz->buf);
 	a = apps;
 	i = 0;
 	if (oid == rotate) {
