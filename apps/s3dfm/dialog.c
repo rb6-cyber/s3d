@@ -171,7 +171,8 @@ void window_copy(char *path)
 	s3dw_button  *okbutton, *abortbutton;
 	float l;
 
-	int i, m;
+	int i;
+	unsigned int m;
 
 	if (fs_lock)  {
 		window_fs_another();
@@ -221,7 +222,8 @@ void window_unlink()
 	s3dw_button  *okbutton, *abortbutton;
 	float l;
 
-	int i, m;
+	int i;
+	unsigned int m;
 
 	if (fs_lock)  {
 		window_fs_another();

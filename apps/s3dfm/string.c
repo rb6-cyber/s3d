@@ -58,7 +58,7 @@ char *dots_at_start(char *str, unsigned int n, t_node *d)
 void dotted_int(char *s, unsigned int i)
 {
 	char st[M_DIR];
-	int p;
+	unsigned int p;
 	p = 0;
 	st[0] = 0;
 	while (i > 0) {
