@@ -8,4 +8,9 @@ if (XTST_FOUND)
 
 	# install
 	install(TARGETS s3d_x11gate RUNTIME DESTINATION bin)
+else (XTST_FOUND)
+	PkgStatus_Later("xtst (pkg name: libxtst-dev)")
+	
+	# print late status
+	Collected_PkgStatus("s3d_x11gate")
 endif (XTST_FOUND)

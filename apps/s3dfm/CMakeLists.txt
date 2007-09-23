@@ -9,4 +9,9 @@ if (PTHREADS_FOUND)
 
 	# install 
 	install(TARGETS s3dfm RUNTIME DESTINATION bin)
+else (PTHREADS_FOUND)
+	PkgStatus_Later("pthreads")
+	
+	# print late status
+	Collected_PkgStatus("s3dfm")
 endif (PTHREADS_FOUND)

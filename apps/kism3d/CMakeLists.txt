@@ -8,4 +8,9 @@ if (PTHREADS_FOUND)
 
 	# install 
 	install(TARGETS kism3d RUNTIME DESTINATION bin)
+else (PTHREADS_FOUND)
+	PkgStatus_Later("pthreads")
+	
+	# print late status
+	Collected_PkgStatus("kism3d")
 endif (PTHREADS_FOUND)
