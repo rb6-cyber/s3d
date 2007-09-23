@@ -35,6 +35,18 @@
 #include <sys/time.h>  /* gettimeofday */
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <config-s3d.h>
+
+#ifndef S3DX11UNUSED
+#if defined(UNUSEDPARAM_ATTRIBUTE)
+#define S3DX11UNUSED(x) (x)__attribute__((unused))
+#elif defined(UNUSEDPARAM_OMIT)
+#define S3DX11UNUSED(x) /* x */
+#else
+#define S3DX11UNUSED(x) x
+#endif
+#endif
+
 int oid;
 XImage *image;
 Display *dpy = 0;
@@ -168,7 +180,7 @@ int keypress(struct s3d_evt *event)
 	return(0);
 
 }
-int mouseclick(struct s3d_evt *event)
+int mouseclick(struct s3d_evt *S3DX11UNUSED(event))
 {
 	int i;
 	printf("thats it, collecting:\n");
