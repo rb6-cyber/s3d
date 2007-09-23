@@ -52,7 +52,7 @@ struct timeval start, end;
 int iterations;
 float count[3];
 
-int get_shift(unsigned long t)
+int get_shift(uint32_t t)
 {
 	int i = 0;
 	while (t) {
@@ -66,7 +66,7 @@ void mainloop()
 #define MAGIC_CHANGED ((unsigned int)~0)
 	unsigned int x, y;
 	int rs, gs, bs;
-	unsigned long d;
+	uint32_t d;
 	int bpp;
 	char *swap_timg;
 	unsigned int last_change, start_change;
@@ -103,14 +103,14 @@ void mainloop()
 		for (y = 0;y < height;y++) {
 
 			for (x = 0;x < width;x++) {
-				d = *((unsigned long *)(image->data + (y * width + x) * bpp));
-				((unsigned long *)tex_image)[(y*width+x)] =
+				d = *((uint32_t *)(image->data + (y * width + x) * bpp));
+				((uint32_t *)tex_image)[(y*width+x)] =
 				        (rs > 0 ? ((d & image->red_mask) >> rs) : ((d & image->red_mask) << -rs)) |
 				        (gs > 0 ? ((d & image->green_mask) >> gs) : ((d & image->green_mask) << -gs)) |
 				        (bs > 0 ? ((d & image->blue_mask) >> bs) : ((d & image->blue_mask) << -bs)) |
 				        255 << 24;
-				if (((unsigned long *)tex_image)[(y*width+x)] !=
-				                ((unsigned long *)otex_image)[(y*width+x)])
+				if (((uint32_t *)tex_image)[(y*width+x)] !=
+				                ((uint32_t *)otex_image)[(y*width+x)])
 					last_change = y;
 			}
 			if (last_change != MAGIC_CHANGED) {
@@ -119,7 +119,7 @@ void mainloop()
 					/*      printf("setting start_change to %d\n",start_change); */
 				}
 				if (last_change != y) {  /*  last change is already over, post it! */
-					s3d_load_texture(oid, 0, 0, start_change, width, last_change - start_change + 1, (unsigned char *)tex_image + start_change*width*4);
+					s3d_load_texture(oid, 0, 0, start_change, width, last_change - start_change + 1, (unsigned char *)tex_image + start_change*width * sizeof(uint32_t));
 					start_change = MAGIC_CHANGED;
 					last_change = MAGIC_CHANGED;
 				}
@@ -128,7 +128,7 @@ void mainloop()
 		/*  posting the last bit, maybe */
 		if (last_change != MAGIC_CHANGED) {
 			/*   printf("last one: [%d-%d]",start_change,last_change);*/
-			s3d_load_texture(oid, 0, 0, start_change, width, last_change - start_change, (unsigned char *)tex_image + start_change*width*4);
+			s3d_load_texture(oid, 0, 0, start_change, width, last_change - start_change, (unsigned char *)tex_image + start_change*width * sizeof(uint32_t));
 		}
 		/*   s3d_load_texture(oid,0,0,0,width,height,tex_image); */
 		/*  swap images */
@@ -220,8 +220,8 @@ int main(int argc, char **argv)
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK, mouseclick);
 		s3d_set_callback(S3D_EVENT_KEY, keypress);
 		printf("screen: %dx%d\n", width, height);
-		img1 = malloc(width * height * 4);
-		img2 = malloc(width * height * 4);
+		img1 = malloc(width * height * sizeof(uint32_t));
+		img2 = malloc(width * height * sizeof(uint32_t));
 		tex_image = img1;
 		otex_image = img2;
 		oid = s3d_new_object();
