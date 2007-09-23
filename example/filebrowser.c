@@ -32,6 +32,7 @@
 #include <unistd.h>  /*  chdir() */
 #include <math.h>  /*  sin(),cos() */
 #include <time.h> /* nanosleep() */
+#include "example.h" /* S3DUNUSED */
 static struct timespec t = {
 	0, 100*1000*1000
 }; /* 100 mili seconds */
@@ -54,7 +55,7 @@ struct t_item {
 };
 struct t_item *item;
 int n_item = 0;
-int display_dir(char *dir, int depth, int  posx, int posy, int posz)
+int display_dir(char *dir, int S3DUNUSED(depth), int  posx, int posy, int posz)
 {
 	struct dirent **namelist;
 	int n, i;

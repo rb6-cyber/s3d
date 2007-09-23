@@ -26,6 +26,7 @@
 #include <stdio.h>  /*  NULL*/
 #include <time.h> /* nanosleep() */
 #include <math.h> /* sin(), cos() */
+#include "example.h" /* S3DUNUSED */
 int i;
 int o;
 float bottom = -1.0;
@@ -36,7 +37,7 @@ int alpha = 0;
 static struct timespec t = {
 	0, 10*1000*1000
 }; /* 100 mili seconds */
-int stop(struct s3d_evt *evt)
+int stop(struct s3d_evt *S3DUNUSED(evt))
 {
 	s3d_quit();
 	return(0);

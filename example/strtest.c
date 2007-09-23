@@ -26,8 +26,9 @@
 #include <s3d.h>
 #include <stdio.h>  /*  NULL*/
 #include <unistd.h> /* sleep() */
+#include "example.h" /* S3DUNUSED */
 int o;
-void stop(struct s3d_evt *evt)
+void stop(struct s3d_evt *S3DUNUSED(evt))
 {
 	s3d_quit();
 }

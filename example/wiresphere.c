@@ -27,6 +27,7 @@
 #include <time.h> /* nanosleep()  */
 #include <math.h> /* M_PI, cos(), sin() */
 #include <stdlib.h> /* malloc(), free() */
+#include "example.h" /* S3DUNUSED */
 static struct timespec t = {
 	0, 100*1000*1000
 }; /* 100 mili seconds */
@@ -98,7 +99,7 @@ int wire_sphere(int slices, int stacks)
 	free(l);
 	return(o);
 }
-void stop(struct s3d_evt *evt)
+void stop(struct s3d_evt *S3DUNUSED(evt))
 {
 	s3d_quit();
 }

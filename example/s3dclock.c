@@ -26,6 +26,7 @@
 #include <stdio.h>  /*  NULL, sprintf() */
 #include <time.h>  /*  nanosleep(), struct tm, time_t...  */
 #include <string.h>  /*  strlen() */
+#include "example.h" /* S3DUNUSED */
 static struct timespec t = {
 	0, 100*1000*1000
 }; /* 100 mili seconds */
@@ -35,7 +36,7 @@ struct tm *mytime;
 time_t now, onow;
 char time_str[256];
 
-void stop(struct s3d_evt *evt)
+void stop(struct s3d_evt *S3DUNUSED(evt))
 {
 	s3d_quit();
 }

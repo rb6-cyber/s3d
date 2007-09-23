@@ -30,6 +30,7 @@
 #include <time.h> /* nanosleep() */
 #include <stdlib.h> /* free() */
 #include <string.h> /* strlen() */
+#include "example.h"
 
 s3dw_surface *surface;
 s3dw_input *input;
@@ -78,12 +79,12 @@ int key(struct s3d_evt *evt)
 
 }
 
-void done_button(s3dw_widget *dummy)
+void done_button(s3dw_widget *S3DUNUSED(dummy))
 {
 	s3d_quit();
 }
 
-void okay_button(s3dw_widget *dummy)
+void okay_button(s3dw_widget *S3DUNUSED(dummy))
 {
 	s3dw_button *button;
 	char string[32];
@@ -115,7 +116,7 @@ void okay_button(s3dw_widget *dummy)
 	/* we don't need it anymore. always free strings, don't leak around */
 	free(age);
 }
-void no_button(s3dw_widget *dummy)
+void no_button(s3dw_widget *S3DUNUSED(dummy))
 {
 	s3dw_button *button;
 	s3dw_delete(S3DWIDGET(surface));

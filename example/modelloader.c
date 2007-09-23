@@ -27,6 +27,7 @@
 #include <s3d.h>
 #include <stdio.h>  /* NULL */
 #include <time.h> /* nanosleep() */
+#include "example.h" /* S3DUNUSED */
 static struct timespec t = {
 	0, 100*1000*1000
 }; /* 100 mili seconds */
@@ -37,7 +38,7 @@ void mainloop()
 	i = (i + 1) % 360;
 	nanosleep(&t, NULL);
 }
-int object_click(struct s3d_evt *evt)
+int object_click(struct s3d_evt *S3DUNUSED(evt))
 {
 	s3d_quit();
 	return(0);
