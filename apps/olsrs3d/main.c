@@ -88,7 +88,7 @@ struct olsr_node *Olsr_node_pEtx;
 int Btn_close_id = -1;
 
 int Btn_close_obj;
-int Last_Click_Time = 0;
+unsigned int Last_Click_Time = 0;
 int Last_Click_Oid = 0;
 float Title_len;
 
