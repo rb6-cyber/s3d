@@ -65,7 +65,7 @@ static char   last_c[MAX_LINES*MAX_CHARS];
 static int    lines[MAX_LINES];
 #endif
 
-void *thread_terminal(void *a)
+void *thread_terminal(void *S3DVTUNUSED(a))
 {
 	int iscon = 1, ret;
 	char buffer[1024];
@@ -486,7 +486,7 @@ void mainloop()
 		paintit();
 	}
 }
-int stop(struct s3d_evt *event)
+int stop(struct s3d_evt *S3DVTUNUSED(event))
 {
 	s3d_quit();
 	return(0);

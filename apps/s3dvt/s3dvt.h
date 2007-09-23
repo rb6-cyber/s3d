@@ -22,6 +22,18 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <config-s3d.h>
+
+#ifndef S3DVTUNUSED
+#if defined(UNUSEDPARAM_ATTRIBUTE)
+#define S3DVTUNUSED(x) (x)__attribute__((unused))
+#elif defined(UNUSEDPARAM_OMIT)
+#define S3DVTUNUSED(x) /* x */
+#else
+#define S3DVTUNUSED(x) x
+#endif
+#endif
+
 #define MAX_LINES 50
 #define MAX_CHARS 80
 #define DEFAULT_FGCOLOR 2
