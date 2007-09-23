@@ -140,7 +140,7 @@ void window_fs_abort(s3dw_widget *button)
 	fs_lock = TYPE_NONE;
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
-void *thread_start(void *ptr)
+void *thread_start(void *S3DFMUNUSED(ptr))
 {
 	switch (fs_lock) {
 	case TYPE_COPY:
@@ -165,7 +165,7 @@ void window_fs(s3dw_widget *button)
 	pthread_create(&filethread, NULL, thread_start, NULL);
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
-void window_copy(char *path)
+void window_copy(char *S3DFMUNUSED(path))
 {
 	s3dw_surface *infwin;
 	s3dw_button  *okbutton, *abortbutton;
@@ -309,7 +309,7 @@ void window_mkdir(char *path)
 	s3dw_show(S3DWIDGET(infwin));
 }
 
-void window_move(char *path)
+void window_move(char *S3DFMUNUSED(path))
 {
 	s3dw_surface *infwin;
 	s3dw_button  *button;
