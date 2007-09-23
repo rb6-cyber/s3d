@@ -7,6 +7,16 @@
 #define MAXQ 4096
 #define QBUF 1024*128
 
+#ifndef S3DOSMUNUSED
+#if defined(UNUSEDPARAM_ATTRIBUTE)
+#define S3DOSMUNUSED(x) (x)__attribute__((unused))
+#elif defined(UNUSEDPARAM_OMIT)
+#define S3DOSMUNUSED(x) /* x */
+#else
+#define S3DOSMUNUSED(x) x
+#endif
+#endif
+
 /* stack it */
 /* #define DB_STACK 1*/
 

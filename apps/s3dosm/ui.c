@@ -51,7 +51,7 @@ void key_button(s3dw_widget *button)
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
 
-int ui_getinfo_node(void *data, int argc, char **argv, char **azColName)
+int ui_getinfo_node(void *S3DOSMUNUSED(data), int argc, char **argv, char **azColName)
 {
 	int i, tagid = -1;
 	char type[MAXQ];
@@ -79,7 +79,7 @@ int ui_getinfo_node(void *data, int argc, char **argv, char **azColName)
 
 	return(0);
 }
-int ui_getinfo_way(void *data, int argc, char **argv, char **azColName)
+int ui_getinfo_way(void *S3DOSMUNUSED(data), int argc, char **argv, char **azColName)
 {
 	int i, tagid = -1;
 	char name[MAXQ];

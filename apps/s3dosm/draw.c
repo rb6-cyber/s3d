@@ -82,7 +82,7 @@ void calc_earth_to_eukl(float lat, float lon, float alt, float *x)
 	x[1] = (ESIZE + alt) *   sin(la);
 	x[2] = (ESIZE + alt) * cos(lo) * cos(la);
 }
-int draw_icon(void *data, int argc, char **argv, char **azColName)
+int draw_icon(void *S3DOSMUNUSED(data), int argc, char **argv, char **S3DOSMUNUSED(azColName))
 {
 	int i, tagid = -1, oid;
 	int nodeid = -1, layerid = -1;
@@ -142,7 +142,7 @@ int insert_node(void *data, int argc, char **argv, char **azColName)
 	}
 	return(0);
 }
-int select_waytype(void *data, int argc, char **argv, char **azColName)
+int select_waytype(void *data, int argc, char **argv, char **S3DOSMUNUSED(azColName))
 {
 	int i;
 	for (i = 0; i < argc; i++) {

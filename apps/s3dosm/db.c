@@ -194,7 +194,7 @@ int db_getpoint(void *data, int argc, char **argv, char **azColName)
 }
 
 /* sqlite3-callback to get an integer of the database */
-int db_getint(void *tagid, int argc, char **argv, char **azColName)
+int db_getint(void *tagid, int S3DOSMUNUSED(argc), char **argv, char **S3DOSMUNUSED(azColName))
 {
 	if (argv[0] != NULL)
 		*((int *)tagid) = atoi(argv[0]);
@@ -202,7 +202,7 @@ int db_getint(void *tagid, int argc, char **argv, char **azColName)
 }
 
 /* sqlite3-callback to get a string of the database */
-static int db_getstr(void *string, int argc, char **argv, char **azColName)
+static int db_getstr(void *string, int S3DOSMUNUSED(argc), char **argv, char **S3DOSMUNUSED(azColName))
 {
 	if (argv[0])
 		strncpy((char *)string, argv[0], MAXQ);
@@ -220,7 +220,7 @@ int db_gettag(int tagid, char *field, char *target)
 	return(target[0] == 0);
 }
 
-int callback(void *NotUsed, int argc, char **argv, char **azColName)
+int callback(void *S3DOSMUNUSED(NotUsed), int argc, char **argv, char **azColName)
 {
 	int i;
 	for (i = 0; i < argc; i++) {
