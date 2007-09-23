@@ -423,7 +423,7 @@ void mainloop()
 
 
 
-void* gui_main(void *unused)
+void* gui_main(void *KISM3DUNUSED(unused))
 {
 
 	if (!s3d_init(NULL, NULL, "kism3d")) {

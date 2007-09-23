@@ -26,6 +26,17 @@
 #include "list.h"
 #include <pthread.h>
 #include <netinet/in.h>   /* sockaddr_in */
+#include <config-s3d.h>
+
+#ifndef KISM3DUNUSED
+#if defined(UNUSEDPARAM_ATTRIBUTE)
+#define KISM3DUNUSED(x) (x)__attribute__((unused))
+#elif defined(UNUSEDPARAM_OMIT)
+#define KISM3DUNUSED(x) /* x */
+#else
+#define KISM3DUNUSED(x) x
+#endif
+#endif
 
 
 
