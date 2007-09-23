@@ -37,7 +37,7 @@
 float CamPosition[2][3];          /* CamPosition[trans|rot][x-z] */
 
 int Last_Click_Oid = 0;
-int Last_Click_Time = 0;
+unsigned int Last_Click_Time = 0;
 
 void *Cam_target = NULL;
 
