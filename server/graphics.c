@@ -73,6 +73,7 @@ int graphics_init()
 	/*     glDepthFunc( GL_LEQUAL ); */
 
 	/* textures */
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 	glEnable(GL_TEXTURE_2D);
 	glShadeModel(GL_SMOOTH);
 	glDisable(GL_DITHER);

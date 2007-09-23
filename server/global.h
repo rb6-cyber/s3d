@@ -47,8 +47,8 @@ extern int running;   /*  server running flag */
 #endif
 #define NAME_MAX 256   /*  limit for names [e.g. process names] */
 #define MCP   0   /*  the mcp's pid  */
-#define TEXTURE_MAX_W 2048
-#define TEXTURE_MAX_H 2048
+#define TEXTURE_MAX_W 4096
+#define TEXTURE_MAX_H 4096
 /*  server version */
 #define S3D_SERVER_MAJOR 0
 #define S3D_SERVER_MINOR 1

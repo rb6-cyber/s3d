@@ -37,8 +37,8 @@ void mainloop()
 	s3d_rotate(oid, 0, i, 0);
 	nanosleep(&t, NULL);
 }
-#define MAXX 300
-#define MAXY 300
+#define MAXX 32
+#define MAXY 32
 int main(int argc, char **argv)
 {
 	unsigned int x, y;
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 		s3d_pep_polygon_tex_coord(oid, 0.0, 0.0,
 		                          1.0, 1.0,
 		                          0.0, 1.0);
-		s3d_translate(oid, 0, 0, 5);
+		s3d_translate(oid, 0, 0, -5);
 		for (y = 0;y < MAXY;y++)
 			for (x = 0;x < MAXX;x++) {
 				data[(y*MAXX+x)*4+0] = (char)((x * 255) / MAXX);

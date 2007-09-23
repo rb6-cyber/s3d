@@ -294,7 +294,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			h = ntohs(*((uint16_t *)cptr));
 			cptr += 2;
 			num = length - 16;
-			/*     s3dprintf(MED,"LOAD_TEX[%d]: oid %d, texture %d, [%d x %d] data at [%d x %d] (%d = %d)",length, oid,toid,w,h,x,y,num,w*h*4,num); */
+			s3dprintf(MED,"LOAD_TEX[%d]: oid %d, texture %d, [%d x %d] data at [%d x %d] (%d = %d)",length, oid,toid,w,h,x,y,num,w*h*4,num); 
 			if ((w*h*4) == num)  /*  check correct size */
 				obj_load_tex(p, oid, toid, x, y, w, h, cptr);
 		}
