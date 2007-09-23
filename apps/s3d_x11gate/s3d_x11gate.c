@@ -35,10 +35,6 @@
 #include <sys/time.h>  /* gettimeofday */
 #include <sys/ipc.h>
 #include <sys/shm.h>
-static struct timespec t = {
-	0, 100*1000*1000
-}; /* 100 mili seconds */
-
 int oid;
 XImage *image;
 Display *dpy = 0;
@@ -67,12 +63,13 @@ int get_shift(unsigned long t)
 }
 void mainloop()
 {
-	int x, y;
+#define MAGIC_CHANGED ((unsigned int)~0)
+	unsigned int x, y;
 	int rs, gs, bs;
 	unsigned long d;
 	int bpp;
 	char *swap_timg;
-	int last_change, start_change;
+	unsigned int last_change, start_change;
 	gettimeofday(&end, NULL);
 	count[0] += (end.tv_sec - start.tv_sec) * 10000000 + end.tv_usec - start.tv_usec;
 	start.tv_sec = end.tv_sec;
@@ -101,8 +98,8 @@ void mainloop()
 		  printf("green: size %d, offset %d\n",gs,goff);
 		  printf("blue: size %d, offset %d\n",bs,boff);
 		  printf("bits per pixel:%d\n",bpp);*/
-		last_change = -1;
-		start_change = -1;
+		last_change = MAGIC_CHANGED;
+		start_change = MAGIC_CHANGED;
 		for (y = 0;y < height;y++) {
 
 			for (x = 0;x < width;x++) {
@@ -116,20 +113,20 @@ void mainloop()
 				                ((unsigned long *)otex_image)[(y*width+x)])
 					last_change = y;
 			}
-			if (last_change != -1) {
-				if (start_change == -1) {
+			if (last_change != MAGIC_CHANGED) {
+				if (start_change == MAGIC_CHANGED) {
 					start_change = y;
 					/*      printf("setting start_change to %d\n",start_change); */
 				}
 				if (last_change != y) {  /*  last change is already over, post it! */
 					s3d_load_texture(oid, 0, 0, start_change, width, last_change - start_change + 1, (unsigned char *)tex_image + start_change*width*4);
-					start_change = -1;
-					last_change = -1;
+					start_change = MAGIC_CHANGED;
+					last_change = MAGIC_CHANGED;
 				}
 			}
 		}
 		/*  posting the last bit, maybe */
-		if (last_change != -1) {
+		if (last_change != MAGIC_CHANGED) {
 			/*   printf("last one: [%d-%d]",start_change,last_change);*/
 			s3d_load_texture(oid, 0, 0, start_change, width, last_change - start_change, (unsigned char *)tex_image + start_change*width*4);
 		}
