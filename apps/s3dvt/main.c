@@ -57,7 +57,7 @@ static int curtty, curpty;
 
 #ifdef M_CHAR
 static unsigned int charbuf[256];
-static unsigned int screenbuf[MAX_LINES*MAX_CHARS];
+static int screenbuf[MAX_LINES*MAX_CHARS];
 static char   last_c[MAX_LINES*MAX_CHARS];
 #endif
 
