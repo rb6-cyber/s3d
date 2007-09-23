@@ -120,8 +120,8 @@ int tcp_readn(char *str, int s);
 struct buf_t {
 	uint32_t start, end, bufsize; /* start/end of the data */
 };
-int shm_write(struct buf_t *rb, char *buf, int n);
-int shm_read(struct buf_t *rb, char *buf, int n);
+unsigned int shm_write(struct buf_t *rb, char *buf, unsigned int n);
+unsigned int shm_read(struct buf_t *rb, char *buf, unsigned int n);
 /* shm.c */
 int _shm_init(char *ftoken);
 int _shm_quit();

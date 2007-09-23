@@ -39,7 +39,7 @@
 /*  access when needed. this also makes things more asynchronous, */
 /*  therefore faster (I hope). */
 
-#define Q_UNUSED -1      /*  unused slot magic number */
+#define Q_UNUSED ((unsigned int)~0)      /*  unused slot magic number */
 #define MAX_REQ  100      /*  don't request more than that. */
 static unsigned int *queue;     /*  the object id's */
 static int queue_size = 0;   /*  the size of the object queue */

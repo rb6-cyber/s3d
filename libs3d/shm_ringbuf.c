@@ -27,9 +27,9 @@
 #include <stdint.h> /* uint32_t */
 #include <string.h> /* memcpy() */
 #ifdef SHM
-int shm_write(struct buf_t *rb, char *buf, int n)
+unsigned int shm_write(struct buf_t *rb, char *buf, unsigned int n)
 {
-	int wrap = 0;
+	unsigned int wrap = 0;
 	int rs;
 	uint32_t e, s, size;
 	char *data;
@@ -72,11 +72,11 @@ int shm_write(struct buf_t *rb, char *buf, int n)
 	if (rb->end >= rb->bufsize) rb->end -= rb->bufsize;
 	return(n);
 }
-int shm_read(struct buf_t *rb, char *buf, int n)
+unsigned int shm_read(struct buf_t *rb, char *buf, unsigned int n)
 {
 	int wrap = 0;
-	int mn = n;
-	int rs;
+	unsigned int mn = n;
+	unsigned int rs;
 	uint32_t e, s, size;
 	char *data;
 

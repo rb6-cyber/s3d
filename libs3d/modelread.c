@@ -124,7 +124,8 @@ int model_load(char *file)
 	G3DFace     *face;
 	GSList      *oitem, *oface;
 	struct material2texture *mat2tex;
-	int       j, k, material_count, texture_count, voff, obj_id;
+	unsigned int i, k;
+	int       j, material_count, texture_count, voff, obj_id;
 #define      PMAX 100
 	uint32_t     polybuf[PMAX * 4], npoly, oldflags;
 	float      normalbuf[PMAX * 9], texcoordbuf[PMAX * 6];
@@ -146,12 +147,12 @@ int model_load(char *file)
 			object = (G3DObject *)oitem->data;
 
 			/* push vertices */
-			for (j = 0; j < object->vertex_count; j++) {
+			for (i = 0; i < object->vertex_count; i++) {
 				/* 2. and 3. coord have to change places otherwise the object will be turned */
-				object->vertex_data[j * 3 + 0] =  object->vertex_data[j * 3 + 0];
-				swaph =         object->vertex_data[j * 3 + 2];
-				object->vertex_data[j * 3 + 2] = -object->vertex_data[j * 3 + 1];
-				object->vertex_data[j * 3 + 1] = swaph;
+				object->vertex_data[i * 3 + 0] =  object->vertex_data[i * 3 + 0];
+				swaph =         object->vertex_data[i * 3 + 2];
+				object->vertex_data[i * 3 + 2] = -object->vertex_data[i * 3 + 1];
+				object->vertex_data[i * 3 + 1] = swaph;
 			}
 			s3d_push_vertices(obj_id, object->vertex_data, object->vertex_count);
 
