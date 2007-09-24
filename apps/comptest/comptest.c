@@ -31,6 +31,17 @@
 #include <X11/extensions/Xcomposite.h>
 #include <X11/extensions/Xdamage.h>
 #include <X11/extensions/Xrender.h>
+#include <config-s3d.h>
+
+#ifndef COMPUNUSED
+#if defined(UNUSEDPARAM_ATTRIBUTE)
+#define COMPUNUSED(x) (x)__attribute__((unused))
+#elif defined(UNUSEDPARAM_OMIT)
+#define COMPUNUSED(x) /* x */
+#else
+#define COMPUNUSED(x) x
+#endif
+#endif
 
 struct extension {
 	int event, error;
@@ -79,7 +90,7 @@ int get_shift(unsigned long t)
 	return(i);
 }
 
-static int error(Display *dpy, XErrorEvent *event)
+static int error(Display *COMPUNUSED(dpy), XErrorEvent *COMPUNUSED(event))
 {
 	/*    printf ("error %d request %d minor %d serial %d\n",
 	        event->error_code, event->request_code, event->minor_code, event->serial);*/
@@ -218,7 +229,7 @@ void window_update(struct window *win, int x, int y, int width, int height)
 	int xi, yi;
 	int rs, gs, bs;
 	int bpp;
-	unsigned char *img_ptr, *bmp_ptr;
+	char *img_ptr, *bmp_ptr;
 	unsigned long *s;
 	uint32_t *t;
 	XImage *image;
@@ -272,7 +283,7 @@ void window_update(struct window *win, int x, int y, int width, int height)
 			bmp_ptr = win->bitmap + ((y + yi) * win->attr.width + x) * sizeof(uint32_t);
 		}
 		/*  s3d_load_texture(win->oid,0,x,y,width,height, ???); */
-		s3d_load_texture(win->oid, 0, 0, 0, win->attr.width, win->attr.height, win->bitmap);
+		s3d_load_texture(win->oid, 0, 0, 0, win->attr.width, win->attr.height, (unsigned char *)win->bitmap);
 		/*  swap images */
 	}
 	XDestroyImage(image);
@@ -298,7 +309,7 @@ int main(int argc, char **argv)
 		for (scr_no = 0; scr_no < ScreenCount(dpy); scr_no++) {
 			XCompositeRedirectSubwindows(dpy, RootWindow(dpy, scr_no), CompositeRedirectAutomatic);
 			XQueryTree(dpy, RootWindow(dpy, scr_no), &root_return, &parent_return, &children, &nchildren);
-			for (i = 0; i < nchildren; i++)
+			for (i = 0; i < (int)nchildren; i++)
 				window_add(dpy, children[i]);
 			XFree(children);
 		}
