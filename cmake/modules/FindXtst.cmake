@@ -10,7 +10,7 @@ if (XTST_LIBRARIES)
 else (XTST_LIBRARIES)
 	include(UsePkgConfig)
 
-	pkgconfig(XTST _IncDir _LinkDir _LinkFlags _CFlags)
+	pkgconfig(xtst _IncDir _LinkDir _LinkFlags _CFlags)
 	set(XTST_DEFINITIONS ${_CFlags})
 
 	find_library(XTST_LIBRARIES
