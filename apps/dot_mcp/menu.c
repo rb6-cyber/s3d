@@ -83,13 +83,13 @@ int menu_init()
 	go = s3d_import_model_file("objs/s3dstart.3ds");
 	s3d_flags_on(go, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 	s3d_link(go, menu_o);
-	for (i = 0;i < (sizeof(menu) / sizeof(struct menu_entry));i++) {
+	for (i = 0; i < (sizeof(menu) / sizeof(struct menu_entry)); i++) {
 		if (-1 == (menu[i].icon_oid = s3d_import_model_file(menu[i].icon)))
 			menu[i].icon_oid = s3d_new_object();
 		menu[i].str_oid = s3d_draw_string(menu[i].name, NULL);
 		s3d_link(menu[i].str_oid, menu[i].icon_oid);
 		s3d_link(menu[i].icon_oid, menu_o);
-		s3d_translate(menu[i].icon_oid, 0, -3 + (-3*i), 0);
+		s3d_translate(menu[i].icon_oid, 0, -3 + (-3 * (signed)i), 0);
 		s3d_translate(menu[i].str_oid, 2, 0, 0);
 		/*  s3d_flags_on(menu[i].icon_oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
 		  s3d_flags_on(menu[i].str_oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);*/
