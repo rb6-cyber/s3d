@@ -1445,10 +1445,10 @@ int check_line_normal(struct t_obj *obj, uint32_t pn)
 
 }
 
-void tex_build_mipmaps(struct t_tex *tex) 
+void tex_build_mipmaps(struct t_tex *tex)
 {
-	int 			 i, w, h, x, y, c;
-	unsigned char 	*buf, *src;
+	int     i, w, h, x, y, c;
+	unsigned char  *buf, *src;
 	w = tex->w;
 	h = tex->h;
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -1457,27 +1457,34 @@ void tex_build_mipmaps(struct t_tex *tex)
 	             GL_RGBA, GL_UNSIGNED_BYTE, tex->buf);
 	/* this is fairly hacky, but we only use one buffer and decrease the image left-top to right-bottom,
 	 * so we only read from elements AFTER the updated (written) elements. */
-	buf = malloc( (w / 2) * (h /2 ) * 4);
+	buf = malloc((w / 2) * (h / 2) * 4);
 	src = tex->buf;
-	for (i = 1 ; i < 4 ; i++) {
-		w /= 2;
-		h /= 2;
+	i = 1;
+	while (w != 1 || h != 1) {
+		if (w != 1) {
+			w /= 2;
+		}
+
+		if (h != 1) {
+			h /= 2;
+		}
 
 		if ((w == 0) || (h == 0)) break;
 		/* TODO: handle texture borders which have not even width or height */
 		for (y = 0; y < h; y++)
-			for (x = 0; x < w; x++) 
+			for (x = 0; x < w; x++)
 				for (c = 0; c < 4; c++) {
-					buf[(y * w + x)*4 + c] = ((uint16_t) 
-											  src[( 2 * y      * w + 2 * x    )*4 + c] + 
-											  src[((2 * y + 1) * w + 2 * x    )*4 + c] + 
-											  src[( 2 * y      * w + 2 * x + 1)*4 + c] + 
-											  src[((2 * y + 1) * w + 2 * x + 1)*4 + c]) / 4;
-/*					s3dprintf(MED,"texture: %d, x = %d, y = %d, c = %d, buf = %02x\n", i, x, y, c, buf[(y * w + x)*4 + c]);*/
+					buf[(y * w + x)*4 + c] = ((uint16_t)
+					                          src[(2  * y      * w + 2 * x)     * 4 + c] +
+					                          src[((2 * y + 1) * w + 2 * x)     * 4 + c] +
+					                          src[(2  * y      * w + 2 * x + 1) * 4 + c] +
+					                          src[((2 * y + 1) * w + 2 * x + 1) * 4 + c]) / 4;
+					/*     s3dprintf(MED,"texture: %d, x = %d, y = %d, c = %d, buf = %02x\n", i, x, y, c, buf[(y * w + x)*4 + c]);*/
 
 				}
 		glTexImage2D(GL_TEXTURE_2D, i, GL_RGBA, w, h, 0,   GL_RGBA, GL_UNSIGNED_BYTE, buf);
 		src = buf;
+		i++;
 	}
 	free(buf);
 }
@@ -1515,10 +1522,10 @@ struct t_tex *get_texture(struct t_obj *obj, struct t_mat *m) {
 				         tex->buf[(j*tex->w+i)*4+3]);
 				    }*/
 				/*  texture has to be generated yet ... */
-/*				tex_build_mipmaps(tex);*/
+				tex_build_mipmaps(tex);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
 				             tex->w, tex->h, 0,  /*  no border. */
-			    	         GL_RGBA, GL_UNSIGNED_BYTE, tex->buf);
+				             GL_RGBA, GL_UNSIGNED_BYTE, tex->buf);
 
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
@@ -1527,14 +1534,8 @@ struct t_tex *get_texture(struct t_obj *obj, struct t_mat *m) {
 				                GL_LINEAR);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 				                GL_LINEAR);
-/*				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
 				                GL_LINEAR_MIPMAP_LINEAR);
-				TODO: does not work?! Textures are still blank. */
-
-
-
-
-
 			}
 		} else { /* . can't use a texture  */
 			tex = NULL;
