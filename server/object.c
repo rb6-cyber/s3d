@@ -282,7 +282,8 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 				obj->p_tex[m+i].gl_texnum = -1;
 				obj->p_tex[m+i].tw = *(px++);
 				obj->p_tex[m+i].th = *(px++);
-				if ((obj->p_tex[m+i].tw <= TEXTURE_MAX_W) && (obj->p_tex[m+i].th <= TEXTURE_MAX_H)) {
+				if ((obj->p_tex[m+i].tw <= TEXTURE_MAX_W) && (obj->p_tex[m+i].th <= TEXTURE_MAX_H) &&
+						(obj->p_tex[m+i].tw > 0) && (obj->p_tex[m+i].th > 0)) {
 					d = log((double)obj->p_tex[m+i].tw) / log(2.0);
 					hm = pow(2, floor(d));
 					s3dprintf(MED, "hm %d, tw %d", hm, obj->p_tex[m+i].tw);
