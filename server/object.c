@@ -1475,10 +1475,10 @@ void tex_build_mipmaps(struct t_tex *tex)
 			for (x = 0; x < w; x++)
 				for (c = 0; c < 4; c++) {
 					buf[(y * w + x)*4 + c] = ((uint16_t)
-					                          src[(2  * y      * w + 2 * x)     * 4 + c] +
-					                          src[((2 * y + 1) * w + 2 * x)     * 4 + c] +
-					                          src[(2  * y      * w + 2 * x + 1) * 4 + c] +
-					                          src[((2 * y + 1) * w + 2 * x + 1) * 4 + c]) / 4;
+					                          src[(2  * y      * 2 * w + 2 * x)     * 4 + c] +
+					                          src[((2 * y + 1) * 2 * w + 2 * x)     * 4 + c] +
+					                          src[(2  * y      * 2 * w + 2 * x + 1) * 4 + c] +
+					                          src[((2 * y + 1) * 2 * w + 2 * x + 1) * 4 + c]) / 4;
 					/*     s3dprintf(MED,"texture: %d, x = %d, y = %d, c = %d, buf = %02x\n", i, x, y, c, buf[(y * w + x)*4 + c]);*/
 
 				}
