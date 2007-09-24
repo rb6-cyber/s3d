@@ -283,7 +283,7 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 				obj->p_tex[m+i].tw = *(px++);
 				obj->p_tex[m+i].th = *(px++);
 				if ((obj->p_tex[m+i].tw <= TEXTURE_MAX_W) && (obj->p_tex[m+i].th <= TEXTURE_MAX_H) &&
-						(obj->p_tex[m+i].tw > 0) && (obj->p_tex[m+i].th > 0)) {
+				                (obj->p_tex[m+i].tw > 0) && (obj->p_tex[m+i].th > 0)) {
 					d = log((double)obj->p_tex[m+i].tw) / log(2.0);
 					hm = pow(2, floor(d));
 					s3dprintf(MED, "hm %d, tw %d", hm, obj->p_tex[m+i].tw);
@@ -813,32 +813,31 @@ int obj_load_tex(struct t_process *p, int32_t oid, int32_t tex, uint16_t x, uint
 				}
 
 				m = t->w * t->th + t->tw;     /*  maximum: position of the last pixel in the buffer */
-				if ((x + w) > t->tw) 
+				if ((x + w) > t->tw)
 					mw = (t->tw - x);
-				else 
+				else
 					mw = w;
-				if ((y + h) > t->th) 
+				if ((y + h) > t->th)
 					mh = (t->th - y);
-				else 
+				else
 					mh = h;
 
-				if (mw <= 0)  /*  nothing to do */
-				{
-					s3dprintf(MED,"oid %d: texture %d: update out of range\n", oid, tex);
+				if (mw <= 0) { /*  nothing to do */
+					s3dprintf(MED, "oid %d: texture %d: update out of range\n", oid, tex);
 					return(-1);
 				}
 				for (i = 0;i < mh;i++) {
 					p1 = (y + i) * t->w + x;  /*  scanline start position */
 					p2 = mw;  /*  and length */
 					if (p1 > m) {
-						s3dprintf(MED,"oid %d: texture %d: assert: we shouldn't break here.\n", oid, tex);
+						s3dprintf(MED, "oid %d: texture %d: assert: we shouldn't break here.\n", oid, tex);
 						break;   /*  need to break here. */
 					}
 					memcpy(t->buf + 4*p1,    /*  draw at p1 position ... */
 					       pixbuf + 4*i*w,   /*  scanline number i ... */
 					       4*p2);
 				}
-				s3dprintf(MED, "updating texture %d\n",t->gl_texnum);
+				s3dprintf(MED, "updating texture %d\n", t->gl_texnum);
 				obj_update_tex(t, x, y, w, h, pixbuf);
 				return(0);
 			} else {
@@ -1501,12 +1500,12 @@ void tex_build_mipmaps(struct t_tex *tex)
 	free(buf);
 }
 /* generate textures */
-void texture_gen(struct t_obj *obj) 
+void texture_gen(struct t_obj *obj)
 {
 	GLuint t;
 	int i;
 	struct t_tex *tex = NULL;
-	for (i=0; i < obj->n_tex; i++) {
+	for (i = 0; i < obj->n_tex; i++) {
 		tex = &obj->p_tex[i];
 		if (tex->gl_texnum == -1) {
 			glGenTextures(1, &t);
@@ -1524,16 +1523,15 @@ void texture_gen(struct t_obj *obj)
 			    }*/
 			/*  texture has to be generated yet ... */
 			tex_build_mipmaps(tex);
-/*			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-			             tex->w, tex->h, 0,  / *  no border. * /
-			             GL_RGBA, GL_UNSIGNED_BYTE, tex->buf);*/
+			/*   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+			                tex->w, tex->h, 0,  / *  no border. * /
+			                GL_RGBA, GL_UNSIGNED_BYTE, tex->buf);*/
 
 		}
 	}
 }
 /* activate/bind texture for object */
 struct t_tex *get_texture(struct t_obj *obj, struct t_mat *m) {
-	GLuint t;
 	struct t_tex *tex = NULL;
 	GLfloat matgl[4];
 	/*  int i,j; */
@@ -1553,7 +1551,7 @@ struct t_tex *get_texture(struct t_obj *obj, struct t_mat *m) {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			
+
 		} else { /* can't use a texture  */
 			tex = NULL;
 		}
