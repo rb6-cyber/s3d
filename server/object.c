@@ -349,7 +349,7 @@ int obj_pep_poly_normal(struct t_process *p, int32_t oid, float *x, int32_t n)
 			glDeleteLists(obj->dplist, 1);
 			obj->dplist = 0;
 		}
-		s3dprintf(VLOW, "pepping poly's %d to %d", (m - n), m);
+		s3dprintf(VLOW, "pepping poly's %d to %d", (m - n), m - 1);
 		for (i = (m - n);i < m;i++) {
 			for (j = 0;j < 3;j++) {
 				obj->p_poly[i].n[j].x = *(px++);
@@ -393,7 +393,7 @@ int obj_pep_line_normal(struct t_process *p, int32_t oid, float *x, int32_t n)
 			glDeleteLists(obj->dplist, 1);
 			obj->dplist = 0;
 		}
-		s3dprintf(VLOW, "pepping line's %d to %d", (m - n), m);
+		s3dprintf(VLOW, "pepping line's %d to %d", (m - n), m - 1);
 		for (i = (m - n);i < m;i++) {
 			for (j = 0;j < 2;j++) {
 				obj->p_line[i].n[j].x = *(px++);
@@ -439,7 +439,7 @@ int obj_pep_poly_texc(struct t_process *p, int32_t oid, float *x, int32_t n)
 			glDeleteLists(obj->dplist, 1);
 			obj->dplist = 0;
 		}
-		s3dprintf(VLOW, "pepping poly's %d to %d", (m - n), m);
+		s3dprintf(VLOW, "pepping poly's %d to %d", (m - n), m - 1);
 		for (i = (m - n);i < m;i++) {
 			for (j = 0;j < 3;j++) {
 				obj->p_poly[i].tc[j].x = *(px++);
@@ -472,7 +472,7 @@ int obj_pep_mat(struct t_process *p, int32_t oid, float *x, int32_t n)
 			glDeleteLists(obj->dplist, 1);
 			obj->dplist = 0;
 		}
-		s3dprintf(VLOW, "pepping mats %d to %d", (m - n), m);
+		s3dprintf(VLOW, "pepping mats %d to %d", (m - n), m - 1);
 		for (i = (m - n);i < m;i++) {
 			obj->p_mat[i].amb_r = *(px++);
 			obj->p_mat[i].amb_g = *(px++);
@@ -513,7 +513,7 @@ int obj_pep_line(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 			glDeleteLists(obj->dplist, 1);
 			obj->dplist = 0;
 		}
-		s3dprintf(VLOW, "pepping lines %d to %d", (m - n), m);
+		s3dprintf(VLOW, "pepping lines %d to %d", (m - n), m - 1);
 		for (i = (m - n);i < m;i++) {
 			obj->p_line[i].v[0] = *(px++);
 			obj->p_line[i].v[1] = *(px++);
@@ -609,7 +609,7 @@ int obj_pep_mat_tex(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 			glDeleteLists(obj->dplist, 1);
 			obj->dplist = 0;
 		}
-		s3dprintf(MED, "pepping mats %d to %d", (m - n), m);
+		s3dprintf(MED, "pepping mats %d to %d", (m - n), m - 1);
 		for (i = (m - n);i < m;i++)
 			obj->p_mat[i].tex = *(px++);
 	} else {
@@ -796,7 +796,7 @@ int obj_load_tex(struct t_process *p, int32_t oid, int32_t tex, uint16_t x, uint
 	struct t_obj *obj;
 	struct t_tex *t;
 	int32_t i, p1, p2, m;
-	int16_t mw;
+	int16_t mw, mh;
 	if (OBJ_VALID(p, oid, obj)) {
 		if (obj->oflags&OF_NODATA) {
 			errds(MED, "obj_load_tex()", "error: no data on object allowed!");
@@ -812,22 +812,33 @@ int obj_load_tex(struct t_process *p, int32_t oid, int32_t tex, uint16_t x, uint
 					obj->dplist = 0;
 				}
 
-				m = (t->w - 1) * t->th + t->tw;     /*  maximum: position of the last pixel in the buffer */
-				if ((x + w) > t->tw) mw = (t->tw - x);
-				else mw = w;
+				m = t->w * t->th + t->tw;     /*  maximum: position of the last pixel in the buffer */
+				if ((x + w) > t->tw) 
+					mw = (t->tw - x);
+				else 
+					mw = w;
+				if ((y + h) > t->th) 
+					mh = (t->th - y);
+				else 
+					mh = h;
+
 				if (mw <= 0)  /*  nothing to do */
+				{
+					s3dprintf(MED,"oid %d: texture %d: update out of range\n", oid, tex);
 					return(-1);
-				for (i = 0;i < h;i++) {
+				}
+				for (i = 0;i < mh;i++) {
 					p1 = (y + i) * t->w + x;  /*  scanline start position */
 					p2 = mw;  /*  and length */
-					if (p1 > m)
-						return(0);   /*  need to break here. */
-					if ((p1 + w) > m)
-						p2 = m - p1;  /*  only draw a part of the scanline */
+					if (p1 > m) {
+						s3dprintf(MED,"oid %d: texture %d: assert: we shouldn't break here.\n", oid, tex);
+						break;   /*  need to break here. */
+					}
 					memcpy(t->buf + 4*p1,    /*  draw at p1 position ... */
 					       pixbuf + 4*i*w,   /*  scanline number i ... */
 					       4*p2);
 				}
+				s3dprintf(MED, "updating texture %d\n",t->gl_texnum);
 				obj_update_tex(t, x, y, w, h, pixbuf);
 				return(0);
 			} else {
@@ -1499,14 +1510,15 @@ struct t_tex *get_texture(struct t_obj *obj, struct t_mat *m) {
 	if (m->tex < obj->n_tex) {
 		tex = &obj->p_tex[m->tex];
 		if (tex->buf != NULL) { /*  texture seems to be okay, select it. */
-			matgl[0] = 0.9f;
-			matgl[1] = 0.9f;
-			matgl[2] = 0.9f;
+			matgl[0] = 1.0f;
+			matgl[1] = 1.0f;
+			matgl[2] = 1.0f;
 			matgl[3] = 1.0f;
 			glMaterialfv(GL_FRONT, GL_AMBIENT, matgl);
 			glMaterialfv(GL_FRONT, GL_DIFFUSE, matgl);
 			glMaterialfv(GL_FRONT, GL_SPECULAR, matgl);
 			if (tex->gl_texnum != -1) {
+				s3dprintf(HIGH, "already have texture %d [%dx%d, in memory %dx%d]", tex->gl_texnum, tex->tw, tex->th, tex->w, tex->h);
 				glBindTexture(GL_TEXTURE_2D, tex->gl_texnum);
 			} else {
 				glGenTextures(1, &t);
@@ -1524,19 +1536,14 @@ struct t_tex *get_texture(struct t_obj *obj, struct t_mat *m) {
 				    }*/
 				/*  texture has to be generated yet ... */
 				tex_build_mipmaps(tex);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-				             tex->w, tex->h, 0,  /*  no border. */
-				             GL_RGBA, GL_UNSIGNED_BYTE, tex->buf);
+/*				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+				             tex->w, tex->h, 0,  / *  no border. * /
+				             GL_RGBA, GL_UNSIGNED_BYTE, tex->buf);*/
 
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-				                GL_LINEAR);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-				                GL_LINEAR);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-				                GL_LINEAR_MIPMAP_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 			}
 		} else { /* . can't use a texture  */
 			tex = NULL;
