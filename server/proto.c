@@ -220,6 +220,9 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			cptr += 4;
 			num = (length - 4) / (4);
 			s3dprintf(VLOW, "PEP_MAT_TEX[%d]: %d materials for object oid...%d", length, num, oid);
+			for (i = 0;i < num;i++)
+				*((uint32_t *)cptr + i) =
+				        ntohl(*((uint32_t *)cptr + i));
 			obj_pep_mat_tex(p, oid, (uint32_t *)cptr, num);
 		}
 		break;

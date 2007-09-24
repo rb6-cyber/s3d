@@ -385,7 +385,7 @@ void cull_get_planes(void);
 int  cull_sphere_in_frustum(struct t_vertex *center, float radius);
 
 /* allocate.c */
-#if DEBUG <= VLOW
+#if DEBUG <= HIGH
 #include <stdlib.h>
 void checkIntegrity(void);
 void checkLeak(void);

@@ -93,6 +93,8 @@ void *debugMalloc(unsigned int length, int tag)
 	struct chunkTrailer *chunkTrailer;
 	unsigned char *chunk;
 
+	checkIntegrity();
+
 	/*  printf("sizeof(struct chunkHeader) = %u, sizeof (struct chunkTrailer) = %u\n", sizeof (struct chunkHeader), sizeof (struct chunkTrailer)); */
 
 	memory = malloc(length + sizeof(struct chunkHeader) + sizeof(struct chunkTrailer));
@@ -125,6 +127,8 @@ void *debugRealloc(void *memoryParameter, unsigned int length, int tag)
 	struct chunkTrailer *chunkTrailer;
 	unsigned char *result;
 	unsigned int copyLength;
+
+	checkIntegrity();
 
 	if (memoryParameter) { /* if memoryParameter==NULL, realloc() should work like malloc() !! */
 		memory = memoryParameter;
@@ -166,6 +170,8 @@ void debugFree(void *memoryParameter)
 	struct chunkTrailer *chunkTrailer;
 	struct chunkHeader *walker;
 	struct chunkHeader *previous;
+
+	checkIntegrity();
 
 	memory = memoryParameter;
 	chunkHeader = (struct chunkHeader *)(memory - sizeof(struct chunkHeader));
