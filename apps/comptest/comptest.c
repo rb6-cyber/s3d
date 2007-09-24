@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2007 Simon Wunderlich <dotslash@packetmixer.de>
  *
- * This file is part of comptest, a one-day-proof-of-concept composite manager hack.
+ * This file is part of comptest, a proof-of-concept composite manager hack.
  * See http://s3d.berlios.de/ for more updates.
  *
  * olsrs3d is free software; you can redistribute it and/or modify
@@ -43,6 +43,9 @@
 #endif
 #endif
 
+#define TEXW	256
+#define TEXH	256
+
 struct extension {
 	int event, error;
 };
@@ -58,7 +61,6 @@ struct window {
 	int        oid;
 	int        no;
 
-	char      *bitmap;  /* bitmap to upload */
 	struct window     *next;
 };
 
@@ -130,7 +132,7 @@ int xinit()
 
 void deco_box(struct window *win)
 {
-	float vertices[8*3] = {
+/*	float vertices[8*3] = {
 		0, 0, 0,
 		1, 0, 0,
 		1, 1, 0,
@@ -155,27 +157,30 @@ void deco_box(struct window *win)
 		0, 1, 2, 0,
 		0, 2, 3, 0
 
-	};
+	};*/
 	float tbuf[] = { 0.0, 0.0,  1.0, 0.0,  1.0, 1.0,
 	                 0.0, 0.0,  1.0, 1.0,  0.0, 1.0
 	               };
-	int i;
+/*	int i;*/
+	int x, y;
+	int vindex, voffset, pindex;
+	int	xpos, ypos;
 
 	win->no = win_no++;  /* TODO: REMOVE */
 	win->oid = s3d_new_object();
-
+/*
 	for (i = 0;i < 8;i++) {
 		sver[i*3 + 0] = vertices[i*3+0] * win->attr.width / 20;
 		sver[i*3 + 1] = vertices[i*3+1] * -win->attr.height / 20;
 		sver[i*3 + 2] = vertices[i*3+2] * -1;
 	}
-
+	
 	s3d_push_material_a(win->oid,
 	                    0.8, 0.0, 0.0 , 1.0,
 	                    1.0, 1.0, 1.0 , 1.0,
 	                    0.8, 0.0, 0.0 , 1.0);
 	s3d_push_texture(win->oid, win->attr.width, win->attr.height);
-	s3d_pep_material_texture(win->oid, 0); /*  assign texture 0 to material 0 */
+	s3d_pep_material_texture(win->oid, 0); / *  assign texture 0 to material 0 * /
 	s3d_push_material_a(win->oid,
 	                    0.0, 0.8, 0.0 , 1.0,
 	                    1.0, 1.0, 1.0 , 1.0,
@@ -184,11 +189,41 @@ void deco_box(struct window *win)
 	s3d_push_vertices(win->oid, sver, 8);
 
 	s3d_push_polygons(win->oid, polygon, 12);
-	s3d_pep_polygon_tex_coords(win->oid, tbuf, 2);
+	s3d_pep_polygon_tex_coords(win->oid, tbuf, 2);*/
+	voffset = 1;
+	vindex = 0;
+	pindex = 0;
+	s3d_push_vertex(win->oid, 0, 0, -1);			/* the first point */
+
+	for (y = 0; y < win->attr.height; y+= TEXH) {	/* the first column */
+		ypos = (y + TEXH > win->attr.height) ? win->attr.height : y + TEXH ;
+		s3d_push_vertex(win->oid, 0, -((float)ypos) / 20, -1);
+		voffset++;
+	}
+	for (x = 0; x < win->attr.width; x+= TEXW) {	/* the first row */
+		xpos = (x + TEXW > win->attr.width) ? win->attr.width : x + TEXW ;
+		s3d_push_vertex(win->oid, ((float)xpos) / 20, 0, -1);
+
+		for (y = 0; y < win->attr.height; y+= TEXH) {
+			ypos = (y + TEXH > win->attr.height) ? win->attr.height : y + TEXH  ;
+			s3d_push_vertex(win->oid, ((float)xpos) / 20, -((float)ypos) / 20, -1);
+			s3d_push_material_a(win->oid,
+		                    0.0, 0.8, 0.0 , 1.0,
+		                    1.0, 1.0, 1.0 , 1.0,
+		                    0.0, 0.8, 0.0 , 1.0);
+			s3d_push_texture(win->oid, xpos - x, ypos - y);
+			s3d_pep_material_texture(win->oid, pindex); 
+			s3d_push_polygon(win->oid, vindex, vindex + voffset, vindex + voffset + 1, pindex);
+			s3d_push_polygon(win->oid, vindex, vindex + voffset + 1, vindex + 1, pindex);
+			s3d_pep_polygon_tex_coords(win->oid, tbuf, 2);
+			pindex++;
+			vindex++;
+		}
+		vindex++;
+	}
 	s3d_translate(win->oid, win->attr.x / 20, -win->attr.y / 20, 5 * win->no);
 	/*  push data on texture 0 position (0,0) */
 	s3d_flags_on(win->oid, S3D_OF_VISIBLE);
-
 }
 
 void window_add(Display *dpy, Window id)
@@ -210,7 +245,6 @@ void window_add(Display *dpy, Window id)
 
 		win->oid = 0;
 
-		win->bitmap = NULL;
 		window_update(win, 0, 0, win->attr.width, win->attr.height);
 
 		win->next = window_head;
@@ -226,68 +260,91 @@ void window_remove(struct window *win)
 
 void window_update(struct window *win, int x, int y, int width, int height)
 {
+	int chunk_width, chunk_height;
+	int xleft, xright;
+	int ytop, ybottom;
+	int texnum;
 	int xi, yi;
 	int rs, gs, bs;
 	int bpp;
 	char *img_ptr, *bmp_ptr;
+	char *bitmap;
 	unsigned long *s;
 	uint32_t *t;
 	XImage *image;
 
-	/* printf("[D]oing window update for window %d at position %d:%d with size %dx%d\n",win->id, x,y,width,height);*/
-	image = XGetImage(dpy, win->id, x, y, win->attr.width, win->attr.height, AllPlanes, ZPixmap);
-	if (!image) {
-		/*  printf("[P]roblem with the image\n");*/
-		return;
-	}
-	if (!win->bitmap)
-		win->bitmap = malloc(win->attr.width * win->attr.height * sizeof(uint32_t));
-	if (!win->oid)
+	/* update the whole window for now. */
+	x = 0;
+	y = 0;
+	width = win->attr.width;
+	height = win->attr.height;
+
+	texnum = 0;
+
+
+/*	if (!win->oid)
 		deco_box(win);
-	if (image->format == ZPixmap) {
-		printf("XImage: %dx%d, format %d (%d), bpp: %d, depth %d, pad %d\n",
-		       image->width, image->height, image->format,
-		       ZPixmap, image->bits_per_pixel, image->depth, image->bitmap_pad);
-		rs = get_shift(image->red_mask) - 8;
-		gs = get_shift(image->green_mask) - 8;
-		bs = get_shift(image->blue_mask) - 8;
+*/
+	for (xleft = 0; xleft < width ; xleft += TEXW) {
+		xright = (xleft + TEXW > width) ? width : xleft + TEXW;
+		chunk_width = xright - xleft;
+		image = XGetImage(dpy, win->id, xleft, y, chunk_width, win->attr.height, AllPlanes, ZPixmap);
+		if (!image) 
+			return;
+		bitmap = malloc( chunk_width * height * sizeof(uint32_t));
+		if (!win->oid)
+			deco_box(win);
+		if (image->format == ZPixmap) {
+			printf("XImage: %dx%d, format %d (%d), bpp: %d, depth %d, pad %d\n",
+				   image->width, image->height, image->format,
+				   ZPixmap, image->bits_per_pixel, image->depth, image->bitmap_pad);
+			rs = get_shift(image->red_mask) - 8;
+			gs = get_shift(image->green_mask) - 8;
+			bs = get_shift(image->blue_mask) - 8;
 
-		bpp = (image->bits_per_pixel / 8);
-		/* rgb is not bgr */
-		rs = rs;
-		gs = gs - 8;
-		bs = bs - 16;
-		printf("Ximage: rgb: %d|%d|%d\n", rs, gs, bs);;
-		/*  printf("red: size %d, offset %d\n",rs,roff);
-		  printf("green: size %d, offset %d\n",gs,goff);
-		  printf("blue: size %d, offset %d\n",bs,boff);
-		  printf("bits per pixel:%d\n",bpp);*/
-		for (yi = 0; yi < height ; yi++) {
-			img_ptr = image->data + (yi * width) * bpp;
-			bmp_ptr = win->bitmap + ((y + yi) * win->attr.width + x) * sizeof(uint32_t);
-			for (xi = 0; xi < width; xi++) {
-				s = (unsigned long *)img_ptr;
-				t = (uint32_t *)bmp_ptr;
-				/*    bmp_ptr[0] = (rs > 0 ? ((*d & image->red_mask) >> rs)  : ((*d  & image->red_mask) << -rs)) ;
-				    bmp_ptr[1] = (gs > 0 ? ((*d & image->green_mask) >> gs) : ((*d  & image->green_mask) << -gs)) ;
-				    bmp_ptr[2] = (bs > 0 ? ((*d & image->blue_mask) >> bs)  : ((*d  & image->blue_mask) << -bs));
-				    bmp_ptr[3] = 255 ;*/
-				*t = (rs > 0 ? ((*s & image->red_mask) >> rs)  : ((*s  & image->red_mask) << -rs)) |
-				     (gs > 0 ? ((*s & image->green_mask) >> gs) : ((*s  & image->green_mask) << -gs)) |
-				     (bs > 0 ? ((*s & image->blue_mask) >> bs)  : ((*s  & image->blue_mask) << -bs)) |
-				     255 << 24;
+			bpp = (image->bits_per_pixel / 8);
+			/* rgb is not bgr */
+			rs = rs;
+			gs = gs - 8;
+			bs = bs - 16;
+			printf("Ximage: rgb: %d|%d|%d\n", rs, gs, bs);;
+			/*  printf("red: size %d, offset %d\n",rs,roff);
+			  printf("green: size %d, offset %d\n",gs,goff);
+			  printf("blue: size %d, offset %d\n",bs,boff);
+			  printf("bits per pixel:%d\n",bpp);*/
+			for (yi = 0; yi < height ; yi++) {
+				img_ptr = image->data + (yi * image->width) * bpp;
+				bmp_ptr = bitmap + ((y + yi) * chunk_width + x) * sizeof(uint32_t);
+				for (xi = 0; xi < xright - xleft; xi++) {
+					s = (unsigned long *)img_ptr;
+					t = (uint32_t *)bmp_ptr;
+					/*    bmp_ptr[0] = (rs > 0 ? ((*d & image->red_mask) >> rs)  : ((*d  & image->red_mask) << -rs)) ;
+						bmp_ptr[1] = (gs > 0 ? ((*d & image->green_mask) >> gs) : ((*d  & image->green_mask) << -gs)) ;
+						bmp_ptr[2] = (bs > 0 ? ((*d & image->blue_mask) >> bs)  : ((*d  & image->blue_mask) << -bs));
+						bmp_ptr[3] = 255 ;*/
+					*t = (rs > 0 ? ((*s & image->red_mask) >> rs)  : ((*s  & image->red_mask) << -rs)) |
+						 (gs > 0 ? ((*s & image->green_mask) >> gs) : ((*s  & image->green_mask) << -gs)) |
+						 (bs > 0 ? ((*s & image->blue_mask) >> bs)  : ((*s  & image->blue_mask) << -bs)) |
+						 255 << 24;
 
-				bmp_ptr += sizeof(uint32_t);
-				img_ptr += bpp;
+					bmp_ptr += sizeof(uint32_t);
+					img_ptr += bpp;
+				}
 			}
-			bmp_ptr = win->bitmap + ((y + yi) * win->attr.width + x) * sizeof(uint32_t);
+			/*  s3d_load_texture(win->oid,0,x,y,width,height, ???); */
+			for (ytop = 0; ytop < height; ytop += TEXH) {
+				ybottom = (ytop + TEXH > height) ? height : ytop + TEXH;
+				chunk_height = ybottom - ytop;
+				s3d_load_texture(win->oid, texnum, 0, 0, chunk_width, chunk_height, (unsigned char *)bitmap + chunk_width * ytop * 4);
+				texnum++;
+			}
+			/*  swap images */
 		}
-		/*  s3d_load_texture(win->oid,0,x,y,width,height, ???); */
-		s3d_load_texture(win->oid, 0, 0, 0, win->attr.width, win->attr.height, (unsigned char *)win->bitmap);
-		/*  swap images */
+		XDestroyImage(image);
+		free(bitmap);
 	}
-	XDestroyImage(image);
 }
+
 
 void event()
 {
