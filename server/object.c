@@ -1500,7 +1500,37 @@ void tex_build_mipmaps(struct t_tex *tex)
 	}
 	free(buf);
 }
+/* generate textures */
+void texture_gen(struct t_obj *obj) 
+{
+	GLuint t;
+	int i;
+	struct t_tex *tex = NULL;
+	for (i=0; i < obj->n_tex; i++) {
+		tex = &obj->p_tex[i];
+		if (tex->gl_texnum == -1) {
+			glGenTextures(1, &t);
+			glBindTexture(GL_TEXTURE_2D, t);
+			tex->gl_texnum = t;
+			s3dprintf(HIGH, "generated texture %d [%dx%d, in memory %dx%d]", t, tex->tw, tex->th, tex->w, tex->h);
+			/*    for (j=0;j<tex->th;j++)
+			    for (i=0;i<tex->tw;i++)
+			    {
+			     s3dprintf(MED,"pixel[%d,%d], %d %d %d %d",i,j,
+			         tex->buf[(j*tex->w+i)*4+0],
+			         tex->buf[(j*tex->w+i)*4+1],
+			         tex->buf[(j*tex->w+i)*4+2],
+			         tex->buf[(j*tex->w+i)*4+3]);
+			    }*/
+			/*  texture has to be generated yet ... */
+			tex_build_mipmaps(tex);
+/*			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+			             tex->w, tex->h, 0,  / *  no border. * /
+			             GL_RGBA, GL_UNSIGNED_BYTE, tex->buf);*/
 
+		}
+	}
+}
 /* activate/bind texture for object */
 struct t_tex *get_texture(struct t_obj *obj, struct t_mat *m) {
 	GLuint t;
@@ -1509,7 +1539,7 @@ struct t_tex *get_texture(struct t_obj *obj, struct t_mat *m) {
 	/*  int i,j; */
 	if (m->tex < obj->n_tex) {
 		tex = &obj->p_tex[m->tex];
-		if (tex->buf != NULL) { /*  texture seems to be okay, select it. */
+		if (tex->buf != NULL && tex->gl_texnum != -1) { /*  texture seems to be okay, select it. */
 			matgl[0] = 1.0f;
 			matgl[1] = 1.0f;
 			matgl[2] = 1.0f;
@@ -1517,35 +1547,14 @@ struct t_tex *get_texture(struct t_obj *obj, struct t_mat *m) {
 			glMaterialfv(GL_FRONT, GL_AMBIENT, matgl);
 			glMaterialfv(GL_FRONT, GL_DIFFUSE, matgl);
 			glMaterialfv(GL_FRONT, GL_SPECULAR, matgl);
-			if (tex->gl_texnum != -1) {
-				s3dprintf(HIGH, "already have texture %d [%dx%d, in memory %dx%d]", tex->gl_texnum, tex->tw, tex->th, tex->w, tex->h);
-				glBindTexture(GL_TEXTURE_2D, tex->gl_texnum);
-			} else {
-				glGenTextures(1, &t);
-				glBindTexture(GL_TEXTURE_2D, t);
-				tex->gl_texnum = t;
-				s3dprintf(HIGH, "generated texture %d [%dx%d, in memory %dx%d]", t, tex->tw, tex->th, tex->w, tex->h);
-				/*    for (j=0;j<tex->th;j++)
-				    for (i=0;i<tex->tw;i++)
-				    {
-				     s3dprintf(MED,"pixel[%d,%d], %d %d %d %d",i,j,
-				         tex->buf[(j*tex->w+i)*4+0],
-				         tex->buf[(j*tex->w+i)*4+1],
-				         tex->buf[(j*tex->w+i)*4+2],
-				         tex->buf[(j*tex->w+i)*4+3]);
-				    }*/
-				/*  texture has to be generated yet ... */
-				tex_build_mipmaps(tex);
-/*				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-				             tex->w, tex->h, 0,  / *  no border. * /
-				             GL_RGBA, GL_UNSIGNED_BYTE, tex->buf);*/
-
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			}
-		} else { /* . can't use a texture  */
+			s3dprintf(VLOW, "already have texture %d [%dx%d, in memory %dx%d]", tex->gl_texnum, tex->tw, tex->th, tex->w, tex->h);
+			glBindTexture(GL_TEXTURE_2D, tex->gl_texnum);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			
+		} else { /* can't use a texture  */
 			tex = NULL;
 		}
 	}
@@ -1572,6 +1581,7 @@ int obj_render(struct t_process *p, int32_t oid)
 	if (obj->oflags&OF_SYSTEM)  return(-1);      /* can't render system objects */
 	if (obj->oflags&OF_CLONE)  obj = p->object[obj->n_vertex];  /* it's a clone - draw the clone! */
 	if (!obj->dplist) {
+		texture_gen(obj);
 		obj->dplist = glGenLists(1);
 		if (obj->dplist) glNewList(obj->dplist, GL_COMPILE); /* only compile and calling later should save time. maybe. */
 		else     s3dprintf(LOW, "couldn't get a new list :/");
