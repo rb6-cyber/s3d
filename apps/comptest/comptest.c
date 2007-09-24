@@ -189,20 +189,22 @@ void window_add(Display *dpy, Window id)
 	win->id = id;
 	XGetWindowAttributes(dpy, win->id, &win->attr);
 	win->format = XRenderFindVisualFormat(dpy, win->attr.visual);
-	/* printf("add window: %d:%d size: %dx%d\n", win->attr.x, win->attr.y, win->attr.width, win->attr.height);*/
-	win->damage = XDamageCreate(dpy, win->id, XDamageReportNonEmpty);
 
-	win->pa.subwindow_mode = IncludeInferiors;
-	win->picture = XRenderCreatePicture(dpy, win->id, win->format, CPSubwindowMode, &win->pa);
+	if (win->format != 0) {
+		/* printf("add window: %d:%d size: %dx%d\n", win->attr.x, win->attr.y, win->attr.width, win->attr.height);*/
+		win->damage = XDamageCreate(dpy, win->id, XDamageReportNonEmpty);
 
-	win->oid = 0;
+		win->pa.subwindow_mode = IncludeInferiors;
+		win->picture = XRenderCreatePicture(dpy, win->id, win->format, CPSubwindowMode, &win->pa);
 
-	win->bitmap = NULL;
-	window_update(win, 0, 0, win->attr.width, win->attr.height);
+		win->oid = 0;
 
-	win->next = window_head;
-	window_head = win;
+		win->bitmap = NULL;
+		window_update(win, 0, 0, win->attr.width, win->attr.height);
 
+		win->next = window_head;
+		window_head = win;
+	}
 }
 
 void window_remove(struct window *win)
