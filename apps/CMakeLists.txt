@@ -1,3 +1,4 @@
+add_subdirectory(comptest)
 add_subdirectory(dot_mcp)
 add_subdirectory(kism3d)
 add_subdirectory(meshs3d)

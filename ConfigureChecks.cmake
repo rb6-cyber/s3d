@@ -76,6 +76,30 @@ if (LIBXML2_FOUND)
 endif (LIBXML2_FOUND)
 
 
+# try to find lib and add include dir for Xcomposite
+find_package(Xcomposite)
+if (XCOMPOSITE_FOUND)
+	add_definitions(${XCOMPOSITE_DEFINITIONS})
+endif (XCOMPOSITE_FOUND)
+
+# try to find lib and add include dir for Xdamage
+find_package(Xdamage)
+if (XDAMAGE_FOUND)
+	add_definitions(${XDAMAGE_DEFINITIONS})
+endif (XDAMAGE_FOUND)
+
+# try to find lib and add include dir for Xfixes
+find_package(Xfixes)
+if (XFIXES_FOUND)
+	add_definitions(${XFIXES_DEFINITIONS})
+endif (XFIXES_FOUND)
+
+# try to find lib and add include dir for Xrender
+find_package(Xrender)
+if (XRENDER_FOUND)
+	add_definitions(${XRENDER_DEFINITIONS})
+endif (XRENDER_FOUND)
+
 # try to find lib and add include dir for Xtst
 find_package(Xtst)
 if (XTST_FOUND)
