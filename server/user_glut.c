@@ -43,12 +43,12 @@ int user_init_glut()
 	return(0);
 }
 
-void keyboard(uint8_t key, int x, int y)
+void keyboard(uint8_t key, int S3DUNUSED(x), int S3DUNUSED(y))
 {
 	user_key(key, key, 0, 0);
 	user_key(key, key, 0, 1);
 }
-void special(int skey, int x, int y)
+void special(int skey, int S3DUNUSED(x), int S3DUNUSED(y))
 {
 	uint16_t mkey;
 	switch (skey) { /* handle special keys */
