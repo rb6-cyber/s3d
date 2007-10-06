@@ -120,8 +120,8 @@ int s3d_init(int *argc, char ***argv, char *name)
 	char      buf[258];    /*  server buffer */
 	int      i;
 	struct timespec   t = {
-		0, 10*1000*1000
-	}; /* 10 mili second */
+		0, 100*1000*1000
+	}; /* 100 mili second */
 
 	cb_lock = 1; /* don't bother while initiating ... is set to 0 after INIT packet received. */
 	if (NULL != (s = getenv("S3D"))) {
