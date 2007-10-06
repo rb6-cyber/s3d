@@ -148,7 +148,7 @@ void move_meshnode(struct node *node)
 	if (!((node->mov_vec[0] == 0) && (node->mov_vec[1] == 0) && (node->mov_vec[2] == 0)) && node->visible) {
 		distance = dirt(node->pos_vec, null_vec, tmp_mov_vec);
 		mov_add(node->mov_vec, tmp_mov_vec, distance / 100);   /* move a little bit to point zero */
-		mov_add(node->mov_vec, tmp_mov_vec, 1);   /* move a little bit to point zero */
+//		mov_add(node->mov_vec, tmp_mov_vec, 1);   /* move a little bit to point zero */
 
 		if ((distance = dist(node->mov_vec, null_vec)) > 10.0)
 			mov_add(node->pos_vec, node->mov_vec, 1.0 / ((float) distance));
@@ -166,7 +166,7 @@ void calc_node_mov(void)
 
 	float distance;
 	float tmp_mov_vec[3], vertex_buf[6];
-	float f;
+	float f, wish_distance;
 	int ip[2];
 	struct node_con *con;
 	struct node *first_node, *sec_node;
@@ -175,21 +175,21 @@ void calc_node_mov(void)
 	if (con_hash->elements == 0)
 		return;
 	hashit1 = hashit2 = NULL;
+	printf("start iteration\n");
 	while (NULL != (hashit1 = hash_iterate(node_hash, hashit1))) {
 		first_node = (struct node *) hashit1->bucket->data;
 		while (NULL != (hashit2 = hash_iterate(node_hash, hashit2))) {
 			sec_node = (struct node *) hashit2->bucket->data;
-			if (first_node != sec_node) {
-				ip[0] = max(first_node->ip, sec_node->ip);
-				ip[1] = min(first_node->ip, sec_node->ip);
+			if (first_node != sec_node && (max(first_node->ip, sec_node->ip) == first_node->ip)) {
+				ip[0] = first_node->ip;
+				ip[1] = sec_node->ip;
 				distance = dirt(first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec);
 				if (NULL != (con = hash_find(con_hash, ip))) {
 					/* we have a connection */
-					f = ((con->etx1_sqrt + con->etx2_sqrt) / 4.0) / distance;
-					mov_add(first_node->mov_vec, tmp_mov_vec,  1 / f - 1);
+					wish_distance = ((con->etx1_sqrt + con->etx2_sqrt)) + 4;
+					f = wish_distance / distance;
+					mov_add(first_node->mov_vec, tmp_mov_vec, (1 / f - 1));
 					mov_add(sec_node->mov_vec, tmp_mov_vec, -(1 / f - 1));
-					printf("------co---------\n%s %.2f %.2f %.2f\n%s %.2f %.2f %.2f\n", first_node->ip_string, first_node->mov_vec[0], first_node->mov_vec[1], first_node->mov_vec[2],
-					       sec_node->ip_string, sec_node->mov_vec[0], sec_node->mov_vec[1], sec_node->mov_vec[2]);
 
 					vertex_buf[0] = first_node->pos_vec[0];
 					vertex_buf[1] = first_node->pos_vec[1];
@@ -208,13 +208,9 @@ void calc_node_mov(void)
 				} else {
 					/* we have no connection */
 					if (distance < 0.1) distance = 0.1;
-					mov_add(first_node->mov_vec, tmp_mov_vec, 100 / (distance * distance));
-					mov_add(sec_node->mov_vec, tmp_mov_vec, -100 / (distance * distance));
-					printf("------nco---------\n%s %.2f %.2f %.2f\n%s %.2f %.2f %.2f\n", first_node->ip_string, first_node->mov_vec[0], first_node->mov_vec[1], first_node->mov_vec[2],
-					       sec_node->ip_string, sec_node->mov_vec[0], sec_node->mov_vec[1], sec_node->mov_vec[2]);
+					mov_add(first_node->mov_vec, tmp_mov_vec, -100 / (distance * distance));
+					mov_add(sec_node->mov_vec, tmp_mov_vec, 100 / (distance * distance));
 				}
-				move_meshnode(first_node);
-				move_meshnode(sec_node);
 			}
 		}
 		/* first_node = hash_find( node_hash, &con->ip[0] );
@@ -228,6 +224,10 @@ void calc_node_mov(void)
 		 ***/
 		/* if ( f < Factor ) f = Factor; */
 
+	}
+	while (NULL != (hashit1 = hash_iterate(node_hash, hashit1))) {
+		first_node = (struct node *) hashit1->bucket->data;
+		move_meshnode(first_node);
 	}
 
 }
@@ -243,6 +243,7 @@ void mainloop()
 
 	while ((net_result = net_main()) != 0) {
 		if (net_result == -1) {
+			printf("that's it folks\n");
 			s3d_quit();
 			break;
 		}
@@ -328,10 +329,13 @@ int main(int argc, char *argv[])
 			Global.obj_zero_point = s3d_new_object();
 			/* Output_border[0] = Output_border[1] = Output_border[2] = Output_border[3] = -1; */
 
+			printf("go, s3d\n");
 			s3d_mainloop(mainloop);
 			s3d_quit();
 			net_quit();
-		}
+			printf("that's it\n");
+		} else 
+			printf("s3d init failed\n");
 	}
 	return(0);
 }

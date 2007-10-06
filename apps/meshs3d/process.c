@@ -128,12 +128,22 @@ void handle_con(unsigned int ip1, unsigned int ip2, float etx)
 		con->ip[0] = ip[0];
 		con->ip[1] = ip[1];
 		con->color = 0;
-		con->obj_id = 0;
+		/* draw line */
+		con->obj_id = s3d_new_object();
+		s3d_push_material(con->obj_id,
+		                  1.0, 1.0, 1.0,
+		                  1.0, 1.0, 1.0,
+		                  1.0, 1.0, 1.0);
+		s3d_push_vertex(con->obj_id, 0, 0, 0);
+		s3d_push_vertex(con->obj_id, 0, 0, 0);
+		s3d_push_line(con->obj_id, 0, 1, 0);
+		s3d_flags_on(con->obj_id, S3D_OF_VISIBLE);
+
 		con->rgb = 0.00;
-		con->etx1 = 0.00;
-		con->etx2 = 0.00;
-		con->etx1_sqrt = 0.00;
-		con->etx2_sqrt = 0.00;
+		con->etx1 = 1.00;
+		con->etx2 = 1.00;
+		con->etx1_sqrt = 1.00;
+		con->etx2_sqrt = 1.00;
 		hash_add(con_hash, con);
 	}
 
