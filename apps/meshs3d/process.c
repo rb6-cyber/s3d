@@ -196,6 +196,7 @@ void handle_mesh_node(unsigned int *ip, char *ip_string)
 		orig_node->obj_id = -1;
 		orig_node->desc_id = -1;
 		hash_add(node_hash, orig_node);
+		Global.node_count++;
 	}
 	return;
 }

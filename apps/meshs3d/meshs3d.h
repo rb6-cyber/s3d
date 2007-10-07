@@ -79,6 +79,11 @@ struct glob {
 	int obj_btn_close;
 	int obj_s3d_url;
 	int obj_zero_point;
+	int obj_node_count;
+	int node_count;
+	float asp;
+	float bottom;
+	float left;
 };
 
 extern char lbuf[MAXLINESIZE];

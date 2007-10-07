@@ -40,6 +40,8 @@
 
 /* global vars */
 struct glob Global;
+
+
 static struct timespec sleep_time = {
 	0, 100 * 1000 * 1000
 };   /* 100 mili seconds */
@@ -54,6 +56,11 @@ void init_globals(void)
 	Global.obj_btn_close = 0;
 	Global.obj_s3d_url = 0;
 	Global.obj_zero_point = 0;
+	Global.obj_node_count = 0;
+	Global.node_count = 0;
+	Global.asp = 1.0;
+	Global.left = -1.0;
+	Global.bottom = -1.0;
 
 }
 
@@ -174,17 +181,23 @@ void calc_node_mov(void)
 
 	if (con_hash->elements == 0)
 		return;
+
 	hashit1 = hashit2 = NULL;
-	printf("start iteration\n");
+
 	while (NULL != (hashit1 = hash_iterate(node_hash, hashit1))) {
+
 		first_node = (struct node *) hashit1->bucket->data;
 		while (NULL != (hashit2 = hash_iterate(node_hash, hashit2))) {
+
 			sec_node = (struct node *) hashit2->bucket->data;
 			if (first_node != sec_node && (max(first_node->ip, sec_node->ip) == first_node->ip)) {
+
 				ip[0] = first_node->ip;
 				ip[1] = sec_node->ip;
 				distance = dirt(first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec);
+
 				if (NULL != (con = hash_find(con_hash, ip))) {
+
 					/* we have a connection */
 					wish_distance = ((con->etx1_sqrt + con->etx2_sqrt)) + 4;
 					f = wish_distance / distance;
@@ -206,10 +219,12 @@ void calc_node_mov(void)
 					                );
 
 				} else {
+
 					/* we have no connection */
 					if (distance < 0.1) distance = 0.1;
 					mov_add(first_node->mov_vec, tmp_mov_vec, -100 / (distance * distance));
 					mov_add(sec_node->mov_vec, tmp_mov_vec, 100 / (distance * distance));
+
 				}
 			}
 		}
@@ -234,13 +249,31 @@ void calc_node_mov(void)
 
 void mainloop()
 {
-
+	static int last_count = 0;
 	int net_result;   /* result of function net_main */
+	char nc_str[20];
+	float str_len;
 
 	calc_node_mov();
 	handle_node();
-	/* move_nodes(); */
 
+	
+	if( Global.node_count && Global.node_count != last_count ) {
+
+		if( Global.obj_node_count ) s3d_del_object( Global.obj_node_count );
+		
+		snprintf(nc_str, 20, "node count: %d", Global.node_count );
+		Global.obj_node_count = s3d_draw_string( nc_str, &str_len );
+		
+		s3d_link( Global.obj_node_count, 0 );
+		s3d_flags_on( Global.obj_node_count, S3D_OF_VISIBLE );
+		s3d_scale( Global.obj_node_count, 0.2 );
+		s3d_translate( Global.obj_node_count, -Global.left * 3.0 - (str_len * 0.2), -Global.bottom * 3.0 - 0.7, -3.0 );
+		
+		last_count = Global.node_count;
+
+	}
+	
 	while ((net_result = net_main()) != 0) {
 		if (net_result == -1) {
 			printf("that's it folks\n");
@@ -252,6 +285,32 @@ void mainloop()
 	return;
 }
 
+int object_info(struct s3d_evt *hrmz)
+{
+	struct s3d_obj_info *inf;
+	inf = (struct s3d_obj_info *)hrmz->buf;
+	s3dw_object_info(hrmz);
+	
+	if (inf->object == 0) {
+	
+		Global.asp = inf->scale;
+		
+		if ( Global.asp > 1.0) {
+
+			Global.bottom = -1.0;
+			Global.left = -Global.asp;
+
+		} else {
+
+			Global.bottom = (-1.0 / Global.asp);
+			Global.left = -1.0;
+
+		}
+
+	}
+
+	return(0);
+}
 
 int main(int argc, char *argv[])
 {
@@ -302,8 +361,10 @@ int main(int argc, char *argv[])
 	process_init();
 
 	if (!net_init(olsr_host)) {
-		/* s3d_set_callback(S3D_EVENT_OBJ_INFO,object_info);
-		s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
+		
+		s3d_set_callback( S3D_EVENT_OBJ_INFO, object_info );
+		
+		/*s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
 		s3d_set_callback(S3D_EVENT_KEY,keypress);
 		s3d_set_callback(S3D_EVENT_QUIT,stop); */
 
