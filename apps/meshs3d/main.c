@@ -203,7 +203,7 @@ void calc_node_mov(void)
 
 					/* we have a connection */
 					wish_distance = ((con->etx1_sqrt + con->etx2_sqrt)) + 4;
-					f = wish_distance / distance;
+					f = powf(wish_distance / distance, 0.25);
 					mov_add(first_node->mov_vec, tmp_mov_vec, (1 / f - 1));
 					mov_add(sec_node->mov_vec, tmp_mov_vec, -(1 / f - 1));
 
