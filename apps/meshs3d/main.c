@@ -125,7 +125,6 @@ void handle_node()
 			else
 				node->obj_id = s3d_clone(Global.obj_node_normal);
 
-
 			s3d_flags_on(node->obj_id, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 			
 			node->desc_id = s3d_draw_string(node->ip_string, &node->desc_length);
