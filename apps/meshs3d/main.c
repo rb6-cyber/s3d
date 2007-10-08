@@ -114,18 +114,17 @@ void handle_node()
 		node = (struct node *) hashit->bucket->data;
 		if (node->node_type_modified) {
 
-			node->node_type_modified = 0;
-			if (node->obj_id) s3d_del_object(node->obj_id);
 
+			if (node->obj_id) s3d_del_object(node->obj_id);
 			if (node->desc_id) s3d_del_object(node->desc_id);
 
-			if (node->node_type == 1) {
+			if (node->node_type == 1)
 				node->obj_id = s3d_clone(Global.obj_node_inet);
-			} else if (node->node_type == 2) {
+			else if (node->node_type == 2)
 				node->obj_id = s3d_clone(Global.obj_node_hna);
-			} else {
+			else
 				node->obj_id = s3d_clone(Global.obj_node_normal);
-			}
+
 
 			s3d_flags_on(node->obj_id, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 			
@@ -133,7 +132,7 @@ void handle_node()
 			s3d_link(node->desc_id, node->obj_id);
 			s3d_translate(node->desc_id, - node->desc_length / 2, -2, 0);
 			s3d_flags_on(node->desc_id, S3D_OF_VISIBLE);
-
+			
 			node->node_type_modified = 0;
 
 		}
