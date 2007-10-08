@@ -78,9 +78,12 @@ static struct timespec t = {
 
 int xinit();
 void window_update(struct window *win, int x, int y, int width, int height);
+static int print_event(Display *dpy, XEvent *event);
+void event();
 
 void mainloop()
 {
+	event();
 	nanosleep(&t, NULL);
 }
 
@@ -92,11 +95,95 @@ int get_shift(unsigned long t)
 	return(i);
 }
 
-static int error(Display *COMPUNUSED(dpy), XErrorEvent *COMPUNUSED(event))
+static int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 {
-	/*    printf ("error %d request %d minor %d serial %d\n",
-	        event->error_code, event->request_code, event->minor_code, event->serial);*/
-	return 0;
+	char *name = "unknown";
+	switch (event->type & 0x7f) {
+	case Expose:
+		name = "Expose";
+		break;
+	case MapNotify:
+		name = "Map";
+		break;
+	case UnmapNotify:
+		name = "Unmap";
+		break;
+	case ReparentNotify:
+		name = "Reparent";
+		break;
+	case CirculateNotify:
+		name = "Circulate";
+		break;
+	}
+	if ( event->type == xdamage.event + XDamageNotify ) {
+		XDamageNotifyEvent *e = (XDamageNotifyEvent*) event ;
+		// e->drawable is the window ID of the damaged window
+		// e->geometry is the geometry of the damaged window	
+		// e->area     is the bounding rect for the damaged area	
+		// e->damage   is the damage handle returned by XDamageCreate()
+
+		// Subtract all the damage, repairing the window.
+		name = "Damage!!";
+	}
+	else if ( event->type == ConfigureNotify ) {
+		XConfigureEvent *e = &event->xconfigure;	
+		// The windows size, position or Z index in the stacking
+		// order has changed
+		name = "Configure!!";
+	}
+
+
+	printf("Event: %s\n", name);
+	return(0);
+
+
+}
+/*static int error(Display *COMPUNUSED(dpy), XErrorEvent *COMPUNUSED(event))*/
+static int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
+{
+	char *name = "";
+    int     o;
+
+    o = event->error_code - xfixes.error;
+    switch (o) {
+    case BadRegion:
+        name = "BadRegion";
+        break;
+    default:
+        break;
+    }
+    o = event->error_code - xdamage.error;
+    switch (o) {
+    case BadDamage:
+        name = "BadDamage";
+        break;
+    default:
+        break;
+    }
+    o = event->error_code - xrender.error;
+    switch (o) {
+    case BadPictFormat:
+        name = "BadPictFormat";
+        break;
+    case BadPicture:
+        name = "BadPicture";
+        break;
+    case BadPictOp:
+        name = "BadPictOp";
+        break;
+    case BadGlyphSet:
+        name = "BadGlyphSet";
+        break;
+    case BadGlyph:
+        name = "BadGlyph";
+        break;
+    default:
+        break;
+    }
+
+	 printf ("error %d (name: %s) request %d minor %d serial %d\n",
+	        event->error_code, name, event->request_code, event->minor_code, (int)event->serial);
+	return(0);
 }
 
 
@@ -234,6 +321,10 @@ void window_add(Display *dpy, Window id)
 		return;
 	win->id = id;
 	XGetWindowAttributes(dpy, win->id, &win->attr);
+/*	XSelectInput(dpy, win->id, ExposureMask|ButtonPressMask|KeyPressMask*/
+	XSelectInput(dpy, win->id, ExposureMask
+					|SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);
+/*	XSelectInput(dpy, win->id, ExposureMask);*/
 	win->format = XRenderFindVisualFormat(dpy, win->attr.visual);
 
 	if (win->format != 0) {
@@ -348,7 +439,18 @@ void window_update(struct window *win, int x, int y, int width, int height)
 
 void event()
 {
-	/* XNextEvent (dpy, &ev);*/
+	XEvent event;
+	while (QLength(dpy)) {
+		XNextEvent(dpy, &event);
+		print_event(dpy, &event);
+		if ( event.type == xdamage.event + XDamageNotify ) {
+			XDamageNotifyEvent *e = (XDamageNotifyEvent*) &event ;
+			printf("window = %d, geometry = %d:%d (at %d:%d), area = %d:%d (at %d:%d)\n", 
+					e->drawable, e->geometry.width, e->geometry.height, e->geometry.x, e->geometry.y,
+					e->area.width, e->area.height, e->area.x, e->area.y);
+			XDamageSubtract(dpy, e->damage, None, None);
+		}
+	}
 }
 
 
@@ -365,6 +467,10 @@ int main(int argc, char **argv)
 	if (!s3d_init(&argc, &argv, "compotest")) {
 		for (scr_no = 0; scr_no < ScreenCount(dpy); scr_no++) {
 			XCompositeRedirectSubwindows(dpy, RootWindow(dpy, scr_no), CompositeRedirectAutomatic);
+/*			XCompositeRedirectSubwindows(dpy, RootWindow(dpy, scr_no), CompositeRedirectManual);*/
+			XSelectInput(dpy, RootWindow(dpy, scr_no),
+						SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);
+
 			XQueryTree(dpy, RootWindow(dpy, scr_no), &root_return, &parent_return, &children, &nchildren);
 			for (i = 0; i < (int)nchildren; i++)
 				window_add(dpy, children[i]);
