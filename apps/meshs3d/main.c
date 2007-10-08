@@ -115,11 +115,9 @@ void handle_node()
 		if (node->node_type_modified) {
 
 			node->node_type_modified = 0;
-			if (node->obj_id != -1) {
-				s3d_del_object(node->obj_id);
-			}
+			if (node->obj_id) s3d_del_object(node->obj_id);
 
-			if (node->desc_id != -1) s3d_del_object(node->desc_id);
+			if (node->desc_id) s3d_del_object(node->desc_id);
 
 			if (node->node_type == 1) {
 				node->obj_id = s3d_clone(Global.obj_node_inet);
@@ -130,6 +128,13 @@ void handle_node()
 			}
 
 			s3d_flags_on(node->obj_id, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
+			
+			node->desc_id = s3d_draw_string(node->ip_string, &node->desc_length);
+			s3d_link(node->desc_id, node->obj_id);
+			s3d_translate(node->desc_id, - node->desc_length / 2, -2, 0);
+			s3d_flags_on(node->desc_id, S3D_OF_VISIBLE);
+
+			node->node_type_modified = 0;
 
 		}
 	}
