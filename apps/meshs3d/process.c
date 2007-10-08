@@ -193,8 +193,8 @@ void handle_mesh_node(unsigned int *ip, char *ip_string)
 		orig_node->pos_vec[2] = ((float) 2.0 * rand()) / RAND_MAX - 1.0;
 		orig_node->mov_vec[0] = orig_node->mov_vec[1] = orig_node->mov_vec[2] = 0.0;
 
-		orig_node->obj_id = 0;
-		orig_node->desc_id = 0;
+		orig_node->obj_id = -1;
+		orig_node->desc_id = -1;
 		hash_add(node_hash, orig_node);
 		Global.node_count++;
 	}

@@ -115,8 +115,8 @@ void handle_node()
 		if (node->node_type_modified) {
 
 
-			if (node->obj_id) s3d_del_object(node->obj_id);
-			if (node->desc_id) s3d_del_object(node->desc_id);
+			if (node->obj_id > 0) s3d_del_object(node->obj_id);
+			if (node->desc_id > 0) s3d_del_object(node->desc_id);
 
 			if (node->node_type == 1)
 				node->obj_id = s3d_clone(Global.obj_node_inet);
