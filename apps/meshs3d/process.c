@@ -165,7 +165,7 @@ void handle_con(unsigned int ip1, unsigned int ip2, float etx)
 
 }
 
-void handle_mesh_node(unsigned int *ip, char *ip_string)
+struct node *handle_mesh_node(unsigned int ip, char *ip_string)
 {
 	struct node *orig_node;
 	struct hashtable_t *swaphash;
@@ -176,11 +176,11 @@ void handle_mesh_node(unsigned int *ip, char *ip_string)
 			exit_error("Couldn't resize hash table \n");
 		node_hash = swaphash;
 	}
-	orig_node = (struct node *) hash_find(node_hash, ip);
+	orig_node = (struct node *) hash_find(node_hash, &ip);
 
 	if (NULL == orig_node) {
 		orig_node = (struct node *)debugMalloc(sizeof(struct node), 101);
-		orig_node->ip = *ip;
+		orig_node->ip = ip;
 		strncpy(orig_node->ip_string, ip_string, NAMEMAX);
 
 		orig_node->node_type = 0;
@@ -198,7 +198,7 @@ void handle_mesh_node(unsigned int *ip, char *ip_string)
 		hash_add(node_hash, orig_node);
 		Global.node_count++;
 	}
-	return;
+	return(orig_node);
 }
 
 int process_main()
@@ -206,10 +206,12 @@ int process_main()
 
 	int dn;
 	float f;
-	char *lbuf_ptr, *last_cr_ptr, *con_from, *con_from_end, *con_to, *con_to_end, *etx, *etx_end;
-	/* struct node *node_from, *node_to; */
-
-	unsigned int int_con_from = 0, int_con_to = 0;
+	char *lbuf_ptr, *last_cr_ptr, *con_from, *con_from_end, *con_to, *con_to_end, *etx, *etx_end, *tmp_char;
+	char hna_name[NAMEMAX];
+	char hna_node[NAMEMAX];
+	
+	struct node *tmp_node;
+	unsigned int int_con_from = 0, int_con_to = 0, address;
 
 	lbuf_ptr = lbuf;
 	last_cr_ptr = NULL;
@@ -255,6 +257,43 @@ int process_main()
 
 				/* announced network via HNA */
 				if (strncmp(etx, "HNA", NAMEMAX) == 0) {
+				
+					if (strncmp(con_to, "0.0.0.0/0.0.0.0", NAMEMAX) == 0) {
+					
+						tmp_node = handle_mesh_node(int_con_from, con_from);
+
+						if (tmp_node->node_type != 1) {
+
+							tmp_node->node_type = 1;
+							tmp_node->node_type_modified = 1;
+							if (Global.debug) printf("new internet: %s\n", tmp_node->ip_string);
+
+						}
+					
+					} else {
+
+						memmove(hna_node, con_to, NAMEMAX);
+						if ((tmp_char = strchr(hna_node, (int)'/'))) {
+							tmp_char++;
+							address = (int) - inet_network(tmp_char);
+							sprintf(hna_name, "%u", (unsigned int)(32 - ceil(log(address) / log(2))));
+							strcpy(tmp_char, hna_name);
+						}
+
+						handle_mesh_node(int_con_from, con_from);
+						tmp_node = handle_mesh_node(int_con_to, hna_node);
+
+						if (tmp_node->node_type != 2) {
+
+							tmp_node->node_type = 2;
+							tmp_node->node_type_modified = 1;
+							if (Global.debug) printf("new hna network: %s\n", tmp_node->ip_string);
+
+						}
+						
+						handle_con(int_con_from, int_con_to, -1000.00);
+					
+					}
 
 				} else {
 
@@ -270,11 +309,11 @@ int process_main()
 						printf("%s is not a valid ip address\n", con_to);
 						continue;
 					}
-					handle_mesh_node(&int_con_from, con_from);
-					handle_mesh_node(&int_con_to, con_to);
+
+					handle_mesh_node(int_con_from, con_from);
+					handle_mesh_node(int_con_to, con_to);
 					handle_con(int_con_from, int_con_to, f);
-					/* node_from = (struct node *) hash_find( node_hash, &int_con_from );
-					node_to = (struct node *) hash_find( node_hash, &int_con_to ); */
+
 				}
 				/* remove zerobyte */
 				(*con_from_end) = (*con_to_end) = (*etx_end) = '"';

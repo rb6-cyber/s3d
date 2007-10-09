@@ -81,6 +81,7 @@ struct glob {
 	int obj_zero_point;
 	int obj_node_count;
 	int node_count;
+	int color_switch;
 	float asp;
 	float bottom;
 	float left;

@@ -58,6 +58,7 @@ void init_globals(void)
 	Global.obj_zero_point = 0;
 	Global.obj_node_count = 0;
 	Global.node_count = 0;
+	Global.color_switch = 0;
 	Global.asp = 1.0;
 	Global.left = -1.0;
 	Global.bottom = -1.0;
@@ -171,6 +172,90 @@ void move_meshnode(struct node *node)
 	}
 }
 
+void color_handler(struct node_con *con)
+{
+	float rgb=0.0, r=0.0, g=0.0, b=0.0, etx;
+	int c, c1=0;
+	
+	if (con->etx1 == -1000.00 || con->etx2 == -1000) {
+
+		c = 1;
+		b = 1.0;
+
+	} else {
+
+		etx = (con->etx1 + con->etx2) / 2.0;
+
+		/* very good link - bright blue */
+		if ((etx >= 1.0) && (etx < 1.5)) {
+
+			c = 2;
+			r = 0.5; g = 1.0; b = 1.0;
+
+		/* good link - bright yellow */
+		} else if ((etx >= 1.5) && (etx < 2.0)) {
+
+			rgb = 2.0 - etx;
+
+			c = 3;
+			c1 = con->color == 3 && (int) rintf(con->rgb * 10) != (int) rintf(rgb * 10) ? 1 : 0;
+			r = 1.0; g = 1.0; b = rgb;
+
+		/* not so good link - orange */
+		} else if ((etx >= 2.0) && (etx < 3.0)) {
+
+			rgb = 1.5 - (etx / 2.0);
+			
+			c = 4;
+			c1 = con->color == 4 && (int) rintf(con->rgb * 10) != (int) rintf(rgb * 10) ? 1 : 0;
+			r = 1.0; g = rgb;
+
+		/* bad link (almost dead) - brown */
+		} else if ((etx >= 3.0) && (etx < 5.0)) {
+
+			rgb = 1.75 - (etx / 4.0);
+
+			c = 5;
+			c1 = con->color == 5 && (int) rintf(con->rgb * 10) != (int) rintf(rgb * 10) ? 1 : 0;
+			
+			r = rgb; g = rgb - 0.5; 
+
+
+		/* zombie link - grey */
+		} else if ((etx >= 5.0) && (etx < 1000.0)) {
+
+			rgb = 1000.0 / (1500.0 + etx);
+
+			c = 6;
+			c1 = con->color == 6 && (int) rintf(con->rgb * 10) != (int) rintf(rgb * 10) ? 1 : 0;
+
+			r = g = b = rgb;
+
+		/* wtf - dark grey */
+		} else {
+
+			c = 7;
+			r = g = b = 0.3;
+
+		}
+
+	}
+	
+	if(con->color != c || c1) {
+		s3d_pep_material(con->obj_id,
+			r, g, b,
+			r, g, b,
+			r, g, b);
+
+		con->color = c;
+		
+		if(rgb != 0.0)
+			con->rgb = rgb;
+	}
+
+}
+
+
 void calc_node_mov(void)
 {
 
@@ -214,12 +299,19 @@ void calc_node_mov(void)
 					vertex_buf[4] = sec_node->pos_vec[1];
 					vertex_buf[5] = sec_node->pos_vec[2];
 					s3d_pep_vertices(con->obj_id, vertex_buf, 2);
+					
+					if (Global.color_switch)
+						color_handler(con);
+					else {
 
-					s3d_pep_material(con->obj_id,
+						s3d_pep_material(con->obj_id,
 					                 1.0, 1.0, 1.0,
 					                 1.0, 1.0, 1.0,
 					                 1.0, 1.0, 1.0
 					                );
+						con->color = 0;
+
+					}
 
 				} else {
 
@@ -231,18 +323,9 @@ void calc_node_mov(void)
 				}
 			}
 		}
-		/* first_node = hash_find( node_hash, &con->ip[0] );
-		sec_node = hash_find( node_hash, &con->ip[1] );
-		distance = dirt( first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec );
-		f = ( ( con->etx1_sqrt + con->etx2_sqrt ) / 4.0 ) / distance; */
-
-		/***
-		 * drift factor - 0.0 < factor < 1.0 ( best results: 0.3 < factor < 0.9
-		 * small factor: fast and strong drift to neighbours
-		 ***/
-		/* if ( f < Factor ) f = Factor; */
 
 	}
+
 	while (NULL != (hashit1 = hash_iterate(node_hash, hashit1))) {
 		first_node = (struct node *) hashit1->bucket->data;
 		move_meshnode(first_node);
@@ -315,6 +398,24 @@ int object_info(struct s3d_evt *hrmz)
 	return(0);
 }
 
+int keypress(struct s3d_evt *event)
+{
+
+	struct s3d_key_event *key = (struct s3d_key_event *)event->buf;
+	
+	switch (key->keysym) {
+	
+	case S3DK_c: /* color on/off */
+
+		Global.color_switch =  Global.color_switch ? 0 : 1;
+		break;
+
+	}
+	
+	return(0);
+	
+}
+
 int main(int argc, char *argv[])
 {
 	int optchar;
@@ -366,9 +467,10 @@ int main(int argc, char *argv[])
 	if (!net_init(olsr_host)) {
 		
 		s3d_set_callback( S3D_EVENT_OBJ_INFO, object_info );
-		
-		/*s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
 		s3d_set_callback(S3D_EVENT_KEY,keypress);
+		
+
+		/*s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
 		s3d_set_callback(S3D_EVENT_QUIT,stop); */
 
 		if (!s3d_init(&argc, &argv, "meshs3d")) {
