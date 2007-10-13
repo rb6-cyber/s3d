@@ -43,8 +43,8 @@
 #endif
 #endif
 
-#define TEXW	256
-#define TEXH	256
+#define TEXW 256
+#define TEXH 256
 
 struct extension {
 	int event, error;
@@ -115,74 +115,71 @@ static int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 		name = "Circulate";
 		break;
 	}
-	if ( event->type == xdamage.event + XDamageNotify ) {
-		XDamageNotifyEvent *e = (XDamageNotifyEvent*) event ;
-		// e->drawable is the window ID of the damaged window
-		// e->geometry is the geometry of the damaged window	
-		// e->area     is the bounding rect for the damaged area	
-		// e->damage   is the damage handle returned by XDamageCreate()
+	if (event->type == xdamage.event + XDamageNotify) {
+		/* XDamageNotifyEvent *e = (XDamageNotifyEvent*) event; */
+		/* e->drawable is the window ID of the damaged window
+		   e->geometry is the geometry of the damaged window
+		   e->area     is the bounding rect for the damaged area
+		   e->damage   is the damage handle returned by XDamageCreate() */
 
-		// Subtract all the damage, repairing the window.
+		/* Subtract all the damage, repairing the window. */
 		name = "Damage!!";
-	}
-	else if ( event->type == ConfigureNotify ) {
-		XConfigureEvent *e = &event->xconfigure;	
-		// The windows size, position or Z index in the stacking
-		// order has changed
+	} else if (event->type == ConfigureNotify) {
+		/* XConfigureEvent *e = &event->xconfigure; */
+		/* The windows size, position or Z index in the stacking
+		   order has changed */
 		name = "Configure!!";
 	}
 
-
 	printf("Event: %s\n", name);
 	return(0);
-
-
 }
+
 /*static int error(Display *COMPUNUSED(dpy), XErrorEvent *COMPUNUSED(event))*/
 static int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 {
 	char *name = "";
-    int     o;
+	int     o;
 
-    o = event->error_code - xfixes.error;
-    switch (o) {
-    case BadRegion:
-        name = "BadRegion";
-        break;
-    default:
-        break;
-    }
-    o = event->error_code - xdamage.error;
-    switch (o) {
-    case BadDamage:
-        name = "BadDamage";
-        break;
-    default:
-        break;
-    }
-    o = event->error_code - xrender.error;
-    switch (o) {
-    case BadPictFormat:
-        name = "BadPictFormat";
-        break;
-    case BadPicture:
-        name = "BadPicture";
-        break;
-    case BadPictOp:
-        name = "BadPictOp";
-        break;
-    case BadGlyphSet:
-        name = "BadGlyphSet";
-        break;
-    case BadGlyph:
-        name = "BadGlyph";
-        break;
-    default:
-        break;
-    }
+	o = event->error_code - xfixes.error;
+	switch (o) {
+	case BadRegion:
+		name = "BadRegion";
+		break;
+	default:
+		break;
+	}
+	o = event->error_code - xdamage.error;
+	switch (o) {
+	case BadDamage:
+		name = "BadDamage";
+		break;
+	default:
+		break;
+	}
+	o = event->error_code - xrender.error;
+	switch (o) {
+	case BadPictFormat:
+		name = "BadPictFormat";
+		break;
+	case BadPicture:
+		name = "BadPicture";
+		break;
+	case BadPictOp:
+		name = "BadPictOp";
+		break;
+	case BadGlyphSet:
+		name = "BadGlyphSet";
+		break;
+	case BadGlyph:
+		name = "BadGlyph";
+		break;
+	default:
+		break;
+	}
 
-	 printf ("error %d (name: %s) request %d minor %d serial %d\n",
-	        event->error_code, name, event->request_code, event->minor_code, (int)event->serial);
+	printf("error %d (name: %s) request %d minor %d serial %d\n",
+	       event->error_code, name, event->request_code, event->minor_code, (int)event->serial);
 	return(0);
 }
 
@@ -248,10 +245,10 @@ void deco_box(struct window *win)
 	float tbuf[] = { 0.0, 0.0,  1.0, 0.0,  1.0, 1.0,
 	                 0.0, 0.0,  1.0, 1.0,  0.0, 1.0
 	               };
-/*	int i;*/
+	/* int i;*/
 	int x, y;
 	int vindex, voffset, pindex;
-	int	xpos, ypos;
+	int xpos, ypos;
 
 	win->no = win_no++;  /* TODO: REMOVE */
 	win->oid = s3d_new_object();
@@ -280,26 +277,26 @@ void deco_box(struct window *win)
 	voffset = 1;
 	vindex = 0;
 	pindex = 0;
-	s3d_push_vertex(win->oid, 0, 0, -1);			/* the first point */
+	s3d_push_vertex(win->oid, 0, 0, -1); /* the first point */
 
-	for (y = 0; y < win->attr.height; y+= TEXH) {	/* the first column */
+	for (y = 0; y < win->attr.height;  y += TEXH) { /* the first column */
 		ypos = (y + TEXH > win->attr.height) ? win->attr.height : y + TEXH ;
 		s3d_push_vertex(win->oid, 0, -((float)ypos) / 20, -1);
 		voffset++;
 	}
-	for (x = 0; x < win->attr.width; x+= TEXW) {	/* the first row */
+	for (x = 0; x < win->attr.width; x += TEXW) { /* the first row */
 		xpos = (x + TEXW > win->attr.width) ? win->attr.width : x + TEXW ;
 		s3d_push_vertex(win->oid, ((float)xpos) / 20, 0, -1);
 
-		for (y = 0; y < win->attr.height; y+= TEXH) {
+		for (y = 0; y < win->attr.height; y += TEXH) {
 			ypos = (y + TEXH > win->attr.height) ? win->attr.height : y + TEXH  ;
 			s3d_push_vertex(win->oid, ((float)xpos) / 20, -((float)ypos) / 20, -1);
 			s3d_push_material_a(win->oid,
-		                    0.0, 0.8, 0.0 , 1.0,
-		                    1.0, 1.0, 1.0 , 1.0,
-		                    0.0, 0.8, 0.0 , 1.0);
+			                    0.0, 0.8, 0.0 , 1.0,
+			                    1.0, 1.0, 1.0 , 1.0,
+			                    0.0, 0.8, 0.0 , 1.0);
 			s3d_push_texture(win->oid, xpos - x, ypos - y);
-			s3d_pep_material_texture(win->oid, pindex); 
+			s3d_pep_material_texture(win->oid, pindex);
 			s3d_push_polygon(win->oid, vindex, vindex + voffset, vindex + voffset + 1, pindex);
 			s3d_push_polygon(win->oid, vindex, vindex + voffset + 1, vindex + 1, pindex);
 			s3d_pep_polygon_tex_coords(win->oid, tbuf, 2);
@@ -321,10 +318,10 @@ void window_add(Display *dpy, Window id)
 		return;
 	win->id = id;
 	XGetWindowAttributes(dpy, win->id, &win->attr);
-/*	XSelectInput(dpy, win->id, ExposureMask|ButtonPressMask|KeyPressMask*/
+	/* XSelectInput(dpy, win->id, ExposureMask|ButtonPressMask|KeyPressMask*/
 	XSelectInput(dpy, win->id, ExposureMask
-					|SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);
-/*	XSelectInput(dpy, win->id, ExposureMask);*/
+	             | SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);
+	/* XSelectInput(dpy, win->id, ExposureMask);*/
 	win->format = XRenderFindVisualFormat(dpy, win->attr.visual);
 
 	if (win->format != 0) {
@@ -373,22 +370,22 @@ void window_update(struct window *win, int x, int y, int width, int height)
 	texnum = 0;
 
 
-/*	if (!win->oid)
-		deco_box(win);
-*/
+	/* if (!win->oid)
+	  deco_box(win);
+	*/
 	for (xleft = 0; xleft < width ; xleft += TEXW) {
 		xright = (xleft + TEXW > width) ? width : xleft + TEXW;
 		chunk_width = xright - xleft;
 		image = XGetImage(dpy, win->id, xleft, y, chunk_width, win->attr.height, AllPlanes, ZPixmap);
-		if (!image) 
+		if (!image)
 			return;
-		bitmap = malloc( chunk_width * height * sizeof(uint32_t));
+		bitmap = malloc(chunk_width * height * sizeof(uint32_t));
 		if (!win->oid)
 			deco_box(win);
 		if (image->format == ZPixmap) {
 			printf("XImage: %dx%d, format %d (%d), bpp: %d, depth %d, pad %d\n",
-				   image->width, image->height, image->format,
-				   ZPixmap, image->bits_per_pixel, image->depth, image->bitmap_pad);
+			       image->width, image->height, image->format,
+			       ZPixmap, image->bits_per_pixel, image->depth, image->bitmap_pad);
 			rs = get_shift(image->red_mask) - 8;
 			gs = get_shift(image->green_mask) - 8;
 			bs = get_shift(image->blue_mask) - 8;
@@ -410,13 +407,13 @@ void window_update(struct window *win, int x, int y, int width, int height)
 					s = (unsigned long *)img_ptr;
 					t = (uint32_t *)bmp_ptr;
 					/*    bmp_ptr[0] = (rs > 0 ? ((*d & image->red_mask) >> rs)  : ((*d  & image->red_mask) << -rs)) ;
-						bmp_ptr[1] = (gs > 0 ? ((*d & image->green_mask) >> gs) : ((*d  & image->green_mask) << -gs)) ;
-						bmp_ptr[2] = (bs > 0 ? ((*d & image->blue_mask) >> bs)  : ((*d  & image->blue_mask) << -bs));
-						bmp_ptr[3] = 255 ;*/
+					 bmp_ptr[1] = (gs > 0 ? ((*d & image->green_mask) >> gs) : ((*d  & image->green_mask) << -gs)) ;
+					 bmp_ptr[2] = (bs > 0 ? ((*d & image->blue_mask) >> bs)  : ((*d  & image->blue_mask) << -bs));
+					 bmp_ptr[3] = 255 ;*/
 					*t = (rs > 0 ? ((*s & image->red_mask) >> rs)  : ((*s  & image->red_mask) << -rs)) |
-						 (gs > 0 ? ((*s & image->green_mask) >> gs) : ((*s  & image->green_mask) << -gs)) |
-						 (bs > 0 ? ((*s & image->blue_mask) >> bs)  : ((*s  & image->blue_mask) << -bs)) |
-						 255 << 24;
+					     (gs > 0 ? ((*s & image->green_mask) >> gs) : ((*s  & image->green_mask) << -gs)) |
+					     (bs > 0 ? ((*s & image->blue_mask) >> bs)  : ((*s  & image->blue_mask) << -bs)) |
+					     255 << 24;
 
 					bmp_ptr += sizeof(uint32_t);
 					img_ptr += bpp;
@@ -443,11 +440,11 @@ void event()
 	while (QLength(dpy)) {
 		XNextEvent(dpy, &event);
 		print_event(dpy, &event);
-		if ( event.type == xdamage.event + XDamageNotify ) {
-			XDamageNotifyEvent *e = (XDamageNotifyEvent*) &event ;
-			printf("window = %d, geometry = %d:%d (at %d:%d), area = %d:%d (at %d:%d)\n", 
-					e->drawable, e->geometry.width, e->geometry.height, e->geometry.x, e->geometry.y,
-					e->area.width, e->area.height, e->area.x, e->area.y);
+		if (event.type == xdamage.event + XDamageNotify) {
+			XDamageNotifyEvent *e = (XDamageNotifyEvent*) & event ;
+			printf("window = %d, geometry = %d:%d (at %d:%d), area = %d:%d (at %d:%d)\n",
+			       e->drawable, e->geometry.width, e->geometry.height, e->geometry.x, e->geometry.y,
+			       e->area.width, e->area.height, e->area.x, e->area.y);
 			XDamageSubtract(dpy, e->damage, None, None);
 		}
 	}
@@ -467,9 +464,9 @@ int main(int argc, char **argv)
 	if (!s3d_init(&argc, &argv, "compotest")) {
 		for (scr_no = 0; scr_no < ScreenCount(dpy); scr_no++) {
 			XCompositeRedirectSubwindows(dpy, RootWindow(dpy, scr_no), CompositeRedirectAutomatic);
-/*			XCompositeRedirectSubwindows(dpy, RootWindow(dpy, scr_no), CompositeRedirectManual);*/
+			/*   XCompositeRedirectSubwindows(dpy, RootWindow(dpy, scr_no), CompositeRedirectManual);*/
 			XSelectInput(dpy, RootWindow(dpy, scr_no),
-						SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);
+			             SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);
 
 			XQueryTree(dpy, RootWindow(dpy, scr_no), &root_return, &parent_return, &children, &nchildren);
 			for (i = 0; i < (int)nchildren; i++)
