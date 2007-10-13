@@ -309,6 +309,18 @@ void deco_box(struct window *win)
 	/*  push data on texture 0 position (0,0) */
 	s3d_flags_on(win->oid, S3D_OF_VISIBLE);
 }
+struct window *window_find(Window id)
+{
+	struct window *window;
+	for (window = window_head; window!=NULL; window = window->next) {
+		if (window->id == id)
+			return(window);
+	}
+	printf("not found. ;(\n");
+	return(NULL);
+	
+}
+
 
 void window_add(Display *dpy, Window id)
 {
@@ -437,15 +449,19 @@ void window_update(struct window *win, int x, int y, int width, int height)
 void event()
 {
 	XEvent event;
+	struct window *window;
 	while (XPending(dpy)) {
 		XNextEvent(dpy, &event);
 		print_event(dpy, &event);
 		if (event.type == xdamage.event + XDamageNotify) {
-			XDamageNotifyEvent *e = (XDamageNotifyEvent*) & event ;
+			XDamageNotifyEvent *e = (XDamageNotifyEvent*) & event;
 			printf("window = %d, geometry = %d:%d (at %d:%d), area = %d:%d (at %d:%d)\n",
 			       (int)e->drawable, e->geometry.width, e->geometry.height, e->geometry.x, e->geometry.y,
 			       e->area.width, e->area.height, e->area.x, e->area.y);
 			XDamageSubtract(dpy, e->damage, None, None);
+			window = window_find(e->drawable);
+			if (window!=NULL)
+				window_update(window, e->area.x, e->area.y, e->area.width, e->area.height);
 		}
 	}
 }
