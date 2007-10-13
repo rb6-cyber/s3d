@@ -443,7 +443,7 @@ void event()
 		if (event.type == xdamage.event + XDamageNotify) {
 			XDamageNotifyEvent *e = (XDamageNotifyEvent*) & event ;
 			printf("window = %d, geometry = %d:%d (at %d:%d), area = %d:%d (at %d:%d)\n",
-			       e->drawable, e->geometry.width, e->geometry.height, e->geometry.x, e->geometry.y,
+			       (int)e->drawable, e->geometry.width, e->geometry.height, e->geometry.x, e->geometry.y,
 			       e->area.width, e->area.height, e->area.x, e->area.y);
 			XDamageSubtract(dpy, e->damage, None, None);
 		}
