@@ -127,12 +127,12 @@ void handle_node()
 				node->obj_id = s3d_clone(Global.obj_node_normal);
 
 			s3d_flags_on(node->obj_id, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
-			
+
 			node->desc_id = s3d_draw_string(node->ip_string, &node->desc_length);
 			s3d_link(node->desc_id, node->obj_id);
 			s3d_translate(node->desc_id, - node->desc_length / 2, -2, 0);
 			s3d_flags_on(node->desc_id, S3D_OF_VISIBLE);
-			
+
 			node->node_type_modified = 0;
 
 		}
@@ -159,7 +159,7 @@ void move_meshnode(struct node *node)
 	if (!((node->mov_vec[0] == 0) && (node->mov_vec[1] == 0) && (node->mov_vec[2] == 0)) && node->visible) {
 		distance = dirt(node->pos_vec, null_vec, tmp_mov_vec);
 		mov_add(node->mov_vec, tmp_mov_vec, distance / 100);   /* move a little bit to point zero */
-//		mov_add(node->mov_vec, tmp_mov_vec, 1);   /* move a little bit to point zero */
+		/* mov_add(node->mov_vec, tmp_mov_vec, 1); */   /* move a little bit to point zero */
 
 		if ((distance = dist(node->mov_vec, null_vec)) > 10.0)
 			mov_add(node->pos_vec, node->mov_vec, 1.0 / ((float) distance));
@@ -176,7 +176,7 @@ void color_handler(struct node_con *con)
 {
 	float rgb=0.0, r=0.0, g=0.0, b=0.0, etx;
 	int c, c1=0;
-	
+
 	if (con->etx1 == -1000.00 || con->etx2 == -1000) {
 
 		c = 1;
@@ -241,14 +241,14 @@ void color_handler(struct node_con *con)
 
 	}
 	
-	if(con->color != c || c1) {
+	if (con->color != c || c1) {
 		s3d_pep_material(con->obj_id,
 			r, g, b,
 			r, g, b,
 			r, g, b);
 
 		con->color = c;
-		
+
 		if(rgb != 0.0)
 			con->rgb = rgb;
 	}
@@ -299,7 +299,7 @@ void calc_node_mov(void)
 					vertex_buf[4] = sec_node->pos_vec[1];
 					vertex_buf[5] = sec_node->pos_vec[2];
 					s3d_pep_vertices(con->obj_id, vertex_buf, 2);
-					
+
 					if (Global.color_switch)
 						color_handler(con);
 					else {
@@ -344,9 +344,9 @@ void mainloop()
 	handle_node();
 
 	
-	if( Global.node_count && Global.node_count != last_count ) {
+	if (Global.node_count && Global.node_count != last_count) {
 
-		if( Global.obj_node_count ) s3d_del_object( Global.obj_node_count );
+		if (Global.obj_node_count) s3d_del_object(Global.obj_node_count);
 		
 		snprintf(nc_str, 20, "node count: %d", Global.node_count );
 		Global.obj_node_count = s3d_draw_string( nc_str, &str_len );
@@ -359,7 +359,7 @@ void mainloop()
 		last_count = Global.node_count;
 
 	}
-	
+
 	while ((net_result = net_main()) != 0) {
 		if (net_result == -1) {
 			printf("that's it folks\n");
@@ -376,11 +376,11 @@ int object_info(struct s3d_evt *hrmz)
 	struct s3d_obj_info *inf;
 	inf = (struct s3d_obj_info *)hrmz->buf;
 	s3dw_object_info(hrmz);
-	
+
 	if (inf->object == 0) {
 	
 		Global.asp = inf->scale;
-		
+
 		if ( Global.asp > 1.0) {
 
 			Global.bottom = -1.0;
@@ -402,18 +402,18 @@ int keypress(struct s3d_evt *event)
 {
 
 	struct s3d_key_event *key = (struct s3d_key_event *)event->buf;
-	
+
 	switch (key->keysym) {
-	
+
 	case S3DK_c: /* color on/off */
 
 		Global.color_switch =  Global.color_switch ? 0 : 1;
 		break;
 
 	}
-	
+
 	return(0);
-	
+
 }
 
 int main(int argc, char *argv[])
@@ -500,7 +500,7 @@ int main(int argc, char *argv[])
 			s3d_quit();
 			net_quit();
 			printf("that's it\n");
-		} else 
+		} else
 			printf("s3d init failed\n");
 	}
 	return(0);
