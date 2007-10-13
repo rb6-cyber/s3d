@@ -437,7 +437,7 @@ void window_update(struct window *win, int x, int y, int width, int height)
 void event()
 {
 	XEvent event;
-	while (QLength(dpy)) {
+	while (XPending(dpy)) {
 		XNextEvent(dpy, &event);
 		print_event(dpy, &event);
 		if (event.type == xdamage.event + XDamageNotify) {
