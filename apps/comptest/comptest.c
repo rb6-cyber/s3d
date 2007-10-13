@@ -43,6 +43,7 @@
 #endif
 #endif
 
+#define MAXEVENTS	50		/* maximum events per loop. */
 #define TEXW 256
 #define TEXH 256
 
@@ -131,7 +132,7 @@ static int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 		name = "Configure!!";
 	}
 
-	printf("Event: %s\n", name);
+/*	printf("Event: %s\n", name);*/
 	return(0);
 }
 
@@ -395,9 +396,9 @@ void window_update(struct window *win, int x, int y, int width, int height)
 		if (!win->oid)
 			deco_box(win);
 		if (image->format == ZPixmap) {
-			printf("XImage: %dx%d, format %d (%d), bpp: %d, depth %d, pad %d\n",
+/*			printf("XImage: %dx%d, format %d (%d), bpp: %d, depth %d, pad %d\n",
 			       image->width, image->height, image->format,
-			       ZPixmap, image->bits_per_pixel, image->depth, image->bitmap_pad);
+			       ZPixmap, image->bits_per_pixel, image->depth, image->bitmap_pad);*/
 			rs = get_shift(image->red_mask) - 8;
 			gs = get_shift(image->green_mask) - 8;
 			bs = get_shift(image->blue_mask) - 8;
@@ -407,7 +408,7 @@ void window_update(struct window *win, int x, int y, int width, int height)
 			rs = rs;
 			gs = gs - 8;
 			bs = bs - 16;
-			printf("Ximage: rgb: %d|%d|%d\n", rs, gs, bs);;
+/*			printf("Ximage: rgb: %d|%d|%d\n", rs, gs, bs);;*/
 			/*  printf("red: size %d, offset %d\n",rs,roff);
 			  printf("green: size %d, offset %d\n",gs,goff);
 			  printf("blue: size %d, offset %d\n",bs,boff);
@@ -450,14 +451,15 @@ void event()
 {
 	XEvent event;
 	struct window *window;
-	while (XPending(dpy)) {
+	int i;
+	for (i=0; i< MAXEVENTS && XPending(dpy); i++) {
 		XNextEvent(dpy, &event);
 		print_event(dpy, &event);
 		if (event.type == xdamage.event + XDamageNotify) {
 			XDamageNotifyEvent *e = (XDamageNotifyEvent*) & event;
-			printf("window = %d, geometry = %d:%d (at %d:%d), area = %d:%d (at %d:%d)\n",
+/*			printf("window = %d, geometry = %d:%d (at %d:%d), area = %d:%d (at %d:%d)\n",
 			       (int)e->drawable, e->geometry.width, e->geometry.height, e->geometry.x, e->geometry.y,
-			       e->area.width, e->area.height, e->area.x, e->area.y);
+			       e->area.width, e->area.height, e->area.x, e->area.y);*/
 			XDamageSubtract(dpy, e->damage, None, None);
 			window = window_find(e->drawable);
 			if (window!=NULL)
