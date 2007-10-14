@@ -59,6 +59,7 @@ struct window {
 	XRenderPictureAttributes  pa;
 	XRenderPictFormat    *format;
 	Picture       picture;
+	int		   already_updated;
 	int        oid;
 	int        no;
 
@@ -74,8 +75,8 @@ Window     root;
 
 static int     win_no = 0;    /* XXX: REMOVE */
 static struct timespec t = {
-	0, 10*1000*1000
-}; /* 10 mili seconds */
+	0, 50*1000*1000
+}; /* 50 mili seconds */
 
 int xinit();
 void window_update(struct window *win, int x, int y, int width, int height);
@@ -251,7 +252,6 @@ void deco_box(struct window *win)
 	int vindex, voffset, pindex;
 	int xpos, ypos;
 
-	win->no = win_no++;  /* TODO: REMOVE */
 	win->oid = s3d_new_object();
 /*
 	for (i = 0;i < 8;i++) {
@@ -306,7 +306,7 @@ void deco_box(struct window *win)
 		}
 		vindex++;
 	}
-	s3d_translate(win->oid, win->attr.x / 20, -win->attr.y / 20, 5 * win->no);
+	s3d_translate(win->oid, win->attr.x / 20, -win->attr.y / 20, 1 * win->no);
 	/*  push data on texture 0 position (0,0) */
 	s3d_flags_on(win->oid, S3D_OF_VISIBLE);
 }
@@ -317,7 +317,7 @@ struct window *window_find(Window id)
 		if (window->id == id)
 			return(window);
 	}
-	printf("not found. ;(\n");
+	printf("not found (window %d). ;(\n", (int)id);
 	return(NULL);
 	
 }
@@ -331,6 +331,8 @@ void window_add(Display *dpy, Window id)
 		return;
 	win->id = id;
 	XGetWindowAttributes(dpy, win->id, &win->attr);
+
+	win->no = win_no++;  
 	/* XSelectInput(dpy, win->id, ExposureMask|ButtonPressMask|KeyPressMask*/
 	XSelectInput(dpy, win->id, ExposureMask
 	             | SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);
@@ -344,7 +346,8 @@ void window_add(Display *dpy, Window id)
 		win->pa.subwindow_mode = IncludeInferiors;
 		win->picture = XRenderCreatePicture(dpy, win->id, win->format, CPSubwindowMode, &win->pa);
 
-		win->oid = 0;
+		win->oid = -1;
+		win->already_updated = 0;
 
 		window_update(win, 0, 0, win->attr.width, win->attr.height);
 
@@ -357,6 +360,41 @@ void window_remove(struct window *win)
 {
 	/* TODO */
 	free(win);
+}
+
+void window_update_geometry(struct window *win, int x, int y, int width, int height) 
+{
+	
+	printf("window_update_geometry()\n");
+	if (win->oid == -1) {
+		win->attr.x = x;
+		win->attr.y = y;
+		win->attr.width = width;
+		win->attr.height = height;
+
+		window_update(win, 0,0, width, height);
+		return;
+	}
+	if ((win->attr.width == width) && (win->attr.height == height)) {
+		if ((win->attr.x == x) && (win->attr.y == y)) {
+			printf("position did not change\n");
+			return;
+		} else {
+			win->attr.x = x;
+			win->attr.y = y;
+			s3d_translate(win->oid, win->attr.x / 20, -win->attr.y / 20, 1 * win->no);
+		}
+	} else {
+		win->attr.x = x;
+		win->attr.y = y;
+		win->attr.width = width;
+		win->attr.height = height;
+
+		s3d_del_object(win->oid);	/* delete the window and redraw */
+		win->oid = -1;
+		window_update(win, 0,0, width, height);
+
+	}
 }
 
 void window_update(struct window *win, int x, int y, int width, int height)
@@ -382,6 +420,12 @@ void window_update(struct window *win, int x, int y, int width, int height)
 
 	texnum = 0;
 
+	if (x == 0 && y == 0 && width == win->attr.width && height == win->attr.height) {
+		if (win->already_updated) 
+			return;
+		else
+			win->already_updated = 1;
+	}
 
 	/* if (!win->oid)
 	  deco_box(win);
@@ -393,7 +437,7 @@ void window_update(struct window *win, int x, int y, int width, int height)
 		if (!image)
 			return;
 		bitmap = malloc(chunk_width * height * sizeof(uint32_t));
-		if (!win->oid)
+		if (win->oid == -1) 
 			deco_box(win);
 		if (image->format == ZPixmap) {
 /*			printf("XImage: %dx%d, format %d (%d), bpp: %d, depth %d, pad %d\n",
@@ -452,6 +496,9 @@ void event()
 	XEvent event;
 	struct window *window;
 	int i;
+	for (window = window_head; window!=NULL; window = window->next) 
+		window->already_updated = 0;
+
 	for (i=0; i< MAXEVENTS && XPending(dpy); i++) {
 		XNextEvent(dpy, &event);
 		print_event(dpy, &event);
@@ -464,6 +511,16 @@ void event()
 			window = window_find(e->drawable);
 			if (window!=NULL)
 				window_update(window, e->area.x, e->area.y, e->area.width, e->area.height);
+		} else if (event.type == ConfigureNotify) {
+			XConfigureEvent *e = &event.xconfigure; 
+			window = window_find(e->window);
+			if (window != NULL) {
+/*				printf("Configure: window = %d, geometry = %d:%d (at %d:%d)\n",
+				       (int)e->window, e->width, e->height, e->x, e->y);*/
+				window_update_geometry(window, e->x, e->y, e->width, e->height);
+			} else {
+				printf("Configure: Could not find window to configure.\n");
+			}
 		}
 	}
 }
