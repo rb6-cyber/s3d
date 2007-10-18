@@ -223,7 +223,7 @@ int gps_init(char *gpshost)
 	gps_query(dgps, "w+x\n");
 	return(0);
 }
-int gps_main()
+int gps_main(void)
 {
 	if (gps_active && ((frame % 6) == 0)) {
 		if (gps_poll(dgps) < 0) {
@@ -253,7 +253,7 @@ int gps_main()
 	frame++;
 	return(0);
 }
-int gps_quit()
+int gps_quit(void)
 {
 	if (gps_active) {
 		printf("deactivating gps-connection ...\n");
@@ -269,11 +269,11 @@ int gps_init(char *gpshost)
 	printf("GPS support not compiled in!\n");
 	return(0);
 }
-int gps_main()
+int gps_main(void)
 {
 	return(0);
 }
-int gps_quit()
+int gps_quit(void)
 {
 	return(0);
 }

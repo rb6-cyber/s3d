@@ -35,7 +35,7 @@ icon_t icons[ICON_NUM] = {
 };
 
 /* load icons, we want to clone each of them later */
-void ui_loadicons()
+void ui_loadicons(void)
 {
 	int i;
 	for (i = 0;i < ICON_NUM;i++)
@@ -128,7 +128,7 @@ int ui_oinfo(struct s3d_evt *evt)
 	s3dw_object_info(evt);
 	return(0);
 }
-int ui_init()
+int ui_init(void)
 {
 	ui_loadicons();
 	s3d_set_callback(S3D_EVENT_OBJ_CLICK, ui_click);
@@ -152,7 +152,7 @@ int load_window(char *text)
 	return(0);
 }
 /* remove it if still here */
-int load_window_remove()
+int load_window_remove(void)
 {
 	if (loadwindow != NULL) {
 		s3dw_delete(S3DWIDGET(loadwindow));

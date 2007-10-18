@@ -8,7 +8,7 @@
 int oidx, oidy;
 static float lat, lon, tlat, tlon;
 /* load rotation centers */
-void nav_init()
+void nav_init(void)
 {
 	lat = lon = tlat = tlon = 0.0;
 	oidx = s3d_new_object();
@@ -50,7 +50,7 @@ void nav_campos(float campos[3], float earthpos[3])
 	earthpos[2] = tmp1[2];
 
 }
-void nav_main()
+void nav_main(void)
 {
 	float x[3];
 	if ((fabs(tlat - lat) > 0.00001) && (fabs(tlon - lon) > 0.00001)) {
@@ -102,7 +102,7 @@ float get_heading(float la1, float lo1, float la2, float lo2)
 	return(angle);
 }
 /* find some good center on our own */
-void nav_autocenter()
+void nav_autocenter(void)
 {
 	float med[2];
 	char query[] = "SELECT avg(longitude) as lo, avg(latitude) as la FROM node; ";

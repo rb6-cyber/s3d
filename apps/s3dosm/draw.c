@@ -428,12 +428,12 @@ void draw_ways(char *filter)
 	db_exec(query, way_group, filter);
 	waylist_draw(filter); /* last way */
 }
-void draw_osm()
+void draw_osm(void)
 {
 	load_window("Drawing Card ...");
 	draw_ways("layer_id=(SELECT layer_id FROM layer WHERE name='osm')");
 }
-void draw_kismet()
+void draw_kismet(void)
 {
 	char query[MAXQ];
 	char filter[] = "layer_id=(SELECT layer_id FROM layer WHERE name='kismet')";
@@ -444,7 +444,7 @@ void draw_kismet()
 	snprintf(query, MAXQ, "SELECT * FROM node WHERE %s;", filter);
 	db_exec(query, draw_icon, filter);
 }
-void draw_all_layers()
+void draw_all_layers(void)
 {
 	draw_osm();
 	draw_kismet();

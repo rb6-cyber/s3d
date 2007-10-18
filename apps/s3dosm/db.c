@@ -243,7 +243,7 @@ static int db_really_exec(const char *query, sqlite3_callback callback, void *ar
 }
 
 /* call this if you're finished with a few stackable operations */
-void db_flush()
+void db_flush(void)
 {
 	if (qlen > 0)
 		db_really_exec(qbuf, NULL, 0);
@@ -289,7 +289,7 @@ int db_init(char *dbFile)
 	return(0);
 }
 
-int db_quit()
+int db_quit(void)
 {
 	sqlite3_close(db);
 	if (dbFile != NULL)
@@ -298,7 +298,7 @@ int db_quit()
 	return(0);
 }
 
-int db_create()
+int db_create(void)
 {
 	db_exec("CREATE TABLE node (layer_id INT, node_id INTEGER , latitude DOUBLE PRECISION, longitude DOUBLE PRECISION, altitude DOUBLE PRECISION, visible BOOLEAN, tag_id INT, s3doid INT, PRIMARY KEY(layer_id,node_id));", NULL, 0);
 	db_exec("CREATE TABLE segment (layer_id INT, seg_id INTEGER, node_from INT, node_to INT, tag_id INT, way_id INT,PRIMARY KEY(layer_id,seg_id));", NULL, 0);

@@ -29,7 +29,7 @@
 #include <time.h>  /*  nanosleep(), struct tm, time_t...  */
 static int ready = 0;
 
-void mainloop()
+void mainloop(void)
 {
 	struct timespec t = {
 		0, 100*1000*1000
@@ -55,7 +55,7 @@ int init(int argc, char **argv)
 	ready = 1;
 	return(0);
 }
-int quit()
+int quit(void)
 {
 	ready = 0;
 	gps_quit();
