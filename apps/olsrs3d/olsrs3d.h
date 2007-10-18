@@ -65,17 +65,17 @@ extern int Move_cam_target;
 extern int move_cam_to;
 
 /* process */
-void lst_initialize();
+void lst_initialize(void);
 void lst_add(int id, struct olsr_node **olsr_node);
 void lst_del(int id);
 struct olsr_node *lst_search(int id);
-void lst_out();
+void lst_out(void);
 struct olsr_node *move_lst_ptr(int *id);
-int process_main();
+int process_main(void);
 /* net */
 int net_init(char *host);
-int net_main();
-int net_quit();
+int net_main(void);
+int net_quit(void);
 /* main */
 void out_of_mem(void);
 void print_etx(void);

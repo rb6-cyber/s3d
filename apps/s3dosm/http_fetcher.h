@@ -124,7 +124,7 @@ void http_perror(const char *string);
  * so if you need to hold on to the message for a while you should make
  * a copy of it.
  */
-const char *http_strerror();
+const char *http_strerror(void);
 
 
 

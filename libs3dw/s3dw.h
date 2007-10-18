@@ -172,7 +172,7 @@ void      s3dw_input_change_text(s3dw_input *input, char *text);
 void      s3dw_label_change_text(s3dw_label *label, char *text);
 s3dw_surface   *s3dw_surface_new(char *title, float width, float height);
 
-s3dw_widget   *s3dw_getroot();
+s3dw_widget   *s3dw_getroot(void);
 void     s3dw_moveit(s3dw_widget *widget);
 void      s3dw_delete(s3dw_widget *widget);
 void      s3dw_show(s3dw_widget *widget);
@@ -189,7 +189,7 @@ int      s3dw_handle_click(struct s3d_evt *evt);
 int      s3dw_handle_key(struct s3d_evt *evt);
 int      s3dw_object_info(struct s3d_evt *evt);
 
-void      s3dw_ani_mate();
+void      s3dw_ani_mate(void);
 #ifdef HAVE_GCCVISIBILITY
 #pragma GCC visibility pop
 #endif

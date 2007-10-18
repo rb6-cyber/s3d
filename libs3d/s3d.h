@@ -84,10 +84,10 @@ struct s3d_key_event {
 #ifdef HAVE_GCCVISIBILITY
 #pragma GCC visibility push(default) /* Only export following functions */
 #endif
-void s3d_usage();
+void s3d_usage(void);
 int s3d_init(int *argc, char ***argv, char *name);
-int s3d_quit();
-int s3d_mainloop(void (*f)());
+int s3d_quit(void);
+int s3d_mainloop(void (*f)(void));
 
 /* object manipulations */
 int s3d_push_vertex(int object, float x, float y, float z);
@@ -138,7 +138,7 @@ int s3d_load_polygon_normals(int object, float *nbuf, uint32_t start, uint16_t n
 int s3d_load_polygon_tex_coords(int object, float *tbuf, uint32_t start, uint16_t n);
 int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h, uint8_t *data);
 
-int s3d_new_object();
+int s3d_new_object(void);
 int s3d_del_object(int oid);
 
 int s3d_clone(int oid);
@@ -171,7 +171,7 @@ void s3d_vector_cross_product(float vector1[], float vector2[], float result_vec
 
 /* event handlers */
 void s3d_push_event(struct s3d_evt *newevt);
-struct s3d_evt *s3d_pop_event();
+struct s3d_evt *s3d_pop_event(void);
 struct s3d_evt *s3d_find_event(uint8_t event);
 int s3d_delete_event(struct s3d_evt *devt);
 
@@ -179,13 +179,13 @@ void s3d_set_callback(uint8_t event, s3d_cb func);
 void s3d_clear_callback(uint8_t event);
 void s3d_ignore_callback(uint8_t event);
 s3d_cb s3d_get_callback(uint8_t event);
-void s3d_process_stack();
+void s3d_process_stack(void);
 
 /* mcp special */
 int s3d_mcp_focus(int object);
 
 /* for apps which don't employ s3d_mainloop() */
-int s3d_net_check();
+int s3d_net_check(void);
 #ifdef HAVE_GCCVISIBILITY
 #pragma GCC visibility pop
 #endif

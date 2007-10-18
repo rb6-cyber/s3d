@@ -135,7 +135,7 @@ void    ani_doit(t_node *f);
 void    ani_finish(t_node *f, int i);
 void    ani_iterate(t_node *f);
 int    ani_check(t_node *f);
-void    ani_mate();
+void    ani_mate(void);
 /* box.c */
 void    box_draw(t_node *dir);
 void     box_draw_icons(t_node *dir);
@@ -150,10 +150,10 @@ int    box_close(t_node *dir, int force);
 void    box_focus_color(t_node *dir, int on);
 /* dialog.c */
 void   close_win(s3dw_widget *button);
-void   window_help();
+void   window_help(void);
 void    window_fs(s3dw_widget *button);
-void   window_fs_another();
-void   window_fs_nothing();
+void   window_fs_another(void);
+void   window_fs_nothing(void);
 void   window_fs_errno(char *errmsg);
 void   window_fs_abort(s3dw_widget *button);
 void   window_copy(char *path);
@@ -161,8 +161,8 @@ void   window_fs_mkdir(s3dw_widget *button);
 void   window_mkdir(char *path);
 void   window_move(char *path);
 void   window_info(char *path);
-void   window_fsani();
-void    window_unlink();
+void   window_fsani(void);
+void    window_unlink(void);
 /* event.c */
 int    event_click(struct s3d_evt *evt);
 int    event_key(struct s3d_evt *evt);

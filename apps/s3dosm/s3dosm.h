@@ -128,16 +128,16 @@ void    node_init(node_t *nnode);
 void    segment_init(segment_t *nsegment);
 void    way_init(way_t *nway);
 object_t  *object_new(int key);
-node_t   *node_new();
-segment_t  *segment_new();
-layer_t  *layer_new();
-way_t   *way_new();
+node_t   *node_new(void);
+segment_t  *segment_new(void);
+layer_t  *layer_new(void);
+way_t   *way_new(void);
 void    node_free(node_t *node);
 void    segment_free(segment_t *segment);
 void    way_free(way_t *way);
 void    layerset_add(layer_t *layer);
 /* main.c */
-void mainloop();
+void mainloop(void);
 /* osm.c */
 void debug_obj(object_t *obj, void *dummy);
 layer_t *parse_osm(char *buf, int length);
@@ -147,15 +147,15 @@ layer_t *load_osm_web(float minlon, float minlat, float maxlon, float maxlat);
 layer_t *parse_kismet(char *buf, int length);
 layer_t *load_kismet_file(char *filename);
 /* draw.c */
-void draw_all_layers();
+void draw_all_layers(void);
 int draw_layer(layer_t *layer);
 void calc_earth_to_eukl(float lat, float lon, float alt, float *x);
 void draw_translate_icon(int user_icon, float la, float lo);
 /* nav.c */
-void nav_main();
-void nav_init();
+void nav_main(void);
+void nav_init(void);
 void nav_center(float la, float lo);
-void nav_autocenter();
+void nav_autocenter(void);
 void nav_campos(float campos[3], float earthpos[3]);
 float get_heading(float la1, float lo1, float la2, float lo2);
 extern int oidy;
@@ -180,19 +180,19 @@ int db_insert_way_only(way_t *way);
 int db_insert_way_seg(way_t *way, int seg_n);
 int db_insert_object(object_t *obj);
 int db_init(char *dbFile);
-int db_quit();
-int db_create();
+int db_quit(void);
+int db_create(void);
 int db_insert_layer(char *layer_name);
-void db_flush();
+void db_flush(void);
 int callback(void *NotUsed, int argc, char **argv, char **azColName);
 /* gps.c */
 int gps_init(char *gpshost);
-int gps_main();
-int gps_quit();
+int gps_main(void);
+int gps_quit(void);
 /* ui.c */
-int ui_init();
+int ui_init(void);
 int load_window(char *text);
-int load_window_remove();
+int load_window_remove(void);
 int load_update_status(float percent);
 /* olsrs3d.c */
 #define NODEHEIGHT 10
@@ -200,7 +200,7 @@ int olsr_object_click(struct s3d_evt *evt);
 int olsr_object_info(struct s3d_evt *hrmz);
 int olsr_parse_args(int argc, char **argv);
 int olsr_keypress(struct s3d_evt *event);
-void olsr_main();
-int olsr_init();
-int olsr_quit();
+void olsr_main(void);
+int olsr_init(void);
+int olsr_quit(void);
 int olsr_parse_args(int argc, char **argv);

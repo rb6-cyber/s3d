@@ -33,5 +33,5 @@
 #endif
 #endif
 
-int menu_init();
+int menu_init(void);
 void menu_click(int oid);

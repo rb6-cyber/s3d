@@ -97,20 +97,20 @@ extern struct hashtable_t *con_hash;
 
 /* process.c */
 /*
-void lst_initialize();
+void lst_initialize(void);
 void lst_add(int id,struct olsr_node **olsr_node);
 void lst_del(int id);
 struct olsr_node *lst_search(int id);
-void lst_out();
+void lst_out(void);
 struct olsr_node *move_lst_ptr(int *id);
 */
-int process_main();
-void process_init();
+int process_main(void);
+void process_init(void);
 
 /* net.c */
 int net_init(char *host);
-int net_main();
-int net_quit();
+int net_main(void);
+int net_quit(void);
 
 /* main */
 /*

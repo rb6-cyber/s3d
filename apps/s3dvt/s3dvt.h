@@ -59,7 +59,7 @@ typedef struct line_struct {
 
 extern t_line line[MAX_LINES+1];
 /* main.c */
-void paintit();
+void paintit(void);
 void term_addchar(char toprint);
 /* terminal.c */
 void AddChar(char *_toadd);
