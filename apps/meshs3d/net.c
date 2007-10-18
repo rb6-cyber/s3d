@@ -70,7 +70,7 @@ int net_init(char *host)
 	return(0);
 }
 
-int net_main()
+int net_main(void)
 {
 	static int net_read_count = 0;
 
@@ -121,7 +121,7 @@ int net_main()
 
 }
 
-int net_quit()
+int net_quit(void)
 {
 	close(sockfd);
 

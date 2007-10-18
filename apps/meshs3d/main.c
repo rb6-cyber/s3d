@@ -105,15 +105,15 @@ float dirt(float p1[], float p2[], float p3[])
 	return(d);
 }
 
-void handle_node()
+void handle_node(void)
 {
-	struct node *node,*tmp_node;
+	struct node *node, *tmp_node;
 	struct node_con *con;
-	struct hash_it_t *hashit,*tmp_hashit=NULL;
+	struct hash_it_t *hashit, *tmp_hashit = NULL;
 	int ip[2];
 	float angle, angle_rad;
 	float tmp_mov_vec[3], desc_norm_vec[3] = {0, 0, -1};
-	
+
 	if (node_hash->elements == 0)
 		return;
 	hashit = NULL;
@@ -154,7 +154,7 @@ void handle_node()
 			Global.node_count--;
 			while (NULL != (tmp_hashit = hash_iterate(node_hash, tmp_hashit))) {
 				tmp_node = (struct node *) tmp_hashit->bucket->data;
-				if ( node != tmp_node && (max(node->ip, tmp_node->ip) == node->ip)) {
+				if (node != tmp_node && (max(node->ip, tmp_node->ip) == node->ip)) {
 					ip[0] = node->ip;
 					ip[1] = tmp_node->ip;
 					if (NULL != (con = hash_find(con_hash, ip))) {
@@ -166,7 +166,7 @@ void handle_node()
 
 		}
 
-		if(node->visible) {
+		if (node->visible) {
 
 			/* rotate node description so that they are always readable */
 			tmp_mov_vec[0] = Global.cam_position[0][0] - node->pos_vec[0];
@@ -225,8 +225,8 @@ void move_meshnode(struct node *node)
 
 void color_handler(struct node_con *con)
 {
-	float rgb=0.0, r=0.0, g=0.0, b=0.0, etx;
-	int c, c1=0;
+	float rgb = 0.0, r = 0.0, g = 0.0, b = 0.0, etx;
+	int c, c1 = 0;
 
 	if (con->etx1 == -1000.00 || con->etx2 == -1000) {
 
@@ -241,38 +241,44 @@ void color_handler(struct node_con *con)
 		if ((etx >= 1.0) && (etx < 1.5)) {
 
 			c = 2;
-			r = 0.5; g = 1.0; b = 1.0;
+			r = 0.5;
+			g = 1.0;
+			b = 1.0;
 
-		/* good link - bright yellow */
+			/* good link - bright yellow */
 		} else if ((etx >= 1.5) && (etx < 2.0)) {
 
 			rgb = 2.0 - etx;
 
 			c = 3;
 			c1 = con->color == 3 && (int) rintf(con->rgb * 10) != (int) rintf(rgb * 10) ? 1 : 0;
-			r = 1.0; g = 1.0; b = rgb;
+			r = 1.0;
+			g = 1.0;
+			b = rgb;
 
-		/* not so good link - orange */
+			/* not so good link - orange */
 		} else if ((etx >= 2.0) && (etx < 3.0)) {
 
 			rgb = 1.5 - (etx / 2.0);
-			
+
 			c = 4;
 			c1 = con->color == 4 && (int) rintf(con->rgb * 10) != (int) rintf(rgb * 10) ? 1 : 0;
-			r = 1.0; g = rgb;
+			r = 1.0;
+			g = rgb;
 
-		/* bad link (almost dead) - brown */
+			/* bad link (almost dead) - brown */
 		} else if ((etx >= 3.0) && (etx < 5.0)) {
 
 			rgb = 1.75 - (etx / 4.0);
 
 			c = 5;
 			c1 = con->color == 5 && (int) rintf(con->rgb * 10) != (int) rintf(rgb * 10) ? 1 : 0;
-			
-			r = rgb; g = rgb - 0.5; 
+
+			r = rgb;
+			g = rgb - 0.5;
 
 
-		/* zombie link - grey */
+			/* zombie link - grey */
 		} else if ((etx >= 5.0) && (etx < 1000.0)) {
 
 			rgb = 1000.0 / (1500.0 + etx);
@@ -282,7 +288,7 @@ void color_handler(struct node_con *con)
 
 			r = g = b = rgb;
 
-		/* wtf - dark grey */
+			/* wtf - dark grey */
 		} else {
 
 			c = 7;
@@ -291,16 +297,16 @@ void color_handler(struct node_con *con)
 		}
 
 	}
-	
+
 	if (con->color != c || c1) {
 		s3d_pep_material(con->obj_id,
-			r, g, b,
-			r, g, b,
-			r, g, b);
+		                 r, g, b,
+		                 r, g, b,
+		                 r, g, b);
 
 		con->color = c;
 
-		if(rgb != 0.0)
+		if (rgb != 0.0)
 			con->rgb = rgb;
 	}
 
@@ -356,10 +362,10 @@ void calc_node_mov(void)
 					else {
 
 						s3d_pep_material(con->obj_id,
-					                 1.0, 1.0, 1.0,
-					                 1.0, 1.0, 1.0,
-					                 1.0, 1.0, 1.0
-					                );
+						                 1.0, 1.0, 1.0,
+						                 1.0, 1.0, 1.0,
+						                 1.0, 1.0, 1.0
+						                );
 						con->color = 0;
 
 					}
@@ -384,7 +390,7 @@ void calc_node_mov(void)
 
 }
 
-void mainloop()
+void mainloop(void)
 {
 	static int last_count = 0;
 	int net_result;   /* result of function net_main */
@@ -394,19 +400,19 @@ void mainloop()
 	calc_node_mov();
 	handle_node();
 
-	
+
 	if (Global.node_count && Global.node_count != last_count) {
 
 		if (Global.obj_node_count) s3d_del_object(Global.obj_node_count);
-		
-		snprintf(nc_str, 20, "node count: %d", Global.node_count );
-		Global.obj_node_count = s3d_draw_string( nc_str, &str_len );
-		
-		s3d_link( Global.obj_node_count, 0 );
-		s3d_flags_on( Global.obj_node_count, S3D_OF_VISIBLE );
-		s3d_scale( Global.obj_node_count, 0.2 );
-		s3d_translate( Global.obj_node_count, -Global.left * 3.0 - (str_len * 0.2), -Global.bottom * 3.0 - 0.7, -3.0 );
-		
+
+		snprintf(nc_str, 20, "node count: %d", Global.node_count);
+		Global.obj_node_count = s3d_draw_string(nc_str, &str_len);
+
+		s3d_link(Global.obj_node_count, 0);
+		s3d_flags_on(Global.obj_node_count, S3D_OF_VISIBLE);
+		s3d_scale(Global.obj_node_count, 0.2);
+		s3d_translate(Global.obj_node_count, -Global.left * 3.0 - (str_len * 0.2), -Global.bottom * 3.0 - 0.7, -3.0);
+
 		last_count = Global.node_count;
 
 	}
@@ -417,7 +423,7 @@ void mainloop()
 		Global.output_block_completed = 0;
 
 	}
-	
+
 	while ((net_result = net_main()) != 0) {
 		if (net_result == -1) {
 			printf("that's it folks\n");
@@ -442,10 +448,10 @@ int object_info(struct s3d_evt *hrmz)
 		Global.cam_position[1][0] = inf->rot_x;
 		Global.cam_position[1][1] = inf->rot_y;
 		Global.cam_position[1][2] = inf->rot_z;
-		
+
 		Global.asp = inf->scale;
 
-		if ( Global.asp > 1.0) {
+		if (Global.asp > 1.0) {
 
 			Global.bottom = -1.0;
 			Global.left = -Global.asp;
@@ -529,10 +535,10 @@ int main(int argc, char *argv[])
 	process_init();
 
 	if (!net_init(olsr_host)) {
-		
-		s3d_set_callback( S3D_EVENT_OBJ_INFO, object_info );
-		s3d_set_callback(S3D_EVENT_KEY,keypress);
-		
+
+		s3d_set_callback(S3D_EVENT_OBJ_INFO, object_info);
+		s3d_set_callback(S3D_EVENT_KEY, keypress);
+
 
 		/*s3d_set_callback(S3D_EVENT_OBJ_CLICK,object_click);
 		s3d_set_callback(S3D_EVENT_QUIT,stop); */

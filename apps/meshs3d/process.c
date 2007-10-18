@@ -102,7 +102,7 @@ void exit_error(char *format, ...)
 	exit(EXIT_FAILURE);
 }
 
-void process_init()
+void process_init(void)
 {
 	/* initialize hashtable */
 	if (NULL == (node_hash = hash_new(1600, orig_comp, orig_choose)))
@@ -147,12 +147,12 @@ void handle_con(unsigned int ip1, unsigned int ip2, float etx)
 		hash_add(con_hash, con);
 	}
 
-	if(con->obj_id == -1) {
+	if (con->obj_id == -1) {
 		con->obj_id = s3d_new_object();
 		s3d_push_material(con->obj_id,
-			1.0, 1.0, 1.0,
-      			1.0, 1.0, 1.0,
-      			1.0, 1.0, 1.0);
+		                  1.0, 1.0, 1.0,
+		                  1.0, 1.0, 1.0,
+		                  1.0, 1.0, 1.0);
 		s3d_push_vertex(con->obj_id, 0, 0, 0);
 		s3d_push_vertex(con->obj_id, 0, 0, 0);
 		s3d_push_line(con->obj_id, 0, 1, 0);
@@ -161,13 +161,13 @@ void handle_con(unsigned int ip1, unsigned int ip2, float etx)
 
 	if (con->ip[0] == ip1) {
 		con->etx1 = etx;
-		if(etx != -1000.00)
+		if (etx != -1000.00)
 			con->etx1_sqrt = sqrt(etx);
 		else
 			con->etx1_sqrt = sqrt(2.0);
 	} else {
 		con->etx2 = etx;
-		if(etx != -1000.00)
+		if (etx != -1000.00)
 			con->etx2_sqrt = sqrt(etx);
 		else
 			con->etx2_sqrt = sqrt(2.0);
@@ -183,8 +183,7 @@ void handle_con(unsigned int ip1, unsigned int ip2, float etx)
 
 }
 
-struct node *handle_mesh_node(unsigned int ip, char *ip_string)
-{
+struct node *handle_mesh_node(unsigned int ip, char *ip_string) {
 	struct node *orig_node;
 	struct hashtable_t *swaphash;
 
@@ -217,7 +216,7 @@ struct node *handle_mesh_node(unsigned int ip, char *ip_string)
 		Global.node_count++;
 	}
 
-	if(!orig_node->visible) {
+	if (!orig_node->visible) {
 		orig_node->visible = 1;
 		orig_node->node_type_modified = 1;
 		Global.node_count++;
@@ -226,7 +225,7 @@ struct node *handle_mesh_node(unsigned int ip, char *ip_string)
 	return(orig_node);
 }
 
-int process_main()
+int process_main(void)
 {
 
 	int dn;
@@ -234,7 +233,7 @@ int process_main()
 	char *lbuf_ptr, *last_cr_ptr, *con_from, *con_from_end, *con_to, *con_to_end, *etx, *etx_end, *tmp_char;
 	char hna_name[NAMEMAX];
 	char hna_node[NAMEMAX];
-	
+
 	struct node *tmp_node;
 	unsigned int int_con_from = 0, int_con_to = 0, address;
 
@@ -282,7 +281,7 @@ int process_main()
 
 				/* announced network via HNA */
 				if (strncmp(etx, "HNA", NAMEMAX) == 0) {
-				
+
 					if (strncmp(con_to, "0.0.0.0/0.0.0.0", NAMEMAX) == 0) {
 
 						if (inet_pton(AF_INET, con_from, &int_con_from) < 1) {
@@ -299,7 +298,7 @@ int process_main()
 							if (Global.debug) printf("new internet: %s\n", tmp_node->ip_string);
 
 						}
-					
+
 					} else {
 
 						memmove(hna_node, con_to, NAMEMAX);
@@ -332,9 +331,9 @@ int process_main()
 							if (Global.debug) printf("new hna network: %s\n", tmp_node->ip_string);
 
 						}
-						
+
 						handle_con(int_con_from, int_con_to, -1000);
-					
+
 					}
 
 				} else {

@@ -25,27 +25,29 @@ struct t_data {
 };
 
 
-void list_data(struct data *head, struct data *end) {
+void list_data(struct data *head, struct data *end)
+{
 	struct data *tmp;
-	
-	for(tmp=head->next;tmp != end;tmp=tmp->next) {
-		printf("%d: %s | %d\n",tmp->index, tmp->line,tmp->active);
+
+	for (tmp = head->next;tmp != end;tmp = tmp->next) {
+		printf("%d: %s | %d\n", tmp->index, tmp->line, tmp->active);
 	}
 }
 
-void rem_data( int index,struct data *head, struct data *end ) {
-	struct data *tmp, *prev=head;
-	
-	for(tmp=head->next;tmp != end;prev = tmp, tmp=tmp->next) {
-		if(tmp->index == index)
+void rem_data(int index, struct data *head, struct data *end)
+{
+	struct data *tmp, *prev = head;
+
+	for (tmp = head->next;tmp != end;prev = tmp, tmp = tmp->next) {
+		if (tmp->index == index)
 			break;
 	}
 
-	if(tmp != end) {
+	if (tmp != end) {
 
 		prev->next = tmp->next;
-		
-		printf("remove index %d\n",tmp->index);
+
+		printf("remove index %d\n", tmp->index);
 		free(tmp);
 	} else {
 		printf("index not found\n");
@@ -53,54 +55,58 @@ void rem_data( int index,struct data *head, struct data *end ) {
 	return;
 }
 
-void dea_data( int index,struct data *head, struct data *end ) {
+void dea_data(int index, struct data *head, struct data *end)
+{
 	struct data *tmp;
-	
-	for(tmp=head->next;tmp != end; tmp=tmp->next) {
-		if(tmp->index == index)
+
+	for (tmp = head->next;tmp != end; tmp = tmp->next) {
+		if (tmp->index == index)
 			break;
 	}
 
-	if(tmp != end && tmp != head) {
+	if (tmp != end && tmp != head) {
 		tmp->active = 0;
 	}
 	return;
 }
 
-void act_data( int index,struct data *head, struct data *end ) {
+void act_data(int index, struct data *head, struct data *end)
+{
 	struct data *tmp;
-	
-	for(tmp=head->next;tmp != end; tmp=tmp->next) {
-		if(tmp->index == index)
+
+	for (tmp = head->next;tmp != end; tmp = tmp->next) {
+		if (tmp->index == index)
 			break;
 	}
 
-	if(tmp != end && tmp != head) {
+	if (tmp != end && tmp != head) {
 		tmp->active = 1;
 	}
 	return;
 }
 
-static void sig(int signr) {
+static void sig(int signr)
+{
 	return;
 }
 
-void *server(void *args) {
+void *server(void *args)
+{
 	struct t_data *t = (struct t_data*)args;
-	int listen_fd,yes=1;
-	struct sockaddr_in sock,client;
+	int listen_fd, yes = 1;
+	struct sockaddr_in sock, client;
 	struct data *tmp;
-	
+
 	int sock2;
 	socklen_t len;
-	
+
 	char buffer[2000];
-	char start[] ="digraph topology\n{\n";
+	char start[] = "digraph topology\n{\n";
 	char end[] = "}\n";
 	int index;
 
 	signal(SIGPIPE, sig);
-	
+
 	listen_fd = socket(PF_INET, SOCK_STREAM, 0);
 	setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
 
@@ -111,24 +117,24 @@ void *server(void *args) {
 
 	bind(listen_fd, (struct sockaddr *) &sock, sizeof(sock));
 	listen(listen_fd, 1);
-	
-	len = sizeof( client );
-		
-	while(1) {
 
-		sock2 =	accept( listen_fd, (struct sockaddr*)&client, &len);
+	len = sizeof(client);
 
-		while(1) {
-		
-			memset(buffer,0,2000);
-			strcat(buffer,start);
+	while (1) {
+
+		sock2 = accept(listen_fd, (struct sockaddr*) & client, &len);
+
+		while (1) {
+
+			memset(buffer, 0, 2000);
+			strcat(buffer, start);
 			index = strlen(start);
 
-			for(tmp=t->head->next;tmp != t->end;tmp=tmp->next) {
+			for (tmp = t->head->next;tmp != t->end;tmp = tmp->next) {
 
-				if(!tmp->active)
+				if (!tmp->active)
 					continue;
-				strcat(&buffer[index],tmp->line );
+				strcat(&buffer[index], tmp->line);
 				index += strlen(tmp->line);
 				strcat(&buffer[index], "\n");
 				index++;
@@ -137,25 +143,26 @@ void *server(void *args) {
 
 			strcat(&buffer[index], end);
 			buffer[index+2] = 0;
-			if( send ( sock2, buffer, strlen(buffer), 0 ) < 1 )
+			if (send(sock2, buffer, strlen(buffer), 0) < 1)
 				break;
 
 			sleep(3);
 
 		}
 	}
-	
+
 	return NULL;
 }
 
-int main() {
+int main()
+{
 	char buffer[BUFFER_SIZE];
 	char *tmp_buffer;
 	struct data *head, *z, *t;
 	static int index = 0;
 	struct t_data t_dat;
 	pthread_t thread;
-	
+
 	head = malloc(sizeof(*head));
 	z = malloc(sizeof(*z));
 
@@ -163,13 +170,13 @@ int main() {
 
 	t_dat.head = head;
 	t_dat.end = z;
-	pthread_create (&thread, NULL, server, &t_dat);
+	pthread_create(&thread, NULL, server, &t_dat);
 	pthread_detach(thread);
 	printf("\ntestivs: ");
 
-	while(fgets(buffer, BUFFER_SIZE, stdin)) {
+	while (fgets(buffer, BUFFER_SIZE, stdin)) {
 
-		if( (tmp_buffer = strstr(buffer, "add")) != NULL ) {
+		if ((tmp_buffer = strstr(buffer, "add")) != NULL) {
 			tmp_buffer[strlen(tmp_buffer) - 1] = 0;
 			tmp_buffer += 4;
 			t = malloc(sizeof(*t));
@@ -178,29 +185,29 @@ int main() {
 			t->active = 1;
 			t->next = head->next;
 			head->next = t;
-		} else if( (tmp_buffer = strstr(buffer, "list")) != NULL ) {
+		} else if ((tmp_buffer = strstr(buffer, "list")) != NULL) {
 
-			list_data(head,z);
+			list_data(head, z);
 
-		} else if( (tmp_buffer = strstr(buffer, "rem")) != NULL ) {
-
-			tmp_buffer[strlen(tmp_buffer) - 1] = 0;
-			tmp_buffer += 4;
-			rem_data( atoi(tmp_buffer),head,z);
-
-		} else if( (tmp_buffer = strstr(buffer, "dea")) != NULL ) {
+		} else if ((tmp_buffer = strstr(buffer, "rem")) != NULL) {
 
 			tmp_buffer[strlen(tmp_buffer) - 1] = 0;
 			tmp_buffer += 4;
-			dea_data( atoi(tmp_buffer),head,z);
+			rem_data(atoi(tmp_buffer), head, z);
 
-		} else if( (tmp_buffer = strstr(buffer, "act")) != NULL ) {
+		} else if ((tmp_buffer = strstr(buffer, "dea")) != NULL) {
 
 			tmp_buffer[strlen(tmp_buffer) - 1] = 0;
 			tmp_buffer += 4;
-			act_data( atoi(tmp_buffer),head,z);
+			dea_data(atoi(tmp_buffer), head, z);
 
-		} else if( (tmp_buffer = strstr(buffer, "quit")) != NULL ) {
+		} else if ((tmp_buffer = strstr(buffer, "act")) != NULL) {
+
+			tmp_buffer[strlen(tmp_buffer) - 1] = 0;
+			tmp_buffer += 4;
+			act_data(atoi(tmp_buffer), head, z);
+
+		} else if ((tmp_buffer = strstr(buffer, "quit")) != NULL) {
 
 			break;
 
@@ -211,6 +218,6 @@ int main() {
 		printf("testivs: ");
 
 	}
-	
+
 	return 0;
 }
