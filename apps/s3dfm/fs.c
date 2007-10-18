@@ -53,7 +53,7 @@ filelist *fl_new(char *path)
 	fl = malloc(sizeof(filelist));
 	fl->p = NULL;
 	fl->n = 0;
-	n = scandir(path, &namelist, 0, alphasort);
+	n = scandir(path, &namelist, NULL, alphasort);
 	if (n <= 2) { /* . and .. is always included. */
 		if (n < 0)
 			fs_error("fl_new():scandir()", path);
