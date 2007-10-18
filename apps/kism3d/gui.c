@@ -118,7 +118,7 @@ int wire_sphere(int slices, int stacks)
 
 
 
-int handle_networks()
+int handle_networks(void)
 {
 
 	struct list_head *network_pos;
@@ -246,7 +246,7 @@ int handle_networks()
 
 
 
-int handle_clients()
+int handle_clients(void)
 {
 
 	struct list_head *client_pos;
@@ -380,7 +380,7 @@ int object_info(struct s3d_evt *hrmz)
 
 
 
-void mainloop()
+void mainloop(void)
 {
 
 	float angle, diff_vec[3], tmp_vec[3] = { 0.0, 0.0, -1.0 };
