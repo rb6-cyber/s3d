@@ -33,12 +33,14 @@ struct menu_entry {
 	char *icon, *name, *path;
 	int icon_oid, str_oid;
 };
+
 static int go = -1;
 static int act;
 static struct menu_entry menu[] = {
 	{"objs/comp.3ds", "terminal", "s3dvt",    0, 0
 	}, {"objs/comp.3ds", "olsrs3d", "olsrs3d",    0, 0}, {"objs/comp.3ds", "s3d_x11gate", "s3d_x11gate",  0, 0}, {"objs/comp.3ds", "filebrowser", "filebrowser",  0, 0}, {"objs/comp.3ds", "logout", "LOGOUT",     0, 0},
 };
+
 void menu_click(int oid)
 {
 	unsigned int i;
@@ -74,7 +76,8 @@ void menu_click(int oid)
 		}
 	}
 }
-int menu_init()
+
+int menu_init(void)
 {
 	unsigned int i;
 	int menu_o;
@@ -97,5 +100,3 @@ int menu_init()
 	}
 	return(menu_o);
 }
-
-

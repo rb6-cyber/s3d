@@ -71,7 +71,7 @@ void place_apps();
 
 #define SIDES 60
 #define RINGS 60
-int greentorus()
+int greentorus(void)
 {
 	int o, i, j;
 	float R, r, a;
@@ -128,6 +128,7 @@ int greentorus()
 	s3d_flags_on(o, S3D_OF_VISIBLE);
 	return(o);
 }
+
 void set_focus(struct app *a)
 {
 	if (focus != a)
@@ -193,6 +194,7 @@ int add_app(struct app *a)
 	n_app += 1;
 	return(0);
 }
+
 void *find_app(int oid)
 {
 	struct app *a = apps;
@@ -203,6 +205,7 @@ void *find_app(int oid)
 	}
 	return(a);
 }
+
 void *del_app(int oid)
 {
 	struct app *prev = NULL, *a = apps;
@@ -232,12 +235,14 @@ void *del_app(int oid)
 	}
 	return(a);
 }
-int stop()
+
+int stop(void)
 {
 	s3d_quit();
 	return(0);
 }
-void place_apps()
+
+void place_apps(void)
 {
 	struct app *a = apps;
 	int j = 0;
@@ -270,6 +275,7 @@ void place_apps()
 	xa = s3d_vector_angle(v, u);
 	s3d_rotate(menu, 0 , 30, 0);
 }
+
 int mcp_object(struct s3d_evt *hrmz)
 {
 	struct mcp_object *mo;
@@ -303,6 +309,7 @@ int mcp_object(struct s3d_evt *hrmz)
 	}
 	return(0);
 }
+
 void app_init(struct app *a)
 {
 	printf("building some window decorations on %d ['%s']\n", a->oid, a->name);
@@ -339,6 +346,7 @@ void app_init(struct app *a)
 	 else*/
 	place_apps();
 }
+
 int mcp_del_object(struct s3d_evt *hrmz)
 {
 	struct mcp_object *mo;
@@ -346,6 +354,7 @@ int mcp_del_object(struct s3d_evt *hrmz)
 	del_app(mo->object);
 	return(0);
 }
+
 int object_click(struct s3d_evt *hrmz)
 {
 	struct app *a;
@@ -382,6 +391,7 @@ int object_click(struct s3d_evt *hrmz)
 	menu_click(oid);
 	return(0);
 }
+
 int object_info(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
@@ -409,7 +419,8 @@ int object_info(struct s3d_evt *hrmz)
 	}
 	return(0);
 }
-void mainloop()
+
+void mainloop(void)
 {
 	struct app *a;
 	float al, r;
@@ -468,6 +479,7 @@ int keydown(struct s3d_evt *event)
 	}
 	return(0);
 }
+
 int keyup(struct s3d_evt *event)
 {
 	struct s3d_key_event *keys = (struct s3d_key_event *)event->buf;
