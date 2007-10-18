@@ -66,12 +66,10 @@ struct window {
 	struct window     *next;
 };
 
-struct extension    xrender, xcomposite, xdamage, xfixes;
-struct window   *window_head = NULL;
-Display       *dpy;
-char    *display = NULL;
-int      scr;
-Window     root;
+static struct extension    xrender, xcomposite, xdamage, xfixes;
+static struct window   *window_head = NULL;
+static Display       *dpy;
+static char    *display = NULL;
 
 static int     win_no = 0;    /* XXX: REMOVE */
 static struct timespec t = {
@@ -83,13 +81,13 @@ void window_update(struct window *win, int x, int y, int width, int height);
 static int print_event(Display *dpy, XEvent *event);
 void event();
 
-void mainloop(void)
+static void mainloop(void)
 {
 	event();
 	nanosleep(&t, NULL);
 }
 
-int get_shift(unsigned long t)
+static int get_shift(unsigned long t)
 {
 	int i;
 	for (i = 0; t ; i++)
@@ -216,7 +214,7 @@ int xinit(void)
 	return(0);
 }
 
-void deco_box(struct window *win)
+static void deco_box(struct window *win)
 {
 /*	float vertices[8*3] = {
 		0, 0, 0,
@@ -310,7 +308,7 @@ void deco_box(struct window *win)
 	/*  push data on texture 0 position (0,0) */
 	s3d_flags_on(win->oid, S3D_OF_VISIBLE);
 }
-struct window *window_find(Window id)
+static struct window* window_find(Window id)
 {
 	struct window *window;
 	for (window = window_head; window!=NULL; window = window->next) {
@@ -323,7 +321,7 @@ struct window *window_find(Window id)
 }
 
 
-void window_add(Display *dpy, Window id)
+static void window_add(Display *dpy, Window id)
 {
 	struct window *win;
 	win = malloc(sizeof(*win));
@@ -356,13 +354,13 @@ void window_add(Display *dpy, Window id)
 	}
 }
 
-void window_remove(struct window *win)
+static void window_remove(struct window *win)
 {
 	/* TODO */
 	free(win);
 }
 
-void window_update_geometry(struct window *win, int x, int y, int width, int height) 
+static void window_update_geometry(struct window *win, int x, int y, int width, int height) 
 {
 	
 	printf("window_update_geometry()\n");
