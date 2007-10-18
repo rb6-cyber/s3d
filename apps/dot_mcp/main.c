@@ -40,8 +40,8 @@ static struct timespec t = {
 struct tver {
 	float x, y, z;
 };
-struct tver campos, camrot;
-float xdif = 0, ydif = 0;
+static struct tver campos, camrot;
+static float xdif = 0, ydif = 0;
 
 struct app {
 	int oid, oid_c;
@@ -54,24 +54,24 @@ struct app {
 	int sphere;
 	struct app *next;
 };
-int ego_mode = 0;
-float asp = 1.0;
-struct app *apps = NULL;
-float bottom = -1.0;
-float left = -1.0;
-float zoom = 5.0;
-int n_app = 0;
-int rot_flag = 0;
-struct app *focus = NULL;
-float focus_r = 0;
-float alpha = 0;
-int rotate, reset, min_but, close_but, sphere, menu = -1;
+static int ego_mode = 0;
+static float asp = 1.0;
+static struct app *apps = NULL;
+static float bottom = -1.0;
+static float left = -1.0;
+static float zoom = 5.0;
+static int n_app = 0;
+static int rot_flag = 0;
+static struct app *focus = NULL;
+static float focus_r = 0;
+static float alpha = 0;
+static int rotate, reset, min_but, close_but, sphere, menu = -1;
 
 void place_apps();
 
 #define SIDES 60
 #define RINGS 60
-int greentorus(void)
+static int greentorus(void)
 {
 	int o, i, j;
 	float R, r, a;
@@ -129,7 +129,7 @@ int greentorus(void)
 	return(o);
 }
 
-void set_focus(struct app *a)
+static void set_focus(struct app *a)
 {
 	if (focus != a)
 		/* resetting old focus */
@@ -175,7 +175,7 @@ void set_focus(struct app *a)
 	place_apps();
 }
 
-int add_app(struct app *a)
+static int add_app(struct app *a)
 {
 	struct app *prev = NULL, *a2 = apps;
 	while ((a2) != NULL) {
@@ -195,7 +195,7 @@ int add_app(struct app *a)
 	return(0);
 }
 
-void *find_app(int oid)
+static void* find_app(int oid)
 {
 	struct app *a = apps;
 	while (a != NULL) {
@@ -206,7 +206,7 @@ void *find_app(int oid)
 	return(a);
 }
 
-void *del_app(int oid)
+static void* del_app(int oid)
 {
 	struct app *prev = NULL, *a = apps;
 	while ((a != NULL)  && (a->oid != oid)) {
@@ -236,7 +236,7 @@ void *del_app(int oid)
 	return(a);
 }
 
-int stop(struct s3d_evt* DOTMCPUNUSED(evt))
+static int stop(struct s3d_evt* DOTMCPUNUSED(evt))
 {
 	s3d_quit();
 	return(0);
@@ -276,7 +276,7 @@ void place_apps(void)
 	s3d_rotate(menu, 0 , 30, 0);
 }
 
-int mcp_object(struct s3d_evt *hrmz)
+static int mcp_object(struct s3d_evt *hrmz)
 {
 	struct mcp_object *mo;
 	struct app *a;
@@ -310,7 +310,7 @@ int mcp_object(struct s3d_evt *hrmz)
 	return(0);
 }
 
-void app_init(struct app *a)
+static void app_init(struct app *a)
 {
 	printf("building some window decorations on %d ['%s']\n", a->oid, a->name);
 	printf("radius of object %d is %f\n", a->oid, a->r);
@@ -347,7 +347,7 @@ void app_init(struct app *a)
 	place_apps();
 }
 
-int mcp_del_object(struct s3d_evt *hrmz)
+static int mcp_del_object(struct s3d_evt *hrmz)
 {
 	struct mcp_object *mo;
 	mo = (struct mcp_object *)hrmz->buf;
@@ -355,7 +355,7 @@ int mcp_del_object(struct s3d_evt *hrmz)
 	return(0);
 }
 
-int object_click(struct s3d_evt *hrmz)
+static int object_click(struct s3d_evt *hrmz)
 {
 	struct app *a;
 	unsigned int i;
@@ -392,7 +392,7 @@ int object_click(struct s3d_evt *hrmz)
 	return(0);
 }
 
-int object_info(struct s3d_evt *hrmz)
+static int object_info(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
 	inf = (struct s3d_obj_info *)hrmz->buf;
@@ -420,7 +420,7 @@ int object_info(struct s3d_evt *hrmz)
 	return(0);
 }
 
-void mainloop(void)
+static void mainloop(void)
 {
 	struct app *a;
 	float al, r;
@@ -454,7 +454,7 @@ void mainloop(void)
 	nanosleep(&t, NULL);
 }
 
-int keydown(struct s3d_evt *event)
+static int keydown(struct s3d_evt *event)
 {
 	struct s3d_key_event *keys = (struct s3d_key_event *)event->buf;
 	switch (keys->keysym) {
@@ -480,7 +480,7 @@ int keydown(struct s3d_evt *event)
 	return(0);
 }
 
-int keyup(struct s3d_evt *event)
+static int keyup(struct s3d_evt *event)
 {
 	struct s3d_key_event *keys = (struct s3d_key_event *)event->buf;
 	switch (keys->keysym) {
