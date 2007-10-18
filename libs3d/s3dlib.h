@@ -53,9 +53,15 @@
 #define OF_TURN_SWAP  3   /*  logical ?! */
 #define TIMEOUT   100000
 #define MAX_CB   256   /*  as much as there are callbacks */
+
 #ifndef NULL
+#if !defined(__cplusplus)
+#define NULL ((void*)0)
+#else
 #define NULL 0
-#endif
+#endif /* !defined(__cplusplus) */
+#endif /* NULL */
+
 #define CON_NULL 0
 #define CON_SHM  1
 #define CON_TCP  2
