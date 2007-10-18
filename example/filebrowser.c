@@ -47,15 +47,15 @@ static struct timespec t = {
 
 #define M_DIR  512
 #define M_NAME  256
-int folder, geometry, mp3, movie, duno, dot, dotdot;
+static int folder, geometry, mp3, movie, duno, dot, dotdot;
 struct t_item {
 	int icon_oid, descr_oid, pie_oid;
 	char name[M_NAME];
 	int type;
 };
-struct t_item *item;
-int n_item = 0;
-int display_dir(char *dir, int S3DUNUSED(depth), int  posx, int posy, int posz)
+static struct t_item *item;
+static int n_item = 0;
+static int display_dir(char *dir, int S3DUNUSED(depth), int  posx, int posy, int posz)
 {
 	struct dirent **namelist;
 	int n, i;
@@ -196,7 +196,7 @@ int display_dir(char *dir, int S3DUNUSED(depth), int  posx, int posy, int posz)
 	return(0);
 }
 
-int object_click(struct s3d_evt *evt)
+static int object_click(struct s3d_evt *evt)
 {
 	int i, oid;
 	char execstr[256];
@@ -233,7 +233,7 @@ int object_click(struct s3d_evt *evt)
 	}
 	return(0);
 }
-void mainloop(void)
+static void mainloop(void)
 {
 	nanosleep(&t, NULL);
 }

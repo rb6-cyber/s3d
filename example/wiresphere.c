@@ -31,9 +31,9 @@
 static struct timespec t = {
 	0, 100*1000*1000
 }; /* 100 mili seconds */
-int oid;
-int r;
-int wire_sphere(int slices, int stacks)
+static int oid;
+static int r;
+static int wire_sphere(int slices, int stacks)
 {
 	int x, y, i, o;
 	int num_v, num_l;
@@ -99,12 +99,12 @@ int wire_sphere(int slices, int stacks)
 	free(l);
 	return(o);
 }
-void stop(struct s3d_evt *S3DUNUSED(evt))
+static void stop(struct s3d_evt *S3DUNUSED(evt))
 {
 	s3d_quit();
 }
 
-void mainloop(void)
+static void mainloop(void)
 {
 	r = (r + 1) % 360;
 	s3d_rotate(oid, 0, r, 0);

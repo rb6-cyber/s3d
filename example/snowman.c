@@ -28,12 +28,12 @@ static struct timespec t = {
 	0, 10*1000*1000
 }; /* 10 mili seconds */
 
-int a;
-int oid_head;
-int oid_middle;
-int oid_foot;
+static int a;
+static int oid_head;
+static int oid_middle;
+static int oid_foot;
 
-void mainloop(void)
+static void mainloop(void)
 {
 	float pos;
 	a = (a + 3) % 360;

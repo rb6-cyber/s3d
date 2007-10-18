@@ -30,18 +30,18 @@
 static struct timespec t = {
 	0, 100*1000*1000
 }; /* 100 mili seconds */
-int big_p, lil_p, bg, sec_p;
-int str_oid = -1, o_str_oid;
-struct tm *mytime;
-time_t now, onow;
-char time_str[256];
+static int big_p, lil_p, bg, sec_p;
+static int str_oid = -1, o_str_oid;
+static struct tm *mytime;
+static time_t now, onow;
+static char time_str[256];
 
-void stop(struct s3d_evt *S3DUNUSED(evt))
+static void stop(struct s3d_evt *S3DUNUSED(evt))
 {
 	s3d_quit();
 }
 
-void mainloop(void)
+static void mainloop(void)
 {
 	onow = now;
 	now = time(NULL);

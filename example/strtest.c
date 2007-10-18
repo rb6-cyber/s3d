@@ -27,13 +27,13 @@
 #include <stdio.h>  /*  NULL*/
 #include <unistd.h> /* sleep() */
 #include "example.h" /* S3DUNUSED */
-int o;
-void stop(struct s3d_evt *S3DUNUSED(evt))
+static int o;
+static void stop(struct s3d_evt *S3DUNUSED(evt))
 {
 	s3d_quit();
 }
 
-void mainloop(void)
+static void mainloop(void)
 {
 	/*  printf("now it's %s\n",time_str); */
 	sleep(1);

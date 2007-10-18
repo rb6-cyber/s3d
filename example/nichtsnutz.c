@@ -34,18 +34,18 @@ static struct timespec t = {
 	0, 10*1000*1000
 }; /* 10 mili seconds */
 
-int object, foll;
-float al, r, rc , alpha = 0.0, Asp, Bottom, Left, angle;
-float CamPosition[2][3],
+static int object, foll;
+static float al, r, rc , alpha = 0.0, Asp, Bottom, Left, angle;
+static float CamPosition[2][3],
 TmpMove[3],
 Tmp[3],
 TmpCam[2][3],
 RotCam[2][3],
 CatPos[3];
 
-float length;
+static float length;
 
-void mainloop(void)
+static void mainloop(void)
 {
 
 	al = (alpha * M_PI / 180);
@@ -101,7 +101,7 @@ void mainloop(void)
 	nanosleep(&t, NULL);
 }
 
-int object_info(struct s3d_evt *hrmz)
+static int object_info(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
 	inf = (struct s3d_obj_info *)hrmz->buf;
@@ -128,7 +128,7 @@ int object_info(struct s3d_evt *hrmz)
 
 
 
-int keypress(struct s3d_evt *event)
+static int keypress(struct s3d_evt *event)
 {
 	int key;
 	key = *((unsigned short *)event->buf);

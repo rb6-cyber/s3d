@@ -27,23 +27,23 @@
 #include <time.h> /* nanosleep() */
 #include <math.h> /* sin(), cos() */
 #include "example.h" /* S3DUNUSED */
-int i;
-int o;
-float bottom = -1.0;
-float left = -1.0;
-float asp = 1.0;
-float len = 1.0;
-int alpha = 0;
+static int i;
+static int o;
+static float bottom = -1.0;
+static float left = -1.0;
+static float asp = 1.0;
+static float len = 1.0;
+static int alpha = 0;
 static struct timespec t = {
 	0, 10*1000*1000
 }; /* 100 mili seconds */
-int stop(struct s3d_evt *S3DUNUSED(evt))
+static int stop(struct s3d_evt *S3DUNUSED(evt))
 {
 	s3d_quit();
 	return(0);
 }
 
-void mainloop(void)
+static void mainloop(void)
 {
 	float a;
 	alpha = (alpha + 1) % 360;
@@ -53,7 +53,7 @@ void mainloop(void)
 	s3d_rotate(0, sin(a)*30, alpha, 0);
 	nanosleep(&t, NULL);
 }
-int object_info(struct s3d_evt *hrmz)
+static int object_info(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
 	inf = (struct s3d_obj_info *)hrmz->buf;
@@ -75,7 +75,7 @@ int object_info(struct s3d_evt *hrmz)
 	}
 	return(0);
 }
-int mbutton_press(struct s3d_evt *hrmz)
+static int mbutton_press(struct s3d_evt *hrmz)
 {
 	struct s3d_but_info *inf;
 	char s[256];

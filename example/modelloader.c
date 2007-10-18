@@ -31,14 +31,14 @@
 static struct timespec t = {
 	0, 100*1000*1000
 }; /* 100 mili seconds */
-int i, oid;
-void mainloop(void)
+static int i, oid;
+static void mainloop(void)
 {
 	s3d_rotate(oid, 0, i, 0);
 	i = (i + 1) % 360;
 	nanosleep(&t, NULL);
 }
-int object_click(struct s3d_evt *S3DUNUSED(evt))
+static int object_click(struct s3d_evt *S3DUNUSED(evt))
 {
 	s3d_quit();
 	return(0);

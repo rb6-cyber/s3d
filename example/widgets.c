@@ -32,12 +32,12 @@
 #include <string.h> /* strlen() */
 #include "example.h"
 
-s3dw_surface *surface;
-s3dw_input *input;
+static s3dw_surface *surface;
+static s3dw_input *input;
 static struct timespec t = {
 	0, 33*1000*1000
 }; /* 33 mili seconds */
-void mainloop(void)
+static void mainloop(void)
 {
 	/* keep this in your mainloop. this will do smooth animations for you ... */
 	s3dw_ani_mate();
@@ -46,15 +46,15 @@ void mainloop(void)
 /* you should always put the s3dw-handler in your own event handler,
  * if you want s3dw to react on clicks or keys ... and i'm sure you
  * want that ... */
-int click(struct s3d_evt *evt)
+static int click(struct s3d_evt *evt)
 {
 	return(s3dw_handle_click(evt));
 }
-void key_button(s3dw_widget *button)
+static void key_button(s3dw_widget *button)
 {
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
-int key(struct s3d_evt *evt)
+static int key(struct s3d_evt *evt)
 {
 	struct s3d_key_event *key = (struct s3d_key_event *)evt->buf;
 	char string[8];
@@ -79,12 +79,12 @@ int key(struct s3d_evt *evt)
 
 }
 
-void done_button(s3dw_widget *S3DUNUSED(dummy))
+static void done_button(s3dw_widget *S3DUNUSED(dummy))
 {
 	s3d_quit();
 }
 
-void okay_button(s3dw_widget *S3DUNUSED(dummy))
+static void okay_button(s3dw_widget *S3DUNUSED(dummy))
 {
 	s3dw_button *button;
 	char string[32];
@@ -116,7 +116,7 @@ void okay_button(s3dw_widget *S3DUNUSED(dummy))
 	/* we don't need it anymore. always free strings, don't leak around */
 	free(age);
 }
-void no_button(s3dw_widget *S3DUNUSED(dummy))
+static void no_button(s3dw_widget *S3DUNUSED(dummy))
 {
 	s3dw_button *button;
 	s3dw_delete(S3DWIDGET(surface));
@@ -130,7 +130,7 @@ void no_button(s3dw_widget *S3DUNUSED(dummy))
 
 	s3dw_show(S3DWIDGET(surface));
 }
-char *text = "okay\nn2\n3\nfooobarfooobar ...\noh no\n its too loooong\n";
+static char *text = "okay\nn2\n3\nfooobarfooobar ...\noh no\n its too loooong\n";
 int main(int argc, char **argv)
 {
 	s3dw_button *button;

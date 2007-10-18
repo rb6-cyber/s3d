@@ -29,9 +29,9 @@ static struct timespec t = {
 }; /* 10 mili seconds */
 
 #include <math.h> /* sin(), cos() */
-int item1, item2, item3;
-int i = 0;
-void mainloop(void)
+static int item1, item2, item3;
+static int i = 0;
+static void mainloop(void)
 {
 	float f, g, h;
 	f = sin((M_PI * (i % 360)) / 180.0);

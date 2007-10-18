@@ -26,7 +26,7 @@
 #include <s3d.h>
 #include <unistd.h>  /*  sleep() */
 #include <stdio.h>  /*  printf() */
-void mainloop(void)
+static void mainloop(void)
 {
 	sleep(1);
 }

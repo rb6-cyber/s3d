@@ -31,10 +31,10 @@ static struct timespec t = {
 	0, 10*1000*1000
 }; /* 10 mili seconds */
 
-int a;
-int rot_point, body, legfr, legbr, legfl, legbl, tail;
+static int a;
+static int rot_point, body, legfr, legbr, legfl, legbl, tail;
 
-void mainloop(void)
+static void mainloop(void)
 {
 	float pos;
 	a = (a + 2) % 360;
