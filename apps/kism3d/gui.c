@@ -448,6 +448,6 @@ void* gui_main(void *KISM3DUNUSED(unused))
 	}
 
 	Kism3d_aborted = 1;
-	return(0);
 
+	return(NULL);
 }
