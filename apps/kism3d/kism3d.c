@@ -70,24 +70,6 @@ void *alloc_memory(int len)
 
 
 
-static void* realloc_memory(void *ptr, int len)
-{
-
-	void *res = realloc(ptr, len);
-
-	if (res == NULL) {
-		printf("Error - can't trallocate memory: %s\n", strerror(errno));
-		exit(1);
-	}
-
-	memset(res, 0, len);
-
-	return res;
-
-}
-
-
-
 unsigned int get_time(void)
 {
 
