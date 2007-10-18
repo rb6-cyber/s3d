@@ -82,6 +82,8 @@ struct glob {
 	int obj_node_count;
 	int node_count;
 	int color_switch;
+	int output_block_counter;
+	int output_block_completed;
 	float asp;
 	float bottom;
 	float left;

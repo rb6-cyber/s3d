@@ -147,6 +147,18 @@ void handle_con(unsigned int ip1, unsigned int ip2, float etx)
 		hash_add(con_hash, con);
 	}
 
+	if(con->obj_id == -1) {
+		con->obj_id = s3d_new_object();
+		s3d_push_material(con->obj_id,
+			1.0, 1.0, 1.0,
+      			1.0, 1.0, 1.0,
+      			1.0, 1.0, 1.0);
+		s3d_push_vertex(con->obj_id, 0, 0, 0);
+		s3d_push_vertex(con->obj_id, 0, 0, 0);
+		s3d_push_line(con->obj_id, 0, 1, 0);
+		s3d_flags_on(con->obj_id, S3D_OF_VISIBLE);
+	}
+
 	if (con->ip[0] == ip1) {
 		con->etx1 = etx;
 		con->etx1_sqrt = sqrt(etx);
@@ -198,6 +210,13 @@ struct node *handle_mesh_node(unsigned int ip, char *ip_string)
 		hash_add(node_hash, orig_node);
 		Global.node_count++;
 	}
+
+	if(!orig_node->visible) {
+		orig_node->visible = 1;
+		orig_node->node_type_modified = 1;
+		Global.node_count++;
+	}
+	orig_node->last_seen = Global.output_block_counter;
 	return(orig_node);
 }
 
@@ -325,6 +344,8 @@ int process_main()
 			}
 
 		} else if (((*lbuf_ptr) == '}') && ((*(lbuf_ptr + 1)) == '\n')) {
+
+			Global.output_block_completed = 1;
 
 		}
 

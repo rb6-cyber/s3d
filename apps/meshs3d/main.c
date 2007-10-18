@@ -59,6 +59,8 @@ void init_globals(void)
 	Global.obj_node_count = 0;
 	Global.node_count = 0;
 	Global.color_switch = 0;
+	Global.output_block_counter = 0;
+	Global.output_block_completed = 0;
 	Global.asp = 1.0;
 	Global.left = -1.0;
 	Global.bottom = -1.0;
@@ -105,16 +107,19 @@ float dirt(float p1[], float p2[], float p3[])
 
 void handle_node()
 {
-	struct node *node;
-	struct hash_it_t *hashit;
+	struct node *node,*tmp_node;
+	struct node_con *con;
+	struct hash_it_t *hashit,*tmp_hashit=NULL;
+	int ip[2];
 
 	if (node_hash->elements == 0)
 		return;
 	hashit = NULL;
 	while (NULL != (hashit = hash_iterate(node_hash, hashit))) {
-		node = (struct node *) hashit->bucket->data;
-		if (node->node_type_modified) {
 
+		node = (struct node *) hashit->bucket->data;
+
+		if (node->node_type_modified) {
 
 			if (node->obj_id > 0) s3d_del_object(node->obj_id);
 			if (node->desc_id > 0) s3d_del_object(node->desc_id);
@@ -136,6 +141,29 @@ void handle_node()
 			node->node_type_modified = 0;
 
 		}
+
+		if ((node->last_seen < Global.output_block_counter - 1) && (node->visible)) {
+
+			s3d_del_object(node->desc_id);
+			s3d_del_object(node->obj_id);
+			node->desc_id = -1;
+			node->obj_id = -1;
+			node->visible = 0;
+			Global.node_count--;
+			while (NULL != (tmp_hashit = hash_iterate(node_hash, tmp_hashit))) {
+				tmp_node = (struct node *) tmp_hashit->bucket->data;
+				if ( node != tmp_node && (max(node->ip, tmp_node->ip) == node->ip)) {
+					ip[0] = node->ip;
+					ip[1] = tmp_node->ip;
+					if (NULL != (con = hash_find(con_hash, ip))) {
+						s3d_del_object(con->obj_id);
+						con->obj_id = -1;
+					}
+				}
+			}
+
+		}
+
 	}
 	return;
 }
@@ -159,7 +187,6 @@ void move_meshnode(struct node *node)
 	if (!((node->mov_vec[0] == 0) && (node->mov_vec[1] == 0) && (node->mov_vec[2] == 0)) && node->visible) {
 		distance = dirt(node->pos_vec, null_vec, tmp_mov_vec);
 		mov_add(node->mov_vec, tmp_mov_vec, distance / 100);   /* move a little bit to point zero */
-		/* mov_add(node->mov_vec, tmp_mov_vec, 1); */   /* move a little bit to point zero */
 
 		if ((distance = dist(node->mov_vec, null_vec)) > 10.0)
 			mov_add(node->pos_vec, node->mov_vec, 1.0 / ((float) distance));
@@ -360,6 +387,13 @@ void mainloop()
 
 	}
 
+	if (Global.output_block_completed) {
+
+		Global.output_block_counter++;
+		Global.output_block_completed = 0;
+
+	}
+	
 	while ((net_result = net_main()) != 0) {
 		if (net_result == -1) {
 			printf("that's it folks\n");
