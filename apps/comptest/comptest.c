@@ -83,7 +83,7 @@ void window_update(struct window *win, int x, int y, int width, int height);
 static int print_event(Display *dpy, XEvent *event);
 void event();
 
-void mainloop()
+void mainloop(void)
 {
 	event();
 	nanosleep(&t, NULL);
@@ -186,7 +186,7 @@ static int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 }
 
 
-int xinit()
+int xinit(void)
 {
 	dpy = XOpenDisplay(display);
 	if (!dpy) {
@@ -491,7 +491,7 @@ void window_update(struct window *win, int x, int y, int width, int height)
 }
 
 
-void event()
+void event(void)
 {
 	XEvent event;
 	struct window *window;
