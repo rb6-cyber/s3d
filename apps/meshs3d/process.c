@@ -161,10 +161,16 @@ void handle_con(unsigned int ip1, unsigned int ip2, float etx)
 
 	if (con->ip[0] == ip1) {
 		con->etx1 = etx;
-		con->etx1_sqrt = sqrt(etx);
+		if(etx != -1000.00)
+			con->etx1_sqrt = sqrt(etx);
+		else
+			con->etx1_sqrt = sqrt(2.0);
 	} else {
 		con->etx2 = etx;
-		con->etx2_sqrt = sqrt(etx);
+		if(etx != -1000.00)
+			con->etx2_sqrt = sqrt(etx);
+		else
+			con->etx2_sqrt = sqrt(2.0);
 	}
 
 
@@ -278,7 +284,12 @@ int process_main()
 				if (strncmp(etx, "HNA", NAMEMAX) == 0) {
 				
 					if (strncmp(con_to, "0.0.0.0/0.0.0.0", NAMEMAX) == 0) {
-					
+
+						if (inet_pton(AF_INET, con_from, &int_con_from) < 1) {
+							printf("%s is not a valid ip address\n", con_from);
+							continue;
+						}
+
 						tmp_node = handle_mesh_node(int_con_from, con_from);
 
 						if (tmp_node->node_type != 1) {
@@ -299,6 +310,18 @@ int process_main()
 							strcpy(tmp_char, hna_name);
 						}
 
+						tmp_char--;
+						tmp_char[0] = 0;
+						if (inet_pton(AF_INET, con_from, &int_con_from) < 1) {
+							printf("%s is not a valid ip address\n", con_from);
+							continue;
+						}
+						if (inet_pton(AF_INET, hna_node, &int_con_to) < 1) {
+							printf("%s is not a valid ip address\n", hna_node);
+							continue;
+						}
+						tmp_char[0] = '/';
+
 						handle_mesh_node(int_con_from, con_from);
 						tmp_node = handle_mesh_node(int_con_to, hna_node);
 
@@ -310,7 +333,7 @@ int process_main()
 
 						}
 						
-						handle_con(int_con_from, int_con_to, -1000.00);
+						handle_con(int_con_from, int_con_to, -1000);
 					
 					}
 
