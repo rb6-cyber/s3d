@@ -36,7 +36,7 @@
 #define FT_ERROR_START_LIST     {
 #define FT_ERROR_END_LIST       { 0, 0 } };
 
-const struct {
+static const struct {
 	int          err_code;
 	const char*  err_msg;
 } ft_errors[] =
@@ -57,12 +57,12 @@ static int face_init = 0;
 
 static int v_off;   /*  the vertex number offset, to have the right vertex numbers for each character */
 static int ch;
-struct t_buf tess_buf[256];
+static struct t_buf tess_buf[256];
 
 
 
 /*  initialize truetype and tess_buf ... */
-int s3d_ft_init(void)
+static int s3d_ft_init(void)
 {
 	int error = FT_Init_FreeType(&library);
 	int i;
@@ -78,7 +78,7 @@ int s3d_ft_init(void)
 	return(0);
 }
 
-int s3d_ft_load_font(void)
+static int s3d_ft_load_font(void)
 {
 	FT_Error error;
 	if ((memory_font == NULL) || (memory_font_size == 0)) {
@@ -96,7 +96,7 @@ int s3d_ft_load_font(void)
 	return(0);
 }
 
-int _s3d_clear_tessbuf(void)
+static int _s3d_clear_tessbuf(void)
 {
 	int i;
 
@@ -115,7 +115,7 @@ int _s3d_clear_tessbuf(void)
 
 /* renders a character with seidels algorithm and stores it in the tess_buf for later
  * usage */
-int _s3d_add_tessbuf(uint16_t a)
+static int _s3d_add_tessbuf(uint16_t a)
 {
 	float norm, ar, xa, ya;
 	int i, j, k, c, n, start, outl, s, e;
@@ -263,7 +263,7 @@ int _s3d_add_tessbuf(uint16_t a)
 }
 
 /* draws one charachter a */
-int _s3d_draw_tessbuf(int oid, uint16_t a, int *voff, float *xoff)
+static int _s3d_draw_tessbuf(int oid, uint16_t a, int *voff, float *xoff)
 {
 	float *vbuf;
 	uint32_t *pbuf;
@@ -401,12 +401,13 @@ float s3d_strlen(char *str)
 	return(xoff);
 
 }
-int s3d_ft_quit(void)
+
+#if 0
+static int s3d_ft_quit(void)
 {
 	_s3d_clear_tessbuf();
 	FT_Done_FreeType(library);
 	ft_init = 0;
 	return(0);
 }
-
-
+#endif /* 0 */

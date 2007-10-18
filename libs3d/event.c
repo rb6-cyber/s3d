@@ -27,7 +27,7 @@
 #include "proto.h"
 #include <stdlib.h>   /*  malloc(), free() */
 
-struct s3d_evt *s3d_stack;
+static struct s3d_evt *s3d_stack;
 int cb_lock = 2;  /*  callback lock */
 void s3d_push_event(struct s3d_evt *newevt)
 {

@@ -63,7 +63,7 @@ int net_send(u_int8_t opcode, char *buf, u_int16_t length)
 }
 /* handler for socket based connection types */
 #ifdef TCP
-int _s3d_net_receive(void)
+static int _s3d_net_receive(void)
 {
 	return(_s3d_tcp_net_receive());
 	return(0);

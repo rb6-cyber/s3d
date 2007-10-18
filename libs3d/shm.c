@@ -47,7 +47,7 @@
 static struct buf_t *data_in, *data_out;
 static int shmid_in, shmid_out;
 static int shm_idle = 0;
-struct timespec t = {
+static struct timespec t = {
 	0, 10*1000*1000
 }; /* 10 mili second */
 /* char ftoken[]="/tmp/.s3d_shm";*/

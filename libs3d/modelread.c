@@ -38,7 +38,7 @@ struct material2texture {
 	int material_id;
 	int texture_id;
 };
-struct material2texture *mat2tex_root = NULL;
+static struct material2texture *mat2tex_root = NULL;
 
 #define MAXSTRN  20
 static int model_load(char *file);
@@ -80,7 +80,7 @@ int s3d_import_model_file(char *fname)
 	return(-1); /* nothing in search path ... */
 }
 
-void *get_mat2tex(struct material2texture **mat2tex, void *mat_ptr)
+static void* get_mat2tex(struct material2texture **mat2tex, void *mat_ptr)
 {
 
 	while ((*mat2tex) != NULL) {
@@ -116,7 +116,7 @@ void *get_mat2tex(struct material2texture **mat2tex, void *mat_ptr)
 
 
 
-int model_load(char *file)
+static int model_load(char *file)
 {
 	G3DContext     *context;
 	G3DModel    *model;

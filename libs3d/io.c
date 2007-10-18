@@ -59,7 +59,7 @@ extern int     cb_lock;
 #ifdef SIGS
 int _s3d_sigio = 0;
 int _s3d_ready = 0;
-void sigint_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? */
+static void sigint_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? */
 {
 	/*s3d_quit();*/ /* TODO: sometimes no clean quit ?!*/
 	exit(-1);

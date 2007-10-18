@@ -135,8 +135,8 @@ int sei_triangulate_polygon(int ncontours, int cntr[], double(*vertices)[2], int
  * set (polygon-area - polygon-boundary). The return value for points
  * on the boundary is not consistent!!!
  */
-
-int is_point_inside_polygon(double vertex[2])
+#if 0
+static int is_point_inside_polygon(double vertex[2])
 {
 	point_t v;
 	int trnum, rseg;
@@ -156,3 +156,4 @@ int is_point_inside_polygon(double vertex[2])
 	rseg = t->rseg;
 	return _greater_than_equal_to(&seg[rseg].v1, &seg[rseg].v0);
 }
+#endif /* 0 */

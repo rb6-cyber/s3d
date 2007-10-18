@@ -44,7 +44,7 @@
 
 static int choose_idx;
 static int permute[SEGSIZE];
-double mlog2(double x)
+static double mlog2(double x)
 {
 	return log(x) / log(2);
 }
