@@ -339,7 +339,7 @@ void window_add(Display *dpy, Window id)
 	/* XSelectInput(dpy, win->id, ExposureMask);*/
 	win->format = XRenderFindVisualFormat(dpy, win->attr.visual);
 
-	if (win->format != 0) {
+	if (win->format != NULL) {
 		/* printf("add window: %d:%d size: %dx%d\n", win->attr.x, win->attr.y, win->attr.width, win->attr.height);*/
 		win->damage = XDamageCreate(dpy, win->id, XDamageReportNonEmpty);
 
