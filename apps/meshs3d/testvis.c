@@ -34,7 +34,7 @@ void list_data(struct data *head, struct data *end) {
 }
 
 void rem_data( int index,struct data *head, struct data *end ) {
-	struct data *tmp, *prev=NULL;
+	struct data *tmp, *prev=head;
 	
 	for(tmp=head->next;tmp != end;prev = tmp, tmp=tmp->next) {
 		if(tmp->index == index)
@@ -43,12 +43,7 @@ void rem_data( int index,struct data *head, struct data *end ) {
 
 	if(tmp != end) {
 
-		if(prev == NULL)
-			head->next = end;
-		else if(tmp->next != end)
-			prev->next = tmp->next;
-		else
-			prev->next = end;
+		prev->next = tmp->next;
 		
 		printf("remove index %d\n",tmp->index);
 		free(tmp);
