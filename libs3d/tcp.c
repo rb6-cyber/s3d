@@ -107,7 +107,7 @@ int _tcp_init(char *sv, int pn)
 	s3dprintf(MED, "connection to %s:%d established", sv, pn);
 	return(0);
 }
-int _tcp_quit()
+int _tcp_quit(void)
 {
 	if (s3d_socket) {
 		s3dprintf(MED, "closing socket %d", s3d_socket);
@@ -141,7 +141,7 @@ int tcp_writen(char *str, int s)
 	}
 	return(s - no_left);
 }
-int _s3d_tcp_net_receive()
+int _s3d_tcp_net_receive(void)
 {
 	fd_set     fs_proc;   /*  filedescriptor set for listening port(s) */
 	struct timeval   tv;   /*  time structure */

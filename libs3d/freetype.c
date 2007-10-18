@@ -62,7 +62,7 @@ struct t_buf tess_buf[256];
 
 
 /*  initialize truetype and tess_buf ... */
-int s3d_ft_init()
+int s3d_ft_init(void)
 {
 	int error = FT_Init_FreeType(&library);
 	int i;
@@ -78,7 +78,7 @@ int s3d_ft_init()
 	return(0);
 }
 
-int s3d_ft_load_font()
+int s3d_ft_load_font(void)
 {
 	FT_Error error;
 	if ((memory_font == NULL) || (memory_font_size == 0)) {
@@ -96,7 +96,7 @@ int s3d_ft_load_font()
 	return(0);
 }
 
-int _s3d_clear_tessbuf()
+int _s3d_clear_tessbuf(void)
 {
 	int i;
 
@@ -401,7 +401,7 @@ float s3d_strlen(char *str)
 	return(xoff);
 
 }
-int s3d_ft_quit()
+int s3d_ft_quit(void)
 {
 	_s3d_clear_tessbuf();
 	FT_Done_FreeType(library);

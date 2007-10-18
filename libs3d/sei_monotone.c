@@ -65,8 +65,7 @@ static int triangulate_single_polygon(int, int, int, int (*)[3]);
 static int traverse_polygon(int, int, int, int);
 
 /* Function returns TRUE if the trapezoid lies inside the polygon */
-static int inside_polygon(t)
-trap_t *t;
+static int inside_polygon(trap_t *t)
 {
 	int rseg = t->rseg;
 
@@ -85,23 +84,20 @@ trap_t *t;
 
 
 /* return a new mon structure from the table */
-static int newmon()
+static int newmon(void)
 {
 	return ++mon_idx;
 }
 
 
 /* return a new chain element from the table */
-static int new_chain_element()
+static int new_chain_element(void)
 {
 	return ++chain_idx;
 }
 
 
-static double get_angle(vp0, vpnext, vp1)
-point_t *vp0;
-point_t *vpnext;
-point_t *vp1;
+static double get_angle(point_t *vp0, point_t *vpnext, point_t *vp1)
 {
 	point_t v0, v1;
 
@@ -120,11 +116,7 @@ point_t *vp1;
 
 /* (v0, v1) is the new diagonal to be added to the polygon. Find which */
 /* chain to use and return the positions of v0 and v1 in p and q */
-static int get_vertex_positions(v0, v1, ip, iq)
-int v0;
-int v1;
-int *ip;
-int *iq;
+static int get_vertex_positions(int v0, int v1, int *ip, int *iq)
 {
 	vertexchain_t *vp0, *vp1;
 	register int i;
@@ -176,10 +168,7 @@ int *iq;
  * the current monotone polygon mcur. Split the current polygon into
  * two polygons using the diagonal (v0, v1)
  */
-static int make_new_monotone_poly(mcur, v0, v1)
-int mcur;
-int v0;
-int v1;
+static int make_new_monotone_poly(int mcur, int v0, int v1)
 {
 	int p, q, ip, iq;
 	int mnew = newmon();
@@ -238,8 +227,7 @@ int v1;
  * the polygon.
  */
 
-int monotonate_trapezoids(n)
-int n;
+int monotonate_trapezoids(int n)
 {
 	register int i;
 	int tr_start;
@@ -309,11 +297,7 @@ int n;
 
 
 /* recursively visit all the trapezoids */
-static int traverse_polygon(mcur, trnum, from, dir)
-int mcur;
-int trnum;
-int from;
-int dir;
+static int traverse_polygon(int mcur, int trnum, int from, int dir)
 {
 	trap_t *t = &tr[trnum];
 	int mnew;
@@ -541,10 +525,7 @@ int dir;
 /* triangulation. */
 /* Take care not to triangulate duplicate monotone polygons */
 
-int triangulate_monotone_polygons(nvert, nmonpoly, op)
-int nvert;
-int nmonpoly;
-int op[][3];
+int triangulate_monotone_polygons(int nvert, int nmonpoly, int op[][3])
 {
 	register int i;
 	point_t ymax, ymin;
@@ -608,11 +589,7 @@ int op[][3];
  * polygon in O(n) time.
  * Joseph O-Rourke, Computational Geometry in C.
  */
-static int triangulate_single_polygon(nvert, posmax, side, op)
-int nvert;
-int posmax;
-int side;
-int op[][3];
+static int triangulate_single_polygon(int nvert, int posmax, int side, int op[][3])
 {
 	register int v;
 	int rc[SEGSIZE], ri = 0; /* reflex chain */

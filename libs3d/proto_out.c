@@ -38,7 +38,7 @@
 
 #define MF_LEN 65530  /*  maximum fragmentation length */
 /*  creates a new object */
-int s3d_new_object()
+int s3d_new_object(void)
 {
 	int oid;
 

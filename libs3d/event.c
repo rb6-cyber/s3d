@@ -56,7 +56,7 @@ void s3d_push_event(struct s3d_evt *newevt)
 	} else
 		s3d_stack = newevt;
 }
-struct s3d_evt *s3d_pop_event() {
+struct s3d_evt *s3d_pop_event(void) {
 	struct s3d_evt *ret;
 	if ((ret = s3d_stack) != NULL)
 		s3d_stack = s3d_stack->next;
@@ -94,7 +94,7 @@ int s3d_delete_event(struct s3d_evt *devt)
 	return(-1);
 }
 /*  this function checks the stack for callbacks. */
-void s3d_process_stack()
+void s3d_process_stack(void)
 {
 	struct s3d_evt *p;
 	s3d_cb cb;

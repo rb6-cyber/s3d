@@ -66,7 +66,7 @@ void sigint_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? */
 }
 
 #endif
-void s3d_usage()
+void s3d_usage(void)
 {
 	printf("s3d-parameters:\n");
 	printf(" --s3d-url <url>: skip S3D enviroment and connect to this url\n");
@@ -168,7 +168,7 @@ int s3d_init(int *argc, char ***argv, char *name)
 	return(-1);
 }
 /*  shuts down the socket, clearing the stack */
-int s3d_quit()
+int s3d_quit(void)
 {
 	struct s3d_evt *ret;
 	if (con_type != CON_NULL && _s3d_ready) {

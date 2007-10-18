@@ -50,7 +50,7 @@ static int q_idx;
 static int tr_idx;
 
 /* Return a new node to be added into the query tree */
-static int newnode()
+static int newnode(void)
 {
 	if (q_idx < QSIZE)
 		return q_idx++;
@@ -61,7 +61,7 @@ static int newnode()
 }
 
 /* Return a free trapezoid */
-static int newtrap()
+static int newtrap(void)
 {
 	if (tr_idx < TRSIZE) {
 		tr[tr_idx].lseg = -1;
@@ -76,10 +76,7 @@ static int newtrap()
 
 
 /* Return the maximum of the two points into the yval structure */
-static int _max(yval, v0, v1)
-point_t *yval;
-point_t *v0;
-point_t *v1;
+static int _max(point_t *yval, point_t *v0, point_t *v1)
 {
 	if (v0->y > v1->y + C_EPS)
 		*yval = *v0;
@@ -96,10 +93,7 @@ point_t *v1;
 
 
 /* Return the minimum of the two points into the yval structure */
-static int _min(yval, v0, v1)
-point_t *yval;
-point_t *v0;
-point_t *v1;
+static int _min(point_t *yval, point_t *v0, point_t *v1)
 {
 	if (v0->y < v1->y - C_EPS)
 		*yval = *v0;
@@ -115,9 +109,7 @@ point_t *v1;
 }
 
 
-int _greater_than(v0, v1)
-point_t *v0;
-point_t *v1;
+int _greater_than(point_t *v0, point_t *v1)
 {
 	if (v0->y > v1->y + C_EPS)
 		return TRUE;
@@ -128,16 +120,12 @@ point_t *v1;
 }
 
 
-int _equal_to(v0, v1)
-point_t *v0;
-point_t *v1;
+int _equal_to(point_t *v0, point_t *v1)
 {
 	return (FP_EQUAL(v0->y, v1->y) && FP_EQUAL(v0->x, v1->x));
 }
 
-int _greater_than_equal_to(v0, v1)
-point_t *v0;
-point_t *v1;
+int _greater_than_equal_to(point_t *v0, point_t *v1)
 {
 	if (v0->y > v1->y + C_EPS)
 		return TRUE;
@@ -147,9 +135,7 @@ point_t *v1;
 		return (v0->x >= v1->x);
 }
 
-int _less_than(v0, v1)
-point_t *v0;
-point_t *v1;
+int _less_than(point_t *v0, point_t *v1)
 {
 	if (v0->y < v1->y - C_EPS)
 		return TRUE;
@@ -173,8 +159,7 @@ point_t *v1;
  *                3
  */
 
-static int init_query_structure(segnum)
-int segnum;
+static int init_query_structure(int segnum)
 {
 	int i1, i2, i3, i4, i5, i6, i7, root;
 	int t1, t2, t3, t4;
@@ -255,9 +240,7 @@ int segnum;
  * have the same y--cood, etc.
  */
 
-static int is_left_of(segnum, v)
-int segnum;
-point_t *v;
+static int is_left_of(int segnum, point_t *v)
 {
 	segment_t *s = &seg[segnum];
 	double area;
@@ -302,9 +285,7 @@ point_t *v;
 /* already inserted into the segment tree. Use the simple test of */
 /* whether the segment which shares this endpoint is already inserted */
 
-static int inserted(segnum, whichpt)
-int segnum;
-int whichpt;
+static int inserted(int segnum, int whichpt)
 {
 	if (whichpt == FIRSTPT)
 		return seg[seg[segnum].prev].is_inserted;
@@ -316,10 +297,7 @@ int whichpt;
  * point v lie in. The return value is the trapezoid number.
  */
 
-int locate_endpoint(v, vo, r)
-point_t *v;
-point_t *vo;
-int r;
+int locate_endpoint(point_t *v, point_t *vo, int r)
 {
 	node_t *rptr = &qs[r];
 
@@ -373,11 +351,7 @@ int r;
  * divided because of its insertion
  */
 
-static int merge_trapezoids(segnum, tfirst, tlast, side)
-int segnum;
-int tfirst;
-int tlast;
-int side;
+static int merge_trapezoids(int segnum, int tfirst, int tlast, int side)
 {
 	int t, tnext, cond;
 	int ptnext;
@@ -442,8 +416,7 @@ int side;
  * the  lower trapezoid dividing all the trapezoids in between .
  */
 
-static int add_segment(segnum)
-int segnum;
+static int add_segment(int segnum)
 {
 	segment_t s;
 	int tu, tl, sk, tfirst, tlast;
@@ -937,8 +910,7 @@ int segnum;
  * This is done to speed up the location-query for the endpoint when
  * the segment is inserted into the trapezoidation subsequently
  */
-static int find_new_roots(segnum)
-int segnum;
+static int find_new_roots(int segnum)
 {
 	segment_t *s = &seg[segnum];
 
@@ -955,8 +927,7 @@ int segnum;
 
 
 /* Main routine to perform trapezoidation */
-int construct_trapezoids(nseg)
-int nseg;
+int construct_trapezoids(int nseg)
 {
 	register int i;
 	int root, h;

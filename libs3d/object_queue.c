@@ -49,7 +49,7 @@ static struct timespec t = {
 	0, 10*1000
 }; /* 10 micro seconds */
 /*  initializes the object queue */
-int _queue_init()
+int _queue_init(void)
 {
 	int i;
 	queue_size = 1;
@@ -62,7 +62,7 @@ int _queue_init()
 	return(0);
 }
 /*  checks the queue empty slots and requests new ones if needed */
-int _queue_fill()
+int _queue_fill(void)
 {
 	int i;
 	for (i = 0;i < queue_size;i++)
@@ -92,7 +92,7 @@ int _queue_new_object(unsigned int oid)
 	return(0);
 }
 /*  an object is requested!! give one out: */
-unsigned int _queue_want_object()
+unsigned int _queue_want_object(void)
 {
 	unsigned int ret;
 	int i, j;
@@ -121,7 +121,7 @@ unsigned int _queue_want_object()
 	return(-1);
 }
 /*  cleans up */
-int _queue_quit()
+int _queue_quit(void)
 {
 	if (queue != NULL) {
 		free(queue);

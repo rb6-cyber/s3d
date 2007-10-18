@@ -112,7 +112,7 @@ int _shm_init(char *ftoken)
 	}
 	return(0);
 }
-int _shm_quit()
+int _shm_quit(void)
 {
 	/* detach from the segment: */
 	if (shmdt(data_in) == -1) {
@@ -166,7 +166,7 @@ int shm_readn(char *str, int s)
 	}
 	return(s - no_left);
 }
-int _shm_net_receive()
+int _shm_net_receive(void)
 {
 	int      found = 0;
 	char     opcode, *buf;

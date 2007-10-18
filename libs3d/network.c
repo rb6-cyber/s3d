@@ -34,7 +34,7 @@ extern int _s3d_sigio;
 #endif
 int con_type = CON_NULL;
 #ifdef TCP
-static int _s3d_net_receive();
+static int _s3d_net_receive(void);
 #endif
 
 int net_send(u_int8_t opcode, char *buf, u_int16_t length)
@@ -63,13 +63,13 @@ int net_send(u_int8_t opcode, char *buf, u_int16_t length)
 }
 /* handler for socket based connection types */
 #ifdef TCP
-int _s3d_net_receive()
+int _s3d_net_receive(void)
 {
 	return(_s3d_tcp_net_receive());
 	return(0);
 }
 #endif
-int s3d_net_check()
+int s3d_net_check(void)
 {
 	switch (con_type) {
 #ifdef TCP

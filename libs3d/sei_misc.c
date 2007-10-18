@@ -50,8 +50,7 @@ double mlog2(double x)
 }
 
 /* Generate a random permutation of the segments 1..n */
-int generate_random_ordering(n)
-int n;
+int generate_random_ordering(int n)
 {
 	struct timeval tval;
 	register int i;
@@ -77,15 +76,14 @@ int n;
 
 /* Return the next segment in the generated random ordering of all the */
 /* segments in S */
-int choose_segment()
+int choose_segment(void)
 {
 	errds(VLOW, "sei:choose_segment()", "%d", permute[choose_idx]);
 	return permute[choose_idx++];
 }
 
 /* Get log*n for given n */
-int math_logstar_n(n)
-int n;
+int math_logstar_n(int n)
 {
 	register int i;
 	double v;
@@ -97,9 +95,7 @@ int n;
 }
 
 
-int math_N(n, h)
-int n;
-int h;
+int math_N(int n, int h)
 {
 	register int i;
 	double v;

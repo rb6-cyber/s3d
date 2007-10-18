@@ -42,8 +42,7 @@
 #include <string.h> /* memset() */
 
 
-static int initialise(n)
-int n;
+static int initialise(int n)
 {
 	register int i;
 
@@ -78,11 +77,7 @@ int n;
  */
 
 
-int sei_triangulate_polygon(ncontours, cntr, vertices, triangles)
-int ncontours;
-int cntr[];
-double(*vertices)[2];
-int (*triangles)[3];
+int sei_triangulate_polygon(int ncontours, int cntr[], double(*vertices)[2], int (*triangles)[3])
 {
 	register int i;
 	int nmonpoly, ccount, npoints, genus;
@@ -141,8 +136,7 @@ int (*triangles)[3];
  * on the boundary is not consistent!!!
  */
 
-int is_point_inside_polygon(vertex)
-double vertex[2];
+int is_point_inside_polygon(double vertex[2])
 {
 	point_t v;
 	int trnum, rseg;
