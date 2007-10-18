@@ -73,7 +73,7 @@ int get_shift(uint32_t t)
 	}
 	return(i);
 }
-void mainloop()
+void mainloop(void)
 {
 #define MAGIC_CHANGED ((unsigned int)~0)
 	unsigned int x, y;
