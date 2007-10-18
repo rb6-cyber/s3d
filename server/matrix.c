@@ -40,7 +40,7 @@ void myLoadIdentity(void)
 }
 #define I(x, y)  x*4+y
 #define M(x, y)  MAT[I(x, y)]
-void mat_debug(t_mtrx S)
+static void mat_debug(t_mtrx S)
 {
 	s3dprintf(MED, "MAT_0: %.2f %.2f %.2f %.2f", S[I(0,0)], S[I(1,0)], S[I(2,0)], S[I(3,0)]);
 	s3dprintf(MED, "MAT_1: %.2f %.2f %.2f %.2f", S[I(0,1)], S[I(1,1)], S[I(2,1)], S[I(3,1)]);

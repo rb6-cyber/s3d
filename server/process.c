@@ -161,7 +161,7 @@ int process_del(int pid)
 	return(-1);
 }
 /* just kick process out of the process list, no network/mcp-oid cleanup */
-int process_list_rm(int pid)
+static int process_list_rm(int pid)
 {
 	if (pid != (procs_n - 1)) { /* copy last block, swap pid */
 		memcpy(&procs_p[pid], &procs_p[procs_n-1], sizeof(struct t_process));

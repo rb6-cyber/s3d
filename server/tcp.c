@@ -48,7 +48,7 @@ extern struct t_con *con_list;
 extern struct t_con mcp;
 extern uint8_t ibuf[MAXPLEN];
 extern int idc;
-int tcp_sockid;
+static int tcp_sockid;
 int tcp_init(void)
 {
 	int yes = 1;

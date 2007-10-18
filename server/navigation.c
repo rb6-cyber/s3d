@@ -24,8 +24,7 @@
 
 #include "global.h"
 #include <math.h> /* atan() */
-int alphax, alphay;
-float view_x, view_y, view_z;
+
 extern int winw, winh;
 void navi_right(void)
 {

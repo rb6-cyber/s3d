@@ -42,7 +42,7 @@
 
 #if defined DEBUG_MALLOC
 
-struct chunkHeader *chunkList = NULL;
+static struct chunkHeader *chunkList = NULL;
 
 struct chunkHeader {
 	struct chunkHeader *next;

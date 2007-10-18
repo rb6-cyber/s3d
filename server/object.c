@@ -1388,7 +1388,7 @@ void obj_pos_update(struct t_process *p, int32_t oid, int32_t first_oid)
 		obj_check_biggest_object(p, oid);
 }
 /*  calculates the normal for one polygon, if not present. */
-int calc_normal(struct t_obj *obj, uint32_t pn)
+static int calc_normal(struct t_obj *obj, uint32_t pn)
 {
 	struct t_vertex a, b, n;
 	struct t_vertex *v[3];
@@ -1433,7 +1433,7 @@ int calc_normal(struct t_obj *obj, uint32_t pn)
 }
 
 /* checks if a normal is set for a line object, or set some default if not */
-int check_line_normal(struct t_obj *obj, uint32_t pn)
+static int check_line_normal(struct t_obj *obj, uint32_t pn)
 {
 	struct t_vertex *v[2];
 	int i, vp;
@@ -1456,7 +1456,7 @@ int check_line_normal(struct t_obj *obj, uint32_t pn)
 
 }
 
-void tex_build_mipmaps(struct t_tex *tex)
+static void tex_build_mipmaps(struct t_tex *tex)
 {
 	int     i, w, h, x, y, c;
 	unsigned char  *buf, *src;
@@ -1500,7 +1500,7 @@ void tex_build_mipmaps(struct t_tex *tex)
 	free(buf);
 }
 /* generate textures */
-void texture_gen(struct t_obj *obj)
+static void texture_gen(struct t_obj *obj)
 {
 	GLuint t;
 	int i;
@@ -1531,7 +1531,7 @@ void texture_gen(struct t_obj *obj)
 	}
 }
 /* activate/bind texture for object */
-struct t_tex *get_texture(struct t_obj *obj, struct t_mat *m) {
+static struct t_tex* get_texture(struct t_obj *obj, struct t_mat *m) {
 	struct t_tex *tex = NULL;
 	GLfloat matgl[4];
 	/*  int i,j; */

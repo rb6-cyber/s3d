@@ -41,7 +41,7 @@
 /*  local prototypes ... */
 void render_virtual_object(struct t_obj *o);
 /*  ... and types/variables */
-int select_mode = 0;
+static int select_mode = 0;
 int winw, winh;
 extern struct t_process *procs_p;
 extern int frame_mode;  /*  GLUT, SDL, ... ? */

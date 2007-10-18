@@ -38,25 +38,25 @@
 #endif
 #include <errno.h>   /*  errno() */
 int frame_mode = 0;
-int kidpid = 0;
-int norc = 0;
+static int kidpid = 0;
+static int norc = 0;
 int running;
 static char *rc = NULL;
 static char *homerc = "~/.s3drc";
 static char *etcrc = "/etc/s3drc";
 /*static int father_done=0;*/
 extern int aa_level;
-char **s3drc[] = {&rc, &homerc, &etcrc};
+static char **s3drc[] = {&rc, &homerc, &etcrc};
 
 static void mainloop(void);
 #ifdef SIGS
 /*  handles the SIGINT command. maybe put signals in a special file? */
-void sigint_handler(int S3DUNUSED(sig))
+static void sigint_handler(int S3DUNUSED(sig))
 {
 	s3dprintf(HIGH, "oh my gosh there is a sigint/term signal! running away ...");
 	quit();
 }
-void sigchld_handler(int S3DUNUSED(sig))
+static void sigchld_handler(int S3DUNUSED(sig))
 {
 	if (kidpid != 0) {
 		kidpid = 0;
@@ -65,7 +65,7 @@ void sigchld_handler(int S3DUNUSED(sig))
 	}
 }
 #endif
-void sigusr_handler(int S3DUNUSED(sig))
+static void sigusr_handler(int S3DUNUSED(sig))
 {
 	s3dprintf(HIGH, "father told use he's done, so lets start to think about the rc file ...");
 	running = 1;
@@ -131,7 +131,7 @@ static void mainloop(void)
 /*  things which should be done each time in main loop go here! this is */
 /*  just for the case we use a function for the mainloop like we do for glut... */
 
-struct timespec t = {
+static struct timespec t = {
 	0, 10*1000*1000
 }; /* 10 mili seconds */
 void one_time(void)
@@ -201,7 +201,7 @@ void quit(void)
 	exit(0);
 }
 /*  processing arguments from the commandline */
-int process_args(int argc, char **argv)
+static int process_args(int argc, char **argv)
 {
 	int      lopt_idx;
 	char     c;

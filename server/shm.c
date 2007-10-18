@@ -46,12 +46,12 @@
 extern uint8_t ibuf[MAXPLEN];
 extern struct t_process *procs_p;
 extern int procs_n;
-struct t_shmcb waiting_comblock;
+static struct t_shmcb waiting_comblock;
 
-key_t *data = NULL;
-char ftoken[] = "/tmp/.s3d";
-int shmid;
-int mkey; /* increasing key */
+static key_t *data = NULL;
+static char ftoken[] = "/tmp/.s3d";
+static int shmid;
+static int mkey; /* increasing key */
 
 static int shm_new_comblock(key_t *data);
 
@@ -89,7 +89,7 @@ int shm_init(void)
 	shm_new_comblock(data);
 	return(0);
 }
-void comblock_init(struct t_shmcb *p_cb)
+static void comblock_init(struct t_shmcb *p_cb)
 {
 	p_cb->shmid_ctos = -1;
 	p_cb->shmid_stoc = -1;

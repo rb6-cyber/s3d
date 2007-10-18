@@ -44,7 +44,7 @@
 uint8_t ibuf[MAXPLEN]; /* input buffer for a packet */
 uint8_t obuf[MAXPLEN]; /* output buffer */
 #ifdef SIGS
-int sigio = 0;
+static int sigio = 0;
 #endif
 
 #ifdef SIGS
