@@ -70,7 +70,7 @@ int get_selected(filelist *fp, t_node *dir)
 	}
 	return(0);
 }
-void window_help()
+void window_help(void)
 {
 	s3dw_surface *infwin;
 	s3dw_button  *button;
@@ -88,7 +88,7 @@ void window_help()
 	s3dw_show(S3DWIDGET(infwin));
 
 }
-void window_fs_another()
+void window_fs_another(void)
 {
 	s3dw_surface *infwin;
 	s3dw_button  *button;
@@ -98,7 +98,7 @@ void window_fs_another()
 	button->onclick = close_win;
 	s3dw_show(S3DWIDGET(infwin));
 }
-void window_fs_nothing()
+void window_fs_nothing(void)
 {
 	s3dw_surface *infwin;
 	s3dw_button  *button;
@@ -216,7 +216,7 @@ void window_copy(char *S3DFMUNUSED(path))
 }
 
 
-void window_unlink()
+void window_unlink(void)
 {
 	s3dw_surface *infwin;
 	s3dw_button  *okbutton, *abortbutton;
@@ -353,7 +353,7 @@ void window_info(char *path)
 	s3dw_show(S3DWIDGET(infwin));
 }
 /* check if a file operation is finished and clean up */
-void window_fsani()
+void window_fsani(void)
 {
 	int i;
 	t_node *node, dummy;

@@ -103,7 +103,7 @@ int ani_check(t_node *f)
 	return(1);
 }
 /* doing the whole animation thing */
-void ani_mate()
+void ani_mate(void)
 {
 	int i;
 	t_node *f;
