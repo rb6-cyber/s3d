@@ -111,7 +111,9 @@ void handle_node()
 	struct node_con *con;
 	struct hash_it_t *hashit,*tmp_hashit=NULL;
 	int ip[2];
-
+	float angle, angle_rad;
+	float tmp_mov_vec[3], desc_norm_vec[3] = {0, 0, -1};
+	
 	if (node_hash->elements == 0)
 		return;
 	hashit = NULL;
@@ -162,6 +164,28 @@ void handle_node()
 				}
 			}
 
+		}
+
+		if(node->visible) {
+
+			/* rotate node description so that they are always readable */
+			tmp_mov_vec[0] = Global.cam_position[0][0] - node->pos_vec[0];
+			tmp_mov_vec[1] = 0;   /* we are not interested in the y value */
+			tmp_mov_vec[2] = Global.cam_position[0][2] - node->pos_vec[2];
+
+			angle = s3d_vector_angle(desc_norm_vec, tmp_mov_vec);
+
+			/* take care of inverse cosinus */
+			if (tmp_mov_vec[0] > 0) {
+				angle_rad = 90.0 / M_PI - angle;
+				angle = 180 - (180.0 / M_PI * angle);
+			} else {
+				angle_rad = 90.0 / M_PI + angle;
+				angle = 180 + (180.0 / M_PI * angle);
+			}
+
+			s3d_rotate(node->desc_id, 0, angle , 0);
+			s3d_translate(node->desc_id, -cos(angle_rad)*node->desc_length / 2 , -1.5, sin(angle_rad)*node->desc_length / 2);
 		}
 
 	}
@@ -412,7 +436,13 @@ int object_info(struct s3d_evt *hrmz)
 	s3dw_object_info(hrmz);
 
 	if (inf->object == 0) {
-	
+		Global.cam_position[0][0] = inf->trans_x;
+		Global.cam_position[0][1] = inf->trans_y;
+		Global.cam_position[0][2] = inf->trans_z;
+		Global.cam_position[1][0] = inf->rot_x;
+		Global.cam_position[1][1] = inf->rot_y;
+		Global.cam_position[1][2] = inf->rot_z;
+		
 		Global.asp = inf->scale;
 
 		if ( Global.asp > 1.0) {

@@ -87,6 +87,7 @@ struct glob {
 	float asp;
 	float bottom;
 	float left;
+	float cam_position[2][3];
 };
 
 extern char lbuf[MAXLINESIZE];
