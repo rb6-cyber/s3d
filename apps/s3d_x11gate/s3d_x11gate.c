@@ -49,7 +49,7 @@
 
 int oid;
 XImage *image;
-Display *dpy = 0;
+Display *dpy = NULL;
 int window, scr;
 unsigned int width, height, height, depth;
 int format;
@@ -220,8 +220,8 @@ int main(int argc, char **argv)
 
 		image = XShmCreateImage(dpy, visual, depth, ZPixmap, NULL, &shminfo, width, height);
 		shminfo.shmid = shmget(IPC_PRIVATE, image->bytes_per_line * image->height, IPC_CREAT | 0777);
-		shminfo.shmaddr = image->data = shmat(shminfo.shmid, 0, 0);
-		shmctl(shminfo.shmid, IPC_RMID, 0);
+		shminfo.shmaddr = image->data = shmat(shminfo.shmid, NULL, 0);
+		shmctl(shminfo.shmid, IPC_RMID, NULL);
 		shminfo.readOnly = False;
 		if (!XShmAttach(dpy, &shminfo))
 			printf("cannot use the shared memory segment .. :( \n");
