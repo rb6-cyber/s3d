@@ -236,7 +236,7 @@ void *del_app(int oid)
 	return(a);
 }
 
-int stop(void)
+int stop(struct s3d_evt* DOTMCPUNUSED(evt))
 {
 	s3d_quit();
 	return(0);

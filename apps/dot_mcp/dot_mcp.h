@@ -21,5 +21,17 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include <config-s3d.h>
+
+#ifndef DOTMCPUNUSED
+#if defined(UNUSEDPARAM_ATTRIBUTE)
+#define DOTMCPUNUSED(x) (x)__attribute__((unused))
+#elif defined(UNUSEDPARAM_OMIT)
+#define DOTMCPUNUSED(x) /* x */
+#else
+#define DOTMCPUNUSED(x) x
+#endif
+#endif
+
 int menu_init();
 void menu_click(int oid);
