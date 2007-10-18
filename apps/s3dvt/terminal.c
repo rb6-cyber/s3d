@@ -46,7 +46,7 @@ static int top = 0;
 static int curfgcolor = DEFAULT_FGCOLOR;
 static int curbgcolor = DEFAULT_BGCOLOR;
 
-void move_all_lines_up()
+void move_all_lines_up(void)
 {
 	t_line *pfirstline = (t_line*) & line;
 	t_line *psecondline = (t_line*) & line + 1;
@@ -69,14 +69,14 @@ void clear_line(int lineid)
 		clear_char(lineid, i);
 }
 
-void clear_line_after_lastchar()
+void clear_line_after_lastchar(void)
 {
 	int i;
 	for (i = cx;i < MAX_CHARS;i++)
 		clear_char(cy, i);
 }
 
-t_line *line_is_full()
+t_line* line_is_full(void)
 {
 	t_line *pcurline = (t_line*) & line + cy;
 	cy++;
@@ -108,7 +108,7 @@ void add_char_append(char toappend)
 		cx++;
 }
 
-void backspace()
+void backspace(void)
 {
 	if (cx > 0)
 		cx--;
@@ -116,7 +116,7 @@ void backspace()
 		cx = 0;
 }
 
-void endansi()
+void endansi(void)
 {
 	printf(" [/ANSI(%d)]\n", isansi2);
 	isansi = 0;
@@ -292,7 +292,7 @@ void move_x_letters(int mode, char *arg1)
 		break;
 	}
 }
-void remove_beginning_from_curpos()
+void remove_beginning_from_curpos(void)
 {
 	int i, j = cx;
 	for (i = cy;i < MAX_LINES;i++) {
@@ -501,7 +501,7 @@ void AddChar(char *_toadd)
 	}
 	gotnewdata = 1;
 }
-void init_line()
+void init_line(void)
 {
 	int i;
 	for (i = 0;i < MAX_LINES;i++) {
