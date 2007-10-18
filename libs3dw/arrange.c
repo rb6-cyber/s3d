@@ -51,6 +51,7 @@ void s3dw_arr_widgetcenter(s3dw_widget *widget, float *center)
 	center[1] = y;
 	center[2] = z;
 }
+
 void s3dw_arr_normdir(float *dir)
 {
 	float dirlen = s3d_vector_length(dir);
@@ -64,7 +65,8 @@ void s3dw_arr_normdir(float *dir)
 	dir[1] /= dirlen;
 	dir[2] /= dirlen;
 }
-void s3dw_turn()
+
+void s3dw_turn(void)
 {
 	s3dw_widget *w, *root = s3dw_getroot();
 	int i;
@@ -114,8 +116,9 @@ void s3dw_turn()
 		}
 	}
 }
+
 #define DIST 40.0
-void s3dw_follow()
+void s3dw_follow(void)
 {
 	s3dw_widget *w, *root = s3dw_getroot();
 	int i;
@@ -146,7 +149,8 @@ void s3dw_follow()
 		}
 	}
 }
-void s3dw_arrange()
+
+void s3dw_arrange(void)
 {
 	s3dw_widget *w1, *w2, *root = s3dw_getroot();
 	int i, j, arranged, allarr;

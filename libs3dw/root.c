@@ -78,7 +78,7 @@ char *s3dw_get_type_string(int type)
 }
 
 /* get the root .... if it's NULL, the lib is not initialized, so do this too ... */
-s3dw_widget *s3dw_getroot()
+s3dw_widget* s3dw_getroot(void)
 {
 	if (root == NULL) {
 		root = (s3dw_widget *)malloc(sizeof(s3dw_widget));

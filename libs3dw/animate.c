@@ -42,6 +42,7 @@ int s3dw_ani_stackpos(s3dw_widget *f)
 	return(-1);
 
 }
+
 /* add an item on the animation stack */
 void s3dw_ani_add(s3dw_widget *f)
 {
@@ -60,6 +61,7 @@ void s3dw_ani_add(s3dw_widget *f)
 	} else /* no place, finish now */
 		s3dw_ani_finish(f, -1);
 }
+
 /* delete an item from the animation stack */
 void s3dw_ani_del(int i)
 {
@@ -71,6 +73,7 @@ void s3dw_ani_del(int i)
 		s3dprintf(MED, "[F]ATAL: can't delete animation!\n");
 	}
 }
+
 /* apply the animation */
 void s3dw_ani_doit(s3dw_widget *f)
 {
@@ -100,6 +103,7 @@ void s3dw_ani_finish(s3dw_widget *f, int i)
 	if (i != -1)
 		s3dw_ani_del(i);
 }
+
 /* do one step of the animation */
 void s3dw_ani_iterate(s3dw_widget *f)
 {
@@ -128,8 +132,9 @@ int s3dw_ani_check(s3dw_widget *f)
 		return(0);
 	return(1);
 }
+
 /* need an arrangement ... */
-void s3dw_ani_needarr()
+void s3dw_ani_needarr(void)
 {
 	ani_need_arr = 1;
 	if (!animation_on) {
@@ -137,8 +142,9 @@ void s3dw_ani_needarr()
 	}
 
 }
+
 /* doing the whole animation thing */
-void s3dw_ani_mate()
+void s3dw_ani_mate(void)
 {
 	int i;
 	s3dw_widget *f;
@@ -155,4 +161,3 @@ void s3dw_ani_mate()
 		}
 	}
 }
-
