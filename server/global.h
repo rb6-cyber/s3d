@@ -45,7 +45,11 @@ extern int running;   /*  server running flag */
 #define S3DUNUSED(x) x
 #endif
 #endif
-#define NAME_MAX 256   /*  limit for names [e.g. process names] */
+
+#ifndef S3D_NAME_MAX
+#define S3D_NAME_MAX 256   /*  limit for names [e.g. process names] */
+#endif /* S3D_NAME_MAX */
+
 #define MCP   0   /*  the mcp's pid  */
 #define TEXTURE_MAX_W 4096
 #define TEXTURE_MAX_H 4096
@@ -168,7 +172,7 @@ struct t_shmcb {
 
 /*  l_* is a list-type, t_* is the type itself */
 struct t_process {
-	char       name[NAME_MAX];   /*  process name */
+	char       name[S3D_NAME_MAX];   /*  process name */
 	struct t_obj  **object;     /*  initial pointer to object list */
 	int32_t      n_obj;     /*  number of objects */
 	int32_t      biggest_obj;    /*  the biggest object */
@@ -193,7 +197,7 @@ struct t_obj_info {
 	float rot_x, rot_y, rot_z;
 	float scale;
 	float r;
-	char name[NAME_MAX];
+	char name[S3D_NAME_MAX];
 };
 enum {
 	zero,

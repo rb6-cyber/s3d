@@ -64,7 +64,7 @@ struct t_process *process_protinit(struct t_process *p, char *name) {
 			return(NULL);
 		}
 	} else {
-		strncpy(p->name, name, NAME_MAX);
+		strncpy(p->name, name, S3D_NAME_MAX);
 		process_sys_init(p);
 
 		/* register the new process in the mcp */
@@ -224,7 +224,7 @@ int process_init(void)
 	procs_p = NULL;
 	process_add();
 	/* set up mcp */
-	strncpy(mcp_p->name, "mcp", NAME_MAX);
+	strncpy(mcp_p->name, "mcp", S3D_NAME_MAX);
 	mcp_p->con_type = CON_NULL;
 	process_sys_init(mcp_p);
 	return(0);

@@ -75,7 +75,7 @@ int event_mbutton_clicked(uint8_t button, uint8_t state)
 /*  tell the client something about us */
 int event_init(struct t_process *p)
 {
-	char s[NAME_MAX+3];
+	char s[S3D_NAME_MAX+3];
 	sprintf(s, "%c%c%c%s", S3D_SERVER_MAJOR, S3D_SERVER_MINOR, S3D_SERVER_PATCH, S3D_SERVER_NAME); /* thanks award */
 	prot_com_out(p, S3D_P_S_INIT, (uint8_t *)s, strlen(S3D_SERVER_NAME) + 4);
 	return(0);
@@ -133,18 +133,18 @@ int event_obj_info(struct t_process *p, int32_t oid)
 
 		mo.r = p->object[oid]->r;
 
-		memset(mo.name, 0, NAME_MAX);
+		memset(mo.name, 0, S3D_NAME_MAX);
 		switch (o->oflags&OF_TYPE) {
 		case OF_VIRTUAL:
 			ap = get_proc_by_pid(o->n_mat);
-			strncpy(mo.name, ap->name, NAME_MAX);
+			strncpy(mo.name, ap->name, S3D_NAME_MAX);
 			break;
 		case OF_CAM:
 			mo.scale = (float)((float)winw) / winh; /* give aspect ratio to program */
-			strncpy(mo.name, "sys_camera0", NAME_MAX);
+			strncpy(mo.name, "sys_camera0", S3D_NAME_MAX);
 			break;
 		case OF_POINTER:
-			strncpy(mo.name, "sys_pointer0", NAME_MAX);
+			strncpy(mo.name, "sys_pointer0", S3D_NAME_MAX);
 			break;
 
 		}

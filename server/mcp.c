@@ -40,7 +40,7 @@ struct mcp_object {
 	float trans_x, trans_y, trans_z;
 	float r;
 	/*  char event; */
-	char name[NAME_MAX];
+	char name[S3D_NAME_MAX];
 };
 #define MCP_NEW_OBJECT 1
 /*  call when a new mcp connects */
@@ -77,7 +77,7 @@ int mcp_rep_object(int32_t mcp_oid)
 	mo.r = p->object[mcp_oid]->r;
 	/*  mo.event=MCP_NEW_OBJECT; */
 	ap = get_proc_by_pid(p->object[mcp_oid]->n_mat);
-	strncpy(mo.name, ap->name, NAME_MAX);
+	strncpy(mo.name, ap->name, S3D_NAME_MAX);
 	prot_com_out(p, S3D_P_MCP_OBJECT, (uint8_t *)&mo, sizeof(struct mcp_object));
 	return(0);
 }

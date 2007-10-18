@@ -43,7 +43,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 {
 	uint8_t  command;
 	int  i;
-	char  name[NAME_MAX];
+	char  name[S3D_NAME_MAX];
 	struct t_process *np;
 	uint8_t *buf, *cptr = NULL;
 	uint16_t length;
@@ -66,8 +66,8 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 	/*  if (mcp_oid==-1) s3dprintf(HIGH,"couldn't find mcp-oid for pid %d!",p->id); */
 	switch (command) {
 	case S3D_P_C_INIT:
-		memset(name, 0, NAME_MAX);
-		if (length > NAME_MAX) i = NAME_MAX;
+		memset(name, 0, S3D_NAME_MAX);
+		if (length > S3D_NAME_MAX) i = S3D_NAME_MAX;
 		else i = length;
 		strncpy(name, (char *)buf, i);
 		s3dprintf(LOW, "[%d]\"%s\" logged in", p->id, name);
