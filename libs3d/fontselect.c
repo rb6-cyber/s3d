@@ -41,16 +41,16 @@
 #ifdef WITH_FONTCONFIG
 char *s3d_findfont(char *mask)
 {
-	FcPattern *pattern = 0, *match = 0;
-	FcChar8 *file = 0;
+	FcPattern *pattern = NULL, *match = NULL;
+	FcChar8 *file = NULL;
 	FcResult result;
 
 	pattern = FcNameParse((FcChar8 *)mask);
-	FcConfigSubstitute(0, pattern, FcMatchPattern);
+	FcConfigSubstitute(NULL, pattern, FcMatchPattern);
 	FcDefaultSubstitute(pattern);
 	s3dprintf(LOW, "Looking for font %s", mask);
 
-	if (!(match = FcFontMatch(0, pattern, &result)))
+	if (!(match = FcFontMatch(NULL, pattern, &result)))
 		return NULL;
 	if (FcPatternGetString(match, FC_FILE, 0, &file) != FcResultMatch)
 		return NULL;

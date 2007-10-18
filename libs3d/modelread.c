@@ -110,7 +110,7 @@ void *get_mat2tex(struct material2texture **mat2tex, void *mat_ptr)
 
 	}
 
-	return(0);
+	return(NULL);
 
 }
 

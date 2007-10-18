@@ -78,8 +78,8 @@ static int parse_args(int *argc, char ***argv)
 	char     c;
 	int      lopt_idx;
 	struct option long_options[] = {
-		{"s3d-url", 1, 0, 0
-		}, {"help", 0, 0, 'h'}, {"s3d-help", 0, 0, 'h'}, {0, 0, 0, 0}
+		{"s3d-url", 1, NULL, 0
+		}, {"help", 0, NULL, 'h'}, {"s3d-help", 0, NULL, 'h'}, {NULL, 0, NULL, 0}
 	};
 	if ((argc == NULL) || (argv == NULL)) return(0); /* nothing to parse */
 	optind = 0;

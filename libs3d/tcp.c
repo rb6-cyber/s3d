@@ -60,7 +60,7 @@ int _tcp_init(char *sv, int pn)
 	int      res;
 	/* char     *port=NULL;*/
 	struct sockaddr_in   sock;
-	struct hostent   *server = 0;
+	struct hostent   *server = NULL;
 #ifdef SIGS
 	_s3d_sigio = 0;
 #endif
