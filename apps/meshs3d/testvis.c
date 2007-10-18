@@ -1,0 +1,221 @@
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <stdlib.h>
+#include <string.h>
+#include <pthread.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#include <signal.h>
+
+#define BUFFER_SIZE 1000
+#define LINE_SIZE 100
+
+struct data {
+	int index;
+	int active;
+	char line[LINE_SIZE];
+	struct data *next;
+};
+
+struct t_data {
+	struct data *head, *end;
+};
+
+
+void list_data(struct data *head, struct data *end) {
+	struct data *tmp;
+	
+	for(tmp=head->next;tmp != end;tmp=tmp->next) {
+		printf("%d: %s | %d\n",tmp->index, tmp->line,tmp->active);
+	}
+}
+
+void rem_data( int index,struct data *head, struct data *end ) {
+	struct data *tmp, *prev=NULL;
+	
+	for(tmp=head->next;tmp != end;prev = tmp, tmp=tmp->next) {
+		if(tmp->index == index)
+			break;
+	}
+
+	if(tmp != end) {
+
+		if(prev == NULL)
+			head->next = end;
+		else if(tmp->next != end)
+			prev->next = tmp->next;
+		else
+			prev->next = end;
+		
+		printf("remove index %d\n",tmp->index);
+		free(tmp);
+	} else {
+		printf("index not found\n");
+	}
+	return;
+}
+
+void dea_data( int index,struct data *head, struct data *end ) {
+	struct data *tmp;
+	
+	for(tmp=head->next;tmp != end; tmp=tmp->next) {
+		if(tmp->index == index)
+			break;
+	}
+
+	if(tmp != end && tmp != head) {
+		tmp->active = 0;
+	}
+	return;
+}
+
+void act_data( int index,struct data *head, struct data *end ) {
+	struct data *tmp;
+	
+	for(tmp=head->next;tmp != end; tmp=tmp->next) {
+		if(tmp->index == index)
+			break;
+	}
+
+	if(tmp != end && tmp != head) {
+		tmp->active = 1;
+	}
+	return;
+}
+
+static void sig(int signr) {
+	return;
+}
+
+void *server(void *args) {
+	struct t_data *t = (struct t_data*)args;
+	int listen_fd,yes=1;
+	struct sockaddr_in sock,client;
+	struct data *tmp;
+	
+	int sock2;
+	socklen_t len;
+	
+	char buffer[2000];
+	char start[] ="digraph topology\n{\n";
+	char end[] = "}\n";
+	int index;
+
+	signal(SIGPIPE, sig);
+	
+	listen_fd = socket(PF_INET, SOCK_STREAM, 0);
+	setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int));
+
+	memset((char *) &sock, 0, sizeof(sock));
+	sock.sin_family = AF_INET;
+	sock.sin_addr.s_addr = htonl(INADDR_ANY);
+	sock.sin_port = htons(2004);
+
+	bind(listen_fd, (struct sockaddr *) &sock, sizeof(sock));
+	listen(listen_fd, 1);
+	
+	len = sizeof( client );
+		
+	while(1) {
+
+		sock2 =	accept( listen_fd, (struct sockaddr*)&client, &len);
+
+		while(1) {
+		
+			memset(buffer,0,2000);
+			strcat(buffer,start);
+			index = strlen(start);
+
+			for(tmp=t->head->next;tmp != t->end;tmp=tmp->next) {
+
+				if(!tmp->active)
+					continue;
+				strcat(&buffer[index],tmp->line );
+				index += strlen(tmp->line);
+				strcat(&buffer[index], "\n");
+				index++;
+
+			}
+
+			strcat(&buffer[index], end);
+			buffer[index+2] = 0;
+			if( send ( sock2, buffer, strlen(buffer), 0 ) < 1 )
+				break;
+
+			sleep(3);
+
+		}
+	}
+	
+	return NULL;
+}
+
+int main() {
+	char buffer[BUFFER_SIZE];
+	char *tmp_buffer;
+	struct data *head, *z, *t;
+	static int index = 0;
+	struct t_data t_dat;
+	pthread_t thread;
+	
+	head = malloc(sizeof(*head));
+	z = malloc(sizeof(*z));
+
+	head->next = z;
+
+	t_dat.head = head;
+	t_dat.end = z;
+	pthread_create (&thread, NULL, server, &t_dat);
+	pthread_detach(thread);
+	printf("\ntestivs: ");
+
+	while(fgets(buffer, BUFFER_SIZE, stdin)) {
+
+		if( (tmp_buffer = strstr(buffer, "add")) != NULL ) {
+			tmp_buffer[strlen(tmp_buffer) - 1] = 0;
+			tmp_buffer += 4;
+			t = malloc(sizeof(*t));
+			snprintf(t->line, LINE_SIZE, tmp_buffer);
+			t->index = ++index;
+			t->active = 1;
+			t->next = head->next;
+			head->next = t;
+		} else if( (tmp_buffer = strstr(buffer, "list")) != NULL ) {
+
+			list_data(head,z);
+
+		} else if( (tmp_buffer = strstr(buffer, "rem")) != NULL ) {
+
+			tmp_buffer[strlen(tmp_buffer) - 1] = 0;
+			tmp_buffer += 4;
+			rem_data( atoi(tmp_buffer),head,z);
+
+		} else if( (tmp_buffer = strstr(buffer, "dea")) != NULL ) {
+
+			tmp_buffer[strlen(tmp_buffer) - 1] = 0;
+			tmp_buffer += 4;
+			dea_data( atoi(tmp_buffer),head,z);
+
+		} else if( (tmp_buffer = strstr(buffer, "act")) != NULL ) {
+
+			tmp_buffer[strlen(tmp_buffer) - 1] = 0;
+			tmp_buffer += 4;
+			act_data( atoi(tmp_buffer),head,z);
+
+		} else if( (tmp_buffer = strstr(buffer, "quit")) != NULL ) {
+
+			break;
+
+		} else
+
+			printf("command not found\n");
+
+		printf("testivs: ");
+
+	}
+	
+	return 0;
+}
