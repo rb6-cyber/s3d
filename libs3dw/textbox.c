@@ -28,7 +28,7 @@
 #include <stdlib.h> /* malloc() */
 #include <string.h> /* strdup() */
 
-void s3dw_textbox_draw(s3dw_widget *widget)
+static void s3dw_textbox_draw(s3dw_widget *widget)
 {
 	float h, w;
 	float vertices[12*3];

@@ -28,7 +28,7 @@
 #include <stdlib.h> /* malloc() */
 #include <string.h> /* strdup() */
 
-void s3dw_scrollbar_draw(s3dw_widget *widget)
+static void s3dw_scrollbar_draw(s3dw_widget *widget)
 {
 	s3dw_scrollbar *scrollbar = (s3dw_scrollbar *)widget;
 	float back_vertices[3*32];

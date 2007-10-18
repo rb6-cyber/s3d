@@ -79,7 +79,7 @@ void s3dw_widget_append(s3dw_widget *parent, s3dw_widget *widget)
 		widget->flags |= S3DW_VISIBLE;
 }
 /* removes an widget from it's parent, should have been appended before */
-void s3dw_widget_remove(s3dw_widget *widget)
+static void s3dw_widget_remove(s3dw_widget *widget)
 {
 	s3dw_widget *parent = widget->parent;
 	int i, stackpos;

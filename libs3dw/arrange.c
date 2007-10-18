@@ -118,7 +118,7 @@ void s3dw_turn(void)
 }
 
 #define DIST 40.0
-void s3dw_follow(void)
+static void s3dw_follow(void)
 {
 	s3dw_widget *w, *root = s3dw_getroot();
 	int i;
