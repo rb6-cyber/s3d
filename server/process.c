@@ -126,7 +126,7 @@ int process_sys_init(struct t_process *p)
 }
 
 /* this is to be called when a new connection appears. a pointer to the added process will be returned */
-struct t_process *process_add() {
+struct t_process *process_add(void) {
 	struct t_process *new_p;
 	procs_n++;
 	procs_p = realloc(procs_p, sizeof(struct t_process)*procs_n); /* increase the block */
@@ -218,7 +218,7 @@ static int p_del(struct t_process *p)
 	}
 	return(0);  /*  successfully deleted */
 }
-int process_init()
+int process_init(void)
 {
 	procs_n = 0;
 	procs_p = NULL;
@@ -229,7 +229,7 @@ int process_init()
 	process_sys_init(mcp_p);
 	return(0);
 }
-int process_quit()
+int process_quit(void)
 {
 	int i;
 	s3dprintf(HIGH, "telling %d processes to go away", procs_n);

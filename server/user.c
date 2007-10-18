@@ -27,7 +27,7 @@
 static int ox, oy;
 static int pressed;
 int but = -1;
-int user_init()
+int user_init(void)
 {
 	switch (frame_mode) {
 #ifdef G_GLUT
@@ -47,7 +47,7 @@ int user_init()
 	ox = oy = 0xFFFFFF;
 	return(0);
 }
-int user_main()
+int user_main(void)
 {
 	switch (frame_mode) {
 #ifdef G_GLUT
@@ -128,7 +128,7 @@ void user_mouse(int button, int state, int x, int y)
 	/* mouse changed? */
 	ptr_move(x, y);
 }
-int user_quit()
+int user_quit(void)
 {
 	return(0);
 }

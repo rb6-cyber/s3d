@@ -27,19 +27,19 @@
 int alphax, alphay;
 float view_x, view_y, view_z;
 extern int winw, winh;
-void navi_right()
+void navi_right(void)
 {
 	navi_pos(1, 0);
 }
-void navi_left()
+void navi_left(void)
 {
 	navi_pos(-1, 0);
 }
-void navi_fwd()
+void navi_fwd(void)
 {
 	navi_pos(0, 1);
 }
-void navi_back()
+void navi_back(void)
 {
 	navi_pos(0, -1);
 }

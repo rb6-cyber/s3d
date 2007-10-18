@@ -89,7 +89,7 @@ int event_quit(struct t_process *p)
 	return(0);
 }
 /* the cam changed?! we should run and tell this the mcp/focused client! */
-int event_cam_changed()
+int event_cam_changed(void)
 {
 	struct t_process *p;
 	struct t_obj  *o;
@@ -100,7 +100,7 @@ int event_cam_changed()
 	return(0);
 }
 /* same for the mouse movement! */
-int event_ptr_changed()
+int event_ptr_changed(void)
 {
 	struct t_process *p;
 	struct t_obj  *o;

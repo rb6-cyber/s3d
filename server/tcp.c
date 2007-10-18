@@ -49,7 +49,7 @@ extern struct t_con mcp;
 extern uint8_t ibuf[MAXPLEN];
 extern int idc;
 int tcp_sockid;
-int tcp_init()
+int tcp_init(void)
 {
 	int yes = 1;
 	struct sockaddr_in my_addr;
@@ -84,7 +84,7 @@ int tcp_init()
 	return(0);
 
 }
-int tcp_quit()
+int tcp_quit(void)
 {
 	close(tcp_sockid);
 #ifdef WIN32
@@ -93,7 +93,7 @@ int tcp_quit()
 	return(0);
 }
 /*  watches the port for new connections */
-int tcp_pollport()
+int tcp_pollport(void)
 {
 	fd_set     fs_port;   /*  filedescriptor set for listening port(s) */
 	int      newsd;   /*  new socket descriptor */
@@ -137,7 +137,7 @@ extern struct t_process *procs_p;
 extern int procs_n;
 /*  this is about looking for new data on the sockets */
 /*  returns 1 when there was new data. */
-int tcp_pollproc()
+int tcp_pollproc(void)
 {
 	fd_set     fs_proc;   /*  filedescriptor set for listening port(s) */
 	struct timeval   tv;   /*  time structure */

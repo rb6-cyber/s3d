@@ -38,7 +38,7 @@ struct t_plane {
 #define PNEAR 4
 #define PFAR 5
 static struct t_plane frustumPlane[6];
-void cull_get_planes()
+void cull_get_planes(void)
 {
 	t_mtrx m, mproj, mmodel;
 	struct t_plane *p;

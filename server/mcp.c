@@ -44,7 +44,7 @@ struct mcp_object {
 };
 #define MCP_NEW_OBJECT 1
 /*  call when a new mcp connects */
-int mcp_init()
+int mcp_init(void)
 {
 	struct t_process *p;
 	uint32_t i;

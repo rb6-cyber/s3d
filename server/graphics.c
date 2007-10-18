@@ -47,7 +47,7 @@ extern struct t_process *procs_p;
 extern int frame_mode;  /*  GLUT, SDL, ... ? */
 /*  this detects and opens the SDL things */
 
-int graphics_init()
+int graphics_init(void)
 {
 	GLfloat shin[] = {16.0};
 	switch (frame_mode) {
@@ -169,7 +169,7 @@ void render_virtual_object(struct t_obj *o)
 }
 /*  this functions renders by going from mcp objects [as it should be],  */
 /*  recursively positiniong the objects into the space. */
-int render_by_mcp()
+int render_by_mcp(void)
 {
 	struct t_process *p = get_proc_by_pid(MCP);
 	int32_t i;
@@ -332,7 +332,7 @@ int graphics_pick_obj(int x, int y)
 }
 
 
-void graphics_main()
+void graphics_main(void)
 {
 	struct t_process *p = get_proc_by_pid(MCP);
 	t_mtrx m;
@@ -392,7 +392,7 @@ void graphics_main()
 }
 
 /*  quit the graphic-interface */
-int graphics_quit()
+int graphics_quit(void)
 {
 	return(0);
 }

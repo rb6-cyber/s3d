@@ -32,7 +32,7 @@ void mouse_motion(int x, int y);
 void passive_mouse_motion(int x, int y);
 extern int but;
 /*  init user input things for glut */
-int user_init_glut()
+int user_init_glut(void)
 {
 	s3dprintf(MED, "using GLUT for user input");
 	glutKeyboardFunc(keyboard);

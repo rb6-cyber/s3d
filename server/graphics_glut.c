@@ -31,7 +31,7 @@
 #include <GL/gl.h>   /*  of course, the gl header */
 #include <stdlib.h>  /* atexit() */
 /*  glut version of graphics init ... */
-int graphics_init_glut()
+int graphics_init_glut(void)
 {
 	/* XXX: Faking argc and argv is probably not a good idea. */
 	int argc = 1;
@@ -49,7 +49,7 @@ int graphics_init_glut()
 	return(0);
 }
 /*  nothing to be done ... */
-int graphics_quit_glut()
+int graphics_quit_glut(void)
 {
 	return(0);
 }

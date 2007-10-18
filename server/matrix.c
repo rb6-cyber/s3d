@@ -34,7 +34,7 @@ t_mtrx Identity = {
 	0.0, 0.0, 1.0, 0.0,
 	0.0, 0.0, 0.0, 1.0
 };
-void myLoadIdentity()
+void myLoadIdentity(void)
 {
 	memcpy(MAT, Identity, sizeof(t_mtrx));
 }
@@ -97,7 +97,7 @@ void myTransformV(struct t_vertex *v)
 #define M(x, y)  Mm[I(x, y)]
 #define P(x, y)  Pm[I(x, y)]
 /* this inverts the matrix M into P in the gauss way */
-int myInvert()
+int myInvert(void)
 {
 	t_mtrx Mm, Pm;
 	int l, lh; /* line*/

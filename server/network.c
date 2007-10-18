@@ -59,7 +59,7 @@ void sigio_handler(int S3DUNUSED(unused))
 }
 #endif
 /*  maybe change the errors to fatal errors ... */
-int network_init()
+int network_init(void)
 {
 #ifdef SIGS
 	/* struct sigaction act;*/
@@ -90,7 +90,7 @@ int net_turn_off(int S3DUNUSED(interval))
 }
 
 /*  this basicly polls for new connection */
-int network_main()
+int network_main(void)
 {
 #ifdef TCP
 #ifdef SIGS
@@ -162,7 +162,7 @@ int n_writen(struct t_process *p, uint8_t *str, int s)
 	return(-1);
 }
 
-int network_quit()
+int network_quit(void)
 {
 #ifdef TCP
 	tcp_quit();

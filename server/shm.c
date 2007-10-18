@@ -59,7 +59,7 @@ static int next_key(int oldkey)
 {
 	return(oldkey + 1);
 }
-int shm_init()
+int shm_init(void)
 {
 	FILE *fp;
 	key_t key;
@@ -140,7 +140,7 @@ static int shm_new_comblock(key_t *data)
 	return(0);
 }
 
-int shm_quit()
+int shm_quit(void)
 {
 	/* detach from the segment: */
 	s3dprintf(LOW, "shm_quit()...");
@@ -172,7 +172,7 @@ int shm_remove(struct t_process *p)
 }
 
 extern int turn; /* set turn to 0 when timeslice is over */
-int shm_main()
+int shm_main(void)
 {
 	int      i/*,found*/;
 	struct buf_t   *dai; /* data in, data out */

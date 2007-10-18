@@ -28,7 +28,7 @@ int aa_level = 4;
 #include <SDL.h>
 
 int SDLFlags = 0;      /*  some flags for SDL */
-int graphics_init_sdl()
+int graphics_init_sdl(void)
 {
 	SDL_Surface *GLwin = NULL;
 	SDL_VideoInfo *VideoInfo;
@@ -113,7 +113,7 @@ int graphics_init_sdl()
 	graphics_reshape(X_RES, Y_RES);
 	return(0);
 }
-int graphics_quit_sdl()
+int graphics_quit_sdl(void)
 {
 	SDL_Quit();
 	return(0);

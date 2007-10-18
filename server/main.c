@@ -134,7 +134,7 @@ static void mainloop(void)
 struct timespec t = {
 	0, 10*1000*1000
 }; /* 10 mili seconds */
-void one_time()
+void one_time(void)
 {
 	nanosleep(&t, NULL);
 	user_main();
@@ -142,7 +142,7 @@ void one_time()
 	graphics_main();
 }
 /*  this initalizes all components.  */
-int init()
+int init(void)
 {
 #ifdef __APPLE__
 	NSApplicationLoad();
@@ -183,7 +183,7 @@ int init()
 }
 
 /*  things to be cleaned up  */
-void quit()
+void quit(void)
 {
 	if (running != 0) {
 		user_quit();

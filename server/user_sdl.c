@@ -28,12 +28,12 @@
 /*  this is done right now by SDL-polling */
 
 extern int SDLFlags;
-int user_init_sdl()
+int user_init_sdl(void)
 {
 	SDL_EnableUNICODE(1);
 	return(0);
 }
-int user_main_sdl()
+int user_main_sdl(void)
 {
 	SDL_Event  event;
 	SDL_Surface *GLwin = NULL;
@@ -159,7 +159,7 @@ int user_main_sdl()
 	return(0);
 
 }
-int user_quit_sdl()
+int user_quit_sdl(void)
 {
 	return(0);
 }
