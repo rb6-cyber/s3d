@@ -71,7 +71,7 @@ int net_init(char *host)
 	return(0);
 }
 
-int net_main()
+int net_main(void)
 {
 
 	if ((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) == -1) {
@@ -120,7 +120,7 @@ int net_main()
 
 }
 
-int net_quit()
+int net_quit(void)
 {
 	close(sockfd);
 

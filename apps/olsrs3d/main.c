@@ -118,7 +118,7 @@ void close_win(s3dw_widget *button)
 
 
 
-void window_help()
+void window_help(void)
 {
 
 	s3dw_surface *infwin;
@@ -720,7 +720,7 @@ void move_olsr_nodes(void)
 
 
 
-void mainloop()
+void mainloop(void)
 {
 
 	int net_result;   /* result of function net_main */
@@ -797,7 +797,7 @@ void mainloop()
 
 }
 
-int stop()
+int stop(void)
 {
 	s3d_quit();
 	net_quit();
@@ -984,7 +984,7 @@ int object_click(struct s3d_evt *evt)
 	return(0);
 }
 
-void print_etx()
+void print_etx(void)
 {
 	struct olsr_neigh_list *tmpNeighbour;
 	float p = 1.4;

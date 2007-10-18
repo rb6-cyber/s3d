@@ -90,7 +90,7 @@ void _abort_search_window(s3dw_widget *bwidget)
 	_search_widget = NULL;
 	set_search_status(NOTHING);
 }
-void show_search_window()
+void show_search_window(void)
 {
 	s3dw_button *search_button, *abort_button;
 

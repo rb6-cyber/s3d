@@ -249,7 +249,7 @@ void *get_olsr_node(struct olsr_node **olsr_node, char *ip)
  *
  */
 
-void lst_initialize()
+void lst_initialize(void)
 {
 	Obj_to_ip_head = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
 	Obj_to_ip_end = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
@@ -375,7 +375,7 @@ struct olsr_node *lst_search(int id) {
 
 }
 
-void lst_out()
+void lst_out(void)
 {
 	struct Obj_to_ip *ptr;
 	ptr = Obj_to_ip_head;
@@ -385,7 +385,7 @@ void lst_out()
 	}
 }
 
-int process_main()
+int process_main(void)
 {
 
 	int dn;
