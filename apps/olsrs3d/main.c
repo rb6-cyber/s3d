@@ -797,7 +797,7 @@ void mainloop(void)
 
 }
 
-int stop(void)
+int stop(struct s3d_evt* OLSRS3DUNUSED(evt))
 {
 	s3d_quit();
 	net_quit();
