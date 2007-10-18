@@ -47,7 +47,7 @@ static struct timespec sleep_time = {
 };   /* 100 mili seconds */
 
 
-void init_globals(void)
+static void init_globals(void)
 {
 	Global.debug = 1;
 	Global.obj_node_hna = 0;
@@ -68,7 +68,7 @@ void init_globals(void)
 }
 
 
-void print_usage(void)
+static void print_usage(void)
 {
 
 	printf("Usage is olsrs3d [options] [-- [s3d options]]\n");
@@ -79,7 +79,7 @@ void print_usage(void)
 	s3d_usage();
 }
 
-float dist(float p1[], float p2[])
+static float dist(float p1[], float p2[])
 {
 	float p[3];
 	p[0] = p1[0] - p2[0];
@@ -88,7 +88,7 @@ float dist(float p1[], float p2[])
 	return (sqrt(p[0]*p[0]   +  p[1]*p[1]  +  p[2]*p[2]));
 }
 
-float dirt(float p1[], float p2[], float p3[])
+static float dirt(float p1[], float p2[], float p3[])
 {
 	float d;
 	d = dist(p1, p2);
@@ -105,7 +105,7 @@ float dirt(float p1[], float p2[], float p3[])
 	return(d);
 }
 
-void handle_node(void)
+static void handle_node(void)
 {
 	struct node *node, *tmp_node;
 	struct node_con *con;
@@ -192,7 +192,7 @@ void handle_node(void)
 	return;
 }
 
-void mov_add(float mov[], float p[], float fac)
+static void mov_add(float mov[], float p[], float fac)
 {
 	/* if (fac>1000)
 	  return;
@@ -202,7 +202,7 @@ void mov_add(float mov[], float p[], float fac)
 	mov[2] += fac * p[2];
 }
 
-void move_meshnode(struct node *node)
+static void move_meshnode(struct node *node)
 {
 	float null_vec[3] = {0, 0, 0};
 	float tmp_mov_vec[3];
@@ -223,7 +223,7 @@ void move_meshnode(struct node *node)
 	}
 }
 
-void color_handler(struct node_con *con)
+static void color_handler(struct node_con *con)
 {
 	float rgb = 0.0, r = 0.0, g = 0.0, b = 0.0, etx;
 	int c, c1 = 0;
@@ -313,7 +313,7 @@ void color_handler(struct node_con *con)
 }
 
 
-void calc_node_mov(void)
+static void calc_node_mov(void)
 {
 
 	float distance;
@@ -390,7 +390,7 @@ void calc_node_mov(void)
 
 }
 
-void mainloop(void)
+static void mainloop(void)
 {
 	static int last_count = 0;
 	int net_result;   /* result of function net_main */
@@ -435,7 +435,7 @@ void mainloop(void)
 	return;
 }
 
-int object_info(struct s3d_evt *hrmz)
+static int object_info(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
 	inf = (struct s3d_obj_info *)hrmz->buf;
@@ -468,7 +468,7 @@ int object_info(struct s3d_evt *hrmz)
 	return(0);
 }
 
-int keypress(struct s3d_evt *event)
+static int keypress(struct s3d_evt *event)
 {
 
 	struct s3d_key_event *key = (struct s3d_key_event *)event->buf;

@@ -46,12 +46,12 @@ struct hashtable_t *node_hash;
 struct hashtable_t *con_hash;
 
 
-int long_comp(void *data1, void *data2)
+static int long_comp(void *data1, void *data2)
 {
 	return(memcmp(data1, data2, 8));
 }
 
-int long_choose(void *data, int32_t size)
+static int long_choose(void *data, int32_t size)
 {
 	unsigned char *key = data;
 	uint32_t hash = 0;
@@ -68,14 +68,14 @@ int long_choose(void *data, int32_t size)
 	return (hash % size);
 }
 
-int orig_comp(void *data1, void *data2)
+static int orig_comp(void *data1, void *data2)
 {
 	return(memcmp(data1, data2, 4));
 }
 
 /* hashfunction to choose an entry in a hash table of given size */
 /* hash algorithm from http://en.wikipedia.org/wiki/Hash_table */
-int orig_choose(void *data, int32_t size)
+static int orig_choose(void *data, int32_t size)
 {
 	unsigned char *key = data;
 	uint32_t hash = 0;
@@ -92,7 +92,7 @@ int orig_choose(void *data, int32_t size)
 	return (hash % size);
 }
 
-void exit_error(char *format, ...)
+static void exit_error(char *format, ...)
 {
 	va_list args;
 
@@ -112,7 +112,7 @@ void process_init(void)
 	return;
 }
 
-void handle_con(unsigned int ip1, unsigned int ip2, float etx)
+static void handle_con(unsigned int ip1, unsigned int ip2, float etx)
 {
 
 	unsigned int ip[2];
@@ -183,7 +183,7 @@ void handle_con(unsigned int ip1, unsigned int ip2, float etx)
 
 }
 
-struct node *handle_mesh_node(unsigned int ip, char *ip_string) {
+static struct node *handle_mesh_node(unsigned int ip, char *ip_string) {
 	struct node *orig_node;
 	struct hashtable_t *swaphash;
 

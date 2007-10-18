@@ -36,10 +36,10 @@
 #include "meshs3d.h"
 
 #define PORT 2004
-char buf[MAXDATASIZE];
+static char buf[MAXDATASIZE];
 
 
-int sockfd, numbytes;
+static int sockfd, numbytes;
 
 int net_init(char *host)
 {

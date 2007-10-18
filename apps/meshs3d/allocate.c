@@ -37,7 +37,7 @@
 
 #if defined DEBUG_MALLOC
 
-struct chunkHeader *chunkList = NULL;
+static struct chunkHeader *chunkList = NULL;
 
 struct chunkHeader {
 	struct chunkHeader *next;
@@ -54,7 +54,7 @@ struct chunkTrailer {
 
 #if defined MEMORY_USAGE
 
-struct memoryUsage *memoryList = NULL;
+static struct memoryUsage *memoryList = NULL;
 
 
 struct memoryUsage {
@@ -65,7 +65,7 @@ struct memoryUsage {
 };
 
 
-void addMemory(uint32_t length, int32_t tag)
+static void addMemory(uint32_t length, int32_t tag)
 {
 
 	struct memoryUsage *walker;
@@ -98,7 +98,7 @@ void addMemory(uint32_t length, int32_t tag)
 }
 
 
-void removeMemory(int32_t tag, int32_t freetag)
+static void removeMemory(int32_t tag, int32_t freetag)
 {
 
 	struct memoryUsage *walker;
