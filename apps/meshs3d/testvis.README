@@ -1,0 +1,25 @@
+handle only one connected client
+
+usage:
+
+add a dot draw line:
+
+testivs: add "104.65.0.42" -> "104.0.7.254"[label="4.03"];
+
+list lines (output index:line | active) :
+
+testivs: list
+1: "104.65.0.42" -> "104.0.7.254"[label="4.03"]; | 1
+
+remove line with index 1:
+testvis: rem 1
+
+deactive output of line with index 1:
+testvis: dea 1
+
+activate output of line with index 1:
+testvis: act 1
+
+quit testvis:
+testvis: quit
+
