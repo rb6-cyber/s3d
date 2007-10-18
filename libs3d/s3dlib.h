@@ -115,7 +115,7 @@ int net_send(uint8_t opcode, char *buf, uint16_t length);
 int s3d_net_init(char *urlc);
 #ifdef TCP
 /* tcp.c */
-int _tcp_init();
+int _tcp_init(char *sv, int pn);
 int _tcp_quit();
 int _s3d_tcp_net_receive();
 int tcp_writen(char *str, int s);
