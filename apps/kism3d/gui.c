@@ -34,22 +34,22 @@
 
 
 
-float CamPosition[2][3];          /* CamPosition[trans|rot][x-z] */
+static float CamPosition[2][3];          /* CamPosition[trans|rot][x-z] */
 
-int Last_Click_Oid = 0;
-unsigned int Last_Click_Time = 0;
+static int Last_Click_Oid = 0;
+static unsigned int Last_Click_Time = 0;
 
-void *Cam_target = NULL;
+static void *Cam_target = NULL;
 
-int Client_obj;
+static int Client_obj;
 
-struct timespec sleeptime = {
+static struct timespec sleeptime = {
 	0, 100 * 1000 * 1000
 };   /* 100 mili seconds */
 
 
 
-int wire_sphere(int slices, int stacks)
+static int wire_sphere(int slices, int stacks)
 {
 	int x, y, i, o;
 	int num_v, num_l;
@@ -118,7 +118,7 @@ int wire_sphere(int slices, int stacks)
 
 
 
-int handle_networks(void)
+static int handle_networks(void)
 {
 
 	struct list_head *network_pos;
@@ -246,7 +246,7 @@ int handle_networks(void)
 
 
 
-int handle_clients(void)
+static int handle_clients(void)
 {
 
 	struct list_head *client_pos;
@@ -310,7 +310,7 @@ int handle_clients(void)
  *
  ***/
 
-int object_click(struct s3d_evt *evt)
+static int object_click(struct s3d_evt *evt)
 {
 
 	struct list_head *network_pos;
@@ -354,7 +354,7 @@ int object_click(struct s3d_evt *evt)
  *
  ***/
 
-int object_info(struct s3d_evt *hrmz)
+static int object_info(struct s3d_evt *hrmz)
 {
 
 	struct s3d_obj_info *inf;
@@ -380,7 +380,7 @@ int object_info(struct s3d_evt *hrmz)
 
 
 
-void mainloop(void)
+static void mainloop(void)
 {
 
 	float angle, diff_vec[3], tmp_vec[3] = { 0.0, 0.0, -1.0 };

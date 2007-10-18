@@ -38,17 +38,17 @@
 
 
 
-DEFINE_LIST_HEAD(kismet_src_list);
+static DEFINE_LIST_HEAD(kismet_src_list);
 DEFINE_LIST_HEAD(Network_list);
 DEFINE_LIST_HEAD(Client_list);
 
-pthread_t s3d_thread_id;
+static pthread_t s3d_thread_id;
 pthread_mutex_t Network_list_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t Client_list_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-int thread_running = 0;
+static int thread_running = 0;
 int Kism3d_aborted = 0;
-int Num_networks = 0;
+ int Num_networks = 0;
 
 
 
@@ -70,7 +70,7 @@ void *alloc_memory(int len)
 
 
 
-void *realloc_memory(void *ptr, int len)
+static void* realloc_memory(void *ptr, int len)
 {
 
 	void *res = realloc(ptr, len);
@@ -101,7 +101,7 @@ unsigned int get_time(void)
 
 
 
-void parse_buffer(struct kismet_src *kismet_src)
+static void parse_buffer(struct kismet_src *kismet_src)
 {
 
 	struct wlan_network *wlan_network;
