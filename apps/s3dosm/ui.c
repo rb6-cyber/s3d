@@ -111,9 +111,9 @@ int ui_click(struct s3d_evt *evt)
 	char query[MAXQ];
 	if (s3dw_handle_click(evt)) return(0);
 	snprintf(query, MAXQ, "SELECT * FROM node WHERE s3doid=%d;", oid);
-	db_exec(query, ui_getinfo_node, 0);
+	db_exec(query, ui_getinfo_node, NULL);
 	snprintf(query, MAXQ, "SELECT * FROM way WHERE s3doid=%d;", oid);
-	db_exec(query, ui_getinfo_way, 0);
+	db_exec(query, ui_getinfo_way, NULL);
 
 	return(0);
 }

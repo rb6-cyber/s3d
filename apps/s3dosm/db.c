@@ -49,7 +49,7 @@ int db_add_tag(object_t *obj, char *key, char *val)
 	clean_string(mkey, key, MAXQ);
 	clean_string(mval, val, MAXQ);
 	snprintf(tagquery, MAXQ, "INSERT INTO tag VALUES (%d, '%s','%s' );", (int)obj->tagid, mkey, mval);
-	db_exec(tagquery, NULL, 0);
+	db_exec(tagquery, NULL, NULL);
 	return(0);
 }
 
@@ -65,7 +65,7 @@ int db_insert_node(node_t *node)
 		snprintf(addquery, MAXQ, "INSERT INTO node (layer_id, node_id,latitude, longitude, altitude, visible, tag_id) VALUES (%d, %d, %f, %f, %f, %d, %d);",
 		         (int)node->base.layerid, (int)node->base.id, node->lat,  node->lon,  node->alt,  node->visible, (int)node->base.tagid);
 
-	db_exec(addquery, NULL, 0);
+	db_exec(addquery, NULL, NULL);
 	return(0);
 }
 
@@ -85,7 +85,7 @@ int db_insert_segment(segment_t *seg)
 	 else*/
 	snprintf(addquery, MAXQ, "INSERT INTO segment (layer_id, seg_id, node_from, node_to, tag_id) VALUES (%d, %d, %d, %d, %d);",
 	         (int)seg->base.layerid, (int)seg->base.id, (int)seg->from, (int)seg->to, (int)seg->base.tagid);
-	db_exec(addquery, NULL, 0);
+	db_exec(addquery, NULL, NULL);
 
 	return(0);
 }
@@ -95,7 +95,7 @@ int db_insert_way_only(way_t *way)
 	char addquery[MAXQ];
 	way->base.tagid = tagid++;
 	snprintf(addquery, MAXQ, "INSERT INTO way (layer_id, way_id, tag_id) VALUES (%d, %d, %d);", (int)way->base.layerid, (int)way->base.id, (int)way->base.tagid);
-	db_exec(addquery, NULL, 0);
+	db_exec(addquery, NULL, NULL);
 	return(0);
 }
 
@@ -103,7 +103,7 @@ int db_insert_way_seg(way_t *way, int seg_n)
 {
 	char addquery[MAXQ];
 	snprintf(addquery, MAXQ, "UPDATE segment SET way_id=%d WHERE seg_id=%d AND layer_id=%d;", (int)way->base.id, seg_n, (int)way->base.layerid);
-	db_exec(addquery, NULL, 0);
+	db_exec(addquery, NULL, NULL);
 	return(0);
 }
 
@@ -119,7 +119,7 @@ int db_insert_layer(char *layer_name)
 	db_exec(findquery, db_getint, &layerid);
 	if (layerid == -1) { /* need to add */
 		snprintf(addquery, MAXQ, "INSERT INTO layer(name) VALUES ('%s');", clayer);
-		db_exec(addquery, NULL, 0);
+		db_exec(addquery, NULL, NULL);
 		db_flush();
 		db_exec(findquery, db_getint, &layerid);
 	}
@@ -232,7 +232,7 @@ int callback(void *S3DOSMUNUSED(NotUsed), int argc, char **argv, char **azColNam
 
 static int db_really_exec(const char *query, sqlite3_callback callback, void *arg)
 {
-	char *zErrMsg = 0;
+	char *zErrMsg = NULL;
 	int rc;
 	if (SQLITE_OK != (rc = sqlite3_exec(db, query, callback, arg, &zErrMsg))) {
 		fprintf(stderr, "query: %s\n", query);
@@ -246,7 +246,7 @@ static int db_really_exec(const char *query, sqlite3_callback callback, void *ar
 void db_flush(void)
 {
 	if (qlen > 0)
-		db_really_exec(qbuf, NULL, 0);
+		db_really_exec(qbuf, NULL, NULL);
 	qbuf[0] = 0;
 	qlen = 0;
 }
@@ -300,16 +300,16 @@ int db_quit(void)
 
 int db_create(void)
 {
-	db_exec("CREATE TABLE node (layer_id INT, node_id INTEGER , latitude DOUBLE PRECISION, longitude DOUBLE PRECISION, altitude DOUBLE PRECISION, visible BOOLEAN, tag_id INT, s3doid INT, PRIMARY KEY(layer_id,node_id));", NULL, 0);
-	db_exec("CREATE TABLE segment (layer_id INT, seg_id INTEGER, node_from INT, node_to INT, tag_id INT, way_id INT,PRIMARY KEY(layer_id,seg_id));", NULL, 0);
-	db_exec("CREATE TABLE way (layer_id INTEGER, way_id INTEGER, tag_id INT, s3doid INT, PRIMARY KEY(layer_id,way_id));", NULL, 0);
-	db_exec("CREATE TABLE layer (layer_id INTEGER, name TEXT, PRIMARY KEY(layer_id));", NULL, 0);
-	db_exec("CREATE TABLE tag (tag_id INT, tagkey TEXT, tagvalue TEXT, PRIMARY KEY(tag_id, tagkey));", NULL, 0);
+	db_exec("CREATE TABLE node (layer_id INT, node_id INTEGER , latitude DOUBLE PRECISION, longitude DOUBLE PRECISION, altitude DOUBLE PRECISION, visible BOOLEAN, tag_id INT, s3doid INT, PRIMARY KEY(layer_id,node_id));", NULL, NULL);
+	db_exec("CREATE TABLE segment (layer_id INT, seg_id INTEGER, node_from INT, node_to INT, tag_id INT, way_id INT,PRIMARY KEY(layer_id,seg_id));", NULL, NULL);
+	db_exec("CREATE TABLE way (layer_id INTEGER, way_id INTEGER, tag_id INT, s3doid INT, PRIMARY KEY(layer_id,way_id));", NULL, NULL);
+	db_exec("CREATE TABLE layer (layer_id INTEGER, name TEXT, PRIMARY KEY(layer_id));", NULL, NULL);
+	db_exec("CREATE TABLE tag (tag_id INT, tagkey TEXT, tagvalue TEXT, PRIMARY KEY(tag_id, tagkey));", NULL, NULL);
 
 	/*
-	db_exec("CREATE UNIQUE INDEX node_id_index ON node (node_id,layer_id);", NULL, 0);
-	db_exec("CREATE UNIQUE INDEX segment_id_index ON segment (seg_id,layer_id);", NULL, 0);
-	db_exec("CREATE UNIQUE INDEX tag_id_index ON tag (tag_id,tagkey);", NULL, 0);
+	db_exec("CREATE UNIQUE INDEX node_id_index ON node (node_id,layer_id);", NULL, NULL);
+	db_exec("CREATE UNIQUE INDEX segment_id_index ON segment (seg_id,layer_id);", NULL, NULL);
+	db_exec("CREATE UNIQUE INDEX tag_id_index ON tag (tag_id,tagkey);", NULL, NULL);
 	*/
 	db_flush();
 	return(0);

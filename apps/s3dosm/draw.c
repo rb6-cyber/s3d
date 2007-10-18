@@ -360,7 +360,7 @@ void waylist_draw(char *filter)
 	s3d_link(way_obj, oidy);
 	s3d_flags_on(way_obj, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 	snprintf(query, MAXQ, "UPDATE way SET s3doid=%d WHERE way_id=%d AND %s;", way_obj, lastid, filter);
-	db_exec(query, NULL, 0);
+	db_exec(query, NULL, NULL);
 
 	waylist_n = 0;
 

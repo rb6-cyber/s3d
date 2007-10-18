@@ -64,8 +64,8 @@ int process_args(int argc, char **argv)
 	float     minlat, minlon, maxlat, maxlon;
 	char      info[1024];
 	struct option long_options[] = {
-		{"help", 0, 0, 'h'
-		}, {"osm", 1, 0, 'o'}, {0, 0, 0, 0}
+		{"help", 0, NULL, 'h'
+		}, {"osm", 1, NULL, 'o'}, {NULL, 0, NULL, 0}
 	};
 	optind = 0;
 	opterr = 0;
