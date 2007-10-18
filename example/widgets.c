@@ -37,7 +37,7 @@ s3dw_input *input;
 static struct timespec t = {
 	0, 33*1000*1000
 }; /* 33 mili seconds */
-void mainloop()
+void mainloop(void)
 {
 	/* keep this in your mainloop. this will do smooth animations for you ... */
 	s3dw_ani_mate();

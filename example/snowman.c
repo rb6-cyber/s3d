@@ -33,7 +33,7 @@ int oid_head;
 int oid_middle;
 int oid_foot;
 
-void mainloop()
+void mainloop(void)
 {
 	float pos;
 	a = (a + 3) % 360;

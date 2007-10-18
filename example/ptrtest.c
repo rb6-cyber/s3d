@@ -43,7 +43,7 @@ int stop(struct s3d_evt *S3DUNUSED(evt))
 	return(0);
 }
 
-void mainloop()
+void mainloop(void)
 {
 	float a;
 	alpha = (alpha + 1) % 360;

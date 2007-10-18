@@ -233,7 +233,7 @@ int object_click(struct s3d_evt *evt)
 	}
 	return(0);
 }
-void mainloop()
+void mainloop(void)
 {
 	nanosleep(&t, NULL);
 }

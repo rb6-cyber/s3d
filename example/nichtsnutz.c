@@ -45,7 +45,7 @@ CatPos[3];
 
 float length;
 
-void mainloop()
+void mainloop(void)
 {
 
 	al = (alpha * M_PI / 180);

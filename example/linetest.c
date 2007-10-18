@@ -34,7 +34,7 @@ void stop(struct s3d_evt *S3DUNUSED(evt))
 	s3d_quit();
 }
 
-void mainloop()
+void mainloop(void)
 {
 	i = (i + 1) % 2;
 	if (i) {

@@ -34,7 +34,7 @@ static struct timespec t = {
 int a;
 int rot_point, body, legfr, legbr, legfl, legbl, tail;
 
-void mainloop()
+void mainloop(void)
 {
 	float pos;
 	a = (a + 2) % 360;

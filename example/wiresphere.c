@@ -104,7 +104,7 @@ void stop(struct s3d_evt *S3DUNUSED(evt))
 	s3d_quit();
 }
 
-void mainloop()
+void mainloop(void)
 {
 	r = (r + 1) % 360;
 	s3d_rotate(oid, 0, r, 0);

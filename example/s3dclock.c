@@ -41,7 +41,7 @@ void stop(struct s3d_evt *S3DUNUSED(evt))
 	s3d_quit();
 }
 
-void mainloop()
+void mainloop(void)
 {
 	onow = now;
 	now = time(NULL);

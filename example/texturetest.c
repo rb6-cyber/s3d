@@ -31,7 +31,7 @@ static struct timespec t = {
 }; /* 10 mili seconds */
 
 int i, oid;
-void mainloop()
+void mainloop(void)
 {
 	i = (i + 1) % 360;
 	s3d_rotate(oid, 0, i, 0);

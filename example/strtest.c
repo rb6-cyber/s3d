@@ -33,7 +33,7 @@ void stop(struct s3d_evt *S3DUNUSED(evt))
 	s3d_quit();
 }
 
-void mainloop()
+void mainloop(void)
 {
 	/*  printf("now it's %s\n",time_str); */
 	sleep(1);
