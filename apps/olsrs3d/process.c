@@ -240,7 +240,7 @@ void *get_olsr_node(struct olsr_node **olsr_node, char *ip)
 		return (*olsr_node);
 
 	}
-	return(0);
+	return(NULL);
 }
 
 /*
