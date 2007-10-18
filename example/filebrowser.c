@@ -75,7 +75,7 @@ int display_dir(char *dir, int S3DUNUSED(depth), int  posx, int posy, int posz)
 		free(item);
 
 	}
-	n = i = scandir(dir, &namelist, 0, alphasort);
+	n = i = scandir(dir, &namelist, NULL, alphasort);
 	if (n < 0) {
 		perror("scandir");
 		return(-1);
