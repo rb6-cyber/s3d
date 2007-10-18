@@ -78,7 +78,7 @@ int graphics_init_sdl(void)
 			} else
 				errsf("SDL_SetVideoMode()", SDL_GetError());
 		}
-	} while (GLwin == 0);
+	} while (GLwin == NULL);
 	switch (SDL_GetVideoInfo()->vfmt->BitsPerPixel) {
 	case 8:
 		rgb_size[0] = 3;

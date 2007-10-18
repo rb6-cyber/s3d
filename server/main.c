@@ -206,8 +206,8 @@ int process_args(int argc, char **argv)
 	int      lopt_idx;
 	char     c;
 	struct option long_options[] = {
-		{"multisample",  1, 0, 'm'
-		}, {"rc",    1, 0, 'r'}, {"help",   0, 0, 'h'}, {"use-glut",  0, 0, 'g'}, {"use-sdl",   0, 0, 's'}, {"no-rc",   0, 0, 'n'}, {0, 0, 0, 0}
+		{"multisample",  1, NULL, 'm'
+		}, {"rc",    1, NULL, 'r'}, {"help",   0, NULL, 'h'}, {"use-glut",  0, NULL, 'g'}, {"use-sdl",   0, NULL, 's'}, {"no-rc",   0, NULL, 'n'}, {NULL, 0, NULL, 0}
 	};
 	while (-1 != (c = getopt_long(argc, argv, "?hgsnr:m:", long_options, &lopt_idx))) {
 		switch (c) {

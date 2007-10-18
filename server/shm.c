@@ -147,7 +147,7 @@ int shm_quit(void)
 	unlink(ftoken);
 	if (data != NULL) {
 		data[0] = data[1] = 0;
-		data = 0;
+		data = NULL;
 		s3dprintf(MED, "shm_quit():removing init block");
 		if (shmdt(data) == -1)
 			errn("shm_quit():shmdt()", errno);
