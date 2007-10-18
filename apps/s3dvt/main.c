@@ -248,7 +248,7 @@ void term_unload(void)
 	printf("unloading tty!!\n");
 	switch (term_mode) {
 	case M_PTY:
-		write(curpty, '\0', 1);  /*  send an EOF, just in case */
+		write(curpty, "\0", 1);  /*  send an EOF, just in case */
 		close(curpty);
 		close(curtty);
 		/* kill(pid); */
