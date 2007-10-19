@@ -479,6 +479,7 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 	/* if (!win->oid)
 	  deco_box(win);
 	*/
+	bitmap = malloc(TEXW * ((height + TEXH) & ~(TEXH - 1)) * sizeof(uint32_t));
 	for (xleft = x; xleft < x + width ; xleft = xright) {
 		xright = (xleft + TEXW) & ~(TEXW - 1);
 		if (xright > (x + width))
@@ -489,7 +490,6 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 		image = XGetImage(dpy, win->id, xleft, y, chunk_width, height, AllPlanes, ZPixmap);
 		if (!image)
 			return;
-		bitmap = malloc(TEXW * ((height + TEXH) & ~(TEXH - 1)) * sizeof(uint32_t));
 		if (win->oid == -1)
 			deco_box(win);
 		/*  printf("image_convert\n");*/
@@ -506,8 +506,8 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 		}
 		/*  printf("done loading textures\n"); */
 		XDestroyImage(image);
-		free(bitmap);
 	}
+	free(bitmap);
 }
 
 

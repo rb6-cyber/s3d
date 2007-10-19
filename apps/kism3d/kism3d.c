@@ -48,7 +48,7 @@ pthread_mutex_t Client_list_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static int thread_running = 0;
 int Kism3d_aborted = 0;
- int Num_networks = 0;
+int Num_networks = 0;
 
 
 
