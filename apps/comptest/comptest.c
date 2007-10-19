@@ -43,13 +43,13 @@
 #endif
 #endif
 
-#define MAXEVENTS	50		/* maximum events per loop. */
+#define MAXEVENTS 50  /* maximum events per loop. */
 
 /* must be 2^x */
 #define TEXW 256
 #define TEXH 256
-#define TEXNUM(win, x, y)	\
-		((((win->attr.height + TEXH - 1)& ~(TEXH-1))/TEXH) * ((int)(x/TEXH)) + ((int)(y/TEXW)))
+#define TEXNUM(win, x, y) \
+  ((((win->attr.height + TEXH - 1)& ~(TEXH-1))/TEXH) * ((int)(x/TEXH)) + ((int)(y/TEXW)))
 
 struct extension {
 	int event, error;
@@ -63,7 +63,7 @@ struct window {
 	XRenderPictureAttributes  pa;
 	XRenderPictFormat    *format;
 	Picture       picture;
-	int		   already_updated;
+	int     already_updated;
 	int        oid;
 	int        no;
 
@@ -135,7 +135,7 @@ static int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 		name = "Configure!!";
 	}
 
-/*	printf("Event: %s\n", name);*/
+	/* printf("Event: %s\n", name);*/
 	return(0);
 }
 
@@ -220,32 +220,32 @@ int xinit(void)
 
 static void deco_box(struct window *win)
 {
-/*	float vertices[8*3] = {
-		0, 0, 0,
-		1, 0, 0,
-		1, 1, 0,
-		0, 1, 0,
-		0, 0, 1,
-		1, 0, 1,
-		1, 1, 1,
-		0, 1, 1
-	};
-	float sver[8*3];
-	uint32_t polygon[12*4] = {
-		1, 5, 6, 1,
-		1, 6, 2, 1,
-		2, 6, 7, 1,
-		2, 7, 3, 1,
-		4, 0, 3, 1,
-		4, 3, 7, 1,
-		5, 4, 7, 1,
-		5, 7, 6, 1,
-		0, 4, 1, 1,
-		4, 5, 1, 1,
-		0, 1, 2, 0,
-		0, 2, 3, 0
+	/* float vertices[8*3] = {
+	  0, 0, 0,
+	  1, 0, 0,
+	  1, 1, 0,
+	  0, 1, 0,
+	  0, 0, 1,
+	  1, 0, 1,
+	  1, 1, 1,
+	  0, 1, 1
+	 };
+	 float sver[8*3];
+	 uint32_t polygon[12*4] = {
+	  1, 5, 6, 1,
+	  1, 6, 2, 1,
+	  2, 6, 7, 1,
+	  2, 7, 3, 1,
+	  4, 0, 3, 1,
+	  4, 3, 7, 1,
+	  5, 4, 7, 1,
+	  5, 7, 6, 1,
+	  0, 4, 1, 1,
+	  4, 5, 1, 1,
+	  0, 1, 2, 0,
+	  0, 2, 3, 0
 
-	};*/
+	 };*/
 	float tbuf[] = { 0.0, 0.0,  1.0, 0.0,  1.0, 1.0,
 	                 0.0, 0.0,  1.0, 1.0,  0.0, 1.0
 	               };
@@ -255,28 +255,28 @@ static void deco_box(struct window *win)
 	int xpos, ypos;
 
 	win->oid = s3d_new_object();
-/*
-	for (i = 0;i < 8;i++) {
-		sver[i*3 + 0] = vertices[i*3+0] * win->attr.width / 20;
-		sver[i*3 + 1] = vertices[i*3+1] * -win->attr.height / 20;
-		sver[i*3 + 2] = vertices[i*3+2] * -1;
-	}
-	
-	s3d_push_material_a(win->oid,
-	                    0.8, 0.0, 0.0 , 1.0,
-	                    1.0, 1.0, 1.0 , 1.0,
-	                    0.8, 0.0, 0.0 , 1.0);
-	s3d_push_texture(win->oid, win->attr.width, win->attr.height);
-	s3d_pep_material_texture(win->oid, 0); / *  assign texture 0 to material 0 * /
-	s3d_push_material_a(win->oid,
-	                    0.0, 0.8, 0.0 , 1.0,
-	                    1.0, 1.0, 1.0 , 1.0,
-	                    0.0, 0.8, 0.0 , 1.0);
+	/*
+	 for (i = 0;i < 8;i++) {
+	  sver[i*3 + 0] = vertices[i*3+0] * win->attr.width / 20;
+	  sver[i*3 + 1] = vertices[i*3+1] * -win->attr.height / 20;
+	  sver[i*3 + 2] = vertices[i*3+2] * -1;
+	 }
 
-	s3d_push_vertices(win->oid, sver, 8);
+	 s3d_push_material_a(win->oid,
+	                     0.8, 0.0, 0.0 , 1.0,
+	                     1.0, 1.0, 1.0 , 1.0,
+	                     0.8, 0.0, 0.0 , 1.0);
+	 s3d_push_texture(win->oid, win->attr.width, win->attr.height);
+	 s3d_pep_material_texture(win->oid, 0); / *  assign texture 0 to material 0 * /
+	 s3d_push_material_a(win->oid,
+	                     0.0, 0.8, 0.0 , 1.0,
+	                     1.0, 1.0, 1.0 , 1.0,
+	                     0.0, 0.8, 0.0 , 1.0);
 
-	s3d_push_polygons(win->oid, polygon, 12);
-	s3d_pep_polygon_tex_coords(win->oid, tbuf, 2);*/
+	 s3d_push_vertices(win->oid, sver, 8);
+
+	 s3d_push_polygons(win->oid, polygon, 12);
+	 s3d_pep_polygon_tex_coords(win->oid, tbuf, 2);*/
 	voffset = 1;
 	vindex = 0;
 	pindex = 0;
@@ -312,16 +312,15 @@ static void deco_box(struct window *win)
 	/*  push data on texture 0 position (0,0) */
 	s3d_flags_on(win->oid, S3D_OF_VISIBLE);
 }
-static struct window *window_find(Window id)
-{
+static struct window *window_find(Window id) {
 	struct window *window;
-	for (window = window_head; window!=NULL; window = window->next) {
+	for (window = window_head; window != NULL; window = window->next) {
 		if (window->id == id)
 			return(window);
 	}
 	printf("not found (window %d). ;(\n", (int)id);
 	return(NULL);
-	
+
 }
 
 
@@ -334,7 +333,7 @@ static void window_add(Display *dpy, Window id)
 	win->id = id;
 	XGetWindowAttributes(dpy, win->id, &win->attr);
 
-	win->no = win_no++;  
+	win->no = win_no++;
 	/* XSelectInput(dpy, win->id, ExposureMask|ButtonPressMask|KeyPressMask*/
 	XSelectInput(dpy, win->id, ExposureMask
 	             | SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);
@@ -364,9 +363,9 @@ static void window_remove(struct window *win)
 	free(win);
 }
 
-static void window_update_geometry(struct window *win, int x, int y, int width, int height) 
+static void window_update_geometry(struct window *win, int x, int y, int width, int height)
 {
-	
+
 	printf("window_update_geometry()\n");
 	if (win->oid == -1) {
 		win->attr.x = x;
@@ -374,7 +373,7 @@ static void window_update_geometry(struct window *win, int x, int y, int width, 
 		win->attr.width = width;
 		win->attr.height = height;
 
-		window_update_content(win, 0,0, width, height);
+		window_update_content(win, 0, 0, width, height);
 		return;
 	}
 	if ((win->attr.width == width) && (win->attr.height == height)) {
@@ -392,9 +391,9 @@ static void window_update_geometry(struct window *win, int x, int y, int width, 
 		win->attr.width = width;
 		win->attr.height = height;
 
-		s3d_del_object(win->oid);	/* delete the window and redraw */
+		s3d_del_object(win->oid); /* delete the window and redraw */
 		win->oid = -1;
-		window_update_content(win, 0,0, width, height);
+		window_update_content(win, 0, 0, width, height);
 
 	}
 }
@@ -410,9 +409,9 @@ static int image_convert(XImage *image, char *bitmap)
 
 
 	if (image->format == ZPixmap) {
-/*		printf("XImage: %dx%d, format %d (%d), bpp: %d, depth %d, pad %d\n",
-		       image->width, image->height, image->format,
-		       ZPixmap, image->bits_per_pixel, image->depth, image->bitmap_pad);*/
+		/*  printf("XImage: %dx%d, format %d (%d), bpp: %d, depth %d, pad %d\n",
+		         image->width, image->height, image->format,
+		         ZPixmap, image->bits_per_pixel, image->depth, image->bitmap_pad);*/
 		rs = get_shift(image->red_mask) - 8;
 		gs = get_shift(image->green_mask) - 8;
 		bs = get_shift(image->blue_mask) - 8;
@@ -422,7 +421,7 @@ static int image_convert(XImage *image, char *bitmap)
 		rs = rs;
 		gs = gs - 8;
 		bs = bs - 16;
-/*		printf("Ximage: rgb: %d|%d|%d\n", rs, gs, bs);;*/
+		/*  printf("Ximage: rgb: %d|%d|%d\n", rs, gs, bs);;*/
 		/*  printf("red: size %d, offset %d\n",rs,roff);
 		  printf("green: size %d, offset %d\n",gs,goff);
 		  printf("blue: size %d, offset %d\n",bs,boff);
@@ -431,8 +430,8 @@ static int image_convert(XImage *image, char *bitmap)
 			img_ptr = image->data + (y * image->width) * bpp;
 			bmp_ptr = bitmap + (y * image->width) * sizeof(uint32_t);
 			for (x = 0; x < image->width; x++) {
-				s = (unsigned long *)	img_ptr;
-				t = (uint32_t *)		bmp_ptr;
+				s = (unsigned long *) img_ptr;
+				t = (uint32_t *)  bmp_ptr;
 				/*    bmp_ptr[0] = (rs > 0 ? ((*d & image->red_mask) >> rs)  : ((*d  & image->red_mask) << -rs)) ;
 				 bmp_ptr[1] = (gs > 0 ? ((*d & image->green_mask) >> gs) : ((*d  & image->green_mask) << -gs)) ;
 				 bmp_ptr[2] = (bs > 0 ? ((*d & image->blue_mask) >> bs)  : ((*d  & image->blue_mask) << -bs));
@@ -461,17 +460,17 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 	XImage *image;
 
 	/* update the whole window for now. */
-/*	x = 50;
-	y = 50;
-	width = win->attr.width;
-	height = win->attr.height;*/
+	/* x = 50;
+	 y = 50;
+	 width = win->attr.width;
+	 height = win->attr.height;*/
 	if (x < 0) x = 0;
 	if (y < 0) y = 0;
-	if (width > win->attr.width - x)			width = win->attr.width - x;
-	if (height > win->attr.height - y)			height = win->attr.height - y;
+	if (width > win->attr.width - x)   width = win->attr.width - x;
+	if (height > win->attr.height - y)   height = win->attr.height - y;
 
 	if (x == 0 && y == 0 && width == win->attr.width && height == win->attr.height) {
-		if (win->already_updated) 
+		if (win->already_updated)
 			return;
 		else
 			win->already_updated = 1;
@@ -481,31 +480,31 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 	  deco_box(win);
 	*/
 	for (xleft = x; xleft < x + width ; xleft = xright) {
-		xright = (xleft + TEXW) & ~(TEXW-1);
+		xright = (xleft + TEXW) & ~(TEXW - 1);
 		if (xright > (x + width))
 			xright = x + width;
 		chunk_width = xright - xleft;
 		printf("request image: xleft = %d, xright = %d, width = %d, x:y = %d:%d, width:height = %d:%d, ~TEXW = %08x\n",
-						xleft, xright, width, x, y, width, height, ~TEXW);
+		       xleft, xright, width, x, y, width, height, ~TEXW);
 		image = XGetImage(dpy, win->id, xleft, y, chunk_width, height, AllPlanes, ZPixmap);
 		if (!image)
 			return;
 		bitmap = malloc(TEXW * height * sizeof(uint32_t));
-		if (win->oid == -1) 
+		if (win->oid == -1)
 			deco_box(win);
-/*		printf("image_convert\n");*/
+		/*  printf("image_convert\n");*/
 		image_convert(image, bitmap);
-/*		printf("load textures ...\n");*/
+		/*  printf("load textures ...\n");*/
 		for (ytop = y; ytop < y + height; ytop = ybottom) {
-			ybottom = (ytop + TEXH) & ~(TEXH-1);
+			ybottom = (ytop + TEXH) & ~(TEXH - 1);
 			chunk_height = ybottom - ytop;
-			s3d_load_texture(win->oid, TEXNUM(win, xleft, ytop), xleft % TEXW, ytop % TEXH, 
-								chunk_width, chunk_height, (unsigned char *)bitmap + chunk_width * (ytop - y) * 4);
-/*			printf("s3d_load_texture(%d, %d, %d, %d, %d, %d, %010p);\n",
-							win->oid, TEXNUM(win, xleft, ytop), xleft % TEXW, ytop % TEXH, 
-								chunk_width, chunk_height, (unsigned char *)bitmap + chunk_width * (ytop - y) * 4);*/
+			s3d_load_texture(win->oid, TEXNUM(win, xleft, ytop), xleft % TEXW, ytop % TEXH,
+			                 chunk_width, chunk_height, (unsigned char *)bitmap + chunk_width * (ytop - y) * 4);
+			/*   printf("s3d_load_texture(%d, %d, %d, %d, %d, %d, %010p);\n",
+			       win->oid, TEXNUM(win, xleft, ytop), xleft % TEXW, ytop % TEXH,
+			        chunk_width, chunk_height, (unsigned char *)bitmap + chunk_width * (ytop - y) * 4);*/
 		}
-/*		printf("done loading textures\n"); */
+		/*  printf("done loading textures\n"); */
 		XDestroyImage(image);
 		free(bitmap);
 	}
@@ -517,27 +516,27 @@ void event(void)
 	XEvent event;
 	struct window *window;
 	int i;
-	for (window = window_head; window!=NULL; window = window->next) 
+	for (window = window_head; window != NULL; window = window->next)
 		window->already_updated = 0;
 
-	for (i=0; i< MAXEVENTS && XPending(dpy); i++) {
+	for (i = 0; i < MAXEVENTS && XPending(dpy); i++) {
 		XNextEvent(dpy, &event);
 		print_event(dpy, &event);
 		if (event.type == xdamage.event + XDamageNotify) {
 			XDamageNotifyEvent *e = (XDamageNotifyEvent*) & event;
-/*			printf("window = %d, geometry = %d:%d (at %d:%d), area = %d:%d (at %d:%d)\n",
-			       (int)e->drawable, e->geometry.width, e->geometry.height, e->geometry.x, e->geometry.y,
-			       e->area.width, e->area.height, e->area.x, e->area.y);*/
+			/*   printf("window = %d, geometry = %d:%d (at %d:%d), area = %d:%d (at %d:%d)\n",
+			          (int)e->drawable, e->geometry.width, e->geometry.height, e->geometry.x, e->geometry.y,
+			          e->area.width, e->area.height, e->area.x, e->area.y);*/
 			XDamageSubtract(dpy, e->damage, None, None);
 			window = window_find(e->drawable);
-			if (window!=NULL)
+			if (window != NULL)
 				window_update_content(window, e->area.x, e->area.y, e->area.width, e->area.height);
 		} else if (event.type == ConfigureNotify) {
-			XConfigureEvent *e = &event.xconfigure; 
+			XConfigureEvent *e = &event.xconfigure;
 			window = window_find(e->window);
 			if (window != NULL) {
-/*				printf("Configure: window = %d, geometry = %d:%d (at %d:%d)\n",
-				       (int)e->window, e->width, e->height, e->x, e->y);*/
+				/*    printf("Configure: window = %d, geometry = %d:%d (at %d:%d)\n",
+				           (int)e->window, e->width, e->height, e->x, e->y);*/
 				window_update_geometry(window, e->x, e->y, e->width, e->height);
 			} else {
 				printf("Configure: Could not find window to configure.\n");
