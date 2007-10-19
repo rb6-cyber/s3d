@@ -36,7 +36,7 @@ static char *dbFile = NULL;
 int db_exec(const char *query, sqlite3_callback callback, void *arg);
 
 /* TODO: remove '' for security reasons */
-void clean_string(char *clean, char *dirty, int n)
+static void clean_string(char *clean, char *dirty, int n)
 {
 	strncpy(clean, dirty, n);
 	clean[n-1] = 0;

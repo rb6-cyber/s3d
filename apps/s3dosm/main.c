@@ -41,7 +41,7 @@ void mainloop(void)
 		s3dw_ani_mate();
 	}
 }
-int init(int argc, char **argv)
+static int init(int argc, char **argv)
 {
 	s3d_select_font("vera");
 	ui_init();
@@ -55,7 +55,7 @@ int init(int argc, char **argv)
 	ready = 1;
 	return(0);
 }
-int quit(void)
+static int quit(void)
 {
 	ready = 0;
 	gps_quit();

@@ -64,13 +64,13 @@ struct adjlist {
 	int seg_id;    /* segment which is involved to the node (both internal counting) */
 };
 
-struct waylist  *waylist_p = NULL;
-struct nodelist *nodelist_p = NULL;
-struct adjlist *adjlist_p = NULL;
-int    nodelist_n = 0;
-int    adjlist_n = 0;
-int    waylist_n = 0;
-int    waylist_bufn = 0;
+static struct waylist  *waylist_p = NULL;
+static struct nodelist *nodelist_p = NULL;
+static struct adjlist *adjlist_p = NULL;
+static int    nodelist_n = 0;
+static int    adjlist_n = 0;
+static int    waylist_n = 0;
+static int    waylist_bufn = 0;
 
 
 void calc_earth_to_eukl(float lat, float lon, float alt, float *x)
@@ -82,7 +82,7 @@ void calc_earth_to_eukl(float lat, float lon, float alt, float *x)
 	x[1] = (ESIZE + alt) *   sin(la);
 	x[2] = (ESIZE + alt) * cos(lo) * cos(la);
 }
-int draw_icon(void *S3DOSMUNUSED(data), int argc, char **argv, char **S3DOSMUNUSED(azColName))
+static int draw_icon(void *S3DOSMUNUSED(data), int argc, char **argv, char **S3DOSMUNUSED(azColName))
 {
 	int i, tagid = -1, oid;
 	int nodeid = -1, layerid = -1;
@@ -129,7 +129,7 @@ int draw_icon(void *S3DOSMUNUSED(data), int argc, char **argv, char **S3DOSMUNUS
 	return(0);
 }
 /* just fetches node information and puts in the nodelist */
-int insert_node(void *data, int argc, char **argv, char **azColName)
+static int insert_node(void *data, int argc, char **argv, char **azColName)
 {
 	struct nodelist *np = data; /* get the nodepointer */
 	int i;
@@ -142,7 +142,7 @@ int insert_node(void *data, int argc, char **argv, char **azColName)
 	}
 	return(0);
 }
-int select_waytype(void *data, int argc, char **argv, char **S3DOSMUNUSED(azColName))
+static int select_waytype(void *data, int argc, char **argv, char **S3DOSMUNUSED(azColName))
 {
 	int i;
 	for (i = 0; i < argc; i++) {
@@ -157,7 +157,7 @@ int select_waytype(void *data, int argc, char **argv, char **S3DOSMUNUSED(azColN
 	return(0);
 }
 /* draw waylist, clear the queue */
-void waylist_draw(char *filter)
+static void waylist_draw(char *filter)
 {
 	float len;
 	char query[MAXQ];
@@ -366,7 +366,7 @@ void waylist_draw(char *filter)
 
 	load_update_status((100.0*num_done) / (float)num_max);
 }
-void waylist_add(struct waylist *p)
+static void waylist_add(struct waylist *p)
 {
 	if (waylist_n >= waylist_bufn) {
 		waylist_bufn += 64;
@@ -379,7 +379,7 @@ void waylist_add(struct waylist *p)
 	waylist_n++;
 }
 
-int way_group(void *data, int argc, char **argv, char **azColName)
+static int way_group(void *data, int argc, char **argv, char **azColName)
 {
 	int i;
 	int id = -1;
@@ -418,7 +418,7 @@ void draw_translate_icon(int user_icon, float la, float lo)
 	s3d_rotate(user_icon, (90 - la), lo, 0);
 }
 
-void draw_ways(char *filter)
+static void draw_ways(char *filter)
 {
 	char query[MAXQ];
 	num_done = 0;
@@ -428,12 +428,12 @@ void draw_ways(char *filter)
 	db_exec(query, way_group, filter);
 	waylist_draw(filter); /* last way */
 }
-void draw_osm(void)
+static void draw_osm(void)
 {
 	load_window("Drawing Card ...");
 	draw_ways("layer_id=(SELECT layer_id FROM layer WHERE name='osm')");
 }
-void draw_kismet(void)
+static void draw_kismet(void)
 {
 	char query[MAXQ];
 	char filter[] = "layer_id=(SELECT layer_id FROM layer WHERE name='kismet')";

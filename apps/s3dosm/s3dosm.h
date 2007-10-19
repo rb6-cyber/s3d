@@ -124,6 +124,7 @@ struct _way_t {
 
 /* object.c */
 void    object_init(object_t *nobj);
+void    object_free(object_t *obj);
 void    node_init(node_t *nnode);
 void    segment_init(segment_t *nsegment);
 void    way_init(way_t *nway);

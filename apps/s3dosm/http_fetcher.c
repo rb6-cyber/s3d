@@ -37,12 +37,12 @@
 #include "http_fetcher.h"
 
 /* Globals */
-int timeout = DEFAULT_READ_TIMEOUT;
-char *userAgent = NULL;
-char *referer = NULL;
-char *auth = NULL;
-int hideUserAgent = 0;
-int hideReferer = 1;
+static int timeout = DEFAULT_READ_TIMEOUT;
+static char *userAgent = NULL;
+static char *referer = NULL;
+static char *auth = NULL;
+static int hideUserAgent = 0;
+static int hideReferer = 1;
 extern const char *http_errlist[]; /* Array of HTTP Fetcher error messages */
 extern char convertedError[128]; /* Buffer to used when errors contain %d */
 static int errorSource = 0;

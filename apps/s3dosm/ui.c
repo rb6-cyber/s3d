@@ -35,7 +35,7 @@ icon_t icons[ICON_NUM] = {
 };
 
 /* load icons, we want to clone each of them later */
-void ui_loadicons(void)
+static void ui_loadicons(void)
 {
 	int i;
 	for (i = 0;i < ICON_NUM;i++)
@@ -46,12 +46,12 @@ static s3dw_surface *loadwindow = NULL;
 static s3dw_label   *loadlabel = NULL;
 static s3dw_label   *loadstatus = NULL;
 
-void key_button(s3dw_widget *button)
+static void key_button(s3dw_widget *button)
 {
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
 
-int ui_getinfo_node(void *S3DOSMUNUSED(data), int argc, char **argv, char **azColName)
+static int ui_getinfo_node(void *S3DOSMUNUSED(data), int argc, char **argv, char **azColName)
 {
 	int i, tagid = -1;
 	char type[MAXQ];
@@ -79,7 +79,7 @@ int ui_getinfo_node(void *S3DOSMUNUSED(data), int argc, char **argv, char **azCo
 
 	return(0);
 }
-int ui_getinfo_way(void *S3DOSMUNUSED(data), int argc, char **argv, char **azColName)
+static int ui_getinfo_way(void *S3DOSMUNUSED(data), int argc, char **argv, char **azColName)
 {
 	int i, tagid = -1;
 	char name[MAXQ];
@@ -105,7 +105,7 @@ int ui_getinfo_way(void *S3DOSMUNUSED(data), int argc, char **argv, char **azCol
 	return(0);
 }
 
-int ui_click(struct s3d_evt *evt)
+static int ui_click(struct s3d_evt *evt)
 {
 	int oid = (int) * ((uint32_t *)evt->buf);
 	char query[MAXQ];
@@ -117,13 +117,13 @@ int ui_click(struct s3d_evt *evt)
 
 	return(0);
 }
-int ui_key(struct s3d_evt *evt)
+static int ui_key(struct s3d_evt *evt)
 {
 	/* struct s3d_key_event *key=(struct s3d_key_event *)evt->buf;*/
 	if (s3dw_handle_key(evt)) return(0);
 	return(0);
 }
-int ui_oinfo(struct s3d_evt *evt)
+static int ui_oinfo(struct s3d_evt *evt)
 {
 	s3dw_object_info(evt);
 	return(0);

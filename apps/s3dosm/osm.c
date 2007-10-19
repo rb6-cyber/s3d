@@ -28,7 +28,7 @@
 #include <libxml/tree.h>
 #include "http_fetcher.h"
 static int layerid;
-int parse_osm_tags(object_t *obj, xmlNodePtr cur)
+static int parse_osm_tags(object_t *obj, xmlNodePtr cur)
 {
 	xmlNodePtr c;
 	xmlAttrPtr attr;
@@ -47,7 +47,7 @@ int parse_osm_tags(object_t *obj, xmlNodePtr cur)
 	return(0);
 
 }
-void parse_osm_way(xmlNodePtr cur)
+static void parse_osm_way(xmlNodePtr cur)
 {
 	way_t way;
 	xmlNodePtr kids;
@@ -70,7 +70,7 @@ void parse_osm_way(xmlNodePtr cur)
 		}
 	}
 }
-void parse_osm_segment(xmlNodePtr cur)
+static void parse_osm_segment(xmlNodePtr cur)
 {
 	segment_t segment;
 	xmlAttrPtr attr;
@@ -89,7 +89,7 @@ void parse_osm_segment(xmlNodePtr cur)
 		parse_osm_tags(OBJECT_T(&segment), cur);
 	}
 }
-void parse_osm_node(xmlNodePtr cur)
+static void parse_osm_node(xmlNodePtr cur)
 {
 	node_t node;
 	xmlAttrPtr attr;

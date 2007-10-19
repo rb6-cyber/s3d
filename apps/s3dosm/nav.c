@@ -5,7 +5,8 @@
 #include <stdio.h> /* printf() */
 #include <math.h> /* fabs() */
 
-int oidx, oidy;
+static int oidx;
+int oidy;
 static float lat, lon, tlat, tlon;
 /* load rotation centers */
 void nav_init(void)
@@ -70,7 +71,7 @@ void nav_main(void)
 	calc_earth_to_eukl(lon, lat, 0, x);
 }
 
-int get_center(void *data, int argc, char **argv, char **azColName)
+static int get_center(void *data, int argc, char **argv, char **azColName)
 {
 	float *med = (float *)data;
 	int i;

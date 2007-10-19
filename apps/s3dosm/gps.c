@@ -25,7 +25,7 @@
 #include <s3d.h>
 #include "s3dosm.h"
 #include <stdio.h>  /* printf() */
-int user_icon = -1, user_icon_rotator = -1;
+static int user_icon = -1, user_icon_rotator = -1;
 #ifdef HAVE_GPS
 #include <gps.h>  /* gps_*() */
 #ifdef NMEA_CHANNELS

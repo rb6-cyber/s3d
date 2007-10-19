@@ -28,7 +28,7 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 static int layerid;
-void parse_kismet_node(xmlNodePtr cur)
+static void parse_kismet_node(xmlNodePtr cur)
 {
 	node_t node;
 	xmlAttrPtr attr;
