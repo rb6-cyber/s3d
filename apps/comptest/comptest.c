@@ -461,10 +461,10 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 	XImage *image;
 
 	/* update the whole window for now. */
-	x = 0;
-	y = 0;
+/*	x = 50;
+	y = 50;
 	width = win->attr.width;
-	height = win->attr.height;
+	height = win->attr.height;*/
 	if (x < 0) x = 0;
 	if (y < 0) y = 0;
 	if (width > win->attr.width - x)			width = win->attr.width - x;
@@ -493,9 +493,9 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 		bitmap = malloc(TEXW * height * sizeof(uint32_t));
 		if (win->oid == -1) 
 			deco_box(win);
-//		printf("image_convert\n");
+/*		printf("image_convert\n");*/
 		image_convert(image, bitmap);
-//		printf("load textures ...\n");
+/*		printf("load textures ...\n");*/
 		for (ytop = y; ytop < y + height; ytop = ybottom) {
 			ybottom = (ytop + TEXH) & ~(TEXH-1);
 			chunk_height = ybottom - ytop;
@@ -505,7 +505,7 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 							win->oid, TEXNUM(win, xleft, ytop), xleft % TEXW, ytop % TEXH, 
 								chunk_width, chunk_height, (unsigned char *)bitmap + chunk_width * (ytop - y) * 4);*/
 		}
-//		printf("done loading textures\n");
+/*		printf("done loading textures\n"); */
 		XDestroyImage(image);
 		free(bitmap);
 	}
@@ -535,7 +535,7 @@ void event(void)
 		} else if (event.type == ConfigureNotify) {
 			XConfigureEvent *e = &event.xconfigure; 
 			window = window_find(e->window);
-			if (window != 0) {
+			if (window != NULL) {
 /*				printf("Configure: window = %d, geometry = %d:%d (at %d:%d)\n",
 				       (int)e->window, e->width, e->height, e->x, e->y);*/
 				window_update_geometry(window, e->x, e->y, e->width, e->height);
