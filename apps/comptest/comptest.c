@@ -77,7 +77,7 @@ static struct timespec t = {
 }; /* 50 mili seconds */
 
 int xinit();
-void window_update(struct window *win, int x, int y, int width, int height);
+void window_update_content(struct window *win, int x, int y, int width, int height);
 static int print_event(Display *dpy, XEvent *event);
 void event();
 
@@ -347,7 +347,7 @@ static void window_add(Display *dpy, Window id)
 		win->oid = -1;
 		win->already_updated = 0;
 
-		window_update(win, 0, 0, win->attr.width, win->attr.height);
+		window_update_content(win, 0, 0, win->attr.width, win->attr.height);
 
 		win->next = window_head;
 		window_head = win;
@@ -370,7 +370,7 @@ static void window_update_geometry(struct window *win, int x, int y, int width, 
 		win->attr.width = width;
 		win->attr.height = height;
 
-		window_update(win, 0,0, width, height);
+		window_update_content(win, 0,0, width, height);
 		return;
 	}
 	if ((win->attr.width == width) && (win->attr.height == height)) {
@@ -390,12 +390,12 @@ static void window_update_geometry(struct window *win, int x, int y, int width, 
 
 		s3d_del_object(win->oid);	/* delete the window and redraw */
 		win->oid = -1;
-		window_update(win, 0,0, width, height);
+		window_update_content(win, 0,0, width, height);
 
 	}
 }
 
-void window_update(struct window *win, int x, int y, int width, int height)
+void window_update_content(struct window *win, int x, int y, int width, int height)
 {
 	int chunk_width, chunk_height;
 	int xleft, xright;
@@ -508,7 +508,7 @@ void event(void)
 			XDamageSubtract(dpy, e->damage, None, None);
 			window = window_find(e->drawable);
 			if (window!=NULL)
-				window_update(window, e->area.x, e->area.y, e->area.width, e->area.height);
+				window_update_content(window, e->area.x, e->area.y, e->area.width, e->area.height);
 		} else if (event.type == ConfigureNotify) {
 			XConfigureEvent *e = &event.xconfigure; 
 			window = window_find(e->window);
