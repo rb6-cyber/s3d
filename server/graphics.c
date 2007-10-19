@@ -43,8 +43,7 @@ void render_virtual_object(struct t_obj *o);
 /*  ... and types/variables */
 static int select_mode = 0;
 int winw, winh;
-extern struct t_process *procs_p;
-extern int frame_mode;  /*  GLUT, SDL, ... ? */
+
 /*  this detects and opens the SDL things */
 
 int graphics_init(void)

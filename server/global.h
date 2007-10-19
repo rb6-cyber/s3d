@@ -210,6 +210,9 @@ int init(void);
 void quit(void);
 void one_time(void);
 /*  network.c */
+extern uint8_t ibuf[MAXPLEN];
+extern uint8_t obuf[MAXPLEN];
+extern int turn;
 void sigpipe_handler(int);
 void sigio_handler(int);
 int network_init(void);
@@ -243,6 +246,7 @@ void ringbuf_init(char *data, uint32_t init_size);
 int shm_write(struct buf_t *rb, char *buf, int n);
 int shm_read(struct buf_t *rb, char *buf, int n);
 /*  proto.c */
+extern int focus_oid;
 int prot_com_in(struct t_process *p, uint8_t *pbuf);
 int prot_com_out(struct t_process *p, uint8_t opcode, uint8_t *buf, uint16_t length);
 /* event.c */
@@ -256,6 +260,7 @@ int event_init(struct t_process *p);
 int event_quit(struct t_process *p);
 int event_ping_in(struct t_process *p, uint32_t o);
 /*   user.c */
+extern int but;
 int user_init(void);
 int user_quit(void);
 int user_main(void);
@@ -287,6 +292,7 @@ static __inline__ void s3dprintf(int relevance __attribute__((unused)),
                                  const char *msg __attribute__((unused)), ...) {}
 #endif
 /*  graphics.c */
+extern int winw, winh;
 int graphics_quit(void);
 void graphics_main(void);
 int graphics_pick_obj(int x, int y);
@@ -297,6 +303,8 @@ int graphics_init_glut(void);
 int graphics_quit_glut(void);
 #endif
 #ifdef G_SDL
+extern int aa_level;
+extern int SDLFlags;
 int graphics_init_sdl(void);
 int graphics_quit_sdl(void);
 #endif
@@ -315,6 +323,8 @@ void navi_pos(int xdif, int ydif);
 void navi_rot(int xdif, int ydif);
 void ptr_move(int x, int y);
 /*  process.c */
+extern struct t_process  *procs_p;
+extern int procs_n;
 struct t_process *process_add(void);
 int process_del(int id);
 int process_init(void);
@@ -372,6 +382,7 @@ int mcp_del_object(int32_t mcp_oid);
 int mcp_init(void);
 int mcp_focus(int oid);
 /*  matrix.c */
+extern t_mtrx Identity;
 void myMultMatrix(t_mtrx mat2);
 void myGetMatrix(t_mtrx mat);
 void mySetMatrix(t_mtrx mat);

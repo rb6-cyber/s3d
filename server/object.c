@@ -34,10 +34,6 @@
 #define MAXLOOP 10
 /*  if oid is always unsigned, we don't have to check oid>=0 */
 
-extern t_mtrx Identity;
-extern int focus_oid;
-
-
 static void obj_update_tex(struct t_tex *tex, u_int16_t x, u_int16_t y, u_int16_t w, u_int16_t h, u_int8_t *pixbuf);
 void obj_sys_update(struct t_process *p, int32_t oid);
 

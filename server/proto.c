@@ -34,7 +34,6 @@
 #endif
 /*  this code should do the protocol work .... */
 /*  */
-extern uint8_t obuf[MAXPLEN];
 int focus_oid = -1;  /*  initially focus the pid */
 /*  handle an incoming command from the client .. */
 

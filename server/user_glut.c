@@ -30,7 +30,7 @@ void keyboard(uint8_t key, int x, int y);
 void special(int skey, int x, int y);
 void mouse_motion(int x, int y);
 void passive_mouse_motion(int x, int y);
-extern int but;
+
 /*  init user input things for glut */
 int user_init_glut(void)
 {

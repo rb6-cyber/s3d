@@ -27,7 +27,6 @@
 /*  this file reads user input */
 /*  this is done right now by SDL-polling */
 
-extern int SDLFlags;
 int user_init_sdl(void)
 {
 	SDL_EnableUNICODE(1);

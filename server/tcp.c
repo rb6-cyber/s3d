@@ -44,10 +44,6 @@
 #include <unistd.h>   /*  read(),write(),getpid(),close() */
 #include <stdlib.h>   /*  malloc(),free() */
 
-extern struct t_con *con_list;
-extern struct t_con mcp;
-extern uint8_t ibuf[MAXPLEN];
-extern int idc;
 static int tcp_sockid;
 int tcp_init(void)
 {
@@ -133,8 +129,6 @@ select_again:
 		}
 	return(0);
 }
-extern struct t_process *procs_p;
-extern int procs_n;
 /*  this is about looking for new data on the sockets */
 /*  returns 1 when there was new data. */
 int tcp_pollproc(void)

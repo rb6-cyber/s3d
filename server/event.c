@@ -31,8 +31,7 @@
 #include <netinet/in.h>  /*  htonl(),htons() */
 #endif
 #include <string.h>  /*  strlen(),strcpy() */
-extern int focus_oid;
-extern int winw, winh; /* to give aspect ratio to the program */
+
 /*  I don't plan to keep this until the end, but it can show us how */
 /*  to interact ... */
 int event_obj_click(struct t_process *p, int32_t oid)

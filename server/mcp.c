@@ -32,8 +32,6 @@
 #include <string.h>    /*  strncpy() */
 
 
-extern int      focus_oid;   /*  the focused program */
-
 /*  this interacts with the actual mcp client */
 struct mcp_object {
 	uint32_t object;

@@ -45,7 +45,6 @@ static char *rc = NULL;
 static char *homerc = "~/.s3drc";
 static char *etcrc = "/etc/s3drc";
 /*static int father_done=0;*/
-extern int aa_level;
 static char **s3drc[] = {&rc, &homerc, &etcrc};
 
 static void mainloop(void);

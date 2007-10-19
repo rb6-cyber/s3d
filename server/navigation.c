@@ -25,7 +25,6 @@
 #include "global.h"
 #include <math.h> /* atan() */
 
-extern int winw, winh;
 void navi_right(void)
 {
 	navi_pos(1, 0);

@@ -43,9 +43,6 @@
 #include <sys/shm.h>
 #include <time.h> /* nanosleep() */
 
-extern uint8_t ibuf[MAXPLEN];
-extern struct t_process *procs_p;
-extern int procs_n;
 static struct t_shmcb waiting_comblock;
 
 static key_t *data = NULL;
@@ -171,7 +168,7 @@ int shm_remove(struct t_process *p)
 	return(0);
 }
 
-extern int turn; /* set turn to 0 when timeslice is over */
+
 int shm_main(void)
 {
 	int      i/*,found*/;
