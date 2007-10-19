@@ -39,7 +39,7 @@ static t_node *destnode = NULL;
 
 extern int typeinput;
 int fs_lock = 0;
-pthread_t filethread;
+static pthread_t filethread;
 
 
 void close_win(s3dw_widget *button)
@@ -47,7 +47,7 @@ void close_win(s3dw_widget *button)
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
 /* add all selected dirs in the new filelist */
-int get_selected(filelist *fp, t_node *dir)
+static int get_selected(filelist *fp, t_node *dir)
 {
 	int i;
 	char *s;
@@ -108,7 +108,7 @@ void window_fs_nothing(void)
 	button->onclick = close_win;
 	s3dw_show(S3DWIDGET(infwin));
 }
-void window_fs_confirm_error(s3dw_widget *button)
+static void window_fs_confirm_error(s3dw_widget *button)
 {
 	fs_err.state = ESTATE_NONE;
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
@@ -140,7 +140,7 @@ void window_fs_abort(s3dw_widget *button)
 	fs_lock = TYPE_NONE;
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
-void *thread_start(void *S3DFMUNUSED(ptr))
+static void* thread_start(void *S3DFMUNUSED(ptr))
 {
 	switch (fs_lock) {
 	case TYPE_COPY:

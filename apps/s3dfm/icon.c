@@ -26,7 +26,7 @@
 #include <math.h>  /* sin(),cos() */
 #include <string.h>  /* strlen() */
 #include <stdlib.h>  /* memcpy() */
-float icon_colors[T_TYPENUM][12] = {
+static float icon_colors[T_TYPENUM][12] = {
 	/* T_DUNO */
 	{ 0, 0, 0.5, 1.0,
 		0, 0, 0.5, 1.0,

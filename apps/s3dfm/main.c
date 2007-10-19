@@ -30,7 +30,7 @@ static struct timespec t = {
 };
 t_node root, cam, *focus;
 
-void mainloop(void)
+static void mainloop(void)
 {
 	ani_mate();
 	s3dw_ani_mate();

@@ -115,6 +115,7 @@ typedef struct _t_file  t_file;
 
 extern t_node root, cam; /* some global objects */
 extern t_node *focus; /* the focused object */
+extern int typeinput;
 extern struct fs_error fs_err;
 
 enum {

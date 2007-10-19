@@ -25,7 +25,7 @@
 #include <s3d_keysym.h>
 #include <stdio.h> /* printf() */
 #include <math.h>  /* ceil(), sqrt() */
-int moveon = 1;
+static int moveon = 1;
 
 /* get the scale for the rootbox zoom */
 float focus_get_scale(t_node *f)
