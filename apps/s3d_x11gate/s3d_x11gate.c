@@ -47,24 +47,22 @@
 #endif
 #endif
 
-int oid;
-XImage *image;
-Display *dpy = NULL;
-int window, scr;
-unsigned int width, height, height, depth;
-int format;
-char *data;
-Visual *visual;
-XShmSegmentInfo shminfo;
-char *tex_image = NULL, *otex_image = NULL, *img1, *img2;
+static int oid;
+static XImage *image;
+static Display *dpy = NULL;
+static int window, scr;
+static unsigned int width, height, height, depth;
+static Visual *visual;
+static XShmSegmentInfo shminfo;
+static char *tex_image = NULL, *otex_image = NULL, *img1, *img2;
 
 
 
-struct timeval start, end;
-int iterations;
-float count[3];
+static struct timeval start, end;
+static int iterations;
+static float count[3];
 
-int get_shift(uint32_t t)
+static int get_shift(uint32_t t)
 {
 	int i = 0;
 	while (t) {
@@ -73,7 +71,7 @@ int get_shift(uint32_t t)
 	}
 	return(i);
 }
-void mainloop(void)
+static void mainloop(void)
 {
 #define MAGIC_CHANGED ((unsigned int)~0)
 	unsigned int x, y;
@@ -156,7 +154,7 @@ void mainloop(void)
 	/* XDestroyImage(image);*/
 	/* nanosleep(&t,NULL); */
 }
-int keypress(struct s3d_evt *event)
+static int keypress(struct s3d_evt *event)
 {
 	int key;
 	int kc;
@@ -180,7 +178,7 @@ int keypress(struct s3d_evt *event)
 	return(0);
 
 }
-int mouseclick(struct s3d_evt *S3DX11UNUSED(event))
+static int mouseclick(struct s3d_evt *S3DX11UNUSED(event))
 {
 	int i;
 	printf("thats it, collecting:\n");
