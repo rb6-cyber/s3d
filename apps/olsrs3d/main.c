@@ -1122,14 +1122,6 @@ static int object_info(struct s3d_evt *hrmz)
 	return(0);
 }
 
-static int mbutton_press(struct s3d_evt *hrmz)
-{
-	struct s3d_but_info *inf;
-	inf = (struct s3d_but_info *)hrmz->buf;
-	printf("button %d, state %d\n", inf->button, inf->state);
-	return(0);
-}
-
 int main(int argc, char *argv[])
 {
 
