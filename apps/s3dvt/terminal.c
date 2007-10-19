@@ -501,17 +501,3 @@ void AddChar(char *_toadd)
 	}
 	gotnewdata = 1;
 }
-static void init_line(void)
-{
-	int i;
-	for (i = 0;i < MAX_LINES;i++) {
-		clear_line(i);
-	}
-}
-static void term_addstring(char *toprint)
-{
-	char *ns;
-	for (ns = toprint;ns[0];ns++) {
-		term_addchar(ns[0]);
-	}  /*  better method */
-}
