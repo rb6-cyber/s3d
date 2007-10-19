@@ -106,6 +106,7 @@ int s3dw_scrollbar_event_click(s3dw_widget *widget, uint32_t oid);
 /* style.c */
 extern s3dw_style def_style;
 /* animate.c */
+extern int ani_need_arr;
 int  s3dw_ani_stackpos(s3dw_widget *f);
 void s3dw_ani_add(s3dw_widget *f);
 void s3dw_ani_del(int i);
@@ -115,6 +116,7 @@ void s3dw_ani_iterate(s3dw_widget *f);
 void s3dw_ani_needarr(void);
 int  s3dw_ani_check(s3dw_widget *f);
 /* arrange.c */
+extern s3dw_widget *_s3dw_cam;
 void s3dw_arrange(void);
 void s3dw_arr_widgetcenter(s3dw_widget *widget, float *center);
 void s3dw_arr_normdir(float *dir);

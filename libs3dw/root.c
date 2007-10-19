@@ -34,7 +34,6 @@ s3dw_key_callback s3dwcb_key[S3DW_NTYPES];
 
 
 static s3dw_widget *root = NULL;
-extern s3dw_widget *_s3dw_cam;
 
 /* just destroy the widget */
 void s3dw_root_destroy(s3dw_widget *widget)

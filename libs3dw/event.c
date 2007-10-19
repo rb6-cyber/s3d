@@ -24,7 +24,7 @@
 #include <s3d.h>
 #include <s3dw.h>
 #include <s3dw_int.h>
-extern s3dw_widget *_s3dw_cam;
+
 int s3dw_handle_click(struct s3d_evt *evt)
 {
 	uint32_t oid = *((uint32_t *)evt->buf);

@@ -28,7 +28,6 @@
 #include <math.h> /* M_PI */
 #define R2D  (180/M_PI)
 s3dw_widget *_s3dw_cam = NULL;
-extern int ani_need_arr;
 
 void s3dw_arr_widgetcenter(s3dw_widget *widget, float *center)
 {
