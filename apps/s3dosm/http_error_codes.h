@@ -39,4 +39,7 @@
 #define HF_STATUSCODE 7
 #define HF_CONTENTLEN 8
 
+extern const char *http_errlist[];
+extern char convertedError[128];
+
 #endif

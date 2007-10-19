@@ -43,8 +43,6 @@ static char *referer = NULL;
 static char *auth = NULL;
 static int hideUserAgent = 0;
 static int hideReferer = 1;
-extern const char *http_errlist[]; /* Array of HTTP Fetcher error messages */
-extern char convertedError[128]; /* Buffer to used when errors contain %d */
 static int errorSource = 0;
 static int http_errno = 0;
 static int errorInt = 0;   /* When the error message has a %d in it,
