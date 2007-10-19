@@ -65,7 +65,7 @@ static char   last_c[MAX_LINES*MAX_CHARS];
 static int    lines[MAX_LINES];
 #endif
 
-void *thread_terminal(void *S3DVTUNUSED(a))
+static void* thread_terminal(void *S3DVTUNUSED(a))
 {
 	int iscon = 1, ret;
 	char buffer[1024];
@@ -101,7 +101,7 @@ void *thread_terminal(void *S3DVTUNUSED(a))
 	}
 	return(NULL); /* huh?! */
 }
-int pty_init_terminal(void)
+static int pty_init_terminal(void)
 {
 	int i;
 	char buf[256];
@@ -183,7 +183,7 @@ void term_addchar(char toprint)
 }
 
 
-int pipe_init_terminal(void)
+static int pipe_init_terminal(void)
 {
 	char buf[256];
 	int uid = 0, gid = 0;
@@ -235,7 +235,7 @@ int pipe_init_terminal(void)
 	}
 	return 1;
 }
-int init_terminal(void)
+static int init_terminal(void)
 {
 	int i;
 	for (i = 0;i < 5;i++)
@@ -243,7 +243,7 @@ int init_terminal(void)
 			return(0);
 	return(pipe_init_terminal());  /*  if not, fallback to pipe mode */
 }
-void term_unload(void)
+static void term_unload(void)
 {
 	printf("unloading tty!!\n");
 	switch (term_mode) {
@@ -374,7 +374,7 @@ void paint_chars()
 / *   printf("\n"); * /
  }
 }*/
-int keypress(struct s3d_evt *event)
+static int keypress(struct s3d_evt *event)
 {
 	struct s3d_key_event *keys = (struct s3d_key_event *)event->buf;
 	int key;
@@ -466,8 +466,8 @@ int keypress(struct s3d_evt *event)
 	return(0);
 
 }
-int i = 0;
-void mainloop(void)
+static int i = 0;
+static void mainloop(void)
 {
 	usleep(10000);
 	nanosleep(&t, NULL);
@@ -486,12 +486,12 @@ void mainloop(void)
 		paintit();
 	}
 }
-int stop(struct s3d_evt *S3DVTUNUSED(event))
+static int stop(struct s3d_evt *S3DVTUNUSED(event))
 {
 	s3d_quit();
 	return(0);
 }
-unsigned int draw_background(void)
+static unsigned int draw_background(void)
 {
 	unsigned int b;
 	b = s3d_new_object();
@@ -507,7 +507,7 @@ unsigned int draw_background(void)
 	s3d_flags_on(b, S3D_OF_VISIBLE);
 	return(b);
 }
-void chars_s3d_init(void)
+static void chars_s3d_init(void)
 {
 #ifdef M_CHAR
 	char c[2];
@@ -523,7 +523,7 @@ void chars_s3d_init(void)
 	s3d_clone_target(cursor, charbuf['_']);
 #endif
 }
-void chars_init(void)
+static void chars_init(void)
 {
 #ifdef M_CHAR
 	int x, y;

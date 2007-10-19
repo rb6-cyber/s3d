@@ -46,7 +46,7 @@ static int top = 0;
 static int curfgcolor = DEFAULT_FGCOLOR;
 static int curbgcolor = DEFAULT_BGCOLOR;
 
-void move_all_lines_up(void)
+static void move_all_lines_up(void)
 {
 	t_line *pfirstline = (t_line*) & line;
 	t_line *psecondline = (t_line*) & line + 1;
@@ -55,28 +55,28 @@ void move_all_lines_up(void)
 	memcpy(pfirstline, &tmpline, (MAX_LINES - 1)*sizeof(struct line_struct));
 }
 
-void clear_char(int lineid, int charid)
+static void clear_char(int lineid, int charid)
 {
 	line[lineid].chars[charid].character = 0;
 	line[lineid].chars[charid].fgcolor = DEFAULT_FGCOLOR;
 	line[lineid].chars[charid].bgcolor = DEFAULT_BGCOLOR;
 }
 
-void clear_line(int lineid)
+static void clear_line(int lineid)
 {
 	int i;
 	for (i = 0;i < MAX_CHARS;i++)
 		clear_char(lineid, i);
 }
 
-void clear_line_after_lastchar(void)
+static void clear_line_after_lastchar(void)
 {
 	int i;
 	for (i = cx;i < MAX_CHARS;i++)
 		clear_char(cy, i);
 }
 
-t_line* line_is_full(void)
+static t_line* line_is_full(void)
 {
 	t_line *pcurline = (t_line*) & line + cy;
 	cy++;
@@ -93,7 +93,7 @@ t_line* line_is_full(void)
 	return pcurline;
 }
 
-void add_char_append(char toappend)
+static void add_char_append(char toappend)
 {
 	int shouldinc = 1;
 	t_line *pcurline = (t_line*) & line + cy;
@@ -108,7 +108,7 @@ void add_char_append(char toappend)
 		cx++;
 }
 
-void backspace(void)
+static void backspace(void)
 {
 	if (cx > 0)
 		cx--;
@@ -116,7 +116,7 @@ void backspace(void)
 		cx = 0;
 }
 
-void endansi(void)
+static void endansi(void)
 {
 	printf(" [/ANSI(%d)]\n", isansi2);
 	isansi = 0;
@@ -133,7 +133,7 @@ void endansi(void)
        7                                      Negative (reverse) image
 */
 
-void ansi_change_graphic(char **args)
+static void ansi_change_graphic(char **args)
 {
 	int curcol;
 	int i;
@@ -194,7 +194,7 @@ void ansi_change_graphic(char **args)
 		}
 	}
 }
-void move_up_x_lines(char *arg)
+static void move_up_x_lines(char *arg)
 {
 	t_line *pfirstline;
 	t_line *psecondline;
@@ -218,7 +218,7 @@ void move_up_x_lines(char *arg)
 	}
 }
 
-void move_down_x_lines(char *arg)
+static void move_down_x_lines(char *arg)
 {
 	t_line *pfirstline;
 	t_line *psecondline;
@@ -239,7 +239,7 @@ void move_down_x_lines(char *arg)
 		memcpy(psecondline, &tmpline, (bottom - top)*sizeof(struct line_struct));
 	}
 }
-void delete_x_letters(char *arg1)
+static void delete_x_letters(char *arg1)
 {
 	int tmpint;
 	t_line *pcurline;
@@ -252,7 +252,7 @@ void delete_x_letters(char *arg1)
 	for (i = cx;i < cx + tmpint;i++)
 		clear_char(cy, i);
 }
-void move_x_letters(int mode, char *arg1)
+static void move_x_letters(int mode, char *arg1)
 {
 	int tmpint;
 	t_line *pcurline;
@@ -292,7 +292,7 @@ void move_x_letters(int mode, char *arg1)
 		break;
 	}
 }
-void remove_beginning_from_curpos(void)
+static void remove_beginning_from_curpos(void)
 {
 	int i, j = cx;
 	for (i = cy;i < MAX_LINES;i++) {
@@ -303,7 +303,7 @@ void remove_beginning_from_curpos(void)
 	}
 }
 
-int parseansi(char curchar)
+static int parseansi(char curchar)
 {
 	static char arg1[16] = "";
 	static char arg2[16] = "";
@@ -501,14 +501,14 @@ void AddChar(char *_toadd)
 	}
 	gotnewdata = 1;
 }
-void init_line(void)
+static void init_line(void)
 {
 	int i;
 	for (i = 0;i < MAX_LINES;i++) {
 		clear_line(i);
 	}
 }
-void term_addstring(char *toprint)
+static void term_addstring(char *toprint)
 {
 	char *ns;
 	for (ns = toprint;ns[0];ns++) {
