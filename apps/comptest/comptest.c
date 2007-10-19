@@ -44,8 +44,12 @@
 #endif
 
 #define MAXEVENTS	50		/* maximum events per loop. */
+
+/* must be 2^x */
 #define TEXW 256
 #define TEXH 256
+#define TEXNUM(win, x, y)	\
+		((((win->attr.height + TEXH - 1)& ~(TEXH-1))/TEXH) * ((int)(x/TEXH)) + ((int)(y/TEXW)))
 
 struct extension {
 	int event, error;
@@ -76,12 +80,12 @@ static struct timespec t = {
 	0, 50*1000*1000
 }; /* 50 mili seconds */
 
-int xinit();
+int xinit(void);
 void window_update_content(struct window *win, int x, int y, int width, int height);
 static int print_event(Display *dpy, XEvent *event);
 void event();
 
-static void mainloop(void)
+static void mainloop()
 {
 	event();
 	nanosleep(&t, NULL);
@@ -308,7 +312,7 @@ static void deco_box(struct window *win)
 	/*  push data on texture 0 position (0,0) */
 	s3d_flags_on(win->oid, S3D_OF_VISIBLE);
 }
-static struct window* window_find(Window id)
+static struct window *window_find(Window id)
 {
 	struct window *window;
 	for (window = window_head; window!=NULL; window = window->next) {
@@ -337,7 +341,7 @@ static void window_add(Display *dpy, Window id)
 	/* XSelectInput(dpy, win->id, ExposureMask);*/
 	win->format = XRenderFindVisualFormat(dpy, win->attr.visual);
 
-	if (win->format != NULL) {
+	if (win->format != 0) {
 		/* printf("add window: %d:%d size: %dx%d\n", win->attr.x, win->attr.y, win->attr.width, win->attr.height);*/
 		win->damage = XDamageCreate(dpy, win->id, XDamageReportNonEmpty);
 
@@ -394,20 +398,66 @@ static void window_update_geometry(struct window *win, int x, int y, int width, 
 
 	}
 }
+/* convert X-format to s3ds RGBA 32bit format */
+int image_convert(XImage *image, char *bitmap)
+{
+	int x, y;
+	int rs, gs, bs;
+	int bpp;
+	char *img_ptr, *bmp_ptr;
+	unsigned long *s;
+	uint32_t *t;
 
+
+	if (image->format == ZPixmap) {
+/*		printf("XImage: %dx%d, format %d (%d), bpp: %d, depth %d, pad %d\n",
+		       image->width, image->height, image->format,
+		       ZPixmap, image->bits_per_pixel, image->depth, image->bitmap_pad);*/
+		rs = get_shift(image->red_mask) - 8;
+		gs = get_shift(image->green_mask) - 8;
+		bs = get_shift(image->blue_mask) - 8;
+
+		bpp = (image->bits_per_pixel / 8);
+		/* rgb is not bgr */
+		rs = rs;
+		gs = gs - 8;
+		bs = bs - 16;
+/*		printf("Ximage: rgb: %d|%d|%d\n", rs, gs, bs);;*/
+		/*  printf("red: size %d, offset %d\n",rs,roff);
+		  printf("green: size %d, offset %d\n",gs,goff);
+		  printf("blue: size %d, offset %d\n",bs,boff);
+		  printf("bits per pixel:%d\n",bpp);*/
+		for (y = 0; y < image->height ; y++) {
+			img_ptr = image->data + (y * image->width) * bpp;
+			bmp_ptr = bitmap + (y * image->width) * sizeof(uint32_t);
+			for (x = 0; x < image->width; x++) {
+				s = (unsigned long *)	img_ptr;
+				t = (uint32_t *)		bmp_ptr;
+				/*    bmp_ptr[0] = (rs > 0 ? ((*d & image->red_mask) >> rs)  : ((*d  & image->red_mask) << -rs)) ;
+				 bmp_ptr[1] = (gs > 0 ? ((*d & image->green_mask) >> gs) : ((*d  & image->green_mask) << -gs)) ;
+				 bmp_ptr[2] = (bs > 0 ? ((*d & image->blue_mask) >> bs)  : ((*d  & image->blue_mask) << -bs));
+				 bmp_ptr[3] = 255 ;*/
+				*t = (rs > 0 ? ((*s & image->red_mask) >> rs)  : ((*s  & image->red_mask) << -rs)) |
+				     (gs > 0 ? ((*s & image->green_mask) >> gs) : ((*s  & image->green_mask) << -gs)) |
+				     (bs > 0 ? ((*s & image->blue_mask) >> bs)  : ((*s  & image->blue_mask) << -bs)) |
+				     255 << 24;
+
+				bmp_ptr += sizeof(uint32_t);
+				img_ptr += bpp;
+			}
+		}
+		return(0);
+	}
+	return(-1);
+}
+
+/* takes a bounding box and updates its window contents */
 void window_update_content(struct window *win, int x, int y, int width, int height)
 {
 	int chunk_width, chunk_height;
 	int xleft, xright;
 	int ytop, ybottom;
-	int texnum;
-	int xi, yi;
-	int rs, gs, bs;
-	int bpp;
-	char *img_ptr, *bmp_ptr;
 	char *bitmap;
-	unsigned long *s;
-	uint32_t *t;
 	XImage *image;
 
 	/* update the whole window for now. */
@@ -415,8 +465,10 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 	y = 0;
 	width = win->attr.width;
 	height = win->attr.height;
-
-	texnum = 0;
+	if (x < 0) x = 0;
+	if (y < 0) y = 0;
+	if (width > win->attr.width - x)			width = win->attr.width - x;
+	if (height > win->attr.height - y)			height = win->attr.height - y;
 
 	if (x == 0 && y == 0 && width == win->attr.width && height == win->attr.height) {
 		if (win->already_updated) 
@@ -428,61 +480,32 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 	/* if (!win->oid)
 	  deco_box(win);
 	*/
-	for (xleft = 0; xleft < width ; xleft += TEXW) {
-		xright = (xleft + TEXW > width) ? width : xleft + TEXW;
+	for (xleft = x; xleft < x + width ; xleft = xright) {
+		xright = (xleft + TEXW) & ~(TEXW-1);
+		if (xright > (x + width))
+			xright = x + width;
 		chunk_width = xright - xleft;
-		image = XGetImage(dpy, win->id, xleft, y, chunk_width, win->attr.height, AllPlanes, ZPixmap);
+		printf("request image: xleft = %d, xright = %d, width = %d, x:y = %d:%d, width:height = %d:%d, ~TEXW = %08x\n",
+						xleft, xright, width, x, y, width, height, ~TEXW);
+		image = XGetImage(dpy, win->id, xleft, y, chunk_width, height, AllPlanes, ZPixmap);
 		if (!image)
 			return;
-		bitmap = malloc(chunk_width * height * sizeof(uint32_t));
+		bitmap = malloc(TEXW * height * sizeof(uint32_t));
 		if (win->oid == -1) 
 			deco_box(win);
-		if (image->format == ZPixmap) {
-/*			printf("XImage: %dx%d, format %d (%d), bpp: %d, depth %d, pad %d\n",
-			       image->width, image->height, image->format,
-			       ZPixmap, image->bits_per_pixel, image->depth, image->bitmap_pad);*/
-			rs = get_shift(image->red_mask) - 8;
-			gs = get_shift(image->green_mask) - 8;
-			bs = get_shift(image->blue_mask) - 8;
-
-			bpp = (image->bits_per_pixel / 8);
-			/* rgb is not bgr */
-			rs = rs;
-			gs = gs - 8;
-			bs = bs - 16;
-/*			printf("Ximage: rgb: %d|%d|%d\n", rs, gs, bs);;*/
-			/*  printf("red: size %d, offset %d\n",rs,roff);
-			  printf("green: size %d, offset %d\n",gs,goff);
-			  printf("blue: size %d, offset %d\n",bs,boff);
-			  printf("bits per pixel:%d\n",bpp);*/
-			for (yi = 0; yi < height ; yi++) {
-				img_ptr = image->data + (yi * image->width) * bpp;
-				bmp_ptr = bitmap + ((y + yi) * chunk_width + x) * sizeof(uint32_t);
-				for (xi = 0; xi < xright - xleft; xi++) {
-					s = (unsigned long *)img_ptr;
-					t = (uint32_t *)bmp_ptr;
-					/*    bmp_ptr[0] = (rs > 0 ? ((*d & image->red_mask) >> rs)  : ((*d  & image->red_mask) << -rs)) ;
-					 bmp_ptr[1] = (gs > 0 ? ((*d & image->green_mask) >> gs) : ((*d  & image->green_mask) << -gs)) ;
-					 bmp_ptr[2] = (bs > 0 ? ((*d & image->blue_mask) >> bs)  : ((*d  & image->blue_mask) << -bs));
-					 bmp_ptr[3] = 255 ;*/
-					*t = (rs > 0 ? ((*s & image->red_mask) >> rs)  : ((*s  & image->red_mask) << -rs)) |
-					     (gs > 0 ? ((*s & image->green_mask) >> gs) : ((*s  & image->green_mask) << -gs)) |
-					     (bs > 0 ? ((*s & image->blue_mask) >> bs)  : ((*s  & image->blue_mask) << -bs)) |
-					     255 << 24;
-
-					bmp_ptr += sizeof(uint32_t);
-					img_ptr += bpp;
-				}
-			}
-			/*  s3d_load_texture(win->oid,0,x,y,width,height, ???); */
-			for (ytop = 0; ytop < height; ytop += TEXH) {
-				ybottom = (ytop + TEXH > height) ? height : ytop + TEXH;
-				chunk_height = ybottom - ytop;
-				s3d_load_texture(win->oid, texnum, 0, 0, chunk_width, chunk_height, (unsigned char *)bitmap + chunk_width * ytop * 4);
-				texnum++;
-			}
-			/*  swap images */
+//		printf("image_convert\n");
+		image_convert(image, bitmap);
+//		printf("load textures ...\n");
+		for (ytop = y; ytop < y + height; ytop = ybottom) {
+			ybottom = (ytop + TEXH) & ~(TEXH-1);
+			chunk_height = ybottom - ytop;
+			s3d_load_texture(win->oid, TEXNUM(win, xleft, ytop), xleft % TEXW, ytop % TEXH, 
+								chunk_width, chunk_height, (unsigned char *)bitmap + chunk_width * (ytop - y) * 4);
+/*			printf("s3d_load_texture(%d, %d, %d, %d, %d, %d, %010p);\n",
+							win->oid, TEXNUM(win, xleft, ytop), xleft % TEXW, ytop % TEXH, 
+								chunk_width, chunk_height, (unsigned char *)bitmap + chunk_width * (ytop - y) * 4);*/
 		}
+//		printf("done loading textures\n");
 		XDestroyImage(image);
 		free(bitmap);
 	}
@@ -512,7 +535,7 @@ void event(void)
 		} else if (event.type == ConfigureNotify) {
 			XConfigureEvent *e = &event.xconfigure; 
 			window = window_find(e->window);
-			if (window != NULL) {
+			if (window != 0) {
 /*				printf("Configure: window = %d, geometry = %d:%d (at %d:%d)\n",
 				       (int)e->window, e->width, e->height, e->x, e->y);*/
 				window_update_geometry(window, e->x, e->y, e->width, e->height);
