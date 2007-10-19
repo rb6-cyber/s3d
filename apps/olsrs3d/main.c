@@ -47,7 +47,7 @@ static struct timespec sleep_time = {
 
 int Debug = 0;
 
-char Olsr_host[256];   /* ip or hostname of olsr node with running dot_draw plugin */
+static char Olsr_host[256];   /* ip or hostname of olsr node with running dot_draw plugin */
 
 struct olsr_con *Con_begin = NULL;   /* begin of connection list */
 struct olsr_node *Olsr_root = NULL;   /* top of olsr node tree */
@@ -55,10 +55,10 @@ struct Obj_to_ip *Obj_to_ip_head, *Obj_to_ip_end, *List_ptr;   /* needed pointer
 
 int Olsr_node_count = 0, Last_olsr_node_count = -1;
 int Olsr_node_count_obj = -1;
-int Olsr_ip_label_obj = -1;
-int Output_border[4];
-int *Olsr_neighbour_label_obj = NULL;
-int Size;
+static int Olsr_ip_label_obj = -1;
+static int Output_border[4];
+static int *Olsr_neighbour_label_obj = NULL;
+static int Size;
 
 
 int Net_read_count;
@@ -67,30 +67,30 @@ int Output_block_completed = 0;
 
 int Olsr_node_obj, Olsr_node_inet_obj, Olsr_node_hna_net, S3d_obj;
 
-float Asp = 1.0;
+static float Asp = 1.0;
 float Bottom = -1.0;
 float Left = -1.0;
 
 float CamPosition[2][3]; /* CamPosition[trans|rot][x-z] */
-float CamPosition2[2][3]; /* CamPosition[trans|rot][x-z] */
+static float CamPosition2[2][3]; /* CamPosition[trans|rot][x-z] */
 
 /* needed ? */
 /* float ZeroPosition[3] = {0,0,0};  current position zero position */
 
 int ZeroPoint;   /* object zeropoint */
-float Zp_rotate = 0.0;
-int ColorSwitch = 0;   /* enable/disable colored olsr connections */
-int RotateSwitch = 0;
-float RotateSpeed = 0.5;
-float Factor = 0.6; /* Factor in calc_olsr_node_mov */
-struct olsr_node *Olsr_node_pEtx;
+static float Zp_rotate = 0.0;
+static int ColorSwitch = 0;   /* enable/disable colored olsr connections */
+static int RotateSwitch = 0;
+static float RotateSpeed = 0.5;
+static float Factor = 0.6; /* Factor in calc_olsr_node_mov */
+static struct olsr_node *Olsr_node_pEtx;
 
 int Btn_close_id = -1;
 
 int Btn_close_obj;
-unsigned int Last_Click_Time = 0;
-int Last_Click_Oid = 0;
-float Title_len;
+static unsigned int Last_Click_Time = 0;
+static int Last_Click_Oid = 0;
+static float Title_len;
 
 /***
  *
@@ -98,7 +98,7 @@ float Title_len;
  *
  ***/
 
-void print_usage(void)
+static void print_usage(void)
 {
 
 	printf("Usage is olsrs3d [options] [-- [s3d options]]\n");
@@ -111,14 +111,14 @@ void print_usage(void)
 }
 
 
-void close_win(s3dw_widget *button)
+static void close_win(s3dw_widget *button)
 {
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
 
 
 
-void window_help(void)
+static void window_help(void)
 {
 
 	s3dw_surface *infwin;
@@ -186,7 +186,7 @@ void out_of_mem(void)
 
 
 
-unsigned int get_time(void)
+static unsigned int get_time(void)
 {
 
 	struct timeval tv;
@@ -234,7 +234,7 @@ float dist(float p1[], float p2[])
  *
  ***/
 
-float dirt(float p1[], float p2[], float p3[])
+static float dirt(float p1[], float p2[], float p3[])
 {
 	float d;
 	d = dist(p1, p2);
@@ -264,7 +264,7 @@ float dirt(float p1[], float p2[], float p3[])
  *
  ***/
 
-void mov_add(float mov[], float p[], float fac)
+static void mov_add(float mov[], float p[], float fac)
 {
 	/* if (fac>1000)
 	  return;
@@ -284,7 +284,7 @@ void mov_add(float mov[], float p[], float fac)
  *
  ***/
 
-void handle_olsr_node(struct olsr_node *olsr_node)
+static void handle_olsr_node(struct olsr_node *olsr_node)
 {
 
 	float distance, angle, angle_rad;
@@ -498,7 +498,7 @@ void handle_olsr_node(struct olsr_node *olsr_node)
  *
  ***/
 
-void calc_olsr_node_mov(void)
+static void calc_olsr_node_mov(void)
 {
 
 	float distance;
@@ -534,7 +534,7 @@ void calc_olsr_node_mov(void)
  *
  ***/
 
-void move_olsr_nodes(void)
+static void move_olsr_nodes(void)
 {
 
 	float null_vec[3] = {0, 0, 0}, vertex_buf[6];
@@ -720,7 +720,7 @@ void move_olsr_nodes(void)
 
 
 
-void mainloop(void)
+static void mainloop(void)
 {
 
 	int net_result;   /* result of function net_main */
@@ -797,7 +797,7 @@ void mainloop(void)
 
 }
 
-int stop(struct s3d_evt* OLSRS3DUNUSED(evt))
+static int stop(struct s3d_evt* OLSRS3DUNUSED(evt))
 {
 	s3d_quit();
 	net_quit();
@@ -810,7 +810,7 @@ int stop(struct s3d_evt* OLSRS3DUNUSED(evt))
  *
  ***/
 
-int keypress(struct s3d_evt *event)
+static int keypress(struct s3d_evt *event)
 {
 
 	struct s3d_key_event *key = (struct s3d_key_event *)event->buf;
@@ -901,7 +901,7 @@ int keypress(struct s3d_evt *event)
  *
  ***/
 
-int object_click(struct s3d_evt *evt)
+static int object_click(struct s3d_evt *evt)
 {
 	/* int i
 	 char ip_str[50];
@@ -1095,7 +1095,7 @@ void print_etx(void)
  *
  ***/
 
-int object_info(struct s3d_evt *hrmz)
+static int object_info(struct s3d_evt *hrmz)
 {
 	struct s3d_obj_info *inf;
 	inf = (struct s3d_obj_info *)hrmz->buf;
@@ -1122,7 +1122,7 @@ int object_info(struct s3d_evt *hrmz)
 	return(0);
 }
 
-int mbutton_press(struct s3d_evt *hrmz)
+static int mbutton_press(struct s3d_evt *hrmz)
 {
 	struct s3d_but_info *inf;
 	inf = (struct s3d_but_info *)hrmz->buf;

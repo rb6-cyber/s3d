@@ -31,15 +31,15 @@
 /* #include "structs.h"  already included by olsrs3d.h */
 #include "search.h"
 
-s3dw_surface *_search_surface;
-s3dw_input  *_search_input;
-s3dw_widget  *_search_widget;
+static s3dw_surface *_search_surface;
+static s3dw_input  *_search_input;
+static s3dw_widget  *_search_widget;
 
-struct olsr_node *_node_root = NULL;
-struct olsr_node **search_node = NULL;
+static struct olsr_node *_node_root = NULL;
+static struct olsr_node **search_node = NULL;
 
-float _return_point[2][3];    /* cam position before move to the widget */
-int  _search_status = NOTHING;   /* status of search */
+static float _return_point[2][3];    /* cam position before move to the widget */
+static int  _search_status = NOTHING;   /* status of search */
 
 void _search_node(s3dw_widget *dummy);
 void _new_search_node(s3dw_widget *dummy);
@@ -82,7 +82,7 @@ void follow_node(float cam_position_t[], float cam_position_r[], float rotate)
 	s3d_translate(0, cam_position_t[0], cam_position_t[1], cam_position_t[2]);
 	s3d_rotate(0, cam_position_r[0], cam_position_r[1], cam_position_r[2]);
 }
-void _abort_search_window(s3dw_widget *bwidget)
+static void _abort_search_window(s3dw_widget *bwidget)
 {
 	s3dw_delete(bwidget->parent); /* remove the window cointaining the button */
 	_search_surface = NULL;

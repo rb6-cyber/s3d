@@ -38,10 +38,10 @@
 #include "olsrs3d.h"
 
 #define PORT 2004   /* the port client will be connecting to  */
-char buf[MAXDATASIZE];
+static char buf[MAXDATASIZE];
 
 
-int sockfd, numbytes;
+static int sockfd, numbytes;
 int net_init(char *host)
 {
 	struct hostent *he;
