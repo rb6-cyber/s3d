@@ -110,7 +110,12 @@ int _queue_fill();
 int _queue_new_object(unsigned int oid);
 unsigned int _queue_want_object();
 int _queue_quit();
+/* io.c */
+#ifdef SIGS
+extern int _s3d_sigio;
+#endif
 /*  network.c */
+extern int con_type;
 int net_send(uint8_t opcode, char *buf, uint16_t length);
 int s3d_net_init(char *urlc);
 #ifdef TCP

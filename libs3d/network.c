@@ -29,9 +29,6 @@
 #include <unistd.h>   /*  read(), write() */
 #include <errno.h>   /*  errno */
 #include <netinet/in.h>  /*  htons(),htonl() */
-#ifdef SIGS
-extern int _s3d_sigio;
-#endif
 int con_type = CON_NULL;
 #ifdef TCP
 static int _s3d_net_receive(void);

@@ -53,8 +53,6 @@
 #endif
 
 static char    *url = NULL;
-extern int     con_type;
-extern int     cb_lock;
 /*  this file is the client-lib-implementation which holds the function to connect and control the server. */
 #ifdef SIGS
 int _s3d_sigio = 0;

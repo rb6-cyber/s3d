@@ -185,6 +185,7 @@ extern segment_t seg[SEGSIZE];  /* Segment table */
 
 extern int monotonate_trapezoids(int);
 extern int triangulate_monotone_polygons(int, int, int (*)[3]);
+extern int sei_triangulate_polygon(int ncontours, int cntr[], double(*vertices)[2], int (*triangles)[3]);
 
 extern int _greater_than(point_t *, point_t *);
 extern int _equal_to(point_t *, point_t *);

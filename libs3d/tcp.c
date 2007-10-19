@@ -38,7 +38,6 @@
 #define __USE_BSD 1  /* we want sig_t and F_SETOWN to be defined */
 #include <fcntl.h>   /*  fcntl */
 #include <signal.h>   /*  signal(), SIGPIPE, SIGIO */
-extern int _s3d_sigio;
 #endif
 
 static int s3d_socket;   /*  this is the socket which holds the tcp-socket .... */
