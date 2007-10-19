@@ -489,7 +489,7 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 		image = XGetImage(dpy, win->id, xleft, y, chunk_width, height, AllPlanes, ZPixmap);
 		if (!image)
 			return;
-		bitmap = malloc(TEXW * height * sizeof(uint32_t));
+		bitmap = malloc(TEXW * ((height + TEXH) & ~(TEXH - 1)) * sizeof(uint32_t));
 		if (win->oid == -1)
 			deco_box(win);
 		/*  printf("image_convert\n");*/
