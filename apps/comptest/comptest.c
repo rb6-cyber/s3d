@@ -85,7 +85,7 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 static int print_event(Display *dpy, XEvent *event);
 void event();
 
-static void mainloop()
+static void mainloop(void)
 {
 	event();
 	nanosleep(&t, NULL);
@@ -341,7 +341,7 @@ static void window_add(Display *dpy, Window id)
 	/* XSelectInput(dpy, win->id, ExposureMask);*/
 	win->format = XRenderFindVisualFormat(dpy, win->attr.visual);
 
-	if (win->format != 0) {
+	if (win->format != NULL) {
 		/* printf("add window: %d:%d size: %dx%d\n", win->attr.x, win->attr.y, win->attr.width, win->attr.height);*/
 		win->damage = XDamageCreate(dpy, win->id, XDamageReportNonEmpty);
 
@@ -399,7 +399,7 @@ static void window_update_geometry(struct window *win, int x, int y, int width, 
 	}
 }
 /* convert X-format to s3ds RGBA 32bit format */
-int image_convert(XImage *image, char *bitmap)
+static int image_convert(XImage *image, char *bitmap)
 {
 	int x, y;
 	int rs, gs, bs;
