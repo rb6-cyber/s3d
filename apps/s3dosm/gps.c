@@ -62,7 +62,6 @@ void show_gpsdata(struct gps_data_t *dgps)
 	printf("[%d] lat/long: [%f|%f], altitude %f\n", frame, dgps->fix.latitude, dgps->fix.longitude, dgps->fix.altitude);
 	printf("speed [kph]: %f\n", dgps->fix.speed / KNOTS_TO_KPH);
 	printf("used %d/%d satellits\n", dgps->satellites_used, dgps->satellites);
-	printf("################## = %f %f %f\n", dgps->fix.pitch, dgps->fix.roll, dgps->fix.dip);
 #else
 	printf("[%d] lat/long: [%f|%f], altitude %f\n", frame, dgps->latitude, dgps->longitude, dgps->altitude);
 	printf("speed [kph]: %f\n", dgps->speed / KNOTS_TO_KPH);
