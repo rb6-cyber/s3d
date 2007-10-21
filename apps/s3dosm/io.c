@@ -60,9 +60,9 @@ char *read_file(char *fname, int *fsize)
 int process_args(int argc, char **argv)
 {
 	int      lopt_idx = 0, i;
-	char     c;
-	float     minlat, minlon, maxlat, maxlon;
-	char      info[1024];
+	int      c;
+	float    minlat, minlon, maxlat, maxlon;
+	char     info[1024];
 	struct option long_options[] = {
 		{"help", 0, NULL, 'h'
 		}, {"osm", 1, NULL, 'o'}, {NULL, 0, NULL, 0}

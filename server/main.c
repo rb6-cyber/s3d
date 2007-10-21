@@ -203,7 +203,7 @@ void quit(void)
 static int process_args(int argc, char **argv)
 {
 	int      lopt_idx;
-	char     c;
+	int      c;
 	struct option long_options[] = {
 		{"multisample",  1, NULL, 'm'
 		}, {"rc",    1, NULL, 'r'}, {"help",   0, NULL, 'h'}, {"use-glut",  0, NULL, 'g'}, {"use-sdl",   0, NULL, 's'}, {"no-rc",   0, NULL, 'n'}, {NULL, 0, NULL, 0}
