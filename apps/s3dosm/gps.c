@@ -25,8 +25,8 @@
 #include <s3d.h>
 #include "s3dosm.h"
 #include <stdio.h>  /* printf() */
-static int user_icon = -1, user_icon_rotator = -1;
 #ifdef HAVE_GPS
+static int user_icon = -1, user_icon_rotator = -1;
 #include <gps.h>  /* gps_*() */
 #ifdef NMEA_CHANNELS
 #define GPS_NEW
@@ -264,7 +264,7 @@ int gps_quit(void)
 }
 #else
 
-int gps_init(char *gpshost)
+int gps_init(char *S3DOSMUNUSED(gpshost))
 {
 	printf("GPS support not compiled in!\n");
 	return(0);
