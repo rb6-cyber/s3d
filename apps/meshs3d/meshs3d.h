@@ -38,6 +38,7 @@ struct node_con {
 	float etx2_sqrt;     /* sqrt etx of right olsr node */
 	int obj_id;        /* id of connection object in s3d */
 	int color;
+	int old;			/* check if the node has been announced in the last block */
 	float rgb;
 };
 

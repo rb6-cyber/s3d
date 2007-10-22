@@ -181,6 +181,8 @@ static void handle_con(unsigned int ip1, unsigned int ip2, float etx)
 		con_hash = swaphash;
 	}
 
+	con->old = 0;
+
 }
 
 static struct node *handle_mesh_node(unsigned int ip, char *ip_string) {
@@ -231,6 +233,8 @@ int process_main(void)
 	int dn;
 	float f;
 	char *lbuf_ptr, *last_cr_ptr, *con_from, *con_from_end, *con_to, *con_to_end, *etx, *etx_end, *tmp_char;
+	struct hash_it_t *hashit;
+	struct node_con *con;
 	char hna_name[NAMEMAX];
 	char hna_node[NAMEMAX];
 
@@ -368,6 +372,20 @@ int process_main(void)
 		} else if (((*lbuf_ptr) == '}') && ((*(lbuf_ptr + 1)) == '\n')) {
 
 			Global.output_block_completed = 1;
+
+			hashit = NULL;
+			/* check for old nodes and remove them */
+			while (NULL != (hashit = hash_iterate(con_hash, hashit))) {
+				con = (struct node_con *) hashit->bucket->data;
+				if (con->old) {
+					if (con->obj_id != -1) 
+						s3d_del_object(con->obj_id);
+					con->obj_id = -1;
+					hash_remove_bucket(con_hash, hashit);
+				}
+				con->old = 1;	/* set con on old. if it's still old in the next iteration, 
+								   we will remove it. */
+			}
 
 		}
 
