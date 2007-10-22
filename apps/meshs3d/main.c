@@ -145,7 +145,6 @@ static void handle_node(void)
 		}
 
 		if ((node->last_seen < Global.output_block_counter - 1) && (node->visible)) {
-
 			s3d_del_object(node->desc_id);
 			s3d_del_object(node->obj_id);
 			node->desc_id = -1;
@@ -154,9 +153,12 @@ static void handle_node(void)
 			Global.node_count--;
 			while (NULL != (tmp_hashit = hash_iterate(node_hash, tmp_hashit))) {
 				tmp_node = (struct node *) tmp_hashit->bucket->data;
-				if (node != tmp_node && (max(node->ip, tmp_node->ip) == node->ip)) {
-					ip[0] = node->ip;
-					ip[1] = tmp_node->ip;
+
+				
+				if ( node != tmp_node ) {
+					ip[0] = max(node->ip,tmp_node->ip);
+					ip[1] = min(node->ip,tmp_node->ip);
+
 					if (NULL != (con = hash_find(con_hash, ip))) {
 						s3d_del_object(con->obj_id);
 						con->obj_id = -1;
