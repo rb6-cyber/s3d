@@ -1,5 +1,10 @@
 # ChangeLog for media-gfx/s3d-svn
 
+*s3d-svn-9999 (22 Oct 2007)
+
+  22 Oct 2007; Sven Eckelmann <sven.eckelmann@gmx.de> s3d-svn-9999.ebuild:
+  Added useflag to build documentation.
+
 *s3d-svn-9999 (5 Jul 2007)
 
   5 Jul 2007; Sven Eckelmann <sven.eckelmann@gmx.de> s3d-svn-9999.ebuild:

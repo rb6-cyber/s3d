@@ -1,6 +1,6 @@
 inherit subversion
 
-IUSE="gps"
+IUSE="gps doc"
 
 ESVN_REPO_URI="http://svn.berlios.de/svnroot/repos/s3d/trunk"
 
@@ -36,6 +36,7 @@ RDEPEND="!media-gfx/s3d
 			x11-libs/libXtst )
 		virtual/x11 )
 
+	doc? ( app-text/docbook-sgml-utils )
 	gps? ( sci-geosciences/gpsd )	
 
 	virtual/glut
