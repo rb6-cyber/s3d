@@ -128,6 +128,10 @@ if (PTHREADS_FOUND)
 endif (PTHREADS_FOUND)
 
 
+# try to find docbook
+find_package(Docbook)
+
+
 # test for shm
 include(TestForSHM)
 if (HAVE_SHM)
