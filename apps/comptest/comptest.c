@@ -497,6 +497,8 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 		/*  printf("load textures ...\n");*/
 		for (ytop = y; ytop < y + height; ytop = ybottom) {
 			ybottom = (ytop + TEXH) & ~(TEXH - 1);
+			if (ybottom > y + height)
+				ybottom = y + height;
 			chunk_height = ybottom - ytop;
 			s3d_load_texture(win->oid, TEXNUM(win, xleft, ytop), xleft % TEXW, ytop % TEXH,
 			                 chunk_width, chunk_height, (unsigned char *)bitmap + chunk_width * (ytop - y) * 4);
