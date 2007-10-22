@@ -334,16 +334,22 @@ static void calc_node_mov(void)
 	while (NULL != (hashit1 = hash_iterate(node_hash, hashit1))) {
 
 		first_node = (struct node *) hashit1->bucket->data;
+		if (!first_node->visible)
+			continue;
+
 		while (NULL != (hashit2 = hash_iterate(node_hash, hashit2))) {
 
 			sec_node = (struct node *) hashit2->bucket->data;
+			if (!sec_node->visible)
+				continue;
+
 			if (first_node != sec_node && (max(first_node->ip, sec_node->ip) == first_node->ip)) {
 
 				ip[0] = first_node->ip;
 				ip[1] = sec_node->ip;
 				distance = dirt(first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec);
 
-				if (NULL != (con = hash_find(con_hash, ip))) {
+				if ((NULL != (con = hash_find(con_hash, ip)))) {
 
 					/* we have a connection */
 					wish_distance = ((con->etx1_sqrt + con->etx2_sqrt)) + 4;
