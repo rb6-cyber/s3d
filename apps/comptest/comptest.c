@@ -479,7 +479,7 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 	/* if (!win->oid)
 	  deco_box(win);
 	*/
-	bitmap = malloc(TEXW * ((height + TEXH) & ~(TEXH - 1)) * sizeof(uint32_t));
+	bitmap = malloc(TEXW * height * sizeof(uint32_t));
 	for (xleft = x; xleft < x + width ; xleft = xright) {
 		xright = (xleft + TEXW) & ~(TEXW - 1);
 		if (xright > (x + width))
