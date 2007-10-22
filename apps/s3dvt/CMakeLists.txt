@@ -1,4 +1,4 @@
-project(s3dvt)
+project(s3dvt C)
 
 if (PTHREADS_FOUND)
 	include_directories(${s3d_SOURCE_DIR}/libs3d)

@@ -1,4 +1,4 @@
-project(s3dfm)
+project(s3dfm C)
 
 if (PTHREADS_FOUND)
 	include_directories(${s3d_SOURCE_DIR}/libs3d ${s3d_SOURCE_DIR}/libs3dw)

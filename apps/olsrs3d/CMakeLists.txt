@@ -1,4 +1,4 @@
-project(olsrs3d)
+project(olsrs3d C)
 
 include_directories(${s3d_SOURCE_DIR}/libs3d ${s3d_SOURCE_DIR}/libs3dw)
 

@@ -1,4 +1,4 @@
-project(s3d_x11gate)
+project(s3d_x11gate C)
 
 if (XTST_FOUND)
 	include_directories(${s3d_SOURCE_DIR}/libs3d ${s3d_SOURCE_DIR}/libs3dw)

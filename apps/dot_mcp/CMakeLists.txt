@@ -1,4 +1,4 @@
-project(dot_mcp)
+project(dot_mcp C)
 
 include_directories(${s3d_SOURCE_DIR}/libs3d)
 

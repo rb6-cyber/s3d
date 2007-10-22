@@ -1,4 +1,4 @@
-project(meshs3d)
+project(meshs3d C)
 
 include_directories(${s3d_SOURCE_DIR}/libs3d ${s3d_SOURCE_DIR}/libs3dw)
 

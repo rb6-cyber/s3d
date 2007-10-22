@@ -1,4 +1,4 @@
-project(s3dosm)
+project(s3dosm C)
 
 # depends on xml2, sqlite3
 if (LIBXML2_FOUND AND SQLITE3_FOUND)
