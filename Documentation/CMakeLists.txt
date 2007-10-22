@@ -1,4 +1,3 @@
-add_subdirectory(libg3d)
 add_subdirectory(libs3d)
 add_subdirectory(libs3dw)
 add_subdirectory(manpages)
