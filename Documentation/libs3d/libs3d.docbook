@@ -967,46 +967,20 @@ Remove the link of object oid to its target.
 </para>
 </sect2>
 
-<!-- TODO: 
-		- this is obsolete. update with s3d_import_model_file() ...
-		- add:  s3d_strlen()
-				s3d_vector_cross_product
-				s3d_angle_to_cam()
-				s3d_ignore_callback()
-				s3d_net_check()
-	-->
-<sect2>
-<title>s3d_import_3ds</title>	
+<sect2 id="s3d_import_model_file">
+<title>s3d_import_model_file</title>	
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
-<funcdef>int <function>s3d_import_3ds</function></funcdef>
+<funcdef>int <function>s3d_import_model_file</function></funcdef>
 <paramdef>
-char *<parameter>buf</parameter>
+		char *<parameter>fname</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
-Imports a 3ds-file from memory (assuming that you have already loaded the 3ds-file and it's located at *buf).
-</para>
-<warning><para>Of course, you won't forget to <link linkend="s3d_flags_on">toggle</link> it <link linkend="S3D_OF_VISIBLE">visible</link>, won't you?</para></warning>
-</sect2>
-
-
-<sect2>
-<title>s3d_import_3ds_file</title>
-<funcsynopsis>
-<funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
-<funcprototype>
-<funcdef>int <function>s3d_import_3ds_file</function></funcdef>
-<paramdef>
-char *<parameter>fname</parameter>
-</paramdef>
-</funcprototype>
-</funcsynopsis>
-<para>
-Opens the 3ds file referenced by 3ds. The function will also look in your object directories (maybe /usr/share/s3d, depending
-on your installation), so you can also use relative paths.
+		Imports an 3d object file and returns the object number. Quite a number of formats are supported, like 3D Studio (.3ds, .prj), Lightwave (.lw, .lwb, .lwo), Quake Models (.md3),
+		or simply everything <ulink url="http://automagically.de/?g3dviewer">libg3d</ulink> supports. :)
 </para>
 <warning><para>Of course, you won't forget to <link linkend="s3d_flags_on">toggle</link> it <link linkend="S3D_OF_VISIBLE">visible</link>, won't you?</para></warning>
 </sect2>
@@ -1059,6 +1033,24 @@ the length of the rendered string in *len (or set len=NULL to disable this).
 	/* not interested in the length? do that:
 	 * <emphasis>s3d_draw_string</emphasis>(str,NULL); */
 </programlisting>
+</sect2>
+
+<sect2 id="s3d_strlen">
+<title>s3d_strlen</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>float <function>s3d_strlen</function></funcdef>
+<paramdef>
+char *<parameter>str</parameter>,
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+		Returns the length of the string if it were rendered with the currently <link linkend="s3d_select_font">selected font</link>.
+		That might be useful to estimate the size used for a text and render the background or bounding box before inserting the text.
+
+</para>
 </sect2>
 
 <sect2>
@@ -1295,6 +1287,25 @@ void obj_click(<link linkend="s3d_evt">struct s3d_evt</link> event)
 
 
 <sect2>
+<title>s3d_ignore_callback</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>void <function>s3d_ignore_callback</function></funcdef>
+<paramdef>
+unsigned char <parameter>event</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+Sets the callback on ignore, that means it won't be queued up for later use. 
+An incoming event of this type will simply be skipped.
+
+</para>
+</sect2>
+
+
+<sect2>
 <title>s3d_clear_callback</title>
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
@@ -1410,6 +1421,26 @@ More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Dot_prod
 </sect2>
 
 <sect2>
+<title>s3d_vector_cross_product</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>float <function>s3d_vector_cross_product</function></funcdef>
+<paramdef>
+float <parameter>vector1</parameter>[],
+float <parameter>vector2</parameter>[]
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+Calculates and returns the cross product of vector1 and vector2.
+All vectors should have the format  float[3].
+More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Cross_product">on wikipedia</ulink>.
+</para>
+</sect2>
+
+
+<sect2>
 <title>s3d_vector_angle</title>
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
@@ -1425,6 +1456,26 @@ float <parameter>vector2</parameter>[]
 Calculates and returns the angle between vector1 and vector2. Please note that the resulting angle is between 0 and PI, therefore not covering the whole period! To convert in degrees just do result*180/M_PI.
 All vectors should have the format  float[3].
 More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Dot_product">on wikipedia</ulink>.
+</para>
+</sect2>
+
+
+<sect2>
+<title>s3d_angle_to_cam</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>float <function>s3d_angle_to_cam</function></funcdef>
+<paramdef>
+float <parameter>obj_pos</parameter>[],
+float <parameter>cam_pos</parameter>[]
+float *<parameter>angle_rad</parameter>
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+Given obj_pos and cam_pos in the format float[3], angle_rad about which angle the object should be rotated around the y-axis 
+so that it faces the camera. This might become handy if you have some text floating in space and want it to face the camera.
 </para>
 </sect2>
 
@@ -1446,6 +1497,23 @@ to an app referenced by it's mcp-object-id.
 </para>
 </sect2>
 
+<sect2>
+<title>s3d_net_check</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>int <function>s3d_net_check</function></funcdef>
+<paramdef>
+		void
+</paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+		This functions is for programs which do not employ a mainloop, hence they need to check 
+		for new events on their own. Programs like these must make sure to call this function
+		from time to time to convince the server that they did not freeze or bail out.
+</para>
+</sect2>
 
 </sect1>
 
