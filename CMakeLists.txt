@@ -27,6 +27,7 @@ include(SetCCWarnFlags)
 include(ConfigureChecks.cmake)
 
 add_subdirectory(apps)
+add_subdirectory(svnonly)
 add_subdirectory(cmake)
 add_subdirectory(Documentation)
 add_subdirectory(example)
