@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!-- TODO: 
+	add input, textbox, scrollbar types
+	s3dw_handle_info()
+-->
 <chapter id="libs3dw">
 <title>libs3wd - The S3D Widget Library</title>
 <sect1 id="using_3dw">

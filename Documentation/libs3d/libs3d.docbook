@@ -967,9 +967,16 @@ Remove the link of object oid to its target.
 </para>
 </sect2>
 
-
+<!-- TODO: 
+		- this is obsolete. update with s3d_import_model_file() ...
+		- add:  s3d_strlen()
+				s3d_vector_cross_product
+				s3d_angle_to_cam()
+				s3d_ignore_callback()
+				s3d_net_check()
+	-->
 <sect2>
-<title>s3d_import_3ds</title>
+<title>s3d_import_3ds</title>	
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
