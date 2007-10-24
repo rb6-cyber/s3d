@@ -8,7 +8,7 @@ Checkout. We will only give a brief summary of the changes here.)
 	  more configurable and at least comprehensible (Thanks to Sven 
 	  Eckelmann)
 	- meshs3d is a complete rewrite of olsrs3d, using faster 
-	  data structures and clean design (implented by Andreas Langer)
+	  data structures and clean design (implemented by Andreas Langer)
 	- s3dosm is a new program to navigate on openstreetmap maps.
 	  it has gps-support, superseding the old s3dgps which operated
 	  on bitmap map files.
