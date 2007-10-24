@@ -154,10 +154,10 @@ static void handle_node(void)
 			while (NULL != (tmp_hashit = hash_iterate(node_hash, tmp_hashit))) {
 				tmp_node = (struct node *) tmp_hashit->bucket->data;
 
-				
+
 				if ( node != tmp_node ) {
-					ip[0] = max(node->ip,tmp_node->ip);
-					ip[1] = min(node->ip,tmp_node->ip);
+					ip[0] = max(node->ip, tmp_node->ip);
+					ip[1] = min(node->ip, tmp_node->ip);
 
 					if (NULL != (con = hash_find(con_hash, ip))) {
 						s3d_del_object(con->obj_id);

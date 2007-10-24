@@ -378,13 +378,13 @@ int process_main(void)
 			while (NULL != (hashit = hash_iterate(con_hash, hashit))) {
 				con = (struct node_con *) hashit->bucket->data;
 				if (con->old) {
-					if (con->obj_id != -1) 
+					if (con->obj_id != -1)
 						s3d_del_object(con->obj_id);
 					con->obj_id = -1;
 					hash_remove_bucket(con_hash, hashit);
 				}
-				con->old = 1;	/* set con on old. if it's still old in the next iteration, 
-								   we will remove it. */
+				con->old = 1; /* set con on old. if it's still old in the next iteration,
+           we will remove it. */
 			}
 
 		}
