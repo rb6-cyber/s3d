@@ -1,5 +1,6 @@
 include(LateErrors)
 include(LateStatus)
+include(LateStatusPartial)
 
 # find required lib and add include dir for FREETYPE
 find_package(FREETYPE)

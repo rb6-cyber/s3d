@@ -12,8 +12,11 @@ if (LIBXML2_FOUND AND SQLITE3_FOUND)
 
 	if (GPS_FOUND)
 		target_link_libraries(s3dosm ${GPS_LIBRARIES})
+	else (GPS_FOUND)
+		PkgStatusPartial_Later("GPS support - libgps (pkg name: libgps-dev or gpsd)")
 	endif (GPS_FOUND)
 
+	Collected_PkgStatusPartial("s3dosm")
 	# install 
 	install(TARGETS s3dosm RUNTIME DESTINATION bin)
 else (LIBXML2_FOUND AND SQLITE3_FOUND)
