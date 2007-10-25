@@ -18,10 +18,10 @@ gewoehnliche X11-Programme ohne Nachteile oder Einschraenkungen nutzbar sein,
 um Kompatibilitaet zu schaffen und auf dieser Basis aufbauen zu koennen.
 
 Daher ist das Hauptziel fuer 0.3 eine transparente (im Sinne von nicht 
-spuerbare) Schicht zwischen X11-Desktop und S3D zu ziehen. Der Desktop soll
-wie gewohnt bedienbar sein, in Wirklichkeit ist er aber nur einen Teil der 
-3D-Welt in die (bei Bedarf) umgeschalten werden kann. Das eroeffnet natuerlich
-auch neue GUI-Moeglichkeiten (z.B. Expose etc).
+spuerbare) Schicht zwischen Graphikausgabe und X11-Desktop in Form von S3D zu 
+ziehen. Der Desktop soll wie gewohnt bedienbar sein, in Wirklichkeit ist er 
+aber nur einen Teil der 3D-Welt in die (bei Bedarf) umgeschalten werden kann. 
+Das eroeffnet natuerlich auch neue GUI-Moeglichkeiten (z.B. Expose etc).
 
 Um das ganze durchzufuehren wuerde ich 3 grosesere Schritte vorschlagen, die 
 einigermassen unabhaengig voneinander sind:
@@ -42,7 +42,10 @@ einigermassen unabhaengig voneinander sind:
    Strukturen irgendwie gelockt werden muessen, ohne dass Deadlocks auftreten
    koennen. Idealerweise haette dann jeder Client seinen eigenen Thread
    in dem er auch blockierend auf Eingabedaten warten kann, und der Graphik-
-   thread wird nur aufgeweckt wenn es etwas zu zeichnen gibt.
+   thread wird nur aufgeweckt wenn es etwas zu zeichnen gibt. Usereingaben
+   koennten einen weiteren Thread erhalten, evtl. auch ein Thread der
+   regelmaessig Shared-Memory-Updates checkt und Threads weckt (die 
+   SHM-Verbindungen muessen nach wie vor gepolled werden).
 
 2. Shared Memory Zugriff auf Texturen
    -------------------------------------
@@ -59,7 +62,7 @@ einigermassen unabhaengig voneinander sind:
    concept-Implementation comptest zu einem vollstaendigen MCP/Composite 
    Manager umwandeln. Dafuer muessen alle moeglichen X11-Window-Events 
    (Window create/resize/destroy) verarbeitet werden und die Fenster 
-   entsprechend dargestellt werden und die Kamera an der richtigen Position
+   entsprechend dargestellt werden, sowie die Kamera an der richtigen Position
    gehalten werden. Man koennte vorerst einen 2D-Desktop-Modus und einen
    3D-Modus haben, zwischen denen gewechselt werden kann.
 
@@ -72,8 +75,8 @@ Sortieren fuer Alpha-Transparenz
 -----------------------------------
 - fuer Transparenz-Effekte muss sich eigentlich selbst um Tiefensortierung 
   gekuemmert werden,  d.h. das Bild muss von hinten nach vorn aufgebaut werden.
-  S3D ignoriert diese Tatsache derzeit einfach und malt die Objekte einfach
-  irgendwie. :)
+  S3D ignoriert diese Tatsache derzeit und malt die Objekte einfach irgendwie. 
+  :)
   Ein erster Ansatz waere vor dem Zeichnen die Objekte (mal abgesehen von den
   Polygonen die sie enthalten) nach ihrer Entfernung von der Kamera zu 
   sortieren.
@@ -85,7 +88,7 @@ Wii-Controller
   und scheinbar ganz gut funktioniert. In S3D gibt es virtuelle 
   Devices (z.B. Pointer), die man darueber steuern koennte.
 
- http://abstrakraft.org/cwiid/wiki/libcwiid
+http://abstrakraft.org/cwiid/wiki/libcwiid
 
 Mehrere Displays
 ------------------
@@ -96,4 +99,4 @@ Mehrere Displays
   alle Seiten ein Bild projiziert bekommt, oder 3D-Stereo-Brillen, bei denen
   man 2 leicht voneinander verschobene Bilder fuer beide Augen haben moechte.
 
-- http://en.wikipedia.org/wiki/Cave_Automatic_Virtual_Environment
+http://en.wikipedia.org/wiki/Cave_Automatic_Virtual_Environment
