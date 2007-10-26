@@ -49,6 +49,13 @@ else (OPENGL_FOUND)
 endif (OPENGL_FOUND)
 
 
+# find lib and add include dir for CWiid
+find_package(CWiid)
+if (CWIID_FOUND)
+	include_directories(${CWIID_INCLUDE_DIR})
+endif (CWIID_FOUND)
+
+
 # try to find lib and add include dir for GLUT
 find_package(GLUT)
 if (GLUT_FOUND)
