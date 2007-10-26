@@ -49,13 +49,6 @@ else (OPENGL_FOUND)
 endif (OPENGL_FOUND)
 
 
-# find lib and add include dir for CWiid
-find_package(CWiid)
-if (CWIID_FOUND)
-	include_directories(${CWIID_INCLUDE_DIR})
-endif (CWIID_FOUND)
-
-
 # try to find lib and add include dir for GLUT
 find_package(GLUT)
 if (GLUT_FOUND)
@@ -74,6 +67,38 @@ endif (SDL_FOUND)
 if (NOT SDL_FOUND AND NOT GLUT_FOUND)
 	PkgError_Later("Could not find SDL (pkg name: libsdl-dev) or GLUT (pkg name: libglut-dev)")
 endif (NOT SDL_FOUND AND NOT GLUT_FOUND)
+
+
+# find lib and add include dir for CWiid
+find_package(CWiid)
+if (CWIID_FOUND)
+	include_directories(${CWIID_INCLUDE_DIR})
+endif (CWIID_FOUND)
+
+
+# try to find docbook
+find_package(Docbook)
+
+
+# try to find lib and add include dir for GPS
+find_package(GPS)
+if (GPS_FOUND)
+	set(HAVE_GPS GPS_FOUND)
+endif (GPS_FOUND)
+
+
+# try to find lib and add include dir for PThreads
+find_package(PThreads)
+if (PTHREADS_FOUND)
+	include_directories(${PTHREADS_INCLUDE_DIR})
+endif (PTHREADS_FOUND)
+
+
+# try to find lib and add include dir for SQLite3
+find_package(SQLite3)
+if (SQLITE3_FOUND)
+	add_definitions(${SQLITE3_DEFINITIONS})
+endif (SQLITE3_FOUND)
 
 
 # try to find lib and add include dir for LibXml2
@@ -113,31 +138,6 @@ find_package(Xtst)
 if (XTST_FOUND)
 	add_definitions(${XTST_DEFINITIONS})
 endif (XTST_FOUND)
-
-
-# try to find lib and add include dir for GPS
-find_package(GPS)
-if (GPS_FOUND)
-	set(HAVE_GPS GPS_FOUND)
-endif (GPS_FOUND)
-
-
-# try to find lib and add include dir for SQLite3
-find_package(SQLite3)
-if (SQLITE3_FOUND)
-	add_definitions(${SQLITE3_DEFINITIONS})
-endif (SQLITE3_FOUND)
-
-
-# try to find lib and add include dir for PThreads
-find_package(PThreads)
-if (PTHREADS_FOUND)
-	include_directories(${PTHREADS_INCLUDE_DIR})
-endif (PTHREADS_FOUND)
-
-
-# try to find docbook
-find_package(Docbook)
 
 
 # test for shm
