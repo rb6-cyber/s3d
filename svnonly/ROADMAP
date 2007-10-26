@@ -55,6 +55,9 @@ einigermassen unabhaengig voneinander sind:
    koennte der Client direkt in einen gemeinsamen Texturespeicher schreiben
    und wenn er fertig ist dem Server ein "Updated"-Event schicken, woraufhin
    dieser dann seine Textur erneuert.
+
+Frage Andreas:
+soll es denn überhaupt weiterhin möglich sein, von einem anderen rechner zu connecten ?
    
 3. Aufbau eines Composite-Managers als MCP
    -----------------------------------------
@@ -89,6 +92,11 @@ Wii-Controller
   Devices (z.B. Pointer), die man darueber steuern koennte.
 
 http://abstrakraft.org/cwiid/wiki/libcwiid
+
+kommentar andreas:
+http://www.wiili.org/index.php/Wiiuse sieht auch nicht verkehrt aus
+
+
 
 Mehrere Displays
 ------------------
