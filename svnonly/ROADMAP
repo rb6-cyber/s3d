@@ -57,7 +57,17 @@ einigermassen unabhaengig voneinander sind:
    dieser dann seine Textur erneuert.
 
 Frage Andreas:
-soll es denn überhaupt weiterhin möglich sein, von einem anderen rechner zu connecten ?
+soll es denn überhaupt weiterhin möglich sein, von einem anderen rechner zu 
+connecten ?
+
+Ja, auf jeden Fall! Man koennte ja eine Funktion 
+"s3d_get_texture_buffer(void **)", die lokal einen Pointer auf den 
+shared-memory Bereich zurueckgibt, und remote einfach einen ganz normalen 
+Speicherbereich. Wenn jetzt "update" aufgeruften wird, uebertraegt die Funktion
+auf dem remote-Rechner wie gehabt diesen Speicherbereich zum Server, auf einem
+SHM-Rechner macht sie aber das oben beschriebene (also nur dem Server Bescheid 
+sagen).
+Damit haetten wir gewissermassen Abwaertskompatibilitaet.
    
 3. Aufbau eines Composite-Managers als MCP
    -----------------------------------------
@@ -108,3 +118,9 @@ Mehrere Displays
   man 2 leicht voneinander verschobene Bilder fuer beide Augen haben moechte.
 
 http://en.wikipedia.org/wiki/Cave_Automatic_Virtual_Environment
+
+GLUT
+------
+
+Kann eigentlich raus, SDL tut alles was wir wollen und mehr, und ist auch 
+Defacto-Standard und auf vielen Platformen verfuegbar.
