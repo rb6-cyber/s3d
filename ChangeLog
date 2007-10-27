@@ -1,21 +1,21 @@
-(detailed ChangeLog can be generated with "svn log" in a subversion 
+(detailed ChangeLog can be generated with "svn log" in a subversion
 Checkout. We will only give a brief summary of the changes here.)
 
 
 2007-10-24 Simon Wunderlich - <dotslash@packetmixer.de>
 	- Released S3D Version 0.2
 	- now using cmake instead of autohell, which seems to be faster,
-	  more configurable and at least comprehensible (Thanks to Sven 
+	  more configurable and at least comprehensible (Thanks to Sven
 	  Eckelmann)
-	- meshs3d is a complete rewrite of olsrs3d, using faster 
+	- meshs3d is a complete rewrite of olsrs3d, using faster
 	  data structures and clean design (implemented by Andreas Langer)
 	- s3dosm is a new program to navigate on openstreetmap maps.
 	  it has gps-support, superseding the old s3dgps which operated
 	  on bitmap map files.
-	- kism3d (implemented by Marek Lindner) visualizes the wireless 
+	- kism3d (implemented by Marek Lindner) visualizes the wireless
 	  networks and works as a frontend to kismet
 	- texture support is now using mipmaps
-	- added a few widgets (textbox/scrollbars) 
+	- added a few widgets (textbox/scrollbars)
 	- of course: fixed various bugs
 2006-09-19 Simon Wunderlich - <dotslash@packetmixer.de>
 	- Released S3D Version 0.1.1

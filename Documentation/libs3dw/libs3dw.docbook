@@ -140,9 +140,9 @@ float		  <parameter>height</parameter>
 </funcprototype>
 </funcsynopsis>
 <para>
-		Creates a new textbox on the <link linkend="s3dw_surface">surface</link>, 
-		with "text" written on it and the upper left 
-		corner at (posx,posy) on the <link linkend="s3dw_surface">surface</link>. 
+		Creates a new textbox on the <link linkend="s3dw_surface">surface</link>,
+		with "text" written on it and the upper left
+		corner at (posx,posy) on the <link linkend="s3dw_surface">surface</link>.
 		Width and height define the size of the textbox including scrollbars which
 		are rendered around the textfield.
 </para>
@@ -479,7 +479,7 @@ void key(<link linkend="s3d_evt">struct s3d_evt</link> *evt)
 </funcsynopsis>
 <para>
 		This can be used to let s3dw handle S3D_EVENT_OBJ_INFO-events. With this,
-		s3dw can consider the camera position and makes things like following the 
+		s3dw can consider the camera position and makes things like following the
 		camera possible.
 </para>
 </sect2>
@@ -565,7 +565,7 @@ enum {
 		information. For typecast, you may use S3DWIDGET().
 </para>
 <para>
-		The pointer ptr allows linking to user-specific datastructures. That comes in handy if the widget is called back by an event, 
+		The pointer ptr allows linking to user-specific datastructures. That comes in handy if the widget is called back by an event,
 		and the program must now find out on which data the user reacted.
 </para>
 </sect2>
@@ -645,8 +645,8 @@ struct _s3dw_scrollbar {
 </programlisting>
 <para>
 		The Scrollbar should be placed around scrollable content. Currently only the
-		left and right icons are clickable (lonclick and ronclick callbacks), in 
-		vertical mode lonclick is the callback for the up icon, 
+		left and right icons are clickable (lonclick and ronclick callbacks), in
+		vertical mode lonclick is the callback for the up icon,
 		ronclick the callback for the down icon.
 </para>
 </sect2>

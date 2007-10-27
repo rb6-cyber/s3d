@@ -372,9 +372,9 @@ static int parseansi(char curchar)
 			break;
 		case 'l':
 			/*  RM -- Reset Mode
-			  
+
 			  ESC [ Ps ; Ps ; . . . ; Ps l                                                                                                          default value: none
-			  
+
 			  Resets one or more VT100 modes as specified by each selective parameter in the parameter string. Each mode to be reset is specified by a separate
 			  parameter. [See Set Mode (SM) control sequence]. (See Modes following this section).*/
 

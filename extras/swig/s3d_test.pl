@@ -7,6 +7,4 @@ if (0==s3d::s3dpy_init("hello perl"))
 	s3d::s3d_flags_on($o,$s3d::S3D_OF_VISIBLE);
 	sleep(10);
 	s3d::s3d_quit();
-	
-	
 }

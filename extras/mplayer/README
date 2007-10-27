@@ -6,7 +6,7 @@ INSTALL
    $ patch -p1 < /path/to/mplayer.1.0pre7try2.s3d.patch
    to patch the source
 4. do ./configure
-   In the summary, you should see "s3d" in the 
+   In the summary, you should see "s3d" in the
    "Enabled optional drivers", "Video Output"
 5. install mplayer and watch videos like this:
    mplayer -vo s3d movie.mpg

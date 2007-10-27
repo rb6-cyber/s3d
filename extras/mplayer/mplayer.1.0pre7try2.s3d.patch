@@ -108,7 +108,7 @@ diff -Naur MPlayer-1.0pre7try2/libvo/vo_s3d.c MPlayer-1.0pre7try2.s3d/libvo/vo_s
 +#include "input/mouse.h"
 +#include "input/input.h"
 +
-+static vo_info_t info = 
++static vo_info_t info =
 +{
 +	"s3d video output",
 +	"s3d",
@@ -178,7 +178,7 @@ diff -Naur MPlayer-1.0pre7try2/libvo/vo_s3d.c MPlayer-1.0pre7try2.s3d/libvo/vo_s
 +	image_width = width;
 +	image_height = height;
 +	printf("config!!\n\n");
-+	if (vo_config_count>0) 
++	if (vo_config_count>0)
 +	{
 +	} else {
 +		free(data2);
@@ -194,7 +194,7 @@ diff -Naur MPlayer-1.0pre7try2/libvo/vo_s3d.c MPlayer-1.0pre7try2.s3d/libvo/vo_s
 +/*	s3d_scale(oid,(((float) d_width)/((float) d_height)),1.0,1.0);*/
 +	data2=malloc(width*height*4);
 +	memset(data2,128,width*height*4);
-+	s3d_push_texture(oid,image_width,image_height);		
++	s3d_push_texture(oid,image_width,image_height);
 +   	mp_msg (MSGT_VO, MSGL_INFO,"[s3d] requesting a %d %d texture... \n",image_width,image_height);
 +   	mp_msg (MSGT_VO, MSGL_INFO,"[s3d] wanted size is %d %d... \n",d_width,d_height);
 +	s3d_pep_material_texture(oid,0);	// assign texture 0 to material 0
@@ -216,7 +216,7 @@ diff -Naur MPlayer-1.0pre7try2/libvo/vo_s3d.c MPlayer-1.0pre7try2.s3d/libvo/vo_s
 +{
 +	s3d_net_check();
 +}
-+#define shift_key (ki->modifier==(S3D_KMOD_LSHIFT||S3D_KMOD_RSHIFT)) 
++#define shift_key (ki->modifier==(S3D_KMOD_LSHIFT||S3D_KMOD_RSHIFT))
 +void s3dmp_key(struct s3d_evt *evt)
 +{
 +	struct s3d_key_event *ki=(struct s3d_key_event *)evt->buf;
@@ -247,7 +247,7 @@ diff -Naur MPlayer-1.0pre7try2/libvo/vo_s3d.c MPlayer-1.0pre7try2.s3d/libvo/vo_s
 +        case S3DK_KP_MINUS: mplayer_put_key('-');break;
 +		case S3DK_TAB: mplayer_put_key('\t');break;
 +		case S3DK_PAGEUP: mplayer_put_key(KEY_PAGE_UP);break;
-+		case S3DK_PAGEDOWN: mplayer_put_key(KEY_PAGE_DOWN);break;  
++		case S3DK_PAGEDOWN: mplayer_put_key(KEY_PAGE_DOWN);break;
 +		case S3DK_UP: mplayer_put_key(KEY_UP);break;
 +        case S3DK_DOWN: mplayer_put_key(KEY_DOWN);break;
 +        case S3DK_LEFT: mplayer_put_key(KEY_LEFT);break;
@@ -275,7 +275,7 @@ diff -Naur MPlayer-1.0pre7try2/libvo/vo_s3d.c MPlayer-1.0pre7try2.s3d/libvo/vo_s
 +			break;
 +
 +	}
-+	
++
 +}
 +int mbutton;
 +void s3dmp_mbutton(struct s3d_evt *evt)
@@ -324,15 +324,15 @@ diff -Naur MPlayer-1.0pre7try2/libvo/vo_s3d.c MPlayer-1.0pre7try2.s3d/libvo/vo_s
 +					1.0,	1.0,	1.0	,1.0,
 +					0.0,	0.0,	0.8	,1.0);
 +	s3d_push_polygon(oid,0,2,1,0);
-+	s3d_pep_polygon_tex_coord(oid, 0.0,1.0, 
++	s3d_pep_polygon_tex_coord(oid, 0.0,1.0,
 +								   1.0,0.0,
 +								   1.0,1.0);
 +	s3d_push_polygon(oid,0,3,2,0);
-+	s3d_pep_polygon_tex_coord(oid, 0.0,1.0, 
++	s3d_pep_polygon_tex_coord(oid, 0.0,1.0,
 +								   0.0,0.0,
 +								   1.0,0.0);
 +	s3d_flags_on(oid,S3D_OF_VISIBLE);
-+    if(arg) 
++    if(arg)
 +    {
 +    	mp_msg (MSGT_VO, MSGL_WARN, "[s3d] what should I do with this arg? \n");
 +		return ENOSYS;

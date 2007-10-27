@@ -968,7 +968,7 @@ Remove the link of object oid to its target.
 </sect2>
 
 <sect2 id="s3d_import_model_file">
-<title>s3d_import_model_file</title>	
+<title>s3d_import_model_file</title>
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
@@ -1298,7 +1298,7 @@ unsigned char <parameter>event</parameter>
 </funcprototype>
 </funcsynopsis>
 <para>
-Sets the callback on ignore, that means it won't be queued up for later use. 
+Sets the callback on ignore, that means it won't be queued up for later use.
 An incoming event of this type will simply be skipped.
 
 </para>
@@ -1474,7 +1474,7 @@ float *<parameter>angle_rad</parameter>
 </funcprototype>
 </funcsynopsis>
 <para>
-Given obj_pos and cam_pos in the format float[3], angle_rad about which angle the object should be rotated around the y-axis 
+Given obj_pos and cam_pos in the format float[3], angle_rad about which angle the object should be rotated around the y-axis
 so that it faces the camera. This might become handy if you have some text floating in space and want it to face the camera.
 </para>
 </sect2>
@@ -1509,7 +1509,7 @@ to an app referenced by it's mcp-object-id.
 </funcprototype>
 </funcsynopsis>
 <para>
-		This functions is for programs which do not employ a mainloop, hence they need to check 
+		This functions is for programs which do not employ a mainloop, hence they need to check
 		for new events on their own. Programs like these must make sure to call this function
 		from time to time to convince the server that they did not freeze or bail out.
 </para>
