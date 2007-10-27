@@ -17,7 +17,7 @@ if (DOCBOOK2HTML_COMPILER)
 			${Documentation_SOURCE_DIR}/libs3d/libs3d.docbook
 		COMMENT "Build s3d documentation"
 	)
-	
+
 	add_custom_target(documentation ALL echo
 		DEPENDS   ${Documentation_BINARY_DIR}/doc_output/index.html
 	)
@@ -27,7 +27,7 @@ if (DOCBOOK2HTML_COMPILER)
 	install(FILES ${DOCS} DESTINATION share/doc/s3d)
 else (DOCBOOK2HTML_COMPILER)
 	PkgStatus_Later("docbook2html (pkg name: docbook-utils)")
-	
+
 	# print late status
 	Collected_PkgStatus("documentation")
 endif (DOCBOOK2HTML_COMPILER)

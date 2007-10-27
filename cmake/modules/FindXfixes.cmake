@@ -34,6 +34,6 @@ else (XFIXES_LIBRARIES)
 
 	# set visibility in cache
 	set(XFIXES_DEFINITIONS ${XFIXES_DEFINITIONS} CACHE STRING "Defines for compilation." FORCE)
- 	mark_as_advanced(XFIXES_LIBRARIES XFIXES_DEFINITIONS)
+	mark_as_advanced(XFIXES_LIBRARIES XFIXES_DEFINITIONS)
 
 endif (XFIXES_LIBRARIES)

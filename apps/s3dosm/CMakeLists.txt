@@ -17,17 +17,17 @@ if (LIBXML2_FOUND AND SQLITE3_FOUND)
 	endif (GPS_FOUND)
 
 	Collected_PkgStatusPartial("s3dosm")
-	# install 
+	# install
 	install(TARGETS s3dosm RUNTIME DESTINATION bin)
 else (LIBXML2_FOUND AND SQLITE3_FOUND)
 	if (NOT LIBXML2_FOUND)
 		PkgStatus_Later("libxml2 (pkg name: libxml2-dev)")
 	endif (NOT LIBXML2_FOUND)
-	
+
 	if (NOT SQLITE3_FOUND)
 		PkgStatus_Later("SQLite3 (pkg name: libsqlite3-dev)")
 	endif (NOT SQLITE3_FOUND)
-	
+
 	# print late status
 	Collected_PkgStatus("s3dosm")
 endif (LIBXML2_FOUND AND SQLITE3_FOUND)

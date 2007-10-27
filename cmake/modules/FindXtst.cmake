@@ -34,6 +34,6 @@ else (XTST_LIBRARIES)
 
 	# set visibility in cache
 	set(XTST_DEFINITIONS ${XTST_DEFINITIONS} CACHE STRING "Defines for compilation." FORCE)
- 	mark_as_advanced(XTST_LIBRARIES XTST_DEFINITIONS)
+	mark_as_advanced(XTST_LIBRARIES XTST_DEFINITIONS)
 
 endif (XTST_LIBRARIES)

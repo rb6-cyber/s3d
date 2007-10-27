@@ -13,7 +13,7 @@ else (G3D_LIBRARIES AND G3D_INCLUDE_DIR)
 
 	pkgconfig(libg3d _IncDir _LinkDir _LinkFlags _CFlags)
 	set(G3D_DEFINITIONS ${_CFlags})
-	
+
 	find_path(G3D_INCLUDE_DIR
 		NAMES g3d/g3d.h
 		PATHS
@@ -41,6 +41,6 @@ else (G3D_LIBRARIES AND G3D_INCLUDE_DIR)
 
 	# set visibility in cache
 	set(G3D_DEFINITIONS ${G3D_DEFINITIONS} CACHE STRING "Defines for compilation." FORCE)
- 	mark_as_advanced(G3D_INCLUDE_DIR G3D_LIBRARIES G3D_DEFINITIONS)
+	mark_as_advanced(G3D_INCLUDE_DIR G3D_LIBRARIES G3D_DEFINITIONS)
 
 endif (G3D_LIBRARIES AND G3D_INCLUDE_DIR)

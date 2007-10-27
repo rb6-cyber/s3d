@@ -10,7 +10,7 @@ if (PTHREADS_FOUND)
 	install(TARGETS s3dvt RUNTIME DESTINATION bin)
 else (PTHREADS_FOUND)
 	PkgStatus_Later("pthreads")
-	
+
 	# print late status
 	Collected_PkgStatus("s3dvt")
 endif (PTHREADS_FOUND)

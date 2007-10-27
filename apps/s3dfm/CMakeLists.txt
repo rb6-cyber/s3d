@@ -7,11 +7,11 @@ if (PTHREADS_FOUND)
 		icon.c main.c node.c parse.c string.c)
 	target_link_libraries(s3dfm s3d s3dw ${PTHREADS_LIBRARIES})
 
-	# install 
+	# install
 	install(TARGETS s3dfm RUNTIME DESTINATION bin)
 else (PTHREADS_FOUND)
 	PkgStatus_Later("pthreads")
-	
+
 	# print late status
 	Collected_PkgStatus("s3dfm")
 endif (PTHREADS_FOUND)

@@ -29,5 +29,5 @@ add_executable(server ${server_src})
 target_link_libraries(server ${OPENGL_LIBRARY} ${server_libs})
 set_target_properties(server PROPERTIES OUTPUT_NAME "s3d")
 
-# install 
+# install
 install(TARGETS server RUNTIME DESTINATION bin)

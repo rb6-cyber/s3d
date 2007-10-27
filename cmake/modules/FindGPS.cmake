@@ -31,6 +31,6 @@ else (GPS_LIBRARIES AND GPS_INCLUDE_DIR)
 	endif (GPS_FOUND)
 
 	# set visibility in cache
- 	mark_as_advanced(GPS_INCLUDE_DIR GPS_LIBRARIES)
+	mark_as_advanced(GPS_INCLUDE_DIR GPS_LIBRARIES)
 
 endif (GPS_LIBRARIES AND GPS_INCLUDE_DIR)
