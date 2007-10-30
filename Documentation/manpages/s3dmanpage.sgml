@@ -14,7 +14,6 @@
 	<refsynopsisdiv> 
 		<cmdsynopsis> 
 			<command>s3d</command> 
-			<arg choice="opt">-g|--use-glut</arg>
 			<arg choice="opt">-s|--use-sdl</arg>
 			<arg choice="opt">-r|--rc</arg>
 			<arg choice="opt">-n|--no-rc</arg>
@@ -43,12 +42,6 @@
 					<para> Show summary of options and exit. </para> 
 				</listitem> 
 			</varlistentry> 
-			<varlistentry> 
-				<term>-g, --use-glut</term> 
-				<listitem> 
-					<para> Tells s3d to use GLUT as graphics framework system. </para>
-				</listitem> 
-			</varlistentry>
 			<varlistentry> 
 				<term>-s, --use-sdl</term> 
 				<listitem> 
