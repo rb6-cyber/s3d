@@ -49,24 +49,14 @@ else (OPENGL_FOUND)
 endif (OPENGL_FOUND)
 
 
-# try to find lib and add include dir for GLUT
-find_package(GLUT)
-if (GLUT_FOUND)
-	include_directories(${GLUT_INCLUDE_DIR})
-	set(G_GLUT GLUT_FOUND)
-endif (GLUT_FOUND)
-
 # try to find lib and add include dir for SDL
 find_package(SDL)
 if (SDL_FOUND)
 	include_directories(${SDL_INCLUDE_DIR})
 	set(G_SDL SDL_FOUND)
+else (SDL_FOUND)
+	PkgError_Later("Could not find SDL (pkg name: libsdl-dev)")
 endif (SDL_FOUND)
-
-# we need SDL and/or GLUT
-if (NOT SDL_FOUND AND NOT GLUT_FOUND)
-	PkgError_Later("Could not find SDL (pkg name: libsdl-dev) or GLUT (pkg name: libglut-dev)")
-endif (NOT SDL_FOUND AND NOT GLUT_FOUND)
 
 
 # find lib and add include dir for CWiid
