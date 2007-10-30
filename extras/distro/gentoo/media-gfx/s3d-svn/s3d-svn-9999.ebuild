@@ -37,14 +37,13 @@ RDEPEND="!media-gfx/s3d
 		virtual/x11 )
 
 	doc? ( app-text/docbook-sgml-utils )
-	gps? ( sci-geosciences/gpsd )	
+	gps? ( sci-geosciences/gpsd )
 	xcomposite? (
 		x11-libs/libXcomposite
 		x11-libs/libXdamage
 		x11-libs/libXfixes
 		x11-libs/libXrender
 	)
-	virtual/glut
 	"
 
 src_compile() {
