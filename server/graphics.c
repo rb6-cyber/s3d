@@ -25,10 +25,6 @@
 #include <stdlib.h>   /*  malloc() */
 #include <string.h>   /*  memcpy() */
 
-#ifdef G_GLUT
-#include <GL/glut.h>   /*  glutSwapBuffers() */
-#endif
-
 #include <GL/gl.h>   /*  GLint */
 #ifdef G_SDL
 #include <SDL.h>  /*  SDL_GL_SwapBuffers */
@@ -53,11 +49,6 @@ int graphics_init(void)
 #ifdef G_SDL
 	case FRAME_SDL:
 		graphics_init_sdl();
-		break;
-#endif
-#ifdef G_GLUT
-	case FRAME_GLUT:
-		graphics_init_glut();
 		break;
 #endif
 	default:
@@ -371,12 +362,6 @@ void graphics_main(void)
 	glMultMatrixf(m);
 
 	switch (frame_mode) {
-#ifdef G_GLUT
-	case FRAME_GLUT:
-		glFlush();
-		glutSwapBuffers();
-		break;
-#endif
 #ifdef G_SDL
 	case FRAME_SDL:
 		/* SDL will glFlush itself */

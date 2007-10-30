@@ -33,7 +33,7 @@
 #include <sys/shm.h> /* key_t */
 #endif
 /*  variables and defines */
-extern int frame_mode;   /*  GLUT, SDL, ... ? */
+extern int frame_mode;   /*  SDL, ... ? */
 extern int running;   /*  server running flag */
 /*  relevance macros */
 #ifndef S3DUNUSED
@@ -201,7 +201,6 @@ struct t_obj_info {
 };
 enum {
 	zero,
-	FRAME_GLUT,
 	FRAME_SDL
 };
 /*  main.c */
@@ -264,10 +263,6 @@ extern int but;
 int user_init(void);
 int user_quit(void);
 int user_main(void);
-#ifdef G_GLUT
-int user_init_glut(void);
-int user_quit_glut(void);
-#endif
 #ifdef G_SDL
 int user_init_sdl(void);
 int user_quit_sdl(void);
@@ -298,10 +293,6 @@ void graphics_main(void);
 int graphics_pick_obj(int x, int y);
 int graphics_init(void);
 int render_by_mcp(void);
-#ifdef G_GLUT
-int graphics_init_glut(void);
-int graphics_quit_glut(void);
-#endif
 #ifdef G_SDL
 extern int aa_level;
 extern int SDLFlags;

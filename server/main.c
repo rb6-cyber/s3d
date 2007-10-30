@@ -26,9 +26,6 @@
 #include <time.h>   /* nanosleep() */
 #include <stdlib.h>   /* exit() */
 #include <unistd.h>   /* sleep(), fork() */
-#ifdef G_GLUT
-#include <GL/glut.h>   /*  glutMainLoop() */
-#endif
 #define  X_RES 800
 #define  Y_RES 600
 #include <getopt.h>   /*  getopt() */
@@ -156,9 +153,6 @@ int init(void)
 #ifdef G_SDL
 		frame_mode = FRAME_SDL;
 #else
-#ifdef G_GLUT
-		frame_mode = FRAME_GLUT;
-#endif
 #endif
 	}
 	if (!frame_mode) {
@@ -206,18 +200,11 @@ static int process_args(int argc, char **argv)
 	int      c;
 	struct option long_options[] = {
 		{"multisample",  1, NULL, 'm'
-		}, {"rc",    1, NULL, 'r'}, {"help",   0, NULL, 'h'}, {"use-glut",  0, NULL, 'g'}, {"use-sdl",   0, NULL, 's'}, {"no-rc",   0, NULL, 'n'}, {NULL, 0, NULL, 0}
+		}, {"rc",    1, NULL, 'r'}, {"help",   0, NULL, 'h'}, {"use-sdl",   0, NULL, 's'}, {"no-rc",   0, NULL, 'n'}, {NULL, 0, NULL, 0}
 	};
 	while (-1 != (c = getopt_long(argc, argv, "?hgsnr:m:", long_options, &lopt_idx))) {
 		switch (c) {
 		case 0:
-			break;
-		case 'g':
-#ifdef G_GLUT
-			frame_mode = FRAME_GLUT;
-#else
-			errsf("process_args()", "sorry, GLUT is not available");
-#endif
 			break;
 		case 's':
 #ifdef G_SDL
@@ -249,9 +236,6 @@ static int process_args(int argc, char **argv)
 			s3dprintf(VHIGH, " --multisample, -m:\tSpecify Multisampling level (antialiasing) if available.\n\t\t(value 1-16, default 4, 0 = off),");
 			s3dprintf(VHIGH, " --rc, -r:\tspecify a rc (startup script)");
 			s3dprintf(VHIGH, " --no-rc, -n:\tdon't use a rc file (useful for debugging mcp's)");
-#ifdef G_GLUT
-			s3dprintf(VHIGH, " --use-glut, -g:\tuse GLUT as framework-system");
-#endif
 #ifdef G_SDL
 			s3dprintf(VHIGH, " --use-sdl, -s:\tuse SDL as framework-system");
 #endif
@@ -267,15 +251,7 @@ int main(int argc, char **argv)
 {
 	process_args(argc, argv);
 	init();
-	switch (frame_mode) {
-#ifdef G_GLUT
-	case FRAME_GLUT:
-		glutMainLoop();
-		break;
-#endif
-	default:
-		mainloop();
-	}
+	mainloop();
 	quit();
 	return(0);
 }

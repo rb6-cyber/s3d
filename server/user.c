@@ -30,11 +30,6 @@ int but = -1;
 int user_init(void)
 {
 	switch (frame_mode) {
-#ifdef G_GLUT
-	case FRAME_GLUT:
-		user_init_glut();
-		break;
-#endif
 #ifdef G_SDL
 	case FRAME_SDL:
 		user_init_sdl();
@@ -50,10 +45,6 @@ int user_init(void)
 int user_main(void)
 {
 	switch (frame_mode) {
-#ifdef G_GLUT
-	case FRAME_GLUT:
-		return(0);  /*  glut uses callback functions */
-#endif
 #ifdef G_SDL
 	case FRAME_SDL:
 		user_main_sdl();
