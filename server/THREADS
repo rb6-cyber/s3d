@@ -1,0 +1,45 @@
+currently:
+----------
+mainloop		(main.c)
+	onetime
+		nanosleep()
+		user_main()
+		network_main()
+		graphics_main()
+
+
+network_main():
+	tcp_pollport()					polls for new processes
+	tcp_pollproc()					reads data from the new processes (connected with TCP)
+	shm_main()						check for new data from processes (connected via SHM)
+
+user_main:
+	user_main_sdl()					get and process SDL events, e.g. sending events to the processes
+	-> graphics_pick_obj()			must render the scene, therefore needs exclusive access to GL
+
+graphics_main
+	...								setup the camera, set GL stuff
+	render_by_mcp()					render the mcp
+		render_virtual_object()		render a process (it's an virtual object in the MCPs object space)
+			obj_render				render objects from the non-MCP process
+		obj_render()				render a "normal" object from the MCP process
+		
+idea:
+-----
+TODO: formulate locks
+process threads:
+each process has its own thread, blocking in tcp_proc_com_in if TCP, or simply sleeping in SHM 
+(pollin will be done in network thread)
+
+network thread:
+does tcp_pollport, spawning new process-threads. After select times out, it polls all SHM 
+connections if there is new data and wakes process threads up if there is anything to do.
+
+graphic thread:
+draws a frame and sleeps until it wakes up. processes make wake it up when new data was
+received, or user events (pick object, window was resized/damaged).
+
+user/event thread:
+processes events from outside (via SDL), send notifications to the processes
+
+
