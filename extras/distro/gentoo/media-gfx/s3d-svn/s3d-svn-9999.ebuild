@@ -19,7 +19,6 @@ DEPEND="${RDEPEND}
 RDEPEND="!media-gfx/s3d
 	>=media-libs/libsdl-1.2.7
 	>=media-libs/freetype-2
-	>=dev-libs/glib-2
 	dev-libs/libxml2
 	media-fonts/ttf-bitstream-vera
 	media-libs/fontconfig
