@@ -20,6 +20,16 @@ else (FONTCONFIG_FOUND)
 endif (FONTCONFIG_FOUND)
 
 
+# find required lib and add include dir for GLIB
+find_package(GLIB)
+if (GLIB2_FOUND)
+	include_directories(${GLIB2_INCLUDE_DIR})
+	add_definitions(${GLIB2_DEFINITIONS})
+else (GLIB2_FOUND)
+	PkgError_Later("Could not find GLIB2 (pkg name: libglib2.0-dev)")
+endif (GLIB2_FOUND)
+
+
 # find required lib and add include dir for G3D
 find_package(G3D)
 if (G3D_FOUND)
