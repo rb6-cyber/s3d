@@ -10,6 +10,10 @@ if (CWIID_FOUND)
 	install(TARGETS wiitest RUNTIME DESTINATION bin)
 else (CWIID_FOUND)
 	if (NOT CWIID_FOUND)
+		if (NOT BLUETOOTH_FOUND)
+			PkgStatus_Later("libbluetooth (pkg name: libbluetooth-dev)")
+		endif (NOT BLUETOOTH_FOUND)
+
 		PkgStatus_Later("libcwiid (pkg name: libcwiid1-dev)")
 	endif (NOT CWIID_FOUND)
 	
