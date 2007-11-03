@@ -21,11 +21,11 @@ as well with all this computing power which remains unused on common
 desktops.
 
 I think a 3d desktop would/could be a very interesting thing (when it works :),
-since it gives so many new possibility's in GUI design (or possibilitys in 
-confusing users, depends on readers view). 
-there are/were other projects like 3dwm which died somehow (3dwm.org is not 
-accessable, for me), and I did not understand it's system thou ... looking 
-glass from sun seems to be very interesting too, but I haven't tried it out 
+since it gives so many new possibility's in GUI design (or possibilitys in
+confusing users, depends on readers view).
+there are/were other projects like 3dwm which died somehow (3dwm.org is not
+accessable, for me), and I did not understand it's system thou ... looking
+glass from sun seems to be very interesting too, but I haven't tried it out
 yet ... so my ignorance and stupidity were reasons for this project as well :)
 
 2.INSTALL
@@ -37,7 +37,7 @@ see the INSTALL file
 -----------
 
 I've written this program to satisfy myself (in some way), so please don't
-assume that it could have ANY USEFULNESS. I just published it because I 
+assume that it could have ANY USEFULNESS. I just published it because I
 thought someone might find it interesting, but there is no warranty for
 anything. if you find bugs or you have ideas what you would like to see
 implemented, or patches, please drop me a line.
@@ -45,19 +45,18 @@ implemented, or patches, please drop me a line.
 4. LICENSE
 ----------
 
-All those things are published under the GPLv2 or later at your option. 
-The Library is licensed under the GNU Lesser GPL (LGPL), so you can 
-also write close-sourced thing which links to the library (if you 
+All those things are published under the GPLv2 or later at your option.
+The Library is licensed under the GNU Lesser GPL (LGPL), so you can
+also write close-sourced thing which links to the library (if you
 really have to ...).
 COPYING for the GPLv2 and COPYING.LESSER for the LGPLv2.1 are included too.
-if I'm mistaken in any ownership-concerns, please tell me and don't be 
+if I'm mistaken in any ownership-concerns, please tell me and don't be
 too mad at me, as I have had no idea of licensing at all.
 
 Applications (GPLv2 or later):
 * apps/dot_mcp
 * apps/kism3d
 * apps/meshs3d
-* apps/olsrs3d
 * apps/s3d_x11gate
 * apps/s3dfm
 * apps/s3dosm
@@ -87,10 +86,9 @@ Any Feedback is welcome!!
 -------
 	Sven Eckelmann <ecsv@hrz.tu-chemnitz.de>
 	Mike Graenz <mog@users.berlios.de>
+	Andreas Kohn <andreas@syndrom23.de>
 	Andreas Langer <andreas_lbg@gmx.de>
 	Marek Lindner <lindner_marek@yahoo.de>
-	Andreas Kohn <andreas@syndrom23.de>
 	Timo Schneider <timos@hrz.tu-chemnitz.de>
 	Christiane Weidauer <yd@freakkind.de>
 	Simon Wunderlich <dotslash@packetmixer.de>
-	

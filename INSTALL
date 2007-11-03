@@ -98,5 +98,3 @@ EOF
 $ s3d
 
 (note, this time without --no-rc)
-
-
