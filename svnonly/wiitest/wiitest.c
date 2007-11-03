@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2007 Simon Wunderlich <dotslash@packetmixer.de>
  *
- * This file is part of wiitest, ripped from wmdemo.c to 
+ * This file is part of wiitest, ripped from wmdemo.c to
  * See http://s3d.berlios.de/ for more updates.
  *
  * wiitest is free software; you can redistribute it and/or modify
@@ -33,12 +33,12 @@ static struct timespec t = {
 }; /* 10 mili seconds */
 
 
-float x[3] = {0,0,0};
-float move[3] = {0,0,0};
+float x[3] = {0, 0, 0};
+float move[3] = {0, 0, 0};
 
 cwiid_err_t err;
 static int oid_head;
-static cwiid_wiimote_t *wiimote;	/* wiimote handle */
+static cwiid_wiimote_t *wiimote; /* wiimote handle */
 
 void err(cwiid_wiimote_t *wiimote, const char *s, va_list ap)
 {
@@ -49,40 +49,40 @@ void err(cwiid_wiimote_t *wiimote, const char *s, va_list ap)
 }
 static void mainloop(void)
 {
-	float pos;
-	struct cwiid_state state;	/* wiimote state */
-	cwiid_get_state(wiimote, &state);
-	float z_normvec[3] = {-1, 0, 0};
+	struct cwiid_state state; /* wiimote state */
+	float z_normvec[3] = { -1, 0, 0};
 	float x_normvec[3] = { 0, 1, 0};
 	float xrot, zrot;
 	float y[3];
-	
-	y[0] = (state.acc[CWIID_X]-128)/128.0; 
-	y[1] = (state.acc[CWIID_Y]-128)/128.0; 
-	y[2] = (state.acc[CWIID_Z]-128)/128.0; 
+
+	cwiid_get_state(wiimote, &state);
+
+	y[0] = (state.acc[CWIID_X] - 128) / 128.0;
+	y[1] = (state.acc[CWIID_Y] - 128) / 128.0;
+	y[2] = (state.acc[CWIID_Z] - 128) / 128.0;
 
 	/* smooth it */
-	x[0] = (x[0]*9 + y[0])/10;
-	x[1] = (x[1]*9 + y[1])/10;
-	x[2] = (x[2]*9 + y[2])/10;
+	x[0] = (x[0] * 9 + y[0]) / 10;
+	x[1] = (x[1] * 9 + y[1]) / 10;
+	x[2] = (x[2] * 9 + y[2]) / 10;
 
-	move[0] = ((x[0] - y[0] ) + move[0]*9)/10;
-	move[1] = ((x[2] - y[2] ) + move[1]*9)/10;
-	move[2] = ((y[1] - x[1] ) + move[2]*9)/10;
+	move[0] = ((x[0] - y[0]) + move[0] * 9) / 10;
+	move[1] = ((x[2] - y[2]) + move[1] * 9) / 10;
+	move[2] = ((y[1] - x[1]) + move[2] * 9) / 10;
 
 	xrot = s3d_vector_angle(x_normvec, x);
 	xrot = 90 - (180.0 / M_PI * xrot);
 
-/*	z_normvec[0] = -cos(xrot * M_PI/180) ;
-	z_normvec[1] = 0;
-	z_normvec[2] = +sin(xrot * M_PI/180) ;
-	printf("zn = %3.3f %3.3f %3.3f    ", z_normvec[0], z_normvec[1], z_normvec[2]);*/
+	/* z_normvec[0] = -cos(xrot * M_PI/180) ;
+	 z_normvec[1] = 0;
+	 z_normvec[2] = +sin(xrot * M_PI/180) ;
+	 printf("zn = %3.3f %3.3f %3.3f    ", z_normvec[0], z_normvec[1], z_normvec[2]);*/
 
 	zrot = s3d_vector_angle(z_normvec, x);
 	/* take care of inverse cosinus */
-	if (x[2] > 0) 					zrot = 180 - (180.0 / M_PI * zrot);
-	 else 							zrot = 180 + (180.0 / M_PI * zrot);
-	zrot-= 90;
+	if (x[2] > 0)      zrot = 180 - (180.0 / M_PI * zrot);
+	else        zrot = 180 + (180.0 / M_PI * zrot);
+	zrot -= 90;
 
 	printf("%3.3f %3.3f %3.3f, zrot = %3.3f, xrot = %3.3f\n", x[0], x[1], x[2], zrot, xrot);
 
@@ -94,15 +94,14 @@ static void mainloop(void)
 
 int main(int argc, char *argv[])
 {
-	bdaddr_t bdaddr;	/* bluetooth device address */
+	bdaddr_t bdaddr; /* bluetooth device address */
 
 	cwiid_set_err(err);
 
 	/* Connect to address given on command-line, if present */
 	if (argc > 1) {
 		str2ba(argv[1], &bdaddr);
-	}
-	else {
+	} else {
 		bdaddr = *BDADDR_ANY;
 	}
 
@@ -114,7 +113,7 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	cwiid_set_rpt_mode(wiimote, CWIID_RPT_BTN | CWIID_RPT_ACC| CWIID_RPT_IR| CWIID_RPT_NUNCHUK | CWIID_RPT_CLASSIC);
+	cwiid_set_rpt_mode(wiimote, CWIID_RPT_BTN | CWIID_RPT_ACC | CWIID_RPT_IR | CWIID_RPT_NUNCHUK | CWIID_RPT_CLASSIC);
 
 
 	if (!s3d_init(&argc, &argv, "wiitest")) {
@@ -124,5 +123,6 @@ int main(int argc, char *argv[])
 		s3d_quit();
 	}
 
+	return 0;
 }
 
