@@ -154,7 +154,7 @@ void *server(void *args)
 	return NULL;
 }
 
-int main()
+int main(void)
 {
 	char buffer[BUFFER_SIZE];
 	char *tmp_buffer;
