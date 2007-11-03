@@ -25,7 +25,7 @@ struct t_data {
 };
 
 
-void list_data(struct data *head, struct data *end)
+static void list_data(struct data *head, struct data *end)
 {
 	struct data *tmp;
 
@@ -34,7 +34,7 @@ void list_data(struct data *head, struct data *end)
 	}
 }
 
-void rem_data(int index, struct data *head, struct data *end)
+static void rem_data(int index, struct data *head, struct data *end)
 {
 	struct data *tmp, *prev = head;
 
@@ -55,7 +55,7 @@ void rem_data(int index, struct data *head, struct data *end)
 	return;
 }
 
-void dea_data(int index, struct data *head, struct data *end)
+static void dea_data(int index, struct data *head, struct data *end)
 {
 	struct data *tmp;
 
@@ -70,7 +70,7 @@ void dea_data(int index, struct data *head, struct data *end)
 	return;
 }
 
-void act_data(int index, struct data *head, struct data *end)
+static void act_data(int index, struct data *head, struct data *end)
 {
 	struct data *tmp;
 
@@ -90,7 +90,7 @@ static void sig(int signr)
 	return;
 }
 
-void *server(void *args)
+static void *server(void *args)
 {
 	struct t_data *t = (struct t_data*)args;
 	int listen_fd, yes = 1;
