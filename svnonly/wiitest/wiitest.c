@@ -33,14 +33,14 @@ static struct timespec t = {
 }; /* 10 mili seconds */
 
 
-float x[3] = {0, 0, 0};
-float move[3] = {0, 0, 0};
+static float x[3] = {0, 0, 0};
+static float move[3] = {0, 0, 0};
 
-cwiid_err_t err;
+static cwiid_err_t err;
 static int oid_head;
 static cwiid_wiimote_t *wiimote; /* wiimote handle */
 
-void err(cwiid_wiimote_t *wiimote, const char *s, va_list ap)
+static void err(cwiid_wiimote_t *wiimote, const char *s, va_list ap)
 {
 	if (wiimote) printf("%d:", cwiid_get_id(wiimote));
 	else printf("-1:");
