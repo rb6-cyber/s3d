@@ -26,20 +26,58 @@ graphics_main
 		
 idea:
 -----
-TODO: formulate locks
+NEW: 
+  process states:
+  UNINITIALIZED:    process has just been created, probably waiting for INIT from client
+  GOT_INIT:         received the INIT, waiting for cleanup thread to set it up (mcp etc)
+  RUNNING:          everything is set up
+  WAIT_TO_DIE:      tells the client to quit as soon as possible.
+  THREAD_LEFT:      client thread left, 
+  
+
 process threads:
 each process has its own thread, blocking in tcp_proc_com_in if TCP, or simply sleeping in SHM 
-(pollin will be done in network thread)
+(polling will be done in network thread):
+* block in read()
+* if process->state == WAIT_TO_DIE, set process->state = THREAD_LEFT and thread is removed
+* lock processlist readonly
+* handle incoming packet
+* maybe send reply
 
-network thread:
+
+network/cleanup thread:
 does tcp_pollport, spawning new process-threads. After select times out, it polls all SHM 
 connections if there is new data and wakes process threads up if there is anything to do.
+* block for some time (200ms?), select() for incoming tcp connection
+* if new connection, 
+  * lock proccess list writeonly
+  * setup new process, add mcp-things etc
+  * unlock processlist
+* lock processlist readonly
+* iterate over processes, if SHM-connection and there is new data available wake it up (send condition-signal)
+* if one process wants to quit (process->state == THREAD_LEFT), remember it for deletion
+* unlock processlist
+* if a process wants to quit
+  * lock processlist writeonly
+  * remove the process(es)
+  * unlock processlist
 
 graphic thread:
 draws a frame and sleeps until it wakes up. processes make wake it up when new data was
 received, or user events (pick object, window was resized/damaged).
+* wait for signal to draw, or sleep 1 second (don't update too often, check for last update)
+* lock processlist readonly
+* render_by_mcp() locks mcp
+   * obj_render() locks further objects
+* unlock processlist
 
 user/event thread:
 processes events from outside (via SDL), send notifications to the processes
 
-
+* block for the next SDL event (SDL_WaitEvent)
+* lock processlist readonly
+* when clicking, do as in graphic thread
+* lock the process which receives the event
+* send the event
+* unlock process
+* unlock processlist
