@@ -126,22 +126,13 @@ static int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 		break;
 	}
 	if (event->type == xdamage.event + XDamageNotify) {
-		/* XDamageNotifyEvent *e = (XDamageNotifyEvent*) event; */
-		/* e->drawable is the window ID of the damaged window
-		   e->geometry is the geometry of the damaged window
-		   e->area     is the bounding rect for the damaged area
-		   e->damage   is the damage handle returned by XDamageCreate() */
-
-		/* Subtract all the damage, repairing the window. */
 		name = "Damage!!";
+		return(0); /* don't report this. */
 	} else if (event->type == ConfigureNotify) {
-		/* XConfigureEvent *e = &event->xconfigure; */
-		/* The windows size, position or Z index in the stacking
-		   order has changed */
 		name = "Configure!!";
 	}
 
-	/* printf("Event: %s\n", name);*/
+	printf("Event: %s\n", name);
 	return(0);
 }
 
@@ -266,6 +257,8 @@ static void deco_box(struct window *win)
 	int vindex, voffset, pindex;
 	int xpos, ypos;
 
+	printf("draw new deco_box!!\n");
+
 	win->oid = s3d_new_object();
 	/*
 	 for (i = 0;i < 8;i++) {
@@ -320,6 +313,7 @@ static void deco_box(struct window *win)
 		}
 		vindex++;
 	}
+	printf("win->no == %d\n", win->no);
 	s3d_translate(win->oid, win->attr.x / 20, -win->attr.y / 20, 1 * win->no);
 	/*  push data on texture 0 position (0,0) */
 	s3d_flags_on(win->oid, S3D_OF_VISIBLE);
@@ -339,7 +333,7 @@ static struct window *window_find(Window id) {
 static void window_add(Display *dpy, Window id)
 {
 	struct window *win;
-	win = malloc(sizeof(*win));
+	win = malloc(sizeof(struct window));
 	if (!win)
 		return;
 	win->id = id;
@@ -347,32 +341,51 @@ static void window_add(Display *dpy, Window id)
 
 	win->no = win_no++;
 	/* XSelectInput(dpy, win->id, ExposureMask|ButtonPressMask|KeyPressMask*/
-	XSelectInput(dpy, win->id, ExposureMask
-	             | SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);
-	/* XSelectInput(dpy, win->id, ExposureMask);*/
+/*	XSelectInput(dpy, win->id, SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);*/
+	XSelectInput(dpy, win->id, 0);
+
+	win->damage = XDamageCreate(dpy, win->id, XDamageReportNonEmpty);
 	win->format = XRenderFindVisualFormat(dpy, win->attr.visual);
 
 	if (win->format != NULL) {
 		/* printf("add window: %d:%d size: %dx%d\n", win->attr.x, win->attr.y, win->attr.width, win->attr.height);*/
-		win->damage = XDamageCreate(dpy, win->id, XDamageReportNonEmpty);
-
 		win->pa.subwindow_mode = IncludeInferiors;
 		win->picture = XRenderCreatePicture(dpy, win->id, win->format, CPSubwindowMode, &win->pa);
-
-		win->oid = -1;
-		win->already_updated = 0;
-
-		window_update_content(win, 0, 0, win->attr.width, win->attr.height);
-
-		win->next = window_head;
-		window_head = win;
+	} else {
+		printf("Format = 0, no damage created\n");
 	}
+	win->oid = -1;
+	win->next = window_head;
+	window_head = win;
+	win->already_updated = 0;
+	window_update_content(win, 0, 0, win->attr.width, win->attr.height);
+
+
+
 }
 
-static void window_remove(struct window *win)
+static void window_remove(Window id)
 {
+	struct window *window, *h;
+	if (window_head == NULL)
+		return;
+	if (window_head->id == id) {
+		window = window_head;
+		window_head = window_head->next;
+	} else {
+		for (window = window_head; window != NULL; window = window->next) {
+			if ((window->next != NULL) && (window->next->id == id)) {
+				h = window;
+				h->next = h->next->next;
+				window = window->next;
+			}
+		}
+		printf("not found (window %d) for removal.\n", (int)id);
+		return;
+	}
+
 	/* TODO */
-	free(win);
+	free(window);
 }
 
 static void window_update_geometry(struct window *win, int x, int y, int width, int height)
@@ -546,7 +559,8 @@ void event(void)
 	for (i = 0; i < MAXEVENTS && XPending(dpy); i++) {
 		XNextEvent(dpy, &event);
 		print_event(dpy, &event);
-		if (event.type == xdamage.event + XDamageNotify) {
+		switch (event.type - xdamage.event) {
+		case XDamageNotify:{
 			XDamageNotifyEvent *e = (XDamageNotifyEvent*) & event;
 			/*   printf("window = %d, geometry = %d:%d (at %d:%d), area = %d:%d (at %d:%d)\n",
 			          (int)e->drawable, e->geometry.width, e->geometry.height, e->geometry.x, e->geometry.y,
@@ -555,7 +569,12 @@ void event(void)
 			window = window_find(e->drawable);
 			if (window != NULL)
 				window_update_content(window, e->area.x, e->area.y, e->area.width, e->area.height);
-		} else if (event.type == ConfigureNotify) {
+			break;
+		   }
+
+		}
+		switch (event.type) {
+		case ConfigureNotify:{
 			XConfigureEvent *e = &event.xconfigure;
 			window = window_find(e->window);
 			if (window != NULL) {
@@ -565,6 +584,19 @@ void event(void)
 			} else {
 				printf("Configure: Could not find window to configure.\n");
 			}
+			break;
+			 }
+		case CreateNotify:{
+			XCreateWindowEvent *e = &event.xcreatewindow;
+			window_add(e->display, e->window);
+			printf("window added!!\n");
+			break;
+			}
+		case DestroyNotify:{
+			XDestroyWindowEvent *e = &event.xdestroywindow;
+			window_remove(e->window);
+			break;
+		   }
 		}
 	}
 }
