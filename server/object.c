@@ -255,7 +255,6 @@ int obj_push_line(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 {
 	int32_t i, m;
-	double d;
 	struct t_tex *p_tex;
 	struct t_obj *obj;
 	uint16_t *px, hm;
@@ -280,26 +279,27 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 				obj->p_tex[m+i].th = *(px++);
 				if ((obj->p_tex[m+i].tw <= TEXTURE_MAX_W) && (obj->p_tex[m+i].th <= TEXTURE_MAX_H) &&
 				                (obj->p_tex[m+i].tw > 0) && (obj->p_tex[m+i].th > 0)) {
-					d = log((double)obj->p_tex[m+i].tw) / log(2.0);
-					hm = pow(2, floor(d));
+					/* find the next power of 2 that can hold the width of the texture */
+					for (hm = 1; hm < obj->p_tex[m+i].tw; hm *= 2);
 					s3dprintf(MED, "hm %d, tw %d", hm, obj->p_tex[m+i].tw);
-					if (hm != obj->p_tex[m+i].tw)  {
-						obj->p_tex[m+i].w = hm * 2;
-						obj->p_tex[m+i].xs = (float)((double)obj->p_tex[m+i].tw) / ((double)obj->p_tex[m+i].w);
-					} else {
+					if (hm == obj->p_tex[m+i].tw)  {
 						obj->p_tex[m+i].xs = 1.0;
-						obj->p_tex[m+i].w = obj->p_tex[m+i].tw;
+						obj->p_tex[m+i].w = hm;
+
+					} else {
+						obj->p_tex[m+i].w = hm;
+						obj->p_tex[m+i].xs = (float)((double)obj->p_tex[m+i].tw) / ((double)obj->p_tex[m+i].w);
 					}
-					d = log((double)obj->p_tex[m+i].th) / log(2.0);
-					hm = pow(2, floor(d));
+					/* find the next power of 2 that can hold the height of the texture */
+					for (hm = 1; hm < obj->p_tex[m+i].th; hm *= 2);
 					s3dprintf(MED, "hm %d, th %d", hm, obj->p_tex[m+i].th);
 
-					if (hm != obj->p_tex[m+i].th)  {
-						obj->p_tex[m+i].h = hm * 2;
-						obj->p_tex[m+i].ys = (float)((double)obj->p_tex[m+i].th) / ((double)obj->p_tex[m+i].h);
-					} else  {
+					if (hm == obj->p_tex[m+i].th)  {
 						obj->p_tex[m+i].ys = 1.0;
 						obj->p_tex[m+i].h = obj->p_tex[m+i].th;
+					} else  {
+						obj->p_tex[m+i].h = hm;
+						obj->p_tex[m+i].ys = (float)((double)obj->p_tex[m+i].th) / ((double)obj->p_tex[m+i].h);
 					}
 					obj->p_tex[m+i].buf = malloc(obj->p_tex[m+i].h * obj->p_tex[m+i].w * 4);
 					memset(obj->p_tex[m+i].buf, 0, obj->p_tex[m+i].h*obj->p_tex[m+i].w*4);
