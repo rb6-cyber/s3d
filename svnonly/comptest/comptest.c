@@ -82,6 +82,7 @@ static struct timespec t = {
 
 int xinit(void);
 void window_update_content(struct window *win, int x, int y, int width, int height);
+static void window_set_position(struct window *win);
 static int print_event(Display *dpy, XEvent *event);
 void event();
 
@@ -126,10 +127,10 @@ static int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 		break;
 	}
 	if (event->type == xdamage.event + XDamageNotify) {
-		name = "Damage!!";
+		name = "Damage";
 		return(0); /* don't report this. */
 	} else if (event->type == ConfigureNotify) {
-		name = "Configure!!";
+		name = "Configure";
 	}
 
 	printf("Event: %s\n", name);
@@ -220,6 +221,11 @@ int xinit(void)
 	XSetErrorHandler(error);
 	return(0);
 }
+
+static void window_set_position(struct window *win) {
+	s3d_translate(win->oid, win->attr.x / 20, -win->attr.y / 20, -0.01 * win->no);
+}
+
 
 static void deco_box(struct window *win)
 {
@@ -313,12 +319,46 @@ static void deco_box(struct window *win)
 		}
 		vindex++;
 	}
-	printf("win->no == %d\n", win->no);
-	s3d_translate(win->oid, win->attr.x / 20, -win->attr.y / 20, 1 * win->no);
+	window_set_position(win);
 	/*  push data on texture 0 position (0,0) */
 	s3d_flags_on(win->oid, S3D_OF_VISIBLE);
 }
-static struct window *window_find(Window id) {
+
+void window_restack(struct window *win, Window above) 
+{
+	struct window **wp;
+	Window old_above;
+	int i;
+	if (win->next == NULL)		old_above = None;
+	else						old_above = win->next->id;
+
+	if (old_above == above)		return;
+
+	/* unlink from list */
+	for (wp = &window_head; *wp != NULL; wp = &(*wp)->next) 
+		if (*wp == win)
+			break;
+
+	if (*wp == NULL) return;
+	*wp = win->next;
+
+	/* relink in front of the new "above" window */
+	for (wp = &window_head; *wp != NULL; wp = &(*wp)->next) 
+		if ((*wp)->id == above)
+			break;
+
+	win->next = *wp;
+	*wp = win;
+
+	for (i=0, wp = &window_head; *wp != NULL; wp = &(*wp)->next, i++)
+		if (i != (*wp)->no) {
+			(*wp)->no = i;
+			if ((*wp)->oid != -1)
+				window_set_position(*wp);
+		}
+}
+static struct window *window_find(Window id) 
+{
 	struct window *window;
 	for (window = window_head; window != NULL; window = window->next) {
 		if (window->id == id)
@@ -378,6 +418,7 @@ static void window_remove(Window id)
 				h = window;
 				h->next = h->next->next;
 				window = window->next;
+				break;
 			}
 		}
 		printf("not found (window %d) for removal.\n", (int)id);
@@ -387,7 +428,6 @@ static void window_remove(Window id)
 	/* TODO */
 	free(window);
 }
-
 static void window_update_geometry(struct window *win, int x, int y, int width, int height)
 {
 
@@ -408,7 +448,7 @@ static void window_update_geometry(struct window *win, int x, int y, int width, 
 		} else {
 			win->attr.x = x;
 			win->attr.y = y;
-			s3d_translate(win->oid, win->attr.x / 20, -win->attr.y / 20, 1 * win->no);
+			window_set_position(win);
 		}
 	} else {
 		win->attr.x = x;
@@ -580,6 +620,7 @@ void event(void)
 			if (window != NULL) {
 				/*    printf("Configure: window = %d, geometry = %d:%d (at %d:%d)\n",
 				           (int)e->window, e->width, e->height, e->x, e->y);*/
+				window_restack(window, e->above);
 				window_update_geometry(window, e->x, e->y, e->width, e->height);
 			} else {
 				printf("Configure: Could not find window to configure.\n");
