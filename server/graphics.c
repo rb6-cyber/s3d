@@ -125,7 +125,7 @@ void render_virtual_object(struct t_obj *o)
 	glMultMatrixf(o->m);
 	glGetFloatv(GL_MODELVIEW_MATRIX, m);
 	cull_get_planes();
-	if (NULL == (ap = get_proc_by_pid(o->n_mat))) { /*  the clean way */
+	if (NULL == (ap = get_proc_by_pid(o->virtual_pid))) { /*  the clean way */
 		errds(HIGH, "render_by_mcp()", "not existing pid (%d) referenced by mcp-object!!", o);
 	} else {
 		/*  now go throu the objects of our app  */
@@ -197,12 +197,12 @@ int render_by_mcp(void)
 							}
 						}
 					}
-				} else if ((o->oflags&OF_CLONE) && (p->object[o->n_vertex]->oflags&OF_VIRTUAL)) { /* it's a clone of an app */
+				} else if ((o->oflags&OF_CLONE) && (p->object[o->clone_ooid]->oflags&OF_VIRTUAL)) { /* it's a clone of an app */
 					if (select_mode == 1)
-						glLoadName(o->n_vertex);/*TODO: what to do if a clone is selected?! */
+						glLoadName(o->clone_ooid);/*TODO: what to do if a clone is selected?! */
 					glPushMatrix();
 					render_virtual_object(o);
-					render_virtual_object(p->object[o->n_vertex]);
+					render_virtual_object(p->object[o->clone_ooid]);
 					glPopMatrix();
 				} else { /* it's a "regular" mcp object */
 					if (select_mode == 1) {
@@ -309,8 +309,8 @@ int graphics_pick_obj(int x, int y)
 			if ((names > 1) && ((mcp_o >= 0) && (mcp_o < p->n_obj))) { /* it's an usual object */
 				s3dprintf(LOW, "clicked on mcp-object %d, object %d", mcp_o, o);
 				if (p->object[mcp_o] != NULL) { /*  that shouldn't happen anyways ... */
-					obj_debug(get_proc_by_pid(p->object[mcp_o]->n_mat), o);
-					event_obj_click(get_proc_by_pid(p->object[mcp_o]->n_mat), o);
+					obj_debug(get_proc_by_pid(p->object[mcp_o]->virtual_pid), o);
+					event_obj_click(get_proc_by_pid(p->object[mcp_o]->virtual_pid), o);
 				}
 			}
 	}

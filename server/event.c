@@ -53,7 +53,7 @@ int event_key_pressed(uint16_t key, uint16_t uni, uint16_t mod, int state)
 	k[2] = htons(mod);
 	k[3] = htons(state);
 	if (OBJ_VALID(get_proc_by_pid(MCP), focus_oid, o))
-		prot_com_out(get_proc_by_pid(o->n_mat), S3D_P_S_KEY, (uint8_t *)k, 8);
+		prot_com_out(get_proc_by_pid(o->virtual_pid), S3D_P_S_KEY, (uint8_t *)k, 8);
 	prot_com_out(get_proc_by_pid(MCP), S3D_P_S_KEY, (uint8_t *)k, 8); /* mcp always gets a copy */
 	return(0);
 }
@@ -67,7 +67,7 @@ int event_mbutton_clicked(uint8_t button, uint8_t state)
 	b[0] = button;
 	b[1] = state;
 	if (OBJ_VALID(get_proc_by_pid(MCP), focus_oid, o))
-		prot_com_out(get_proc_by_pid(o->n_mat), S3D_P_S_MBUTTON, (uint8_t *)&b, 2);
+		prot_com_out(get_proc_by_pid(o->virtual_pid), S3D_P_S_MBUTTON, (uint8_t *)&b, 2);
 	prot_com_out(get_proc_by_pid(MCP), S3D_P_S_MBUTTON, (uint8_t *)&b, 2); /* mcp always gets a copy */
 	return(0);
 }
@@ -95,7 +95,7 @@ int event_cam_changed(void)
 	p = get_proc_by_pid(MCP);
 	event_obj_info(p, 0);
 	if (OBJ_VALID(p, focus_oid, o))
-		event_obj_info(get_proc_by_pid(o->n_mat), 0);
+		event_obj_info(get_proc_by_pid(o->virtual_pid), 0);
 	return(0);
 }
 /* same for the mouse movement! */
@@ -106,7 +106,7 @@ int event_ptr_changed(void)
 	p = get_proc_by_pid(MCP);
 	event_obj_info(p, get_pointer(p));
 	if (OBJ_VALID(p, focus_oid, o)) {
-		p = get_proc_by_pid(o->n_mat); /* focused program pointer*/
+		p = get_proc_by_pid(o->virtual_pid); /* focused program pointer*/
 		event_obj_info(p, get_pointer(p));
 	}
 	return(0);
@@ -135,7 +135,7 @@ int event_obj_info(struct t_process *p, int32_t oid)
 		memset(mo.name, 0, S3D_NAME_MAX);
 		switch (o->oflags&OF_TYPE) {
 		case OF_VIRTUAL:
-			ap = get_proc_by_pid(o->n_mat);
+			ap = get_proc_by_pid(o->virtual_pid);
 			strncpy(mo.name, ap->name, S3D_NAME_MAX);
 			break;
 		case OF_CAM:

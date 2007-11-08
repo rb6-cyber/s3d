@@ -141,10 +141,10 @@ struct t_obj {
 #define OF_3DPOINTER 0xB0000000
 
 #define OF_MASK   0x00FFFFFF
+	int32_t virtual_pid;		/* if virtual, this contains the pid */
+	int32_t clone_ooid;			/* if clone, this contains the oid of the original */
+
 	int32_t n_vertex, n_mat, n_poly, n_tex, n_line;
-	/*  if OF_VIRTUAL is set, n_mat contains the pid */
-	/*  if OF_CLONE is set, n_vertex contains the original oid */
-	/*  I know this is dirty, but it would a waste of data if I don't do so ... */
 	int32_t dplist;   /*  opengl display list number */
 	int32_t linkid;   /*  linking target, -1 if there is none */
 	int32_t lsub, lnext, lprev;

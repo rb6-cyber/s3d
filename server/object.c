@@ -51,8 +51,8 @@ int obj_debug(struct t_process *p, int32_t oid)
 		if (o->oflags&OF_SYSTEM) {
 			s3dprintf(HIGH, "it's a system object!!");
 		} else if (o->oflags&OF_CLONE) {
-			s3dprintf(HIGH, "it's a clone linking to %d", o->n_vertex);
-			obj_debug(p, o->n_vertex);
+			s3dprintf(HIGH, "it's a clone linking to %d", o->clone_ooid);
+			obj_debug(p, o->clone_ooid);
 		}
 	} else {
 		s3dprintf(HIGH, "can't get oid %d pid %d", oid, p->id);
@@ -569,7 +569,7 @@ int obj_pep_vertex(struct t_process *p, int32_t oid, float *x, int32_t n)
 			is_clnsrc = 0;
 			for (i = 0;i < p->n_obj;i++) {
 				if (p->object[i] != NULL) {
-					if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->n_vertex == oid)) { /* if it's pointing to our object ... */
+					if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->clone_ooid == oid)) { /* if it's pointing to our object ... */
 						is_clnsrc = 1;
 						p->object[i]->r = obj->r * (p->object[i]->r / obj->scale); /* give it the new radius too! */
 						obj_check_biggest_object(p, i);
@@ -1184,7 +1184,7 @@ void obj_size_update(struct t_process *p, int32_t oid)
 		vp = o->p_vertex;
 		vn = o->n_vertex;
 		if (o->oflags&OF_CLONE) {
-			o2 = p->object[o->n_vertex];  /*  get the target into o2*/
+			o2 = p->object[o->clone_ooid];  /*  get the target into o2*/
 			o->r = o2->r * (o->scale / o2->scale);
 			obj_check_biggest_object(p, oid);
 			return;
@@ -1203,7 +1203,7 @@ void obj_size_update(struct t_process *p, int32_t oid)
 				is_clnsrc = 0;
 				for (i = 0;i < p->n_obj;i++) {
 					if (p->object[i] != NULL) {
-						if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->n_vertex == oid)) { /* if it's pointing to our object ... */
+						if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->clone_ooid == oid)) { /* if it's pointing to our object ... */
 							is_clnsrc = 1;
 							p->object[i]->r = o->r * (p->object[i]->r / o->scale); /* give it the new radius too! */
 							obj_check_biggest_object(p, i);
@@ -1348,7 +1348,7 @@ void obj_pos_update(struct t_process *p, int32_t oid, int32_t first_oid)
 		if (o->oflags&OF_SYSTEM) /* TODO: what will we do if $sys_object is linked to another? */
 		{ /* a system object changed position? let's update the focus'ed sys-objects */
 			if (OBJ_VALID(p, focus_oid, ao))
-				if (NULL != (ap = get_proc_by_pid(ao->n_mat))) {
+				if (NULL != (ap = get_proc_by_pid(ao->virtual_pid))) {
 					if (OF_POINTER == (o->oflags&0xF0000000)) { /* we dont have to do that much in this case ... */
 						if (OBJ_VALID(ap, get_pointer(ap), ao)) { /* we can redefine ao here -> ao = focused app's pointer*/
 							ao->rotate.x = o->rotate.x;
@@ -1573,7 +1573,7 @@ int obj_render(struct t_process *p, int32_t oid)
 	glMultMatrixf(obj->m);
 	/* into_position(p,obj,0);*/
 	if (obj->oflags&OF_SYSTEM)  return(-1);      /* can't render system objects */
-	if (obj->oflags&OF_CLONE)  obj = p->object[obj->n_vertex];  /* it's a clone - draw the clone! */
+	if (obj->oflags&OF_CLONE)  obj = p->object[obj->clone_ooid];  /* it's a clone - draw the clone! */
 	if (!obj->dplist) {
 		texture_gen(obj);
 		obj->dplist = glGenLists(1);
@@ -1818,6 +1818,8 @@ int obj_new(struct t_process *p)
 	obj->translate.x = obj->translate.y = obj->translate.z = 0.0F;
 	obj->scale = 1.0F;
 	obj->n_vertex = obj->n_poly = obj->n_mat = obj->n_tex = 0;
+	obj->clone_ooid = 0;
+	obj->virtual_pid = 0;
 	obj->r = obj->or = 0.0F;
 	obj->m_uptodate = 0;
 	memcpy(obj->m, Identity, sizeof(t_mtrx));
@@ -1869,7 +1871,7 @@ int obj_clone_change(struct t_process *p, int32_t oid, int32_t toid)
 					is_clnsrc = 0;
 					for (i = 0;i < p->n_obj;i++)
 						if (p->object[i] != NULL)
-							if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->n_vertex == oid)) { /*  it's linking to our object! */
+							if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->clone_ooid == oid)) { /*  it's linking to our object! */
 								errds(VHIGH, "obj_clone_change()", "couldn't clone %d from %d (on pid %d): object %d is already cloning from object %d.",
 								      oid, toid, p->id, oid, i, oid);
 								return(-1);
@@ -1883,7 +1885,7 @@ int obj_clone_change(struct t_process *p, int32_t oid, int32_t toid)
 			if (oid != toid) { /*  don't looplink */
 				o->oflags |= OF_CLONE;
 				no->oflags |= OF_CLONE_SRC;
-				o->n_vertex = toid;  /*  n_vertex is not used for this as it's just cloned, so we can use it ... */
+				o->clone_ooid = toid;  
 				obj_size_update(p, oid);
 				s3dprintf(LOW, "changed clone-target of obj %d to %d of process %d", oid, toid, p->id);
 				if (p->id != MCP) obj_check_biggest_object(p, oid);
@@ -1920,8 +1922,8 @@ int obj_del(struct t_process *p, int32_t oid)
 
 		if (p->id == MCP) {
 			if (o->oflags&OF_VIRTUAL) { /*  only delete if virtual */
-				s3dprintf(HIGH, "the mcp wants %d to be closed", o->n_mat);
-				event_quit(get_proc_by_pid(o->n_mat));
+				s3dprintf(HIGH, "the mcp wants %d to be closed", o->virtual_pid);
+				event_quit(get_proc_by_pid(o->virtual_pid));
 				return(0);
 			}
 		} else
@@ -1949,9 +1951,9 @@ int obj_del(struct t_process *p, int32_t oid)
 			if (o->oflags&OF_CLONE_SRC)
 				for (i = 0;i < p->n_obj;i++)
 					if (p->object[i] != NULL)
-						if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->n_vertex == oid)) { /*  it's linking to our object! */
+						if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->clone_ooid == oid)) { /*  it's linking to our object! */
 							p->object[i]->oflags &= ~OF_CLONE;  /*  disable clone flag */
-							p->object[i]->n_vertex = 0;   /*  and "clone reference" to 0 */
+							p->object[i]->clone_ooid = -1;   /*  and "clone reference" to 0 */
 							p->object[i]->r = 0.0F;   /*  empty object, so radius is zero! */
 							if (p->id != MCP) obj_check_biggest_object(p, i);
 						}

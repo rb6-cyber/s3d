@@ -74,7 +74,7 @@ int mcp_rep_object(int32_t mcp_oid)
 	mo.trans_z = p->object[mcp_oid]->translate.z;
 	mo.r = p->object[mcp_oid]->r;
 	/*  mo.event=MCP_NEW_OBJECT; */
-	ap = get_proc_by_pid(p->object[mcp_oid]->n_mat);
+	ap = get_proc_by_pid(p->object[mcp_oid]->virtual_pid);
 	strncpy(mo.name, ap->name, S3D_NAME_MAX);
 	prot_com_out(p, S3D_P_MCP_OBJECT, (uint8_t *)&mo, sizeof(struct mcp_object));
 	return(0);

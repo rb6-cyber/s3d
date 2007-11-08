@@ -70,7 +70,7 @@ struct t_process *process_protinit(struct t_process *p, char *name) {
 		/* register the new process in the mcp */
 		if (-1 != (mcp_oid = obj_new(&procs_p[MCP]))) {
 			mcp_p->object[mcp_oid]->oflags |= OF_VIRTUAL | OF_VISIBLE | OF_SELECTABLE;
-			mcp_p->object[mcp_oid]->n_mat = p->id;
+			mcp_p->object[mcp_oid]->virtual_pid = p->id;
 
 			/*   mcp_p->object[mcp_oid]->p_mat=(struct t_material *)new_p; */
 			/*  dirty, but it's just a pointer after all ... */
@@ -167,7 +167,7 @@ static int process_list_rm(int pid)
 		memcpy(&procs_p[pid], &procs_p[procs_n-1], sizeof(struct t_process));
 		procs_p[pid].id = pid; /* change the pid of the new procs_p */
 		if (procs_p[pid].mcp_oid != -1) /* the last process could just appear without initializing yet ... */
-			procs_p[0].object[procs_p[pid].mcp_oid]->n_mat = pid;
+			procs_p[0].object[procs_p[pid].mcp_oid]->virtual_pid = pid;
 		/* change the mcp-objects pid-pointer to the right position! */
 		/* this is kind of pointer madness */
 	}
@@ -190,9 +190,9 @@ static int p_del(struct t_process *p)
 		if (p->mcp_oid != -1) {
 			for (j = 0;j < mcp_p->n_obj;j++)  /*  remove clones and links pointing on this app-object ... */
 				if (mcp_p->object[j] != NULL) {
-					if ((mcp_p->object[j]->oflags&OF_CLONE) && (mcp_p->object[j]->n_vertex == p->mcp_oid)) { /*  it's linking to our object! */
+					if ((mcp_p->object[j]->oflags&OF_CLONE) && (mcp_p->object[j]->clone_ooid == p->mcp_oid)) { /*  it's linking to our object! */
 						mcp_p->object[j]->oflags &= ~OF_CLONE;  /*  disable clone flag */
-						mcp_p->object[j]->n_vertex = 0;   /*  and "clone reference" to 0 */
+						mcp_p->object[j]->clone_ooid = 0;   /*  and "clone reference" to 0 */
 						mcp_p->object[j]->r = 0.0F;   /*  empty object, so radius is zero! */
 					}
 				}
