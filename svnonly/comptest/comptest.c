@@ -103,6 +103,12 @@ static int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 {
 	char *name = "unknown";
 	switch (event->type & 0x7f) {
+	case CreateNotify:
+		name = "Create";
+		break;
+	case DestroyNotify:
+		name = "Destroy";
+		break;
 	case Expose:
 		name = "Expose";
 		break;
@@ -181,6 +187,12 @@ static int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 	default:
 		break;
 	}
+	switch (event->error_code) {
+	case BadMatch:
+		name = "BadMatch";
+		break;
+	}
+
 
 	printf("error %d (name: %s) request %d minor %d serial %d\n",
 	       event->error_code, name, event->request_code, event->minor_code, (int)event->serial);
@@ -459,6 +471,15 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 	char *bitmap;
 	XImage *image;
 
+	if (win->attr.map_state == IsUnmapped)	/* not mapped images can't be grabbed */
+		return;
+
+	if (win->attr.class == InputOnly)		/* can't grab image from this source */
+	{
+		printf("inputonly window\n");
+		return;
+	}
+
 	/* update the whole window for now. */
 	/* x = 50;
 	 y = 50;
@@ -485,8 +506,9 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 		if (xright > (x + width))
 			xright = x + width;
 		chunk_width = xright - xleft;
+/*		printf("map-state = %d, backing_store = %d\n", win->attr.map_state);
 		printf("request image: xleft = %d, xright = %d, width = %d, x:y = %d:%d, width:height = %d:%d, ~TEXW = %08x\n",
-		       xleft, xright, width, x, y, width, height, ~TEXW);
+		       xleft, xright, width, x, y, width, height, ~TEXW);*/
 		image = XGetImage(dpy, win->id, xleft, y, chunk_width, height, AllPlanes, ZPixmap);
 		if (!image)
 			return;
