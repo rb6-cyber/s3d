@@ -106,7 +106,7 @@ void wii_calcdata()
 	x_data[dataindex][2] = (state.acc[CWIID_Y] - 128) / 128.0;
 	x_data[dataindex][1] = (state.acc[CWIID_Z] - 128) / 128.0;
 
-	lastindex = (dataindex + N_SMOOTH - 1) % MAXNORM;
+	lastindex = (dataindex + N_SMOOTH - 1) % N_SMOOTH;
 	move_data[dataindex][0] =   x_data[lastindex][0] - x_data[dataindex][0];
 	move_data[dataindex][1] =   x_data[lastindex][1] - x_data[dataindex][1];
 	move_data[dataindex][2] = - x_data[lastindex][2] + x_data[dataindex][2];
