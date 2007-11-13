@@ -126,6 +126,10 @@ static int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 	case CirculateNotify:
 		name = "Circulate";
 		break;
+	case PropertyNotify:
+		name = "PropertyNotify";
+		return(0);
+		break;
 	}
 	if (event->type == xdamage.event + XDamageNotify) {
 		name = "Damage";
@@ -138,7 +142,6 @@ static int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 	return(0);
 }
 
-/*static int error(Display *COMPUNUSED(dpy), XErrorEvent *COMPUNUSED(event))*/
 static int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 {
 	char *name = "";
@@ -271,8 +274,6 @@ static void deco_box(struct window *win)
 	int vindex, voffset, pindex;
 	int xpos, ypos;
 
-	printf("draw new deco_box!!\n");
-
 	win->oid = s3d_new_object();
 	/*
 	 for (i = 0;i < 8;i++) {
@@ -372,7 +373,6 @@ static struct window *window_find(Window id)
 		if (window->id == id)
 			return(window);
 	}
-	printf("not found (window %d). ;(\n", (int)id);
 	return(NULL);
 
 }
@@ -384,6 +384,11 @@ static void window_add(Display *dpy, Window id)
 	win = malloc(sizeof(struct window));
 	if (!win)
 		return;
+
+	if (window_find(id) != NULL) {
+		printf("!!!! Window already added\n");
+		return;
+	}
 	win->id = id;
 	XGetWindowAttributes(dpy, win->id, &win->attr);
 
@@ -405,6 +410,7 @@ static void window_add(Display *dpy, Window id)
 	window_head = win;
 	win->already_updated = 0;
 	window_update_content(win, 0, 0, win->attr.width, win->attr.height);
+	printf("window (%d) added\n", (int)id);
 
 
 
@@ -412,26 +418,28 @@ static void window_add(Display *dpy, Window id)
 
 static void window_remove(Window id)
 {
-	struct window *window, *h;
-	if (window_head == NULL)
-		return;
-	if (window_head->id == id) {
-		window = window_head;
-		window_head = window_head->next;
-	} else {
-		for (window = window_head; window != NULL; window = window->next) {
-			if ((window->next != NULL) && (window->next->id == id)) {
-				h = window;
-				h->next = h->next->next;
-				window = window->next;
-				break;
-			}
-		}
-		printf("not found (window %d) for removal.\n", (int)id);
+	struct window **wp, *window;
+	for (wp = &window_head; *wp != NULL; wp = &(*wp)->next) 
+		if ((*wp)->id == id)
+			break;
+
+	if (*wp == NULL) {
+		printf("!!!! not found (window %d) for removal.\n", (int)id);
 		return;
 	}
+	window = *wp;
+	*wp = window->next;
 
-	/* TODO */
+	printf("window (%d) removed\n", id);
+
+	/* TODO: properly cleanup */
+	if (window->oid != -1)
+		s3d_del_object(window->oid);
+	if (window->picture)
+		XRenderFreePicture(dpy, window->picture);
+	if (window->damage)
+		XDamageDestroy(dpy, window->damage);
+
 	free(window);
 }
 static void window_update_geometry(struct window *win, int x, int y, int width, int height)
@@ -636,7 +644,6 @@ void event(void)
 		case CreateNotify:{
 			XCreateWindowEvent *e = &event.xcreatewindow;
 			window_add(e->display, e->window);
-			printf("window added!!\n");
 			break;
 			}
 		case DestroyNotify:{
