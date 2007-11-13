@@ -3,7 +3,7 @@ project(comptest C)
 if (XCOMPOSITE_FOUND AND XDAMAGE_FOUND AND XFIXES_FOUND AND XRENDER_FOUND)
 	include_directories(${s3d_SOURCE_DIR}/libs3d)
 
-	add_executable(comptest comptest.c)
+	add_executable(comptest comptest.c window.c x11.c)
 	target_link_libraries(comptest s3d ${XCOMPOSITE_LIBRARIES}
 		${XFIXES_LIBRARIES} ${XDAMAGE_LIBRARIES} ${XRENDER_LIBRARIES})
 
