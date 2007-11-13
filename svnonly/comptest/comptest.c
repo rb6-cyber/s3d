@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>        /* malloc(), free() */
 #include <time.h>         /* nanosleep() */
+#include <errno.h>			/* errno */
 #include <s3d.h>
 #include <X11/Xlib.h>       /* Ximage, Display, X*() */
 #include <X11/Xutil.h>       /* XDestroyImage() */
@@ -133,7 +134,7 @@ static int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 		name = "Configure";
 	}
 
-	printf("Event: %s\n", name);
+	printf("Event: %s (%d)\n", name, event->type);
 	return(0);
 }
 
@@ -141,6 +142,7 @@ static int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 static int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 {
 	char *name = "";
+	char buf[256];
 	int     o;
 
 	o = event->error_code - xfixes.error;
@@ -180,14 +182,20 @@ static int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 		break;
 	}
 	switch (event->error_code) {
+	case BadWindow:
+		name = "BadWindow";
+		break;
+	case BadDrawable:
+		name = "BadDrawable";
+		break;
 	case BadMatch:
 		name = "BadMatch";
+		return(0);
 		break;
 	}
-
-
-	printf("error %d (name: %s) request %d minor %d serial %d\n",
-	       event->error_code, name, event->request_code, event->minor_code, (int)event->serial);
+	XGetErrorText(dpy, event->error_code, buf, 256);
+	printf("error %d (name: %s) request %d minor %d serial %d: %s\n",
+	       event->error_code, name, event->request_code, event->minor_code, (int)event->serial, buf);
 	return(0);
 }
 
@@ -391,8 +399,6 @@ static void window_add(Display *dpy, Window id)
 		/* printf("add window: %d:%d size: %dx%d\n", win->attr.x, win->attr.y, win->attr.width, win->attr.height);*/
 		win->pa.subwindow_mode = IncludeInferiors;
 		win->picture = XRenderCreatePicture(dpy, win->id, win->format, CPSubwindowMode, &win->pa);
-	} else {
-		printf("Format = 0, no damage created\n");
 	}
 	win->oid = -1;
 	win->next = window_head;
@@ -528,10 +534,7 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 		return;
 
 	if (win->attr.class == InputOnly)		/* can't grab image from this source */
-	{
-		printf("inputonly window\n");
 		return;
-	}
 
 	/* update the whole window for now. */
 	/* x = 50;
@@ -563,8 +566,11 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 		printf("request image: xleft = %d, xright = %d, width = %d, x:y = %d:%d, width:height = %d:%d, ~TEXW = %08x\n",
 		       xleft, xright, width, x, y, width, height, ~TEXW);*/
 		image = XGetImage(dpy, win->id, xleft, y, chunk_width, height, AllPlanes, ZPixmap);
-		if (!image)
+		if (!image) {
+/*			printf("XGetImage Error: xleft = %d, xright = %d, width = %d, x:y = %d:%d, width:height = %d:%d\n",
+							xleft, xright, width, x, y, width, height);*/
 			return;
+		}
 		if (win->oid == -1)
 			deco_box(win);
 		/*  printf("image_convert\n");*/
