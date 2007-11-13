@@ -22,7 +22,6 @@
  */
 
 #include "global.h"
-#include <stdlib.h>   /*  malloc() */
 #include <string.h>   /*  memcpy() */
 
 #include <GL/gl.h>   /*  GLint */
