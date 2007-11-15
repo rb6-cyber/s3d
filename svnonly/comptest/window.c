@@ -93,13 +93,13 @@ void window_add(Display *dpy, Window id)
 	XSelectInput(dpy, win->id, 0);
 
 	win->damage = XDamageCreate(dpy, win->id, XDamageReportNonEmpty);
-	win->format = XRenderFindVisualFormat(dpy, win->attr.visual);
+/*	win->format = XRenderFindVisualFormat(dpy, win->attr.visual);
 
 	if (win->format != NULL) {
-		/* printf("add window: %d:%d size: %dx%d\n", win->attr.x, win->attr.y, win->attr.width, win->attr.height);*/
+		/ * printf("add window: %d:%d size: %dx%d\n", win->attr.x, win->attr.y, win->attr.width, win->attr.height);* /
 		win->pa.subwindow_mode = IncludeInferiors;
 		win->picture = XRenderCreatePicture(dpy, win->id, win->format, CPSubwindowMode, &win->pa);
-	}
+	}*/
 	win->no = 0;
 	win->oid = -1;
 	win->next = window_head;
