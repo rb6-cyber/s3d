@@ -17,6 +17,7 @@
 #endif
 
 #define MAXEVENTS 50  /* maximum events per loop. */
+#define SCREEN_SCALE	5.0
 
 /* must be 2^x */
 #define TEXW 256
@@ -32,6 +33,7 @@ struct window {
 	Damage       damage;  /* damage notification */
 	XRenderPictureAttributes  pa;
 	XRenderPictFormat    *format;
+	Pixmap			pix;
 	Picture       picture;
 	int     already_updated;
 	int        oid;
@@ -41,6 +43,9 @@ struct window {
 };
 
 /* comptest.c */
+extern int screen_width;
+extern int screen_height;
+extern int screen_oid;
 void deco_box(struct window *win);
 /* window.c */
 void window_update_content(struct window *win, int x, int y, int width, int height);

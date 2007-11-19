@@ -27,7 +27,7 @@
 struct window   *window_head = NULL;
 
 void window_set_position(struct window *win) {
-	s3d_translate(win->oid, win->attr.x / 20, -win->attr.y / 20, -0.01 * win->no);
+	s3d_translate(win->oid, win->attr.x, -win->attr.y, -0.01 * win->no);
 }
 
 void window_restack(struct window *win, Window above) 
@@ -100,13 +100,14 @@ void window_add(Display *dpy, Window id)
 		win->pa.subwindow_mode = IncludeInferiors;
 		win->picture = XRenderCreatePicture(dpy, win->id, win->format, CPSubwindowMode, &win->pa);
 	}*/
+	win->pix = None;
 	win->no = 0;
 	win->oid = -1;
 	win->next = window_head;
 	window_head = win;
 	win->already_updated = 0;
 	window_update_content(win, 0, 0, win->attr.width, win->attr.height);
-	printf("window (%d) added\n", (int)id);
+/*	printf("window (%d) added\n", (int)id);*/
 }
 
 void window_remove(Window id)
@@ -118,6 +119,7 @@ void window_remove(Window id)
 
 	if (*wp == NULL) {
 		printf("!!!! not found (window %d) for removal.\n", (int)id);
+		exit(-1);
 		return;
 	}
 	window = *wp;
@@ -144,6 +146,8 @@ void window_update_geometry(struct window *win, int x, int y, int width, int hei
 		win->attr.y = y;
 		win->attr.width = width;
 		win->attr.height = height;
+		printf("new XCompositeNameWindowPixmap\n");
+
 
 		window_update_content(win, 0, 0, width, height);
 		return;
@@ -162,6 +166,10 @@ void window_update_geometry(struct window *win, int x, int y, int width, int hei
 		win->attr.y = y;
 		win->attr.width = width;
 		win->attr.height = height;
+
+		printf("new XCompositeNameWindowPixmap\n");
+		XFreePixmap(dpy, win->pix);
+		win->pix = XCompositeNameWindowPixmap(dpy, win->id);
 
 		s3d_del_object(win->oid); /* delete the window and redraw */
 		win->oid = -1;
@@ -188,7 +196,6 @@ static int image_convert(XImage *image, char *bitmap)
 	char *img_ptr, *bmp_ptr;
 	unsigned long *s;
 	uint32_t *t;
-
 
 	if (image->format == ZPixmap) {
 		/*  printf("XImage: %dx%d, format %d (%d), bpp: %d, depth %d, pad %d\n",
@@ -277,14 +284,23 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 		printf("request image: xleft = %d, xright = %d, width = %d, x:y = %d:%d, width:height = %d:%d, ~TEXW = %08x\n",
 		       xleft, xright, width, x, y, width, height, ~TEXW);*/
 		image = XGetImage(dpy, win->id, xleft, y, chunk_width, height, AllPlanes, ZPixmap);
+/*		if (win->pix == None)
+			XFreePixmap(dpy, win->pix);
+		win->pix = XCompositeNameWindowPixmap(dpy, win->id);*/
+
+		image = XGetImage(dpy, win->pix, xleft, y, chunk_width, height, AllPlanes, ZPixmap);
 		if (!image) {
 /*			printf("XGetImage Error: xleft = %d, xright = %d, width = %d, x:y = %d:%d, width:height = %d:%d\n",
 							xleft, xright, width, x, y, width, height);*/
+			if (win->oid != -1) {
+				s3d_del_object(win->oid);
+				win->oid = -1;
+			}
+				
 			return;
 		}
 		if (win->oid == -1)
 			deco_box(win);
-		/*  printf("image_convert\n");*/
 		image_convert(image, bitmap);
 		/*  printf("load textures ...\n");*/
 		for (ytop = y; ytop < y + height; ytop = ybottom) {

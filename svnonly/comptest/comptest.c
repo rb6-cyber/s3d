@@ -22,6 +22,7 @@
  */
 
 #include "comptest.h"
+#include <s3d_keysym.h>
 #include <stdio.h>
 #include <stdlib.h>        /* malloc(), free() */
 #include <time.h>         /* nanosleep() */
@@ -78,6 +79,7 @@ void deco_box(struct window *win)
 	int xpos, ypos;
 
 	win->oid = s3d_new_object();
+	s3d_link(win->oid, screen_oid);
 	/*
 	 for (i = 0;i < 8;i++) {
 	  sver[i*3 + 0] = vertices[i*3+0] * win->attr.width / 20;
@@ -107,16 +109,16 @@ void deco_box(struct window *win)
 
 	for (y = 0; y < win->attr.height;  y += TEXH) { /* the first column */
 		ypos = (y + TEXH > win->attr.height) ? win->attr.height : y + TEXH ;
-		s3d_push_vertex(win->oid, 0, -((float)ypos) / 20, -1);
+		s3d_push_vertex(win->oid, 0, -((float)ypos) , -1);
 		voffset++;
 	}
 	for (x = 0; x < win->attr.width; x += TEXW) { /* the first row */
 		xpos = (x + TEXW > win->attr.width) ? win->attr.width : x + TEXW ;
-		s3d_push_vertex(win->oid, ((float)xpos) / 20, 0, -1);
+		s3d_push_vertex(win->oid, ((float)xpos) , 0, -1);
 
 		for (y = 0; y < win->attr.height; y += TEXH) {
 			ypos = (y + TEXH > win->attr.height) ? win->attr.height : y + TEXH  ;
-			s3d_push_vertex(win->oid, ((float)xpos) / 20, -((float)ypos) / 20, -1);
+			s3d_push_vertex(win->oid, ((float)xpos) , -((float)ypos) , -1);
 			s3d_push_material_a(win->oid,
 			                    0.0, 0.8, 0.0 , 1.0,
 			                    1.0, 1.0, 1.0 , 1.0,
@@ -136,8 +138,28 @@ void deco_box(struct window *win)
 	s3d_flags_on(win->oid, S3D_OF_VISIBLE);
 }
 
+static int key(struct s3d_evt *evt)
+{
+	struct s3d_key_event *key = (struct s3d_key_event *)evt->buf;
+	if (key->keysym == S3DK_RETURN) {
+		printf("camera into position ...\n");
+
+		s3d_translate(0, 0,0, SCREEN_SCALE);
+		s3d_rotate(0,0,0,0);
+
+		
+
+	}
+	return(0);
+
+}
+int screen_width = 0;
+int screen_height = 0;
+int screen_oid = -1;
+
 int main(int argc, char **argv)
 {
+	XWindowAttributes    attr;
 	Window        root_return, parent_return;
 	unsigned int     nchildren;
 	Window       *children;
@@ -146,7 +168,15 @@ int main(int argc, char **argv)
 
 	if (xinit())
 		return(1);
+	XGetWindowAttributes(dpy, RootWindow(dpy, 0), &attr);
+	screen_width = attr.width;
+	screen_height = attr.height;
+
 	if (!s3d_init(&argc, &argv, "comptest")) {
+		s3d_set_callback(S3D_EVENT_KEY, key);
+		screen_oid = s3d_new_object();
+		s3d_translate(screen_oid, -SCREEN_SCALE * (float)screen_width/((float) screen_height), SCREEN_SCALE, 0);
+		s3d_scale(screen_oid, 2* SCREEN_SCALE/((float)screen_height));
 		for (scr_no = 0; scr_no < ScreenCount(dpy); scr_no++) {
 			XCompositeRedirectSubwindows(dpy, RootWindow(dpy, scr_no), CompositeRedirectAutomatic);
 			/*   XCompositeRedirectSubwindows(dpy, RootWindow(dpy, scr_no), CompositeRedirectManual);*/
