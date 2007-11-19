@@ -24,6 +24,8 @@
 #include "comptest.h"
 #include <stdio.h>		/* printf() */
 
+#define XCOMPOSITE_VERSION_0_2 200
+
 struct extension {
 	int event, error;
 };
@@ -154,6 +156,11 @@ int xinit(void)
 
 	if (!XCompositeQueryVersion(dpy, &composite_major, &composite_minor)) {
 		fprintf(stderr, "Could not check composite version\n");
+		return(1);
+	}
+
+	if (XCompositeVersion() < XCOMPOSITE_VERSION_0_2) {
+		fprintf(stderr, "Could not find composite version 0.2 or better\n");
 		return(1);
 	}
 
