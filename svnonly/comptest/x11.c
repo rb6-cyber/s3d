@@ -135,6 +135,8 @@ int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 
 int xinit(void)
 {
+	int composite_major, composite_minor;
+
 	dpy = XOpenDisplay(display);
 	if (!dpy) {
 		fprintf(stderr, "Can't open display\n");
@@ -144,10 +146,14 @@ int xinit(void)
 		fprintf(stderr, "No render extension\n");
 		return(1);
 	}
-	/*    XCompositeQueryVersion (dpy, &composite_major, &composite_minor); */
 
 	if (!XCompositeQueryExtension(dpy, &xcomposite.event, &xcomposite.error)) {
 		fprintf(stderr, "No composite extension\n");
+		return(1);
+	}
+
+	if (!XCompositeQueryVersion(dpy, &composite_major, &composite_minor)) {
+		fprintf(stderr, "Could not check composite version\n");
 		return(1);
 	}
 
