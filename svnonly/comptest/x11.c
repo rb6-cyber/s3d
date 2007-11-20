@@ -218,6 +218,7 @@ void event(void)
 			 }
 		case CreateNotify:{
 			XCreateWindowEvent *e = &event.xcreatewindow;
+			printf("override_redirect = %d\n", (int)e->override_redirect);
 			window_add(e->display, e->window);
 			break;
 			}

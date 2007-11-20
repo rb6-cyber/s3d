@@ -86,19 +86,29 @@ void window_add(Display *dpy, Window id)
 		return;
 	}
 	win->id = id;
-	XGetWindowAttributes(dpy, win->id, &win->attr);
+	win->next = window_head;
+	window_head = win;
+	win->damage = None;
+	win->pix = None;
+	win->no = 0;
+	win->oid = -1;
+	win->already_updated = 0;
+
+	/* TODO: at my place, windows are created and destroyed in the same moment. so this 
+	 * function fails sometimes. 
+	 * maybe there is a function asking something like "is there really a window with id ;win->id'...". 
+	 * that would help here. */
+	if (!XGetWindowAttributes(dpy, win->id, &win->attr)) {
+		/* window does not exit, next event is probably it's removal ... */
+		return;
+	}
+	
 
 	/* XSelectInput(dpy, win->id, ExposureMask|ButtonPressMask|KeyPressMask*/
 /*	XSelectInput(dpy, win->id, SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);*/
 	XSelectInput(dpy, win->id, 0);
 
 	win->damage = XDamageCreate(dpy, win->id, XDamageReportNonEmpty);
-	win->pix = None;
-	win->no = 0;
-	win->oid = -1;
-	win->next = window_head;
-	window_head = win;
-	win->already_updated = 0;
 	if (win->next == NULL) 
 		window_restack(win, None);
 	else
@@ -243,11 +253,6 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 	if (win->attr.class == InputOnly)		/* can't grab image from this source */
 		return;
 
-	/* update the whole window for now. */
-	/* x = 50;
-	 y = 50;
-	 width = win->attr.width;
-	 height = win->attr.height;*/
 	if (x < 0) x = 0;
 	if (y < 0) y = 0;
 	if (width > win->attr.width - x)   width = win->attr.width - x;
@@ -269,17 +274,14 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 		if (xright > (x + width))
 			xright = x + width;
 		chunk_width = xright - xleft;
-/*		printf("map-state = %d, backing_store = %d\n", win->attr.map_state);
-		printf("request image: xleft = %d, xright = %d, width = %d, x:y = %d:%d, width:height = %d:%d, ~TEXW = %08x\n",
-		       xleft, xright, width, x, y, width, height, ~TEXW);*/
-		/* image = XGetImage(dpy, win->id, xleft, y, chunk_width, height, AllPlanes, ZPixmap); */
+
 		if (win->pix == None)
 			win->pix = XCompositeNameWindowPixmap(dpy, win->id);
-
 		image = XGetImage(dpy, win->pix, xleft, y, chunk_width, height, AllPlanes, ZPixmap);
 		if (!image) {
-/*			printf("XGetImage Error: xleft = %d, xright = %d, width = %d, x:y = %d:%d, width:height = %d:%d\n",
-							xleft, xright, width, x, y, width, height);*/
+			printf("XGetImage Error: xleft = %d, xright = %d, width = %d, x:y = %d:%d, width:height = %d:%d\n",
+							xleft, xright, width, x, y, width, height);
+			exit(-1);
 			if (win->oid != -1) {
 				s3d_del_object(win->oid);
 				win->oid = -1;
