@@ -182,7 +182,7 @@ static int image_convert(XImage *image, char *bitmap)
 {
 	int x, y;
 	char *img_ptr, *bmp_ptr;
-	char *sc, *tc;
+	uint8_t *sc, *tc;
 
 	if (image->format != ZPixmap) 
 		return(-1);
@@ -192,8 +192,8 @@ static int image_convert(XImage *image, char *bitmap)
 				img_ptr = image->data + (y * image->width) * 4;
 				bmp_ptr = bitmap + (y * image->width) * 4;
 				for (x = 0; x < image->width; x++) {
-					sc = (unsigned long *) img_ptr;
-					tc = (uint32_t *)  bmp_ptr;
+					sc = (uint8_t *) img_ptr;
+					tc = (uint8_t *) bmp_ptr;
 	
 					tc[0] = sc[2];
 					tc[1] = sc[1];
@@ -211,7 +211,7 @@ static int image_convert(XImage *image, char *bitmap)
 			for (y = 0; y < image->height ; y++) {
 				bmp_ptr = bitmap + (y * image->width) * 4;
 				for (x = 0; x < image->width; x++) {
-					tc = (uint32_t *)  bmp_ptr;
+					tc = (uint8_t *)  bmp_ptr;
 	
 					tc[0] = 255;
 					tc[1] = 0;

@@ -31,10 +31,7 @@ struct window {
 	XWindowAttributes    attr;   /* position, size etc. */
 	XImage      *image;
 	Damage       damage;  /* damage notification */
-	XRenderPictureAttributes  pa;
-	XRenderPictFormat    *format;
 	Pixmap			pix;
-	Picture       picture;
 	int     already_updated;
 	int        oid;
 	int		   no;
