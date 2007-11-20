@@ -178,64 +178,52 @@ void window_update_geometry(struct window *win, int x, int y, int width, int hei
 	}
 }
 
-static int get_shift(unsigned long t)
-{
-	int i;
-	for (i = 0; t ; i++)
-		t >>= 1;
-	return(i);
-}
-
-
 /* convert X-format to s3ds RGBA 32bit format */
 static int image_convert(XImage *image, char *bitmap)
 {
 	int x, y;
-	int rs, gs, bs;
-	int bpp;
 	char *img_ptr, *bmp_ptr;
-	unsigned long *s;
-	uint32_t *t;
+	char *sc, *tc;
 
-	if (image->format == ZPixmap) {
-		/* printf("XImage: %dx%d, format %x (%x), bpp: %d, depth %d, pad %d\n",
-		         image->width, image->height, image->format,
-		         ZPixmap, image->bits_per_pixel, image->depth, image->bitmap_pad); */
-		rs = get_shift(image->red_mask) - 8;
-		gs = get_shift(image->green_mask) - 8;
-		bs = get_shift(image->blue_mask) - 8;
-
-		bpp = (image->bits_per_pixel / 8);
-		/* rgb is not bgr */
-		rs = rs;
-		gs = gs - 8;
-		bs = bs - 16;
-		/*  printf("Ximage: rgb: %d|%d|%d\n", rs, gs, bs);;*/
-		/*  printf("red: size %d, offset %d\n",rs,roff);
-		  printf("green: size %d, offset %d\n",gs,goff);
-		  printf("blue: size %d, offset %d\n",bs,boff);
-		  printf("bits per pixel:%d\n",bpp);*/
-		for (y = 0; y < image->height ; y++) {
-			img_ptr = image->data + (y * image->width) * bpp;
-			bmp_ptr = bitmap + (y * image->width) * sizeof(uint32_t);
-			for (x = 0; x < image->width; x++) {
-				s = (unsigned long *) img_ptr;
-				t = (uint32_t *)  bmp_ptr;
-				/*    bmp_ptr[0] = (rs > 0 ? ((*d & image->red_mask) >> rs)  : ((*d  & image->red_mask) << -rs)) ;
-				 bmp_ptr[1] = (gs > 0 ? ((*d & image->green_mask) >> gs) : ((*d  & image->green_mask) << -gs)) ;
-				 bmp_ptr[2] = (bs > 0 ? ((*d & image->blue_mask) >> bs)  : ((*d  & image->blue_mask) << -bs));
-				 bmp_ptr[3] = 255 ;*/
-				*t = (rs > 0 ? ((*s & image->red_mask) >> rs)  : ((*s  & image->red_mask) << -rs)) |
-				     (gs > 0 ? ((*s & image->green_mask) >> gs) : ((*s  & image->green_mask) << -gs)) |
-				     (bs > 0 ? ((*s & image->blue_mask) >> bs)  : ((*s  & image->blue_mask) << -bs)) |
-				     255 << 24;
-				*t = *s;
+	if (image->format != ZPixmap) 
+		return(-1);
+	switch (image->bits_per_pixel) {
+		case 32:
+			for (y = 0; y < image->height ; y++) {
+				img_ptr = image->data + (y * image->width) * 4;
+				bmp_ptr = bitmap + (y * image->width) * 4;
+				for (x = 0; x < image->width; x++) {
+					sc = (unsigned long *) img_ptr;
+					tc = (uint32_t *)  bmp_ptr;
+	
+					tc[0] = sc[2];
+					tc[1] = sc[1];
+					tc[2] = sc[0];
+					tc[3] = 255;
 
 
-				bmp_ptr += sizeof(uint32_t);
-				img_ptr += bpp;
+					bmp_ptr += 4;
+					img_ptr += 4;
+				}
 			}
-		}
+			break;
+		default:
+			/* not implemented. draw a red image. */
+			for (y = 0; y < image->height ; y++) {
+				bmp_ptr = bitmap + (y * image->width) * 4;
+				for (x = 0; x < image->width; x++) {
+					tc = (uint32_t *)  bmp_ptr;
+	
+					tc[0] = 255;
+					tc[1] = 0;
+					tc[2] = 0;
+					tc[3] = 255;
+
+					bmp_ptr += 4;
+				}
+			}
+			break;
+
 		return(0);
 	}
 	return(-1);
