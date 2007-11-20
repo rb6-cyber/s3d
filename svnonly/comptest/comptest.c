@@ -144,7 +144,7 @@ static int key(struct s3d_evt *evt)
 	if (key->keysym == S3DK_RETURN) {
 		printf("camera into position ...\n");
 
-		s3d_translate(0, 0,0, SCREEN_SCALE);
+		s3d_translate(0, 0,0, SCREEN_SCALE * ( 1 - 1/100.0));
 		s3d_rotate(0,0,0,0);
 
 		
