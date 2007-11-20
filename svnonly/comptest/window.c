@@ -93,19 +93,19 @@ void window_add(Display *dpy, Window id)
 	XSelectInput(dpy, win->id, 0);
 
 	win->damage = XDamageCreate(dpy, win->id, XDamageReportNonEmpty);
-/*	win->format = XRenderFindVisualFormat(dpy, win->attr.visual);
-
-	if (win->format != NULL) {
-		/ * printf("add window: %d:%d size: %dx%d\n", win->attr.x, win->attr.y, win->attr.width, win->attr.height);* /
-		win->pa.subwindow_mode = IncludeInferiors;
-		win->picture = XRenderCreatePicture(dpy, win->id, win->format, CPSubwindowMode, &win->pa);
-	}*/
 	win->pix = None;
 	win->no = 0;
 	win->oid = -1;
 	win->next = window_head;
 	window_head = win;
 	win->already_updated = 0;
+	if (win->next == NULL) 
+		window_restack(win, None);
+	else
+		window_restack(win, win->next->id);
+	
+
+
 	window_update_content(win, 0, 0, win->attr.width, win->attr.height);
 /*	printf("window (%d) added\n", (int)id);*/
 }
@@ -128,10 +128,10 @@ void window_remove(Window id)
 	printf("window (%d) removed\n", (int)id);
 
 	/* TODO: properly cleanup */
+	if (window->pix != None)
+		XFreePixmap(dpy, window->pix);
 	if (window->oid != -1)
 		s3d_del_object(window->oid);
-	if (window->picture)
-		XRenderFreePicture(dpy, window->picture);
 	if (window->damage)
 		XDamageDestroy(dpy, window->damage);
 
@@ -146,12 +146,15 @@ void window_update_geometry(struct window *win, int x, int y, int width, int hei
 		win->attr.y = y;
 		win->attr.width = width;
 		win->attr.height = height;
-		printf("new XCompositeNameWindowPixmap\n");
-
 
 		window_update_content(win, 0, 0, width, height);
 		return;
 	}
+	if (win->pix != None) {
+		XFreePixmap(dpy, win->pix);
+		win->pix = None;
+	}
+
 	if ((win->attr.width == width) && (win->attr.height == height)) {
 		if ((win->attr.x == x) && (win->attr.y == y)) {
 			printf("position did not change\n");
@@ -166,10 +169,6 @@ void window_update_geometry(struct window *win, int x, int y, int width, int hei
 		win->attr.y = y;
 		win->attr.width = width;
 		win->attr.height = height;
-
-		printf("new XCompositeNameWindowPixmap\n");
-		XFreePixmap(dpy, win->pix);
-		win->pix = XCompositeNameWindowPixmap(dpy, win->id);
 
 		s3d_del_object(win->oid); /* delete the window and redraw */
 		win->oid = -1;
@@ -274,9 +273,8 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 		printf("request image: xleft = %d, xright = %d, width = %d, x:y = %d:%d, width:height = %d:%d, ~TEXW = %08x\n",
 		       xleft, xright, width, x, y, width, height, ~TEXW);*/
 		/* image = XGetImage(dpy, win->id, xleft, y, chunk_width, height, AllPlanes, ZPixmap); */
-		if (win->pix != None)
-			XFreePixmap(dpy, win->pix);
-		win->pix = XCompositeNameWindowPixmap(dpy, win->id);
+		if (win->pix == None)
+			win->pix = XCompositeNameWindowPixmap(dpy, win->id);
 
 		image = XGetImage(dpy, win->pix, xleft, y, chunk_width, height, AllPlanes, ZPixmap);
 		if (!image) {
