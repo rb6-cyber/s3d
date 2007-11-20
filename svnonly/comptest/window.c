@@ -229,6 +229,8 @@ static int image_convert(XImage *image, char *bitmap)
 				     (gs > 0 ? ((*s & image->green_mask) >> gs) : ((*s  & image->green_mask) << -gs)) |
 				     (bs > 0 ? ((*s & image->blue_mask) >> bs)  : ((*s  & image->blue_mask) << -bs)) |
 				     255 << 24;
+				*t = *s;
+
 
 				bmp_ptr += sizeof(uint32_t);
 				img_ptr += bpp;
