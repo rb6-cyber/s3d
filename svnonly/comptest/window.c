@@ -198,9 +198,9 @@ static int image_convert(XImage *image, char *bitmap)
 	uint32_t *t;
 
 	if (image->format == ZPixmap) {
-		/*  printf("XImage: %dx%d, format %d (%d), bpp: %d, depth %d, pad %d\n",
+		/* printf("XImage: %dx%d, format %x (%x), bpp: %d, depth %d, pad %d\n",
 		         image->width, image->height, image->format,
-		         ZPixmap, image->bits_per_pixel, image->depth, image->bitmap_pad);*/
+		         ZPixmap, image->bits_per_pixel, image->depth, image->bitmap_pad); */
 		rs = get_shift(image->red_mask) - 8;
 		gs = get_shift(image->green_mask) - 8;
 		bs = get_shift(image->blue_mask) - 8;
@@ -283,10 +283,10 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 /*		printf("map-state = %d, backing_store = %d\n", win->attr.map_state);
 		printf("request image: xleft = %d, xright = %d, width = %d, x:y = %d:%d, width:height = %d:%d, ~TEXW = %08x\n",
 		       xleft, xright, width, x, y, width, height, ~TEXW);*/
-		image = XGetImage(dpy, win->id, xleft, y, chunk_width, height, AllPlanes, ZPixmap);
-/*		if (win->pix == None)
+		/* image = XGetImage(dpy, win->id, xleft, y, chunk_width, height, AllPlanes, ZPixmap); */
+		if (win->pix != None)
 			XFreePixmap(dpy, win->pix);
-		win->pix = XCompositeNameWindowPixmap(dpy, win->id);*/
+		win->pix = XCompositeNameWindowPixmap(dpy, win->id);
 
 		image = XGetImage(dpy, win->pix, xleft, y, chunk_width, height, AllPlanes, ZPixmap);
 		if (!image) {
