@@ -24,6 +24,8 @@
 #define TEXH 256
 #define TEXNUM(win, x, y) \
   ((((win->attr.height + TEXH - 1)& ~(TEXH-1))/TEXH) * ((int)(x/TEXH)) + ((int)(y/TEXW)))
+#define MIN(x,y)	(((x)<(y))?(x):(y))
+#define MAX(x,y)	(((x)>(y))?(x):(y))
 
 
 struct window {
@@ -32,7 +34,9 @@ struct window {
 	XImage      *image;
 	Damage       damage;  /* damage notification */
 	Pixmap			pix;
-	int     already_updated;
+	int			geometry_update_needed;
+	int     	content_update_needed;
+	XRectangle	content_update;
 	int        oid;
 	int		   no;
 
@@ -45,15 +49,14 @@ extern int screen_height;
 extern int screen_oid;
 void deco_box(struct window *win);
 /* window.c */
-void window_update_content(struct window *win, int x, int y, int width, int height);
 void window_set_position(struct window *win);
 void window_restack(struct window *win, Window above);
 struct window *window_find(Window id);
 struct window *window_find(Window id);
 void window_add(Display *dpy, Window id);
 void window_remove(Window id);
-void window_update_content(struct window *win, int x, int y, int width, int height);
-void window_update_geometry(struct window *win, int x, int y, int width, int height);
+void window_update_content(struct window *win);
+void window_update_geometry(struct window *win);
 
 extern struct window   *window_head;
 /* x11.c */

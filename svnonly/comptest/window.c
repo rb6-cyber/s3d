@@ -92,7 +92,14 @@ void window_add(Display *dpy, Window id)
 	win->pix = None;
 	win->no = 0;
 	win->oid = -1;
-	win->already_updated = 0;
+	win->content_update_needed = 1;
+	win->geometry_update_needed = 0;
+	win->content_update.x = 0;
+	win->content_update.y = 0;
+	win->content_update.width = 0;
+	win->content_update.height = 0;
+
+
 
 	/* TODO: at my place, windows are created and destroyed in the same moment. so this 
 	 * function fails sometimes. 
@@ -102,22 +109,21 @@ void window_add(Display *dpy, Window id)
 		/* window does not exit, next event is probably it's removal ... */
 		return;
 	}
+	win->content_update.width = win->attr.width;
+	win->content_update.height = win->attr.height;
 
 	/* XSelectInput(dpy, win->id, ExposureMask|ButtonPressMask|KeyPressMask*/
 /*	XSelectInput(dpy, win->id, SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);*/
 	XSelectInput(dpy, win->id, 0);
 
-	win->damage = XDamageCreate(dpy, win->id, XDamageReportNonEmpty);
+	if (win->attr.class != InputOnly)		/* don't create damage on these windows */
+		win->damage = XDamageCreate(dpy, win->id, XDamageReportNonEmpty);
 	if (win->next == NULL) 
 		window_restack(win, None);
 	else
 		window_restack(win, win->next->id);
 	
-
-
 	XCompositeRedirectWindow(dpy, id, CompositeRedirectAutomatic);
-	window_update_content(win, 0, 0, win->attr.width, win->attr.height);
-/*	printf("window (%d) added\n", (int)id);*/
 }
 
 void window_remove(Window id)
@@ -142,48 +148,43 @@ void window_remove(Window id)
 		XFreePixmap(dpy, window->pix);
 	if (window->oid != -1)
 		s3d_del_object(window->oid);
-	if (window->damage)
-		XDamageDestroy(dpy, window->damage);
+/*  Damage is automatically destroyed */
+/*	if (window->damage != None)
+		XDamageDestroy(dpy, window->damage);	*/
 
 	free(window);
 }
-void window_update_geometry(struct window *win, int x, int y, int width, int height)
+void window_update_geometry(struct window *win)
 {
+	XWindowAttributes attr;	
+	win->geometry_update_needed = 0;
+
+	if (!XGetWindowAttributes(dpy, win->id, &attr))
+		return;
 
 	if (win->oid == -1) {
-		win->attr.x = x;
-		win->attr.y = y;
-		win->attr.width = width;
-		win->attr.height = height;
+		win->content_update_needed = 1;
+	} 
 
-		window_update_content(win, 0, 0, width, height);
-		return;
-	}
-	if (win->pix != None) {
-		XFreePixmap(dpy, win->pix);
-		win->pix = None;
-	}
-
-	if ((win->attr.width == width) && (win->attr.height == height)) {
-		if ((win->attr.x == x) && (win->attr.y == y)) {
+	if ((win->attr.width == attr.width) && (win->attr.height == attr.height)) {
+		if ((win->attr.x == attr.x) && (win->attr.y == attr.y)) {
 			printf("position did not change\n");
-			return;
 		} else {
-			win->attr.x = x;
-			win->attr.y = y;
+			memcpy(&win->attr, &attr, sizeof(attr));
 			window_set_position(win);
+			return;
 		}
 	} else {
-		win->attr.x = x;
-		win->attr.y = y;
-		win->attr.width = width;
-		win->attr.height = height;
+		if (win->pix != None) {
+			XFreePixmap(dpy, win->pix);
+			win->pix = None;
+		}
 
 		s3d_del_object(win->oid); /* delete the window and redraw */
 		win->oid = -1;
-		window_update_content(win, 0, 0, width, height);
-
+		win->content_update_needed = 1;
 	}
+	memcpy(&win->attr, &attr, sizeof(attr));
 }
 
 /* convert X-format to s3ds RGBA 32bit format */
@@ -238,13 +239,24 @@ static int image_convert(XImage *image, char *bitmap)
 }
 
 /* takes a bounding box and updates its window contents */
-void window_update_content(struct window *win, int x, int y, int width, int height)
+void window_update_content(struct window *win)
 {
+	int x, y, width, height;
 	int chunk_width, chunk_height;
 	int xleft, xright;
 	int ytop, ybottom;
 	char *bitmap;
 	XImage *image;
+
+	x = win->content_update.x;
+	y = win->content_update.y;
+	width = win->content_update.width;
+	height = win->content_update.height;
+
+	/* done with updating, or at least we tried */
+	win->content_update.width = 0;
+	win->content_update.height = 0;
+	win->content_update_needed = 0;
 
 	if (win->attr.map_state == IsUnmapped)	/* not mapped images can't be grabbed */
 		return;
@@ -257,16 +269,6 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 	if (width > win->attr.width - x)   width = win->attr.width - x;
 	if (height > win->attr.height - y)   height = win->attr.height - y;
 
-	if (x == 0 && y == 0 && width == win->attr.width && height == win->attr.height) {
-		if (win->already_updated)
-			return;
-		else
-			win->already_updated = 1;
-	}
-
-	/* if (!win->oid)
-	  deco_box(win);
-	*/
 	bitmap = malloc(TEXW * height * sizeof(uint32_t));
 	for (xleft = x; xleft < x + width ; xleft = xright) {
 		xright = (xleft + TEXW) & ~(TEXW - 1);
@@ -290,8 +292,9 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 		}
 		if (win->oid == -1)
 			deco_box(win);
+
 		image_convert(image, bitmap);
-		/*  printf("load textures ...\n");*/
+
 		for (ytop = y; ytop < y + height; ytop = ybottom) {
 			ybottom = (ytop + TEXH) & ~(TEXH - 1);
 			if (ybottom > y + height)
@@ -299,11 +302,7 @@ void window_update_content(struct window *win, int x, int y, int width, int heig
 			chunk_height = ybottom - ytop;
 			s3d_load_texture(win->oid, TEXNUM(win, xleft, ytop), xleft % TEXW, ytop % TEXH,
 			                 chunk_width, chunk_height, (unsigned char *)bitmap + chunk_width * (ytop - y) * 4);
-			/*   printf("s3d_load_texture(%d, %d, %d, %d, %d, %d, %010p);\n",
-			       win->oid, TEXNUM(win, xleft, ytop), xleft % TEXW, ytop % TEXH,
-			        chunk_width, chunk_height, (unsigned char *)bitmap + chunk_width * (ytop - y) * 4);*/
 		}
-		/*  printf("done loading textures\n"); */
 		XDestroyImage(image);
 	}
 	free(bitmap);

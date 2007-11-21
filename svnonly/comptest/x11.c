@@ -23,6 +23,7 @@
 
 #include "comptest.h"
 #include <stdio.h>		/* printf() */
+#include <string.h>		/* memcpy() */
 #include <X11/Xproto.h>	/* X_* request defines */
 
 #define XCOMPOSITE_VERSION_0_2 200
@@ -164,18 +165,32 @@ int xinit(void)
 	return(0);
 }
 
+/* find biggest bounding rect of the two given rects, write it into dest */
+void merge_rect( XRectangle *dest, XRectangle *src) {
+	int max;
+	if (dest->width == 0 || dest->height == 0) {
+		memcpy(dest, src, sizeof(*dest));
+		return;
+	}
+	max = MAX(dest->width + dest->x, src->width + src->x);
+	dest->x = MIN(dest->x, src->x);
+	dest->width = max - dest->x;
+
+	max = MAX(dest->height + dest->y, src->height + src->y);
+	dest->y = MIN(dest->y, src->y);
+	dest->height = max - dest->y;
+}
 
 void event(void)
 {
 	XEvent event;
 	struct window *window;
-	int i;
-	int ret;
-/*	for (window = window_head; window != NULL; window = window->next)
-		window->already_updated = 0;*/
+	struct timeval start, stop;
+	float secs;
 
+
+	gettimeofday(&start, NULL);
 	while (XPending(dpy)) {
-/*	for (i = 0; i < MAXEVENTS && XPending(dpy); i++) {*/
 		XNextEvent(dpy, &event);
 		print_event(dpy, &event);
 		switch (event.type - xdamage.event) {
@@ -186,11 +201,10 @@ void event(void)
 			          e->area.width, e->area.height, e->area.x, e->area.y);*/
 			XDamageSubtract(dpy, e->damage, None, None);
 			window = window_find(e->drawable);
-			if (window != NULL)
-				window->already_updated = 0;
-				/* TODO: remember the rect damaged, and only update this part later. merge it if there was
-				 * already damage. */
-/*				window_update_content(window, e->area.x, e->area.y, e->area.width, e->area.height);*/
+			if (window != NULL) {
+				window->content_update_needed = 1;
+				merge_rect(&window->content_update, &e->area);
+			}
 			break;
 		   }
 
@@ -203,7 +217,7 @@ void event(void)
 				/*    printf("Configure: window = %d, geometry = %d:%d (at %d:%d)\n",
 				           (int)e->window, e->width, e->height, e->x, e->y);*/
 				window_restack(window, e->above);
-				window_update_geometry(window, e->x, e->y, e->width, e->height);
+				window->geometry_update_needed = 1;
 			} else {
 				printf("Configure: Could not find window to configure.\n");
 			}
@@ -221,11 +235,21 @@ void event(void)
 		   }
 		}
 	}
-	for (window = window_head; window != NULL; window = window->next)
-		if (window->already_updated == 0) {
-			window_update_content(window, 0,0, window->attr.width, window->attr.height);
-			window->already_updated = 1;
+	int d;
+	d = 0;
+	for (window = window_head; window != NULL; window = window->next) {
+		if (window->geometry_update_needed) 
+			window_update_geometry(window);
+		if (window->content_update_needed) 
+		{
+			window_update_content(window);
+			d++;
 		}
+	}
+
+	gettimeofday(&stop, NULL);
+	secs = (stop.tv_sec - start.tv_sec) + (stop.tv_usec - start.tv_usec)/1e6;
+	printf("msecs to process events: %3.3f, %d windows updated\n", secs*1e3, d);
 
 }
 
