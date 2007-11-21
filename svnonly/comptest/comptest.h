@@ -61,4 +61,5 @@ void event(void);
 int xinit(void);
 int error(Display *COMPUNUSED(dpy), XErrorEvent *event);
 int print_event(Display *COMPUNUSED(dpy), XEvent *event);
+void x11_addwindows();
 extern Display *dpy;

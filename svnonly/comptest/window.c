@@ -102,7 +102,6 @@ void window_add(Display *dpy, Window id)
 		/* window does not exit, next event is probably it's removal ... */
 		return;
 	}
-	
 
 	/* XSelectInput(dpy, win->id, ExposureMask|ButtonPressMask|KeyPressMask*/
 /*	XSelectInput(dpy, win->id, SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);*/

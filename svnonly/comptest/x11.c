@@ -23,11 +23,12 @@
 
 #include "comptest.h"
 #include <stdio.h>		/* printf() */
+#include <X11/Xproto.h>	/* X_* request defines */
 
 #define XCOMPOSITE_VERSION_0_2 200
 
 struct extension {
-	int event, error;
+	int event, error, request;
 };
 static struct extension    xrender, xcomposite, xdamage, xfixes;
 Display       *dpy;
@@ -37,31 +38,14 @@ int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 {
 	char *name = "unknown";
 	switch (event->type & 0x7f) {
-	case CreateNotify:
-		name = "Create";
-		break;
-	case DestroyNotify:
-		name = "Destroy";
-		break;
-	case Expose:
-		name = "Expose";
-		break;
-	case MapNotify:
-		name = "Map";
-		break;
-	case UnmapNotify:
-		name = "Unmap";
-		break;
-	case ReparentNotify:
-		name = "Reparent";
-		break;
-	case CirculateNotify:
-		name = "Circulate";
-		break;
-	case PropertyNotify:
-		name = "PropertyNotify";
-		return(0);
-		break;
+	case CreateNotify:		name = "Create";			break;
+	case DestroyNotify:		name = "Destroy";			break;
+	case Expose:			name = "Expose";			break;
+	case MapNotify:			name = "Map";				break;
+	case UnmapNotify:		name = "Unmap";				break;
+	case ReparentNotify:	name = "Reparent";			break;
+	case CirculateNotify:	name = "Circulate";			break;
+	case PropertyNotify:	name = "PropertyNotify";	return(0);	break;
 	}
 	if (event->type == xdamage.event + XDamageNotify) {
 		name = "Damage";
@@ -76,61 +60,65 @@ int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 
 int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 {
-	char *name = "";
+	char *name;
 	char buf[256];
-	int     o;
+	char buf_req[256];
+	char *req;
 
-	o = event->error_code - xfixes.error;
-	switch (o) {
-	case BadRegion:
-		name = "BadRegion";
-		break;
-	default:
-		break;
-	}
-	o = event->error_code - xdamage.error;
-	switch (o) {
-	case BadDamage:
-		name = "BadDamage";
-		break;
-	default:
-		break;
-	}
-	o = event->error_code - xrender.error;
-	switch (o) {
-	case BadPictFormat:
-		name = "BadPictFormat";
-		break;
-	case BadPicture:
-		name = "BadPicture";
-		break;
-	case BadPictOp:
-		name = "BadPictOp";
-		break;
-	case BadGlyphSet:
-		name = "BadGlyphSet";
-		break;
-	case BadGlyph:
-		name = "BadGlyph";
-		break;
-	default:
-		break;
-	}
-	switch (event->error_code) {
-	case BadWindow:
-		name = "BadWindow";
-		break;
-	case BadDrawable:
-		name = "BadDrawable";
-		break;
-	case BadMatch:
-		name = "BadMatch";
-		return(0);
-		break;
-	}
 	XGetErrorText(dpy, event->error_code, buf, 256);
-	printf("error %d (name: %s) request %d minor %d serial %d: %s\n",
-	       event->error_code, name, event->request_code, event->minor_code, (int)event->serial, buf);
+	name = buf;
+
+	switch (event->error_code - xfixes.error) {
+	case BadRegion:		name = "BadRegion";		break;
+	default:			break;
+	}
+	switch (event->error_code - xdamage.error) {
+	case BadDamage:		name = "BadDamage";		break;
+	default:			break;
+	}
+	switch (event->error_code - xrender.error) {
+	case BadPictFormat:	name = "BadPictFormat";		break;
+	case BadPicture:	name = "BadPicture";		break;
+	case BadPictOp:		name = "BadPictOp";			break;
+	case BadGlyphSet:	name = "BadGlyphSet";		break;
+	case BadGlyph:		name = "BadGlyph";			break;
+	default:			break;
+	}
+
+	/* request code */
+	sprintf(buf_req, "unknown (request %d, minor %d)", event->request_code, event->minor_code);
+	req = buf_req;
+
+	switch (event->request_code) {
+	case X_GetWindowAttributes:	req = "XGetWindowAttributes()";	break;
+	case X_GetImage:			req = "XGetImage()";			break;
+	default:				break;
+	}
+	if (event->request_code == xcomposite.request) {
+		switch (event->minor_code) {
+		case X_CompositeRedirectWindow:			req = "XCompositeRedirectWindow()";			break;
+		case X_CompositeNameWindowPixmap:		req = "XCompositeNameWindowPixmap()";		break;
+		default:				
+			sprintf(buf_req, "XComposite?? unknown (request %d, minor %d)", event->request_code, event->minor_code);
+			req = buf_req;
+			break;
+		}
+	}
+
+	if (event->request_code == xdamage.request) {
+		switch (event->minor_code) {
+		case X_DamageAdd:			req = "XDamageAdd()";			break;
+		case X_DamageCreate:		req = "XDamageCreate()";		break;
+		case X_DamageDestroy:		req = "XDamageDestroy()";		break;
+		case X_DamageSubtract:		req = "XDamageSubtract()";		break;
+		default:				
+			sprintf(buf_req, "XDamage?? unknown (request %d, minor %d)", event->request_code, event->minor_code);
+			req = buf_req;
+			break;
+		}
+	}
+
+	printf("ERROR at request %s [%d]: %s\n", req, event->error_code, name);
 	return(0);
 }
 
@@ -140,38 +128,38 @@ int xinit(void)
 	int composite_major, composite_minor;
 
 	dpy = XOpenDisplay(display);
+
 	if (!dpy) {
 		fprintf(stderr, "Can't open display\n");
 		return(1);
 	}
-	if (!XRenderQueryExtension(dpy, &xrender.event, &xrender.error)) {
+	if (!XQueryExtension (dpy, COMPOSITE_NAME, &xcomposite.request, &xcomposite.event, &xcomposite.error)) {
+		fprintf(stderr, "No composite extension\n");
+	    return(1);
+	}
+	if (!XQueryExtension (dpy, RENDER_NAME, &xrender.request, &xrender.event, &xrender.error)) {
 		fprintf(stderr, "No render extension\n");
-		return(1);
+	    return(1);
+	}
+	if (!XQueryExtension (dpy, DAMAGE_NAME, &xdamage.request, &xdamage.event, &xdamage.error)) {
+		fprintf(stderr, "No damage extension\n");
+	    return(1);
+	}
+	if (!XQueryExtension (dpy, XFIXES_NAME, &xfixes.request, &xfixes.event, &xfixes.error)) {
+		fprintf(stderr, "No fixes extension\n");
+	    return(1);
 	}
 
-	if (!XCompositeQueryExtension(dpy, &xcomposite.event, &xcomposite.error)) {
-		fprintf(stderr, "No composite extension\n");
-		return(1);
-	}
 
 	if (!XCompositeQueryVersion(dpy, &composite_major, &composite_minor)) {
 		fprintf(stderr, "Could not check composite version\n");
 		return(1);
 	}
-
 	if (XCompositeVersion() < XCOMPOSITE_VERSION_0_2) {
 		fprintf(stderr, "Could not find composite version 0.2 or better\n");
 		return(1);
 	}
 
-	if (!XDamageQueryExtension(dpy, &xdamage.event, &xdamage.error)) {
-		fprintf(stderr, "No damage extension\n");
-		return(1);
-	}
-	if (!XFixesQueryExtension(dpy, &xfixes.event, &xfixes.error)) {
-		fprintf(stderr, "No XFixes extension\n");
-		return(1);
-	}
 	XSetErrorHandler(error);
 	return(0);
 }
@@ -218,7 +206,6 @@ void event(void)
 			 }
 		case CreateNotify:{
 			XCreateWindowEvent *e = &event.xcreatewindow;
-			printf("override_redirect = %d\n", (int)e->override_redirect);
 			window_add(e->display, e->window);
 			break;
 			}
@@ -231,4 +218,22 @@ void event(void)
 	}
 }
 
+void x11_addwindows() 
+{
+	Window        root_return, parent_return;
+	unsigned int     nchildren;
+	Window       *children;
+	int     i, scr_no;
 
+	for (scr_no = 0; scr_no < ScreenCount(dpy); scr_no++) {
+		XCompositeRedirectSubwindows(dpy, RootWindow(dpy, scr_no), CompositeRedirectAutomatic);
+		/*   XCompositeRedirectSubwindows(dpy, RootWindow(dpy, scr_no), CompositeRedirectManual);*/
+		XSelectInput(dpy, RootWindow(dpy, scr_no),
+					 SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);
+	
+		XQueryTree(dpy, RootWindow(dpy, scr_no), &root_return, &parent_return, &children, &nchildren);
+		for (i = 0; i < (int)nchildren; i++)
+			window_add(dpy, children[i]);
+		XFree(children);
+	}
+}

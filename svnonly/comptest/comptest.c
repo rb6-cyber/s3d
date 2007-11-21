@@ -157,37 +157,31 @@ int screen_width = 0;
 int screen_height = 0;
 int screen_oid = -1;
 
-int main(int argc, char **argv)
-{
+void set_screenpos() {
 	XWindowAttributes    attr;
-	Window        root_return, parent_return;
-	unsigned int     nchildren;
-	Window       *children;
-	int     i, scr_no;
-
-
-	if (xinit())
-		return(1);
 	XGetWindowAttributes(dpy, RootWindow(dpy, 0), &attr);
 	screen_width = attr.width;
 	screen_height = attr.height;
 
+	screen_oid = s3d_new_object();
+	s3d_translate(screen_oid, -SCREEN_SCALE * (float)screen_width/((float) screen_height), SCREEN_SCALE, 0);
+	s3d_scale(screen_oid, 2* SCREEN_SCALE/((float)screen_height));
+
+}
+
+int main(int argc, char **argv)
+{
+
+
+	if (xinit())
+		return(1);
+
 	if (!s3d_init(&argc, &argv, "comptest")) {
 		s3d_set_callback(S3D_EVENT_KEY, key);
-		screen_oid = s3d_new_object();
-		s3d_translate(screen_oid, -SCREEN_SCALE * (float)screen_width/((float) screen_height), SCREEN_SCALE, 0);
-		s3d_scale(screen_oid, 2* SCREEN_SCALE/((float)screen_height));
-		for (scr_no = 0; scr_no < ScreenCount(dpy); scr_no++) {
-			XCompositeRedirectSubwindows(dpy, RootWindow(dpy, scr_no), CompositeRedirectAutomatic);
-			/*   XCompositeRedirectSubwindows(dpy, RootWindow(dpy, scr_no), CompositeRedirectManual);*/
-			XSelectInput(dpy, RootWindow(dpy, scr_no),
-			             SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);
 
-			XQueryTree(dpy, RootWindow(dpy, scr_no), &root_return, &parent_return, &children, &nchildren);
-			for (i = 0; i < (int)nchildren; i++)
-				window_add(dpy, children[i]);
-			XFree(children);
-		}
+		set_screenpos();
+
+		x11_addwindows();
 		s3d_mainloop(mainloop);
 	}
 
