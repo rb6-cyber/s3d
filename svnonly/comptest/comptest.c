@@ -28,8 +28,8 @@
 #include <time.h>         /* nanosleep() */
 #include <errno.h>			/* errno */
 
-
-
+#include <sys/time.h>		/* gettimeofday() */
+#include <time.h>			/* gettimeofday() */
 
 
 static struct timespec t = {
@@ -38,7 +38,13 @@ static struct timespec t = {
 
 static void mainloop(void)
 {
+	struct timeval start, stop;
+	float secs;
+	gettimeofday(&start, NULL);
 	event();
+	gettimeofday(&stop, NULL);
+	secs = (stop.tv_sec - start.tv_sec) + (stop.tv_usec - start.tv_usec)/1e6;
+/*	printf("msecs to process events: %3.3f\n", secs*1e3);*/
 	nanosleep(&t, NULL);
 }
 
@@ -135,7 +141,8 @@ void deco_box(struct window *win)
 	}
 	window_set_position(win);
 	/*  push data on texture 0 position (0,0) */
-	s3d_flags_on(win->oid, S3D_OF_VISIBLE);
+	if (win->mapped)
+		s3d_flags_on(win->oid, S3D_OF_VISIBLE);
 }
 
 static int key(struct s3d_evt *evt)

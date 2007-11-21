@@ -23,6 +23,7 @@
 
 #include "comptest.h"
 #include <stdlib.h>	/* malloc(), free() */
+#include <string.h>	/* memcpy() */
 #include <stdio.h>	/* printf() */
 struct window   *window_head = NULL;
 
@@ -74,16 +75,18 @@ struct window *window_find(Window id)
 
 }
 
-void window_add(Display *dpy, Window id)
+struct window *window_add(Display *dpy, Window id)
 {
 	struct window *win;
 	win = malloc(sizeof(struct window));
 	if (!win)
-		return;
+		return(NULL);
 
+	printf("window_add(%d)\n", (int) id);
 	if (window_find(id) != NULL) {
 		printf("!!!! Window already added\n");
-		return;
+		free(win);
+		return(NULL);
 	}
 	win->id = id;
 	win->next = window_head;
@@ -92,12 +95,13 @@ void window_add(Display *dpy, Window id)
 	win->pix = None;
 	win->no = 0;
 	win->oid = -1;
-	win->content_update_needed = 1;
+	win->content_update_needed = 0;
 	win->geometry_update_needed = 0;
 	win->content_update.x = 0;
 	win->content_update.y = 0;
 	win->content_update.width = 0;
 	win->content_update.height = 0;
+	win->mapped = 0;
 
 
 
@@ -107,10 +111,8 @@ void window_add(Display *dpy, Window id)
 	 * that would help here. */
 	if (!XGetWindowAttributes(dpy, win->id, &win->attr)) {
 		/* window does not exit, next event is probably it's removal ... */
-		return;
+		return(win);
 	}
-	win->content_update.width = win->attr.width;
-	win->content_update.height = win->attr.height;
 
 	/* XSelectInput(dpy, win->id, ExposureMask|ButtonPressMask|KeyPressMask*/
 /*	XSelectInput(dpy, win->id, SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);*/
@@ -124,6 +126,35 @@ void window_add(Display *dpy, Window id)
 		window_restack(win, win->next->id);
 	
 	XCompositeRedirectWindow(dpy, id, CompositeRedirectAutomatic);
+	return(win);
+}
+void window_map(struct window *win)
+{
+	printf("window_map(%d)\n", win->id);
+	if (win->mapped)
+		return;
+
+	win->mapped = 1;
+	win->content_update_needed = 1;
+	win->content_update.x = 0;
+	win->content_update.y = 0;
+	win->content_update.width = win->attr.width;
+	win->content_update.height = win->attr.height;
+	if (win->oid != -1)
+		s3d_flags_on(win->oid, S3D_OF_VISIBLE);
+
+
+}
+
+void window_unmap(struct window *win)
+{
+	if (!win->mapped)
+		return;
+	win->mapped = 0;
+	if (win->oid != -1)
+		s3d_flags_off(win->oid, S3D_OF_VISIBLE);
+
+	/* TODO: handle */
 }
 
 void window_remove(Window id)

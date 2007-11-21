@@ -185,11 +185,7 @@ void event(void)
 {
 	XEvent event;
 	struct window *window;
-	struct timeval start, stop;
-	float secs;
 
-
-	gettimeofday(&start, NULL);
 	while (XPending(dpy)) {
 		XNextEvent(dpy, &event);
 		print_event(dpy, &event);
@@ -223,6 +219,22 @@ void event(void)
 			}
 			break;
 			 }
+		case MapNotify:{
+			XMapEvent *e = &event.xmap;
+			window = window_find(e->window);
+			if (window != NULL)
+				window_map(window);
+			break;
+			}
+		case UnmapNotify:{
+			XUnmapEvent *e = &event.xunmap;
+			window = window_find(e->window);
+			if (window != NULL)
+				window_unmap(window);
+			break;
+			}
+
+
 		case CreateNotify:{
 			XCreateWindowEvent *e = &event.xcreatewindow;
 			window_add(e->display, e->window);
@@ -247,9 +259,7 @@ void event(void)
 		}
 	}
 
-	gettimeofday(&stop, NULL);
-	secs = (stop.tv_sec - start.tv_sec) + (stop.tv_usec - start.tv_usec)/1e6;
-	printf("msecs to process events: %3.3f, %d windows updated\n", secs*1e3, d);
+/*	printf("%d windows updated\n", d);*/
 
 }
 
@@ -258,6 +268,7 @@ void x11_addwindows()
 	Window        root_return, parent_return;
 	unsigned int     nchildren;
 	Window       *children;
+	struct window *win;
 	int     i, scr_no;
 
 	for (scr_no = 0; scr_no < ScreenCount(dpy); scr_no++) {
@@ -267,8 +278,12 @@ void x11_addwindows()
 					 SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);
 	
 		XQueryTree(dpy, RootWindow(dpy, scr_no), &root_return, &parent_return, &children, &nchildren);
-		for (i = 0; i < (int)nchildren; i++)
-			window_add(dpy, children[i]);
+		for (i = 0; i < (int)nchildren; i++) {
+			win = window_add(dpy, children[i]);
+			if (win != NULL && win->attr.map_state != IsUnmapped)
+				window_map(win);
+
+		}
 		XFree(children);
 	}
 }

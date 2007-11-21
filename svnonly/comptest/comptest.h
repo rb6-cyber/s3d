@@ -39,6 +39,7 @@ struct window {
 	XRectangle	content_update;
 	int        oid;
 	int		   no;
+	int 		mapped;
 
 	struct window     *next;
 };
@@ -52,8 +53,7 @@ void deco_box(struct window *win);
 void window_set_position(struct window *win);
 void window_restack(struct window *win, Window above);
 struct window *window_find(Window id);
-struct window *window_find(Window id);
-void window_add(Display *dpy, Window id);
+struct window *window_add(Display *dpy, Window id);
 void window_remove(Window id);
 void window_update_content(struct window *win);
 void window_update_geometry(struct window *win);
