@@ -50,6 +50,7 @@ extern int screen_height;
 extern int screen_oid;
 void deco_box(struct window *win);
 /* window.c */
+void window_map(struct window *win);
 void window_set_position(struct window *win);
 void window_restack(struct window *win, Window above);
 struct window *window_find(Window id);
@@ -57,6 +58,7 @@ struct window *window_add(Display *dpy, Window id);
 void window_remove(Window id);
 void window_update_content(struct window *win);
 void window_update_geometry(struct window *win);
+void window_unmap(struct window *win);
 
 extern struct window   *window_head;
 /* x11.c */
