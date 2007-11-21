@@ -166,7 +166,7 @@ int xinit(void)
 }
 
 /* find biggest bounding rect of the two given rects, write it into dest */
-void merge_rect( XRectangle *dest, XRectangle *src) {
+static void merge_rect( XRectangle *dest, XRectangle *src) {
 	int max;
 	if (dest->width == 0 || dest->height == 0) {
 		memcpy(dest, src, sizeof(*dest));
@@ -263,7 +263,7 @@ void event(void)
 
 }
 
-void x11_addwindows() 
+void x11_addwindows(void)
 {
 	Window        root_return, parent_return;
 	unsigned int     nchildren;

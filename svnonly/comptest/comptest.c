@@ -164,7 +164,7 @@ int screen_width = 0;
 int screen_height = 0;
 int screen_oid = -1;
 
-void set_screenpos() {
+static void set_screenpos(void) {
 	XWindowAttributes    attr;
 	XGetWindowAttributes(dpy, RootWindow(dpy, 0), &attr);
 	screen_width = attr.width;
