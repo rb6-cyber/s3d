@@ -130,7 +130,7 @@ struct window *window_add(Display *dpy, Window id)
 }
 void window_map(struct window *win)
 {
-	printf("window_map(%d)\n", win->id);
+	printf("window_map(%d)\n", (int)win->id);
 	if (win->mapped)
 		return;
 

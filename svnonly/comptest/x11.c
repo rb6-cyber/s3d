@@ -185,6 +185,7 @@ void event(void)
 {
 	XEvent event;
 	struct window *window;
+	int d;
 
 	while (XPending(dpy)) {
 		XNextEvent(dpy, &event);
@@ -247,7 +248,6 @@ void event(void)
 		   }
 		}
 	}
-	int d;
 	d = 0;
 	for (window = window_head; window != NULL; window = window->next) {
 		if (window->geometry_update_needed) 
