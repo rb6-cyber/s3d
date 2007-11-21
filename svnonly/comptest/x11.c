@@ -170,10 +170,12 @@ void event(void)
 	XEvent event;
 	struct window *window;
 	int i;
-	for (window = window_head; window != NULL; window = window->next)
-		window->already_updated = 0;
+	int ret;
+/*	for (window = window_head; window != NULL; window = window->next)
+		window->already_updated = 0;*/
 
-	for (i = 0; i < MAXEVENTS && XPending(dpy); i++) {
+	while (XPending(dpy)) {
+/*	for (i = 0; i < MAXEVENTS && XPending(dpy); i++) {*/
 		XNextEvent(dpy, &event);
 		print_event(dpy, &event);
 		switch (event.type - xdamage.event) {
@@ -185,7 +187,10 @@ void event(void)
 			XDamageSubtract(dpy, e->damage, None, None);
 			window = window_find(e->drawable);
 			if (window != NULL)
-				window_update_content(window, e->area.x, e->area.y, e->area.width, e->area.height);
+				window->already_updated = 0;
+				/* TODO: remember the rect damaged, and only update this part later. merge it if there was
+				 * already damage. */
+/*				window_update_content(window, e->area.x, e->area.y, e->area.width, e->area.height);*/
 			break;
 		   }
 
@@ -216,6 +221,12 @@ void event(void)
 		   }
 		}
 	}
+	for (window = window_head; window != NULL; window = window->next)
+		if (window->already_updated == 0) {
+			window_update_content(window, 0,0, window->attr.width, window->attr.height);
+			window->already_updated = 1;
+		}
+
 }
 
 void x11_addwindows() 

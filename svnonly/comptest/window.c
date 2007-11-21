@@ -115,6 +115,7 @@ void window_add(Display *dpy, Window id)
 	
 
 
+	XCompositeRedirectWindow(dpy, id, CompositeRedirectAutomatic);
 	window_update_content(win, 0, 0, win->attr.width, win->attr.height);
 /*	printf("window (%d) added\n", (int)id);*/
 }
@@ -149,7 +150,6 @@ void window_remove(Window id)
 void window_update_geometry(struct window *win, int x, int y, int width, int height)
 {
 
-	printf("window_update_geometry()\n");
 	if (win->oid == -1) {
 		win->attr.x = x;
 		win->attr.y = y;
