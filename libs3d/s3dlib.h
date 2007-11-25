@@ -130,6 +130,8 @@ extern int _s3d_sigio;
 extern int con_type;
 int net_send(uint8_t opcode, char *buf, uint16_t length);
 int s3d_net_init(char *urlc);
+/* proto_out.c */
+int _s3d_update_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h);
 #ifdef TCP
 /* tcp.c */
 int _tcp_init(char *sv, int pn);

@@ -70,6 +70,7 @@ static void _s3d_free_s3dtex(void *d1)
 void _s3d_handle_texshm(struct s3d_texshm *tshm) 
 {
 	struct s3d_tex *tex = NULL;
+	s3dprintf(HIGH, "handling new texture ...");
 	if (tex_hash == NULL)
 		return;
 #ifdef SHM
@@ -87,6 +88,7 @@ void _s3d_handle_texshm(struct s3d_texshm *tshm)
 		  free(tex);
           return;
 	}
+	s3dprintf(HIGH, "adding new texture ...");
 	_s3d_hash_add(tex_hash, tex);
 #endif
 	return;
@@ -103,7 +105,10 @@ int _s3d_load_texture_shm(int object, uint32_t tid, uint16_t xpos, uint16_t ypos
 	check.oid = object;
 	check.tex = tid;
 	tex = _s3d_hash_find(tex_hash, (void *)&check);
-
+	if (tex == NULL)
+		return(-1); /* coudn't find */
+	s3dprintf(VLOW, "texture: oid %d, tex %d, shmid %d, tw %d, th %d, w %d, h %d ...",
+					tex->tshm.oid, tex->tshm.tex, tex->tshm.shmid, tex->tshm.tw, tex->tshm.th, tex->tshm.w, tex->tshm.th);
 	/* found it, assume that it's properly attached. */
 	m = tex->tshm.w * tex->tshm.th + tex->tshm.tw;     /*  maximum: position of the last pixel in the buffer */
 	if ((xpos + w) > tex->tshm.tw)	mw = (tex->tshm.tw - xpos);
