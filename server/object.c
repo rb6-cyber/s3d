@@ -366,9 +366,11 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 
 					bufsize = obj->p_tex[m+i].h * obj->p_tex[m+i].w * 4;
 
-					if (texture_shm_register(&(obj->p_tex[m+i]), bufsize) == -1) {
+					if (texture_shm_register(&(obj->p_tex[m+i]), bufsize) == 0) 
+						event_texshm(p, oid, m+i);
+					else
 						obj->p_tex[m+i].buf = malloc(bufsize);
-					}
+					
 					memset(obj->p_tex[m+i].buf, 0, bufsize);
 
 

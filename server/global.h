@@ -191,15 +191,6 @@ struct t_process {
 #endif
 };
 
-struct t_obj_info {
-	int32_t object;
-	uint32_t flags;
-	float trans_x, trans_y, trans_z;
-	float rot_x, rot_y, rot_z;
-	float scale;
-	float r;
-	char name[S3D_NAME_MAX];
-};
 enum {
 	zero,
 	FRAME_SDL
@@ -255,6 +246,7 @@ int event_obj_info(struct t_process *p, int32_t oid);
 int event_obj_click(struct t_process *p, int32_t oid);
 int event_key_pressed(uint16_t key, uint16_t uni, uint16_t mod, int state);
 int event_mbutton_clicked(uint8_t button, uint8_t state);
+int event_texshm(struct t_process *p, int32_t oid, int32_t tex);
 int event_cam_changed(void);
 int event_ptr_changed(void);
 int event_init(struct t_process *p);

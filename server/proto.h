@@ -171,7 +171,12 @@
 /*  2b: state */
 #define S3D_P_S_MBUTTON 5
 /*  1b: button number */
-/*  2b: butotn state */
+/*  2b: button state */
+#define S3D_P_S_SHMTEX	6
+/*  4b: object id */
+/*  4b: texture number */
+/*  4b: shmid */
+/*  4*2b: width, height, bufwidth, bufheight */
 #define S3D_P_S_NEWOBJ 16
 /*  4b: oid */
 

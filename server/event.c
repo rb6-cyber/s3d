@@ -112,10 +112,40 @@ int event_ptr_changed(void)
 	return(0);
 }
 
+/* inform client about an available shm-segment for the texture */
+int event_texshm(struct t_process *p, int32_t oid, int32_t tex)
+{
+	struct t_obj *o;
+	struct {
+		int32_t oid, tex;
+		int16_t tw, th, w, h;
+	} __attribute__((__packed__)) shmtex_packet;
+	s3dprintf(HIGH, "informing process about new texture on oid %d, texture %d\n", oid, tex);
+	if (OBJ_VALID(p, oid, o)) {
+		shmtex_packet.oid = htonl(oid);
+		shmtex_packet.tex = htonl(tex);
+		shmtex_packet.tw = htons(o->p_tex[tex].tw);
+		shmtex_packet.th = htons(o->p_tex[tex].th);
+		shmtex_packet.w = htons(o->p_tex[tex].w);
+		shmtex_packet.h = htons(o->p_tex[tex].h);
+		prot_com_out(p, S3D_P_S_SHMTEX, (void *)&shmtex_packet, sizeof(shmtex_packet));
+	}
+	return(0);
+}
+
 /* this should replace the mcp_rep_object() function later ... */
 int event_obj_info(struct t_process *p, int32_t oid)
 {
-	struct t_obj_info mo;
+	struct {
+		int32_t object;
+		uint32_t flags;
+		float trans_x, trans_y, trans_z;
+		float rot_x, rot_y, rot_z;
+		float scale;
+		float r;
+		char name[S3D_NAME_MAX];
+	} __attribute__((__packed__)) mo;
+
 	struct t_process *ap;
 	struct t_obj *o;
 	if (OBJ_VALID(p, oid, o)) {
@@ -147,7 +177,7 @@ int event_obj_info(struct t_process *p, int32_t oid)
 			break;
 
 		}
-		prot_com_out(p, S3D_P_S_OINFO, (uint8_t *)&mo, sizeof(struct t_obj_info));
+		prot_com_out(p, S3D_P_S_OINFO, (uint8_t *)&mo, sizeof(mo));
 	}
 	return(0);
 }
