@@ -24,6 +24,7 @@
 
 #include <stdint.h>
 #include "config.h"
+#include "hash.h"
 #ifdef __APPLE__
 #ifdef SHM
 #undef SHM
@@ -77,6 +78,17 @@ extern s3d_cb s3d_cb_list[MAX_CB];
 /*  char *s3d_open_file(char *fname); */
 int net_prot_in(uint8_t opcode, uint16_t length, char *buf);
 
+/* what we get from the wires */
+struct s3d_texshm {
+	int32_t oid, tex, shmid;
+	uint16_t tw, th, w, h;
+} __attribute__((__packed__));
+/* for internal use. */
+struct s3d_tex {
+	struct s3d_texshm tshm;
+	char *buf;
+} __attribute__((__packed__));
+
 #ifdef DEBUG
 #ifdef HAVE_GCCVISIBILITY
 #pragma GCC visibility push(default) /* Only export following functions */
@@ -114,11 +126,6 @@ int _queue_quit();
 #ifdef SIGS
 extern int _s3d_sigio;
 #endif
-/* proto_in.c */
-struct s3d_texshm {
-	int32_t oid, tex, shmid;
-	uint16_t tw, th, w, h;
-} __attribute__((__packed__));
 /*  network.c */
 extern int con_type;
 int net_send(uint8_t opcode, char *buf, uint16_t length);
@@ -158,3 +165,9 @@ struct tessp_t {
 	int next, prev, done;
 };
 int _s3d_tesselate(struct tessp_t *t, struct t_buf *b);
+/* texture.c */
+int _s3d_texture_init(void);
+int _s3d_texture_quit(void);
+void _s3d_handle_texshm(struct s3d_texshm *tshm);
+int _s3d_load_texture_shm(int object, uint32_t tid, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h, uint8_t *data);
+

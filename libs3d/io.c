@@ -149,6 +149,7 @@ int s3d_init(int *argc, char ***argv, char *name)
 	net_send(S3D_P_C_INIT, buf, strlen(buf));
 
 	_queue_init();
+	_s3d_texture_init();
 #ifdef SIGS
 	if (signal(SIGINT, (sig_t)sigint_handler) == SIG_ERR)
 		errdn(LOW, "s3d_init():signal()", errno);
@@ -169,6 +170,7 @@ int s3d_init(int *argc, char ***argv, char *name)
 int s3d_quit(void)
 {
 	struct s3d_evt *ret;
+	_s3d_texture_quit();
 	if (con_type != CON_NULL && _s3d_ready) {
 		net_send(S3D_P_C_QUIT, NULL, 0);
 		switch (con_type) {

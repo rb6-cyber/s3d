@@ -290,7 +290,6 @@ struct hashtable_t *_s3d_hash_resize(struct hashtable_t *hash, int size) {
 	_s3d_hash_delete(hash, NULL);	/* remove hash and eventual overflow buckets but not the content itself. */
 
 	return( new_hash);
-
 }
 
 

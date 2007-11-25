@@ -66,12 +66,12 @@ int _tcp_init(char *sv, int pn)
 #ifdef WIN32
 	WSADATA datainfo;
 	if (WSAStartup(257, &datainfo) != 0) {
-		errn("s3d_init():startup()", errno);
+		errn("_tcp_init()():startup()", errno);
 		return(-1);
 	}
 #endif
 	if ((sd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
-		errn("s3d_init():socket()", errno);
+		errn("_tcp_init()():socket()", errno);
 		return (-1);
 	}
 	sock.sin_family = AF_INET;
@@ -80,14 +80,14 @@ int _tcp_init(char *sv, int pn)
 	if ((server = gethostbyname(sv)))
 		memcpy(&sock.sin_addr.s_addr, server->h_addr_list[0], 4);
 	else {
-		errn("s3d_init():gethostbyname()", errno);
+		errn("_tcp_init()():gethostbyname()", errno);
 		return(-1);
 	}
 	sock.sin_port = htons(pn);
 
 	res = connect(sd, (struct sockaddr *) & sock, sizeof(struct sockaddr_in));
 	if (res < 0) {
-		errn("s3d_init():connect()", errno);
+		errn("_tcp_init()():connect()", errno);
 		return(-1);
 	}
 	/*    if ( fcntl(sd, F_SETFL, O_ASYNC | O_NONBLOCK) < 0 ) */
