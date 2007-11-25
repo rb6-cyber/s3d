@@ -1,7 +1,7 @@
 /*
  * sei_triangulate.h
  *
- * Copyright (C) 2006 Simon Wunderlich
+ * Copyright (C) 2006-2007 Simon Wunderlich
  * Copyright (C) 1994 A. Narkhede and D .Manocha, who released their code
  * for public domain:
  * <snip>
