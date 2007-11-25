@@ -342,25 +342,22 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 					/* find the next power of 2 that can hold the width of the texture */
 					for (hm = 1; hm < obj->p_tex[m+i].tw; hm *= 2);
 					s3dprintf(MED, "hm %d, tw %d", hm, obj->p_tex[m+i].tw);
-					if (hm == obj->p_tex[m+i].tw)  {
+					obj->p_tex[m+i].w = hm;
+					if (hm == obj->p_tex[m+i].tw)  
 						obj->p_tex[m+i].xs = 1.0;
-						obj->p_tex[m+i].w = hm;
-
-					} else {
-						obj->p_tex[m+i].w = hm;
+					 else 
 						obj->p_tex[m+i].xs = (float)((double)obj->p_tex[m+i].tw) / ((double)obj->p_tex[m+i].w);
-					}
+
 					/* find the next power of 2 that can hold the height of the texture */
 					for (hm = 1; hm < obj->p_tex[m+i].th; hm *= 2);
 					s3dprintf(MED, "hm %d, th %d", hm, obj->p_tex[m+i].th);
 
-					if (hm == obj->p_tex[m+i].th)  {
+					obj->p_tex[m+i].h = hm;
+					if (hm == obj->p_tex[m+i].th)  
 						obj->p_tex[m+i].ys = 1.0;
-						obj->p_tex[m+i].h = obj->p_tex[m+i].th;
-					} else  {
-						obj->p_tex[m+i].h = hm;
+					else  
 						obj->p_tex[m+i].ys = (float)((double)obj->p_tex[m+i].th) / ((double)obj->p_tex[m+i].h);
-					}
+
 					errds(LOW, "obj_push_tex()", "setting up %d %d (in mem: %d %d) texture",
 					      obj->p_tex[m+i].tw,
 					      obj->p_tex[m+i].th,
