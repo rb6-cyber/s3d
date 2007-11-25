@@ -315,7 +315,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			cptr += 2;
 			h = ntohs(*((uint16_t *)cptr));
 			cptr += 2;
-			s3dprintf(MED, "UPDATE_TEX[%d]: oid %d, texture %d, [%d x %d] data at [%d x %d] ", length, oid, toid, w, h, x, y);
+			s3dprintf(VLOW, "UPDATE_TEX[%d]: oid %d, texture %d, [%d x %d] data at [%d x %d] ", length, oid, toid, w, h, x, y);
 			obj_update_tex(p, oid, toid, x, y, w, h, NULL);
 		}
 		break;

@@ -857,6 +857,13 @@ int obj_update_tex(struct t_process *p, int32_t oid, int32_t tid,uint16_t S3DUNU
 		return(-1);
 	tex = &obj->p_tex[tid];
 
+	if (obj->dplist) {
+		s3dprintf(VLOW, "freeing display list %d to get new data", obj->dplist);
+		glDeleteLists(obj->dplist, 1);
+		obj->dplist = 0;
+	}
+
+
 	if ((tex->gl_texnum) != -1) {
 		t = tex->gl_texnum;
 		/* s3dprintf(MED,"updating texture %d at [%d %d] with a [%d %d] pixbuf",t,x,y,w,h); */
@@ -883,12 +890,6 @@ int obj_load_tex(struct t_process *p, int32_t oid, int32_t tex, uint16_t x, uint
 		if (tex < obj->n_tex) {
 			t = &obj->p_tex[tex];
 			if (t->buf != NULL) {
-				if (obj->dplist) {
-					s3dprintf(VLOW, "freeing display list %d to get new data", obj->dplist);
-					glDeleteLists(obj->dplist, 1);
-					obj->dplist = 0;
-				}
-
 				m = t->w * t->th + t->tw;     /*  maximum: position of the last pixel in the buffer */
 				if ((x + w) > t->tw)
 					mw = (t->tw - x);
@@ -1574,7 +1575,7 @@ static void texture_gen(struct t_obj *obj)
 			glGenTextures(1, &t);
 			glBindTexture(GL_TEXTURE_2D, t);
 			tex->gl_texnum = t;
-			s3dprintf(HIGH, "generated texture %d [%dx%d, in memory %dx%d]", t, tex->tw, tex->th, tex->w, tex->h);
+			s3dprintf(LOW, "generated texture %d [%dx%d, in memory %dx%d]", t, tex->tw, tex->th, tex->w, tex->h);
 			/*    for (j=0;j<tex->th;j++)
 			    for (i=0;i<tex->tw;i++)
 			    {
