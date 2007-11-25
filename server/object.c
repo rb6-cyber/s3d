@@ -268,12 +268,12 @@ int texture_shm_register(struct t_tex *tex, int bufsize)
 	int key;
 	key = shm_next_key();
 	if ((tex->shmid = shmget(key, bufsize, 0644 | IPC_CREAT)) == -1) {
-		errnf("texture_shm_register():shmget()", errno);
+		errn("texture_shm_register():shmget()", errno);
 		return(-1);
 	}
 	tex->buf = shmat(tex->shmid, (void *)0, 0);
 	if ((key_t *)tex->buf == (key_t *)(-1)) {
-		errnf("shm_init():shmat()", errno);
+		errn("shm_init():shmat()", errno);
 		shmctl(tex->shmid, IPC_RMID, NULL);
 		tex->shmid = -1;
 		return(-1);
