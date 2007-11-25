@@ -41,7 +41,6 @@
 #define MAXLOOP 10
 /*  if oid is always unsigned, we don't have to check oid>=0 */
 
-static void obj_update_tex(struct t_tex *tex, u_int16_t x, u_int16_t y, u_int16_t w, u_int16_t h, u_int8_t *pixbuf);
 void obj_sys_update(struct t_process *p, int32_t oid);
 
 int texture_shm_register(struct t_tex *tex, int bufsize);
@@ -840,10 +839,24 @@ int obj_load_mat(struct t_process *p, int32_t oid, float *x, int32_t start, int3
 		return(-1);
 	return(0);
 }
-/* the interal texture updating function ... this is for opengl*/
-static void obj_update_tex(struct t_tex *tex, u_int16_t S3DUNUSED(x), u_int16_t S3DUNUSED(y), u_int16_t S3DUNUSED(w), u_int16_t S3DUNUSED(h), u_int8_t *S3DUNUSED(pixbuf))
+/* notify graphic system that the texture is updated */
+int obj_update_tex(struct t_process *p, int32_t oid, int32_t tid,uint16_t S3DUNUSED(x), uint16_t S3DUNUSED(y), uint16_t S3DUNUSED(w), uint16_t S3DUNUSED(h), uint8_t *S3DUNUSED(pixbuf))
 {
 	GLuint t;
+	struct t_obj *obj;
+	struct t_tex *tex;
+
+	if (OBJ_VALID(p, oid, obj)) {
+		if (obj->oflags&OF_NODATA) {
+			errds(MED, "obj_load_tex()", "error: no data on object allowed!");
+			return(-1);
+		}
+		if ((tid < 0) || (tid >= obj->n_tex)) 
+			return(-1);
+	} else
+		return(-1);
+	tex = &obj->p_tex[tid];
+
 	if ((tex->gl_texnum) != -1) {
 		t = tex->gl_texnum;
 		/* s3dprintf(MED,"updating texture %d at [%d %d] with a [%d %d] pixbuf",t,x,y,w,h); */
@@ -852,6 +865,7 @@ static void obj_update_tex(struct t_tex *tex, u_int16_t S3DUNUSED(x), u_int16_t 
 		glDeleteTextures(1, &t);
 		tex->gl_texnum = -1;
 	}
+	return(0);
 }
 /*  loads some data into the pixbuf */
 int obj_load_tex(struct t_process *p, int32_t oid, int32_t tex, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *pixbuf)
@@ -901,7 +915,7 @@ int obj_load_tex(struct t_process *p, int32_t oid, int32_t tex, uint16_t x, uint
 					       4*p2);
 				}
 				s3dprintf(MED, "updating texture %d\n", t->gl_texnum);
-				obj_update_tex(t, x, y, w, h, pixbuf);
+				obj_update_tex(p, oid, tex, x, y, w, h, pixbuf);
 				return(0);
 			} else {
 				errds(HIGH, "obj_load_tex()", "no buffer to draw to in oid %d, texture %d", oid, tex);

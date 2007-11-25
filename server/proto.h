@@ -116,6 +116,10 @@
 /*  4b:  object id */
 /*  4b:  position */
 /*  3*4f: material elements [amb,spec,diff with r,g,b,a] */
+#define S3D_P_C_UPDATE_TEX  29
+/*  4b:    object id */
+/*  4b:    texture id */
+/*  4*2b: xpos,ypos,width,height */
 #define S3D_P_C_LOAD_TEX  28
 /*  4b:  object id */
 /*  4b:  texture number */

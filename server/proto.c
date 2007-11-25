@@ -282,7 +282,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 		}
 		break;
 	case S3D_P_C_LOAD_TEX:
-		if (length > 8) {
+		if (length > 16) {
 			oid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
 			toid = ntohl(*((uint32_t *)cptr));
@@ -296,11 +296,30 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			h = ntohs(*((uint16_t *)cptr));
 			cptr += 2;
 			num = length - 16;
-			s3dprintf(MED, "LOAD_TEX[%d]: oid %d, texture %d, [%d x %d] data at [%d x %d] (%d = %d)", length, oid, toid, w, h, x, y, num, w*h*4, num);
+			s3dprintf(MED, "LOAD_TEX[%d]: oid %d, texture %d, [%d x %d] data at [%d x %d] (%d = %d)", length, oid, toid, w, h, x, y, num, w*h*4);
 			if ((w*h*4) == num)  /*  check correct size */
 				obj_load_tex(p, oid, toid, x, y, w, h, cptr);
 		}
 		break;
+	case S3D_P_C_UPDATE_TEX:
+		if (length == 16) {
+			oid = ntohl(*((uint32_t *)cptr));
+			cptr += 4;
+			toid = ntohl(*((uint32_t *)cptr));
+			cptr += 4;
+			x = ntohs(*((uint16_t *)cptr));
+			cptr += 2;
+			y = ntohs(*((uint16_t *)cptr));
+			cptr += 2;
+			w = ntohs(*((uint16_t *)cptr));
+			cptr += 2;
+			h = ntohs(*((uint16_t *)cptr));
+			cptr += 2;
+			s3dprintf(MED, "UPDATE_TEX[%d]: oid %d, texture %d, [%d x %d] data at [%d x %d] ", length, oid, toid, w, h, x, y);
+			obj_update_tex(p, oid, toid, x, y, w, h, NULL);
+		}
+		break;
+
 	case S3D_P_C_DEL_VERTEX:
 		if (length == 8) {
 			oid = ntohl(*((uint32_t *)cptr));

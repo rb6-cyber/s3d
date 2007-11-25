@@ -341,6 +341,7 @@ int obj_load_line_normal(struct t_process *p, int32_t oid, float *x, int32_t sta
 int obj_load_poly_texc(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n);
 int obj_load_mat(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n);
 int obj_load_tex(struct t_process *p, int32_t oid, int32_t tex, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *pixbuf);
+int obj_update_tex(struct t_process *p, int32_t oid, int32_t tid, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *pixbuf);
 int obj_del_vertex(struct t_process *p, int32_t oid, int32_t n);
 int obj_del_mat(struct t_process *p, int32_t oid, int32_t n);
 int obj_del_poly(struct t_process *p, int32_t oid, int32_t n);
