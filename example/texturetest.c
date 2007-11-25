@@ -37,8 +37,8 @@ static void mainloop(void)
 	s3d_rotate(oid, 0, i, 0);
 	nanosleep(&t, NULL);
 }
-#define MAXX 32
-#define MAXY 32
+#define MAXX 24
+#define MAXY 24
 int main(int argc, char **argv)
 {
 	unsigned int x, y;

@@ -114,6 +114,11 @@ int _queue_quit();
 #ifdef SIGS
 extern int _s3d_sigio;
 #endif
+/* proto_in.c */
+struct s3d_texshm {
+	int32_t oid, tex, shmid;
+	uint16_t tw, th, w, h;
+} __attribute__((__packed__));
 /*  network.c */
 extern int con_type;
 int net_send(uint8_t opcode, char *buf, uint16_t length);

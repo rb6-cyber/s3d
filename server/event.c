@@ -117,13 +117,15 @@ int event_texshm(struct t_process *p, int32_t oid, int32_t tex)
 {
 	struct t_obj *o;
 	struct {
-		int32_t oid, tex;
-		int16_t tw, th, w, h;
+		int32_t oid, tex, shmid;
+		uint16_t tw, th, w, h;
 	} __attribute__((__packed__)) shmtex_packet;
-	s3dprintf(HIGH, "informing process about new texture on oid %d, texture %d\n", oid, tex);
 	if (OBJ_VALID(p, oid, o)) {
+		s3dprintf(LOW, "informing process about new texture on oid %d, texture %d, which is available under id %d\n", 
+						oid, tex, o->p_tex[tex].shmid);
 		shmtex_packet.oid = htonl(oid);
 		shmtex_packet.tex = htonl(tex);
+		shmtex_packet.shmid = htonl(o->p_tex[tex].shmid);
 		shmtex_packet.tw = htons(o->p_tex[tex].tw);
 		shmtex_packet.th = htons(o->p_tex[tex].th);
 		shmtex_packet.w = htons(o->p_tex[tex].w);

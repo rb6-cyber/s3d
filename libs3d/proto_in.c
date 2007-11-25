@@ -35,6 +35,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 	struct s3d_evt *s3devt = NULL;
 	struct mcp_object *mo;
 	struct s3d_obj_info *oi;
+	struct s3d_texshm *tshm;
 	switch (opcode) {
 	case S3D_P_S_INIT:
 		s3dprintf(MED, "S3D_P_S_INIT: init!!");
@@ -138,6 +139,26 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 			}
 		} else s3dprintf(MED, "wrong length for S3D_P_S_OINFO length %d != %d", length, sizeof(struct s3d_obj_info));
 		break;
+	case S3D_P_S_SHMTEX:
+		if (length == sizeof(struct s3d_texshm)) {
+			tshm = (struct s3d_texshm *)buf;
+
+			/* this is only handled internally ... */
+			tshm->oid = ntohl(tshm->oid);
+			tshm->tex = ntohl(tshm->tex);
+			tshm->shmid = ntohl(tshm->shmid);
+			tshm->tw = ntohs(tshm->tw);
+			tshm->th = ntohs(tshm->th);
+			tshm->w = ntohs(tshm->w);
+			tshm->h = ntohs(tshm->h);
+
+			s3dprintf(MED, "S3D_P_S_SHMTEX: texture %d of object %d is available under shmid %d",
+						tshm->tex, tshm->oid, tshm->shmid);
+
+		} else 
+			s3dprintf(MED, "wrong length for S3D_P_S_SHMTEX length %d != %d", length, sizeof(struct s3d_texshm));
+		break;
+
 
 	case S3D_P_MCP_DEL_OBJECT:
 		if (length == 4) {
