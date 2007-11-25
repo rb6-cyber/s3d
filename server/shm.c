@@ -52,9 +52,10 @@ static int mkey; /* increasing key */
 
 static int shm_new_comblock(key_t *data);
 
-static int next_key(int oldkey)
+int shm_next_key(void)
 {
-	return(oldkey + 1);
+	mkey = mkey + 1;
+	return(mkey);
 }
 int shm_init(void)
 {
@@ -70,7 +71,8 @@ int shm_init(void)
 		return(1);
 	}
 	s3dprintf(LOW, "shm_init(): init key is 0x%08x", key);
-	mkey = next_key(key);
+	mkey = key;
+
 	/* connect to (and possibly create) the segment: */
 	if ((shmid = shmget(key, SHM_SIZE, 0644 | IPC_CREAT)) == -1) {
 		errnf("shm_init():shmget()", errno);
@@ -101,10 +103,8 @@ static int shm_new_comblock(key_t *data)
 	struct t_shmcb *mycb;
 	comblock_init(&waiting_comblock);
 	mycb = &waiting_comblock;
-	mycb->key_stoc = mkey;
-	mkey = next_key(mkey);
-	mycb->key_ctos = mkey;
-	mkey = next_key(mkey);
+	mycb->key_stoc = shm_next_key();
+	mycb->key_ctos = shm_next_key();
 	s3dprintf(MED, "shm_open_comblock():stoc: %08x, ctos: %08x", mycb->key_stoc, mycb->key_ctos);
 	/* connect & create the client to server segment: */
 	if ((mycb->shmid_ctos = shmget(mycb->key_ctos, RB_STD_SIZE, 0644 | IPC_CREAT)) == -1) {

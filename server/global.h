@@ -110,6 +110,7 @@ struct t_tex {
 	uint16_t tw, th;  /*  texture width */
 	uint8_t *buf;   /*  the data */
 	float xs, ys;  /*  scale data for gl-implementations which require 2^x */
+	int shmid;		/* shared memory id, is -1 if it's not attached */
 	/*  texture sizes. */
 	int32_t gl_texnum;  /*  the gl texture number. */
 };
@@ -236,6 +237,7 @@ int tcp_remove(int sock);
 int shm_init(void);
 int shm_quit(void);
 int shm_main(void);
+int shm_next_key(void);
 int shm_remove(struct t_process *p);
 int shm_writen(struct buf_t *rb, uint8_t *buf, int n);
 int shm_readn(struct buf_t *rb, uint8_t *buf, int n);
