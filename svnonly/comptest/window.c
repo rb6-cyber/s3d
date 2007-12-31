@@ -89,6 +89,9 @@ struct window *window_add(Display *dpy, Window id)
 		return(NULL);
 	}
 	win->id = id;
+/*	print_properties(id);*/
+	win->name = x11_get_name(id);
+	printf("###################### name = %s\n", win->name);
 	win->next = window_head;
 	window_head = win;
 	win->damage = None;
@@ -133,7 +136,6 @@ void window_map(struct window *win)
 	printf("window_map(%d)\n", (int)win->id);
 	if (win->mapped)
 		return;
-
 	win->mapped = 1;
 	win->content_update_needed = 1;
 	win->content_update.x = 0;

@@ -31,15 +31,16 @@
 struct window {
 	Window        id;
 	XWindowAttributes    attr;   /* position, size etc. */
-	XImage      *image;
-	Damage       damage;  /* damage notification */
-	Pixmap			pix;
+	XImage     *image;
+	Damage      damage;  /* damage notification */
+	Pixmap		pix;
 	int			geometry_update_needed;
 	int     	content_update_needed;
 	XRectangle	content_update;
-	int        oid;
-	int		   no;
+	int			oid;
+	int			no;
 	int 		mapped;
+	char		*name;
 
 	struct window     *next;
 };
@@ -62,9 +63,13 @@ void window_unmap(struct window *win);
 
 extern struct window   *window_head;
 /* x11.c */
+void x11_always_on_top(Window win);
 void event(void);
 int xinit(void);
 int error(Display *COMPUNUSED(dpy), XErrorEvent *event);
 int print_event(Display *COMPUNUSED(dpy), XEvent *event);
 void x11_addwindows();
+char *x11_get_prop(Window win, char *prop);
+char *x11_get_name(Window win); 
+void print_properties(Window win);
 extern Display *dpy;

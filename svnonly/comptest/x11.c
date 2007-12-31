@@ -24,6 +24,7 @@
 #include "comptest.h"
 #include <stdio.h>		/* printf() */
 #include <string.h>		/* memcpy() */
+#include <stdlib.h>		/* free() */
 #include <X11/Xproto.h>	/* X_* request defines */
 
 #define XCOMPOSITE_VERSION_0_2 200
@@ -121,6 +122,124 @@ int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 
 	printf("ERROR at request %s [%d]: %s\n", req, event->error_code, name);
 	return(0);
+}
+
+void print_properties(Window win)
+{
+	Atom *p;
+	int num, j;
+	char *aname;
+	Atom type;
+	int format;
+	unsigned long nitems, bytes_after;
+	unsigned char *ret = NULL;
+
+	p = XListProperties(dpy, win, &num);
+	printf("found %d properties for window %d\n", num, (int)win);
+	for (j = 0; j < num; j++) {
+		aname = XGetAtomName(dpy, p[j]);
+		if (aname) {
+			if(Success == XGetWindowProperty(dpy, win, XInternAtom(dpy, aname, False),
+						0L, ~0L, False, XA_STRING,
+						&type, &format, &nitems,
+						&bytes_after, &ret))
+			{
+/*				printf("format = %d, nitems = %d, bytes_after = %d\n", format, nitems, bytes_after);*/
+				printf("%s = %s\n", aname, ret);
+				XFree(ret);
+			}
+			XFree(aname);
+		} else printf("NULL\n");
+	}
+	XFree(p);
+}
+char *x11_get_prop(Window win, char *prop) 
+{
+	Atom type;
+	int format;
+	unsigned long nitems, bytes_after;
+	unsigned char *reqret = NULL;
+	char *ret = NULL;
+
+
+	if(Success == XGetWindowProperty(dpy, win, XInternAtom(dpy, prop, False),
+		0L, ~0L, False, /*XA_STRING*/ AnyPropertyType,
+		&type, &format, &nitems,
+		&bytes_after, &reqret)) {
+		if (reqret != NULL) {
+			ret = strdup((char *)reqret);
+			XFree(reqret);
+		} 
+	}
+	return(ret);
+}
+char *x11_get_name(Window win) 
+{
+	unsigned int nchildren;
+	Window *children;
+	Window root, parent;
+	char *role, *name;
+	int j;
+
+	role = x11_get_prop(win, "WM_WINDOW_ROLE");
+	if (role != NULL) {
+		if (strcmp(role, "decoration widget") == 0){
+			free(role);
+			return(NULL);
+		}
+		free(role);
+	}
+	name = x11_get_prop(win, "WM_NAME");
+	if (name != NULL) {
+		if (strcmp(name, "S3D") == 0) {
+			printf("setting s3d to always on top\n");
+			x11_always_on_top(win);
+		}
+		return(name);
+	}
+
+	XQueryTree(dpy, win, &root, &parent, &children, &nchildren);
+
+	for (j = 0; j < (int)nchildren; j++) {
+		name = x11_get_name(children[j]);
+		if (name != NULL)
+			break;
+	}
+	XFree(children);
+	return(name);
+
+}
+
+/* set always on top property to s3d server */
+void x11_always_on_top(Window win)
+{
+	Atom net_wm_state_stays_on_top, net_wm_state;
+	XClientMessageEvent xev;
+	int scr_no;
+
+	net_wm_state = XInternAtom(dpy, "_NET_WM_STATE", False);
+	if (net_wm_state == None)
+		fprintf(stderr, "No _NET_WM_STATE\n");
+
+	net_wm_state_stays_on_top = XInternAtom(dpy, "_NET_WM_STATE_STAYS_ON_TOP", 0);
+	if (net_wm_state_stays_on_top == None)
+		fprintf(stderr, "No _NET_WM_STATE_STAYS_ON_TOP\n");
+
+	memset(&xev, 0, sizeof(xev));
+	xev.type = ClientMessage;
+	xev.message_type = net_wm_state;
+	xev.display = dpy;
+	xev.window = win;
+	xev.format = 32;
+	xev.data.l[0] = 1;
+	xev.data.l[1] = net_wm_state_stays_on_top;
+	xev.data.l[2] = 0;
+
+	for (scr_no = 0; scr_no < ScreenCount(dpy); scr_no++) {
+		if (!XSendEvent(dpy, RootWindow(dpy, scr_no), False, SubstructureRedirectMask, (XEvent *) & xev))
+			fprintf(stderr, "Error XSendEvent() on type of event: _NET_WM_STATE\n");
+	}
+	XFlush(dpy);
 }
 
 
