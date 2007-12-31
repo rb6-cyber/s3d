@@ -94,6 +94,8 @@ int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 	switch (event->request_code) {
 	case X_GetWindowAttributes:	req = "XGetWindowAttributes()";	break;
 	case X_GetImage:			req = "XGetImage()";			break;
+	case X_QueryTree:			req = "XQueryTree()";			break;
+	case X_GetProperty:			req = "XGetProperty()";			break;
 	default:				break;
 	}
 	if (event->request_code == xcomposite.request) {
@@ -162,7 +164,7 @@ char *x11_get_prop(Window win, char *prop)
 	char *ret = NULL;
 
 
-	if(Success == XGetWindowProperty(dpy, win, XInternAtom(dpy, prop, False),
+	if (Success == XGetWindowProperty(dpy, win, XInternAtom(dpy, prop, False),
 		0L, ~0L, False, /*XA_STRING*/ AnyPropertyType,
 		&type, &format, &nitems,
 		&bytes_after, &reqret)) {
@@ -198,14 +200,16 @@ char *x11_get_name(Window win)
 		return(name);
 	}
 
-	XQueryTree(dpy, win, &root, &parent, &children, &nchildren);
+	if (XQueryTree(dpy, win, &root, &parent, &children, &nchildren) == 0)
+		return(NULL);
 
 	for (j = 0; j < (int)nchildren; j++) {
 		name = x11_get_name(children[j]);
 		if (name != NULL)
 			break;
 	}
-	XFree(children);
+	if (children != NULL)
+		XFree(children);
 	return(name);
 
 }
