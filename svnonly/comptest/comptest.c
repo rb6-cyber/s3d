@@ -27,6 +27,7 @@
 #include <stdlib.h>        /* malloc(), free() */
 #include <time.h>         /* nanosleep() */
 #include <errno.h>			/* errno */
+#include <math.h>			/* cos(), sin() */
 
 #include <sys/time.h>		/* gettimeofday() */
 #include <time.h>			/* gettimeofday() */
@@ -158,7 +159,94 @@ static int key(struct s3d_evt *evt)
 
 	}
 	return(0);
+}
+void x_rot(float vec[3], float angle) 
+{
+	float bak[3];
+	float c,s;
+	bak[1] = vec[1];
+	bak[2] = vec[2];
+	c = cos(angle);
+	s = sin(angle);
+	vec[1] = c*bak[1] - s*bak[2];
+	vec[2] = s*bak[1] + c*bak[2];
+}
 
+void y_rot(float vec[3], float angle) 
+{
+	float bak[3];
+	float c,s;
+	bak[0] = vec[0];
+	bak[2] = vec[2];
+
+	c = cos(angle);
+	s = sin(angle);
+	vec[0] = c*bak[0]  + s*bak[2];
+	vec[2] = -s*bak[0] + c*bak[2];
+}
+float cam_pos[3]={0,0,0};
+float cam_rot[3]={0,0,0};
+float ptr_rot[3]={0,0,0};
+float ptr_pos[3]={0,0,0};
+int cursor;
+
+static int oinfo(struct s3d_evt *evt) 
+{
+	float ptr_dir[3];
+	float t;
+	struct s3d_obj_info *oinf= (struct s3d_obj_info *)evt->buf;
+	switch (oinf->object) {
+		case 0:	/* camera */
+			cam_pos[0] = oinf->trans_x;
+			cam_pos[1] = oinf->trans_y;
+			cam_pos[2] = oinf->trans_z;
+			cam_rot[0] = M_PI/180.0*oinf->rot_x;
+			cam_rot[1] = M_PI/180.0*oinf->rot_y;
+			cam_rot[2] = M_PI/180.0*oinf->rot_z;
+			break;
+		case 1:	/* pointer */
+			ptr_rot[0] = M_PI/180.0*oinf->rot_x;
+			ptr_rot[1] = M_PI/180.0*oinf->rot_y;
+			ptr_rot[2] = M_PI/180.0*oinf->rot_z;
+			break;
+	}
+	if (oinf->object >= 2)
+		return(-1);
+
+	
+	printf("object info for object %d, name %s\n", oinf->object, oinf->name);
+	printf("trans: %3.3f %3.3f %3.3f\n", oinf->trans_x, oinf->trans_y, oinf->trans_z);
+	printf("rot:   %3.3f %3.3f %3.3f\n", oinf->rot_x, oinf->rot_y, oinf->rot_z);
+
+
+	/* TODO: ptr_r_y * ptr_r_x * cam_r_y * cam_r_x * I */
+	ptr_dir[0] = 0;
+	ptr_dir[1] = 0;
+	ptr_dir[2] = -1;
+
+
+	x_rot(ptr_dir, cam_rot[0]);
+	y_rot(ptr_dir, cam_rot[1]);
+	x_rot(ptr_dir, ptr_rot[0]);
+	y_rot(ptr_dir, ptr_rot[1]);
+
+
+
+	printf("pointer direction: %3.3f %3.3f %3.3f\n", ptr_dir[0], ptr_dir[1], ptr_dir[2]);
+
+	if (fabs(ptr_dir[2]) < 1e-3)
+		return(-1);
+
+	t = - cam_pos[2]/ptr_dir[2];
+	ptr_pos[0] = cam_pos[0] + t *ptr_dir[0];
+	ptr_pos[1] = cam_pos[1] + t *ptr_dir[1];
+	ptr_pos[2] = 0;
+
+	printf("pointer position: %3.3f %3.3f\n", ptr_pos[0], ptr_pos[1]);
+	
+	s3d_translate(cursor, ptr_pos[0], ptr_pos[1], ptr_pos[2]);
+
+	return(0);
 }
 int screen_width = 0;
 int screen_height = 0;
@@ -184,7 +272,11 @@ int main(int argc, char **argv)
 		return(1);
 
 	if (!s3d_init(&argc, &argv, "comptest")) {
+		cursor = s3d_import_model_file("objs/arrow.3ds");
+		s3d_flags_on(cursor, S3D_OF_VISIBLE);
+
 		s3d_set_callback(S3D_EVENT_KEY, key);
+		s3d_set_callback(S3D_EVENT_OBJ_INFO, oinfo);
 
 		set_screenpos();
 
