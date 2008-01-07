@@ -35,7 +35,7 @@ int parse_dir(t_node *dir)
 	int n, i;
 	int oldn;
 	DIR  *dirhd = NULL;
-	char *ext, *nstr = NULL;
+	char *nstr = NULL;
 	char path[M_DIR];
 	char ndir[M_DIR];
 
@@ -72,18 +72,13 @@ int parse_dir(t_node *dir)
 				/* find out the filetype ... very simple */
 				dir->sub[i]->type = T_DUNO;
 				dir->sub[i]->pindex = i;
-				ext = strrchr(nstr, '.');
 				strncpy(ndir, path, M_DIR);
 				strncat(ndir, namelist[n]->d_name, M_DIR);
 				if ((namelist[n]->d_type == DT_DIR) || ((namelist[n]->d_type == DT_UNKNOWN)))
 					if ((dirhd = opendir(ndir)) != NULL) {
 						dir->sub[i]->type = T_FOLDER;
 						closedir(dirhd);
-					} /*else if (ext!=NULL)
-        {
-         if (0==strncmp(ext,".3ds",strlen(ext)<4?strlen(ext):4))     dir->sub[i]->type=T_GEOMETRY;
-         else if (0==strncmp(ext,".mp3",strlen(ext)<4?strlen(ext):4))    dir->sub[i]->type=T_MUSIC;
-         } */
+					}
 				dir->sub[i]->check = 0; /* check=0 means we've already processed this item */
 			}
 			free(namelist[n]);

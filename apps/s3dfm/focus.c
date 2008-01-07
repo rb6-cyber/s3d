@@ -25,7 +25,6 @@
 #include <s3d_keysym.h>
 #include <stdio.h> /* printf() */
 #include <math.h>  /* ceil(), sqrt() */
-static int moveon = 1;
 
 /* get the scale for the rootbox zoom */
 float focus_get_scale(t_node *f)
@@ -57,7 +56,6 @@ void focus_set(t_node *f)
 	root.px = 0.0;
 	root.py = 0.0;
 	root.pz = 0.0;
-	moveon = 1;
 	/* printf("[Z]ooming to %s\n",f->name);*/
 	/* box_collapse_grandkids(f);*/
 	root.scale = focus_get_scale(f);
