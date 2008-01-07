@@ -137,7 +137,7 @@ int s3d_init(int *argc, char ***argv, char *name)
 		}
 	} else {
 		strncpy(urlc, url, 256);  /*  this should keep buffer overflows away, maybe */
-		urlc[256] = 0;  /*  just to make sure */
+		urlc[255] = '\0';  /*  just to make sure */
 		if (!strncmp(urlc, "s3d:// ", 6)) {
 			if (s3d_net_init(urlc) == CON_NULL) return(-1);
 		} else {
