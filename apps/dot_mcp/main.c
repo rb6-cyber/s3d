@@ -246,7 +246,6 @@ void place_apps(void)
 {
 	struct app *a = apps;
 	int j = 0;
-	float u[3], v[3], ya, xa;
 	while (a != NULL) {
 		if (a->init) {
 			/*   printf("placing app [%d,'%s'], oid %d, r=%f\n",j,a->name,a->oid,a->r); */
@@ -262,17 +261,6 @@ void place_apps(void)
 	}
 	s3d_translate(menu, left*zoom + 0.4, (-bottom)*zoom - 0.4, -zoom);
 
-	v[0] = 0;
-	v[1] = 0;
-	v[2] = 1;
-	u[0] = left * zoom + 0.4;
-	u[1] = 0;
-	u[2] = -zoom;
-	ya = s3d_vector_angle(v, u);
-	u[0] = 0;
-	u[1] = (-bottom) * zoom;
-	u[2] = -zoom;
-	xa = s3d_vector_angle(v, u);
 	s3d_rotate(menu, 0 , 30, 0);
 }
 
