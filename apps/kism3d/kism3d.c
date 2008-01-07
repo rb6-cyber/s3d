@@ -91,7 +91,6 @@ static void parse_buffer(struct kismet_src *kismet_src)
 	char enable_network[] = "!0 ENABLE NETWORK bssid,type,channel,ssid\n", enable_client[] = "!0 ENABLE CLIENT bssid,mac,ip\n", enable_alert[] = "!0 ENABLE ALERT *\n";
 	char *read_ptr, *line_ptr, *last_cr_ptr = NULL, *parse_begin_ptr, *parse_end_ptr;
 	char *bssid, *channel, *type, *ssid, *mac, *ip;
-	char end_char;
 	int count;
 
 	read_ptr = kismet_src->recv_buff;
@@ -165,7 +164,6 @@ static void parse_buffer(struct kismet_src *kismet_src)
 				/* printf( "line: %s\n", line_ptr ); */
 
 				parse_begin_ptr = parse_end_ptr = line_ptr + strlen("*NETWORK: ");
-				end_char = ' ';
 				count = 0;
 
 				while ((*parse_end_ptr) != '\0') {
