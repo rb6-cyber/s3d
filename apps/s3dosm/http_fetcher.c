@@ -368,7 +368,7 @@ int http_setAuth(const char *user, const char *pass)
 	unsigned char plain[1024];
 	char ec64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 	char *b64;
-	int i, j, c, len, n;
+	int i, j, c, len;
 	char o = 0;
 	/* base64 encode user and pass */
 	if ((user == NULL) || (pass == NULL)) { /* bad input or request to clean up */
@@ -384,18 +384,18 @@ int http_setAuth(const char *user, const char *pass)
 	while (i < len || c != 0) {
 		switch (c) {
 		case 0:
-			o = ec64[ n=plain[i] >> 2 ];
+			o = ec64[ plain[i] >> 2 ];
 			i++;
 			break;
 		case 1:
-			o = ec64[ n=((plain[i-1] & 0x3) << 4) | (plain[i] >> 4)];
+			o = ec64[ ((plain[i-1] & 0x3) << 4) | (plain[i] >> 4)];
 			i++;
 			break;
 		case 2:
-			o = (i >= len) ? '=' : ec64[ n=((plain[i-1] & 0xf) << 2) | (plain[i] >> 6)];
+			o = (i >= len) ? '=' : ec64[ ((plain[i-1] & 0xf) << 2) | (plain[i] >> 6)];
 			break;
 		case 3:
-			o = (i >= len) ? '=' : ec64[ n=(plain[i] & 0x3f)];
+			o = (i >= len) ? '=' : ec64[ plain[i] & 0x3f];
 			i++;
 			break;
 		}

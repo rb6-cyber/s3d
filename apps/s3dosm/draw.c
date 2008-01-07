@@ -85,21 +85,17 @@ void calc_earth_to_eukl(float lat, float lon, float alt, float *x)
 static int draw_icon(void *S3DOSMUNUSED(data), int argc, char **argv, char **S3DOSMUNUSED(azColName))
 {
 	int i, tagid = -1, oid;
-	int nodeid = -1, layerid = -1;
 	/* char query[MAXQ];*/
 	char s[MAXQ];
-	float la, lo, alt;
+	float la, lo;
 	float x[3];
-	la = lo = alt = 0.0;
+	la = lo = 0.0;
 	num_done++;
 	for (i = 0; i < argc; i++) {
 		if (argv[i]) {
 			if (0 == strcmp(azColName[i], "longitude"))   lo = strtod(argv[i], NULL);
 			else if (0 == strcmp(azColName[i], "latitude"))  la = strtod(argv[i], NULL);
-			else if (0 == strcmp(azColName[i], "altitude"))  alt = strtod(argv[i], NULL);
 			else if (0 == strcmp(azColName[i], "tag_id"))    tagid = atoi(argv[i]);
-			else if (0 == strcmp(azColName[i], "node_id"))   nodeid = atoi(argv[i]);
-			else if (0 == strcmp(azColName[i], "layer_id"))   layerid = atoi(argv[i]);
 		}
 	}
 	if (0 == db_gettag(tagid, "amenity", s)) {
@@ -121,8 +117,6 @@ static int draw_icon(void *S3DOSMUNUSED(data), int argc, char **argv, char **S3D
 			s3d_link(oid, oidy);
 			s3d_flags_on(oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 			load_update_status((100.0*num_done) / (float)num_max);
-			/*   snprintf(query,MAXQ,"UPDATE node SET s3doid=%d WHERE node_id=%d AND layer_id=%d;",oid,nodeid,layerid);
-			   db_exec(query, NULL, 0);*/
 		}
 
 	}
