@@ -110,9 +110,7 @@ static int pty_init_terminal(void)
 	int uid = 0, gid = 0;
 	char exe[] = "/bin/bash";
 	char curchar;
-	char *disp;
 
-	disp = getenv("DISPLAY");
 	uid = getuid();
 	gid = getgid();
 	term_mode = M_PTY;
@@ -185,24 +183,20 @@ void term_addchar(char toprint)
 
 static int pipe_init_terminal(void)
 {
-	char buf[256];
 	int uid = 0, gid = 0;
 	char *exe = "/bin/bash";
 	char *args = "-i";
-	char *disp;
 
 	term_mode = M_PIPE;
 	if ((pipe(mpipe_in) == -1) || (pipe(mpipe_out) == -1)) {
 		printf("pipe failed\n");
 		return(-1);
 	}
-	disp = getenv("DISPLAY");
 	uid = getuid();
 	gid = getgid();
 	pid = fork();
 	if (pid == 0) { /*  the child */
 		char tmpstr[1024];
-		buf[5] = 't';
 		setuid(uid);
 		setgid(gid);
 		if (setsid() < 0)
@@ -265,7 +259,7 @@ void paintit(void)
 {
 	int cline;
 	int c;
-	unsigned char ch, och;
+	unsigned char ch;
 	unsigned int ci;
 	int i, line_end;
 
@@ -275,7 +269,7 @@ void paintit(void)
 		line_end = 0;
 		for (c = 0;c < MAX_CHARS;c++) {
 			i = cline * MAX_CHARS + c;    /*  calculate position */
-			if (((ch = line[cline].chars[c].character) != (och = last_c[i]))) {
+			if (((ch = line[cline].chars[c].character) != last_c[i])) {
 				if (screenbuf[i] == -1) {
 					screenbuf[i] = s3d_new_object();
 					s3d_translate(screenbuf[i], c*X_RATIO*CS - CS*X_RATIO*MAX_CHARS / 2, -cline*CS + CS*MAX_LINES / 2, 0);
@@ -543,7 +537,6 @@ static void chars_init(void)
 }
 int main(int argc, char **argv)
 {
-	unsigned int b;
 	chars_init();
 	init_terminal();
 	s3d_set_callback(S3D_EVENT_QUIT, stop);
@@ -555,7 +548,7 @@ int main(int argc, char **argv)
 			printf("font not found\n");
 			exit(-1);
 		}
-		b = draw_background();
+		draw_background();
 		chars_s3d_init();
 		s3d_mainloop(mainloop);
 		s3d_quit();

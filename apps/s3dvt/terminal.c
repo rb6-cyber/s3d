@@ -242,11 +242,10 @@ static void move_down_x_lines(char *arg)
 static void delete_x_letters(char *arg1)
 {
 	int tmpint;
-	t_line *pcurline;
 	int i;
 	if (arg1[0]) tmpint = atoi(arg1);
 	else     tmpint = 1;
-	pcurline = (t_line*) & line + cy;
+
 	if (tmpint + cx > MAX_CHARS)
 		tmpint = MAX_CHARS - cx;
 	for (i = cx;i < cx + tmpint;i++)
@@ -255,21 +254,18 @@ static void delete_x_letters(char *arg1)
 static void move_x_letters(int mode, char *arg1)
 {
 	int tmpint;
-	t_line *pcurline;
 	int i;
 	if (arg1[0])
 		tmpint = atoi(arg1);
 	else
 		tmpint = 1;
-	pcurline = (t_line*) & line + cy;
+
 	switch (mode) {
 	case MOVE_RIGHT:
 		for (i = 0;i < tmpint;i++) {
-			/*          pcurline->nextchar++;
-			    lastchar++;*/
 			cx++;
 			if (cx == MAX_CHARS)
-				pcurline = line_is_full();  /*  our line is full */
+				line_is_full();  /*  our line is full */
 		}
 		break;
 	case MOVE_LEFT:
@@ -277,7 +273,6 @@ static void move_x_letters(int mode, char *arg1)
 			cx--;
 			if (cx == -1) {
 				cy--;
-				pcurline = (t_line*) & line + cy;
 				cx = MAX_CHARS - 1;
 			}  /*  need to go up one line */
 		}
