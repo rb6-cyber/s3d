@@ -35,11 +35,10 @@ static struct timespec t = {
 }; /* 10 mili seconds */
 
 static int object, foll;
-static float al, r, rc , alpha = 0.0, Asp, Bottom, Left, angle;
+static float al, r, alpha = 0.0, angle;
 static float CamPosition[2][3],
 TmpMove[3],
 Tmp[3],
-TmpCam[2][3],
 RotCam[2][3],
 CatPos[3];
 
@@ -50,16 +49,10 @@ static void mainloop(void)
 
 	al = (alpha * M_PI / 180);
 	r = 5.0;
-	rc = 12.0;
 
 	CatPos[0] = sin(al) * r;
 	CatPos[1] = 0;
 	CatPos[2] = cos(al) * r;
-	/*
-	RotCam[0][0] = sin(al) * rc;
-	RotCam[0][1] = 0.0;
-	RotCam[0][2] = cos(al) * rc;
-	*/
 	s3d_translate(object, CatPos[0] , CatPos[1], CatPos[2]);
 	s3d_rotate(object, 0, alpha, 0);
 	alpha = alpha + 0.1;
@@ -113,15 +106,6 @@ static int object_info(struct s3d_evt *hrmz)
 		CamPosition[1][0] = inf->rot_x;
 		CamPosition[1][1] = inf->rot_y;
 		CamPosition[1][2] = inf->rot_z;
-
-		Asp = inf->scale;
-		if (Asp > 1.0) { /* wide screen */
-			Bottom = -1.0;
-			Left = -Asp;
-		} else {  /* high screen */
-			Bottom = (-1.0 / Asp);
-			Left = -1.0;
-		}
 	}
 	return(0);
 }
@@ -133,17 +117,7 @@ static int keypress(struct s3d_evt *event)
 	int key;
 	key = *((unsigned short *)event->buf);
 	switch (key) {
-	case 'f':
-		foll = foll ? 0 : 1;
-		if (foll) {
-			TmpCam[0][0] = CamPosition[0][0];
-			TmpCam[0][1] = CamPosition[0][1];
-			TmpCam[0][2] = CamPosition[0][2];
-			TmpCam[1][0] = CamPosition[1][0];
-			TmpCam[1][1] = CamPosition[1][1];
-			TmpCam[1][2] = CamPosition[1][2];
-		}
-		break;
+	default: ;
 	}
 	return(0);
 }

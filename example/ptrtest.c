@@ -27,10 +27,7 @@
 #include <time.h> /* nanosleep() */
 #include <math.h> /* sin(), cos() */
 #include "example.h" /* S3DUNUSED */
-static int i;
 static int o;
-static float bottom = -1.0;
-static float left = -1.0;
 static float asp = 1.0;
 static float len = 1.0;
 static int alpha = 0;
@@ -61,13 +58,6 @@ static int object_info(struct s3d_evt *hrmz)
 		if (asp != inf->scale) {
 			asp = inf->scale;
 			printf("screen aspect: %f\n", asp);
-			if (asp > 1.0) { /* wide screen */
-				bottom = -1.0;
-				left = -asp;
-			} else {  /* high screen */
-				bottom = (-1.0 / asp);
-				left = -1.0;
-			}
 		}
 	}
 	if (inf->object == 1) { /* of course, a link s3d_link(o,1 would be much easier ... */
@@ -93,7 +83,6 @@ static int mbutton_press(struct s3d_evt *hrmz)
 }
 int main(int argc, char **argv)
 {
-	i = 0;
 	if (!s3d_init(&argc, &argv, "ptr and cam test")) {
 		s3d_set_callback(S3D_EVENT_OBJ_INFO, object_info);
 		s3d_set_callback(S3D_EVENT_MBUTTON, mbutton_press);

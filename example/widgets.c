@@ -134,7 +134,6 @@ static char *text = "okay\nn2\n3\nfooobarfooobar ...\noh no\n its too loooong\n"
 int main(int argc, char **argv)
 {
 	s3dw_button *button;
-	s3dw_textbox *textbox;
 	if (!s3d_init(&argc, &argv, "widgettest")) {
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK, click);
 		s3d_set_callback(S3D_EVENT_KEY, key);
@@ -163,7 +162,7 @@ int main(int argc, char **argv)
 		/* we will tell him how sad we are ... */
 		button->onclick = no_button;
 		/* create some textbox at (1,10) widh width 18 and height 8 */
-		textbox = s3dw_textbox_new(surface, text, 1, 10, 18, 8);
+		s3dw_textbox_new(surface, text, 1, 10, 18, 8);
 
 		/* this widget is focused (of course, it's our only one ... */
 		s3dw_focus(S3DWIDGET(surface));

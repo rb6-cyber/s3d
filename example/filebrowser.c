@@ -239,9 +239,7 @@ static void mainloop(void)
 }
 int main(int argc, char **argv)
 {
-	int i;
 	if (!s3d_init(&argc, &argv, "filebrowser")) {
-		i = 0;
 		/*  load the object files */
 		folder = s3d_import_model_file("objs/folder.3ds");
 		geometry = s3d_import_model_file("objs/geometry.3ds");
