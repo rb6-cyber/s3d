@@ -67,7 +67,7 @@ static float focus_r = 0;
 static float alpha = 0;
 static int rotate, reset, min_but, close_but, sphere, menu = -1;
 
-void place_apps();
+void place_apps(void);
 
 #define SIDES 60
 #define RINGS 60

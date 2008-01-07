@@ -117,11 +117,11 @@ void errs(char *func, char *msg);
 /*  fontselect.c */
 char *s3d_findfont(char *mask);
 /*  object_queue.c */
-int _queue_init();
-int _queue_fill();
+int _queue_init(void);
+int _queue_fill(void);
 int _queue_new_object(unsigned int oid);
-unsigned int _queue_want_object();
-int _queue_quit();
+unsigned int _queue_want_object(void);
+int _queue_quit(void);
 /* io.c */
 #ifdef SIGS
 extern int _s3d_sigio;
@@ -135,8 +135,8 @@ int _s3d_update_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, 
 #ifdef TCP
 /* tcp.c */
 int _tcp_init(char *sv, int pn);
-int _tcp_quit();
-int _s3d_tcp_net_receive();
+int _tcp_quit(void);
+int _s3d_tcp_net_receive(void);
 int tcp_writen(char *str, int s);
 int tcp_readn(char *str, int s);
 #endif
@@ -149,8 +149,8 @@ unsigned int shm_write(struct buf_t *rb, char *buf, unsigned int n);
 unsigned int shm_read(struct buf_t *rb, char *buf, unsigned int n);
 /* shm.c */
 int _shm_init(char *ftoken);
-int _shm_quit();
-int _shm_net_receive();
+int _shm_quit(void);
+int _shm_net_receive(void);
 int shm_writen(char *str, int s);
 int shm_readn(char *str, int s);
 #endif
