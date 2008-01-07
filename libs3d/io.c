@@ -73,7 +73,7 @@ void s3d_usage(void)
 
 static int parse_args(int *argc, char ***argv)
 {
-	char     c;
+	int     c;
 	int      lopt_idx;
 	struct option long_options[] = {
 		{"s3d-url", 1, NULL, 0
