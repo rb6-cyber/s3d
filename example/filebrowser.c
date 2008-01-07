@@ -47,6 +47,9 @@ static struct timespec t = {
 
 #define M_DIR  512
 #define M_NAME  256
+
+#define DEG2RAD(x) (x * ((float)M_PI / 180.0f))
+
 static int folder, geometry, mp3, movie, duno, dot, dotdot;
 struct t_item {
 	int icon_oid, descr_oid, pie_oid;
@@ -140,26 +143,26 @@ static int display_dir(char *dir, int S3DUNUSED(depth), int  posx, int posy, int
 			px = posx;
 			py = posy;
 			pz = posz;
-			alpha = ((360.0 * n) / ((float)i));
-			radius = ((n_item * 10) / (M_PI * 4));
+			alpha = ((360.0f * n) / ((float)i));
+			radius = ((n_item * 10) / ((float)M_PI * 4));
 			if (n_item < 5)
-				radius = ((50) / (M_PI * 4));
+				radius = ((50) / ((float)M_PI * 4));
 			else
-				radius = ((n_item * 10) / (M_PI * 4));
-			px = posx - sin(alpha * M_PI / 180.0) * radius;
+				radius = ((n_item * 10) / ((float)M_PI * 4));
+			px = posx - sinf(DEG2RAD(alpha)) * radius;
 			pz = posy;
-			pz = posz - cos(alpha * M_PI / 180.0) * radius;
+			pz = posz - cosf(DEG2RAD(alpha)) * radius;
 
 			item[n].pie_oid = s3d_new_object();
 			s3d_push_vertex(item[n].pie_oid, 0, -2, 0);
-			al = ((360.0 * (n - 0.5)) / ((float)i));
+			al = ((360.0f * (n - 0.5f)) / ((float)i));
 			s3d_push_vertex(item[n].pie_oid,
-			                posx - sin(al*M_PI / 180.0)*radius, -2, posz - cos(al*M_PI / 180.0)*radius);
-			al = ((360.0 * (n + 0.5)) / ((float)i));
+			                posx - sinf(DEG2RAD(al))*radius, -2, posz - cosf(DEG2RAD(al))*radius);
+			al = ((360.0f * (n + 0.5f)) / ((float)i));
 			s3d_push_vertex(item[n].pie_oid,
-			                posx - sin(al*M_PI / 180.0)*radius, -2, posz - cos(al*M_PI / 180.0)*radius);
+			                posx - sinf(DEG2RAD(al))*radius, -2, posz - cosf(DEG2RAD(al))*radius);
 
-			f = 1.0 - 0.05 * (n % 2);
+			f = 1.0f - 0.05f * (n % 2);
 			switch (item[n].type) {
 			case T_LOCALDIR:
 				s3d_push_material(item[n].pie_oid,  0, f, 0,   0.5, 0.5, 0.5,  f, f, f);
@@ -176,8 +179,8 @@ static int display_dir(char *dir, int S3DUNUSED(depth), int  posx, int posy, int
 			}
 			s3d_push_polygon(item[n].pie_oid, 0, 2, 1, 0);
 
-			s3d_push_vertex(item[n].pie_oid, pz, -2, 0);
-			s3d_translate(item[n].icon_oid, px, py, pz);
+			s3d_push_vertex(item[n].pie_oid, (float)pz, -2.f, 0.f);
+			s3d_translate(item[n].icon_oid, (float)px, (float)py, (float)pz);
 			s3d_rotate(item[n].icon_oid, 0, alpha, 0);
 			s3d_flags_on(item[n].icon_oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 			s3d_flags_on(item[n].pie_oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);

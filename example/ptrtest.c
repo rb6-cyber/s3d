@@ -44,10 +44,10 @@ static void mainloop(void)
 {
 	float a;
 	alpha = (alpha + 1) % 360;
-	s3d_rotate(o, alpha, 0, 0);
-	a = (((float)alpha) * M_PI / 180);
-	s3d_translate(0, sin(a)*30, 0, 30 + cos(a)*30);
-	s3d_rotate(0, sin(a)*30, alpha, 0);
+	s3d_rotate(o, (float)alpha, 0.f, 0.f);
+	a = (((float)alpha) * (float)M_PI / 180.f);
+	s3d_translate(0.f, sinf(a)*30.f, 0.f, 30.f + cosf(a)*30.f);
+	s3d_rotate(0, sinf(a)*30.f, (float)alpha, 0.f);
 	nanosleep(&t, NULL);
 }
 static int object_info(struct s3d_evt *hrmz)
@@ -61,7 +61,7 @@ static int object_info(struct s3d_evt *hrmz)
 		}
 	}
 	if (inf->object == 1) { /* of course, a link s3d_link(o,1 would be much easier ... */
-		s3d_translate(o, (inf->trans_x)*2.0, (inf->trans_y)*2.0, -2);
+		s3d_translate(o, (inf->trans_x)*2.0f, (inf->trans_y)*2.0f, -2);
 	}
 	return(0);
 }

@@ -38,14 +38,14 @@ static void mainloop(void)
 {
 	float pos;
 	a = (a + 2) % 360;
-	pos = sin((5 * a * M_PI) / 180) * 20;
+	pos = sinf((5.f * a * (float)M_PI) / 180.f) * 20.f;
 	s3d_rotate(legfr, 0, 90, 180 + pos);
 	s3d_rotate(legfl, 0, 90, 180 - pos);
 	s3d_rotate(legbr, 0, 0, 180 + pos);
 	s3d_rotate(legbl, 0, 0, 180 - pos);
 
 	s3d_rotate(tail, 0, 30, 110 + pos);
-	s3d_rotate(rot_point, 0, -a, 0);
+	s3d_rotate(rot_point, 0, (float)-a, 0);
 	nanosleep(&t, NULL);
 }
 int main(int argc, char **argv)

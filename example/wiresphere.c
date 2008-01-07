@@ -36,7 +36,7 @@ static int r;
 static int wire_sphere(int slices, int stacks)
 {
 	int x, y, i, o;
-	int num_v, num_l;
+	unsigned int num_v, num_l;
 	float *v, *n;  /* vertices, normals */
 	float alpha, beta;
 	unsigned int *l; /* lines */
@@ -47,12 +47,12 @@ static int wire_sphere(int slices, int stacks)
 	l = malloc(sizeof(unsigned int) * 3 * num_l);
 	i = 0;
 	for (x = 0;x < slices;x++) {
-		alpha = (x * 360.0 / slices) * M_PI / 180.0;
+		alpha = (x * 360.0f / slices) * (float)M_PI / 180.0f;
 		for (y = 0;y < (stacks + 1);y++) {
-			beta = ((y * 180 / slices) - 90.0) * M_PI / 180.0;
-			v[i*3+0] = cos(alpha) * cos(beta);
-			v[i*3+1] = sin(beta);
-			v[i*3+2] = sin(alpha) * cos(beta);
+			beta = ((y * 180 / slices) - 90.0f) * (float)M_PI / 180.0f;
+			v[i*3+0] = cosf(alpha) * cosf(beta);
+			v[i*3+1] = sinf(beta);
+			v[i*3+2] = sinf(alpha) * cosf(beta);
 			i++;
 		}
 	}
@@ -91,9 +91,9 @@ static int wire_sphere(int slices, int stacks)
 	s3d_push_material(o, 0, 0, 1,
 	                  1, 0, 0,
 	                  0, 1, 0);
-	s3d_push_vertices(o, v, num_v);
-	s3d_push_lines(o, l, num_l);
-	s3d_load_line_normals(o, n, 0, num_l);
+	s3d_push_vertices(o, v, (uint16_t)num_v);
+	s3d_push_lines(o, l, (uint16_t)num_l);
+	s3d_load_line_normals(o, n, 0, (uint16_t)num_l);
 	free(v);
 	free(n);
 	free(l);
@@ -107,7 +107,7 @@ static void stop(struct s3d_evt *S3DUNUSED(evt))
 static void mainloop(void)
 {
 	r = (r + 1) % 360;
-	s3d_rotate(oid, 0, r, 0);
+	s3d_rotate(oid, 0, (float)r, 0);
 	nanosleep(&t, NULL);
 
 }

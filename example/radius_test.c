@@ -34,12 +34,12 @@ static int i = 0;
 static void mainloop(void)
 {
 	float f, g, h;
-	f = sin((M_PI * (i % 360)) / 180.0);
-	g = cos((M_PI * (i % 360)) / 180.0);
-	h = sin((M_PI * ((3 * i) % 360)) / 180.0);
+	f = sinf(((float)M_PI * (i % 360)) / 180.0f);
+	g = cosf(((float)M_PI * (i % 360)) / 180.0f);
+	h = sinf(((float)M_PI * ((3 * i) % 360)) / 180.0f);
 
 	s3d_translate(item1, f*10, h*2, g*5);
-	s3d_rotate(item1, 0, i % 360, 0);
+	s3d_rotate(item1, 0, (float)(i % 360), 0);
 	/* s3d_scale(item1,h+3,h+3,h+3);*/
 
 	/* s3d_translate(item2,f*10,0, g*5);*/

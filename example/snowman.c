@@ -37,14 +37,14 @@ static void mainloop(void)
 {
 	float pos;
 	a = (a + 3) % 360;
-	pos = sin((a * M_PI) / 180) * 5;
+	pos = sinf((a * (float)M_PI) / 180.f) * 5.f;
 	if (pos < 0) pos *= -1;
-	s3d_rotate(oid_head, 0, a, 0);
-	s3d_rotate(oid_middle, 0, a, 0);
-	s3d_rotate(oid_foot, 0, a, 0);
-	s3d_translate(oid_head,  0, 1.5 + 2.00*pos, 0);
-	s3d_translate(oid_middle, 0, 0   + 1.25*pos, 0);
-	s3d_translate(oid_foot,  0, -2  + 1.00*pos, 0);
+	s3d_rotate(oid_head, 0, (float)a, 0);
+	s3d_rotate(oid_middle, 0, (float)a, 0);
+	s3d_rotate(oid_foot, 0, (float)a, 0);
+	s3d_translate(oid_head,  0, 1.5f + 2.0f*pos, 0);
+	s3d_translate(oid_middle, 0, 0   + 1.25f*pos, 0);
+	s3d_translate(oid_foot,  0, -2  + 1.00f*pos, 0);
 	nanosleep(&t, NULL);
 }
 int main(int argc, char **argv)

@@ -48,9 +48,9 @@ static void mainloop(void)
 	if (now != onow) {
 		o_str_oid = str_oid;
 		mytime = localtime(&now);
-		s3d_rotate(lil_p, 0, 0, -((mytime->tm_hour % 12) / 12.0)*360.0);
-		s3d_rotate(big_p, 0, 0, -(mytime->tm_min / 60.0)*360.0);
-		s3d_rotate(sec_p, 0, 0, -(mytime->tm_sec / 60.0)*360.0);
+		s3d_rotate(lil_p, 0, 0, -((mytime->tm_hour % 12) / 12.0f)*360.0f);
+		s3d_rotate(big_p, 0, 0, -(mytime->tm_min / 60.0f)*360.0f);
+		s3d_rotate(sec_p, 0, 0, -(mytime->tm_sec / 60.0f)*360.0f);
 		sprintf(time_str, "%02d:%02d:%02d", mytime->tm_hour, mytime->tm_min, mytime->tm_sec);
 		str_oid = s3d_draw_string(time_str, NULL);
 		s3d_translate(str_oid, -1, -1.3, 0);

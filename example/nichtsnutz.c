@@ -47,23 +47,23 @@ static float length;
 static void mainloop(void)
 {
 
-	al = (alpha * M_PI / 180);
-	r = 5.0;
+	al = (alpha * (float)M_PI / 180.f);
+	r = 5.0f;
 
-	CatPos[0] = sin(al) * r;
+	CatPos[0] = sinf(al) * r;
 	CatPos[1] = 0;
-	CatPos[2] = cos(al) * r;
+	CatPos[2] = cosf(al) * r;
 	s3d_translate(object, CatPos[0] , CatPos[1], CatPos[2]);
 	s3d_rotate(object, 0, alpha, 0);
-	alpha = alpha + 0.1;
-	if (alpha > 360.0) alpha = 0.0;
+	alpha = alpha + 0.1f;
+	if (alpha > 360.0f) alpha = 0.0f;
 
 	length = s3d_vector_length(CatPos);
 
 
-	RotCam[0][0] = (CatPos[0] * 12.0) / length;
-	RotCam[0][1] = (CatPos[1] * 12.0) / length;
-	RotCam[0][2] = (CatPos[2] * 12.0) / length;
+	RotCam[0][0] = (CatPos[0] * 12.0f) / length;
+	RotCam[0][1] = (CatPos[1] * 12.0f) / length;
+	RotCam[0][2] = (CatPos[2] * 12.0f) / length;
 
 
 	if (foll) {
@@ -82,7 +82,7 @@ static void mainloop(void)
 		Tmp[2] = CamPosition[0][2] - CatPos[2];
 
 		angle = s3d_vector_angle(Tmp, TmpMove);
-		angle = (CatPos[0] > 0) ? (180 - (180 / M_PI * angle)) : (180 + (180 / M_PI * angle));
+		angle = (CatPos[0] > 0) ? (180.f - (180.f / (float)M_PI * angle)) : (180.f + (180.f / (float)M_PI * angle));
 		printf("%f %f\n", angle, al);
 
 		CamPosition[1][1] = (CamPosition[1][1] * 4 + angle) / 5;

@@ -47,7 +47,7 @@ int main(int argc, char **argv)
 		s3d_select_font("vera");
 		/*  o=s3d_draw_string("The lazy fox is bored enough to jump over everything it sees. weird, isn't it?!",NULL);  */
 		for (i = 0;i < 256;i++)
-			c[255-i] = i;
+			c[255-i] = (char)i;
 		o = s3d_draw_string(c, NULL);
 		/*  o=s3d_draw_string("A",NULL);*/
 		s3d_flags_on(o, S3D_OF_VISIBLE);

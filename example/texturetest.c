@@ -34,7 +34,7 @@ static int i, oid;
 static void mainloop(void)
 {
 	i = (i + 1) % 360;
-	s3d_rotate(oid, 0, i, 0);
+	s3d_rotate(oid, 0, (float)i, 0);
 	nanosleep(&t, NULL);
 }
 #define MAXX 24
@@ -67,8 +67,8 @@ int main(int argc, char **argv)
 		for (y = 0;y < MAXY;y++)
 			for (x = 0;x < MAXX;x++) {
 				data[(y*MAXX+x)*4+0] = (char)((x * 255) / MAXX);
-				data[(y*MAXX+x)*4+1] = ((x * y) / (MAXX * MAXY));
-				data[(y*MAXX+x)*4+2] = ((y * 255) / MAXX);
+				data[(y*MAXX+x)*4+1] = (char)((x * y) / (MAXX * MAXY));
+				data[(y*MAXX+x)*4+2] = (char)((y * 255) / MAXX);
 				data[(y*MAXX+x)*4+3] = 255;
 			}
 		s3d_push_texture(oid, MAXX, MAXY);
