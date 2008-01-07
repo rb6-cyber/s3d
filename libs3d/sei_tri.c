@@ -80,7 +80,7 @@ static int initialise(int n)
 int sei_triangulate_polygon(int ncontours, int cntr[], double(*vertices)[2], int (*triangles)[3])
 {
 	register int i;
-	int nmonpoly, ccount, npoints, genus;
+	int nmonpoly, ccount, npoints;
 	int n;
 
 	memset((void *)seg, 0, sizeof(seg));
@@ -118,7 +118,6 @@ int sei_triangulate_polygon(int ncontours, int cntr[], double(*vertices)[2], int
 		ccount++;
 	}
 
-	genus = ncontours - 1;
 	n = i - 1;
 
 	initialise(n);

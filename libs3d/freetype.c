@@ -55,8 +55,6 @@ static int memory_font_size = 0;  /*  and it's size, to reduce load times. */
 static int ft_init = 0;
 static int face_init = 0;
 
-static int v_off;   /*  the vertex number offset, to have the right vertex numbers for each character */
-static int ch;
 static struct t_buf tess_buf[256];
 
 
@@ -118,7 +116,7 @@ static int _s3d_clear_tessbuf(void)
 static int _s3d_add_tessbuf(uint16_t a)
 {
 	float norm, ar, xa, ya;
-	int i, j, k, c, n, start, outl, s, e;
+	int i, j, k, c, n, outl, s, e;
 	int np, pos;
 	int triangles[SEI_SS*2][3]; /* more than enough ... */
 	int ncontours, ncon;
@@ -139,8 +137,6 @@ static int _s3d_add_tessbuf(uint16_t a)
 	}
 	s3dprintf(VLOW, "[T]riangulating character %c", a);
 	norm = 1.0 / face->glyph->metrics.vertAdvance;
-	ch = a;
-	v_off = 0;
 	if ((face->glyph->outline.n_points > 0) && (face->glyph->outline.n_points < SEI_SS)) {
 		tess_buf[a].vn = face->glyph->outline.n_points;
 		tess_buf[a].vbuf = malloc(sizeof(float) * face->glyph->outline.n_points * 3);
@@ -148,7 +144,6 @@ static int _s3d_add_tessbuf(uint16_t a)
 		j = 0;
 		ncontours = face->glyph->outline.n_contours;
 		for (c = 0;c < ncontours;c++) {
-			start = j;  /* first point */
 			i = 0;
 			ncon = face->glyph->outline.contours[c]; /* position of the end of ths contour */
 			cntr[c] = ncon - j + 1;  /* how many points do we have here? */
@@ -376,7 +371,6 @@ float s3d_strlen(char *str)
 {
 	int i;
 	float xoff;
-	int voff;
 	int len;
 	uint16_t a;
 	if (!ft_init)
@@ -390,7 +384,6 @@ float s3d_strlen(char *str)
 	}
 	/*  standard material */
 	xoff = 0;
-	voff = 0;
 	len = strlen(str);
 	for (i = 0;i < len; i++) {
 		a = (uint8_t)str[i];

@@ -303,7 +303,6 @@ static int traverse_polygon(int mcur, int trnum, int from, int dir)
 	int mnew;
 	int v0, v1;
 	int retval = -1;
-	int do_switch = FALSE;
 
 	if ((trnum <= 0) || visited[trnum])
 		return 0;
@@ -325,7 +324,6 @@ static int traverse_polygon(int mcur, int trnum, int from, int dir)
 			v0 = tr[t->d1].lseg;
 			v1 = t->lseg;
 			if (from == t->d1) {
-				do_switch = TRUE;
 				mnew = make_new_monotone_poly(mcur, v1, v0);
 				traverse_polygon(mcur, t->d1, trnum, TR_FROM_UP);
 				traverse_polygon(mnew, t->d0, trnum, TR_FROM_UP);
@@ -348,7 +346,6 @@ static int traverse_polygon(int mcur, int trnum, int from, int dir)
 			v0 = t->rseg;
 			v1 = tr[t->u0].rseg;
 			if (from == t->u1) {
-				do_switch = TRUE;
 				mnew = make_new_monotone_poly(mcur, v1, v0);
 				traverse_polygon(mcur, t->u1, trnum, TR_FROM_DN);
 				traverse_polygon(mnew, t->u0, trnum, TR_FROM_DN);
@@ -373,7 +370,6 @@ static int traverse_polygon(int mcur, int trnum, int from, int dir)
 			retval = SP_2UP_2DN;
 			if (((dir == TR_FROM_DN) && (t->d1 == from)) ||
 			                ((dir == TR_FROM_UP) && (t->u1 == from))) {
-				do_switch = TRUE;
 				mnew = make_new_monotone_poly(mcur, v1, v0);
 				traverse_polygon(mcur, t->u1, trnum, TR_FROM_DN);
 				traverse_polygon(mcur, t->d1, trnum, TR_FROM_UP);
@@ -393,7 +389,6 @@ static int traverse_polygon(int mcur, int trnum, int from, int dir)
 
 				retval = SP_2UP_LEFT;
 				if ((dir == TR_FROM_UP) && (t->u0 == from)) {
-					do_switch = TRUE;
 					mnew = make_new_monotone_poly(mcur, v1, v0);
 					traverse_polygon(mcur, t->u0, trnum, TR_FROM_DN);
 					traverse_polygon(mnew, t->d0, trnum, TR_FROM_UP);
@@ -411,7 +406,6 @@ static int traverse_polygon(int mcur, int trnum, int from, int dir)
 				v1 = tr[t->u0].rseg;
 				retval = SP_2UP_RIGHT;
 				if ((dir == TR_FROM_UP) && (t->u1 == from)) {
-					do_switch = TRUE;
 					mnew = make_new_monotone_poly(mcur, v1, v0);
 					traverse_polygon(mcur, t->u1, trnum, TR_FROM_DN);
 					traverse_polygon(mnew, t->d1, trnum, TR_FROM_UP);
@@ -433,7 +427,6 @@ static int traverse_polygon(int mcur, int trnum, int from, int dir)
 				v1 = t->lseg;
 				retval = SP_2DN_LEFT;
 				if (!((dir == TR_FROM_DN) && (t->d0 == from))) {
-					do_switch = TRUE;
 					mnew = make_new_monotone_poly(mcur, v1, v0);
 					traverse_polygon(mcur, t->u1, trnum, TR_FROM_DN);
 					traverse_polygon(mcur, t->d1, trnum, TR_FROM_UP);
@@ -452,7 +445,6 @@ static int traverse_polygon(int mcur, int trnum, int from, int dir)
 
 				retval = SP_2DN_RIGHT;
 				if ((dir == TR_FROM_DN) && (t->d1 == from)) {
-					do_switch = TRUE;
 					mnew = make_new_monotone_poly(mcur, v1, v0);
 					traverse_polygon(mcur, t->d1, trnum, TR_FROM_UP);
 					traverse_polygon(mnew, t->u1, trnum, TR_FROM_DN);
@@ -473,7 +465,6 @@ static int traverse_polygon(int mcur, int trnum, int from, int dir)
 				v1 = t->lseg;
 				retval = SP_SIMPLE_LRDN;
 				if (dir == TR_FROM_UP) {
-					do_switch = TRUE;
 					mnew = make_new_monotone_poly(mcur, v1, v0);
 					traverse_polygon(mcur, t->u0, trnum, TR_FROM_DN);
 					traverse_polygon(mcur, t->u1, trnum, TR_FROM_DN);
@@ -493,7 +484,6 @@ static int traverse_polygon(int mcur, int trnum, int from, int dir)
 
 				retval = SP_SIMPLE_LRUP;
 				if (dir == TR_FROM_UP) {
-					do_switch = TRUE;
 					mnew = make_new_monotone_poly(mcur, v1, v0);
 					traverse_polygon(mcur, t->u0, trnum, TR_FROM_DN);
 					traverse_polygon(mcur, t->u1, trnum, TR_FROM_DN);
@@ -529,7 +519,7 @@ int triangulate_monotone_polygons(int nvert, int nmonpoly, int op[][3])
 {
 	register int i;
 	point_t ymax, ymin;
-	int p, vfirst, posmax, posmin, v;
+	int p, vfirst, posmax, v;
 	int vcount, processed;
 
 
@@ -539,7 +529,7 @@ int triangulate_monotone_polygons(int nvert, int nmonpoly, int op[][3])
 		processed = FALSE;
 		vfirst = mchain[mon[i]].vnum;
 		ymax = ymin = vert[vfirst].pt;
-		posmax = posmin = mon[i];
+		posmax = mon[i];
 		mchain[mon[i]].marked = TRUE;
 		p = mchain[mon[i]].next;
 		while ((v = mchain[p].vnum) != vfirst) {
@@ -555,7 +545,6 @@ int triangulate_monotone_polygons(int nvert, int nmonpoly, int op[][3])
 			}
 			if (_less_than(&vert[v].pt, &ymin)) {
 				ymin = vert[v].pt;
-				posmin = p;
 			}
 			p = mchain[p].next;
 			vcount++;

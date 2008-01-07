@@ -423,7 +423,7 @@ static int add_segment(int segnum)
 	int tfirstr = 0, tlastr = 0, tfirstl, tlastl;
 	int i1, i2, t, tn;
 	point_t tpt;
-	int tritop = 0, tribot = 0, is_swapped = 0;
+	int tribot = 0, is_swapped = 0;
 	int tmptriseg;
 	int tmpseg = 1;
 
@@ -488,10 +488,9 @@ static int add_segment(int segnum)
 		tr[tu].sink = i1;
 		tr[tl].sink = i2;
 		tfirst = tl;
-	} else    /* v0 already present */
-	{       /* Get the topmost intersecting trapezoid */
+	} else {    /* v0 already present */
+	       /* Get the topmost intersecting trapezoid */
 		tfirst = locate_endpoint(&s.v0, &s.v1, s.root0);
-		tritop = 1;
 	}
 
 
@@ -632,9 +631,9 @@ static int add_segment(int segnum)
 				}
 			} else {   /* fresh seg. or upward cusp */
 				int tmp_u = tr[t].u0;
-				int td0, td1;
+				int td0;
 				if (((td0 = tr[tmp_u].d0) > 0) &&
-				                ((td1 = tr[tmp_u].d1) > 0)) {  /* upward cusp */
+				                (tr[tmp_u].d1 > 0)) {  /* upward cusp */
 					if ((tr[td0].rseg > 0) &&
 					                !is_left_of(tr[td0].rseg, &s.v1)) {
 						tr[t].u0 = tr[t].u1 = tr[tn].u1 = -1;
@@ -714,9 +713,9 @@ static int add_segment(int segnum)
 				}
 			} else {   /* fresh seg. or upward cusp */
 				int tmp_u = tr[t].u0;
-				int td0, td1;
+				int td0;
 				if (((td0 = tr[tmp_u].d0) > 0) &&
-				                ((td1 = tr[tmp_u].d1) > 0)) {  /* upward cusp */
+				                (tr[tmp_u].d1 > 0)) {  /* upward cusp */
 					if ((tr[td0].rseg > 0) &&
 					                !is_left_of(tr[td0].rseg, &s.v1)) {
 						tr[t].u0 = tr[t].u1 = tr[tn].u1 = -1;
@@ -771,15 +770,13 @@ static int add_segment(int segnum)
 		else {
 			double y0, yt;
 			point_t tmppt;
-			int tnext, i_d0, i_d1;
+			int tnext, i_d0;
 			tmpseg = tr[tr[t].d0].rseg;
 
-			i_d0 = i_d1 = FALSE;
+			i_d0 = FALSE;
 			if (FP_EQUAL(tr[t].lo.y, s.v0.y)) {
 				if (tr[t].lo.x > s.v0.x)
 					i_d0 = TRUE;
-				else
-					i_d1 = TRUE;
 			} else {
 				tmppt.y = y0 = tr[t].lo.y;
 				yt = (y0 - s.v0.y) / (s.v1.y - s.v0.y);
@@ -787,8 +784,6 @@ static int add_segment(int segnum)
 
 				if (_less_than(&tmppt, &tr[t].lo))
 					i_d0 = TRUE;
-				else
-					i_d1 = TRUE;
 			}
 
 			/* check continuity from the top so that the lower-neighbour */
@@ -824,9 +819,9 @@ static int add_segment(int segnum)
 				}
 			} else {   /* fresh seg. or upward cusp */
 				int tmp_u = tr[t].u0;
-				int td0, td1;
+				int td0;
 				if (((td0 = tr[tmp_u].d0) > 0) &&
-				                ((td1 = tr[tmp_u].d1) > 0)) {  /* upward cusp */
+				                (tr[tmp_u].d1 > 0)) {  /* upward cusp */
 					if ((tr[td0].rseg > 0) &&
 					                !is_left_of(tr[td0].rseg, &s.v1)) {
 						tr[t].u0 = tr[t].u1 = tr[tn].u1 = -1;
