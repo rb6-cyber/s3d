@@ -1499,13 +1499,11 @@ static int calc_normal(struct t_obj *obj, uint32_t pn)
 /* checks if a normal is set for a line object, or set some default if not */
 static int check_line_normal(struct t_obj *obj, uint32_t pn)
 {
-	struct t_vertex *v[2];
 	int i, vp;
 	for (i = 0;i < 2;i++) { /*  set and check */
 		vp = obj->p_line[pn].v[i]; /*  ... get the vertices ... */
-		if (vp < (int)obj->n_vertex)
-			v[i] = &(obj->p_vertex[vp]);
-		else return(-1);
+		if (vp >= (int)obj->n_vertex)
+			return(-1);
 	}
 	if ((obj->p_line[pn].n[0].x*obj->p_line[pn].n[0].x +
 	                obj->p_line[pn].n[0].y*obj->p_line[pn].n[0].y +

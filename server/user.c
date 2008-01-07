@@ -25,7 +25,6 @@
 #include "global.h"
 /*  this file reads user input */
 static int ox, oy;
-static int pressed;
 int but = -1;
 int user_init(void)
 {
@@ -38,7 +37,6 @@ int user_init(void)
 	default:
 		return(-1);
 	}
-	pressed = 0;
 	ox = oy = 0xFFFFFF;
 	return(0);
 }

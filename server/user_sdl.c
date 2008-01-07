@@ -35,7 +35,6 @@ int user_init_sdl(void)
 int user_main_sdl(void)
 {
 	SDL_Event  event;
-	SDL_Surface *GLwin = NULL;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
 		case SDL_MOUSEMOTION:
@@ -125,7 +124,7 @@ int user_main_sdl(void)
 			s3dprintf(VLOW, "SDL_SYSWMEVENT");
 			break;
 		case SDL_VIDEORESIZE:
-			if ((GLwin = SDL_SetVideoMode(event.resize.w, event.resize.h, 16, SDLFlags)) == NULL)
+			if (SDL_SetVideoMode(event.resize.w, event.resize.h, 16, SDLFlags) == NULL)
 				errsf("SDL_SetVideoMode()", SDL_GetError());
 			graphics_reshape(event.resize.w, event.resize.h);
 			break;

@@ -32,7 +32,6 @@ int graphics_init_sdl(void)
 {
 	SDL_Surface *GLwin = NULL;
 	SDL_VideoInfo *VideoInfo;
-	int rgb_size[3];      /*  for SDL_GL attributes */
 	int buffers, samples;
 	s3dprintf(MED, "Using SDL driver ...");
 
@@ -54,13 +53,6 @@ int graphics_init_sdl(void)
 
 
 	/*  set some opengl-attributes */
-	/* SDL_GL_SetAttribute( SDL_GL_RED_SIZE, rgb_size[0] );
-	 SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, rgb_size[1] );
-	 SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, rgb_size[2] );*/
-	/*  SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5); */
-	/*  SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 5); */
-	/*  SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5); */
-	/*  SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 16 ); */
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	do {
 		if (aa_level > 0) {
@@ -79,24 +71,6 @@ int graphics_init_sdl(void)
 				errsf("SDL_SetVideoMode()", SDL_GetError());
 		}
 	} while (GLwin == NULL);
-	switch (SDL_GetVideoInfo()->vfmt->BitsPerPixel) {
-	case 8:
-		rgb_size[0] = 3;
-		rgb_size[1] = 3;
-		rgb_size[2] = 2;
-		break;
-	case 15:
-	case 16:
-		rgb_size[0] = 5;
-		rgb_size[1] = 5;
-		rgb_size[2] = 5;
-		break;
-	default:
-		rgb_size[0] = 8;
-		rgb_size[1] = 8;
-		rgb_size[2] = 8;
-		break;
-	}
 	if (aa_level > 0) {
 		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLEBUFFERS, &buffers);
 		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &samples);
