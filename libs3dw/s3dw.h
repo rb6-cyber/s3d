@@ -28,6 +28,12 @@
 #endif
 #include <stdint.h>  /* [u]intXX_t type definitions*/
 
+#ifdef HAVE_GCCVISIBILITY
+#define S3DWEXPORT __attribute__ ((visibility("default")))
+#else
+#define S3DWEXPORT
+#endif
+
 /* we want this widget visible, as long as the widgets below are also visible.
  * on for all widgets, except surfaces which have to be switched visible
  * with s3dw_show() */
@@ -160,38 +166,32 @@ struct _s3dw_style {
 	float title_text_mat[12]; /* material for the text on the title bar */
 };
 /* button.c */
-#ifdef HAVE_GCCVISIBILITY
-#pragma GCC visibility push(default) /* Only export following functions */
-#endif
-s3dw_button   *s3dw_button_new(s3dw_surface *surface, char *text, float posx, float posy);
-s3dw_label    *s3dw_label_new(s3dw_surface *surface, char *text, float posx, float posy);
-s3dw_input    *s3dw_input_new(s3dw_surface *surface, float width, float posx, float posy);
-s3dw_textbox   *s3dw_textbox_new(s3dw_surface *surface, char *text, float posx, float posy, float width, float height);
-char     *s3dw_input_gettext(s3dw_input *input);
-void      s3dw_input_change_text(s3dw_input *input, char *text);
-void      s3dw_label_change_text(s3dw_label *label, char *text);
-s3dw_surface   *s3dw_surface_new(char *title, float width, float height);
+S3DWEXPORT s3dw_button   *s3dw_button_new(s3dw_surface *surface, char *text, float posx, float posy);
+S3DWEXPORT s3dw_label    *s3dw_label_new(s3dw_surface *surface, char *text, float posx, float posy);
+S3DWEXPORT s3dw_input    *s3dw_input_new(s3dw_surface *surface, float width, float posx, float posy);
+S3DWEXPORT s3dw_textbox   *s3dw_textbox_new(s3dw_surface *surface, char *text, float posx, float posy, float width, float height);
+S3DWEXPORT char     *s3dw_input_gettext(s3dw_input *input);
+S3DWEXPORT void      s3dw_input_change_text(s3dw_input *input, char *text);
+S3DWEXPORT void      s3dw_label_change_text(s3dw_label *label, char *text);
+S3DWEXPORT s3dw_surface   *s3dw_surface_new(char *title, float width, float height);
 
-s3dw_widget   *s3dw_getroot(void);
-void     s3dw_moveit(s3dw_widget *widget);
-void      s3dw_delete(s3dw_widget *widget);
-void      s3dw_show(s3dw_widget *widget);
-void      s3dw_focus(s3dw_widget *focus);
+S3DWEXPORT s3dw_widget   *s3dw_getroot(void);
+S3DWEXPORT void     s3dw_moveit(s3dw_widget *widget);
+S3DWEXPORT void      s3dw_delete(s3dw_widget *widget);
+S3DWEXPORT void      s3dw_show(s3dw_widget *widget);
+S3DWEXPORT void      s3dw_focus(s3dw_widget *focus);
 
-void      s3dw_textbox_scrollup(s3dw_textbox *textbox);
-void      s3dw_textbox_scrolldown(s3dw_textbox *textbox);
-void      s3dw_textbox_scrollleft(s3dw_textbox *textbox);
-void      s3dw_textbox_scrollright(s3dw_textbox *textbox);
-void      s3dw_textbox_scrollto(s3dw_textbox *textbox, int x, int y);
-void      s3dw_textbox_change_text(s3dw_textbox *textbox, char *text);
+S3DWEXPORT void      s3dw_textbox_scrollup(s3dw_textbox *textbox);
+S3DWEXPORT void      s3dw_textbox_scrolldown(s3dw_textbox *textbox);
+S3DWEXPORT void      s3dw_textbox_scrollleft(s3dw_textbox *textbox);
+S3DWEXPORT void      s3dw_textbox_scrollright(s3dw_textbox *textbox);
+S3DWEXPORT void      s3dw_textbox_scrollto(s3dw_textbox *textbox, int x, int y);
+S3DWEXPORT void      s3dw_textbox_change_text(s3dw_textbox *textbox, char *text);
 
-int      s3dw_handle_click(struct s3d_evt *evt);
-int      s3dw_handle_key(struct s3d_evt *evt);
-int      s3dw_object_info(struct s3d_evt *evt);
+S3DWEXPORT int      s3dw_handle_click(struct s3d_evt *evt);
+S3DWEXPORT int      s3dw_handle_key(struct s3d_evt *evt);
+S3DWEXPORT int      s3dw_object_info(struct s3d_evt *evt);
 
-void      s3dw_ani_mate(void);
-#ifdef HAVE_GCCVISIBILITY
-#pragma GCC visibility pop
-#endif
+S3DWEXPORT void      s3dw_ani_mate(void);
 
 #endif

@@ -23,6 +23,12 @@
 #ifndef LIBS3D_H
 #define LIBS3D_H
 
+#ifdef HAVE_GCCVISIBILITY
+#define S3DEXPORT __attribute__ ((visibility("default")))
+#else
+#define S3DEXPORT
+#endif
+
 #include <stdint.h>  /* [u]intXX_t type definitions*/
 /* definitions */
 struct s3d_evt {
@@ -81,113 +87,107 @@ struct s3d_key_event {
 };
 
 /* framework functions */
-#ifdef HAVE_GCCVISIBILITY
-#pragma GCC visibility push(default) /* Only export following functions */
-#endif
-void s3d_usage(void);
-int s3d_init(int *argc, char ***argv, char *name);
-int s3d_quit(void);
-int s3d_mainloop(void (*f)(void));
+S3DEXPORT void s3d_usage(void);
+S3DEXPORT int s3d_init(int *argc, char ***argv, char *name);
+S3DEXPORT int s3d_quit(void);
+S3DEXPORT int s3d_mainloop(void (*f)(void));
 
 /* object manipulations */
-int s3d_push_vertex(int object, float x, float y, float z);
-int s3d_push_vertices(int object, float *vbuf, uint16_t n);
-int s3d_push_material(int object,
+S3DEXPORT int s3d_push_vertex(int object, float x, float y, float z);
+S3DEXPORT int s3d_push_vertices(int object, float *vbuf, uint16_t n);
+S3DEXPORT int s3d_push_material(int object,
                       float amb_r, float amb_g, float amb_b,
                       float spec_r, float spec_g, float spec_b,
                       float diff_r, float diff_g, float diff_b);
-int s3d_pep_material(int object,
+S3DEXPORT int s3d_pep_material(int object,
                      float amb_r, float amb_g, float amb_b,
                      float spec_r, float spec_g, float spec_b,
                      float diff_r, float diff_g, float diff_b);
-int s3d_push_material_a(int object,
+S3DEXPORT int s3d_push_material_a(int object,
                         float amb_r, float amb_g, float amb_b, float amb_a,
                         float spec_r, float spec_g, float spec_b, float spec_a,
                         float diff_r, float diff_g, float diff_b, float diff_a);
-int s3d_push_materials_a(int object, float *mbuf, uint16_t n);
-int s3d_pep_material_a(int object,
+S3DEXPORT int s3d_push_materials_a(int object, float *mbuf, uint16_t n);
+S3DEXPORT int s3d_pep_material_a(int object,
                        float amb_r, float amb_g, float amb_b, float amb_a,
                        float spec_r, float spec_g, float spec_b, float spec_a,
                        float diff_r, float diff_g, float diff_b, float diff_a);
 
-int s3d_pep_materials_a(int object, float *mbuf, uint16_t n);
-int s3d_load_materials_a(int object, float *mbuf, uint32_t start, uint16_t n);
-int s3d_push_polygon(int object, uint32_t v1, uint32_t v2, uint32_t v3, uint32_t material);
-int s3d_push_polygons(int object, uint32_t *pbuf, uint16_t n);
-int s3d_push_line(int object, uint32_t v1, uint32_t v2, uint32_t material);
-int s3d_push_lines(int object, uint32_t *lbuf, uint16_t n);
-int s3d_push_texture(int object, uint16_t w, uint16_t h);
-int s3d_push_textures(int object, uint16_t *tbuf, uint16_t n);
-int s3d_pop_vertex(int object, uint32_t n);
-int s3d_pop_polygon(int object, uint32_t n);
-int s3d_pop_material(int object, uint32_t n);
-int s3d_pop_texture(int object, uint32_t n);
-int s3d_pop_polygon(int object, uint32_t n);
-int s3d_pop_line(int object, uint32_t n);
-int s3d_pep_line_normals(int object, float *nbuf, uint16_t n);
-int s3d_pep_polygon_normals(int object, float *nbuf, uint16_t n);
-int s3d_pep_polygon_tex_coord(int object, float x1, float y1, float x2, float y2, float x3, float y3);
-int s3d_pep_polygon_tex_coords(int object, float *tbuf, uint16_t n);
-int s3d_pep_material_texture(int object, uint32_t tex);
-int s3d_pep_vertex(int object, float x, float y, float z);
-int s3d_pep_vertices(int object, float *vbuf, uint16_t n);
-int s3d_pep_line(int object, int v1, int v2, int material);
-int s3d_pep_lines(int object, uint32_t *lbuf, uint16_t n);
-int s3d_load_line_normals(int object, float *nbuf, uint32_t start, uint16_t n);
-int s3d_load_polygon_normals(int object, float *nbuf, uint32_t start, uint16_t n);
-int s3d_load_polygon_tex_coords(int object, float *tbuf, uint32_t start, uint16_t n);
-int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h, uint8_t *data);
+S3DEXPORT int s3d_pep_materials_a(int object, float *mbuf, uint16_t n);
+S3DEXPORT int s3d_load_materials_a(int object, float *mbuf, uint32_t start, uint16_t n);
+S3DEXPORT int s3d_push_polygon(int object, uint32_t v1, uint32_t v2, uint32_t v3, uint32_t material);
+S3DEXPORT int s3d_push_polygons(int object, uint32_t *pbuf, uint16_t n);
+S3DEXPORT int s3d_push_line(int object, uint32_t v1, uint32_t v2, uint32_t material);
+S3DEXPORT int s3d_push_lines(int object, uint32_t *lbuf, uint16_t n);
+S3DEXPORT int s3d_push_texture(int object, uint16_t w, uint16_t h);
+S3DEXPORT int s3d_push_textures(int object, uint16_t *tbuf, uint16_t n);
+S3DEXPORT int s3d_pop_vertex(int object, uint32_t n);
+S3DEXPORT int s3d_pop_polygon(int object, uint32_t n);
+S3DEXPORT int s3d_pop_material(int object, uint32_t n);
+S3DEXPORT int s3d_pop_texture(int object, uint32_t n);
+S3DEXPORT int s3d_pop_polygon(int object, uint32_t n);
+S3DEXPORT int s3d_pop_line(int object, uint32_t n);
+S3DEXPORT int s3d_pep_line_normals(int object, float *nbuf, uint16_t n);
+S3DEXPORT int s3d_pep_polygon_normals(int object, float *nbuf, uint16_t n);
+S3DEXPORT int s3d_pep_polygon_tex_coord(int object, float x1, float y1, float x2, float y2, float x3, float y3);
+S3DEXPORT int s3d_pep_polygon_tex_coords(int object, float *tbuf, uint16_t n);
+S3DEXPORT int s3d_pep_material_texture(int object, uint32_t tex);
+S3DEXPORT int s3d_pep_vertex(int object, float x, float y, float z);
+S3DEXPORT int s3d_pep_vertices(int object, float *vbuf, uint16_t n);
+S3DEXPORT int s3d_pep_line(int object, int v1, int v2, int material);
+S3DEXPORT int s3d_pep_lines(int object, uint32_t *lbuf, uint16_t n);
+S3DEXPORT int s3d_load_line_normals(int object, float *nbuf, uint32_t start, uint16_t n);
+S3DEXPORT int s3d_load_polygon_normals(int object, float *nbuf, uint32_t start, uint16_t n) ;
+S3DEXPORT int s3d_load_polygon_tex_coords(int object, float *tbuf, uint32_t start, uint16_t n);
+S3DEXPORT int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h, uint8_t *data);
 
-int s3d_new_object(void);
-int s3d_del_object(int oid);
+S3DEXPORT int s3d_new_object(void);
+S3DEXPORT int s3d_del_object(int oid);
 
-int s3d_clone(int oid);
-int s3d_clone_target(int oid, int toid);
+S3DEXPORT int s3d_clone(int oid);
+S3DEXPORT int s3d_clone_target(int oid, int toid);
 
-int s3d_link(int oid_from, int oid_to);
-int s3d_unlink(int oid);
+S3DEXPORT int s3d_link(int oid_from, int oid_to);
+S3DEXPORT int s3d_unlink(int oid);
 
-int s3d_flags_on(int object, uint32_t flags);
-int s3d_flags_off(int object, uint32_t flags);
-int s3d_translate(int object, float x, float y, float z);
-int s3d_rotate(int object, float x, float y, float z);
-int s3d_scale(int object, float s);
+S3DEXPORT int s3d_flags_on(int object, uint32_t flags);
+S3DEXPORT int s3d_flags_off(int object, uint32_t flags);
+S3DEXPORT int s3d_translate(int object, float x, float y, float z);
+S3DEXPORT int s3d_rotate(int object, float x, float y, float z);
+S3DEXPORT int s3d_scale(int object, float s);
 
 /* high-level object creating */
-int s3d_import_model_file(char *fname);
-int s3d_open_file(char *fname, char **pointer);
-int s3d_select_font(char *mask);
-int s3d_draw_string(char *str, float *xlen);
-float s3d_strlen(char *str);
+S3DEXPORT int s3d_import_model_file(char *fname);
+S3DEXPORT int s3d_open_file(char *fname, char **pointer);
+S3DEXPORT int s3d_select_font(char *mask);
+S3DEXPORT int s3d_draw_string(char *str, float *xlen);
+S3DEXPORT float s3d_strlen(char *str);
 
 /* some vector calculation helpers */
 
-float s3d_vector_length(float vector[]);
-float s3d_vector_dot_product(float vector1[], float vector2[]);
-void s3d_vector_subtract(float vector1[], float vector2[], float result_vector[]);
-float s3d_vector_angle(float vector1[], float vector2[]);
-float s3d_angle_to_cam(float obj_pos[], float cam_pos[], float *angle_rad);
-void s3d_vector_cross_product(float vector1[], float vector2[], float result_vector[]);
+S3DEXPORT float s3d_vector_length(float vector[]);
+S3DEXPORT float s3d_vector_dot_product(float vector1[], float vector2[]);
+S3DEXPORT void s3d_vector_subtract(float vector1[], float vector2[], float result_vector[]);
+S3DEXPORT float s3d_vector_angle(float vector1[], float vector2[]);
+S3DEXPORT float s3d_angle_to_cam(float obj_pos[], float cam_pos[], float *angle_rad);
+S3DEXPORT void s3d_vector_cross_product(float vector1[], float vector2[], float result_vector[]);
 
 /* event handlers */
-void s3d_push_event(struct s3d_evt *newevt);
-struct s3d_evt *s3d_pop_event(void);
-struct s3d_evt *s3d_find_event(uint8_t event);
-int s3d_delete_event(struct s3d_evt *devt);
+S3DEXPORT void s3d_push_event(struct s3d_evt *newevt);
+S3DEXPORT struct s3d_evt *s3d_pop_event(void);
+S3DEXPORT struct s3d_evt *s3d_find_event(uint8_t event);
+S3DEXPORT int s3d_delete_event(struct s3d_evt *devt);
 
-void s3d_set_callback(uint8_t event, s3d_cb func);
-void s3d_clear_callback(uint8_t event);
-void s3d_ignore_callback(uint8_t event);
-s3d_cb s3d_get_callback(uint8_t event);
-void s3d_process_stack(void);
+S3DEXPORT void s3d_set_callback(uint8_t event, s3d_cb func);
+S3DEXPORT void s3d_clear_callback(uint8_t event);
+S3DEXPORT void s3d_ignore_callback(uint8_t event);
+S3DEXPORT s3d_cb s3d_get_callback(uint8_t event);
+S3DEXPORT void s3d_process_stack(void);
 
 /* mcp special */
-int s3d_mcp_focus(int object);
+S3DEXPORT int s3d_mcp_focus(int object);
 
 /* for apps which don't employ s3d_mainloop() */
-int s3d_net_check(void);
-#ifdef HAVE_GCCVISIBILITY
-#pragma GCC visibility pop
-#endif
+S3DEXPORT int s3d_net_check(void);
 
 #endif

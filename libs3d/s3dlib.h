@@ -41,6 +41,12 @@
 #endif
 #endif
 
+#ifdef HAVE_GCCVISIBILITY
+#define S3DEXPORT __attribute__ ((visibility("default")))
+#else
+#define S3DEXPORT
+#endif
+
 #define VLOW 1
 #define LOW  2
 #define MED  3
@@ -90,16 +96,9 @@ struct s3d_tex {
 } __attribute__((__packed__));
 
 #ifdef DEBUG
-#ifdef HAVE_GCCVISIBILITY
-#pragma GCC visibility push(default) /* Only export following functions */
-#endif
-void s3dprintf(int relevance, const char *fmt, ...);
-void errdn(int relevance, char *func, int en);
-void errds(int relevance, char *func, const char *fmt, ...);
-#ifdef HAVE_GCCVISIBILITY
-#pragma GCC visibility pop
-#endif
-
+S3DEXPORT void s3dprintf(int relevance, const char *fmt, ...);
+S3DEXPORT void errdn(int relevance, char *func, int en);
+S3DEXPORT void errds(int relevance, char *func, const char *fmt, ...);
 #else
 static __inline__ void s3dprintf(int S3DUNUSED(relevance),
                                  const char *S3DUNUSED(fmt), ...) {}
