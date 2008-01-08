@@ -150,8 +150,6 @@ static void *server(void *args)
 
 		}
 	}
-
-	return NULL;
 }
 
 int main(void)

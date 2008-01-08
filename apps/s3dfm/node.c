@@ -134,7 +134,6 @@ int node_undisplay(t_node *dir)
 	default:
 		return(-1);
 	}
-	dir->disp = 0;
 }
 
 /* delete a node and all its kids internally, remove the graphics, reorder the parents etc ... */

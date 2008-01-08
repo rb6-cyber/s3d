@@ -50,7 +50,6 @@ int user_main(void)
 	default:
 		return(0);
 	}
-	return(0);
 }
 void user_key(uint16_t key, uint16_t unicode, uint16_t mod, int state)
 {

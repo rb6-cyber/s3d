@@ -313,8 +313,6 @@ int fs_fl_move(filelist *fl, char *dest)
 	}
 
 	return(r);
-
-	return(0);
 }
 
 /* write an error and wait for a reaction */

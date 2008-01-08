@@ -265,8 +265,6 @@ static int image_convert(XImage *image, char *bitmap)
 				}
 			}
 			break;
-
-		return(0);
 	}
 	return(-1);
 }
