@@ -1,13 +1,14 @@
-IUSE=""
-
-SRC_URI="http://download.berlios.de/${PN}/${P}.tar.bz2"
+# Copyright 2004-2008 S3D Team
+# Distributed under the terms of the GNU General Public License v2
 
 DESCRIPTION="a 3d network display server"
 HOMEPAGE="http://s3d.berlios.de/"
+SRC_URI="http://download.berlios.de/${PN}/${P}.tar.bz2"
 
-LICENSE="GPL-2 LGPL"
-KEYWORDS="x86"
+LICENSE="GPL-2 LGPL-2.1"
 SLOT="0"
+KEYWORDS="x86"
+IUSE=""
 
 DEPEND="${RDEPEND}
 	>=sys-devel/autoconf-2.59
@@ -48,4 +49,3 @@ src_compile() {
 src_install() {
 	emake DESTDIR="${D}" install || die
 }
-

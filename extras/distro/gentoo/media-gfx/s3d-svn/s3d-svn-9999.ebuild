@@ -1,15 +1,16 @@
+# Copyright 2004-2008 S3D Team
+# Distributed under the terms of the GNU General Public License v2
+
 inherit subversion
-
-IUSE="gps doc xcomposite"
-
-ESVN_REPO_URI="http://svn.berlios.de/svnroot/repos/s3d/trunk"
 
 DESCRIPTION="a 3d network display server"
 HOMEPAGE="http://s3d.berlios.de/"
+ESVN_REPO_URI="http://svn.berlios.de/svnroot/repos/s3d/trunk"
 
-LICENSE="GPL-2 LGPL"
-KEYWORDS="~x86 ~amd64"
+LICENSE="GPL-2 LGPL-2.1"
 SLOT="0"
+KEYWORDS="~x86 ~amd64"
+IUSE="gps doc xcomposite"
 
 DEPEND="${RDEPEND}
 	sys-devel/flex
@@ -54,4 +55,3 @@ src_install() {
 	emake DESTDIR="${D}" install || die
 	dodoc ChangeLog README TODO
 }
-

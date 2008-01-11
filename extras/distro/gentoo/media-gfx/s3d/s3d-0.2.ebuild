@@ -1,13 +1,14 @@
-IUSE="gps doc"
-
-SRC_URI="http://download.berlios.de/${PN}/${P}.tar.bz2"
+# Copyright 2004-2008 S3D Team
+# Distributed under the terms of the GNU General Public License v2
 
 DESCRIPTION="a 3d network display server"
 HOMEPAGE="http://s3d.berlios.de/"
+SRC_URI="http://download.berlios.de/${PN}/${P}.tar.bz2"
 
-LICENSE="GPL-2 LGPL"
-KEYWORDS="x86 amd64"
+LICENSE="GPL-2 LGPL-2.1"
 SLOT="0"
+KEYWORDS="x86 amd64"
+IUSE="gps doc"
 
 DEPEND="${RDEPEND}
 	sys-devel/flex
@@ -35,7 +36,7 @@ RDEPEND="!media-gfx/s3d-svn
 		virtual/x11 )
 
 	doc? ( app-text/docbook-sgml-utils )
-	gps? ( sci-geosciences/gpsd )	
+	gps? ( sci-geosciences/gpsd )
 	virtual/glut
 	"
 
@@ -48,4 +49,3 @@ src_install() {
 	emake DESTDIR="${D}" install || die
 	dodoc ChangeLog README TODO
 }
-
