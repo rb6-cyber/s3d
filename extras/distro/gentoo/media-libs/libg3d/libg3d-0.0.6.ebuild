@@ -1,6 +1,8 @@
 # Copyright 2004-2008 S3D Team
 # Distributed under the terms of the GNU General Public License v2
 
+inherit eutils
+
 DESCRIPTION="library for loading 3D models of many file types"
 HOMEPAGE="https://gna.org/projects/libg3d/"
 SRC_URI="http://download.gna.org/${PN}/${P}.tar.gz"
@@ -24,6 +26,8 @@ RDEPEND="!<=media-gfx/s3d-0.1.1
 	"
 
 src_compile() {
+	epatch "${FILESDIR}"/${PN}-0.0.6-link_math.patch
+
 	econf \
 		$(use_enable gtk gtktest) \
 		$(use_enable xml xmltest) \

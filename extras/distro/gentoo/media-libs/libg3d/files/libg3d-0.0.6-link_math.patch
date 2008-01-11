@@ -1,0 +1,24 @@
+diff -ruN libg3d-0.0.6.orig/src/Makefile.am libg3d-0.0.6/src/Makefile.am
+--- libg3d-0.0.6.orig/src/Makefile.am	2008-01-11 20:56:28.000000000 +0000
++++ libg3d-0.0.6/src/Makefile.am	2008-01-11 20:58:57.000000000 +0000
+@@ -28,5 +28,6 @@
+ 
+ libg3d_la_LIBADD = \
+ 	@GLIB_LIBS@ \
+-	@MAGIC_LIBS@
++	@MAGIC_LIBS@ \
++	-lm
+ 
+diff -ruN libg3d-0.0.6.orig/src/Makefile.in libg3d-0.0.6/src/Makefile.in
+--- libg3d-0.0.6.orig/src/Makefile.in	2008-01-11 20:56:28.000000000 +0000
++++ libg3d-0.0.6/src/Makefile.in	2008-01-11 20:58:57.000000000 +0000
+@@ -200,7 +200,8 @@
+ 
+ libg3d_la_LIBADD = \
+ 	@GLIB_LIBS@ \
+-	@MAGIC_LIBS@
++	@MAGIC_LIBS@ \
++	-lm
+ 
+ subdir = src
+ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4

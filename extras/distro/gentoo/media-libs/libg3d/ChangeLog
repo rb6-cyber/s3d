@@ -1,5 +1,11 @@
 # ChangeLog for media-gfx/libg3d
 
+  23 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> libg3d-0.0.3.ebuild,
+  libg3d-0.0.5.ebuild, libg3d-0.0.6.ebuild, +libg3d-0.0.3-link_math.patch,
+  +libg3d-0.0.6-link_math.patch:
+  Force direct linking against math library to protect against errors
+  in conjunktion with ld's "--as-needed".
+
   23 Dec 2006; Sven Eckelmann <sven.eckelmann@gmx.de> libg3d-0.0.6.ebuild:
   Mark amd64 as stable.
 
