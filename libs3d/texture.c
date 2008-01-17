@@ -144,5 +144,6 @@ int _s3d_texture_quit(void)
 	if (tex_hash == NULL)
 		return(-1);
 	_s3d_hash_delete(tex_hash, _s3d_free_s3dtex);
+	tex_hash= NULL;
 	return(0);
 }
