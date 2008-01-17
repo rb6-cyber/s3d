@@ -175,11 +175,14 @@ int shm_main(void)
 	struct buf_t   *dai; /* data in, data out */
 	struct t_process *new_p;
 	struct shmid_ds   d;
+	int iterations;
 	/* do*/
 	{
 		/*  found=0;*/
 		turn = 1;
+		iterations = 0;
 		for (i = 0;i < procs_n;i++) {
+			iterations++;
 #ifdef G_SDL
 			SDL_SetTimer(100, (SDL_TimerCallback) net_turn_off);
 #endif
@@ -193,6 +196,7 @@ int shm_main(void)
 						i--; /* evil hack: decrease i so it will be our turn again in the next round */
 					else {
 						s3dprintf(MED, "client %d [%s] seems to want to keep us busy ... ", i, procs_p[i].name);
+						SDL_SetTimer(100, (SDL_TimerCallback) net_turn_off);	/* restart timer */
 						turn = 1; /* don't decrease, it's next connections turn */
 					}
 				} else {
@@ -207,6 +211,11 @@ int shm_main(void)
 					}
 				}
 			}
+			if (iterations > 500) {
+				turn = 0;
+				iterations = 0;
+			}
+/*			s3dprintf(MED, "iterations: %d, turn = %d, i = %d\n", iterations, turn, i);*/
 		}
 #ifdef G_SDL
 		SDL_SetTimer(0, NULL);

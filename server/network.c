@@ -81,7 +81,7 @@ int network_init(void)
 #endif
 	return(0);
 }
-int      turn;
+volatile int      turn;
 int net_turn_off(int S3DUNUSED(interval))
 {
 	s3dprintf(VLOW, "Warning: High traffic on Network, interrupting read.");

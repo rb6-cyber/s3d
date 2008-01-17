@@ -203,7 +203,7 @@ void one_time(void);
 /*  network.c */
 extern uint8_t ibuf[MAXPLEN];
 extern uint8_t obuf[MAXPLEN];
-extern int turn;
+extern volatile int turn;
 void sigpipe_handler(int);
 void sigio_handler(int);
 int network_init(void);
