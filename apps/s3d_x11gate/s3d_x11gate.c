@@ -118,7 +118,7 @@ static void mainloop(void)
 				        (rs > 0 ? ((d & image->red_mask) >> rs) : ((d & image->red_mask) << -rs)) |
 				        (gs > 0 ? ((d & image->green_mask) >> gs) : ((d & image->green_mask) << -gs)) |
 				        (bs > 0 ? ((d & image->blue_mask) >> bs) : ((d & image->blue_mask) << -bs)) |
-				        255 << 24;
+				        255u << 24;
 				if (((uint32_t *)tex_image)[(y*width+x)] !=
 				                ((uint32_t *)otex_image)[(y*width+x)])
 					last_change = y;
@@ -185,7 +185,6 @@ static int mouseclick(struct s3d_evt *S3DX11UNUSED(event))
 	for (i = 0;i < 3;i++)
 		printf("[%d] %f\n", i, count[i] / iterations);
 	exit(0);
-	return(0);
 }
 int main(int argc, char **argv)
 {

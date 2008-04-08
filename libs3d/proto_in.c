@@ -31,7 +31,7 @@
 /*  this proccesses the commands and pushes s3d-events, or does other things ;) */
 int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 {
-	uint32_t oid = -1;
+	uint32_t oid = ~0u;
 	struct s3d_evt *s3devt = NULL;
 	struct mcp_object *mo;
 	struct s3d_obj_info *oi;
