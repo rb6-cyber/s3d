@@ -3,7 +3,7 @@
 
 DESCRIPTION="a 3d network display server"
 HOMEPAGE="http://s3d.berlios.de/"
-SRC_URI="http://download.berlios.de/${PN}/${P}.tar.bz2"
+SRC_URI="mirror://berlios/${PN}/${P}.tar.bz2"
 
 LICENSE="GPL-2 LGPL-2.1"
 SLOT="0"
