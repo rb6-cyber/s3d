@@ -40,6 +40,14 @@ else (G3D_FOUND)
 endif (G3D_FOUND)
 
 
+# find required lib and add include dir for G3D
+find_package(Math)
+if (MATH_FOUND)
+else (MATH_FOUND)
+	PkgError_Later("Could not find libm")
+endif (MATH_FOUND)
+
+
 # find required lib and add include dir for OPENGL
 find_package(OpenGL)
 if (OPENGL_FOUND)
@@ -156,10 +164,6 @@ include(TestGCCVisibility)
 
 # test how to mark parameter as explicit unused
 include(TestUnusedParam)
-
-
-# link always against math library
-link_libraries(m)
 
 
 # print errors (if found)
