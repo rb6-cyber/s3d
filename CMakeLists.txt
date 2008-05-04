@@ -26,13 +26,13 @@ include(SetCCWarnFlags)
 # Run configure stuff
 include(ConfigureChecks.cmake)
 
+add_subdirectory(libs3d)
+add_subdirectory(libs3dw)
 add_subdirectory(apps)
 add_subdirectory(svnonly)
 add_subdirectory(cmake)
 add_subdirectory(Documentation)
 add_subdirectory(example)
-add_subdirectory(libs3d)
-add_subdirectory(libs3dw)
 add_subdirectory(objs)
 add_subdirectory(server)
 

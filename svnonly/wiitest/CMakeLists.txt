@@ -4,7 +4,7 @@ if (CWIID_FOUND)
 	include_directories(${s3d_SOURCE_DIR}/libs3d ${CWIID_INCLUDE_DIR})
 
 	add_executable(wiitest wiitest.c)
-	target_link_libraries(wiitest s3d ${CWIID_LIBRARIES} ${MATH_LIBRARIES})
+	target_link_libraries(wiitest ${S3D_LIBRARIES} ${CWIID_LIBRARIES} ${MATH_LIBRARIES})
 
 	# install
 	install(TARGETS wiitest RUNTIME DESTINATION bin)

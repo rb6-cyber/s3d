@@ -137,6 +137,12 @@ if (XTST_FOUND)
 	add_definitions(${XTST_DEFINITIONS})
 endif (XTST_FOUND)
 
+# try to find lib and add include dir for Xtst
+find_package(X11)
+if (X11_FOUND)
+	add_definitions(${XTST_DEFINITIONS})
+endif (X11_FOUND)
+
 
 # test for shm
 include(TestForSHM)
