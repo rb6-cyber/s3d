@@ -29,12 +29,16 @@ include(ConfigureChecks.cmake)
 add_subdirectory(libs3d)
 add_subdirectory(libs3dw)
 add_subdirectory(apps)
-add_subdirectory(experimental)
 add_subdirectory(cmake)
 add_subdirectory(Documentation)
 add_subdirectory(example)
 add_subdirectory(objs)
 add_subdirectory(server)
+
+file(GLOB INCLUDE_EXPERIMENTAL experimental)
+if (INCLUDE_EXPERIMENTAL)
+	add_subdirectory(experimental)
+endif (INCLUDE_EXPERIMENTAL)
 
 # Generate s3drc
 configure_file(s3drc.cmake ${s3d_BINARY_DIR}/s3drc)
