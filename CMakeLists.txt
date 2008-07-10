@@ -5,7 +5,7 @@ set(VERSION 0.2.1)
 cmake_minimum_required(VERSION 2.4.4)
 
 # Add directory with library checks to search path
-set(CMAKE_MODULE_PATH "${s3d_SOURCE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
+list(APPEND CMAKE_MODULE_PATH "${s3d_SOURCE_DIR}/cmake/modules")
 
 # set path to objects
 set(OBJECTPATH "${CMAKE_INSTALL_PREFIX}/share/s3d/objs:${s3d_SOURCE_DIR}/objs")
