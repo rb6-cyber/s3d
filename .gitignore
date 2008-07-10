@@ -1,0 +1,11 @@
+*.[oa]
+*~
+*.so
+*.pc
+CMakeFiles
+cmake_install.cmake
+Makefile
+CMakeCache.txt
+config-s3d.h
+doc_output
+s3drc
