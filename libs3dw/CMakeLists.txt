@@ -2,6 +2,7 @@ include_directories(${s3d_SOURCE_DIR}/libs3d ${s3d_SOURCE_DIR}/libs3dw)
 
 add_library(s3dw SHARED animate.c arrange.c button.c event.c input.c
 	label.c root.c scrollbar.c style.c surface.c textbox.c widget.c)
+set_target_properties(s3dw PROPERTIES VERSION ${VERSION} SOVERSION 2)
 set(S3DW_LIBRARIES s3dw CACHE PATHS "Path to libraries")
 
 # install
