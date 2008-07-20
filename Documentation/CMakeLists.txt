@@ -23,8 +23,8 @@ if (DOCBOOK2HTML_COMPILER)
 	)
 
 	# install
-	file(GLOB DOCS ${Documentation_BINARY_DIR}/doc_output/*)
-	install(FILES ${DOCS} DESTINATION share/doc/s3d)
+	set(DOC_DIR ${CMAKE_INSTALL_PREFIX}/share/doc/s3d)
+	install(CODE "file(GLOB DOCS ${Documentation_BINARY_DIR}/doc_output/*)\n foreach(file \${DOCS}) \n file(INSTALL DESTINATION ${DOC_DIR} TYPE FILE FILES \"\${file}\") \n endforeach (file \"\${DOCS}\")")
 else (DOCBOOK2HTML_COMPILER)
 	PkgStatus_Later("docbook2html (pkg name: docbook-utils)")
 
