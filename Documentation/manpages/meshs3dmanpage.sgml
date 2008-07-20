@@ -1,0 +1,81 @@
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN">
+<refentry id="meshs3d">
+
+	<refmeta> 
+		<refentrytitle>meshs3d</refentrytitle>
+		<manvolnum>1</manvolnum>
+	</refmeta> 
+	
+	<refnamediv> 
+		<refname>meshs3d</refname>
+		<refpurpose> olsr/batman topology visualizer for s3d </refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv> 
+		<cmdsynopsis> 
+			<command>meshs3d</command>
+			<arg choice="opt">-d</arg>
+			<arg choice="opt">-H</arg>
+			<arg choice="opt">-h|--help</arg>
+			<arg choice="opt">--s3d-url</arg>
+		</cmdsynopsis>
+	</refsynopsisdiv> 
+	
+	<refsect1> 
+		<title>DESCRIPTION</title> 
+		<para>
+			<command>meshs3d(1)</command> is a  <!-- TODO -->
+		</para>
+		<para> </para>
+	</refsect1> 
+	
+	<refsect1>
+		<title>OPTIONS</title> 
+		<para> 
+			This program follows the usual GNU command line syntax. A summary of 
+			the options supported by <command>meshs3d</command> is below.
+		</para>
+		<variablelist>
+			<varlistentry> 
+				<term>-h, --help</term>
+				<listitem> 
+					<para> Show summary of options and exit. </para> 
+				</listitem> 
+			</varlistentry> 
+			<varlistentry> 
+				<term>-d</term>
+				<listitem> 
+					<para> Enable debug mode </para>
+				</listitem>
+			</varlistentry> 
+			<varlistentry> 
+				<term>-H</term> 
+				<listitem> 
+					<para> connect to olsr node. By default meshs3d uses localhost</para>
+				</listitem> 
+			</varlistentry>
+			<varlistentry>
+				<term>--s3d-url</term>
+				<listitem>
+					<para> skip S3D environment and connect to this url </para>
+				</listitem>
+			</varlistentry>
+		</variablelist> 
+	</refsect1> 
+		
+	<refsect1> 
+		<title>SEE ALSO</title>
+		<para> <ulink url="http://s3d.berlios.de/"> s3d project page on berlios </ulink> </para>
+		<!--TODO: ADD REFERENCE TO APPS AND /usr/share/doc/s3d/ -->
+	</refsect1>
+
+	<refsect1> 
+		<title>AUTHOR</title>
+		<para>
+			This manual page was written by Timo Schneider <email>timo.schneider@s2004.tu-chemnitz.de</email> 
+			for the Debian project (but may be used by others).
+		</para>
+	</refsect1>
+	
+</refentry> 
+

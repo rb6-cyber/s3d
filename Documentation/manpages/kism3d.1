@@ -3,35 +3,29 @@
 .\" <http://shell.ipoline.com/~elmert/comp/docbook2X/> 
 .\" Please send any bug reports, improvements, comments, patches, 
 .\" etc. to Steve Cheng <steve@ggi-project.org>.
-.TH "S3D" "1" "20 July 2008" "" ""
+.TH "KISM3D" "1" "20 July 2008" "" ""
 
 .SH NAME
-s3d \- network display server
+kism3d \- 802.11 visualizer for s3d
 .SH SYNOPSIS
 
-\fBs3d\fR [ \fB-s|--use-sdl\fR ] [ \fB-r|--rc\fR ] [ \fB-n|--no-rc\fR ] [ \fB-h|-?|--help\fR ]
+\fBkism3d\fR [ \fBHOST:PORT\fR ] [ \fB--s3d-url\fR ]
 
 .SH "DESCRIPTION"
 .PP
-\fBs3d(1)\fR is a network display server which can be used as 3d desktop environment.
+\fBkism3d(1)\fR is a  
 .PP
 .SH "OPTIONS"
 .PP
 This program follows the usual GNU command line syntax. A summary of 
-the options supported by \fBs3d\fR is below. 
+the options supported by \fBkism3d\fR is below.
 .TP
-\fB-h, -?, --help\fR
-Show summary of options and exit. 
+\fBHOST\fR
 .TP
-\fB-s, --use-sdl\fR
-Tells s3d to use SDL as graphics framework system. 
+\fBPORT\fR
 .TP
-\fB-r, --rc\fR
-Use the specified file as rc-script. By default s3d uses ~/.s3drc as
-per-user rc-script and /etc/s3drc as system-wide rc-script
-.TP
-\fB-n, --no-rc\fR
-Don't use rc-scripts even if the exist in the apropriate locations. 
+\fB--s3d-url\fR
+skip S3D environment and connect to this url 
 .SH "SEE ALSO"
 .PP
 s3d project page on berlios  <URL:http://s3d.berlios.de/> 
