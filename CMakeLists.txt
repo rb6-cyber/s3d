@@ -42,4 +42,4 @@ endif (INCLUDE_EXPERIMENTAL)
 
 # Generate s3drc
 configure_file(s3drc.cmake ${s3d_BINARY_DIR}/s3drc)
-install(FILES ${s3d_BINARY_DIR}/s3drc DESTINATION /etc)
+install(PROGRAMS ${s3d_BINARY_DIR}/s3drc DESTINATION /etc)
