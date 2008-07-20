@@ -67,7 +67,7 @@ static void sigint_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? *
 void s3d_usage(void)
 {
 	printf("s3d-parameters:\n");
-	printf(" --s3d-url <url>: skip S3D enviroment and connect to this url\n");
+	printf(" --s3d-url <url>: skip S3D environment and connect to this url\n");
 	printf(" --help, -?, -h, --s3d-help: this helpful text\n");
 }
 
@@ -123,7 +123,7 @@ int s3d_init(int *argc, char ***argv, char *name)
 
 	cb_lock = 1; /* don't bother while initiating ... is set to 0 after INIT packet received. */
 	if (NULL != (s = getenv("S3D"))) {
-		s3dprintf(VLOW, "at least we have the enviroment variable ... %s", s);
+		s3dprintf(VLOW, "at least we have the environment variable ... %s", s);
 		url = s;
 	}
 	parse_args(argc, argv);

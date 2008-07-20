@@ -24,7 +24,7 @@
 	<refsect1> 
 		<title>DESCRIPTION</title> 
 		<para>
-			<command>s3d(1)</command> is a network display server which can be used as 3d desktop enviroment.
+			<command>s3d(1)</command> is a network display server which can be used as 3d desktop environment.
 		</para>
 		<para> </para>
 	</refsect1> 
