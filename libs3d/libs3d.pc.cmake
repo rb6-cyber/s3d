@@ -6,6 +6,6 @@ includedir=@CMAKE_INSTALL_PREFIX@/include
 Name: libs3d
 Version: @VERSION@
 Description: Client library for the s3d server
-Requires: libg3d freetype2 fontconfig
+Requires: libg3d freetype2 fontconfig sdl
 Libs: -L${libdir} -ls3d
 Cflags: -I${includedir}
