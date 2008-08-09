@@ -1,19 +1,24 @@
-<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN">
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+  <!ENTITY debian      "<productname>Debian</productname>">
+
+  <!ENTITY program     "s3d">
+]>
 <refentry id="s3d"> 
 
 	<refmeta> 
-		<refentrytitle>s3d</refentrytitle>
+		<refentrytitle>&program;</refentrytitle>
 		<manvolnum>1</manvolnum>
 	</refmeta> 
 	
 	<refnamediv> 
-		<refname>s3d</refname> 
+		<refname>&program;</refname>
 		<refpurpose> network display server </refpurpose>
 	</refnamediv>
 	
 	<refsynopsisdiv> 
 		<cmdsynopsis> 
-			<command>s3d</command> 
+			<command>&program;</command>
 			<arg choice="opt">-s|--use-sdl</arg>
 			<arg choice="opt">-r|--rc</arg>
 			<arg choice="opt">-n|--no-rc</arg>
@@ -23,7 +28,7 @@
 	<refsect1> 
 		<title>DESCRIPTION</title> 
 		<para>
-			<command>s3d(1)</command> is a network display server which can be used as 3d desktop environment.
+			<command>&program;(1)</command> is a network display server which can be used as 3d desktop environment.
 		</para>
 		<para> </para>
 	</refsect1> 
@@ -31,20 +36,20 @@
 	<refsect1>
 		<title>OPTIONS</title> 
 		<para> 
-			This program follows the usual GNU command line syntax. A summary of 
-			the options supported by <command>s3d</command> is below. 
+			This program follows the usual &gnu; command line syntax. A summary of
+			the options supported by <command>&program;</command> is below.
 		</para>
 		<variablelist>
 			<varlistentry> 
 				<term>-s, --use-sdl</term> 
 				<listitem> 
-					<para> Tells s3d to use SDL as graphics framework system. </para>
+					<para> Tells &program; to use SDL as graphics framework system. </para>
 				</listitem>
 			</varlistentry> 
 			<varlistentry> 
 				<term>-r, --rc</term> 
 				<listitem> 
-					<para> Use the specified file as rc-script. By default s3d uses ~/.s3drc as
+					<para> Use the specified file as rc-script. By default &program; uses ~/.s3drc as
 						   per-user rc-script and /etc/s3drc as system-wide rc-script</para>
 				</listitem> 
 			</varlistentry>
@@ -67,7 +72,7 @@
 		<title>AUTHOR</title>
 		<para>
 			This manual page was written by Timo Schneider <email>timo.schneider@s2004.tu-chemnitz.de</email> 
-			for the Debian project (but may be used by others).
+			for the &debian; project (but may be used by others).
 		</para>
 	</refsect1>
 	

@@ -1,19 +1,24 @@
-<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN">
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+  <!ENTITY debian      "<productname>Debian</productname>">
+
+  <!ENTITY program     "s3dfm">
+]>
 <refentry id="s3dfm"> 
 
 	<refmeta> 
-		<refentrytitle>s3dfm</refentrytitle>
+		<refentrytitle>&program;</refentrytitle>
 		<manvolnum>1</manvolnum>
 	</refmeta> 
 	
 	<refnamediv> 
-		<refname>s3dfm</refname>
+		<refname>&program;</refname>
 		<refpurpose> s3d file manager </refpurpose>
 	</refnamediv>
 	
 	<refsynopsisdiv> 
 		<cmdsynopsis> 
-			<command>s3dfm</command>
+			<command>&program;</command>
 			<arg choice="opt">-h|--help</arg>
 			<arg choice="opt">--s3d-url</arg>
 		</cmdsynopsis>
@@ -22,7 +27,7 @@
 	<refsect1> 
 		<title>DESCRIPTION</title> 
 		<para>
-			<command>s3dfm(1)</command> is a  <!-- TODO -->
+			<command>&program;(1)</command> is a  <!-- TODO -->
 		</para>
 		<para> </para>
 	</refsect1> 
@@ -30,8 +35,8 @@
 	<refsect1>
 		<title>OPTIONS</title> 
 		<para> 
-			This program follows the usual GNU command line syntax. A summary of 
-			the options supported by <command>s3dfm</command> is below.
+			This program follows the usual &gnu; command line syntax. A summary of
+			the options supported by <command>&program;</command> is below.
 		</para>
 		<variablelist>
 			<varlistentry> 
@@ -59,7 +64,7 @@
 		<title>AUTHOR</title>
 		<para>
 			This manual page was written by Timo Schneider <email>timo.schneider@s2004.tu-chemnitz.de</email> 
-			for the Debian project (but may be used by others).
+			for the &debian; project (but may be used by others).
 		</para>
 	</refsect1>
 	

@@ -1,19 +1,24 @@
-<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN">
-<refentry id="s3d_x11gate">
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+  <!ENTITY debian      "<productname>Debian</productname>">
+
+  <!ENTITY program     "s3d_x11gate">
+]>
+<refentry id="s3dx11gate">
 
 	<refmeta>
-		<refentrytitle>s3d_x11gate</refentrytitle>
+		<refentrytitle>&program;</refentrytitle>
 		<manvolnum>1</manvolnum>
 	</refmeta>
 
 	<refnamediv>
-		<refname>s3d_x11gate</refname>
+		<refname>&program;</refname>
 		<refpurpose> 3d gateway for x11 desktops </refpurpose>
 	</refnamediv>
 
 	<refsynopsisdiv>
 		<cmdsynopsis>
-			<command>s3d_x11gate</command>
+			<command>&program;</command>
 			<arg choice="opt">-h|--help</arg>
 			<arg choice="opt">--s3d-url</arg>
 		</cmdsynopsis>
@@ -22,7 +27,7 @@
 	<refsect1>
 		<title>DESCRIPTION</title>
 		<para>
-			<command>s3d_x11gate(1)</command> is a  <!-- TODO -->
+			<command>&program;(1)</command> is a  <!-- TODO -->
 		</para>
 		<para> </para>
 	</refsect1>
@@ -30,8 +35,8 @@
 	<refsect1>
 		<title>OPTIONS</title>
 		<para>
-			This program follows the usual GNU command line syntax. A summary of
-			the options supported by <command>s3d_x11gate</command> is below.
+			This program follows the usual &gnu; command line syntax. A summary of
+			the options supported by <command>&program;</command> is below.
 		</para>
 		<variablelist>
 			<varlistentry>
@@ -59,7 +64,7 @@
 		<title>AUTHOR</title>
 		<para>
 			This manual page was written by Timo Schneider <email>timo.schneider@s2004.tu-chemnitz.de</email>
-			for the Debian project (but may be used by others).
+			for the &debian; project (but may be used by others).
 		</para>
 	</refsect1>
 
