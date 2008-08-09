@@ -68,7 +68,7 @@ void s3d_usage(void)
 {
 	printf("s3d-parameters:\n");
 	printf(" --s3d-url <url>: skip S3D environment and connect to this url\n");
-	printf(" --help, -?, -h, --s3d-help: this helpful text\n");
+	printf(" --help, -h, --s3d-help: this helpful text\n");
 }
 
 static int parse_args(int *argc, char ***argv)
@@ -96,7 +96,6 @@ static int parse_args(int *argc, char ***argv)
 			printf("usage: %s [options]", (*argv)[0]);
 			s3d_usage();
 			return(-1);
-		case '?':
 		default:
 			/* ignore args which are not for us, but maybe the app which builds on us */
 			break;

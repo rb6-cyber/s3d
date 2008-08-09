@@ -17,7 +17,6 @@
 			<arg choice="opt">-s|--use-sdl</arg>
 			<arg choice="opt">-r|--rc</arg>
 			<arg choice="opt">-n|--no-rc</arg>
-			<arg choice="opt">-h|-?|--help</arg>
 		</cmdsynopsis>
 	</refsynopsisdiv> 
 	
@@ -36,12 +35,6 @@
 			the options supported by <command>s3d</command> is below. 
 		</para>
 		<variablelist>
-			<varlistentry> 
-				<term>-h, -?, --help</term> 
-				<listitem> 
-					<para> Show summary of options and exit. </para> 
-				</listitem> 
-			</varlistentry> 
 			<varlistentry> 
 				<term>-s, --use-sdl</term> 
 				<listitem> 
