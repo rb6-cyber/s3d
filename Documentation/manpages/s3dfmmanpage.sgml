@@ -39,14 +39,16 @@
 			the options supported by <command>&program;</command> is below.
 		</para>
 		<variablelist>
-			<varlistentry> 
-				<term>-h, --help</term>
+			<varlistentry>
+				<term><option>-h</option>,
+					<option>--help</option>
+				</term>
 				<listitem> 
 					<para> Show summary of options and exit. </para> 
 				</listitem> 
 			</varlistentry>
 			<varlistentry>
-				<term>--s3d-url</term>
+				<term><option>--s3d-url</option></term>
 				<listitem>
 					<para> skip S3D environment and connect to this url </para>
 				</listitem>

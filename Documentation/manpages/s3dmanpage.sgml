@@ -41,20 +41,23 @@
 		</para>
 		<variablelist>
 			<varlistentry> 
-				<term>-s, --use-sdl</term> 
+				<term><option>-s</option>,
+					<option>--use-sdl</option></term>
 				<listitem> 
 					<para> Tells &program; to use SDL as graphics framework system. </para>
 				</listitem>
 			</varlistentry> 
 			<varlistentry> 
-				<term>-r, --rc</term> 
+				<term><option>-r</option>,
+					<option>--rc</option></term>
 				<listitem> 
 					<para> Use the specified file as rc-script. By default &program; uses ~/.s3drc as
 						   per-user rc-script and /etc/s3drc as system-wide rc-script</para>
 				</listitem> 
 			</varlistentry>
 			<varlistentry> 
-				<term>-n, --no-rc</term> 
+				<term><option>-n</option>,
+					<option>--no-rc</option></term>
 				<listitem> 
 					<para> Don't use rc-scripts even if the exist in the apropriate locations. </para>
 				</listitem> 

@@ -40,7 +40,7 @@
 		</para>
 		<variablelist>
 			<varlistentry> 
-				<term>HOST</term> 
+				<term>HOST</term>
 				<listitem> 
 					<para> <!-- TODO --> </para> 
 				</listitem> 
@@ -52,7 +52,7 @@
 				</listitem>
 			</varlistentry>
 			<varlistentry>
-				<term>--s3d-url</term>
+				<term><option>--s3d-url</option></term>
 				<listitem>
 					<para> skip S3D environment and connect to this url </para>
 				</listitem>
