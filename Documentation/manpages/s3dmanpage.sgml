@@ -20,7 +20,7 @@
 		<cmdsynopsis> 
 			<command>&program;</command>
 			<arg choice="opt">-s|--use-sdl</arg>
-			<arg choice="opt">-r|--rc</arg>
+			<arg choice="opt">-r|--rc <replaceable>rc-script</replaceable></arg>
 			<arg choice="opt">-n|--no-rc</arg>
 		</cmdsynopsis>
 	</refsynopsisdiv> 
@@ -48,8 +48,8 @@
 				</listitem>
 			</varlistentry> 
 			<varlistentry> 
-				<term><option>-r</option>,
-					<option>--rc</option></term>
+				<term><option>-r <replaceable>rc-script</replaceable></option>,
+					<option>--rc <replaceable>rc-script</replaceable></option></term>
 				<listitem> 
 					<para> Use the specified file as rc-script. By default &program; uses ~/.s3drc as
 						   per-user rc-script and /etc/s3drc as system-wide rc-script</para>

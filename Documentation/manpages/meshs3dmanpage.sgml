@@ -20,9 +20,9 @@
 		<cmdsynopsis> 
 			<command>&program;</command>
 			<arg choice="opt">-d</arg>
-			<arg choice="opt">-H</arg>
+			<arg choice="opt">-H <replaceable>node</replaceable></arg>
 			<arg choice="opt">-h|--help</arg>
-			<arg choice="opt">--s3d-url</arg>
+			<arg choice="opt">--s3d-url <replaceable>url</replaceable></arg>
 		</cmdsynopsis>
 	</refsynopsisdiv> 
 	
@@ -56,13 +56,13 @@
 				</listitem>
 			</varlistentry> 
 			<varlistentry> 
-				<term><option>-H</option></term>
+				<term><option>-H <replaceable>node</replaceable></option></term>
 				<listitem> 
 					<para> connect to olsr node. By default &program; uses localhost</para>
 				</listitem> 
 			</varlistentry>
 			<varlistentry>
-				<term><option>--s3d-url</option></term>
+				<term><option>--s3d-url <replaceable>url</replaceable></option></term>
 				<listitem>
 					<para> skip S3D environment and connect to this url </para>
 				</listitem>

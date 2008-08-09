@@ -19,8 +19,8 @@
 	<refsynopsisdiv> 
 		<cmdsynopsis> 
 			<command>&program;</command>
-			<arg choice="opt">HOST:PORT</arg>
-			<arg choice="opt">--s3d-url</arg>
+			<arg choice="opt">--s3d-url <replaceable>url</replaceable></arg>
+			<arg choice="plain"><replaceable>HOST</replaceable>:<replaceable>PORT</replaceable></arg>
 		</cmdsynopsis>
 	</refsynopsisdiv> 
 	
@@ -39,20 +39,8 @@
 			the options supported by <command>&program;</command> is below.
 		</para>
 		<variablelist>
-			<varlistentry> 
-				<term>HOST</term>
-				<listitem> 
-					<para> <!-- TODO --> </para> 
-				</listitem> 
-			</varlistentry> 
-			<varlistentry> 
-				<term>PORT</term>
-				<listitem> 
-					<para> <!-- TODO --> </para>
-				</listitem>
-			</varlistentry>
 			<varlistentry>
-				<term><option>--s3d-url</option></term>
+				<term><option>--s3d-url <replaceable>url</replaceable></option></term>
 				<listitem>
 					<para> skip S3D environment and connect to this url </para>
 				</listitem>

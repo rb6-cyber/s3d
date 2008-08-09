@@ -20,7 +20,7 @@
 		<cmdsynopsis> 
 			<command>&program;</command>
 			<arg choice="opt">-h|--help</arg>
-			<arg choice="opt">--s3d-url</arg>
+			<arg choice="opt">--s3d-url <replaceable>url</replaceable></arg>
 		</cmdsynopsis>
 	</refsynopsisdiv> 
 	
@@ -48,7 +48,7 @@
 				</listitem> 
 			</varlistentry>
 			<varlistentry>
-				<term><option>--s3d-url</option></term>
+				<term><option>--s3d-url <replaceable>url</replaceable></option></term>
 				<listitem>
 					<para> skip S3D environment and connect to this url </para>
 				</listitem>

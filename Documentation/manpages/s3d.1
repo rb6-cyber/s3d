@@ -9,7 +9,7 @@
 s3d \- network display server
 .SH SYNOPSIS
 
-\fBs3d\fR [ \fB-s|--use-sdl\fR ] [ \fB-r|--rc\fR ] [ \fB-n|--no-rc\fR ]
+\fBs3d\fR [ \fB-s|--use-sdl\fR ] [ \fB-r|--rc \fIrc-script\fB\fR ] [ \fB-n|--no-rc\fR ]
 
 .SH "DESCRIPTION"
 .PP
@@ -23,7 +23,7 @@ the options supported by \fBs3d\fR is below.
 \fB-s, --use-sdl\fR
 Tells s3d to use SDL as graphics framework system. 
 .TP
-\fB-r, --rc\fR
+\fB-r \fIrc-script\fB, --rc \fIrc-script\fB\fR
 Use the specified file as rc-script. By default s3d uses ~/.s3drc as
 per-user rc-script and /etc/s3drc as system-wide rc-script
 .TP
