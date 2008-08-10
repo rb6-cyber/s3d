@@ -58,6 +58,8 @@
 
 	<refsect1>
 		<title>SEE ALSO</title>
+		<para> <command>s3d</command>(1).</para>
+
 		<para> <ulink url="http://s3d.berlios.de/"> s3d project page on berlios </ulink> </para>
 		<!--TODO: ADD REFERENCE TO APPS AND /usr/share/doc/s3d/ -->
 	</refsect1>
