@@ -42,7 +42,7 @@
 	<refsect1> 
 		<title>DESCRIPTION</title> 
 		<para>
-			<command>&program;(1)</command> is a <!-- TODO -->
+			<command>&program;(1)</command> is a mcp (which is the window manager in s3d-terms) for s3d.
 		</para>
 		<para> </para>
 	</refsect1> 

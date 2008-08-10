@@ -27,7 +27,7 @@
 	<refsect1> 
 		<title>DESCRIPTION</title> 
 		<para>
-			<command>&program;(1)</command> is a  <!-- TODO -->
+			<command>&program;(1)</command> is a 3D 802.11 visualizer for kismet.
 		</para>
 		<para> </para>
 	</refsect1> 
