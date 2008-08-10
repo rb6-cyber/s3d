@@ -145,15 +145,12 @@ layer_t *parse_osm(char *buf, int length)
 layer_t *load_osm_web(float minlon, float minlat, float maxlon, float maxlat)
 {
 	int ret;
-	char *user = "foo@packetmixer.de";
-	char *pass = "foobar";
 	char url[1024];
 	char *fileBuf;      /* Pointer to downloaded data */
 	layer_t *layer;
 	snprintf(url, 1024, "www.openstreetmap.org/api/0.5/map?bbox=%f,%f,%f,%f", minlon, minlat, maxlon, maxlat);
 	printf("downloading url [ %s ]\n", url);
 
-	http_setAuth(user, pass);
 	ret = http_fetch(url, &fileBuf); /* Downloads page */
 	if (ret == -1) {
 		http_perror("http_fetch");
