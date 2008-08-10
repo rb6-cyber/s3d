@@ -52,7 +52,10 @@ static void parse_osm_way(xmlNodePtr cur)
 	way_t way;
 	xmlNodePtr kids;
 	xmlAttrPtr attr, kattr;
-	int seg;
+	int nd, last_nd;
+	segment_t segment;
+	static int seg = 0;
+	last_nd = 0;
 
 	way_init(&way);
 
@@ -62,31 +65,25 @@ static void parse_osm_way(xmlNodePtr cur)
 	db_insert_way_only(&way);
 	parse_osm_tags(OBJECT_T(&way), cur);
 	for (kids = cur->children;kids != NULL;kids = kids->next) {
-		if (0 == strcmp((char *)kids->name, "seg")) {
-			seg = -1;
+		if (0 == strcmp((char *)kids->name, "nd")) {
 			for (kattr = kids->properties;kattr;kattr = kattr->next)
-				if (0 == strcmp((char *)kattr->name, "id"))    seg = strtol((char *)kattr->children->content, NULL, 10);
-			db_insert_way_seg(&way, seg);
+				if (0 == strcmp((char *)kattr->name, "ref"))    nd = strtol((char *)kattr->children->content, NULL, 10);
+
+			if (last_nd != 0 && nd != 0) {
+				seg++;
+
+				segment_init(&segment);
+				segment.base.layerid = layerid;
+				segment.base.id = seg;
+				segment.from = last_nd;
+				segment.to = nd;
+				db_insert_segment(&segment);
+				parse_osm_tags(OBJECT_T(&segment), cur);
+
+				db_insert_way_seg(&way, seg);
+			}
+			last_nd = nd;
 		}
-	}
-}
-static void parse_osm_segment(xmlNodePtr cur)
-{
-	segment_t segment;
-	xmlAttrPtr attr;
-
-	segment_init(&segment);
-
-	segment.base.layerid = layerid;
-	for (attr = cur->properties;attr;attr = attr->next) {
-
-		if (0 == strcmp((char *)attr->name, "id"))    segment.base.id = strtol((char *)attr->children->content, NULL, 10);
-		else if (0 == strcmp((char *)attr->name, "from"))   segment.from =  strtod((char *)attr->children->content, NULL);
-		else if (0 == strcmp((char *)attr->name, "to"))   segment.to =   strtod((char *)attr->children->content, NULL);
-	}
-	if ((segment.base.id > 0) && (segment.from > 0) && (segment.to > 0)) {
-		db_insert_segment(&segment);
-		parse_osm_tags(OBJECT_T(&segment), cur);
 	}
 }
 static void parse_osm_node(xmlNodePtr cur)
@@ -136,7 +133,6 @@ layer_t *parse_osm(char *buf, int length)
 	for (cur = cur->children;cur != NULL; cur = cur->next) {
 		if (cur->type == XML_ELEMENT_NODE) {
 			if (0 == strcmp((char *)cur->name, "node"))    parse_osm_node(cur);
-			else if (0 == strcmp((char *)cur->name, "segment"))  parse_osm_segment(cur);
 			else if (0 == strcmp((char *)cur->name, "way"))   parse_osm_way(cur);
 		}
 		if ((i++) % 200 == 0)  load_update_status(100*((float)i) / n); /* report status */
@@ -154,7 +150,7 @@ layer_t *load_osm_web(float minlon, float minlat, float maxlon, float maxlat)
 	char url[1024];
 	char *fileBuf;      /* Pointer to downloaded data */
 	layer_t *layer;
-	snprintf(url, 1024, "www.openstreetmap.org/api/0.3/map?bbox=%f,%f,%f,%f", minlon, minlat, maxlon, maxlat);
+	snprintf(url, 1024, "www.openstreetmap.org/api/0.5/map?bbox=%f,%f,%f,%f", minlon, minlat, maxlon, maxlat);
 	printf("downloading url [ %s ]\n", url);
 
 	http_setAuth(user, pass);

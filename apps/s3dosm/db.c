@@ -60,10 +60,10 @@ int db_insert_node(node_t *node)
 
 	if (node->base.id == 0) /* give own id */
 		sqlite3_snprintf(MAXQ, addquery, "INSERT INTO node (layer_id, latitude, longitude, altitude, visible, tag_id) VALUES (%d, %f, %f, %f, %d, %d);",
-		         (int)node->base.layerid,    node->lat,  node->lon,  node->alt,  node->visible, (int)node->base.tagid);
+		                 (int)node->base.layerid,    node->lat,  node->lon,  node->alt,  node->visible, (int)node->base.tagid);
 	else
 		sqlite3_snprintf(MAXQ, addquery, "INSERT INTO node (layer_id, node_id,latitude, longitude, altitude, visible, tag_id) VALUES (%d, %d, %f, %f, %f, %d, %d);",
-		         (int)node->base.layerid, (int)node->base.id, node->lat,  node->lon,  node->alt,  node->visible, (int)node->base.tagid);
+		                 (int)node->base.layerid, (int)node->base.id, node->lat,  node->lon,  node->alt,  node->visible, (int)node->base.tagid);
 
 	db_exec(addquery, NULL, NULL);
 	return(0);
@@ -81,7 +81,7 @@ int db_insert_segment(segment_t *seg)
 	}
 
 	sqlite3_snprintf(MAXQ, addquery, "INSERT INTO segment (layer_id, seg_id, node_from, node_to, tag_id) VALUES (%d, %d, %d, %d, %d);",
-	         (int)seg->base.layerid, (int)seg->base.id, (int)seg->from, (int)seg->to, (int)seg->base.tagid);
+	                 (int)seg->base.layerid, (int)seg->base.id, (int)seg->from, (int)seg->to, (int)seg->base.tagid);
 	db_exec(addquery, NULL, NULL);
 
 	return(0);

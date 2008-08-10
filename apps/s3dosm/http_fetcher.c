@@ -388,11 +388,11 @@ int http_setAuth(const char *user, const char *pass)
 			i++;
 			break;
 		case 1:
-			o = ec64[ ((plain[i-1] & 0x3) << 4) | (plain[i] >> 4)];
+			o = ec64[((plain[i-1] & 0x3) << 4) | (plain[i] >> 4)];
 			i++;
 			break;
 		case 2:
-			o = (i >= len) ? '=' : ec64[ ((plain[i-1] & 0xf) << 2) | (plain[i] >> 6)];
+			o = (i >= len) ? '=' : ec64[((plain[i-1] & 0xf) << 2) | (plain[i] >> 6)];
 			break;
 		case 3:
 			o = (i >= len) ? '=' : ec64[ plain[i] & 0x3f];
