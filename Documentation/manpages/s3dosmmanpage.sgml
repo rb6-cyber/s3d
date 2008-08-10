@@ -19,15 +19,17 @@
 	<refsynopsisdiv>
 		<cmdsynopsis>
 			<command>&program;</command>
+			<arg choice="opt">-o|--osm <replaceable>MINLAT</replaceable>,<replaceable>MINLON</replaceable>,<replaceable>MAXLAT</replaceable>,<replaceable>MAXLON</replaceable></arg>
 			<arg choice="opt">-h|--help</arg>
 			<arg choice="opt">--s3d-url <replaceable>url</replaceable></arg>
+			<arg choice="opt"><replaceable>files</replaceable></arg>
 		</cmdsynopsis>
 	</refsynopsisdiv>
 
 	<refsect1>
 		<title>DESCRIPTION</title>
 		<para>
-			<command>&program;(1)</command> is a 3D gps card application for openstreetmap xml card data.
+			<command>&program;(1)</command> is a 3D gps card application for openstreetmap/kismet xml card data.
 		</para>
 		<para> </para>
 	</refsect1>
@@ -48,12 +50,32 @@
 				</listitem>
 			</varlistentry>
 			<varlistentry>
+				<term><option>-o</option>,
+					<option>--osm</option>
+					<replaceable>MINLAT</replaceable>,<replaceable>MINLON</replaceable>,<replaceable>MAXLAT</replaceable>,<replaceable>MAXLON</replaceable>
+				</term>
+				<listitem>
+					<para> Load a map with the given bounding box from the openstreetmap server. </para>
+				</listitem>
+			</varlistentry>
+			<varlistentry>
 				<term><option>--s3d-url <replaceable>url</replaceable></option></term>
 				<listitem>
 					<para> skip S3D environment and connect to this url </para>
 				</listitem>
 			</varlistentry>
 		</variablelist>
+	</refsect1>
+
+	<refsect1>
+		<title>EXAMPLES</title>
+		<para>
+		<screen
+><prompt>$ </prompt><userinput>s3osm --osm <replaceable>12.90142,50.82475,12.93352,50.84592</replaceable></userinput>
+<prompt>$ </prompt><userinput>s3osm <replaceable>osmdata</replaceable>.xml</userinput>
+</screen>
+
+		</para>
 	</refsect1>
 
 	<refsect1>
