@@ -48,7 +48,7 @@ int db_add_tag(object_t *obj, char *key, char *val)
 	char mkey[MAXQ], mval[MAXQ];
 	clean_string(mkey, key, MAXQ);
 	clean_string(mval, val, MAXQ);
-	snprintf(tagquery, MAXQ, "INSERT INTO tag VALUES (%d, '%s','%s' );", (int)obj->tagid, mkey, mval);
+	sqlite3_snprintf(MAXQ, tagquery, "INSERT INTO tag VALUES (%d, '%q','%q' );", (int)obj->tagid, mkey, mval);
 	db_exec(tagquery, NULL, NULL);
 	return(0);
 }
@@ -59,10 +59,10 @@ int db_insert_node(node_t *node)
 	node->base.tagid = tagid++;
 
 	if (node->base.id == 0) /* give own id */
-		snprintf(addquery, MAXQ, "INSERT INTO node (layer_id, latitude, longitude, altitude, visible, tag_id) VALUES (%d, %f, %f, %f, %d, %d);",
+		sqlite3_snprintf(MAXQ, addquery, "INSERT INTO node (layer_id, latitude, longitude, altitude, visible, tag_id) VALUES (%d, %f, %f, %f, %d, %d);",
 		         (int)node->base.layerid,    node->lat,  node->lon,  node->alt,  node->visible, (int)node->base.tagid);
 	else
-		snprintf(addquery, MAXQ, "INSERT INTO node (layer_id, node_id,latitude, longitude, altitude, visible, tag_id) VALUES (%d, %d, %f, %f, %f, %d, %d);",
+		sqlite3_snprintf(MAXQ, addquery, "INSERT INTO node (layer_id, node_id,latitude, longitude, altitude, visible, tag_id) VALUES (%d, %d, %f, %f, %f, %d, %d);",
 		         (int)node->base.layerid, (int)node->base.id, node->lat,  node->lon,  node->alt,  node->visible, (int)node->base.tagid);
 
 	db_exec(addquery, NULL, NULL);
@@ -79,11 +79,8 @@ int db_insert_segment(segment_t *seg)
 		printf("ugh, segment id is 0!\n");
 		exit(0);
 	}
-	/* if (seg->base.id==0) / * give own id * /
-	  snprintf(addquery,MAXQ,"INSERT INTO segment (layer_id, node_from, node_to, tag_id) VALUES (%d, %d, %d), %d;",
-	      (int)seg->base.layerid,    (int)seg->from, (int)seg->to, tagid );
-	 else*/
-	snprintf(addquery, MAXQ, "INSERT INTO segment (layer_id, seg_id, node_from, node_to, tag_id) VALUES (%d, %d, %d, %d, %d);",
+
+	sqlite3_snprintf(MAXQ, addquery, "INSERT INTO segment (layer_id, seg_id, node_from, node_to, tag_id) VALUES (%d, %d, %d, %d, %d);",
 	         (int)seg->base.layerid, (int)seg->base.id, (int)seg->from, (int)seg->to, (int)seg->base.tagid);
 	db_exec(addquery, NULL, NULL);
 
@@ -94,7 +91,7 @@ int db_insert_way_only(way_t *way)
 {
 	char addquery[MAXQ];
 	way->base.tagid = tagid++;
-	snprintf(addquery, MAXQ, "INSERT INTO way (layer_id, way_id, tag_id) VALUES (%d, %d, %d);", (int)way->base.layerid, (int)way->base.id, (int)way->base.tagid);
+	sqlite3_snprintf(MAXQ, addquery, "INSERT INTO way (layer_id, way_id, tag_id) VALUES (%d, %d, %d);", (int)way->base.layerid, (int)way->base.id, (int)way->base.tagid);
 	db_exec(addquery, NULL, NULL);
 	return(0);
 }
@@ -102,7 +99,7 @@ int db_insert_way_only(way_t *way)
 int db_insert_way_seg(way_t *way, int seg_n)
 {
 	char addquery[MAXQ];
-	snprintf(addquery, MAXQ, "UPDATE segment SET way_id=%d WHERE seg_id=%d AND layer_id=%d;", (int)way->base.id, seg_n, (int)way->base.layerid);
+	sqlite3_snprintf(MAXQ, addquery, "UPDATE segment SET way_id=%d WHERE seg_id=%d AND layer_id=%d;", (int)way->base.id, seg_n, (int)way->base.layerid);
 	db_exec(addquery, NULL, NULL);
 	return(0);
 }
@@ -115,10 +112,10 @@ int db_insert_layer(char *layer_name)
 	int layerid = -1;
 	clean_string(clayer, layer_name, MAXQ);
 
-	snprintf(findquery, MAXQ, "SELECT layer_id FROM layer WHERE name='%s';", clayer);
+	sqlite3_snprintf(MAXQ, findquery, "SELECT layer_id FROM layer WHERE name='%q';", clayer);
 	db_exec(findquery, db_getint, &layerid);
 	if (layerid == -1) { /* need to add */
-		snprintf(addquery, MAXQ, "INSERT INTO layer(name) VALUES ('%s');", clayer);
+		sqlite3_snprintf(MAXQ, addquery, "INSERT INTO layer(name) VALUES ('%q');", clayer);
 		db_exec(addquery, NULL, NULL);
 		db_flush();
 		db_exec(findquery, db_getint, &layerid);
@@ -139,7 +136,7 @@ int db_olsr_check(char *ip, float *pos)
 	if (NULL != (s = strchr(clean_ip, '/')))  /* don't process ip's with subnet information */
 		*s = 0; /* TERMINATING ZERO!! */
 
-	snprintf(findquery, MAXQ, "SELECT latitude, longitude, altitude FROM node WHERE tag_id=(SELECT tag_id FROM tag WHERE tagkey='ip' AND tagvalue='%s');", clean_ip);
+	sqlite3_snprintf(MAXQ, findquery, "SELECT latitude, longitude, altitude FROM node WHERE tag_id=(SELECT tag_id FROM tag WHERE tagkey='ip' AND tagvalue='%q');", clean_ip);
 	found = MAGIC;
 	db_exec(findquery, db_getpoint, p);
 	if (found == 1) {
@@ -215,7 +212,7 @@ int db_gettag(int tagid, char *field, char *target)
 {
 	char query[MAXQ];
 	target[0] = 0;
-	snprintf(query, MAXQ, "SELECT tagvalue FROM tag WHERE tagkey='%s' AND tag_id=%d;", field, tagid);
+	sqlite3_snprintf(MAXQ, query, "SELECT tagvalue FROM tag WHERE tagkey='%q' AND tag_id=%d;", field, tagid);
 	db_exec(query, db_getstr, target);
 	return(target[0] == 0);
 }
