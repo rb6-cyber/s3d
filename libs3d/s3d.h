@@ -86,6 +86,10 @@ struct s3d_key_event {
 	uint16_t state;  /* 0 = pressed, 1 = released */
 };
 
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /* framework functions */
 S3DEXPORT void s3d_usage(void);
 S3DEXPORT int s3d_init(int *argc, char ***argv, const char *name);
@@ -189,5 +193,9 @@ S3DEXPORT int s3d_mcp_focus(int object);
 
 /* for apps which don't employ s3d_mainloop() */
 S3DEXPORT int s3d_net_check(void);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+} /* extern "C" */
+#endif
 
 #endif

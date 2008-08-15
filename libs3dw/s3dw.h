@@ -165,6 +165,11 @@ struct _s3dw_style {
 	float title_mat[12];  /* material for the title bar */
 	float title_text_mat[12]; /* material for the text on the title bar */
 };
+
+#if defined(__cplusplus) || defined(c_plusplus)
+extern "C" {
+#endif
+
 /* button.c */
 S3DWEXPORT s3dw_button   *s3dw_button_new(s3dw_surface *surface, const char *text, float posx, float posy);
 S3DWEXPORT s3dw_label    *s3dw_label_new(s3dw_surface *surface, const char *text, float posx, float posy);
@@ -193,5 +198,9 @@ S3DWEXPORT int      s3dw_handle_key(struct s3d_evt *evt);
 S3DWEXPORT int      s3dw_object_info(struct s3d_evt *evt);
 
 S3DWEXPORT void      s3dw_ani_mate(void);
+
+#if defined(__cplusplus) || defined(c_plusplus)
+} /* extern "C" */
+#endif
 
 #endif
