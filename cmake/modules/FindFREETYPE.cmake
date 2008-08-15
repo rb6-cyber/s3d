@@ -1,64 +1,15 @@
-# Try to find FreeType
+# # Try to find FreeType
 #  FREETYPE_FOUND - If false, do not try to use FREETYPE.
-#  FREETYPE_INCLUDE_DIR - where to find freetype/config/ftheader.h and ft2build.h, etc.
+#  FREETYPE_INCLUDE_DIRS - where to find freetype/config/ftheader.h and ft2build.h, etc.
 #  FREETYPE_LIBRARIES - the libraries to link against
 #  FREETYPE_DEFINITIONS - switches required for FREETYPE
 
 
-if (FREETYPE_LIBRARIES AND FREETYPE_INCLUDE_DIR)
+if (FREETYPE_LIBRARIES AND FREETYPE_INCLUDE_DIRS)
 	# path set by user or was found in the past
 	set(FREETYPE_FOUND TRUE)
-else (FREETYPE_LIBRARIES AND FREETYPE_INCLUDE_DIR)
-	include(UsePkgConfig)
+else (FREETYPE_LIBRARIES AND FREETYPE_INCLUDE_DIRS)
+	find_package(PkgConfig)
 
-	pkgconfig(freetype2 _IncDir _LinkDir _LinkFlags _CFlags)
-	set(FREETYPE_DEFINITIONS ${_CFlags})
-
-	find_path(FREETYPE_INCLUDE_DIR
-		NAMES freetype/config/ftheader.h
-		PATHS
-			${_IncDir}
-			${_IncDir}/freetype2
-	)
-
-	find_path(FREETYPECONFIG_INCLUDE_DIR
-		NAMES ft2build.h
-		PATHS
-			${_IncDir}
-	)
-
-	find_library(FREETYPE_LIBRARIES
-		NAMES freetype
-		PATHS ${_LinkDir}
-	)
-
-	if (FREETYPE_INCLUDE_DIR AND FREETYPECONFIG_INCLUDE_DIR)
-		list(APPEND FREETYPE_INCLUDE_DIR ${FREETYPECONFIG_INCLUDE_DIR})
-	else (FREETYPE_INCLUDE_DIR AND FREETYPECONFIG_INCLUDE_DIR)
-		set(FREETYPE_INCLUDE_DIR)
-	endif (FREETYPE_INCLUDE_DIR AND FREETYPECONFIG_INCLUDE_DIR)
-
-	if (FREETYPE_INCLUDE_DIR AND FREETYPE_LIBRARIES)
-		set(FREETYPE_FOUND TRUE)
-	endif (FREETYPE_INCLUDE_DIR AND FREETYPE_LIBRARIES)
-
-	if (FREETYPE_FOUND)
-		if (NOT FREETYPE_FIND_QUIETLY)
-			message(STATUS "Found FREETYPE: ${FREETYPE_LIBRARIES}")
-		endif (NOT FREETYPE_FIND_QUIETLY)
-	else (FREETYPE_FOUND)
-		if (FREETYPE_FIND_REQUIRED)
-			message(FATAL_ERROR "Could not find FREETYPE")
-		endif (FREETYPE_FIND_REQUIRED)
-	endif (FREETYPE_FOUND)
-
-	# set visibility in cache
-	set(FREETYPE_INCLUDE_DIR ${FREETYPE_INCLUDE_DIR} CACHE PATH "Path to a file." FORCE)
-	set(FREETYPE_LIBRARIES ${FREETYPE_LIBRARIES} CACHE FILEPATH "Path to a library." FORCE)
-	set(FREETYPE_DEFINITIONS ${FREETYPE_DEFINITIONS} CACHE STRING "Defines for compilation." FORCE)
-	mark_as_advanced(FREETYPE_INCLUDE_DIR FREETYPE_LIBRARIES FREETYPE_DEFINITIONS)
-
-	# mark as internal
-	set(FREETYPECONFIG_INCLUDE_DIR ${FREETYPECONFIG_INCLUDE_DIR} CACHE INTERNAL "Path to a config file." FORCE)
-
-endif (FREETYPE_LIBRARIES AND FREETYPE_INCLUDE_DIR)
+	pkg_search_module(FREETYPE freetype2)
+endif (FREETYPE_LIBRARIES AND FREETYPE_INCLUDE_DIRS)

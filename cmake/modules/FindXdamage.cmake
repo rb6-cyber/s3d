@@ -8,14 +8,11 @@ if (XDAMAGE_LIBRARIES)
 	# path set by user or was found in the past
 	set(XDAMAGE_FOUND TRUE)
 else (XDAMAGE_LIBRARIES)
-	include(UsePkgConfig)
-
-	pkgconfig(xdamage _IncDir _LinkDir _LinkFlags _CFlags)
-	set(XDAMAGE_DEFINITIONS ${_CFlags})
+	set(XDAMAGE_DEFINITIONS "")
 
 	find_library(XDAMAGE_LIBRARIES
 		NAMES Xdamage
-		PATHS ${_LinkDir}
+		PATHS
 	)
 
 	if (XDAMAGE_LIBRARIES)
