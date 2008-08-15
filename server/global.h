@@ -159,7 +159,7 @@ struct t_obj {
 	float    scale;
 	t_mtrx   m;
 	int    m_uptodate;
-	float r, or;     /*  radius, object radius */
+	float r, o_r;     /*  radius, object radius */
 };
 #ifdef SHM
 struct t_shmcb {
@@ -266,16 +266,16 @@ void user_mouse(int button, int state, int x, int y);
 void user_key(unsigned short key, unsigned short unicode, unsigned short mod, int state);
 
 /*  error.c */
-void errn(char *func, int en);
-void errnf(char *func, int en);
-void errs(char *func, char *msg);
-void errsf(char *func, char *msg);
+void errn(const char *func, int en);
+void errnf(const char *func, int en);
+void errs(const char *func, const char *msg);
+void errsf(const char *func, const char *msg);
 #ifdef DEBUG
-void errds(int relevance, char *func, const char *fmt, ...);
+void errds(int relevance, const char *func, const char *fmt, ...);
 void s3dprintf(int relevance, const char *msg, ...);
 #else
 static __inline__ void errds(int relevance __attribute__((unused)),
-                             char *func __attribute__((unused)),
+                             const char *func __attribute__((unused)),
                              const char *fmt __attribute__((unused)), ...) {}
 static __inline__ void s3dprintf(int relevance __attribute__((unused)),
                                  const char *msg __attribute__((unused)), ...) {}
@@ -314,7 +314,7 @@ struct t_process *process_add(void);
 int process_del(int id);
 int process_init(void);
 int process_quit(void);
-struct t_process *process_protinit(struct t_process *p, char *name);
+struct t_process *process_protinit(struct t_process *p, const char *name);
 struct t_process *get_proc_by_pid(int pid);
 /*  object.c */
 int obj_debug(struct t_process *p, int32_t oid);

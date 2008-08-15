@@ -58,7 +58,7 @@ int fly_set_absolute_position(t_node *node)
 t_node *fly_create_anode(t_node *node)
 {
 	t_node *work;
-	work = malloc(sizeof(t_node));
+	work = (t_node*)malloc(sizeof(t_node));
 	node_init(work);
 	work->parent = node->parent;
 	work->scale = node->scale;

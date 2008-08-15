@@ -48,7 +48,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 	case S3D_P_S_CLICK:
 		if (length == 4) {
 			oid = ntohl(*((uint32_t *)buf));
-			if (NULL != (s3devt = malloc(sizeof(struct s3d_evt)))) {
+			if (NULL != (s3devt = (struct s3d_evt*)malloc(sizeof(struct s3d_evt)))) {
 				*((uint32_t *)buf) = oid;  /*  reuse buffer ... */
 				s3devt->event = S3D_EVENT_OBJ_CLICK;
 				s3devt->length = 4;
@@ -75,7 +75,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 		break;
 	case S3D_P_S_KEY:
 		if (length == 8) {
-			if (NULL != (s3devt = malloc(sizeof(struct s3d_evt)))) {
+			if (NULL != (s3devt = (struct s3d_evt*)malloc(sizeof(struct s3d_evt)))) {
 				struct s3d_key_event *keyevent;
 				s3devt->length = 2;
 				keyevent = (struct s3d_key_event *)buf;
@@ -91,7 +91,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 		break;
 	case S3D_P_S_MBUTTON:
 		if (length == 2) {
-			if (NULL != (s3devt = malloc(sizeof(struct s3d_evt)))) {
+			if (NULL != (s3devt = (struct s3d_evt*)malloc(sizeof(struct s3d_evt)))) {
 				s3devt->event = S3D_EVENT_MBUTTON;
 				s3devt->length = 2;
 				s3devt->buf = buf;
@@ -102,7 +102,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 	case S3D_P_MCP_OBJECT:
 		if (length == sizeof(struct mcp_object)) {
 			/*     oid=htonl(*((uint32_t *)buf)); */
-			if (NULL != (s3devt = malloc(sizeof(struct s3d_evt)))) {
+			if (NULL != (s3devt = (struct s3d_evt*)malloc(sizeof(struct s3d_evt)))) {
 				/*      *((uint32_t *)buf)=oid;  / *  reuse buffer ... * / */
 				s3devt->event = S3D_MCP_OBJECT;
 				s3devt->length = length;
@@ -120,7 +120,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 	case S3D_P_S_OINFO:
 		if (length == sizeof(struct s3d_obj_info)) {
 			/*     oid=htonl(*((uint32_t *)buf)); */
-			if (NULL != (s3devt = malloc(sizeof(struct s3d_evt)))) {
+			if (NULL != (s3devt = (struct s3d_evt*)malloc(sizeof(struct s3d_evt)))) {
 				/*      *((uint32_t *)buf)=oid;  / *  reuse buffer ... * / */
 				s3devt->event = S3D_EVENT_OBJ_INFO;
 				s3devt->length = length;
@@ -164,7 +164,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 
 	case S3D_P_MCP_DEL_OBJECT:
 		if (length == 4) {
-			if (NULL != (s3devt = malloc(sizeof(struct s3d_evt)))) {
+			if (NULL != (s3devt = (struct s3d_evt*)malloc(sizeof(struct s3d_evt)))) {
 				s3devt->event = S3D_MCP_DEL_OBJECT;
 				s3devt->length = length;
 				*((uint32_t *)buf) = ntohl(*((uint32_t *)buf));  /*  revert oid */

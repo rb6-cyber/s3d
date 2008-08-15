@@ -31,7 +31,7 @@
 #include <errno.h>   /* errno */
 #include <s3d.h>   /* s3d_usage() */
 
-char *read_file(char *fname, int *fsize)
+char *read_file(const char *fname, int *fsize)
 {
 	FILE *fp;
 	char *buf = NULL;
@@ -47,7 +47,7 @@ char *read_file(char *fname, int *fsize)
 		return(NULL);
 	}
 	filesize = bf.st_size;
-	if ((buf = malloc(filesize)) == NULL)  {
+	if ((buf = (char*)malloc(filesize)) == NULL)  {
 		fprintf(stderr, "read_file( %s ):malloc(): %s", fname, strerror(errno));
 		return(NULL);
 	}

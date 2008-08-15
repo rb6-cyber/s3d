@@ -78,7 +78,7 @@ struct window *window_find(Window id)
 struct window *window_add(Display *dpy, Window id)
 {
 	struct window *win;
-	win = malloc(sizeof(struct window));
+	win = (struct window *)malloc(sizeof(struct window));
 	if (!win)
 		return(NULL);
 
@@ -121,7 +121,12 @@ struct window *window_add(Display *dpy, Window id)
 /*	XSelectInput(dpy, win->id, SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);*/
 	XSelectInput(dpy, win->id, 0);
 
+#if defined(__cplusplus) || defined(c_plusplus)
+	if (win->attr.c_class != InputOnly)		/* don't create damage on these windows */
+#else
 	if (win->attr.class != InputOnly)		/* don't create damage on these windows */
+#endif 
+	
 		win->damage = XDamageCreate(dpy, win->id, XDamageReportNonEmpty);
 	if (win->next == NULL) 
 		window_restack(win, None);
@@ -292,15 +297,20 @@ void window_update_content(struct window *win)
 	if (win->attr.map_state == IsUnmapped)	/* not mapped images can't be grabbed */
 		return;
 
+#if defined(__cplusplus) || defined(c_plusplus)
+	if (win->attr.c_class == InputOnly)		/* can't grab image from this source */
+		return;
+#else
 	if (win->attr.class == InputOnly)		/* can't grab image from this source */
 		return;
+#endif
 
 	if (x < 0) x = 0;
 	if (y < 0) y = 0;
 	if (width > win->attr.width - x)   width = win->attr.width - x;
 	if (height > win->attr.height - y)   height = win->attr.height - y;
 
-	bitmap = malloc(TEXW * height * sizeof(uint32_t));
+	bitmap = (char*)malloc(TEXW * height * sizeof(uint32_t));
 	for (xleft = x; xleft < x + width ; xleft = xright) {
 		xright = (xleft + TEXW) & ~(TEXW - 1);
 		if (xright > (x + width))

@@ -130,7 +130,7 @@ static void no_button(s3dw_widget *S3DUNUSED(dummy))
 
 	s3dw_show(S3DWIDGET(surface));
 }
-static char *text = "okay\nn2\n3\nfooobarfooobar ...\noh no\n its too loooong\n";
+static const char *text = "okay\nn2\n3\nfooobarfooobar ...\noh no\n its too loooong\n";
 int main(int argc, char **argv)
 {
 	s3dw_button *button;

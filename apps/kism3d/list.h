@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
+#include <stdlib.h>
 
 struct list_head {
 	struct list_head *next, *prev;
@@ -75,29 +75,29 @@ struct list_head {
  * This is only for internal list manipulation where we know
  * the prev/next entries already!
  */
-static inline void __list_add(struct list_head *new,
+static inline void __list_add(struct list_head *n,
                               struct list_head *prev,
                               struct list_head *next)
 {
-	next->prev = new;
-	new->next = next;
-	new->prev = prev;
-	prev->next = new;
+	next->prev = n;
+	n->next = next;
+	n->prev = prev;
+	prev->next = n;
 }
 
 
 
 /**
  * list_add_tail - add a new entry
- * @new: new entry to be added
+ * @n: new entry to be added
  * @head: list head to add it before
  *
  * Insert a new entry before the specified head.
  * This is useful for implementing queues.
  */
-static inline void list_add_tail(struct list_head *new, struct list_head *head)
+static inline void list_add_tail(struct list_head *n, struct list_head *head)
 {
-	__list_add(new, head->prev, head);
+	__list_add(n, head->prev, head);
 }
 
 
@@ -125,7 +125,7 @@ static inline void __list_del(struct list_head *prev, struct list_head *next)
 static inline void list_del(struct list_head *entry)
 {
 	__list_del(entry->prev, entry->next);
-	entry->next = (void *) 0;
-	entry->prev = (void *) 0;
+	entry->next = NULL;
+	entry->prev = NULL;
 }
 

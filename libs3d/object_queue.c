@@ -54,7 +54,7 @@ int _queue_init(void)
 	int i;
 	queue_size = 1;
 	requested = 0;
-	queue = malloc(sizeof(unsigned int) * queue_size);
+	queue = (unsigned int*)malloc(sizeof(unsigned int) * queue_size);
 	for (i = 0;i < queue_size;i++) {
 		queue[i] = Q_UNUSED;
 	}
@@ -85,7 +85,7 @@ int _queue_new_object(unsigned int oid)
 	if (queue_size == 0) return(-1);  /*  already quit. */
 	/*  if we reach here, all slots all taken.  */
 	/*  s3dprintf(LOW,"no place for object, resizing stack.",i); */
-	queue = realloc(queue, sizeof(unsigned int) * (queue_size + 1));
+	queue = (unsigned int*)realloc(queue, sizeof(unsigned int) * (queue_size + 1));
 	queue_size += 1;
 	requested--;
 	queue[queue_size-1] = oid;

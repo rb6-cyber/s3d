@@ -130,7 +130,7 @@ int event_texshm(struct t_process *p, int32_t oid, int32_t tex)
 		shmtex_packet.th = htons(o->p_tex[tex].th);
 		shmtex_packet.w = htons(o->p_tex[tex].w);
 		shmtex_packet.h = htons(o->p_tex[tex].h);
-		prot_com_out(p, S3D_P_S_SHMTEX, (void *)&shmtex_packet, sizeof(shmtex_packet));
+		prot_com_out(p, S3D_P_S_SHMTEX, (uint8_t *)&shmtex_packet, sizeof(shmtex_packet));
 	}
 	return(0);
 }

@@ -58,9 +58,9 @@ static int wire_sphere(int slices, int stacks)
 	unsigned int *l; /* lines */
 	num_v = (stacks + 1) * slices;
 	num_l = stacks * slices + (stacks - 1) * slices; /* vertical + horizontal */
-	v = malloc(sizeof(float) * 3 * num_v);
-	n = malloc(sizeof(float) * 6 * num_l);
-	l = malloc(sizeof(unsigned int) * 3 * num_l);
+	v = (float*)malloc(sizeof(float) * 3 * num_v);
+	n = (float*)malloc(sizeof(float) * 6 * num_l);
+	l = (unsigned int*)malloc(sizeof(unsigned int) * 3 * num_l);
 	i = 0;
 	for (x = 0;x < slices;x++) {
 		alpha = (x * 360.0 / slices) * M_PI / 180.0;

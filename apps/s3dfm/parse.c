@@ -63,8 +63,8 @@ int parse_dir(t_node *dir)
 					/* i now holds the right index in sub, so we use dir->sub[i]
 					 * to reference the new item now... */
 					dir->n_sub++;
-					dir->sub = realloc(dir->sub , dir->n_sub * sizeof(t_node *));
-					dir->sub[i] = malloc(sizeof(t_node));
+					dir->sub = (struct _t_node**)realloc(dir->sub , dir->n_sub * sizeof(t_node *));
+					dir->sub[i] = (struct _t_node*)malloc(sizeof(t_node));
 					node_init(dir->sub[i]);
 					strncpy(dir->sub[i]->name, nstr, M_NAME);
 					dir->sub[i]->parent = dir;
@@ -96,7 +96,7 @@ int parse_dir(t_node *dir)
 				dir->check = 1;
 			}
 		/* if we removed something, then shrink the buffer accordingly .. */
-		if (dir->check)  dir->sub = realloc(dir->sub , dir->n_sub * sizeof(t_node *));
+		if (dir->check)  dir->sub = (struct _t_node**)realloc(dir->sub , dir->n_sub * sizeof(t_node *));
 		dir->parsed = 1;
 	}
 	return(0);

@@ -154,7 +154,7 @@ static void window_help(void)
 }
 
 
-void window_error(char *msg)
+void window_error(const char *msg)
 {
 
 	s3dw_surface *infwin;
@@ -1007,7 +1007,7 @@ void print_etx(void)
 		tmpNeighbour = tmpNeighbour->next_olsr_neigh_list;
 	}
 
-	Olsr_neighbour_label_obj = malloc(Size * sizeof(int));
+	Olsr_neighbour_label_obj = (int*)malloc(Size * sizeof(int));
 	tmpNeighbour = Olsr_node_pEtx->olsr_neigh_list;
 
 	for (i = 0; i < Size ;i++) {

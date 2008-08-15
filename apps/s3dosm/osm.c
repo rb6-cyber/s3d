@@ -108,7 +108,7 @@ static void parse_osm_node(xmlNodePtr cur)
 	}
 }
 /* parse the osm input file */
-layer_t *parse_osm(char *buf, int length)
+layer_t *parse_osm(const char *buf, int length)
 {
 	xmlDocPtr doc;
 	xmlNodePtr cur, c;
@@ -161,7 +161,7 @@ layer_t *load_osm_web(float minlon, float minlat, float maxlon, float maxlat)
 	free(fileBuf);
 	return layer;
 }
-layer_t *load_osm_file(char *filename)
+layer_t *load_osm_file(const char *filename)
 {
 	int length;
 	char *file;

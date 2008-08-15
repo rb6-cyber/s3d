@@ -46,7 +46,7 @@ struct wlan_client *get_wlan_client(char *mac) {
 
 
 	/* we reached the end of the list and must create a new wlan_network */
-	wlan_client = alloc_memory(sizeof(struct wlan_client));
+	wlan_client = (struct wlan_client*)alloc_memory(sizeof(struct wlan_client));
 
 	INIT_LIST_HEAD(&wlan_client->list);
 

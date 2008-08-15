@@ -110,7 +110,7 @@ static int parse_args(int *argc, char ***argv)
 	return(0);
 }
 /*  external functions go here ... */
-int s3d_init(int *argc, char ***argv, char *name)
+int s3d_init(int *argc, char ***argv, const char *name)
 {
 	char     *s;
 	char      urlc[256];   /*  this should be enough for an url */
@@ -189,7 +189,7 @@ int s3d_quit(void)
 		_queue_quit();
 		while (NULL != (ret = s3d_pop_event())) s3d_delete_event(ret);  /*  clear the stack ... */
 		cb_lock = 0; /* we don't care about old callbacks, now we just quit! */
-		ret = malloc(sizeof(struct s3d_evt));
+		ret = (struct s3d_evt *)malloc(sizeof(struct s3d_evt));
 		ret->event = S3D_EVENT_QUIT;
 		ret->length = 0;
 		s3d_push_event(ret);
@@ -210,7 +210,7 @@ int s3d_mainloop(void (*f)())
 }
 /*  opens a file returning it's filesize  */
 /*  and setting *pointer to the buffer. to be freed */
-int s3d_open_file(char *fname, char **pointer)
+int s3d_open_file(const char *fname, char **pointer)
 {
 	FILE *fp;
 	char *buf = NULL;
@@ -236,7 +236,7 @@ int s3d_open_file(char *fname, char **pointer)
 	}
 	filesize = bf.st_size;
 	/* s3dprintf(LOW, "opening %s, filesize is %d",fname, filesize);*/
-	if ((buf = malloc(filesize)) == NULL) {
+	if ((buf = (char *)malloc(filesize)) == NULL) {
 		errn("s3d_open_3ds_file():malloc()", errno);
 		exit(-1);
 	}

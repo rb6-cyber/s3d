@@ -41,13 +41,13 @@ void s3dprintf(int relevance, const char *fmt, ...)
 		fprintf(stderr, "s3dlib: %s\n", (char *)&dbm);
 	}
 }
-void errdn(int relevance, char *func, int en)
+void errdn(int relevance, const char *func, int en)
 {
 	if (relevance >= DEBUG)
 		fprintf(stderr, "s3dlib error: %s: (%d) %s\n", func, en, strerror(en));
 }
 
-void errds(int relevance, char *func, const char *fmt, ...)
+void errds(int relevance, const char *func, const char *fmt, ...)
 {
 	char dbm[DBM_MAX];
 	va_list args;
@@ -60,11 +60,11 @@ void errds(int relevance, char *func, const char *fmt, ...)
 	}
 }
 #endif
-void errn(char *func, int en)
+void errn(const char *func, int en)
 {
 	fprintf(stderr, "s3dlib error: %s: (%d) %s\n", func, en, strerror(en));
 }
-void errs(char *func, char *msg)
+void errs(const char *func, const char *msg)
 {
 	fprintf(stderr, "s3dlib error: %s: %s\n", func, msg);
 }

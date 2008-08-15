@@ -138,7 +138,7 @@ int ui_init(void)
 }
 
 /* initialize the loadwindow or change its caption text */
-int load_window(char *text)
+int load_window(const char *text)
 {
 	if (loadwindow == NULL) { /* create it */
 		loadwindow = s3dw_surface_new("Now loading ...", 20, 5);

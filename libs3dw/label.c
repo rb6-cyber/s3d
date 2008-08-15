@@ -50,7 +50,7 @@ void s3dw_label_hide(s3dw_widget *widget)
 	s3d_flags_off(widget->oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 }
 /* change label text */
-void s3dw_label_change_text(s3dw_label *label, char *text)
+void s3dw_label_change_text(s3dw_label *label, const char *text)
 {
 	s3dw_widget *widget = (s3dw_widget *)label;
 
@@ -65,7 +65,7 @@ void s3dw_label_change_text(s3dw_label *label, char *text)
 
 
 /* create a new label in the surface */
-s3dw_label *s3dw_label_new(s3dw_surface *surface, char *text, float posx, float posy)
+s3dw_label *s3dw_label_new(s3dw_surface *surface, const char *text, float posx, float posy)
 {
 	s3dw_label *label;
 	s3dw_widget *widget;

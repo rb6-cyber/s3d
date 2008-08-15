@@ -184,8 +184,8 @@ void term_addchar(char toprint)
 static int pipe_init_terminal(void)
 {
 	int uid = 0, gid = 0;
-	char *exe = "/bin/bash";
-	char *args = "-i";
+	const char *exe = "/bin/bash";
+	const char *args = "-i";
 
 	term_mode = M_PIPE;
 	if ((pipe(mpipe_in) == -1) || (pipe(mpipe_out) == -1)) {

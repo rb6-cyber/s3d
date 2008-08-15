@@ -159,7 +159,7 @@ static void handle_node(void)
 					ip[0] = max(node->ip, tmp_node->ip);
 					ip[1] = min(node->ip, tmp_node->ip);
 
-					if (NULL != (con = hash_find(con_hash, ip))) {
+					if (NULL != (con = (struct node_con*)hash_find(con_hash, ip))) {
 						s3d_del_object(con->obj_id);
 						con->obj_id = -1;
 					}
@@ -349,7 +349,7 @@ static void calc_node_mov(void)
 				ip[1] = sec_node->ip;
 				distance = dirt(first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec);
 
-				if ((NULL != (con = hash_find(con_hash, ip)))) {
+				if ((NULL != (con = (struct node_con*)hash_find(con_hash, ip)))) {
 
 					/* we have a connection */
 					wish_distance = ((con->etx1_sqrt + con->etx2_sqrt)) + 4;

@@ -69,7 +69,8 @@ int wii_init(char *addr)
 	if (addr != NULL) {
 		str2ba(addr, &bdaddr);
 	} else {
-		bdaddr = *BDADDR_ANY;
+		/* BDADDR_ANY */
+		memset(&bdaddr, 0, sizeof(bdaddr_t));
 	}
 
 	/* Connect to the wiimote */

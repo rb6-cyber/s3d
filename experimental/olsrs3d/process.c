@@ -83,7 +83,7 @@ static int add_olsr_con(struct olsr_node *con_from, struct olsr_node *con_to, fl
 	/* new connection */
 	if ((*olsr_con) == NULL) {
 
-		(*olsr_con) = malloc(sizeof(struct olsr_con));
+		(*olsr_con) = (struct olsr_con*)malloc(sizeof(struct olsr_con));
 		if ((*olsr_con) == NULL) out_of_mem();
 
 		/* create connection object */
@@ -133,14 +133,14 @@ static int add_olsr_con(struct olsr_node *con_from, struct olsr_node *con_to, fl
 		/* add new olsr connection to olsr nodes in order to access the connection from the olsr node */
 		olsr_neigh_list = &(*olsr_con)->left_olsr_node->olsr_neigh_list;
 		while ((*olsr_neigh_list) != NULL) olsr_neigh_list = &(*olsr_neigh_list)->next_olsr_neigh_list;
-		(*olsr_neigh_list) = malloc(sizeof(struct olsr_neigh_list));
+		(*olsr_neigh_list) = (struct olsr_neigh_list*)malloc(sizeof(struct olsr_neigh_list));
 		if ((*olsr_neigh_list) == NULL) out_of_mem();
 		(*olsr_neigh_list)->olsr_con = (*olsr_con);
 		(*olsr_neigh_list)->next_olsr_neigh_list = NULL;
 
 		olsr_neigh_list = &(*olsr_con)->right_olsr_node->olsr_neigh_list;
 		while ((*olsr_neigh_list) != NULL) olsr_neigh_list = &(*olsr_neigh_list)->next_olsr_neigh_list;
-		(*olsr_neigh_list) = malloc(sizeof(struct olsr_neigh_list));
+		(*olsr_neigh_list) = (struct olsr_neigh_list*)malloc(sizeof(struct olsr_neigh_list));
 		if ((*olsr_neigh_list) == NULL) out_of_mem();
 		(*olsr_neigh_list)->olsr_con = (*olsr_con);
 		(*olsr_neigh_list)->next_olsr_neigh_list = NULL;
@@ -164,7 +164,7 @@ static int add_olsr_con(struct olsr_node *con_from, struct olsr_node *con_to, fl
  *
  ***/
 
-static void* get_olsr_node(struct olsr_node **olsr_node, char *ip)
+static struct olsr_node* get_olsr_node(struct olsr_node **olsr_node, char *ip)
 {
 
 	int result;   /* result of strcmp */
@@ -210,7 +210,7 @@ static void* get_olsr_node(struct olsr_node **olsr_node, char *ip)
 	/* if node is NULL we reached the end of the tree and must create a new olsr_node */
 	if ((*olsr_node) == NULL) {
 
-		(*olsr_node) = malloc(sizeof(struct olsr_node));
+		(*olsr_node) = (struct olsr_node*)malloc(sizeof(struct olsr_node));
 		if ((*olsr_node) == NULL) out_of_mem();
 
 		(*olsr_node)->left = NULL;
@@ -272,18 +272,18 @@ void lst_initialize(void)
 
 void lst_add(int id, struct olsr_node **olsr_node)
 {
-	struct Obj_to_ip *new;
-	new = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
-	if (new == NULL)
+	struct Obj_to_ip *n;
+	n = (struct Obj_to_ip*) malloc(sizeof(struct Obj_to_ip));
+	if (n == NULL)
 		out_of_mem();
-	new->id = id;
-	new->olsr_node = *olsr_node;
+	n->id = id;
+	n->olsr_node = *olsr_node;
 	move_lst_ptr(&id);
-	new->prev = List_ptr;
-	new->next = List_ptr->next;
-	List_ptr->next->prev = new;
-	List_ptr->next = new;
-	/* printf("obj2ip: add object %d between %d .. %d ip %s to list\n",new->id,new->prev->id,new->next->id,new->olsr_node->ip); */
+	n->prev = List_ptr;
+	n->next = List_ptr->next;
+	List_ptr->next->prev = n;
+	List_ptr->next = n;
+	/* printf("obj2ip: add object %d between %d .. %d ip %s to list\n",n->id,n->prev->id,n->next->id,n->olsr_node->ip); */
 }
 
 /*

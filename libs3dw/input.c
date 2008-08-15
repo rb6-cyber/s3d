@@ -173,7 +173,7 @@ void s3dw_input_destroy(s3dw_widget *widget)
 	free(input);
 }
 /* changes the text of the input */
-void s3dw_input_change_text(s3dw_input *input, char *text)
+void s3dw_input_change_text(s3dw_input *input, const char *text)
 {
 	s3dw_widget *widget = (s3dw_widget *)input;
 	uint32_t oid_text;
@@ -198,7 +198,7 @@ int s3dw_input_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 	case S3DK_BACKSPACE:
 		len = strlen(input->text);
 		if ((len = strlen(input->text)) > 0) {
-			newtext = malloc(len + 0); /* +1 for the terminating byte, -1 for the deleted character */
+			newtext = (char *)malloc(len + 0); /* +1 for the terminating byte, -1 for the deleted character */
 			strncpy(newtext, input->text, len);
 			newtext[len-1] = 0;
 			s3dw_input_change_text(input, newtext);
@@ -209,7 +209,7 @@ int s3dw_input_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 	default:
 		if (isprint(key)) {
 			len = strlen(input->text);
-			newtext = malloc(len + 2); /* +1 for the terminating byte, +1 for the new character */
+			newtext = (char *)malloc(len + 2); /* +1 for the terminating byte, +1 for the new character */
 			strcpy(newtext, input->text);
 			newtext[len] = key;
 			newtext[len+1] = 0;

@@ -195,7 +195,7 @@ static int add_app(struct app *a)
 	return(0);
 }
 
-static void* find_app(int oid)
+static struct app* find_app(int oid)
 {
 	struct app *a = apps;
 	while (a != NULL) {
@@ -271,7 +271,7 @@ static int mcp_object(struct s3d_evt *hrmz)
 	mo = (struct mcp_object *)hrmz->buf;
 	if (NULL == (a = find_app(mo->object))) {
 		printf("adding new object ......");
-		a = malloc(sizeof(struct app));
+		a = (struct app*)malloc(sizeof(struct app));
 		a->oid = mo->object;
 		a->r = mo->r;
 		strncpy(a->name, mo->name, 256);

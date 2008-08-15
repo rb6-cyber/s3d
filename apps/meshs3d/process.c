@@ -53,7 +53,7 @@ static int long_comp(void *data1, void *data2)
 
 static int long_choose(void *data, int32_t size)
 {
-	unsigned char *key = data;
+	unsigned char *key = (unsigned char*)data;
 	uint32_t hash = 0;
 	size_t i;
 
@@ -77,7 +77,7 @@ static int orig_comp(void *data1, void *data2)
 /* hash algorithm from http://en.wikipedia.org/wiki/Hash_table */
 static int orig_choose(void *data, int32_t size)
 {
-	unsigned char *key = data;
+	unsigned char *key = (unsigned char*)data;
 	uint32_t hash = 0;
 	size_t i;
 
@@ -92,7 +92,7 @@ static int orig_choose(void *data, int32_t size)
 	return (hash % size);
 }
 
-static void exit_error(char *format, ...)
+static void exit_error(const char *format, ...)
 {
 	va_list args;
 

@@ -47,7 +47,7 @@ struct _layer_t {
 };
 
 struct _icon_t {
-	char *path;
+	const char *path;
 	int oid;
 };
 enum {
@@ -141,12 +141,12 @@ void    layerset_add(layer_t *layer);
 void mainloop(void);
 /* osm.c */
 void debug_obj(object_t *obj, void *dummy);
-layer_t *parse_osm(char *buf, int length);
-layer_t *load_osm_file(char *filename);
+layer_t *parse_osm(const char *buf, int length);
+layer_t *load_osm_file(const char *filename);
 layer_t *load_osm_web(float minlon, float minlat, float maxlon, float maxlat);
 /* kismet.c */
-layer_t *parse_kismet(char *buf, int length);
-layer_t *load_kismet_file(char *filename);
+layer_t *parse_kismet(const char *buf, int length);
+layer_t *load_kismet_file(const char *filename);
 /* draw.c */
 void draw_all_layers(void);
 int draw_layer(layer_t *layer);
@@ -161,18 +161,18 @@ void nav_campos(float campos[3], float earthpos[3]);
 float get_heading(float la1, float lo1, float la2, float lo2);
 extern int oidy;
 /* tag.c */
-void tag_add(object_t *obj, char *k, char *v);
-tag_t *tag_get(object_t *obj, char *k);
+void tag_add(object_t *obj, const char *k, char *v);
+tag_t *tag_get(object_t *obj, const char *k);
 void tag_free(tag_t *tag);
 /* io.c */
-char *read_file(char *fname, int *fsize);
+char *read_file(const char *fname, int *fsize);
 int process_args(int argc, char **argv);
 /* db.c */
 int db_olsr_node_init(float *pos);
-int db_olsr_check(char *ip, float *pos);
-int db_exec(const char *query, sqlite3_callback callback, void *arg);
-int db_add_tag(object_t *obj, char *key, char *val);
-int db_gettag(int tagid, char *field, char *target);
+int db_olsr_check(const char *ip, float *pos);
+int db_exec(const char *query, sqlite3_callback callback, const void *arg);
+int db_add_tag(object_t *obj, const char *key, const char *val);
+int db_gettag(int tagid, const char *field, char *target);
 int db_getint(void *tagid, int argc, char **argv, char **azColName);
 int db_getpoint(void *data, int argc, char **argv, char **azColName);
 int db_insert_node(node_t *node);
@@ -180,19 +180,19 @@ int db_insert_segment(segment_t *seg);
 int db_insert_way_only(way_t *way);
 int db_insert_way_seg(way_t *way, int seg_n);
 int db_insert_object(object_t *obj);
-int db_init(char *dbFile);
+int db_init(const char *dbFile);
 int db_quit(void);
 int db_create(void);
-int db_insert_layer(char *layer_name);
+int db_insert_layer(const char *layer_name);
 void db_flush(void);
 int callback(void *NotUsed, int argc, char **argv, char **azColName);
 /* gps.c */
-int gps_init(char *gpshost);
+int gps_init(const char *gpshost);
 int gps_main(void);
 int gps_quit(void);
 /* ui.c */
 int ui_init(void);
-int load_window(char *text);
+int load_window(const char *text);
 int load_window_remove(void);
 int load_update_status(float percent);
 /* olsrs3d.c */

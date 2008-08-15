@@ -75,7 +75,7 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 	}
 
 	/* Copy the url passed in into a buffer we can work with, change, etc. */
-	url = malloc(strlen(url_tmp) + 1);
+	url = (char*)malloc(strlen(url_tmp) + 1);
 	if (url == NULL) {
 		errorSource = ERRNO;
 		return -1;
@@ -379,7 +379,7 @@ int http_setAuth(const char *user, const char *pass)
 
 	snprintf((char *)plain, 1024, "%s:%s", user, pass);
 	len = strlen((char *)plain);
-	b64 = malloc(len * 4 + 1);
+	b64 = (char*)malloc(len * 4 + 1);
 	i = j = c = 0;
 	while (i < len || c != 0) {
 		switch (c) {

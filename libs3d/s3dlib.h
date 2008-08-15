@@ -97,24 +97,24 @@ struct s3d_tex {
 
 #ifdef DEBUG
 S3DEXPORT void s3dprintf(int relevance, const char *fmt, ...);
-S3DEXPORT void errdn(int relevance, char *func, int en);
-S3DEXPORT void errds(int relevance, char *func, const char *fmt, ...);
+S3DEXPORT void errdn(int relevance, const char *func, int en);
+S3DEXPORT void errds(int relevance, const char *func, const char *fmt, ...);
 #else
 static __inline__ void s3dprintf(int S3DUNUSED(relevance),
                                  const char *S3DUNUSED(fmt), ...) {}
 static __inline__ void errdn(int S3DUNUSED(relevance),
-                             char *S3DUNUSED(func),
+                             const char *S3DUNUSED(func),
                              int S3DUNUSED(en)) {}
 static __inline__ void errds(int S3DUNUSED(relevance),
-                             char *S3DUNUSED(func),
+                             const char *S3DUNUSED(func),
                              const char *S3DUNUSED(fmt), ...) {}
 #endif
 
-void errn(char *func, int en);
-void errs(char *func, char *msg);
+void errn(const char *func, int en);
+void errs(const char *func, const char *msg);
 
 /*  fontselect.c */
-char *s3d_findfont(char *mask);
+char *s3d_findfont(const char *mask);
 /*  object_queue.c */
 int _queue_init(void);
 int _queue_fill(void);

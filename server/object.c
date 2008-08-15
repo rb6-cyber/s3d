@@ -86,7 +86,7 @@ int obj_push_vertex(struct t_process *p, int32_t oid, float *x, int32_t n)
 
 		m = obj->n_vertex;  /*  saving the first number of vertices */
 		px = x;    /*  movable pointer for x, later */
-		if (NULL != (p_vertex = realloc(obj->p_vertex, sizeof(struct t_vertex) * (n + (obj->n_vertex))))) {
+		if (NULL != (p_vertex = (struct t_vertex*)realloc(obj->p_vertex, sizeof(struct t_vertex) * (n + (obj->n_vertex))))) {
 			if (obj->dplist) {
 				s3dprintf(VLOW, "freeing display list %d to get new data", obj->dplist);
 				glDeleteLists(obj->dplist, 1);
@@ -152,7 +152,7 @@ int obj_push_mat(struct t_process *p, int32_t oid, float *x, int32_t n)
 		}
 		m = obj->n_mat;  /*  saving the first number of materials */
 		px = x;    /*  movable pointer for x, later */
-		if (NULL != (p_mat = realloc(obj->p_mat, sizeof(struct t_mat) * (n + (obj->n_mat))))) {
+		if (NULL != (p_mat = (struct t_mat*)realloc(obj->p_mat, sizeof(struct t_mat) * (n + (obj->n_mat))))) {
 			if (obj->dplist) {
 				s3dprintf(VLOW, "freeing display list %d to get new data", obj->dplist);
 				glDeleteLists(obj->dplist, 1);
@@ -197,7 +197,7 @@ int obj_push_poly(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 
 		m = obj->n_poly;  /*  saving the first number of polys */
 		px = x;    /*  movable pointer for x, later */
-		if (NULL != (p_poly = realloc(obj->p_poly, sizeof(struct t_poly) * (n + (obj->n_poly))))) {
+		if (NULL != (p_poly = (struct t_poly*)realloc(obj->p_poly, sizeof(struct t_poly) * (n + (obj->n_poly))))) {
 			if (obj->dplist) {
 				s3dprintf(VLOW, "freeing display list %d to get new data", obj->dplist);
 				glDeleteLists(obj->dplist, 1);
@@ -238,7 +238,7 @@ int obj_push_line(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 
 		m = obj->n_line;  /*  saving the first number of lines */
 		px = x;    /*  movable pointer for x, later */
-		if (NULL != (p_line = realloc(obj->p_line, sizeof(struct t_line) * (n + (obj->n_line))))) {
+		if (NULL != (p_line = (struct t_line*)realloc(obj->p_line, sizeof(struct t_line) * (n + (obj->n_line))))) {
 			if (obj->dplist) {
 				s3dprintf(VLOW, "freeing display list %d to get new data", obj->dplist);
 				glDeleteLists(obj->dplist, 1);
@@ -270,7 +270,7 @@ int texture_shm_register(struct t_tex *tex, int bufsize)
 		errn("texture_shm_register():shmget()", errno);
 		return(-1);
 	}
-	tex->buf = shmat(tex->shmid, (void *)0, 0);
+	tex->buf = (uint8_t*)shmat(tex->shmid, (void *)0, 0);
 	if ((key_t *)tex->buf == (key_t *)(-1)) {
 		errn("shm_init():shmat()", errno);
 		shmctl(tex->shmid, IPC_RMID, NULL);
@@ -323,7 +323,7 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 		}
 		m = obj->n_tex;    /*  saving the first number of textures */
 		px = x;    /*  movable pointer for x, later */
-		if (NULL != (p_tex = realloc(obj->p_tex, sizeof(struct t_tex) * (n + (obj->n_tex))))) {
+		if (NULL != (p_tex = (struct t_tex*)realloc(obj->p_tex, sizeof(struct t_tex) * (n + (obj->n_tex))))) {
 			/*   if (obj->dplist)
 			   {
 			    s3dprintf(VLOW,"freeing display list %d to get new data",obj->dplist);
@@ -339,7 +339,7 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 				if ((obj->p_tex[m+i].tw <= TEXTURE_MAX_W) && (obj->p_tex[m+i].th <= TEXTURE_MAX_H) &&
 				                (obj->p_tex[m+i].tw > 0) && (obj->p_tex[m+i].th > 0)) {
 					/* find the next power of 2 that can hold the width of the texture */
-					for (hm = 1; hm < obj->p_tex[m+i].tw; hm *= 2);
+					for (hm = 1; hm < obj->p_tex[m+i].tw; hm *= 2) {}
 					s3dprintf(MED, "hm %d, tw %d", hm, obj->p_tex[m+i].tw);
 					obj->p_tex[m+i].w = hm;
 					if (hm == obj->p_tex[m+i].tw)  
@@ -348,7 +348,7 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 						obj->p_tex[m+i].xs = (float)((double)obj->p_tex[m+i].tw) / ((double)obj->p_tex[m+i].w);
 
 					/* find the next power of 2 that can hold the height of the texture */
-					for (hm = 1; hm < obj->p_tex[m+i].th; hm *= 2);
+					for (hm = 1; hm < obj->p_tex[m+i].th; hm *= 2) {}
 					s3dprintf(MED, "hm %d, th %d", hm, obj->p_tex[m+i].th);
 
 					obj->p_tex[m+i].h = hm;
@@ -368,7 +368,7 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 					if (texture_shm_register(&(obj->p_tex[m+i]), bufsize) == 0) 
 						event_texshm(p, oid, m+i);
 					else
-						obj->p_tex[m+i].buf = malloc(bufsize);
+						obj->p_tex[m+i].buf = (uint8_t*)malloc(bufsize);
 					
 					memset(obj->p_tex[m+i].buf, 0, bufsize);
 
@@ -969,7 +969,7 @@ int obj_del_vertex(struct t_process *p, int32_t oid, int32_t n)
 			obj->n_vertex = 0;
 			obj->p_vertex = NULL;
 		} else if (n > 0) {
-			if (NULL != (p_vertex = realloc(obj->p_vertex, sizeof(struct t_vertex) * (m - n)))) {
+			if (NULL != (p_vertex = (struct t_vertex*)realloc(obj->p_vertex, sizeof(struct t_vertex) * (m - n)))) {
 				if (obj->dplist) {
 					s3dprintf(VLOW, "freeing display list %d to get new data", obj->dplist);
 					glDeleteLists(obj->dplist, 1);
@@ -1005,7 +1005,7 @@ int obj_del_mat(struct t_process *p, int32_t oid, int32_t n)
 			obj->n_mat = 0;
 			obj->p_mat = NULL;
 		} else if (n > 0)
-			if (NULL != (p_mat = realloc(obj->p_mat, sizeof(struct t_mat) * (m - n)))) {
+			if (NULL != (p_mat = (struct t_mat*)realloc(obj->p_mat, sizeof(struct t_mat) * (m - n)))) {
 				if (obj->dplist) {
 					s3dprintf(VLOW, "freeing display list %d to get new data", obj->dplist);
 					glDeleteLists(obj->dplist, 1);
@@ -1038,7 +1038,7 @@ int obj_del_poly(struct t_process *p, int32_t oid, int32_t n)
 			obj->n_poly = 0;
 			obj->p_poly = NULL;
 		} else if (n > 0)
-			if (NULL != (p_poly = realloc(obj->p_poly, sizeof(struct t_poly) * (m - n)))) {
+			if (NULL != (p_poly = (struct t_poly*)realloc(obj->p_poly, sizeof(struct t_poly) * (m - n)))) {
 				if (obj->dplist) {
 					s3dprintf(VLOW, "freeing display list %d to get new data", obj->dplist);
 					glDeleteLists(obj->dplist, 1);
@@ -1071,7 +1071,7 @@ int obj_del_line(struct t_process *p, int32_t oid, int32_t n)
 			obj->n_line = 0;
 			obj->p_line = NULL;
 		} else if (n > 0)
-			if (NULL != (p_line = realloc(obj->p_line, sizeof(struct t_line) * (m - n)))) {
+			if (NULL != (p_line = (struct t_line*)realloc(obj->p_line, sizeof(struct t_line) * (m - n)))) {
 				if (obj->dplist) {
 					s3dprintf(VLOW, "freeing display list %d to get new data", obj->dplist);
 					glDeleteLists(obj->dplist, 1);
@@ -1109,7 +1109,7 @@ int obj_del_tex(struct t_process *p, int32_t oid, int32_t n)
 		} else if (n > 0) {
 			for (i = (m - n);i < m;i++) 
 				texture_delete(&(obj->p_tex[i]));
-			if (NULL != (p_tex = realloc(obj->p_tex, sizeof(struct t_tex) * (m - n)))) {
+			if (NULL != (p_tex = (struct t_tex*)realloc(obj->p_tex, sizeof(struct t_tex) * (m - n)))) {
 				if (obj->dplist) {
 					s3dprintf(VLOW, "freeing display list %d to get new data", obj->dplist);
 					glDeleteLists(obj->dplist, 1);
@@ -1246,7 +1246,7 @@ void obj_size_update(struct t_process *p, int32_t oid)
 	if (p->id == MCP) return; /*  mcp does not need that. */
 	if (OBJ_VALID(p, oid, o)) {
 		if (o->oflags&OF_SYSTEM) {
-			o->r = o->or = 0; /* we don't care about system objects */
+			o->r = o->o_r = 0; /* we don't care about system objects */
 			return;
 		}
 		vp = o->p_vertex;
@@ -1298,7 +1298,7 @@ void obj_check_biggest_object(struct t_process *p, int32_t oid)
 	o = p->object[oid];
 	if (o->oflags&OF_SYSTEM)
 		return; /* we don't care, system objects don't count. */
-	r = o->r + o->or;
+	r = o->r + o->o_r;
 	if (r > mcp_o->r) {  /*  this is now the biggest object. */
 		mcp_o->r = r;
 		p->biggest_obj = oid;
@@ -1309,7 +1309,7 @@ void obj_check_biggest_object(struct t_process *p, int32_t oid)
 			found = 0;
 			for (i = 0;i < p->n_obj;i++)
 				if (p->object[i] != NULL) {
-					if ((r2 = p->object[i]->r + p->object[i]->or) > r) { /*  this object is bigger than the old biggest one. */
+					if ((r2 = p->object[i]->r + p->object[i]->o_r) > r) { /*  this object is bigger than the old biggest one. */
 						if (!(p->object[i]->oflags&OF_SYSTEM)) {
 							p->biggest_obj = oid;
 							r = r2;
@@ -1411,7 +1411,7 @@ void obj_pos_update(struct t_process *p, int32_t oid, int32_t first_oid)
 		mySetMatrix(o->m);
 		myTransform3f(v);
 		/*  and get it's destination point. phew */
-		o->or = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+		o->o_r = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
 	} else
 		if (o->oflags&OF_SYSTEM) /* TODO: what will we do if $sys_object is linked to another? */
 		{ /* a system object changed position? let's update the focus'ed sys-objects */
@@ -1530,7 +1530,7 @@ static void tex_build_mipmaps(struct t_tex *tex)
 	             GL_RGBA, GL_UNSIGNED_BYTE, tex->buf);
 	/* this is fairly hacky, but we only use one buffer and decrease the image left-top to right-bottom,
 	 * so we only read from elements AFTER the updated (written) elements. */
-	buf = malloc((w / 2) * (h / 2) * 4);
+	buf = (unsigned char*)malloc((w / 2) * (h / 2) * 4);
 	src = tex->buf;
 	i = 1;
 	while (w != 1 || h != 1) {
@@ -1874,7 +1874,7 @@ int obj_new(struct t_process *p)
 {
 	struct t_obj *obj;
 	int32_t pos, reuse = 0;
-	obj = malloc(sizeof(struct t_obj));  /*  get an object and define it with our data */
+	obj = (struct t_obj*)malloc(sizeof(struct t_obj));  /*  get an object and define it with our data */
 	memset(obj, 0, sizeof(struct t_obj));
 	obj->linkid = -1;
 	obj->lsub = -1;
@@ -1886,7 +1886,7 @@ int obj_new(struct t_process *p)
 	obj->n_vertex = obj->n_poly = obj->n_mat = obj->n_tex = 0;
 	obj->clone_ooid = 0;
 	obj->virtual_pid = 0;
-	obj->r = obj->or = 0.0F;
+	obj->r = obj->o_r = 0.0F;
 	obj->m_uptodate = 0;
 	memcpy(obj->m, Identity, sizeof(t_mtrx));
 	/*  fresh and clean ... */
@@ -1901,8 +1901,8 @@ int obj_new(struct t_process *p)
 		}
 		if (!reuse) {
 			if (p->n_obj > 0)
-				p->object = realloc(p->object, sizeof(struct t_obj *) * (p->n_obj + 1));
-			else p->object = malloc(sizeof(struct t_obj *) * (p->n_obj + 1));
+				p->object = (struct t_obj**)realloc(p->object, sizeof(struct t_obj *) * (p->n_obj + 1));
+			else p->object = (struct t_obj**)malloc(sizeof(struct t_obj *) * (p->n_obj + 1));
 			pos = p->n_obj;    /*  add object at the end */
 			p->n_obj++;      /*  increment counter */
 		}
@@ -2002,7 +2002,7 @@ int obj_del(struct t_process *p, int32_t oid)
 				p->biggest_obj = -1;
 				for (i = 0;i < p->n_obj;i++)
 					if (p->object[i] != NULL) {
-						r = p->object[i]->r + p->object[i]->or;
+						r = p->object[i]->r + p->object[i]->o_r;
 						if (r > mr) {
 							if (!(p->object[i]->oflags&OF_SYSTEM)) {
 								p->biggest_obj = i;
@@ -2069,7 +2069,7 @@ int obj_free(struct t_process *p, int32_t oid)
 		i = oid;
 		while ((i != -1) && (p->object[i] == NULL)) i--;
 		p->n_obj = i + 1;
-		p->object = realloc(p->object, sizeof(struct t_obj *) * (p->n_obj));
+		p->object = (struct t_obj**)realloc(p->object, sizeof(struct t_obj *) * (p->n_obj));
 	}
 	return(0);
 }

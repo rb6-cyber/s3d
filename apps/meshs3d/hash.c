@@ -85,7 +85,7 @@ struct hash_it_t *hash_iterate(struct hashtable_t *hash, struct hash_it_t *iter_
 	struct hash_it_t *iter;
 
 	if (iter_in == NULL) {
-		iter = debugMalloc(sizeof(struct hash_it_t), 301);
+		iter = (struct hash_it_t*)debugMalloc(sizeof(struct hash_it_t), 301);
 		iter->index =  -1;
 		iter->bucket = NULL;
 		iter->prev_bucket = NULL;
@@ -154,12 +154,12 @@ struct hash_it_t *hash_iterate(struct hashtable_t *hash, struct hash_it_t *iter_
 struct hashtable_t *hash_new(int size, hashdata_compare_cb compare, hashdata_choose_cb choose) {
 	struct hashtable_t *hash;
 
-	hash = debugMalloc(sizeof(struct hashtable_t) , 302);
+	hash = (struct hashtable_t*)debugMalloc(sizeof(struct hashtable_t) , 302);
 	if (hash == NULL)      /* could not allocate the hash control structure */
 		return (NULL);
 
 	hash->size = size;
-	hash->table = debugMalloc(sizeof(struct element_t *) * size, 303);
+	hash->table = (struct element_t**)debugMalloc(sizeof(struct element_t *) * size, 303);
 	if (hash->table == NULL) {   /* could not allocate the table */
 		debugFree(hash, 1305);
 		return(NULL);
@@ -189,7 +189,7 @@ int hash_add(struct hashtable_t *hash, void *data)
 	}
 
 	/* found the tail of the list, add new element */
-	if (NULL == (bucket = debugMalloc(sizeof(struct element_t), 304)))
+	if (NULL == (bucket = (struct element_t*)debugMalloc(sizeof(struct element_t), 304)))
 		return(-1); /* debugMalloc failed */
 
 	bucket->data = data;   /* init the new bucket */

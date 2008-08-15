@@ -41,7 +41,7 @@ struct wlan_network *get_wlan_network(char *bssid) {
 
 
 	/* we reached the end of the list and must create a new wlan_network */
-	wlan_network = alloc_memory(sizeof(struct wlan_network));
+	wlan_network = (struct wlan_network*)alloc_memory(sizeof(struct wlan_network));
 
 	INIT_LIST_HEAD(&wlan_network->list);
 

@@ -163,7 +163,7 @@ int _s3d_tcp_net_receive(void)
 				if (1 == tcp_readn(&opcode, 1)) {
 					tcp_readn((char *)&length, 2);
 					length = ntohs(length);
-					buf = malloc(length);
+					buf = (char*)malloc(length);
 					tcp_readn(buf, length);
 					net_prot_in(opcode, length, buf);
 					found = 1;

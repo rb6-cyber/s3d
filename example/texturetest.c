@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 	unsigned char *data;
 
 	if (!s3d_init(&argc, &argv, "texturetest")) {
-		data = malloc(MAXX * MAXY * 4);
+		data = (unsigned char *)malloc(MAXX * MAXY * 4);
 		oid = s3d_new_object();
 		s3d_push_vertex(oid, -1, -1, 0);
 		s3d_push_vertex(oid, 1, -1, 0);

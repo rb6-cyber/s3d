@@ -32,31 +32,31 @@
 /*  basicly, this is for upcoming logfiles, or maybe draw error-messages into */
 /*  the 3d-space */
 /*  this is the generic failure routine ... */
-void errn(char *func, int en)
+void errn(const char *func, int en)
 {
 	fprintf(stderr, "error: %s: (%d) %s\n", func, en, strerror(en));
 }
 /*  ... and it's fatal pendant */
-void errnf(char *func, int en)
+void errnf(const char *func, int en)
 {
 	fprintf(stderr, "FATAL: %s: (%d) %s\n", func, en, strerror(en));
 	exit(-1);
 }
 
 /*  prints an error with the function and it's error-message */
-void errs(char *func, char *msg)
+void errs(const char *func, const char *msg)
 {
 	fprintf(stderr, "error: %s: %s\n", func, msg);
 }
 
-void errsf(char *func, char *msg)
+void errsf(const char *func, const char *msg)
 {
 	fprintf(stderr, "FATAL: %s: %s\n", func, msg);
 	exit(-1);
 }
 #ifdef DEBUG
 /*  printing error message */
-void errds(int relevance, char *func, const char *fmt, ...)
+void errds(int relevance, const char *func, const char *fmt, ...)
 {
 	char dbm[DBM_MAX];
 	va_list args;

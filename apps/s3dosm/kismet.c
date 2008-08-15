@@ -74,7 +74,7 @@ static void parse_kismet_node(xmlNodePtr cur)
 }
 
 /* parse the osm input file */
-layer_t *parse_kismet(char *buf, int length)
+layer_t *parse_kismet(const char *buf, int length)
 {
 	xmlDocPtr doc;
 	xmlNodePtr cur, c;
@@ -109,7 +109,7 @@ layer_t *parse_kismet(char *buf, int length)
 	xmlFreeDoc(doc);
 	return(layer);
 }
-layer_t *load_kismet_file(char *filename)
+layer_t *load_kismet_file(const char *filename)
 {
 	int length;
 	char *file;

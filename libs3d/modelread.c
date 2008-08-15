@@ -43,7 +43,7 @@ static struct material2texture *mat2tex_root = NULL;
 #define MAXSTRN  20
 static int model_load(char *file);
 /*  just a helper function for reading from file instead of memory. */
-int s3d_import_model_file(char *fname)
+int s3d_import_model_file(const char *fname)
 {
 	char *buf, *ptr, *next;
 	char searchpath[1024];
@@ -80,7 +80,7 @@ int s3d_import_model_file(char *fname)
 	return(-1); /* nothing in search path ... */
 }
 
-static void* get_mat2tex(struct material2texture **mat2tex, void *mat_ptr)
+static struct material2texture* get_mat2tex(struct material2texture **mat2tex, void *mat_ptr)
 {
 
 	while ((*mat2tex) != NULL) {
@@ -93,7 +93,7 @@ static void* get_mat2tex(struct material2texture **mat2tex, void *mat_ptr)
 
 	if ((*mat2tex) == NULL) {
 
-		(*mat2tex) = malloc(sizeof(struct material2texture));
+		(*mat2tex) = (struct material2texture *)malloc(sizeof(struct material2texture));
 
 		if ((*mat2tex) == NULL) {
 			errs("model_import()", "Sorry - you ran out of memory !\n");
@@ -184,7 +184,7 @@ static int model_load(char *file)
 						/* reorder pixeldata - s3d wants rgba */
 						if (s3d_pixeldata != NULL) free(s3d_pixeldata);
 
-						s3d_pixeldata = malloc(sizeof(uint8_t) * face->tex_image->width * face->tex_image->height * 32);
+						s3d_pixeldata = (uint8_t*)malloc(sizeof(uint8_t) * face->tex_image->width * face->tex_image->height * 32);
 
 						if (s3d_pixeldata == NULL) {
 							errs("model_load()", "Sorry - you ran out of memory !\n");

@@ -50,7 +50,7 @@ filelist *fl_new(char *path)
 	int n, i, j;
 	char *name;
 
-	fl = malloc(sizeof(filelist));
+	fl = (filelist*)malloc(sizeof(filelist));
 	fl->p = NULL;
 	fl->n = 0;
 	n = scandir(path, &namelist, NULL, alphasort);
@@ -60,11 +60,11 @@ filelist *fl_new(char *path)
 	} else {
 		j = 0;
 		fl->n = n - 2 ; /* ignore . and .. */
-		fl->p = malloc(sizeof(t_file) * fl->n);
+		fl->p = (struct _t_file*)malloc(sizeof(t_file) * fl->n);
 		for (i = 0;i < n;i++) {
 			name = namelist[i]->d_name;
 			if (!((strcmp(name, ".") == 0) || (strcmp(name, "..") == 0))) { /* ignore */
-				fl->p[j].name = malloc(strlen(name) + strlen(path) + 2);
+				fl->p[j].name = (char*)malloc(strlen(name) + strlen(path) + 2);
 				strcpy(fl->p[j].name, path);
 				strcat(fl->p[j].name, "/");
 				strcat(fl->p[j].name, name);
@@ -207,7 +207,7 @@ int fs_copy(char *source, char *dest)
 	return(0);
 }
 /* copy the source to the destination, destination should be a directory. */
-int fs_fl_copy(filelist *fl, char *dest)
+int fs_fl_copy(filelist *fl, const char *dest)
 {
 	int i;
 	int r;
@@ -217,7 +217,7 @@ int fs_fl_copy(filelist *fl, char *dest)
 	for (i = 0;i < fl->n;i++) {
 		fl->p[i].state = STATE_INUSE;
 		bname = basename(fl->p[i].name);
-		sdest = malloc(strlen(dest) + strlen(bname) + 2);
+		sdest = (char*)malloc(strlen(dest) + strlen(bname) + 2);
 
 		strcpy(sdest, dest);
 		strcat(sdest, "/");
@@ -291,7 +291,7 @@ int fs_move(char *source, char *dest)
 }
 
 /* moves the source to the destination */
-int fs_fl_move(filelist *fl, char *dest)
+int fs_fl_move(filelist *fl, const char *dest)
 {
 	int i;
 	int r;
@@ -301,7 +301,7 @@ int fs_fl_move(filelist *fl, char *dest)
 	for (i = 0;i < fl->n;i++) {
 		fl->p[i].state = STATE_INUSE;
 		bname = basename(fl->p[i].name);
-		sdest = malloc(strlen(dest) + strlen(bname) + 2);
+		sdest = (char*)malloc(strlen(dest) + strlen(bname) + 2);
 
 		strcpy(sdest, dest);
 		strcat(sdest, "/");
@@ -316,13 +316,13 @@ int fs_fl_move(filelist *fl, char *dest)
 }
 
 /* write an error and wait for a reaction */
-int fs_error(char *message, char *file)
+int fs_error(const char *message, char *file)
 {
 	static struct timespec t = {
 		0, 100*1000*1000
 	};
 	fs_err.err = errno;
-	fs_err.message = message;
+	fs_err.message = (char*)message;
 	fs_err.file = file;
 	fs_err.state = ESTATE_RISE;
 	printf("[FS ERROR]: %s %s %s", message, file, strerror(errno));

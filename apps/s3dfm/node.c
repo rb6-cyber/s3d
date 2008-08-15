@@ -26,7 +26,7 @@
 #include <stdio.h> /* printf() */
 #include <stdlib.h> /* free() */
 /* find the node to a path, return NULL if not parsed yet */
-t_node *node_getbypath(char *path)
+t_node *node_getbypath(const char *path)
 {
 	char p[M_DIR];
 	char *s, *match;

@@ -139,7 +139,7 @@ static int _s3d_add_tessbuf(uint16_t a)
 	norm = 1.0 / face->glyph->metrics.vertAdvance;
 	if ((face->glyph->outline.n_points > 0) && (face->glyph->outline.n_points < SEI_SS)) {
 		tess_buf[a].vn = face->glyph->outline.n_points;
-		tess_buf[a].vbuf = malloc(sizeof(float) * face->glyph->outline.n_points * 3);
+		tess_buf[a].vbuf = (float*)malloc(sizeof(float) * face->glyph->outline.n_points * 3);
 
 		j = 0;
 		ncontours = face->glyph->outline.n_contours;
@@ -234,7 +234,7 @@ static int _s3d_add_tessbuf(uint16_t a)
 			ncntr[c] = cntr[perm[c]];
 		}
 		n = 0;
-		tess_buf[a].pbuf = malloc(sizeof(uint32_t) * 4 * (face->glyph->outline.n_points + 2 * face->glyph->outline.n_contours));
+		tess_buf[a].pbuf = (uint32_t*)malloc(sizeof(uint32_t) * 4 * (face->glyph->outline.n_points + 2 * face->glyph->outline.n_contours));
 		k = 0;
 		for (c = ncontours - 1;c >= 0;c--) {
 			n++;     /* count out and inlines ... */
@@ -268,8 +268,8 @@ static int _s3d_draw_tessbuf(int oid, uint16_t a, int *voff, float *xoff)
 	/* only draw if it has some information in it */
 	if ((tess_buf[a].pn != 0) && (tess_buf[a].vn != 0)) {
 
-		vbuf = malloc(sizeof(float) * 3 * tess_buf[a].vn);
-		pbuf = malloc(sizeof(uint32_t) * 4 * tess_buf[a].pn);
+		vbuf = (float*)malloc(sizeof(float) * 3 * tess_buf[a].vn);
+		pbuf = (uint32_t*)malloc(sizeof(uint32_t) * 4 * tess_buf[a].pn);
 		memcpy(vbuf, tess_buf[a].vbuf, sizeof(float)*3*tess_buf[a].vn);
 		memcpy(pbuf, tess_buf[a].pbuf, sizeof(uint32_t)*4*tess_buf[a].pn);
 		/*  prepare the buffs ... */
@@ -301,7 +301,7 @@ static int _s3d_draw_tessbuf(int oid, uint16_t a, int *voff, float *xoff)
 	*xoff += tess_buf[a].xoff;  /*  xoffset */
 	return(0);
 }
-int s3d_select_font(char *path)
+int s3d_select_font(const char *path)
 {
 	char    *oldfont = memory_font;
 	int     oldsize = memory_font_size;
@@ -338,7 +338,7 @@ int s3d_select_font(char *path)
 }
 
 /*  draws a simple string. */
-int s3d_draw_string(char *str, float *xlen)
+int s3d_draw_string(const char *str, float *xlen)
 {
 	int i;
 	float xoff;
@@ -367,7 +367,7 @@ int s3d_draw_string(char *str, float *xlen)
 	return(f_oid);
 }
 /* get the string length before actually drawing it. */
-float s3d_strlen(char *str)
+float s3d_strlen(const char *str)
 {
 	int i;
 	float xoff;

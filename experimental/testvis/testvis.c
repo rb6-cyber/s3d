@@ -161,8 +161,8 @@ int main(void)
 	struct t_data t_dat;
 	pthread_t thread;
 
-	head = malloc(sizeof(*head));
-	z = malloc(sizeof(*z));
+	head = (struct data *)malloc(sizeof(*head));
+	z = (struct data *)malloc(sizeof(*z));
 
 	head->next = z;
 
@@ -177,7 +177,7 @@ int main(void)
 		if ((tmp_buffer = strstr(buffer, "add")) != NULL) {
 			tmp_buffer[strlen(tmp_buffer) - 1] = 0;
 			tmp_buffer += 4;
-			t = malloc(sizeof(*t));
+			t = (struct data *)malloc(sizeof(*t));
 			snprintf(t->line, LINE_SIZE, tmp_buffer);
 			t->index = ++index;
 			t->active = 1;

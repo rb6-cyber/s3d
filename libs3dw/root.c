@@ -53,7 +53,7 @@ int s3dw_key_nothing(s3dw_widget *S3DUNUSED(widget), struct s3d_key_event *S3DUN
 	return(0);
 }
 
-char *s3dw_get_type_string(int type)
+const char *s3dw_get_type_string(int type)
 {
 	switch (type) {
 	case S3DW_TROOT:

@@ -82,7 +82,7 @@ struct hash_it_t *_s3d_hash_iterate(struct hashtable_t *hash, struct hash_it_t *
 	struct hash_it_t *iter;
 
 	if (iter_in == NULL) {
-		iter= malloc(sizeof(struct hash_it_t));
+		iter= (struct hash_it_t*)malloc(sizeof(struct hash_it_t));
 		iter->index =  -1;
 		iter->bucket = NULL;
 		iter->prev_bucket = NULL;
@@ -151,12 +151,12 @@ struct hash_it_t *_s3d_hash_iterate(struct hashtable_t *hash, struct hash_it_t *
 struct hashtable_t *_s3d_hash_new(int size, hashdata_compare_cb compare, hashdata_choose_cb choose) {
 	struct hashtable_t *hash;
 
-	hash= malloc( sizeof(struct hashtable_t));
+	hash= (struct hashtable_t*)malloc( sizeof(struct hashtable_t));
 	if ( hash == NULL ) 			/* could not allocate the hash control structure */
 		return (NULL);
 
 	hash->size= size;
-	hash->table= malloc( sizeof(struct element_t *) * size);
+	hash->table= (struct element_t **)malloc( sizeof(struct element_t *) * size);
 	if ( hash->table == NULL ) {	/* could not allocate the table */
 		free(hash);
 		return(NULL);
@@ -185,7 +185,7 @@ int _s3d_hash_add(struct hashtable_t *hash, void *data) {
 	}
 
 	/* found the tail of the list, add new element */
-	if (NULL == (bucket= malloc(sizeof(struct element_t))))
+	if (NULL == (bucket = (struct element_t*)malloc(sizeof(struct element_t))))
 		return(-1); /* malloc failed */
 
 	bucket->data= data;				/* init the new bucket */

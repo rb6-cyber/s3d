@@ -38,11 +38,11 @@ int frame_mode = 0;
 static int kidpid = 0;
 static int norc = 0;
 int running;
-static char *rc = NULL;
-static char *homerc = "~/.s3drc";
-static char *etcrc = "/etc/s3drc";
+static const char *rc = NULL;
+static const char *homerc = "~/.s3drc";
+static const char *etcrc = "/etc/s3drc";
 /*static int father_done=0;*/
-static char **s3drc[] = {&rc, &homerc, &etcrc};
+static const char **s3drc[] = {&rc, &homerc, &etcrc};
 
 static void mainloop(void);
 #ifdef SIGS

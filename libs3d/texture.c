@@ -37,25 +37,25 @@ static int _s3d_choose_cb(void *d1, int size);
 static void _s3d_free_s3dtex(void *d1);
 static struct hashtable_t *tex_hash = NULL;
 
-static int _s3d_choose_cb(void *d1, int size) 
+static int _s3d_choose_cb(void *d1, int size)
 {
-	struct s3d_texshm *t1 = d1;
+	struct s3d_texshm *t1 = (struct s3d_texshm *)d1;
 	return((t1->oid*32 + t1->tex)%size);
 }
 
-static int _s3d_compare_cb(void *d1, void *d2) 
+static int _s3d_compare_cb(void *d1, void *d2)
 {
 	struct s3d_texshm *t1, *t2;
-	t1 = d1;
-	t2 = d2;
+	t1 = (struct s3d_texshm *)d1;
+	t2 = (struct s3d_texshm *)d2;
 	if ((t1->oid == t2->oid) && (t1->tex == t2->tex))
 		return(0);
 	return(1);
 }
 
-static void _s3d_free_s3dtex(void *d1) 
+static void _s3d_free_s3dtex(void *d1)
 {
-	struct s3d_tex *tex = d1;
+	struct s3d_tex *tex = (struct s3d_tex *)d1;
 #ifdef SHM	
 	if (tex->buf != NULL) {
 		shmdt(tex->buf);
@@ -74,19 +74,19 @@ void _s3d_handle_texshm(struct s3d_texshm *tshm)
 	if (tex_hash == NULL)
 		return;
 #ifdef SHM
-	tex = _s3d_hash_remove(tex_hash, tshm);
+	tex = (struct s3d_tex *)_s3d_hash_remove(tex_hash, tshm);
 	if (tex != NULL)
 		_s3d_free_s3dtex(tex);
 	if (tshm->shmid == -1)
 		return;
 
-	tex = malloc(sizeof(*tex));
+	tex = (struct s3d_tex *)malloc(sizeof(*tex));
 	tex->tshm = *tshm;
-	tex->buf = shmat(tex->tshm.shmid, (void *)0, 0);
-    if ((key_t *)tex->buf == (key_t *)(-1)) {
-          errn("shm_init():shmat()", errno);
-		  free(tex);
-          return;
+	tex->buf = (char*)shmat(tex->tshm.shmid, (void *)0, 0);
+	if ((key_t *)tex->buf == (key_t *)(-1)) {
+		errn("shm_init():shmat()", errno);
+		free(tex);
+		return;
 	}
 	s3dprintf(HIGH, "adding new texture ...");
 	_s3d_hash_add(tex_hash, tex);
@@ -97,14 +97,14 @@ int _s3d_load_texture_shm(int object, uint32_t tid, uint16_t xpos, uint16_t ypos
 {
 	struct s3d_texshm check;
 	struct s3d_tex *tex;
-   	int32_t i, p1, p2, m;
-    int16_t mw, mh; 
+	int32_t i, p1, p2, m;
+	int16_t mw, mh;
 
 	if (tex_hash == NULL)
 		return(-1);
 	check.oid = object;
 	check.tex = tid;
-	tex = _s3d_hash_find(tex_hash, (void *)&check);
+	tex = (struct s3d_tex *)_s3d_hash_find(tex_hash, (void *)&check);
 	if (tex == NULL)
 		return(-1); /* coudn't find */
 	s3dprintf(VLOW, "texture: oid %d, tex %d, shmid %d, tw %d, th %d, w %d, h %d ...",

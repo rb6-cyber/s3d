@@ -33,16 +33,15 @@ static int tagid = 1;  /* tagid, incremented with each new object */
 
 static sqlite3 *db;
 static char *dbFile = NULL;
-int db_exec(const char *query, sqlite3_callback callback, void *arg);
 
 /* TODO: remove '' for security reasons */
-static void clean_string(char *clean, char *dirty, int n)
+static void clean_string(char *clean, const char *dirty, int n)
 {
 	strncpy(clean, dirty, n);
 	clean[n-1] = 0;
 }
 
-int db_add_tag(object_t *obj, char *key, char *val)
+int db_add_tag(object_t *obj, const char *key, const char *val)
 {
 	char tagquery[MAXQ];
 	char mkey[MAXQ], mval[MAXQ];
@@ -104,7 +103,7 @@ int db_insert_way_seg(way_t *way, int seg_n)
 	return(0);
 }
 
-int db_insert_layer(char *layer_name)
+int db_insert_layer(const char *layer_name)
 {
 	char findquery[MAXQ];
 	char addquery[MAXQ];
@@ -126,7 +125,7 @@ int db_insert_layer(char *layer_name)
 #define MAGIC 1337 /* just to elevate the nodes a little bit */
 static int found = 0;
 /* tries to find node coordinates of ip, returns 1 if has found something */
-int db_olsr_check(char *ip, float *pos)
+int db_olsr_check(const char *ip, float *pos)
 {
 	char findquery[MAXQ];
 	char clean_ip[16];
@@ -164,7 +163,7 @@ int db_olsr_node_init(float *pos)
 int db_getpoint(void *data, int argc, char **argv, char **azColName)
 {
 	float lo = 0.0, la = 0.0, alt = 0.0;
-	float *p = data;
+	float *p = (float*)data;
 	int i;
 	for (i = 0; i < argc; i++) {
 		if (argv[i]) {
@@ -208,7 +207,7 @@ static int db_getstr(void *string, int S3DOSMUNUSED(argc), char **argv, char **S
 
 /* get the value for a a certain tagid and keyvalue (field). Write into target, which has to be allocated with MAXQ bytes of space.
  * Nothing is written when nothing is found. */
-int db_gettag(int tagid, char *field, char *target)
+int db_gettag(int tagid, const char *field, char *target)
 {
 	char query[MAXQ];
 	target[0] = 0;
@@ -227,11 +226,11 @@ int callback(void *S3DOSMUNUSED(NotUsed), int argc, char **argv, char **azColNam
 	return 0;
 }
 
-static int db_really_exec(const char *query, sqlite3_callback callback, void *arg)
+static int db_really_exec(const char *query, sqlite3_callback callback, const void *arg)
 {
 	char *zErrMsg = NULL;
 	int rc;
-	if (SQLITE_OK != (rc = sqlite3_exec(db, query, callback, arg, &zErrMsg))) {
+	if (SQLITE_OK != (rc = sqlite3_exec(db, query, callback, (void*)arg, &zErrMsg))) {
 		fprintf(stderr, "query: %s\n", query);
 		fprintf(stderr, "SQL error: %s\n", zErrMsg);
 		exit(-1);
@@ -248,7 +247,7 @@ void db_flush(void)
 	qlen = 0;
 }
 
-int db_exec(const char *query, sqlite3_callback callback, void *arg)
+int db_exec(const char *query, sqlite3_callback callback, const void *arg)
 {
 	int ret;
 #ifdef DB_STACK
@@ -269,7 +268,7 @@ int db_exec(const char *query, sqlite3_callback callback, void *arg)
 	return(ret);
 }
 
-int db_init(char *dbFile)
+int db_init(const char *dbFile)
 {
 	int rc;
 	tagid = 1;

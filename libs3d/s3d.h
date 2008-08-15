@@ -88,7 +88,7 @@ struct s3d_key_event {
 
 /* framework functions */
 S3DEXPORT void s3d_usage(void);
-S3DEXPORT int s3d_init(int *argc, char ***argv, char *name);
+S3DEXPORT int s3d_init(int *argc, char ***argv, const char *name);
 S3DEXPORT int s3d_quit(void);
 S3DEXPORT int s3d_mainloop(void (*f)(void));
 
@@ -157,11 +157,11 @@ S3DEXPORT int s3d_rotate(int object, float x, float y, float z);
 S3DEXPORT int s3d_scale(int object, float s);
 
 /* high-level object creating */
-S3DEXPORT int s3d_import_model_file(char *fname);
-S3DEXPORT int s3d_open_file(char *fname, char **pointer);
-S3DEXPORT int s3d_select_font(char *mask);
-S3DEXPORT int s3d_draw_string(char *str, float *xlen);
-S3DEXPORT float s3d_strlen(char *str);
+S3DEXPORT int s3d_import_model_file(const char *fname);
+S3DEXPORT int s3d_open_file(const char *fname, char **pointer);
+S3DEXPORT int s3d_select_font(const char *mask);
+S3DEXPORT int s3d_draw_string(const char *str, float *xlen);
+S3DEXPORT float s3d_strlen(const char *str);
 
 /* some vector calculation helpers */
 

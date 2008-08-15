@@ -233,7 +233,7 @@ static void parse_buffer(struct kismet_src *kismet_src)
 				if (wlan_network->ssid != NULL)
 					free(wlan_network->ssid);
 
-				wlan_network->ssid = alloc_memory(strlen(ssid));
+				wlan_network->ssid = (char*)alloc_memory(strlen(ssid));
 				strcpy(wlan_network->ssid, ssid);
 
 				pthread_mutex_unlock(&Network_list_mutex);
@@ -356,7 +356,7 @@ int main(int argc, char *argv[])
 
 	while (argc > found_args) {
 
-		kismet_src = alloc_memory(sizeof(struct kismet_src));
+		kismet_src = (struct kismet_src*)alloc_memory(sizeof(struct kismet_src));
 
 		INIT_LIST_HEAD(&kismet_src->list);
 		kismet_src->enable_level = 0;
@@ -404,7 +404,7 @@ int main(int argc, char *argv[])
 		kismet_src->kismet_addr.sin_port = htons(kismet_src->port);
 		kismet_src->kismet_addr.sin_addr.s_addr = kismet_src->ip;
 
-		kismet_src->kismet_ip = alloc_memory(16);
+		kismet_src->kismet_ip = (char*)alloc_memory(16);
 		inet_ntop(AF_INET, &kismet_src->ip, kismet_src->kismet_ip, 16);
 
 
@@ -431,7 +431,7 @@ int main(int argc, char *argv[])
 		}
 
 
-		kismet_src->recv_buff = alloc_memory(1500);
+		kismet_src->recv_buff = (char*)alloc_memory(1500);
 
 		FD_SET(kismet_src->sock, &wait_sockets);
 		if (kismet_src->sock > max_sock)

@@ -71,7 +71,7 @@ int s3dw_widget_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 void s3dw_widget_append(s3dw_widget *parent, s3dw_widget *widget)
 {
 	parent->nobj++;
-	parent->pobj = realloc(parent->pobj, sizeof(s3dw_widget **) * (parent->nobj));
+	parent->pobj = (s3dw_widget**)realloc(parent->pobj, sizeof(s3dw_widget **) * (parent->nobj));
 	parent->pobj[parent->nobj-1] = widget;
 	widget->parent = parent;
 	widget->style = parent->style;

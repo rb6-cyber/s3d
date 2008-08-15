@@ -51,7 +51,7 @@ static int oid;
 static XImage *image;
 static Display *dpy = NULL;
 static int window, scr;
-static unsigned int width, height, height, depth;
+static unsigned int width, height, depth;
 static Visual *visual;
 static XShmSegmentInfo shminfo;
 static char *tex_image = NULL, *otex_image = NULL, *img1, *img2;
@@ -188,7 +188,7 @@ static int mouseclick(struct s3d_evt *S3DX11UNUSED(event))
 }
 int main(int argc, char **argv)
 {
-	char *disp = NULL;
+	const char *disp = NULL;
 	int a, b, c, d;
 	int xt;
 	if (disp == NULL) disp = getenv("DISPLAY");
@@ -217,7 +217,7 @@ int main(int argc, char **argv)
 
 		image = XShmCreateImage(dpy, visual, depth, ZPixmap, NULL, &shminfo, width, height);
 		shminfo.shmid = shmget(IPC_PRIVATE, image->bytes_per_line * image->height, IPC_CREAT | 0777);
-		shminfo.shmaddr = image->data = shmat(shminfo.shmid, NULL, 0);
+		shminfo.shmaddr = image->data = (char*)shmat(shminfo.shmid, NULL, 0);
 		shmctl(shminfo.shmid, IPC_RMID, NULL);
 		shminfo.readOnly = False;
 		if (!XShmAttach(dpy, &shminfo))
@@ -229,8 +229,8 @@ int main(int argc, char **argv)
 		s3d_set_callback(S3D_EVENT_OBJ_CLICK, mouseclick);
 		s3d_set_callback(S3D_EVENT_KEY, keypress);
 		printf("screen: %dx%d\n", width, height);
-		img1 = malloc(width * height * sizeof(uint32_t));
-		img2 = malloc(width * height * sizeof(uint32_t));
+		img1 = (char*)malloc(width * height * sizeof(uint32_t));
+		img2 = (char*)malloc(width * height * sizeof(uint32_t));
 		tex_image = img1;
 		otex_image = img2;
 		oid = s3d_new_object();

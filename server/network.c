@@ -100,7 +100,7 @@ int network_main(void)
 #ifdef G_SDL
 		SDL_SetTimer(50, (SDL_TimerCallback) net_turn_off);
 #endif
-		while (turn && tcp_pollproc());  /*  if there is new data, loop please. this is for testing now, and should be combined with timing later .. */
+		while (turn && tcp_pollproc()) {}  /*  if there is new data, loop please. this is for testing now, and should be combined with timing later .. */
 #ifdef G_SDL
 		SDL_SetTimer(0, NULL);
 #endif

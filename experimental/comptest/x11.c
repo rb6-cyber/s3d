@@ -38,7 +38,7 @@ static char    *display = NULL;
 
 int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 {
-	char *name = "unknown";
+	const char *name = "unknown";
 	switch (event->type & 0x7f) {
 	case CreateNotify:		name = "Create";			break;
 	case DestroyNotify:		name = "Destroy";			break;
@@ -62,10 +62,10 @@ int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 
 int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 {
-	char *name;
+	const char *name;
 	char buf[256];
 	char buf_req[256];
-	char *req;
+	const char *req;
 
 	XGetErrorText(dpy, event->error_code, buf, 256);
 	name = buf;

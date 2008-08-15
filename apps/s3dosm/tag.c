@@ -24,11 +24,11 @@
 #include <stdio.h> /* printf() */
 #include <string.h> /* strcmp() */
 #include <stdlib.h> /* realloc() */
-void tag_add(object_t *obj, char *k, char *v)
+void tag_add(object_t *obj, const char *k, char *v)
 {
 	tag_t *t;
 	obj->tag_n++;
-	obj->tag_p = realloc(obj->tag_p, obj->tag_n * sizeof(tag_t));
+	obj->tag_p = (tag_t*)realloc(obj->tag_p, obj->tag_n * sizeof(tag_t));
 	if (k != NULL && v != NULL) {
 		t = &(obj->tag_p[obj->tag_n-1]);
 		t->ttype = TAG_UNKNOWN;
@@ -38,7 +38,7 @@ void tag_add(object_t *obj, char *k, char *v)
 		if (0 == strcmp(k, "name")) t->ttype = TAG_NAME;
 	}
 }
-tag_t *tag_get(object_t *obj, char *k)
+tag_t *tag_get(object_t *obj, const char *k)
 {
 	int i;
 	for (i = 0;i < obj->tag_n;i++) {

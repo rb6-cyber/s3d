@@ -126,7 +126,7 @@ void s3dw_surface_hide(s3dw_widget *widget)
 	s3d_flags_off(surface->oid_tbar, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 }
 /* create a new surface */
-s3dw_surface *s3dw_surface_new(char *title, float width, float height)
+s3dw_surface *s3dw_surface_new(const char *title, float width, float height)
 {
 	s3dw_surface *surface;
 	s3dw_widget  *widget;

@@ -80,4 +80,4 @@ int net_quit(void);
 void out_of_mem(void);
 void print_etx(void);
 float dist(float p1[], float p2[]);
-void window_error(char *msg);
+void window_error(const char *msg);

@@ -35,7 +35,7 @@ static int process_list_rm(int pid);
 int process_sys_init(struct t_process *p);
 
 /* protocol request for process initialization */
-struct t_process *process_protinit(struct t_process *p, char *name) {
+struct t_process *process_protinit(struct t_process *p, const char *name) {
 	int con_type;
 	int32_t mcp_oid;
 	if ((strncmp(name, "sys_", 4) == 0)) { /* we don't like "sys_"-apps, kicking this */
@@ -129,7 +129,7 @@ int process_sys_init(struct t_process *p)
 struct t_process *process_add(void) {
 	struct t_process *new_p;
 	procs_n++;
-	procs_p = realloc(procs_p, sizeof(struct t_process)*procs_n); /* increase the block */
+	procs_p = (struct t_process *)realloc(procs_p, sizeof(struct t_process)*procs_n); /* increase the block */
 	new_p = &procs_p[procs_n-1];
 
 	new_p->id   = procs_n - 1;
@@ -172,7 +172,7 @@ static int process_list_rm(int pid)
 		/* this is kind of pointer madness */
 	}
 	procs_n--;
-	procs_p = realloc(procs_p, sizeof(struct t_process) * procs_n); /* decrease the block,
+	procs_p = (struct t_process*)realloc(procs_p, sizeof(struct t_process) * procs_n); /* decrease the block,
   wipe the last one */
 	return(0);
 }

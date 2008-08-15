@@ -55,8 +55,8 @@ static int get_selected(filelist *fp, t_node *dir)
 		if (dir->sub[i]->sub != NULL) get_selected(fp, dir->sub[i]); /* scan subdir */
 		if (dir->sub[i]->detached) {
 			fp->n++;
-			fp->p = realloc(fp->p, sizeof(t_file) * fp->n);
-			s = malloc(M_DIR);
+			fp->p = (struct _t_file*)realloc(fp->p, sizeof(t_file) * fp->n);
+			s = (char*)malloc(M_DIR);
 			node_path(dir->sub[i], s);
 			fp->p[fp->n - 1].name = s;
 			if ((fs_lock == TYPE_COPY) || (fs_lock == TYPE_MOVE))
@@ -114,7 +114,7 @@ static void window_fs_confirm_error(s3dw_widget *button)
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 
 }
-void window_fs_errno(char *errmsg)
+void window_fs_errno(const char *errmsg)
 {
 	s3dw_surface *infwin;
 	s3dw_button  *button;
@@ -165,7 +165,7 @@ void window_fs(s3dw_widget *button)
 	pthread_create(&filethread, NULL, thread_start, NULL);
 	s3dw_delete(button->parent); /* parent =surface. this means close containing window */
 }
-void window_copy(char *S3DFMUNUSED(path))
+void window_copy(const char *S3DFMUNUSED(path))
 {
 	s3dw_surface *infwin;
 	s3dw_button  *okbutton, *abortbutton;
@@ -179,7 +179,7 @@ void window_copy(char *S3DFMUNUSED(path))
 		return;
 	}
 	fs_lock = TYPE_COPY;
-	fp = malloc(sizeof(filelist));
+	fp = (filelist*)malloc(sizeof(filelist));
 	fp->n = 0;
 	fp->p = NULL;
 	get_selected(fp, &root);
@@ -230,7 +230,7 @@ void window_unlink(void)
 		return;
 	}
 	fs_lock = TYPE_UNLINK;
-	fp = malloc(sizeof(filelist));
+	fp = (filelist*)malloc(sizeof(filelist));
 	fp->n = 0;
 	fp->p = NULL;
 	get_selected(fp, &root);
@@ -282,7 +282,7 @@ void window_fs_mkdir(s3dw_widget *button)
 	window_fs_abort(button); /* finish */
 
 }
-void window_mkdir(char *path)
+void window_mkdir(const char *path)
 {
 	s3dw_surface *infwin;
 	s3dw_button  *okbutton, *abortbutton;
@@ -309,7 +309,7 @@ void window_mkdir(char *path)
 	s3dw_show(S3DWIDGET(infwin));
 }
 
-void window_move(char *S3DFMUNUSED(path))
+void window_move(const char *S3DFMUNUSED(path))
 {
 	s3dw_surface *infwin;
 	s3dw_button  *button;

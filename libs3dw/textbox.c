@@ -115,7 +115,7 @@ void s3dw_textbox_drawtext(s3dw_widget *widget)
 	int x, y;
 	float width;
 	textbox->n_lineoids = widget->height - 2;
-	textbox->p_lineoids = malloc(textbox->n_lineoids * sizeof(int));
+	textbox->p_lineoids = (int*)malloc(textbox->n_lineoids * sizeof(int));
 	width = widget->width - 1.5;
 	y = -textbox->window_y;
 	x = textbox->window_x;
@@ -196,7 +196,7 @@ static void _s3dw_textbox_scrollbar_right(s3dw_widget *widget)
 }
 
 /* create a new textbox in the surface */
-s3dw_textbox *s3dw_textbox_new(s3dw_surface *surface, char *text, float posx, float posy, float width, float height)
+s3dw_textbox *s3dw_textbox_new(s3dw_surface *surface, const char *text, float posx, float posy, float width, float height)
 {
 	s3dw_textbox *textbox;
 	s3dw_widget *widget;
@@ -265,7 +265,7 @@ void s3dw_textbox_scrollto(s3dw_textbox *textbox, int x, int y)
 	s3dw_textbox_redraw(widget);
 }
 
-void s3dw_textbox_change_text(s3dw_textbox *textbox, char *text)
+void s3dw_textbox_change_text(s3dw_textbox *textbox, const char *text)
 {
 	s3dw_widget *widget = (s3dw_widget *)textbox;
 	/* redraw the text ... */

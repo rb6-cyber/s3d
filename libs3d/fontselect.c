@@ -39,7 +39,7 @@
 
 
 #ifdef WITH_FONTCONFIG
-char *s3d_findfont(char *mask)
+char *s3d_findfont(const char *mask)
 {
 	FcPattern *pattern = NULL, *match = NULL;
 	FcChar8 *file = NULL;
@@ -60,7 +60,7 @@ char *s3d_findfont(char *mask)
 /*  this uses the xserver to get a font-path and scan it for ttf-fonts. */
 /*  if it matches, give it out ... it's not nice, right, and might not */
 /*  work on your place. */
-char *s3d_findfont(char *mask)
+char *(const char *mask)
 {
 	char **flist = NULL;
 	int fnum = 0;

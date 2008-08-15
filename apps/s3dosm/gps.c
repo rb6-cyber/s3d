@@ -174,10 +174,10 @@ void show_position(struct gps_data_t *dgps)
 	lon_old = lo;
 	lastfix = fix;
 }
-int gps_init(char *gpshost)
+int gps_init(const char *gpshost)
 {
 	int sock_opts;
-	char *err_str;
+	const char *err_str;
 	dgps = gps_open(gpshost, "2947");
 	if (dgps == NULL) {
 		switch (errno) {
@@ -263,7 +263,7 @@ int gps_quit(void)
 }
 #else
 
-int gps_init(char *S3DOSMUNUSED(gpshost))
+int gps_init(const char *S3DOSMUNUSED(gpshost))
 {
 	printf("GPS support not compiled in!\n");
 	return(0);

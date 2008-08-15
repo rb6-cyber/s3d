@@ -48,7 +48,7 @@ void object_init(object_t *nobj)
 
 object_t* object_new(int key)
 {
-	object_t *nobj = malloc(sizeof(object_t));
+	object_t *nobj = (object_t*)malloc(sizeof(object_t));
 	object_init(nobj);
 	nobj->id = key;
 	return (nobj);
@@ -68,7 +68,7 @@ void node_init(node_t *nnode)
 }
 node_t* node_new(void)
 {
-	node_t *nnode = malloc(sizeof(node_t));
+	node_t *nnode = (node_t*)malloc(sizeof(node_t));
 	node_init(nnode);
 	return(nnode);
 }
@@ -87,7 +87,7 @@ void segment_init(segment_t *nsegment)
 }
 segment_t* segment_new(void)
 {
-	segment_t *nsegment = malloc(sizeof(segment_t));
+	segment_t *nsegment = (segment_t*)malloc(sizeof(segment_t));
 	segment_init(nsegment);
 	return(nsegment);
 }
@@ -106,7 +106,7 @@ void way_init(way_t *nway)
 }
 way_t* way_new(void)
 {
-	way_t *nway = malloc(sizeof(way_t));
+	way_t *nway = (way_t*)malloc(sizeof(way_t));
 	way_init(nway);
 	return(nway);
 }
@@ -119,7 +119,7 @@ void way_free(way_t *way)
 /* ########### layer  ############### */
 layer_t* layer_new(void)
 {
-	layer_t *nlayer = malloc(sizeof(layer_t));
+	layer_t *nlayer = (layer_t*)malloc(sizeof(layer_t));
 	nlayer->tree = NULL;
 	nlayer->visible = 0;
 	return(nlayer);
@@ -131,6 +131,6 @@ void layerset_add(layer_t *layer)
 {
 	if (layer == NULL) return;
 	layerset.n++;
-	layerset.p = realloc(layerset.p, sizeof(layer_t *) * layerset.n);
+	layerset.p = (layer_t**)realloc(layerset.p, sizeof(layer_t *) * layerset.n);
 	layerset.p[layerset.n-1] = layer;
 }

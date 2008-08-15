@@ -84,7 +84,7 @@ static void addMemory(uint32_t length, int32_t tag)
 
 	if (walker == NULL) {
 
-		walker = malloc(sizeof(struct memoryUsage));
+		walker = (struct memoryUsage*)malloc(sizeof(struct memoryUsage));
 
 		walker->length = length;
 		walker->tag = tag;
@@ -192,7 +192,7 @@ void *debugMalloc(uint32_t length, int32_t tag)
 
 	/* printf("sizeof(struct chunkHeader) = %u, sizeof (struct chunkTrailer) = %u\n", sizeof (struct chunkHeader), sizeof (struct chunkTrailer)); */
 
-	memory = malloc(length + sizeof(struct chunkHeader) + sizeof(struct chunkTrailer));
+	memory = (unsigned char*)malloc(length + sizeof(struct chunkHeader) + sizeof(struct chunkTrailer));
 
 	if (memory == NULL) {
 		fprintf(stderr, "Cannot allocate %u bytes, malloc tag = %d\n", (unsigned int)(length + sizeof(struct chunkHeader) + sizeof(struct chunkTrailer)), tag);
@@ -230,7 +230,7 @@ void *debugRealloc(void *memoryParameter, uint32_t length, int32_t tag)
 	uint32_t copyLength;
 
 	if (memoryParameter) { /* if memoryParameter==NULL, realloc() should work like malloc() !! */
-		memory = memoryParameter;
+		memory = (unsigned char*)memoryParameter;
 		chunkHeader = (struct chunkHeader *)(memory - sizeof(struct chunkHeader));
 
 		if (chunkHeader->magicNumber != MAGIC_NUMBER) {
@@ -247,7 +247,7 @@ void *debugRealloc(void *memoryParameter, uint32_t length, int32_t tag)
 	}
 
 
-	result = debugMalloc(length, tag);
+	result = (unsigned char*)debugMalloc(length, tag);
 	if (memoryParameter) {
 		copyLength = length;
 
@@ -270,7 +270,7 @@ void debugFree(void *memoryParameter, int tag)
 	struct chunkHeader *walker;
 	struct chunkHeader *previous;
 
-	memory = memoryParameter;
+	memory = (unsigned char*)memoryParameter;
 	chunkHeader = (struct chunkHeader *)(memory - sizeof(struct chunkHeader));
 
 	if (chunkHeader->magicNumber != MAGIC_NUMBER) {

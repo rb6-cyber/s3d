@@ -73,7 +73,7 @@ int s3d_net_check(void)
 #ifdef SIGS
 		if (_s3d_sigio) {
 #endif
-			while (_s3d_net_receive());
+			while (_s3d_net_receive()) {}
 #ifdef SIGS
 			_s3d_sigio = 0;
 		}
@@ -82,7 +82,7 @@ int s3d_net_check(void)
 #endif
 #ifdef SHM
 	case CON_SHM:
-		while (_shm_net_receive());
+		while (_shm_net_receive()) {}
 		break;
 #endif
 	}

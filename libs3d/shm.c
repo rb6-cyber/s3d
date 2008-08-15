@@ -74,13 +74,13 @@ int _shm_init(char *ftoken)
 	}
 
 	/* attach to the segment to get a pointer to it: */
-	next_key = shmat(shmid, (void *)0, 0);
+	next_key = (uint32_t*)shmat(shmid, (void *)0, 0);
 	if (next_key == (uint32_t *)(-1)) {
 		errn("shm_init():shmat()", errno);
 		return(1);
 	}
 	s3dprintf(MED, "right now, next_keys are: %08x, %08x", next_key[0], next_key[1]);
-	while ((0 == (key_in = next_key[1])) || (0 == (key_out = next_key[0])));
+	while ((0 == (key_in = next_key[1])) || (0 == (key_out = next_key[0]))) {}
 	next_key[0] = next_key[1] = 0;
 	s3dprintf(MED, "right now, next_keys are: %08x, %08x", key_in, key_out);
 	/* as we have the new key, we  can detach here now. */
@@ -179,7 +179,7 @@ int _shm_net_receive(void)
 		if (1 == shm_readn(&opcode, 1)) {
 			shm_readn((char *)&length, 2);
 			length = ntohs(length);
-			buf = malloc(length);
+			buf = (char*)malloc(length);
 			shm_readn(buf, length);
 			net_prot_in(opcode, length, buf);
 			found = 1;

@@ -58,7 +58,7 @@ struct t_item {
 };
 static struct t_item *item;
 static int n_item = 0;
-static int display_dir(char *dir, int S3DUNUSED(depth), int  posx, int posy, int posz)
+static int display_dir(const char *dir, int S3DUNUSED(depth), int  posx, int posy, int posz)
 {
 	struct dirent **namelist;
 	int n, i;
@@ -83,7 +83,7 @@ static int display_dir(char *dir, int S3DUNUSED(depth), int  posx, int posy, int
 		perror("scandir");
 		return(-1);
 	} else {
-		item = malloc(sizeof(struct t_item) * i);
+		item = (struct t_item*)malloc(sizeof(struct t_item) * i);
 		n_item = i;
 		while (n--) {
 			item[n].type = T_DUNO;

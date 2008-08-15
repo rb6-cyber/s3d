@@ -30,7 +30,7 @@
 #include <stdlib.h> /* exit() */
 #include <string.h> /* strlen(),strncpy(), strncat() */
 struct menu_entry {
-	char *icon, *name, *path;
+	const char *icon, *name, *path;
 	int icon_oid, str_oid;
 };
 

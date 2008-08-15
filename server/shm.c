@@ -80,7 +80,7 @@ int shm_init(void)
 	}
 
 	/* attach to the segment to get a pointer to it: */
-	data = shmat(shmid, (void *)0, 0);
+	data = (key_t *)shmat(shmid, (void *)0, 0);
 	if (data == (key_t *)(-1)) {
 		errnf("shm_init():shmat()", errno);
 		return(1);
@@ -111,7 +111,7 @@ static int shm_new_comblock(key_t *data)
 		errn("shm_open_comblock:shmget()", errno);
 		return(1);
 	}
-	mycb->data_ctos = shmat(mycb->shmid_ctos, (void *)0, 0);
+	mycb->data_ctos = (char*)shmat(mycb->shmid_ctos, (void *)0, 0);
 	if (mycb->data_ctos == (char *)(-1)) {
 		errn("shm_open_comblock:shmat()", errno);
 		return(1);
@@ -121,7 +121,7 @@ static int shm_new_comblock(key_t *data)
 		errn("shm_open_comblock:shmget()", errno);
 		return(1);
 	}
-	mycb->data_stoc = shmat(mycb->shmid_stoc, (void *)0, 0);
+	mycb->data_stoc = (char*)shmat(mycb->shmid_stoc, (void *)0, 0);
 	if (mycb->data_stoc == (char *)(-1)) {
 		errn("shm_open_comblock:shmat()", errno);
 		return(1);

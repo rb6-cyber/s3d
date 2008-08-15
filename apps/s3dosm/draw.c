@@ -125,7 +125,7 @@ static int draw_icon(void *S3DOSMUNUSED(data), int argc, char **argv, char **S3D
 /* just fetches node information and puts in the nodelist */
 static int insert_node(void *data, int argc, char **argv, char **azColName)
 {
-	struct nodelist *np = data; /* get the nodepointer */
+	struct nodelist *np = (struct nodelist *)data; /* get the nodepointer */
 	int i;
 	for (i = 0; i < argc; i++) {
 		if (argv[i]) {
@@ -151,7 +151,7 @@ static int select_waytype(void *data, int argc, char **argv, char **S3DOSMUNUSED
 	return(0);
 }
 /* draw waylist, clear the queue */
-static void waylist_draw(char *filter)
+static void waylist_draw(const char *filter)
 {
 	float len;
 	char query[MAXQ];
@@ -364,9 +364,9 @@ static void waylist_add(struct waylist *p)
 {
 	if (waylist_n >= waylist_bufn) {
 		waylist_bufn += 64;
-		waylist_p = realloc(waylist_p, sizeof(struct waylist) * waylist_bufn);
-		nodelist_p = realloc(nodelist_p, sizeof(struct nodelist) * waylist_bufn * 2); /* we can have twice as many nodes as there are segments in a graph. */
-		adjlist_p = realloc(adjlist_p, sizeof(struct nodelist) * waylist_bufn * 2);
+		waylist_p = (struct waylist *)realloc(waylist_p, sizeof(struct waylist) * waylist_bufn);
+		nodelist_p = (struct nodelist *)realloc(nodelist_p, sizeof(struct nodelist) * waylist_bufn * 2); /* we can have twice as many nodes as there are segments in a graph. */
+		adjlist_p = (struct adjlist *)realloc(adjlist_p, sizeof(struct nodelist) * waylist_bufn * 2);
 	}
 	waylist_p[waylist_n].node_to = p->node_to;
 	waylist_p[waylist_n].node_from = p->node_from;
@@ -412,7 +412,7 @@ void draw_translate_icon(int user_icon, float la, float lo)
 	s3d_rotate(user_icon, (90 - la), lo, 0);
 }
 
-static void draw_ways(char *filter)
+static void draw_ways(const char *filter)
 {
 	char query[MAXQ];
 	num_done = 0;
