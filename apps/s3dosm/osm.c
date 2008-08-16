@@ -52,10 +52,9 @@ static void parse_osm_way(xmlNodePtr cur)
 	way_t way;
 	xmlNodePtr kids;
 	xmlAttrPtr attr, kattr;
-	int nd, last_nd;
+	int nd = 0, last_nd = 0;
 	segment_t segment;
 	static int seg = 0;
-	last_nd = 0;
 
 	way_init(&way);
 
@@ -82,7 +81,9 @@ static void parse_osm_way(xmlNodePtr cur)
 
 				db_insert_way_seg(&way, seg);
 			}
-			last_nd = nd;
+			if (nd != 0) {
+				last_nd = nd;
+			}
 		}
 	}
 }
