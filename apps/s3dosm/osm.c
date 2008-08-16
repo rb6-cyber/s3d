@@ -92,7 +92,6 @@ static void parse_osm_node(xmlNodePtr cur)
 	xmlAttrPtr attr;
 
 	node_init(&node);
-	attr = cur->properties;
 
 	node.base.layerid = layerid;
 	for (attr = cur->properties;attr;attr = attr->next) {

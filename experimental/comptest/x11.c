@@ -47,10 +47,9 @@ int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 	case UnmapNotify:		name = "Unmap";				break;
 	case ReparentNotify:	name = "Reparent";			break;
 	case CirculateNotify:	name = "Circulate";			break;
-	case PropertyNotify:	name = "PropertyNotify";	return(0);	break;
+	case PropertyNotify:	return(0);
 	}
 	if (event->type == xdamage.event + XDamageNotify) {
-		name = "Damage";
 		return(0); /* don't report this. */
 	} else if (event->type == ConfigureNotify) {
 		name = "Configure";

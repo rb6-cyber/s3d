@@ -156,7 +156,7 @@ void move_search_widget(float x, float y, float z)
 /* public */
 void move_to_search_widget(float cam_position_t[], float cam_position_r[])
 {
-	float target, current;
+	float target;
 
 	set_search_status(WIDGET);
 	cam_position_t[0] = (cam_position_t[0] * 4 + _search_widget->x) / 5;
@@ -164,30 +164,21 @@ void move_to_search_widget(float cam_position_t[], float cam_position_r[])
 	cam_position_t[2] = (cam_position_t[2] * 4 + (_search_widget->z - 10)) / 5;
 
 	target = _search_widget->arx;
-	current = cam_position_r[0];
 
 	if (_search_widget->arx - cam_position_r[0] > 180)
 		target -= 360;
-	if (_search_widget->arx - cam_position_r[0] < -180)
-		current -= 360;
 	cam_position_r[0] = (cam_position_r[0] * 4 + target) / 5;
 
 	target = _search_widget->ary;
-	current = cam_position_r[1];
 
 	if (_search_widget->ary - cam_position_r[1] > 180)
 		target -= 360;
-	if (_search_widget->ary - cam_position_r[1] < -180)
-		current -= 360;
 	cam_position_r[1] = (cam_position_r[1] * 4 + target) / 5;
 
 	target = _search_widget->arz;
-	current = cam_position_r[2];
 
 	if (_search_widget->arz - cam_position_r[2] > 180)
 		target -= 360;
-	if (_search_widget->arz - cam_position_r[2] < -180)
-		current -= 360;
 	cam_position_r[2] = (cam_position_r[2] * 4 + target) / 5;
 
 	s3d_translate(0, cam_position_t[0], cam_position_t[1], cam_position_t[2]);
@@ -204,37 +195,28 @@ void move_to_search_widget(float cam_position_t[], float cam_position_r[])
 /* public */
 void move_to_return_point(float cam_position_t[], float cam_position_r[])
 {
-	float target, current;
+	float target;
 
 	cam_position_t[0] = (cam_position_t[0] * 4 + _return_point[0][0]) / 5;
 	cam_position_t[1] = (cam_position_t[1] * 4 + _return_point[0][1]) / 5;
 	cam_position_t[2] = (cam_position_t[2] * 4 + _return_point[0][2]) / 5;
 
 	target = _return_point[1][0];
-	current = cam_position_r[0];
 
 	if (_return_point[1][0] - cam_position_r[0] > 180)
 		target -= 360;
-	if (_return_point[1][0] - cam_position_r[0] < -180)
-		current -= 360;
 	cam_position_r[0] = (cam_position_r[0] * 4 + target) / 5;
 
 	target = _return_point[1][1];
-	current = cam_position_r[1];
 
 	if (_return_point[1][1] - cam_position_r[1] > 180)
 		target -= 360;
-	if (_return_point[1][1] - cam_position_r[1] < -180)
-		current -= 360;
 	cam_position_r[1] = (cam_position_r[1] * 4 + target) / 5;
 
 	target = _return_point[1][2];
-	current = cam_position_r[2];
 
 	if (_return_point[1][2] - cam_position_r[2] > 180)
 		target -= 360;
-	if (_return_point[1][2] - cam_position_r[2] < -180)
-		current -= 360;
 	cam_position_r[2] = (cam_position_r[2] * 4 + target) / 5;
 
 	s3d_translate(0, cam_position_t[0], cam_position_t[1], cam_position_t[2]);

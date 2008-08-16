@@ -32,9 +32,8 @@ float focus_get_scale(t_node *f)
 	float scale, s;
 	if (f->disp == D_DIR) {
 		s = 0.2;
-		scale = 1 / s;
 		if (f->parent != NULL)
-			scale = 1 / s * focus_get_scale(f->parent);
+			scale = 1.f / s * focus_get_scale(f->parent);
 		else
 			return(1.0);
 		root.px -= f->px;

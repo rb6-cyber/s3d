@@ -40,12 +40,9 @@ static struct timespec t = {
 static void mainloop(void)
 {
 	struct timeval start, stop;
-	float secs;
 	gettimeofday(&start, NULL);
 	event();
 	gettimeofday(&stop, NULL);
-	secs = (stop.tv_sec - start.tv_sec) + (stop.tv_usec - start.tv_usec)/1e6;
-/*	printf("msecs to process events: %3.3f\n", secs*1e3);*/
 	nanosleep(&t, NULL);
 }
 

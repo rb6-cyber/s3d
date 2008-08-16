@@ -196,7 +196,6 @@ int s3dw_input_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 	s3dprintf(MED, "edit field got key %d!!", key);
 	switch (keys->keysym) {
 	case S3DK_BACKSPACE:
-		len = strlen(input->text);
 		if ((len = strlen(input->text)) > 0) {
 			newtext = (char *)malloc(len + 0); /* +1 for the terminating byte, -1 for the deleted character */
 			strncpy(newtext, input->text, len);

@@ -140,17 +140,13 @@ static int display_dir(const char *dir, int S3DUNUSED(depth), int  posx, int pos
 				break;
 			}
 
-			px = posx;
-			py = posy;
-			pz = posz;
 			alpha = ((360.0f * n) / ((float)i));
-			radius = ((n_item * 10) / ((float)M_PI * 4));
 			if (n_item < 5)
 				radius = ((50) / ((float)M_PI * 4));
 			else
 				radius = ((n_item * 10) / ((float)M_PI * 4));
 			px = posx - sinf(DEG2RAD(alpha)) * radius;
-			pz = posy;
+			py = posy;
 			pz = posz - cosf(DEG2RAD(alpha)) * radius;
 
 			item[n].pie_oid = s3d_new_object();

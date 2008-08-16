@@ -35,7 +35,6 @@ static void parse_kismet_node(xmlNodePtr cur)
 	xmlNodePtr kids, gpskids;
 
 	node_init(&node);
-	attr = cur->properties;
 
 	node.base.layerid = layerid;
 	node.base.id = 0;  /* let database decide */

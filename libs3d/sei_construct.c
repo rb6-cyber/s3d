@@ -733,11 +733,6 @@ static int add_segment(int segnum)
 			if (FP_EQUAL(tr[t].lo.y, tr[tlast].lo.y) &&
 			                FP_EQUAL(tr[t].lo.x, tr[tlast].lo.x) && tribot) {  /* bottom forms a triangle */
 
-				if (is_swapped)
-					tmptriseg = seg[segnum].prev;
-				else
-					tmptriseg = seg[segnum].next;
-
 				if ((tmpseg > 0) && is_left_of(tmpseg, &s.v0)) {
 					/* L-R downward cusp */
 					tr[tr[t].d1].u0 = t;

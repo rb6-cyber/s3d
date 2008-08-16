@@ -300,7 +300,6 @@ int graphics_pick_obj(int x, int y)
 			s3dprintf(VLOW, "[HIT %d] names %d [z1:%f|z2:%f] mcp_o=%d, o=%d ", i, names, z1, z2, mcp_o, o);
 		}
 		s3dprintf(VLOW, "mcp_o= %d, o= %d", mcp_o, o);
-		ptr = select_buf;
 		if (mcp_o == -1) { /* it's an mcp object */
 			s3dprintf(LOW, "clicked on mcp-object no. %d", o);
 			event_obj_click(p, o);
