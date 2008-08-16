@@ -2040,7 +2040,7 @@ int obj_free(struct t_process *p, int32_t oid)
 		link_delete(p, o->lsub);
 		if (i == o->lsub) {
 			s3dprintf(HIGH, "something is wrong!!");
-			o = NULL; /* segfault */
+			o->lsub = -1;
 		}
 	}
 
