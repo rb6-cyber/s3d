@@ -75,7 +75,7 @@ unsigned int shm_write(struct buf_t *rb, char *buf, unsigned int n)
 unsigned int shm_read(struct buf_t *rb, char *buf, unsigned int n)
 {
 	int wrap = 0;
-	unsigned int mn = n;
+	unsigned int mn;
 	unsigned int rs;
 	uint32_t e, s, size;
 	char *data;

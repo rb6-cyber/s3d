@@ -78,7 +78,7 @@ static void clear_line_after_lastchar(void)
 
 static t_line* line_is_full(void)
 {
-	t_line *pcurline = (t_line*) & line + cy;
+	t_line *pcurline;
 	cy++;
 	if (cy >= MAX_LINES) {     /*  damn it ... our display is filled ... let's move everything upwards */
 		cy = MAX_LINES - 1;

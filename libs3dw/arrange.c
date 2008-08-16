@@ -53,7 +53,7 @@ void s3dw_arr_widgetcenter(s3dw_widget *widget, float *center)
 
 void s3dw_arr_normdir(float *dir)
 {
-	float dirlen = s3d_vector_length(dir);
+	float dirlen;
 	while ((dirlen = s3d_vector_length(dir)) == 0) {
 		/* make up some random direction if they're exactly the same position */
 		dir[0] = ((float)rand() - RAND_MAX / 2.0) / RAND_MAX;
