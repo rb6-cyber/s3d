@@ -1909,9 +1909,6 @@ int obj_new(struct t_process *p)
 		p->object[pos] = obj;
 		s3dprintf(VLOW, "pid %d added new object %d at %010p [pos %d]", p->id, pos, obj, pos);
 		return (pos);
-	} else {
-		s3dprintf(HIGH, "obj_new(): no such process %d", p->id);
-		return(-1);
 	}
 }
 
@@ -2044,7 +2041,6 @@ int obj_free(struct t_process *p, int32_t oid)
 		if (i == o->lsub) {
 			s3dprintf(HIGH, "something is wrong!!");
 			o = NULL; /* segfault */
-			o->lsub = -1;
 		}
 	}
 
