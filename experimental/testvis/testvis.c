@@ -32,9 +32,20 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <signal.h>
+#include <config-s3d.h>
 
 #define BUFFER_SIZE 1000
 #define LINE_SIZE 100
+
+#ifndef VISUNUSED
+#if defined(UNUSEDPARAM_ATTRIBUTE)
+#define VISUNUSED(x) (x)__attribute__((unused))
+#elif defined(UNUSEDPARAM_OMIT)
+#define VISUNUSED(x) /* x */
+#else
+#define VISUNUSED(x) x
+#endif
+#endif
 
 struct data {
 	int index;
@@ -108,7 +119,7 @@ static void act_data(int index, struct data *head, struct data *end)
 	return;
 }
 
-static void sig(int signr)
+static void sig(int VISUNUSED(signr))
 {
 	return;
 }
