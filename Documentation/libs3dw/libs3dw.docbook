@@ -522,37 +522,40 @@ void mainloop()
 <sect2 id="s3dw_widget">
 <title>s3dw_widget</title>
 <programlisting>
-struct _s3dw_widget {   
-		/* private .. */
-		int          type;
-		<emphasis>s3dw_widget</emphasis> *parent;        
-		<link linkend="s3dw_style">s3dw_style</link>  *style;
-		int                   nobj; /* number of children objects */
-		<emphasis>s3dw_widget</emphasis>         **pobj; /* pointer to list of children objects */
-		int          focus;         /* index of the widget focused in pobj */
-		int          flags;         /* flags like visibility */
-		float        ax,ay,az;      /* current position for animation */
-		float        as;            /* current scale factor */
-		float        arx,ary,arz;   /* current rotation */
-		float        width,height;  /* width and height of the widget, outer size */
-		unsigned long oid;          /* the main object which is used for transformations etc ...*/
-		/* public */
-		void  *ptr;   				/* a pointer to a user structure, to use in callbacks etc */
-		float        x,y,z;         /* position, relative to the surface usually */
-		float        s;             /* scale factor */
-		float        rx,ry,rz;      /* rotation around the axis */
+struct _s3dw_widget {
+	/* private .. */
+	int         type;
+	s3dw_widget *parent;
+	s3dw_style  *style;
+	int         nobj;          /* number of children objects */
+	s3dw_widget **pobj;        /* pointer to list of children objects */
+	int         focus;         /* index of the widget focused in pobj */
+	int         flags;         /* flags like visibility */
+	float       ax, ay, az;    /* current position for animation */
+	float       as;            /* current scale factor */
+	float       arx, ary, arz; /* current rotation */
+	float       width, height; /* width and height of the widget, outer size */
+	uint32_t    oid;           /* the main object which is used for transformations etc ...*/
+	/* public */
+	void        *ptr;          /* a pointer to a user structure, to use in callbacks etc */
+	float       x, y, z;       /* position, relative to the surface usually */
+	float       s;             /* scale factor */
+	float       rx, ry, rz;    /* rotation around the axis */
 };
 typedef struct _s3dw_widget     s3dw_widget;
 
 /* type may be one of the following ... */		
 
 enum {
-    S3DW_TROOT,
-    S3DW_TSURFACE,
-    S3DW_TBUTTON,
-    S3DW_TLABEL,
-    S3DW_TINPUT,
-    S3DW_NTYPES
+	S3DW_TROOT,
+	S3DW_TCAM,
+	S3DW_TSURFACE,
+	S3DW_TBUTTON,
+	S3DW_TLABEL,
+	S3DW_TINPUT,
+	S3DW_TTEXTBOX,
+	S3DW_TSCROLLBAR,
+	S3DW_NTYPES
 };
 <anchor id="S3DWIDGET"/>
 #define     S3DWIDGET(x)    ((s3dw_widget *)x)
@@ -578,7 +581,7 @@ struct _s3dw_button {
     /* private */
 	<link linkend="s3dw_widget">s3dw_widget</link>      widget;
 	char            *text;
-	unsigned long    oid_text;
+	uint32_t    oid_text;
 	/* public */
 	<link linkend="s3dw_callback">s3dw_callback</link>    onclick;
 };
@@ -597,7 +600,7 @@ struct _s3dw_input {
     /* private */
 	<link linkend="s3dw_widget">s3dw_widget</link>      widget;
 	char            *text;
-	unsigned long    oid_text;
+	uint32_t    oid_text;
 	/* public */
 	<link linkend="s3dw_callback">s3dw_callback</link>    onclick;
 	<link linkend="s3dw_callback">s3dw_callback</link>    onedit;
@@ -678,9 +681,9 @@ typedef struct _s3dw_surface     s3dw_surface;
 struct _s3dw_surface {
     /* private */
 	<link linkend="s3dw_widget">s3dw_widget</link>      widget;
-	unsigned long         oid_title;
-	unsigned long         oid_tbar;
-	char            *text;
+	uint32_t         oid_title;
+	uint32_t         oid_tbar;
+	char            *title;
 };
 </programlisting>
 <para>

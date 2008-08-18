@@ -1524,15 +1524,14 @@ to an app referenced by it's mcp-object-id.
 <sect2 id="s3d_obj_info">
 <title>struct s3d_but_info</title>
 <programlisting>
-struct s3d_obj_info 
-{
-	unsigned long object;
-	unsigned long flags;
-	float trans_x,trans_y,trans_z;
-	float rot_x,rot_y,rot_z;
+struct s3d_obj_info {
+	uint32_t object;
+	uint32_t flags;
+	float trans_x, trans_y, trans_z;
+	float rot_x, rot_y, rot_z;
 	float scale;
 	float r;
-	char name[256]; 
+	char name[256];
 };
 </programlisting>
 <para>
@@ -1551,10 +1550,10 @@ For cam object, scale will contain the aspect ratio.
 <sect2 id="s3d_but_info">
 <title>struct s3d_but_info</title>
 <programlisting>
-struct s3d_but_info     
-{                       
-    unsigned char button, state;
-};                      
+struct s3d_but_info {
+	uint8_t button;
+	uint8_t state;
+};
 </programlisting>
 <para>
 Can be used on the buffer of an <link linkend="s3d_evt">event</link> of type <link linkend="S3D_EVENT_MBUTTON">S3D_EVENT_MBUTTON</link>.
@@ -1565,12 +1564,11 @@ Can be used on the buffer of an <link linkend="s3d_evt">event</link> of type <li
 <sect2 id="mcp_object">
 <title>struct mcp_object</title>
 <programlisting>
-struct mcp_object 
-{
-	unsigned long object;
-	float trans_x,trans_y,trans_z;
+struct mcp_object {
+	uint32_t object;
+	float trans_x, trans_y, trans_z;
 	float r;
-	char name[256]; 
+	char name[256];
 };
 
 </programlisting>
@@ -1583,7 +1581,7 @@ obsolete, deprecated, don't use, to be removed soon (use <link linkend="s3d_but_
 <title>struct s3d_evt</title>
 <programlisting>
 struct s3d_evt {
-	unsigned char event;
+	uint8_t event;
 	int length;
 	char *buf;
 	struct s3d_evt *next;
