@@ -87,7 +87,7 @@ void s3dw_button_draw(s3dw_widget *widget)
 }
 
 /* create a new button in the surface */
-s3dw_button *s3dw_button_new(s3dw_surface *surface, const char *text, float posx, float posy)
+s3dw_button *s3dw_button_new(const s3dw_surface *surface, const char *text, float posx, float posy)
 {
 	s3dw_button *button;
 	s3dw_widget *widget;

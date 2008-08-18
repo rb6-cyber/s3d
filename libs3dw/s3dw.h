@@ -171,10 +171,10 @@ extern "C" {
 #endif
 
 /* button.c */
-S3DWEXPORT s3dw_button   *s3dw_button_new(s3dw_surface *surface, const char *text, float posx, float posy);
-S3DWEXPORT s3dw_label    *s3dw_label_new(s3dw_surface *surface, const char *text, float posx, float posy);
-S3DWEXPORT s3dw_input    *s3dw_input_new(s3dw_surface *surface, float width, float posx, float posy);
-S3DWEXPORT s3dw_textbox   *s3dw_textbox_new(s3dw_surface *surface, const char *text, float posx, float posy, float width, float height);
+S3DWEXPORT s3dw_button   *s3dw_button_new(const s3dw_surface *surface, const char *text, float posx, float posy);
+S3DWEXPORT s3dw_label    *s3dw_label_new(const s3dw_surface *surface, const char *text, float posx, float posy);
+S3DWEXPORT s3dw_input    *s3dw_input_new(const s3dw_surface *surface, float width, float posx, float posy);
+S3DWEXPORT s3dw_textbox   *s3dw_textbox_new(const s3dw_surface *surface, const char *text, float posx, float posy, float width, float height);
 S3DWEXPORT char     *s3dw_input_gettext(s3dw_input *input);
 S3DWEXPORT void      s3dw_input_change_text(s3dw_input *input, const char *text);
 S3DWEXPORT void      s3dw_label_change_text(s3dw_label *label, const char *text);
@@ -193,8 +193,8 @@ S3DWEXPORT void      s3dw_textbox_scrollright(s3dw_textbox *textbox);
 S3DWEXPORT void      s3dw_textbox_scrollto(s3dw_textbox *textbox, int x, int y);
 S3DWEXPORT void      s3dw_textbox_change_text(s3dw_textbox *textbox, const char *text);
 
-S3DWEXPORT int      s3dw_handle_click(struct s3d_evt *evt);
-S3DWEXPORT int      s3dw_handle_key(struct s3d_evt *evt);
+S3DWEXPORT int      s3dw_handle_click(const struct s3d_evt *evt);
+S3DWEXPORT int      s3dw_handle_key(const struct s3d_evt *evt);
 S3DWEXPORT int      s3dw_object_info(struct s3d_evt *evt);
 
 S3DWEXPORT void      s3dw_ani_mate(void);

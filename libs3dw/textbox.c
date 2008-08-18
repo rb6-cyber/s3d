@@ -196,7 +196,7 @@ static void _s3dw_textbox_scrollbar_right(s3dw_widget *widget)
 }
 
 /* create a new textbox in the surface */
-s3dw_textbox *s3dw_textbox_new(s3dw_surface *surface, const char *text, float posx, float posy, float width, float height)
+s3dw_textbox *s3dw_textbox_new(const s3dw_surface *surface, const char *text, float posx, float posy, float width, float height)
 {
 	s3dw_textbox *textbox;
 	s3dw_widget *widget;

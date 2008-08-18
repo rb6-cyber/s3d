@@ -113,7 +113,7 @@ int s3d_push_vertex(int object, float x, float y, float z)
 }
 /*  like vertex add, but you can add a lot of vertices with this. */
 /*  it's to be used for file readers or fast coders :) */
-int s3d_push_vertices(int object, float *vbuf, uint16_t n)
+int s3d_push_vertices(int object, const float *vbuf, uint16_t n)
 {
 	char    buf[MF_LEN+4], *ptr;
 	int     f, i, len = n * 4 * 3;
@@ -224,7 +224,7 @@ int s3d_push_material_a(int object,
 	return(0);  /*  nothing yet */
 }
 /*  push a material array (with alpha information!) */
-int s3d_push_materials_a(int object, float *mbuf, uint16_t n)
+int s3d_push_materials_a(int object, const float *mbuf, uint16_t n)
 {
 	char    buf[MF_LEN+4], *ptr;
 	int     f, i, len = n * 4 * 12;
@@ -287,10 +287,11 @@ int s3d_push_line(int object, uint32_t v1, uint32_t v2, uint32_t material)
 
 /*  this is the polygon array version */
 /*  assumes to have a list of polys which consists of v1,v2,v3,material */
-int s3d_push_polygons(int object, uint32_t *pbuf, uint16_t n)
+int s3d_push_polygons(int object, const uint32_t *pbuf, uint16_t n)
 {
 	uint32_t  buf[(MF_LEN+4)/4];
-	uint32_t  *s, *d;
+	const uint32_t  *s;
+	uint32_t  *d;
 	int     f, i, j, len = n * 4 * 4;
 	int     flen, stepl;
 	if (n < 1)
@@ -311,10 +312,11 @@ int s3d_push_polygons(int object, uint32_t *pbuf, uint16_t n)
 	}
 	return(0);
 }
-int s3d_push_lines(int object, uint32_t *lbuf, uint16_t n)
+int s3d_push_lines(int object, const uint32_t *lbuf, uint16_t n)
 {
 	uint32_t  buf[(MF_LEN+4)/4];
-	uint32_t  *s, *d;
+	const uint32_t  *s;
+	uint32_t  *d;
 	int     f, i, j, len = n * 4 * 3;
 	int     flen, stepl;
 	if (n < 1)
@@ -351,10 +353,11 @@ int s3d_push_texture(int object, uint16_t w, uint16_t h)
 	net_send(S3D_P_C_PUSH_TEX, buf, len);
 	return(0);
 }
-int s3d_push_textures(int object, uint16_t *tbuf, uint16_t n)
+int s3d_push_textures(int object, const uint16_t *tbuf, uint16_t n)
 {
 	uint32_t  buf[(MF_LEN+4)/4];
-	uint16_t  *s, *d;
+	const uint16_t  *s;
+	uint16_t *d;
 
 	int     f, i, j, len = n * 2 * 2;
 	int     flen, stepl;
@@ -515,7 +518,7 @@ int s3d_pep_material_a(int object,
 	net_send(S3D_P_C_PEP_MAT, buf, len);
 	return(0);  /*  nothing yet */
 }
-int s3d_pep_materials_a(int object, float *mbuf, uint16_t n)
+int s3d_pep_materials_a(int object, const float *mbuf, uint16_t n)
 {
 	char    buf[MF_LEN+4];
 	if ((n*12*sizeof(float) + 4) > MF_LEN) {
@@ -529,7 +532,7 @@ int s3d_pep_materials_a(int object, float *mbuf, uint16_t n)
 }
 
 /*  adds normal information to the last n polygons. */
-int s3d_pep_polygon_normals(int object, float *nbuf, uint16_t n)
+int s3d_pep_polygon_normals(int object, const float *nbuf, uint16_t n)
 {
 	uint8_t buf[MF_LEN+4];
 	if ((n*9*sizeof(float) + 4) > MF_LEN) {
@@ -543,7 +546,7 @@ int s3d_pep_polygon_normals(int object, float *nbuf, uint16_t n)
 
 }
 /*  adds normal information to the last n line. */
-int s3d_pep_line_normals(int object, float *nbuf, uint16_t n)
+int s3d_pep_line_normals(int object, const float *nbuf, uint16_t n)
 {
 	uint8_t buf[MF_LEN+4];
 	if ((n*9*sizeof(float) + 4) > MF_LEN) {
@@ -595,7 +598,7 @@ int s3d_pep_line(int object, int v1, int v2, int material)
 
 
 /*  replaces the last n lines. */
-int s3d_pep_lines(int object, uint32_t *lbuf, uint16_t n)
+int s3d_pep_lines(int object, const uint32_t *lbuf, uint16_t n)
 {
 	uint32_t  buf[MF_LEN+4];
 	int    i;
@@ -611,7 +614,7 @@ int s3d_pep_lines(int object, uint32_t *lbuf, uint16_t n)
 
 }
 /*  replaces the last n vertices. */
-int s3d_pep_vertices(int object, float *vbuf, uint16_t n)
+int s3d_pep_vertices(int object, const float *vbuf, uint16_t n)
 {
 	uint8_t buf[MF_LEN+4];
 	if ((n*3*sizeof(float) + 4) > MF_LEN) {
@@ -647,7 +650,7 @@ int s3d_pep_polygon_tex_coord(int object, float x1, float y1, float x2, float y2
 	return(0);
 }
 /*  adds texture coordinates to the last n polygons. */
-int s3d_pep_polygon_tex_coords(int object, float *tbuf, uint16_t n)
+int s3d_pep_polygon_tex_coords(int object, const float *tbuf, uint16_t n)
 {
 	char buf[MF_LEN+4];
 	if ((n*6*sizeof(float)) > MF_LEN) {
@@ -660,7 +663,7 @@ int s3d_pep_polygon_tex_coords(int object, float *tbuf, uint16_t n)
 	return(0);
 }
 /*  adds normal information to the last n polygons. */
-int s3d_load_polygon_normals(int object, float *nbuf, uint32_t start, uint16_t n)
+int s3d_load_polygon_normals(int object, const float *nbuf, uint32_t start, uint16_t n)
 {
 	char    buf[MF_LEN+4], *ptr;
 	int     f, i, len = n * 9 * 4;
@@ -688,7 +691,7 @@ int s3d_load_polygon_normals(int object, float *nbuf, uint32_t start, uint16_t n
 	return(0);
 }
 /*  adds normal information to the last n polygons. */
-int s3d_load_line_normals(int object, float *nbuf, uint32_t start, uint16_t n)
+int s3d_load_line_normals(int object, const float *nbuf, uint32_t start, uint16_t n)
 {
 	char    buf[MF_LEN+4], *ptr;
 	int     f, i, len = n * 6 * 4;
@@ -716,7 +719,7 @@ int s3d_load_line_normals(int object, float *nbuf, uint32_t start, uint16_t n)
 	return(0);
 }
 /*  adds texture coordinates to the last n polygons. */
-int s3d_load_polygon_tex_coords(int object, float *tbuf, uint32_t start, uint16_t n)
+int s3d_load_polygon_tex_coords(int object, const float *tbuf, uint32_t start, uint16_t n)
 {
 	char    buf[MF_LEN+4], *ptr;
 	int     f, i, len = n * 6 * 4;
@@ -744,7 +747,7 @@ int s3d_load_polygon_tex_coords(int object, float *tbuf, uint32_t start, uint16_
 	return(0);
 }
 /*  load n materials at position start, overwriting old ones */
-int s3d_load_materials_a(int object, float *mbuf, uint32_t start, uint16_t n)
+int s3d_load_materials_a(int object, const float *mbuf, uint32_t start, uint16_t n)
 {
 	char    buf[MF_LEN+4], *ptr;
 	int     f, i, len = n * 12 * 4;
@@ -802,7 +805,7 @@ int _s3d_update_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, 
 
 }
 /*  load data (which has width w and height h) into object, texture tex at position (xpos,ypos) */
-int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h, uint8_t *data)
+int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h, const uint8_t *data)
 {
 	char    buf[MF_LEN+4], *ptr;
 	int     linestep, lines, i;

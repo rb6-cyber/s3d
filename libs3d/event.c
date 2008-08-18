@@ -72,7 +72,7 @@ struct s3d_evt *s3d_find_event(uint8_t event) {
 	}
 	return(NULL);
 }
-int s3d_delete_event(struct s3d_evt *devt)
+int s3d_delete_event(const struct s3d_evt *devt)
 {
 	struct s3d_evt *previous = NULL;
 	struct s3d_evt *p = s3d_stack;

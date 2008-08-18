@@ -25,12 +25,12 @@
 #include <s3dw.h>
 #include <s3dw_int.h>
 
-int s3dw_handle_click(struct s3d_evt *evt)
+int s3dw_handle_click(const struct s3d_evt *evt)
 {
 	uint32_t oid = *((uint32_t *)evt->buf);
 	return(s3dw_widget_event_click(s3dw_getroot(), oid));
 }
-int s3dw_handle_key(struct s3d_evt *evt)
+int s3dw_handle_key(const struct s3d_evt *evt)
 {
 	struct s3d_key_event *keys = (struct s3d_key_event *)evt->buf;
 	return(s3dw_widget_event_key(s3dw_getroot(), keys));

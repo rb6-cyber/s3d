@@ -93,7 +93,7 @@ void _s3d_handle_texshm(struct s3d_texshm *tshm)
 #endif
 	return;
 }
-int _s3d_load_texture_shm(int object, uint32_t tid, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h, uint8_t *data)
+int _s3d_load_texture_shm(int object, uint32_t tid, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h, const uint8_t *data)
 {
 	struct s3d_texshm check;
 	struct s3d_tex *tex;

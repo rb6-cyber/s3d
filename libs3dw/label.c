@@ -65,7 +65,7 @@ void s3dw_label_change_text(s3dw_label *label, const char *text)
 
 
 /* create a new label in the surface */
-s3dw_label *s3dw_label_new(s3dw_surface *surface, const char *text, float posx, float posy)
+s3dw_label *s3dw_label_new(const s3dw_surface *surface, const char *text, float posx, float posy)
 {
 	s3dw_label *label;
 	s3dw_widget *widget;

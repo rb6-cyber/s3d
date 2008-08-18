@@ -36,7 +36,7 @@
  *
  ***/
 
-float s3d_vector_length(float vector[])
+float s3d_vector_length(const float vector[])
 {
 
 	return (sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2]));
@@ -54,7 +54,7 @@ float s3d_vector_length(float vector[])
  *
  ***/
 
-void s3d_vector_subtract(float vector1[], float vector2[], float result_vector[])
+void s3d_vector_subtract(const float vector1[], const float vector2[], float result_vector[])
 {
 
 	result_vector[0] = vector2[0] - vector1[0];
@@ -74,7 +74,7 @@ void s3d_vector_subtract(float vector1[], float vector2[], float result_vector[]
  *
  ***/
 
-float s3d_vector_dot_product(float vector1[], float vector2[])
+float s3d_vector_dot_product(const float vector1[], const float vector2[])
 {
 	return (vector1[0] * vector2[0] + vector1[1] * vector2[1] + vector1[2] * vector2[2]);
 }
@@ -90,7 +90,7 @@ float s3d_vector_dot_product(float vector1[], float vector2[])
  *
  ***/
 
-void s3d_vector_cross_product(float vector1[], float vector2[], float result_vector[])
+void s3d_vector_cross_product(const float vector1[], const float vector2[], float result_vector[])
 {
 	result_vector[0] = vector1[1] * vector2[2] - vector1[2] * vector2[1];
 	result_vector[1] = vector1[2] * vector2[0] - vector1[0] * vector2[2];
@@ -109,7 +109,7 @@ void s3d_vector_cross_product(float vector1[], float vector2[], float result_vec
  *
  ***/
 
-float s3d_vector_angle(float vector1[], float vector2[])
+float s3d_vector_angle(const float vector1[], const float vector2[])
 {
 
 	return (acos(s3d_vector_dot_product(vector1, vector2) / (s3d_vector_length(vector1) * s3d_vector_length(vector2))));
@@ -128,7 +128,7 @@ float s3d_vector_angle(float vector1[], float vector2[])
  *
  ***/
 
-float s3d_angle_to_cam(float obj_pos[], float cam_pos[], float *angle_rad)
+float s3d_angle_to_cam(const float obj_pos[], const float cam_pos[], float *angle_rad)
 {
 
 	float angle, tmp_mov_vec[3], desc_norm_vec[3] = { 0.0, 0.0, -1.0 };

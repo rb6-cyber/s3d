@@ -138,7 +138,7 @@ void s3dw_input_hide(s3dw_widget *widget)
 	s3d_flags_off(input->oid_text, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 }
 /* create a new input in the surface */
-s3dw_input *s3dw_input_new(s3dw_surface *surface, float width, float posx, float posy)
+s3dw_input *s3dw_input_new(const s3dw_surface *surface, float width, float posx, float posy)
 {
 	s3dw_input *input;
 	s3dw_widget *widget;
