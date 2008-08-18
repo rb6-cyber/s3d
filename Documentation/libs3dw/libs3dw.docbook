@@ -35,7 +35,7 @@
 <funcprototype>
 <funcdef>s3dw_surface *<function>s3dw_surface_new</function></funcdef>
 <paramdef>
-char         *<parameter>title</parameter>,
+const char         *<parameter>title</parameter>,
 float		  <parameter>width</parameter>,
 float		  <parameter>height</parameter>
 </paramdef>
@@ -57,8 +57,8 @@ float		  <parameter>height</parameter>
 <funcprototype>
 <funcdef>s3dw_button *<function>s3dw_button_new</function></funcdef>
 <paramdef>
-s3dw_surface *<parameter>surface</parameter>,
-char         *<parameter>text</parameter>,
+const s3dw_surface *<parameter>surface</parameter>,
+const char         *<parameter>text</parameter>,
 float		  <parameter>posx</parameter>,
 float		  <parameter>posy</parameter>
 </paramdef>
@@ -81,7 +81,7 @@ float		  <parameter>posy</parameter>
 <funcprototype>
 <funcdef>s3dw_input *<function>s3dw_input_new</function></funcdef>
 <paramdef>
-s3dw_surface *<parameter>surface</parameter>,
+const s3dw_surface *<parameter>surface</parameter>,
 float		  <parameter>width</parameter>,
 float		  <parameter>posx</parameter>,
 float		  <parameter>posy</parameter>
@@ -106,8 +106,8 @@ float		  <parameter>posy</parameter>
 <funcprototype>
 <funcdef>s3dw_label *<function>s3dw_label_new</function></funcdef>
 <paramdef>
-s3dw_surface *<parameter>surface</parameter>,
-char         *<parameter>text</parameter>,
+const s3dw_surface *<parameter>surface</parameter>,
+const char         *<parameter>text</parameter>,
 float		  <parameter>posx</parameter>,
 float		  <parameter>posy</parameter>
 </paramdef>
@@ -130,8 +130,8 @@ float		  <parameter>posy</parameter>
 <funcprototype>
 <funcdef>s3dw_textbox *<function>s3dw_textbox_new</function></funcdef>
 <paramdef>
-s3dw_surface *<parameter>surface</parameter>,
-char         *<parameter>text</parameter>,
+const s3dw_surface *<parameter>surface</parameter>,
+const char         *<parameter>text</parameter>,
 float		  <parameter>posx</parameter>,
 float		  <parameter>posy</parameter>,
 float		  <parameter>width</parameter>,
@@ -287,7 +287,7 @@ int <parameter>y</parameter>
 <funcdef>void <function>s3dw_input_change_text</function></funcdef>
 <paramdef>
 		s3dw_input *<parameter>input</parameter>,
-		char *<parameter>text</parameter>
+const 		char *<parameter>text</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -304,7 +304,7 @@ int <parameter>y</parameter>
 <funcdef>void <function>s3dw_label_change_text</function></funcdef>
 <paramdef>
 		s3dw_label *<parameter>label</parameter>,
-		char *<parameter>text</parameter>
+const 		char *<parameter>text</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -321,7 +321,7 @@ int <parameter>y</parameter>
 <funcdef>void <function>s3dw_textbox_change_text</function></funcdef>
 <paramdef>
 		s3dw_textbox *<parameter>textbox</parameter>,
-		char *<parameter>text</parameter>
+const 		char *<parameter>text</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -406,7 +406,7 @@ int <parameter>y</parameter>
 <funcprototype>
 <funcdef>void <function>s3dw_handle_click</function></funcdef>
 <paramdef>
-		struct s3d_evt *<parameter>event</parameter>
+const		struct s3d_evt *<parameter>event</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -440,7 +440,7 @@ void click(<link linkend="s3d_evt">struct s3d_evt</link> *evt)
 <funcprototype>
 <funcdef>void <function>s3dw_handle_key</function></funcdef>
 <paramdef>
-		struct s3d_evt *<parameter>event</parameter>
+const		struct s3d_evt *<parameter>event</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -473,7 +473,7 @@ void key(<link linkend="s3d_evt">struct s3d_evt</link> *evt)
 <funcprototype>
 <funcdef>void <function>s3dw_object_info</function></funcdef>
 <paramdef>
-		struct s3d_evt *<parameter>event</parameter>
+const		struct s3d_evt *<parameter>event</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>

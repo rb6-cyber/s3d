@@ -48,9 +48,9 @@
 <funcprototype>
 <funcdef>int <function>s3d_init</function></funcdef>
 <paramdef>
-int *<parameter>argc</parameter>.
-char ***<parameter>argv</parameter>
-char *<parameter>name</parameter>
+int *<parameter>argc</parameter>,
+char ***<parameter>argv</parameter>,
+const char *<parameter>name</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -153,7 +153,7 @@ your polygons.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_push_vertices</function></funcdef>
-<paramdef>int <parameter>object</parameter>, float *<parameter>vbuf</parameter>, unsigned short <parameter>n</parameter></paramdef>
+<paramdef>int <parameter>object</parameter>, const float *<parameter>vbuf</parameter>, uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -185,7 +185,7 @@ float <parameter>spec_g</parameter>,
 float <parameter>spec_b</parameter>,
 float <parameter>diff_r</parameter>,
 float <parameter>diff_g</parameter>,
-float <parameter>diff_b</parameter>,
+float <parameter>diff_b</parameter>
 
 </paramdef>
 </funcprototype>
@@ -240,8 +240,8 @@ Use <link linkend="s3d_push_materials_a">s3d_push_materials_a()</link> if you ha
 <funcdef>int <function>s3d_push_materials_a</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
-float *<parameter>mbuf</parameter>, 
-unsigned short <parameter>n</parameter>
+const float *<parameter>mbuf</parameter>, 
+uint16_t <parameter>n</parameter>
 
 </paramdef>
 </funcprototype>
@@ -280,10 +280,10 @@ s3d_push_materials_a(object,mbuf,2); /* push a red and a cyan material */
 <funcprototype>
 <funcdef>int <function>s3d_push_polygon</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-int <parameter>v1</parameter>,
-int <parameter>v2</parameter>,
-int <parameter>v3</parameter>,
-int <parameter>material</parameter>
+uint32_t <parameter>v1</parameter>,
+uint32_t <parameter>v2</parameter>,
+uint32_t <parameter>v3</parameter>,
+uint32_t <parameter>material</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -310,8 +310,8 @@ int oid=<link linkend="s3d_new_object">s3d_new_object</link>();   /* create a ne
 <funcprototype>
 <funcdef>int <function>s3d_push_polygons</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-unsigned long <parameter>*pbuf</parameter>,
-unsigned short <parameter>n</parameter>
+const uint32_t *<parameter>*pbuf</parameter>,
+unsigned uint16_t <parameter>n</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -340,9 +340,9 @@ int oid=<link linkend="s3d_new_object">s3d_new_object</link>();   /* create a ne
 <funcprototype>
 <funcdef>int <function>s3d_push_line</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-int <parameter>v1</parameter>,
-int <parameter>v2</parameter>,
-int <parameter>material</parameter>
+uint32_t <parameter>v1</parameter>,
+uint32_t <parameter>v2</parameter>,
+uint32_t <parameter>material</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -360,8 +360,8 @@ a lot of lines to push, use <link linkend="s3d_push_lines">s3d_push_lines()</lin
 <funcprototype>
 <funcdef>int <function>s3d_push_line</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-unsigned  long *<parameter>*lbuf</parameter>,
-unsigned short <parameter>n</parameter>
+const uint32_t *<parameter>*lbuf</parameter>,
+uint16_t <parameter>n</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -378,9 +378,9 @@ as in <link linkend="s3d_push_line">s3d_push_line()</link>.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_push_texture</function></funcdef>
-<paramdef>int <parameter>object</parameter>, 
-int <parameter>w</parameter>,
-int <parameter>h</parameter>
+<paramdef>int <parameter>object</parameter>,
+uint16_t <parameter>w</parameter>,
+uint16_t <parameter>h</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -397,7 +397,7 @@ Adds a new texture with height w and height h on the texturestack.
 <funcprototype>
 <funcdef>int <function>s3d_pop_vertex</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-unsigned short <parameter>n</parameter>
+uint32_t <parameter>n</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -414,7 +414,7 @@ Deletes the latest n vertices from the vertex stack of the object.
 <funcprototype>
 <funcdef>int <function>s3d_pop_polygon</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-unsigned short <parameter>n</parameter>
+uint32_t <parameter>n</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -432,7 +432,7 @@ Deletes the latest n polygon from the polygon stack of the object.
 <funcprototype>
 <funcdef>int <function>s3d_pop_material</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-unsigned short <parameter>n</parameter>
+uint32_t <parameter>n</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -449,7 +449,7 @@ Deletes the latest n material from the material stack of the object.
 <funcprototype>
 <funcdef>int <function>s3d_pop_texture</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-unsigned short <parameter>n</parameter>
+uint32_t <parameter>n</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -466,7 +466,7 @@ Deletes the latest n textures from the texture stack of the object.
 <funcprototype>
 <funcdef>int <function>s3d_pop_line</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-unsigned short <parameter>n</parameter>
+uint32_t <parameter>n</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -483,8 +483,8 @@ Deletes the latest n lines from the line stack of the object.
 <funcdef>int <function>s3d_pep_polygon_normals</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
-float *<parameter>nbuf</parameter>,
-unsigned short <parameter>n</parameter>
+const float *<parameter>nbuf</parameter>,
+uint16_t <parameter>n</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -533,8 +533,8 @@ texture defined in the material</link> of the polygon. If you have more polygons
 <funcdef>int <function>s3d_pep_polygon_tex_coords</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
-float *<parameter>tbuf</parameter>, 
-int <parameter>n</parameter>
+const float *<parameter>tbuf</parameter>, 
+uint16_t <parameter>n</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -552,7 +552,7 @@ as in <link linkend="s3d_pep_polygon_tex_coord">s3d_pep_polygon_tex_coord()</lin
 <funcdef>int <function>s3d_pep_material_texture</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
-unsigned long <parameter>tex</parameter>
+uint32_t <parameter>tex</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -590,8 +590,8 @@ Alter the latest pushed vertex, overwriting with the supplied values.
 <funcdef>int <function>s3d_pep_vertices</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
-float *<parameter>vbuf</parameter>,
-unsigned short <parameter>n</parameter>
+const float *<parameter>vbuf</parameter>,
+uint16_t <parameter>n</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -629,8 +629,8 @@ Alter the latest pushed line, overwriting with the supplied values.
 <funcdef>int <function>s3d_pep_lines</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
-unsigned long *<parameter>lbuf</parameter>,
-unsigned short <parameter>n</parameter>
+const uint32_t *<parameter>lbuf</parameter>,
+uint16_t <parameter>n</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -649,8 +649,8 @@ specifying first, second vertex and material of each line.
 <funcdef>int <function>s3d_pep_line_normals</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
-float *<parameter>nbuf</parameter>,
-unsigned short <parameter>n</parameter>
+const float *<parameter>nbuf</parameter>,
+uint16_t <parameter>n</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -672,9 +672,9 @@ nbuf should contain n * 6 float values, for each vertex a normal vector (x,y,z),
 <funcdef>int <function>s3d_load_line_normals</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
-float *<parameter>nbuf</parameter>,
-int <parameter>start</parameter>,
-unsigned short <parameter>n</parameter>,
+const float *<parameter>nbuf</parameter>,
+uint32_t <parameter>start</parameter>,
+uint16_t <parameter>n</parameter>,
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -701,7 +701,7 @@ float <parameter>spec_g</parameter>,
 float <parameter>spec_b</parameter>,
 float <parameter>diff_r</parameter>,
 float <parameter>diff_g</parameter>,
-float <parameter>diff_b</parameter>,
+float <parameter>diff_b</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -751,8 +751,8 @@ See <link linkend="s3d_pep_materials_a">s3d_push_materials_a</link> if you want 
 <funcdef>int <function>s3d_pep_materials_a</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
-float *<parameter>mbuf</parameter>, 
-unsigned short <parameter>n</parameter>
+const float *<parameter>mbuf</parameter>, 
+uint16_t <parameter>n</parameter>
 
 </paramdef>
 </funcprototype>
@@ -772,9 +772,9 @@ if you only want to alter the latest material.
 <funcdef>int <function>s3d_load_materials_a</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
-float *<parameter>mbuf</parameter>, 
-unsigned longs <parameter>start</parameter>,
-unsigned short <parameter>n</parameter>
+const float *<parameter>mbuf</parameter>,
+uint32_t <parameter>start</parameter>,
+uint16_t <parameter>n</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -794,9 +794,9 @@ See <link linkend="s3d_push_materials_a">s3d_push_materials_a</link> for more in
 <funcdef>int <function>s3d_load_polygon_normals</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
-float *<parameter>nbuf</parameter>,
-int <parameter>start</parameter>,
-unsigned short <parameter>n</parameter>,
+const float *<parameter>nbuf</parameter>,
+uint32_t <parameter>start</parameter>,
+uint16_t <parameter>n</parameter>,
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -835,12 +835,12 @@ the latest n polygons but n polygons starting with index start.
 <funcdef>int <function>s3d_load_texture</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
-unsigned long <parameter>tex</parameter>,
-unsigned short <parameter>xpos</parameter>,
-unsigned short <parameter>ypos</parameter>,
-unsigned short <parameter>w</parameter>,
-unsigned short <parameter>h</parameter>,
-unsigned char *<parameter>data</parameter>
+uint32_t <parameter>tex</parameter>,
+uint16_t <parameter>xpos</parameter>,
+uint16_t <parameter>ypos</parameter>,
+uint16_t <parameter>w</parameter>,
+uint16_t <parameter>h</parameter>,
+const uint8_t *<parameter>data</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -890,12 +890,12 @@ Deletes the object referenced by oid.
 </sect2>
 
 
-<sect2 id="s3d_clone_object">
-<title>s3d_clone_object</title>
+<sect2 id="s3d_clone">
+<title>s3d_clone</title>
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
-<funcdef>int <function>s3d_clone_object</function></funcdef>
+<funcdef>int <function>s3d_clone</function></funcdef>
 <paramdef>
 int <parameter>oid</parameter>
 </paramdef>
@@ -912,11 +912,11 @@ The function returns the childs object id.
 
 
 <sect2>
-<title>s3d_clone_object_target</title>
+<title>s3d_clone_target</title>
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
-<funcdef>int <function>s3d_clone_object_target</function></funcdef>
+<funcdef>int <function>s3d_clone_target</function></funcdef>
 <paramdef>
 int <parameter>oid</parameter>,
 int <parameter>toid</parameter>
@@ -925,7 +925,7 @@ int <parameter>toid</parameter>
 </funcsynopsis>
 <para>
 Changes the clone target of oid to another object (toid). This assumes you've got
-oid from <link linkend="s3d_clone_object">s3d_clone_object</link> before.
+oid from <link linkend="s3d_clone">s3d_clone</link> before.
 </para>
 </sect2>
 
@@ -974,7 +974,7 @@ Remove the link of object oid to its target.
 <funcprototype>
 <funcdef>int <function>s3d_import_model_file</function></funcdef>
 <paramdef>
-		char *<parameter>fname</parameter>
+		const char *<parameter>fname</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -993,7 +993,7 @@ Remove the link of object oid to its target.
 <funcprototype>
 <funcdef>int <function>s3d_select_font</function></funcdef>
 <paramdef>
-char *<parameter>mask</parameter>
+const char *<parameter>mask</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1014,7 +1014,7 @@ This selects a font for the <link linkend="s3d_draw_string">s3d_draw_string()</l
 <funcprototype>
 <funcdef>int <function>s3d_draw_string</function></funcdef>
 <paramdef>
-char *<parameter>str</parameter>,
+const char *<parameter>str</parameter>,
 float *<parameter>len</parameter>
 </paramdef>
 </funcprototype>
@@ -1042,7 +1042,7 @@ the length of the rendered string in *len (or set len=NULL to disable this).
 <funcprototype>
 <funcdef>float <function>s3d_strlen</function></funcdef>
 <paramdef>
-char *<parameter>str</parameter>,
+const char *<parameter>str</parameter>,
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1060,7 +1060,7 @@ char *<parameter>str</parameter>,
 <funcprototype>
 <funcdef>int <function>s3d_open_file</function></funcdef>
 <paramdef>
-char *<parameter>fname</parameter>,
+const char *<parameter>fname</parameter>,
 char **<parameter>pointer</parameter>
 </paramdef>
 </funcprototype>
@@ -1082,7 +1082,7 @@ you're finished.
 <funcdef>int <function>s3d_flags_on</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>,
-unsigned long <parameter>flags</parameter>
+uint32_t <parameter>flags</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1101,7 +1101,7 @@ turn some flags on for object.
 <funcdef>int <function>s3d_flags_off</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>,
-unsigned long <parameter>flags</parameter>
+uint32_t <parameter>flags</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1229,7 +1229,7 @@ and its buffer! Returns a pointer to <link linkend="s3d_evt">struct s3d_evt</lin
 <funcprototype>
 <funcdef>struct s3d_evt *<function>s3d_find_event</function></funcdef>
 <paramdef>
-unsigned char <parameter>event</parameter>
+uint8_t <parameter>event</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1246,7 +1246,7 @@ Returns a pointer to <link linkend="s3d_evt">struct s3d_evt</link>.
 <funcprototype>
 <funcdef>int <function>s3d_delete_event</function></funcdef>
 <paramdef>
-struct s3d_evt *<parameter>devt</parameter>
+const struct s3d_evt *<parameter>devt</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1263,7 +1263,7 @@ deleted (maybe obtained from <link linkend="s3d_find_event">s3d_find_event</link
 <funcprototype>
 <funcdef>int <function>s3d_set_callback</function></funcdef>
 <paramdef>
-unsigned char <parameter>event</parameter>
+uint8_t <parameter>event</parameter>
 s3d_cb <parameter>func</parameter>
 </paramdef>
 </funcprototype>
@@ -1293,7 +1293,7 @@ void obj_click(<link linkend="s3d_evt">struct s3d_evt</link> event)
 <funcprototype>
 <funcdef>void <function>s3d_ignore_callback</function></funcdef>
 <paramdef>
-unsigned char <parameter>event</parameter>
+uint8_t <parameter>event</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1312,7 +1312,7 @@ An incoming event of this type will simply be skipped.
 <funcprototype>
 <funcdef>void <function>s3d_clear_callback</function></funcdef>
 <paramdef>
-unsigned char <parameter>event</parameter>
+uint8_t <parameter>event</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1329,7 +1329,7 @@ Clears the callback which is associated with the event.
 <funcprototype>
 <funcdef>s3d_cb <function>s3d_get_callback</function></funcdef>
 <paramdef>
-unsigned char <parameter>event</parameter>
+uint8_t <parameter>event</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1371,7 +1371,7 @@ of events of this type on the stack.
 <funcprototype>
 <funcdef>float <function>s3d_vector_length</function></funcdef>
 <paramdef>
-float <parameter>vector</parameter>[]
+const float <parameter>vector</parameter>[]
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1382,20 +1382,20 @@ More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Length_o
 </sect2>
 
 <sect2>
-<title>s3d_vector_substract</title>
+<title>s3d_vector_subtract</title>
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
-<funcdef>void <function>s3d_vector_substract</function></funcdef>
+<funcdef>void <function>s3d_vector_subtract</function></funcdef>
 <paramdef>
-float <parameter>vector1</parameter>[],
-float <parameter>vector2</parameter>[],
+const float <parameter>vector1</parameter>[],
+const float <parameter>vector2</parameter>[],
 float <parameter>result_vector</parameter>[]
 </paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
-Substracts vector1 from vector2, writing result into result_vector.
+Subtracts vector1 from vector2, writing result into result_vector.
 All vectors should have the format  float[3].
 More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Vector_addition_and_subtraction">on wikipedia</ulink>.
 </para>
@@ -1408,8 +1408,8 @@ More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Vector_a
 <funcprototype>
 <funcdef>float <function>s3d_vector_dot_product</function></funcdef>
 <paramdef>
-float <parameter>vector1</parameter>[],
-float <parameter>vector2</parameter>[]
+const float <parameter>vector1</parameter>[],
+const float <parameter>vector2</parameter>[]
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1427,8 +1427,8 @@ More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Dot_prod
 <funcprototype>
 <funcdef>float <function>s3d_vector_cross_product</function></funcdef>
 <paramdef>
-float <parameter>vector1</parameter>[],
-float <parameter>vector2</parameter>[]
+const float <parameter>vector1</parameter>[],
+const float <parameter>vector2</parameter>[]
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1447,8 +1447,8 @@ More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Cross_pr
 <funcprototype>
 <funcdef>float <function>s3d_vector_angle</function></funcdef>
 <paramdef>
-float <parameter>vector1</parameter>[],
-float <parameter>vector2</parameter>[]
+const float <parameter>vector1</parameter>[],
+const float <parameter>vector2</parameter>[]
 </paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1467,8 +1467,8 @@ More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Dot_prod
 <funcprototype>
 <funcdef>float <function>s3d_angle_to_cam</function></funcdef>
 <paramdef>
-float <parameter>obj_pos</parameter>[],
-float <parameter>cam_pos</parameter>[]
+const float <parameter>obj_pos</parameter>[],
+const float <parameter>cam_pos</parameter>[]
 float *<parameter>angle_rad</parameter>
 </paramdef>
 </funcprototype>
