@@ -392,6 +392,7 @@ to have greater performance.
 The tbuf should contain n texture sizes which consist of 2 uint16_t values
 for width and height for each texture. 
 </para>
+</sect2>
 
 
 <sect2>
