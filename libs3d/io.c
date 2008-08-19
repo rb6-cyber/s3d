@@ -101,12 +101,12 @@ static int parse_args(int *argc, char ***argv)
 			break;
 		}
 	}
-	optind = 0;
 	if (*argc > 0) {
 		*argc -= (optind - 1);  /*  hide s3d-options */
 		(*argv)[optind-1] = (*argv)[0]; /*  restore program path */
 		*argv += (optind - 1);  /*  set the string pointer at the right position */
 	}
+	optind = 0;
 	return(0);
 }
 /*  external functions go here ... */
