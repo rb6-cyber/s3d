@@ -376,7 +376,7 @@ int s3d_push_textures(int object, const uint16_t *tbuf, uint16_t n)
 		s = tbuf + i * stepl / 2;
 		for (j = 0;j < flen / 2;j++)
 			d[j] = htons(s[j]);
-		net_send(S3D_P_C_PUSH_POLY, (char *)buf, flen + 4);
+		net_send(S3D_P_C_PUSH_TEX, (char *)buf, flen + 4);
 	}
 	return(0);
 }

@@ -307,7 +307,7 @@ uint16_t <parameter>n</parameter></paramdef>
 <para>
 as for vertices, you can push arrays of polygons to have greater performance.
 the pbuf should contain n polygons which consist of 4 uint32_t values
-of 3 vertices indeces and 1 material index.
+of 3 vertices indices and 1 material index.
 </para>
 <programlisting>
 uint32_t pbuf[] = { 0, 1, 2, 0};
@@ -374,6 +374,24 @@ uint16_t <parameter>h</parameter></paramdef>
 Adds a new texture with height w and height h on the texturestack.
 </para>
 </sect2>
+
+<sect2>
+<title>s3d_push_textures</title>
+<funcsynopsis>
+<funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
+<funcprototype>
+<funcdef>int <function>s3d_push_textures</function></funcdef>
+<paramdef>int <parameter>object</parameter>, 
+const uint16_t *<parameter>*tbuf</parameter>,
+uint16_t <parameter>n</parameter></paramdef>
+</funcprototype>
+</funcsynopsis>
+<para>
+As for vertices, you can push arrays of textures on the texture stack 
+to have greater performance.
+The tbuf should contain n texture sizes which consist of 2 uint16_t values
+for width and height for each texture. 
+</para>
 
 
 <sect2>
