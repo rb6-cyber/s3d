@@ -47,11 +47,9 @@
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_init</function></funcdef>
-<paramdef>
-int *<parameter>argc</parameter>,
+<paramdef>int *<parameter>argc</parameter>,
 char ***<parameter>argv</parameter>,
-const char *<parameter>name</parameter>
-</paramdef>
+const char *<parameter>name</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -61,7 +59,7 @@ success in Server initializion. name specifies the your programs name.
 <programlisting>
 int main(char argc, char **argv)
 {
-	if (!<emphasis>s3d_init(<![CDATA[&argc,&argv]]>,"Hello world")</emphasis>) 
+	if (!<emphasis>s3d_init(<![CDATA[&argc, &argv]]>, "Hello world")</emphasis>) 
 	{
 		...
 		<link linkend="s3d_quit">s3d_quit()</link>;
@@ -79,7 +77,7 @@ int main(char argc, char **argv)
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_quit</function></funcdef>
-<paramdef>void </paramdef>
+<paramdef>void</paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -94,7 +92,7 @@ the <link linkend="s3d_mainloop">s3d_mainloop</link>.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>void <function>s3d_usage</function></funcdef>
-<paramdef>void </paramdef>
+<paramdef>void</paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -163,7 +161,7 @@ usual case).
 </para>
 <programlisting>
 float vertices[] = { 0.0, 0.0, 0.0,
-                     1.0, 2.0, 3,0,
+                     1.0, 2.0, 3.0,
                      3.0, 2.0, 1.0};
 <emphasis>s3d_push_vertices</emphasis>(object, vertices, 3); /* pushing 3 vertices */
 </programlisting>
@@ -185,9 +183,7 @@ float <parameter>spec_g</parameter>,
 float <parameter>spec_b</parameter>,
 float <parameter>diff_r</parameter>,
 float <parameter>diff_g</parameter>,
-float <parameter>diff_b</parameter>
-
-</paramdef>
+float <parameter>diff_b</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -220,9 +216,7 @@ float <parameter>spec_a</parameter>,
 float <parameter>diff_r</parameter>,
 float <parameter>diff_g</parameter>,
 float <parameter>diff_b</parameter>,
-float <parameter>diff_a</parameter>
-
-</paramdef>
+float <parameter>diff_a</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -238,12 +232,9 @@ Use <link linkend="s3d_push_materials_a">s3d_push_materials_a()</link> if you ha
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_push_materials_a</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 const float *<parameter>mbuf</parameter>, 
-uint16_t <parameter>n</parameter>
-
-</paramdef>
+uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -260,14 +251,14 @@ function.
 <programlisting>
 /* each line has r,g,b,a value */
 float bla[24]=
-	{1,0,0,1,
-	 1,0,0,1,
-	 1,0,0,1,
-	 0,1,1,1,
-	 0,1,1,1,
-	 0,1,1,1};
+	{1, 0, 0, 1,
+	 1, 0, 0, 1,
+	 1, 0, 0, 1,
+	 0, 1, 1, 1,
+	 0, 1, 1, 1,
+	 0, 1, 1, 1};
 
-s3d_push_materials_a(object,mbuf,2); /* push a red and a cyan material */
+s3d_push_materials_a(object, mbuf, 2); /* push a red and a cyan material */
 </programlisting>
 </sect2>
 
@@ -283,8 +274,7 @@ s3d_push_materials_a(object,mbuf,2); /* push a red and a cyan material */
 uint32_t <parameter>v1</parameter>,
 uint32_t <parameter>v2</parameter>,
 uint32_t <parameter>v3</parameter>,
-uint32_t <parameter>material</parameter>
-</paramdef>
+uint32_t <parameter>material</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -293,11 +283,11 @@ numbers and one material material-index-nr. as argument.
 </para>
 <programlisting>
 int oid=<link linkend="s3d_new_object">s3d_new_object</link>();   /* create a new object */
-<link linkend="s3d_push_vertex">s3d_push_vertex</link>(oid,0.0,0.0,0.0);
-<link linkend="s3d_push_vertex">s3d_push_vertex</link>(oid,0.0,1.0,0.0);
-<link linkend="s3d_push_vertex">s3d_push_vertex</link>(oid,1.0,0.0,0.0);
-<link linkend="s3d_push_material">s3d_push_material</link>(oid,0.3,0.0,0.0, 1.0,1.0,1.0, 1.0,0.0,0.0);
-<emphasis>s3d_push_polygon</emphasis>(oid,0,1,2,0);
+<link linkend="s3d_push_vertex">s3d_push_vertex</link>(oid, 0.0, 0.0, 0.0);
+<link linkend="s3d_push_vertex">s3d_push_vertex</link>(oid, 0.0, 1.0, 0.0);
+<link linkend="s3d_push_vertex">s3d_push_vertex</link>(oid, 1.0, 0.0, 0.0);
+<link linkend="s3d_push_material">s3d_push_material</link>(oid, 0.3, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0);
+<emphasis>s3d_push_polygon</emphasis>(oid, 0, 1, 2, 0);
 /* this will create a red polygon */
 </programlisting>
 </sect2>
@@ -311,23 +301,22 @@ int oid=<link linkend="s3d_new_object">s3d_new_object</link>();   /* create a ne
 <funcdef>int <function>s3d_push_polygons</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
 const uint32_t *<parameter>*pbuf</parameter>,
-unsigned uint16_t <parameter>n</parameter>
-</paramdef>
+uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
 as for vertices, you can push arrays of polygons to have greater performance.
-the pbuf should contain n polygons which consist of 4 unsigned long values
+the pbuf should contain n polygons which consist of 4 uint32_t values
 of 3 vertices indeces and 1 material index.
 </para>
 <programlisting>
-unsigned long pbuf[] = { 0,1,2,0};
+uint32_t pbuf[] = { 0, 1, 2, 0};
 int oid=<link linkend="s3d_new_object">s3d_new_object</link>();   /* create a new object */
-<link linkend="s3d_push_vertex">s3d_push_vertex</link>(oid,0.0,0.0,0.0);
-<link linkend="s3d_push_vertex">s3d_push_vertex</link>(oid,0.0,1.0,0.0);
-<link linkend="s3d_push_vertex">s3d_push_vertex</link>(oid,1.0,0.0,0.0);
-<link linkend="s3d_push_material">s3d_push_material</link>(oid,0.3,0.0,0.0, 1.0,1.0,1.0, 1.0,0.0,0.0);
-<emphasis>s3d_push_polygons</emphasis>(oid,pbuf,1);
+<link linkend="s3d_push_vertex">s3d_push_vertex</link>(oid, 0.0, 0.0, 0.0);
+<link linkend="s3d_push_vertex">s3d_push_vertex</link>(oid, 0.0, 1.0, 0.0);
+<link linkend="s3d_push_vertex">s3d_push_vertex</link>(oid, 1.0, 0.0, 0.0);
+<link linkend="s3d_push_material">s3d_push_material</link>(oid, 0.3, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0);
+<emphasis>s3d_push_polygons</emphasis>(oid, pbuf, 1);
 /* push one polygon with the pbuf data */
 </programlisting>
 </sect2>
@@ -342,8 +331,7 @@ int oid=<link linkend="s3d_new_object">s3d_new_object</link>();   /* create a ne
 <paramdef>int <parameter>object</parameter>, 
 uint32_t <parameter>v1</parameter>,
 uint32_t <parameter>v2</parameter>,
-uint32_t <parameter>material</parameter>
-</paramdef>
+uint32_t <parameter>material</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -358,11 +346,10 @@ a lot of lines to push, use <link linkend="s3d_push_lines">s3d_push_lines()</lin
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
-<funcdef>int <function>s3d_push_line</function></funcdef>
+<funcdef>int <function>s3d_push_lines</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-const uint32_t *<parameter>*lbuf</parameter>,
-uint16_t <parameter>n</parameter>
-</paramdef>
+const uint32_t *<parameter>lbuf</parameter>,
+uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -380,8 +367,7 @@ as in <link linkend="s3d_push_line">s3d_push_line()</link>.
 <funcdef>int <function>s3d_push_texture</function></funcdef>
 <paramdef>int <parameter>object</parameter>,
 uint16_t <parameter>w</parameter>,
-uint16_t <parameter>h</parameter>
-</paramdef>
+uint16_t <parameter>h</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -397,8 +383,7 @@ Adds a new texture with height w and height h on the texturestack.
 <funcprototype>
 <funcdef>int <function>s3d_pop_vertex</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-uint32_t <parameter>n</parameter>
-</paramdef>
+uint32_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -414,8 +399,7 @@ Deletes the latest n vertices from the vertex stack of the object.
 <funcprototype>
 <funcdef>int <function>s3d_pop_polygon</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-uint32_t <parameter>n</parameter>
-</paramdef>
+uint32_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -432,8 +416,7 @@ Deletes the latest n polygon from the polygon stack of the object.
 <funcprototype>
 <funcdef>int <function>s3d_pop_material</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-uint32_t <parameter>n</parameter>
-</paramdef>
+uint32_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -449,8 +432,7 @@ Deletes the latest n material from the material stack of the object.
 <funcprototype>
 <funcdef>int <function>s3d_pop_texture</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-uint32_t <parameter>n</parameter>
-</paramdef>
+uint32_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -466,8 +448,7 @@ Deletes the latest n textures from the texture stack of the object.
 <funcprototype>
 <funcdef>int <function>s3d_pop_line</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-uint32_t <parameter>n</parameter>
-</paramdef>
+uint32_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -481,11 +462,9 @@ Deletes the latest n lines from the line stack of the object.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_pep_polygon_normals</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 const float *<parameter>nbuf</parameter>,
-uint16_t <parameter>n</parameter>
-</paramdef>
+uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -506,15 +485,13 @@ proper normal values (same for every vertex, calculated by the plane which is de
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_pep_polygon_tex_coord</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 float <parameter>x1</parameter>, 
 float <parameter>y1</parameter>, 
 float <parameter>x2</parameter>, 
 float <parameter>y2</parameter>, 
 float <parameter>x3</parameter>, 
-float <parameter>y3</parameter>
-</paramdef>
+float <parameter>y3</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -531,11 +508,9 @@ texture defined in the material</link> of the polygon. If you have more polygons
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_pep_polygon_tex_coords</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 const float *<parameter>tbuf</parameter>, 
-uint16_t <parameter>n</parameter>
-</paramdef>
+uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -550,10 +525,8 @@ as in <link linkend="s3d_pep_polygon_tex_coord">s3d_pep_polygon_tex_coord()</lin
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_pep_material_texture</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
-uint32_t <parameter>tex</parameter>
-</paramdef>
+<paramdef>int <parameter>object</parameter>, 
+uint32_t <parameter>tex</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -569,12 +542,10 @@ have pushed this texture with <link linkend="s3d_push_texture">s3d_push_texture<
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_pep_vertex</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 float <parameter>x</parameter>,
 float <parameter>y</parameter>,
-float <parameter>z</parameter>
-</paramdef>
+float <parameter>z</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -588,11 +559,9 @@ Alter the latest pushed vertex, overwriting with the supplied values.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_pep_vertices</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 const float *<parameter>vbuf</parameter>,
-uint16_t <parameter>n</parameter>
-</paramdef>
+uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -608,12 +577,10 @@ specifying x,y,z of the vertices.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_pep_line</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
-unsigned long <parameter>v1</parameter>,
-unsigned long <parameter>v2</parameter>,
-unsigned long <parameter>material</parameter>
-</paramdef>
+<paramdef>int <parameter>object</parameter>, 
+int <parameter>v1</parameter>,
+int <parameter>v2</parameter>,
+int <parameter>material</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -627,16 +594,14 @@ Alter the latest pushed line, overwriting with the supplied values.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_pep_lines</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 const uint32_t *<parameter>lbuf</parameter>,
-uint16_t <parameter>n</parameter>
-</paramdef>
+uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
 Alter the latest n pushed lines. lbuf holds the values which
-are used to overwrite the old data, n entries with each 3 unsigned longs
+are used to overwrite the old data, n entries with each 3 uint32_t
 specifying first, second vertex and material of each line.
 </para>
 </sect2>
@@ -647,11 +612,9 @@ specifying first, second vertex and material of each line.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_pep_line_normals</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 const float *<parameter>nbuf</parameter>,
-uint16_t <parameter>n</parameter>
-</paramdef>
+uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -670,12 +633,10 @@ nbuf should contain n * 6 float values, for each vertex a normal vector (x,y,z),
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_load_line_normals</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 const float *<parameter>nbuf</parameter>,
 uint32_t <parameter>start</parameter>,
-uint16_t <parameter>n</parameter>,
-</paramdef>
+uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -691,8 +652,7 @@ the latest n lines but n lines starting with index start.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_pep_material</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 float <parameter>amb_r</parameter>,
 float <parameter>amb_g</parameter>,
 float <parameter>amb_b</parameter>,
@@ -701,8 +661,7 @@ float <parameter>spec_g</parameter>,
 float <parameter>spec_b</parameter>,
 float <parameter>diff_r</parameter>,
 float <parameter>diff_g</parameter>,
-float <parameter>diff_b</parameter>
-</paramdef>
+float <parameter>diff_b</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -719,8 +678,7 @@ See <link linkend="s3d_pep_materials_a">s3d_pep_materials_a</link> if you want t
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_pep_material_a</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 float <parameter>amb_r</parameter>,
 float <parameter>amb_g</parameter>,
 float <parameter>amb_b</parameter>,
@@ -732,8 +690,7 @@ float <parameter>spec_a</parameter>,
 float <parameter>diff_r</parameter>,
 float <parameter>diff_g</parameter>,
 float <parameter>diff_b</parameter>,
-float <parameter>diff_a</parameter>
-</paramdef>
+float <parameter>diff_a</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -749,12 +706,9 @@ See <link linkend="s3d_pep_materials_a">s3d_push_materials_a</link> if you want 
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_pep_materials_a</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 const float *<parameter>mbuf</parameter>, 
-uint16_t <parameter>n</parameter>
-
-</paramdef>
+uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -770,12 +724,10 @@ if you only want to alter the latest material.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_load_materials_a</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 const float *<parameter>mbuf</parameter>,
 uint32_t <parameter>start</parameter>,
-uint16_t <parameter>n</parameter>
-</paramdef>
+uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -792,12 +744,10 @@ See <link linkend="s3d_push_materials_a">s3d_push_materials_a</link> for more in
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_load_polygon_normals</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 const float *<parameter>nbuf</parameter>,
 uint32_t <parameter>start</parameter>,
-uint16_t <parameter>n</parameter>,
-</paramdef>
+uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -813,12 +763,10 @@ the latest n polygons but n polygons starting with index start.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_load_polygon_tex_coords</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 const float *<parameter>tbuf</parameter>, 
 uint32_t <parameter>start</parameter>,
-uint16_t <parameter>n</parameter>
-</paramdef>
+uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -833,15 +781,13 @@ the latest n polygons but n polygons starting with index start.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_load_texture</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>, 
+<paramdef>int <parameter>object</parameter>, 
 uint32_t <parameter>tex</parameter>,
 uint16_t <parameter>xpos</parameter>,
 uint16_t <parameter>ypos</parameter>,
 uint16_t <parameter>w</parameter>,
 uint16_t <parameter>h</parameter>,
-const uint8_t *<parameter>data</parameter>
-</paramdef>
+const uint8_t *<parameter>data</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -861,9 +807,7 @@ using <link linkend="s3d_pep_polygon_tex_coord">s3d_pep_polygon_tex_coord()</lin
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_new_object</function></funcdef>
-<paramdef>
-void
-</paramdef>
+<paramdef>void</paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -879,9 +823,7 @@ Creates a new object, returning the object id.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_del_object</function></funcdef>
-<paramdef>
-int <parameter>oid</parameter>
-</paramdef>
+<paramdef>int <parameter>oid</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -896,9 +838,7 @@ Deletes the object referenced by oid.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_clone</function></funcdef>
-<paramdef>
-int <parameter>oid</parameter>
-</paramdef>
+<paramdef>int <parameter>oid</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -917,10 +857,8 @@ The function returns the childs object id.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_clone_target</function></funcdef>
-<paramdef>
-int <parameter>oid</parameter>,
-int <parameter>toid</parameter>
-</paramdef>
+<paramdef>int <parameter>oid</parameter>,
+int <parameter>toid</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -936,10 +874,8 @@ oid from <link linkend="s3d_clone">s3d_clone</link> before.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_link</function></funcdef>
-<paramdef>
-int <parameter>oid_from</parameter>,
-int <parameter>oid_to</parameter>
-</paramdef>
+<paramdef>int <parameter>oid_from</parameter>,
+int <parameter>oid_to</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -957,9 +893,7 @@ It will also rotate with the table etc.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_unlink</function></funcdef>
-<paramdef>
-int <parameter>oid</parameter>
-</paramdef>
+<paramdef>int <parameter>oid</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -973,9 +907,7 @@ Remove the link of object oid to its target.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_import_model_file</function></funcdef>
-<paramdef>
-		const char *<parameter>fname</parameter>
-</paramdef>
+<paramdef>const char *<parameter>fname</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -992,9 +924,7 @@ Remove the link of object oid to its target.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_select_font</function></funcdef>
-<paramdef>
-const char *<parameter>mask</parameter>
-</paramdef>
+<paramdef>const char *<parameter>mask</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1013,10 +943,8 @@ This selects a font for the <link linkend="s3d_draw_string">s3d_draw_string()</l
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_draw_string</function></funcdef>
-<paramdef>
-const char *<parameter>str</parameter>,
-float *<parameter>len</parameter>
-</paramdef>
+<paramdef>const char *<parameter>str</parameter>,
+float *<parameter>len</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1028,10 +956,10 @@ the length of the rendered string in *len (or set len=NULL to disable this).
 	char str="hello world!";
 	float len;
 	<link linkend="s3d_select_font">s3d_select_font</link>("vera");
-	<emphasis>s3d_draw_string</emphasis>(str,len);
+	<emphasis>s3d_draw_string</emphasis>(str, len);
 
 	/* not interested in the length? do that:
-	 * <emphasis>s3d_draw_string</emphasis>(str,NULL); */
+	 * <emphasis>s3d_draw_string</emphasis>(str, NULL); */
 </programlisting>
 </sect2>
 
@@ -1041,9 +969,7 @@ the length of the rendered string in *len (or set len=NULL to disable this).
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>float <function>s3d_strlen</function></funcdef>
-<paramdef>
-const char *<parameter>str</parameter>,
-</paramdef>
+<paramdef>const char *<parameter>str</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1059,10 +985,8 @@ const char *<parameter>str</parameter>,
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_open_file</function></funcdef>
-<paramdef>
-const char *<parameter>fname</parameter>,
-char **<parameter>pointer</parameter>
-</paramdef>
+<paramdef>const char *<parameter>fname</parameter>,
+char **<parameter>pointer</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1080,10 +1004,8 @@ you're finished.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_flags_on</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>,
-uint32_t <parameter>flags</parameter>
-</paramdef>
+<paramdef>int <parameter>object</parameter>,
+uint32_t <parameter>flags</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1099,10 +1021,8 @@ turn some flags on for object.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_flags_off</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>,
-uint32_t <parameter>flags</parameter>
-</paramdef>
+<paramdef>int <parameter>object</parameter>,
+uint32_t <parameter>flags</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1117,12 +1037,10 @@ turn some flags off for object.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_translate</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>,
+<paramdef>int <parameter>object</parameter>,
 float <parameter>x</parameter>,
 float <parameter>y</parameter>,
-float <parameter>z</parameter>
-</paramdef>
+float <parameter>z</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1131,8 +1049,8 @@ always located at 0.0 , 0.0, 0.0.
 </para>
 <important><para>Translation is absolute, not relative!</para></important>
 <programlisting>
-<emphasis>s3d_translate</emphasis>(object,2,0,0);
-<emphasis>s3d_translate</emphasis>(object,4,0,0);
+<emphasis>s3d_translate</emphasis>(object, 2, 0, 0);
+<emphasis>s3d_translate</emphasis>(object, 4, 0, 0);
 /* object will end up at 4,0,0 and not 6,0,0!! */
 </programlisting>
 </sect2>
@@ -1144,12 +1062,10 @@ always located at 0.0 , 0.0, 0.0.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_rotate</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>,
+<paramdef>int <parameter>object</parameter>,
 float <parameter>x</parameter>,
 float <parameter>y</parameter>,
-float <parameter>z</parameter>
-</paramdef>
+float <parameter>z</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1165,8 +1081,8 @@ bodies axis. (I wonder if that makes it any clearer ;)
 </para>
 <important><para>Rotate is absolute, not relative!</para></important>
 <programlisting>
-<emphasis>s3d_rotate</emphasis>(object,90,0,0);
-<emphasis>s3d_rotate</emphasis>(object,180,0,0);
+<emphasis>s3d_rotate</emphasis>(object, 90,  0, 0);
+<emphasis>s3d_rotate</emphasis>(object, 180, 0, 0);
 /* object will be rotated 180 degrees around the x-axis, not 270 degress! */
 </programlisting>
 </sect2>
@@ -1178,10 +1094,8 @@ bodies axis. (I wonder if that makes it any clearer ;)
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_scale</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>,
-float <parameter>s</parameter>
-</paramdef>
+<paramdef>int <parameter>object</parameter>,
+float <parameter>s</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1196,9 +1110,7 @@ Scales the object. about factor s. s=1 will be the original size, -1 will mirror
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_push_event</function></funcdef>
-<paramdef>
-		struct s3d_evt *<parameter>newevt</parameter>
-</paramdef>
+<paramdef>struct s3d_evt *<parameter>newevt</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1212,8 +1124,7 @@ Pushes an <link linkend="s3d_evt">event</link> onto the event-stack. Usually you
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>struct s3d_evt *<function>s3d_pop_event</function></funcdef>
-<paramdef>void
-</paramdef>
+<paramdef>void</paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1228,9 +1139,7 @@ and its buffer! Returns a pointer to <link linkend="s3d_evt">struct s3d_evt</lin
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>struct s3d_evt *<function>s3d_find_event</function></funcdef>
-<paramdef>
-uint8_t <parameter>event</parameter>
-</paramdef>
+<paramdef>uint8_t <parameter>event</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1245,9 +1154,7 @@ Returns a pointer to <link linkend="s3d_evt">struct s3d_evt</link>.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_delete_event</function></funcdef>
-<paramdef>
-const struct s3d_evt *<parameter>devt</parameter>
-</paramdef>
+<paramdef>const struct s3d_evt *<parameter>devt</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1262,10 +1169,8 @@ deleted (maybe obtained from <link linkend="s3d_find_event">s3d_find_event</link
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_set_callback</function></funcdef>
-<paramdef>
-uint8_t <parameter>event</parameter>
-s3d_cb <parameter>func</parameter>
-</paramdef>
+<paramdef>uint8_t <parameter>event</parameter>,
+s3d_cb <parameter>func</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1274,9 +1179,11 @@ applications. event callbacks will not interrupt each other or the mainloop.
 </para>
 <important><para>Defining callbacks will only work after calling <link linkend="s3d_init">s3d_init()</link></para></important>
 <programlisting>
+ <![CDATA[#include <inttypes.h>]]>
+
 void obj_click(<link linkend="s3d_evt">struct s3d_evt</link> event)
 {
-	printf("object id %d got clicked", *((unsigned long *)event->buf));
+	printf("object id %"PRIu32" got clicked", *((uint32_t *)event->buf));
 }
 ...
 	<link linkend="s3d_set_callback">s3d_set_callback</link>(<link linkend="S3D_EVENT_NEW_OBJECT">S3D_EVENT_NEW_OBJECT</link>, obj_click);
@@ -1292,9 +1199,7 @@ void obj_click(<link linkend="s3d_evt">struct s3d_evt</link> event)
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>void <function>s3d_ignore_callback</function></funcdef>
-<paramdef>
-uint8_t <parameter>event</parameter>
-</paramdef>
+<paramdef>uint8_t <parameter>event</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1311,9 +1216,7 @@ An incoming event of this type will simply be skipped.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>void <function>s3d_clear_callback</function></funcdef>
-<paramdef>
-uint8_t <parameter>event</parameter>
-</paramdef>
+<paramdef>uint8_t <parameter>event</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1328,9 +1231,7 @@ Clears the callback which is associated with the event.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>s3d_cb <function>s3d_get_callback</function></funcdef>
-<paramdef>
-uint8_t <parameter>event</parameter>
-</paramdef>
+<paramdef>uint8_t <parameter>event</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1352,8 +1253,7 @@ Returns the <link linkend="s3d_cb">Callback-function</link> of the event.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>void <function>s3d_process_callback</function></funcdef>
-<paramdef>void
-</paramdef>
+<paramdef>void</paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1370,9 +1270,7 @@ of events of this type on the stack.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>float <function>s3d_vector_length</function></funcdef>
-<paramdef>
-const float <parameter>vector</parameter>[]
-</paramdef>
+<paramdef>const float <parameter>vector</parameter>[]</paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1387,11 +1285,9 @@ More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Length_o
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>void <function>s3d_vector_subtract</function></funcdef>
-<paramdef>
-const float <parameter>vector1</parameter>[],
+<paramdef>const float <parameter>vector1</parameter>[],
 const float <parameter>vector2</parameter>[],
-float <parameter>result_vector</parameter>[]
-</paramdef>
+float <parameter>result_vector</parameter>[]</paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1407,10 +1303,8 @@ More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Vector_a
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>float <function>s3d_vector_dot_product</function></funcdef>
-<paramdef>
-const float <parameter>vector1</parameter>[],
-const float <parameter>vector2</parameter>[]
-</paramdef>
+<paramdef>const float <parameter>vector1</parameter>[],
+const float <parameter>vector2</parameter>[]</paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1426,10 +1320,8 @@ More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Dot_prod
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>float <function>s3d_vector_cross_product</function></funcdef>
-<paramdef>
-const float <parameter>vector1</parameter>[],
-const float <parameter>vector2</parameter>[]
-</paramdef>
+<paramdef>const float <parameter>vector1</parameter>[],
+const float <parameter>vector2</parameter>[]</paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1446,10 +1338,8 @@ More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Cross_pr
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>float <function>s3d_vector_angle</function></funcdef>
-<paramdef>
-const float <parameter>vector1</parameter>[],
-const float <parameter>vector2</parameter>[]
-</paramdef>
+<paramdef>const float <parameter>vector1</parameter>[],
+const float <parameter>vector2</parameter>[]</paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1466,11 +1356,9 @@ More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Dot_prod
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>float <function>s3d_angle_to_cam</function></funcdef>
-<paramdef>
-const float <parameter>obj_pos</parameter>[],
+<paramdef>const float <parameter>obj_pos</parameter>[],
 const float <parameter>cam_pos</parameter>[]
-float *<parameter>angle_rad</parameter>
-</paramdef>
+float *<parameter>angle_rad</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1486,9 +1374,7 @@ so that it faces the camera. This might become handy if you have some text float
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_mcp_focus</function></funcdef>
-<paramdef>
-int <parameter>object</parameter>
-</paramdef>
+<paramdef>int <parameter>object</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1503,9 +1389,7 @@ to an app referenced by it's mcp-object-id.
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_net_check</function></funcdef>
-<paramdef>
-		void
-</paramdef>
+<paramdef>void</paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1652,7 +1536,7 @@ Callbacks can be defined with <link linkend="s3d_set_callback">s3d_set_callback(
 <term><anchor id="S3D_EVENT_OBJ_CLICK"/>S3D_EVENT_OBJ_CLICK</term>
 <listitem><para>
 An object got clicked (when you set the flag <link linkend="S3D_OF_SELECTABLE">S3D_OF_SELECTABLE</link>), buf will contain the object id
-of the object which got clicked (unsigned long, 4 byte)
+of the object which got clicked (uint32_t)
 </para></listitem>
 </varlistentry>
 
