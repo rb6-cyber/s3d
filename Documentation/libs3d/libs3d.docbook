@@ -8,7 +8,7 @@
  <para>
  Install the lib using the usual usual mechanism:
  <programlisting>
- ./configure
+ cmake .
  make
  make install
  </programlisting>
