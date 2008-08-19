@@ -38,7 +38,7 @@ hold right mouse button and move mouse to rotate the mouse (look around)
 left mouse button is for clicking :)
 </para></listitem>
 <listitem><para>
-presse f1 to get in ego-shooter mode :D you can use w,a,s,d for movement now. f1 again to deactivate.
+presse f2 to get in ego-shooter mode :D you can use w,a,s,d for movement now. f2 again to deactivate.
 this only works with dot_mcp, the others above work out-of-the box within the server.
 </para></listitem>
 </itemizedlist>
