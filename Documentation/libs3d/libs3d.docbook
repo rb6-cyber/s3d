@@ -807,17 +807,17 @@ the latest n polygons but n polygons starting with index start.
 </sect2>
 
 
-<sect2 id="s3d_load_tex_coords">
-<title>s3d_load_tex_coords</title>
+<sect2 id="s3d_load_polygon_tex_coords">
+<title>s3d_load_polygon_tex_coords</title>
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
-<funcdef>int <function>s3d_load_tex_coords</function></funcdef>
+<funcdef>int <function>s3d_load_polygon_tex_coords</function></funcdef>
 <paramdef>
 int <parameter>object</parameter>, 
-float *<parameter>tbuf</parameter>, 
-int <parameter>start</parameter>,
-int <parameter>n</parameter>
+const float *<parameter>tbuf</parameter>, 
+uint32_t <parameter>start</parameter>,
+uint16_t <parameter>n</parameter>
 </paramdef>
 </funcprototype>
 </funcsynopsis>
