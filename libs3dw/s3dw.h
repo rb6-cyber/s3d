@@ -193,9 +193,9 @@ S3DWEXPORT void      s3dw_textbox_scrollright(s3dw_textbox *textbox);
 S3DWEXPORT void      s3dw_textbox_scrollto(s3dw_textbox *textbox, int x, int y);
 S3DWEXPORT void      s3dw_textbox_change_text(s3dw_textbox *textbox, const char *text);
 
-S3DWEXPORT int      s3dw_handle_click(const struct s3d_evt *evt);
-S3DWEXPORT int      s3dw_handle_key(const struct s3d_evt *evt);
-S3DWEXPORT int      s3dw_object_info(struct s3d_evt *evt);
+S3DWEXPORT int      s3dw_handle_click(const struct s3d_evt *event);
+S3DWEXPORT int      s3dw_handle_key(const struct s3d_evt *event);
+S3DWEXPORT int      s3dw_object_info(struct s3d_evt *event);
 
 S3DWEXPORT void      s3dw_ani_mate(void);
 

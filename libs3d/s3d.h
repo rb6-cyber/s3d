@@ -141,7 +141,7 @@ S3DEXPORT int s3d_pep_vertices(int object, const float *vbuf, uint16_t n);
 S3DEXPORT int s3d_pep_line(int object, int v1, int v2, int material);
 S3DEXPORT int s3d_pep_lines(int object, const uint32_t *lbuf, uint16_t n);
 S3DEXPORT int s3d_load_line_normals(int object, const float *nbuf, uint32_t start, uint16_t n);
-S3DEXPORT int s3d_load_polygon_normals(int object, const float *nbuf, uint32_t start, uint16_t n) ;
+S3DEXPORT int s3d_load_polygon_normals(int object, const float *nbuf, uint32_t start, uint16_t n);
 S3DEXPORT int s3d_load_polygon_tex_coords(int object, const float *tbuf, uint32_t start, uint16_t n);
 S3DEXPORT int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h, const uint8_t *data);
 

@@ -107,7 +107,7 @@ Prints the possible parameter for the client library (which can be passed in
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
 <funcdef>int <function>s3d_mainloop</function></funcdef>
-<paramdef>void (*<parameter>f</parameter>)()</paramdef>
+<paramdef>void (*<parameter>f</parameter>)(void)</paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -300,7 +300,7 @@ int oid=<link linkend="s3d_new_object">s3d_new_object</link>();   /* create a ne
 <funcprototype>
 <funcdef>int <function>s3d_push_polygons</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-const uint32_t *<parameter>*pbuf</parameter>,
+const uint32_t *<parameter>pbuf</parameter>,
 uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -382,7 +382,7 @@ Adds a new texture with height w and height h on the texturestack.
 <funcprototype>
 <funcdef>int <function>s3d_push_textures</function></funcdef>
 <paramdef>int <parameter>object</parameter>, 
-const uint16_t *<parameter>*tbuf</parameter>,
+const uint16_t *<parameter>tbuf</parameter>,
 uint16_t <parameter>n</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -963,12 +963,12 @@ This selects a font for the <link linkend="s3d_draw_string">s3d_draw_string()</l
 <funcprototype>
 <funcdef>int <function>s3d_draw_string</function></funcdef>
 <paramdef>const char *<parameter>str</parameter>,
-float *<parameter>len</parameter></paramdef>
+float *<parameter>xlen</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
 Renders the string str with in Truetype format with the height 1, returns
-the length of the rendered string in *len (or set len=NULL to disable this).
+the length of the rendered string in *xlen (or set len=NULL to disable this).
 
 </para>
 <programlisting>
@@ -1128,7 +1128,7 @@ Scales the object. about factor s. s=1 will be the original size, -1 will mirror
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
-<funcdef>int <function>s3d_push_event</function></funcdef>
+<funcdef>void <function>s3d_push_event</function></funcdef>
 <paramdef>struct s3d_evt *<parameter>newevt</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1187,7 +1187,7 @@ deleted (maybe obtained from <link linkend="s3d_find_event">s3d_find_event</link
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
-<funcdef>int <function>s3d_set_callback</function></funcdef>
+<funcdef>void <function>s3d_set_callback</function></funcdef>
 <paramdef>uint8_t <parameter>event</parameter>,
 s3d_cb <parameter>func</parameter></paramdef>
 </funcprototype>
@@ -1271,7 +1271,7 @@ Returns the <link linkend="s3d_cb">Callback-function</link> of the event.
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
-<funcdef>void <function>s3d_process_callback</function></funcdef>
+<funcdef>void <function>s3d_process_stack</function></funcdef>
 <paramdef>void</paramdef>
 </funcprototype>
 </funcsynopsis>
@@ -1338,9 +1338,10 @@ More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Dot_prod
 <funcsynopsis>
 <funcsynopsisinfo><![CDATA[#include <s3d.h>]]></funcsynopsisinfo>
 <funcprototype>
-<funcdef>float <function>s3d_vector_cross_product</function></funcdef>
+<funcdef>void <function>s3d_vector_cross_product</function></funcdef>
 <paramdef>const float <parameter>vector1</parameter>[],
-const float <parameter>vector2</parameter>[]</paramdef>
+const float <parameter>vector2</parameter>[],
+float <parameter>result_vector</parameter>[]</paramdef>
 </funcprototype>
 </funcsynopsis>
 <para>
@@ -1376,7 +1377,7 @@ More info <ulink url="http://en.wikipedia.org/wiki/Vector_%28spatial%29#Dot_prod
 <funcprototype>
 <funcdef>float <function>s3d_angle_to_cam</function></funcdef>
 <paramdef>const float <parameter>obj_pos</parameter>[],
-const float <parameter>cam_pos</parameter>[]
+const float <parameter>cam_pos</parameter>[],
 float *<parameter>angle_rad</parameter></paramdef>
 </funcprototype>
 </funcsynopsis>
