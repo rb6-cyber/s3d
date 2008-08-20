@@ -3,6 +3,4 @@ general:
 dot_mcp:
 	* sane paths for applications
 cmake:
-	* Build the documentation (to html at least) if the user has
-	  docbook stuff installed.
 	* Apple todo: won't find -lX11 (for s3d_x11gate) while compiling

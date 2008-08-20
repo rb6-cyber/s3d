@@ -1,7 +1,15 @@
 (detailed ChangeLog can be generated with "svn log" in a subversion
 Checkout. We will only give a brief summary of the changes here.)
 
-
+2008-??-?? ?? <??@??.??>
+	- GLUT specific parts were removed from server
+	- server will generate mipmaps for textures
+	- SHM connected server and clients will now share their texture buffers
+	  over shm. Clients will only send update notices to inform the
+	  server
+	- s3dosm is now OSM api 0.5 compatible
+	- C++ compatible api headers (no abi changes)
+	- of course: fixed various bugs
 2007-10-24 Simon Wunderlich - <dotslash@packetmixer.de>
 	- Released S3D Version 0.2
 	- now using cmake instead of autohell, which seems to be faster,
