@@ -1518,49 +1518,6 @@ static int check_line_normal(struct t_obj *obj, uint32_t pn)
 
 }
 
-static void tex_build_mipmaps(struct t_tex *tex)
-{
-	int     i, w, h, x, y, c;
-	unsigned char  *buf, *src;
-	w = tex->w;
-	h = tex->h;
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-	             tex->w, tex->h, 0,  /*  no border. */
-	             GL_RGBA, GL_UNSIGNED_BYTE, tex->buf);
-	/* this is fairly hacky, but we only use one buffer and decrease the image left-top to right-bottom,
-	 * so we only read from elements AFTER the updated (written) elements. */
-	buf = (unsigned char*)malloc((w / 2) * (h / 2) * 4);
-	src = tex->buf;
-	i = 1;
-	while (w != 1 || h != 1) {
-		if (w != 1) {
-			w /= 2;
-		}
-
-		if (h != 1) {
-			h /= 2;
-		}
-
-		if ((w == 0) || (h == 0)) break;
-		/* TODO: handle texture borders which have not even width or height */
-		for (y = 0; y < h; y++)
-			for (x = 0; x < w; x++)
-				for (c = 0; c < 4; c++) {
-					buf[(y * w + x)*4 + c] = ((uint16_t)
-					                          src[(2  * y      * 2 * w + 2 * x)     * 4 + c] +
-					                          src[((2 * y + 1) * 2 * w + 2 * x)     * 4 + c] +
-					                          src[(2  * y      * 2 * w + 2 * x + 1) * 4 + c] +
-					                          src[((2 * y + 1) * 2 * w + 2 * x + 1) * 4 + c]) / 4;
-					/*     s3dprintf(MED,"texture: %d, x = %d, y = %d, c = %d, buf = %02x\n", i, x, y, c, buf[(y * w + x)*4 + c]);*/
-
-				}
-		glTexImage2D(GL_TEXTURE_2D, i, GL_RGBA, w, h, 0,   GL_RGBA, GL_UNSIGNED_BYTE, buf);
-		src = buf;
-		i++;
-	}
-	free(buf);
-}
 /* generate textures */
 static void texture_gen(struct t_obj *obj)
 {
@@ -1574,20 +1531,12 @@ static void texture_gen(struct t_obj *obj)
 			glBindTexture(GL_TEXTURE_2D, t);
 			tex->gl_texnum = t;
 			s3dprintf(LOW, "generated texture %d [%dx%d, in memory %dx%d]", t, tex->tw, tex->th, tex->w, tex->h);
-			/*    for (j=0;j<tex->th;j++)
-			    for (i=0;i<tex->tw;i++)
-			    {
-			     s3dprintf(MED,"pixel[%d,%d], %d %d %d %d",i,j,
-			         tex->buf[(j*tex->w+i)*4+0],
-			         tex->buf[(j*tex->w+i)*4+1],
-			         tex->buf[(j*tex->w+i)*4+2],
-			         tex->buf[(j*tex->w+i)*4+3]);
-			    }*/
 			/*  texture has to be generated yet ... */
-			tex_build_mipmaps(tex);
-			/*   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-			                tex->w, tex->h, 0,  / *  no border. * /
-			                GL_RGBA, GL_UNSIGNED_BYTE, tex->buf);*/
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+			glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+			             tex->w, tex->h, 0,  /*  no border. */
+			             GL_RGBA, GL_UNSIGNED_BYTE, tex->buf);
 
 		}
 	}
