@@ -866,11 +866,12 @@ int obj_update_tex(struct t_process *p, int32_t oid, int32_t tid,uint16_t S3DUNU
 
 	if ((tex->gl_texnum) != -1) {
 		t = tex->gl_texnum;
-		/* s3dprintf(MED,"updating texture %d at [%d %d] with a [%d %d] pixbuf",t,x,y,w,h); */
-		/*   glTexSubImage2D(t,0,x,y,w,h,GL_RGBA,GL_UNSIGNED_BYTE,pixbuf); */
+		s3dprintf(MED, "updating texture %d at [%d %d] with a [%d %d] pixbuf", t, x, y, w, h);
 
-		glDeleteTextures(1, &t);
-		tex->gl_texnum = -1;
+		glBindTexture(GL_TEXTURE_2D, t);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, tex->w, tex->h, GL_RGBA, GL_UNSIGNED_BYTE, tex->buf);
 	}
 	return(0);
 }
