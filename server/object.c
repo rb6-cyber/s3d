@@ -45,7 +45,6 @@ void obj_sys_update(struct t_process *p, int32_t oid);
 
 int texture_shm_register(struct t_tex *tex, int bufsize);
 void texture_delete(struct t_tex *tex);
-
 /*  debugging function for objects, prints out some stuff known about it... */
 int obj_debug(struct t_process *p, int32_t oid)
 {
@@ -840,7 +839,7 @@ int obj_load_mat(struct t_process *p, int32_t oid, float *x, int32_t start, int3
 	return(0);
 }
 /* notify graphic system that the texture is updated */
-int obj_update_tex(struct t_process *p, int32_t oid, int32_t tid,uint16_t S3DUNUSED(x), uint16_t S3DUNUSED(y), uint16_t S3DUNUSED(w), uint16_t S3DUNUSED(h), uint8_t *S3DUNUSED(pixbuf))
+int obj_update_tex(struct t_process *p, int32_t oid, int32_t tid, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *S3DUNUSED(pixbuf))
 {
 	GLuint t;
 	struct t_obj *obj;
