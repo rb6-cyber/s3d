@@ -46,12 +46,12 @@ struct hashtable_t *node_hash;
 struct hashtable_t *con_hash;
 
 
-static int long_comp(void *data1, void *data2)
+static int long_comp(const void *data1, const void *data2)
 {
 	return(memcmp(data1, data2, 8));
 }
 
-static int long_choose(void *data, int32_t size)
+static int long_choose(const void *data, int32_t size)
 {
 	unsigned char *key = (unsigned char*)data;
 	uint32_t hash = 0;
@@ -68,14 +68,14 @@ static int long_choose(void *data, int32_t size)
 	return (hash % size);
 }
 
-static int orig_comp(void *data1, void *data2)
+static int orig_comp(const void *data1, const void *data2)
 {
 	return(memcmp(data1, data2, 4));
 }
 
 /* hashfunction to choose an entry in a hash table of given size */
 /* hash algorithm from http://en.wikipedia.org/wiki/Hash_table */
-static int orig_choose(void *data, int32_t size)
+static int orig_choose(const void *data, int32_t size)
 {
 	unsigned char *key = (unsigned char*)data;
 	uint32_t hash = 0;

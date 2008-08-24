@@ -27,8 +27,8 @@
 
 
 
-typedef int (*hashdata_compare_cb)(void *, void *);
-typedef int (*hashdata_choose_cb)(void *, int);
+typedef int (*hashdata_compare_cb)(const void *, const void *);
+typedef int (*hashdata_choose_cb)(const void *, int);
 typedef void (*hashdata_free_cb)(void *);
 
 struct element_t {

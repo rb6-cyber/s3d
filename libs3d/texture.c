@@ -32,18 +32,18 @@
 #include <errno.h>  /* errno */
 #include <string.h>  /* memcpy() */
 
-static int _s3d_compare_cb(void *d1, void *d2);
-static int _s3d_choose_cb(void *d1, int size);
+static int _s3d_compare_cb(const void *d1, const void *d2);
+static int _s3d_choose_cb(const void *d1, int size);
 static void _s3d_free_s3dtex(void *d1);
 static struct hashtable_t *tex_hash = NULL;
 
-static int _s3d_choose_cb(void *d1, int size)
+static int _s3d_choose_cb(const void *d1, int size)
 {
 	struct s3d_texshm *t1 = (struct s3d_texshm *)d1;
 	return((t1->oid*32 + t1->tex) % size);
 }
 
-static int _s3d_compare_cb(void *d1, void *d2)
+static int _s3d_compare_cb(const void *d1, const void *d2)
 {
 	struct s3d_texshm *t1, *t2;
 	t1 = (struct s3d_texshm *)d1;
