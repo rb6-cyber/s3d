@@ -1,6 +1,5 @@
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
   <!ENTITY gnu         "<acronym>GNU</acronym>">
-  <!ENTITY debian      "<productname>Debian</productname>">
 
   <!ENTITY program     "s3d_x11gate">
 ]>
@@ -62,14 +61,6 @@
 
 		<para> <ulink url="http://s3d.berlios.de/"> s3d project page on berlios </ulink> </para>
 		<!--TODO: ADD REFERENCE TO APPS AND /usr/share/doc/s3d/ -->
-	</refsect1>
-
-	<refsect1>
-		<title>AUTHOR</title>
-		<para>
-			This manual page was written by Timo Schneider <email>timo.schneider@s2004.tu-chemnitz.de</email>
-			for the &debian; project (but may be used by others).
-		</para>
 	</refsect1>
 
 </refentry>
