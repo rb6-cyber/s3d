@@ -785,7 +785,8 @@ int s3d_pep_material_texture(int object, uint32_t tex)
 	net_send(S3D_P_C_PEP_MAT_TEX, buf, 8);
 	return(0);
 }
-int _s3d_update_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h) {
+int _s3d_update_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h)
+{
 	char    buf[16], *ptr;
 	ptr = buf;
 	*((uint32_t *)ptr) = htonl(object);
@@ -812,7 +813,7 @@ int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uin
 	if (_s3d_load_texture_shm(object, tex, xpos, ypos, w, h, data) == 0) {
 		/* TODO: send update event to server */
 		_s3d_update_texture(object, tex, xpos, ypos, w, h);
-		return(0);	/* did it over shm */
+		return(0); /* did it over shm */
 	}
 	linestep = (MF_LEN - 16) / (w * 4);
 	if (linestep == 0)

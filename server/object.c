@@ -30,7 +30,7 @@
 #define _ISOC99_SOURCE
 #endif
 #include <math.h>   /*  sin(),cos() */
-#include <errno.h>	/* errno */
+#include <errno.h> /* errno */
 #ifdef SHM
 #include <sys/types.h>
 #include <sys/ipc.h>
@@ -260,7 +260,7 @@ int obj_push_line(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 }
 
 /* register the texture, if possible */
-int texture_shm_register(struct t_tex *tex, int bufsize) 
+int texture_shm_register(struct t_tex *tex, int bufsize)
 {
 #ifdef SHM
 	int key;
@@ -283,28 +283,28 @@ int texture_shm_register(struct t_tex *tex, int bufsize)
 }
 
 /* delete the texture, eventually detach from the shm segment */
-void texture_delete(struct t_tex *tex) 
+void texture_delete(struct t_tex *tex)
 {
 	GLuint t;
-	s3dprintf(HIGH, "texture delete: shmid = %d, buf = %010p\n",tex->shmid, tex->buf);
+	s3dprintf(HIGH, "texture delete: shmid = %d, buf = %010p\n", tex->shmid, tex->buf);
 #ifdef SHM
 	if (tex->shmid != -1) {
 		if (tex->buf != NULL) {
 			shmdt(tex->buf);
-			tex->buf= NULL;
+			tex->buf = NULL;
 		}
 		shmctl(tex->shmid, IPC_RMID, NULL);
 		tex->shmid = -1;
 	}
 #endif
 
-	if (tex->buf != NULL) 
+	if (tex->buf != NULL)
 		free(tex->buf);
 	if (tex->gl_texnum) {
 		t = tex->gl_texnum;
 		glDeleteTextures(1, &t);
 	}
-	
+
 }
 /* creates n new textures on the texture stack, of object oid, with (w,h)
  * given through *x */
@@ -341,9 +341,9 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 					for (hm = 1; hm < obj->p_tex[m+i].tw; hm *= 2) {}
 					s3dprintf(MED, "hm %d, tw %d", hm, obj->p_tex[m+i].tw);
 					obj->p_tex[m+i].w = hm;
-					if (hm == obj->p_tex[m+i].tw)  
+					if (hm == obj->p_tex[m+i].tw)
 						obj->p_tex[m+i].xs = 1.0;
-					 else 
+					else
 						obj->p_tex[m+i].xs = (float)((double)obj->p_tex[m+i].tw) / ((double)obj->p_tex[m+i].w);
 
 					/* find the next power of 2 that can hold the height of the texture */
@@ -351,9 +351,9 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 					s3dprintf(MED, "hm %d, th %d", hm, obj->p_tex[m+i].th);
 
 					obj->p_tex[m+i].h = hm;
-					if (hm == obj->p_tex[m+i].th)  
+					if (hm == obj->p_tex[m+i].th)
 						obj->p_tex[m+i].ys = 1.0;
-					else  
+					else
 						obj->p_tex[m+i].ys = (float)((double)obj->p_tex[m+i].th) / ((double)obj->p_tex[m+i].h);
 
 					errds(LOW, "obj_push_tex()", "setting up %d %d (in mem: %d %d) texture",
@@ -364,16 +364,16 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 
 					bufsize = obj->p_tex[m+i].h * obj->p_tex[m+i].w * 4;
 
-					if (texture_shm_register(&(obj->p_tex[m+i]), bufsize) == 0) 
-						event_texshm(p, oid, m+i);
+					if (texture_shm_register(&(obj->p_tex[m+i]), bufsize) == 0)
+						event_texshm(p, oid, m + i);
 					else
 						obj->p_tex[m+i].buf = (uint8_t*)malloc(bufsize);
-					
+
 					memset(obj->p_tex[m+i].buf, 0, bufsize);
 
 
 
-	
+
 				} else {
 					errds(MED, "obj_push_tex()", "bad size for texture %d (requested size: %dx%d, max %dx%d)", m + i,
 					      obj->p_tex[m+i].tw, obj->p_tex[m+i].th, TEXTURE_MAX_W, TEXTURE_MAX_H);
@@ -850,7 +850,7 @@ int obj_update_tex(struct t_process *p, int32_t oid, int32_t tid, uint16_t x, ui
 			errds(MED, "obj_load_tex()", "error: no data on object allowed!");
 			return(-1);
 		}
-		if ((tid < 0) || (tid >= obj->n_tex)) 
+		if ((tid < 0) || (tid >= obj->n_tex))
 			return(-1);
 	} else
 		return(-1);
@@ -1100,14 +1100,14 @@ int obj_del_tex(struct t_process *p, int32_t oid, int32_t n)
 		s3dprintf(VLOW, "deleting %d textures of pid %d/ oid %d", n, p->id, oid);
 		m = obj->n_tex;  /*  saving the first number of textures  */
 		if (n >= m) {
-			for (i = 0;i < m;i++) 
+			for (i = 0;i < m;i++)
 				texture_delete(&(obj->p_tex[i]));
 			if (m > 0)
 				free(obj->p_tex);
 			obj->n_tex = 0;
 			obj->p_tex = NULL;
 		} else if (n > 0) {
-			for (i = (m - n);i < m;i++) 
+			for (i = (m - n);i < m;i++)
 				texture_delete(&(obj->p_tex[i]));
 			if (NULL != (p_tex = (struct t_tex*)realloc(obj->p_tex, sizeof(struct t_tex) * (m - n)))) {
 				if (obj->dplist) {
@@ -1542,7 +1542,8 @@ static void texture_gen(struct t_obj *obj)
 	}
 }
 /* activate/bind texture for object */
-static struct t_tex* get_texture(struct t_obj *obj, struct t_mat *m) {
+static struct t_tex* get_texture(struct t_obj *obj, struct t_mat *m)
+{
 	struct t_tex *tex = NULL;
 	GLfloat matgl[4];
 	/*  int i,j; */
@@ -1899,7 +1900,7 @@ int obj_clone_change(struct t_process *p, int32_t oid, int32_t toid)
 			if (oid != toid) { /*  don't looplink */
 				o->oflags |= OF_CLONE;
 				no->oflags |= OF_CLONE_SRC;
-				o->clone_ooid = toid;  
+				o->clone_ooid = toid;
 				obj_size_update(p, oid);
 				s3dprintf(LOW, "changed clone-target of obj %d to %d of process %d", oid, toid, p->id);
 				if (p->id != MCP) obj_check_biggest_object(p, oid);
@@ -1999,7 +2000,7 @@ int obj_free(struct t_process *p, int32_t oid)
 		if (o->n_vertex > 0) free(o->p_vertex);
 		if (o->n_poly > 0) free(o->p_poly);
 		if (o->n_mat > 0) free(o->p_mat);
-		for (i = 0;i < o->n_tex;i++) 
+		for (i = 0;i < o->n_tex;i++)
 			texture_delete(&(o->p_tex[i]));
 		if (o->n_tex > 0) free(o->p_tex);
 

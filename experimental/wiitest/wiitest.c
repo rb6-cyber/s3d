@@ -27,7 +27,7 @@
 #include <s3d.h>
 #include <math.h> /* sin() */
 #include <time.h> /* nanosleep() */
-#define N_SMOOTH		8		/* how much data is used to normalize */
+#define N_SMOOTH  8  /* how much data is used to normalize */
 
 static struct timespec t = {
 	0, 10*1000*1000
@@ -59,9 +59,9 @@ static void err(cwiid_wiimote_t *wiimote, const char *s, va_list ap)
 }
 
 
-int wii_init(char *addr) 
+int wii_init(char *addr)
 {
-	int i,j;
+	int i, j;
 	bdaddr_t bdaddr; /* bluetooth device address */
 	cwiid_set_err(err);
 
@@ -92,13 +92,13 @@ int wii_init(char *addr)
 	return(0);
 
 }
-void wii_calcdata() 
+void wii_calcdata()
 {
 	struct cwiid_state state; /* wiimote state */
 	float z_normvec[3] = { 0, -1, 0};
 	float x_normvec[3] = { 0, 0, 1};
 	float y[3];
-	int i,j;
+	int i, j;
 	int lastindex;
 
 	cwiid_get_state(wiimote, &state);
@@ -111,18 +111,18 @@ void wii_calcdata()
 	move_data[dataindex][0] =   x_data[lastindex][0] - x_data[dataindex][0];
 	move_data[dataindex][1] =   x_data[lastindex][1] - x_data[dataindex][1];
 	move_data[dataindex][2] = - x_data[lastindex][2] + x_data[dataindex][2];
-	dataindex = (dataindex + 1)%N_SMOOTH;
+	dataindex = (dataindex + 1) % N_SMOOTH;
 	/* smooth it */
 	for (j = 0; j < 3; j++) {
 		wii_x[j] = 0;
 		wii_move[j] = 0;
 	}
-	for (i = 0; i< N_SMOOTH; i++) 
+	for (i = 0; i < N_SMOOTH; i++)
 		for (j = 0; j < 3; j++) {
 			wii_x[j] +=    x_data[i][j];
 			wii_move[j] += move_data[i][j];
-	}
-	for (j = 0; j< 3; j++) {
+		}
+	for (j = 0; j < 3; j++) {
 		wii_x[j] /= N_SMOOTH;
 		wii_move[j] /= N_SMOOTH;
 	}
@@ -137,7 +137,7 @@ void wii_calcdata()
 	wii_zrot = s3d_vector_angle(z_normvec, y);
 	/* take care of inverse cosinus */
 	if (wii_x[0] < 0)   wii_zrot = 180 - (180.0 / M_PI * wii_zrot);
-	else        		wii_zrot = 180 + (180.0 / M_PI * wii_zrot);
+	else          wii_zrot = 180 + (180.0 / M_PI * wii_zrot);
 }
 
 

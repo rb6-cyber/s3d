@@ -22,10 +22,10 @@
  */
 
 #include "comptest.h"
-#include <stdio.h>		/* printf() */
-#include <string.h>		/* memcpy() */
-#include <stdlib.h>		/* free() */
-#include <X11/Xproto.h>	/* X_* request defines */
+#include <stdio.h>  /* printf() */
+#include <string.h>  /* memcpy() */
+#include <stdlib.h>  /* free() */
+#include <X11/Xproto.h> /* X_* request defines */
 
 #define XCOMPOSITE_VERSION_0_2 200
 
@@ -40,14 +40,29 @@ int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 {
 	const char *name = "unknown";
 	switch (event->type & 0x7f) {
-	case CreateNotify:		name = "Create";			break;
-	case DestroyNotify:		name = "Destroy";			break;
-	case Expose:			name = "Expose";			break;
-	case MapNotify:			name = "Map";				break;
-	case UnmapNotify:		name = "Unmap";				break;
-	case ReparentNotify:	name = "Reparent";			break;
-	case CirculateNotify:	name = "Circulate";			break;
-	case PropertyNotify:	return(0);
+	case CreateNotify:
+		name = "Create";
+		break;
+	case DestroyNotify:
+		name = "Destroy";
+		break;
+	case Expose:
+		name = "Expose";
+		break;
+	case MapNotify:
+		name = "Map";
+		break;
+	case UnmapNotify:
+		name = "Unmap";
+		break;
+	case ReparentNotify:
+		name = "Reparent";
+		break;
+	case CirculateNotify:
+		name = "Circulate";
+		break;
+	case PropertyNotify:
+		return(0);
 	}
 	if (event->type == xdamage.event + XDamageNotify) {
 		return(0); /* don't report this. */
@@ -70,20 +85,37 @@ int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 	name = buf;
 
 	switch (event->error_code - xfixes.error) {
-	case BadRegion:		name = "BadRegion";		break;
-	default:			break;
+	case BadRegion:
+		name = "BadRegion";
+		break;
+	default:
+		break;
 	}
 	switch (event->error_code - xdamage.error) {
-	case BadDamage:		name = "BadDamage";		break;
-	default:			break;
+	case BadDamage:
+		name = "BadDamage";
+		break;
+	default:
+		break;
 	}
 	switch (event->error_code - xrender.error) {
-	case BadPictFormat:	name = "BadPictFormat";		break;
-	case BadPicture:	name = "BadPicture";		break;
-	case BadPictOp:		name = "BadPictOp";			break;
-	case BadGlyphSet:	name = "BadGlyphSet";		break;
-	case BadGlyph:		name = "BadGlyph";			break;
-	default:			break;
+	case BadPictFormat:
+		name = "BadPictFormat";
+		break;
+	case BadPicture:
+		name = "BadPicture";
+		break;
+	case BadPictOp:
+		name = "BadPictOp";
+		break;
+	case BadGlyphSet:
+		name = "BadGlyphSet";
+		break;
+	case BadGlyph:
+		name = "BadGlyph";
+		break;
+	default:
+		break;
 	}
 
 	/* request code */
@@ -91,17 +123,30 @@ int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 	req = buf_req;
 
 	switch (event->request_code) {
-	case X_GetWindowAttributes:	req = "XGetWindowAttributes()";	break;
-	case X_GetImage:			req = "XGetImage()";			break;
-	case X_QueryTree:			req = "XQueryTree()";			break;
-	case X_GetProperty:			req = "XGetProperty()";			break;
-	default:				break;
+	case X_GetWindowAttributes:
+		req = "XGetWindowAttributes()";
+		break;
+	case X_GetImage:
+		req = "XGetImage()";
+		break;
+	case X_QueryTree:
+		req = "XQueryTree()";
+		break;
+	case X_GetProperty:
+		req = "XGetProperty()";
+		break;
+	default:
+		break;
 	}
 	if (event->request_code == xcomposite.request) {
 		switch (event->minor_code) {
-		case X_CompositeRedirectWindow:			req = "XCompositeRedirectWindow()";			break;
-		case X_CompositeNameWindowPixmap:		req = "XCompositeNameWindowPixmap()";		break;
-		default:				
+		case X_CompositeRedirectWindow:
+			req = "XCompositeRedirectWindow()";
+			break;
+		case X_CompositeNameWindowPixmap:
+			req = "XCompositeNameWindowPixmap()";
+			break;
+		default:
 			sprintf(buf_req, "XComposite?? unknown (request %d, minor %d)", event->request_code, event->minor_code);
 			req = buf_req;
 			break;
@@ -110,11 +155,19 @@ int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 
 	if (event->request_code == xdamage.request) {
 		switch (event->minor_code) {
-		case X_DamageAdd:			req = "XDamageAdd()";			break;
-		case X_DamageCreate:		req = "XDamageCreate()";		break;
-		case X_DamageDestroy:		req = "XDamageDestroy()";		break;
-		case X_DamageSubtract:		req = "XDamageSubtract()";		break;
-		default:				
+		case X_DamageAdd:
+			req = "XDamageAdd()";
+			break;
+		case X_DamageCreate:
+			req = "XDamageCreate()";
+			break;
+		case X_DamageDestroy:
+			req = "XDamageDestroy()";
+			break;
+		case X_DamageSubtract:
+			req = "XDamageSubtract()";
+			break;
+		default:
 			sprintf(buf_req, "XDamage?? unknown (request %d, minor %d)", event->request_code, event->minor_code);
 			req = buf_req;
 			break;
@@ -140,12 +193,11 @@ void print_properties(Window win)
 	for (j = 0; j < num; j++) {
 		aname = XGetAtomName(dpy, p[j]);
 		if (aname) {
-			if(Success == XGetWindowProperty(dpy, win, XInternAtom(dpy, aname, False),
-						0L, ~0L, False, XA_STRING,
-						&type, &format, &nitems,
-						&bytes_after, &ret))
-			{
-/*				printf("format = %d, nitems = %d, bytes_after = %d\n", format, nitems, bytes_after);*/
+			if (Success == XGetWindowProperty(dpy, win, XInternAtom(dpy, aname, False),
+			                                  0L, ~0L, False, XA_STRING,
+			                                  &type, &format, &nitems,
+			                                  &bytes_after, &ret)) {
+				/*    printf("format = %d, nitems = %d, bytes_after = %d\n", format, nitems, bytes_after);*/
 				printf("%s = %s\n", aname, ret);
 				XFree(ret);
 			}
@@ -154,7 +206,7 @@ void print_properties(Window win)
 	}
 	XFree(p);
 }
-char *x11_get_prop(Window win, char *prop) 
+char *x11_get_prop(Window win, char *prop)
 {
 	Atom type;
 	int format;
@@ -164,17 +216,17 @@ char *x11_get_prop(Window win, char *prop)
 
 
 	if (Success == XGetWindowProperty(dpy, win, XInternAtom(dpy, prop, False),
-		0L, ~0L, False, /*XA_STRING*/ AnyPropertyType,
-		&type, &format, &nitems,
-		&bytes_after, &reqret)) {
+	                                  0L, ~0L, False, /*XA_STRING*/ AnyPropertyType,
+	                                  &type, &format, &nitems,
+	                                  &bytes_after, &reqret)) {
 		if (reqret != NULL) {
 			ret = strdup((char *)reqret);
 			XFree(reqret);
-		} 
+		}
 	}
 	return(ret);
 }
-char *x11_get_name(Window win) 
+char *x11_get_name(Window win)
 {
 	unsigned int nchildren;
 	Window *children;
@@ -184,7 +236,7 @@ char *x11_get_name(Window win)
 
 	role = x11_get_prop(win, "WM_WINDOW_ROLE");
 	if (role != NULL) {
-		if (strcmp(role, "decoration widget") == 0){
+		if (strcmp(role, "decoration widget") == 0) {
 			free(role);
 			return(NULL);
 		}
@@ -256,21 +308,21 @@ int xinit(void)
 		fprintf(stderr, "Can't open display\n");
 		return(1);
 	}
-	if (!XQueryExtension (dpy, COMPOSITE_NAME, &xcomposite.request, &xcomposite.event, &xcomposite.error)) {
+	if (!XQueryExtension(dpy, COMPOSITE_NAME, &xcomposite.request, &xcomposite.event, &xcomposite.error)) {
 		fprintf(stderr, "No composite extension\n");
-	    return(1);
+		return(1);
 	}
-	if (!XQueryExtension (dpy, RENDER_NAME, &xrender.request, &xrender.event, &xrender.error)) {
+	if (!XQueryExtension(dpy, RENDER_NAME, &xrender.request, &xrender.event, &xrender.error)) {
 		fprintf(stderr, "No render extension\n");
-	    return(1);
+		return(1);
 	}
-	if (!XQueryExtension (dpy, DAMAGE_NAME, &xdamage.request, &xdamage.event, &xdamage.error)) {
+	if (!XQueryExtension(dpy, DAMAGE_NAME, &xdamage.request, &xdamage.event, &xdamage.error)) {
 		fprintf(stderr, "No damage extension\n");
-	    return(1);
+		return(1);
 	}
-	if (!XQueryExtension (dpy, XFIXES_NAME, &xfixes.request, &xfixes.event, &xfixes.error)) {
+	if (!XQueryExtension(dpy, XFIXES_NAME, &xfixes.request, &xfixes.event, &xfixes.error)) {
 		fprintf(stderr, "No fixes extension\n");
-	    return(1);
+		return(1);
 	}
 
 
@@ -288,7 +340,8 @@ int xinit(void)
 }
 
 /* find biggest bounding rect of the two given rects, write it into dest */
-static void merge_rect( XRectangle *dest, XRectangle *src) {
+static void merge_rect(XRectangle *dest, XRectangle *src)
+{
 	int max;
 	if (dest->width == 0 || dest->height == 0) {
 		memcpy(dest, src, sizeof(*dest));
@@ -313,7 +366,7 @@ void event(void)
 		XNextEvent(dpy, &event);
 		print_event(dpy, &event);
 		switch (event.type - xdamage.event) {
-		case XDamageNotify:{
+		case XDamageNotify: {
 			XDamageNotifyEvent *e = (XDamageNotifyEvent*) & event;
 			/*   printf("window = %d, geometry = %d:%d (at %d:%d), area = %d:%d (at %d:%d)\n",
 			          (int)e->drawable, e->geometry.width, e->geometry.height, e->geometry.x, e->geometry.y,
@@ -325,11 +378,11 @@ void event(void)
 				merge_rect(&window->content_update, &e->area);
 			}
 			break;
-		   }
+		}
 
 		}
 		switch (event.type) {
-		case ConfigureNotify:{
+		case ConfigureNotify: {
 			XConfigureEvent *e = &event.xconfigure;
 			window = window_find(e->window);
 			if (window != NULL) {
@@ -341,47 +394,46 @@ void event(void)
 				printf("Configure: Could not find window to configure.\n");
 			}
 			break;
-			 }
-		case MapNotify:{
+		}
+		case MapNotify: {
 			XMapEvent *e = &event.xmap;
 			window = window_find(e->window);
 			if (window != NULL)
 				window_map(window);
 			break;
-			}
-		case UnmapNotify:{
+		}
+		case UnmapNotify: {
 			XUnmapEvent *e = &event.xunmap;
 			window = window_find(e->window);
 			if (window != NULL)
 				window_unmap(window);
 			break;
-			}
+		}
 
 
-		case CreateNotify:{
+		case CreateNotify: {
 			XCreateWindowEvent *e = &event.xcreatewindow;
 			window_add(e->display, e->window);
 			break;
-			}
-		case DestroyNotify:{
+		}
+		case DestroyNotify: {
 			XDestroyWindowEvent *e = &event.xdestroywindow;
 			window_remove(e->window);
 			break;
-		   }
+		}
 		}
 	}
 	d = 0;
 	for (window = window_head; window != NULL; window = window->next) {
-		if (window->geometry_update_needed) 
+		if (window->geometry_update_needed)
 			window_update_geometry(window);
-		if (window->content_update_needed) 
-		{
+		if (window->content_update_needed) {
 			window_update_content(window);
 			d++;
 		}
 	}
 
-/*	printf("%d windows updated\n", d);*/
+	/* printf("%d windows updated\n", d);*/
 
 }
 
@@ -397,8 +449,8 @@ void x11_addwindows(void)
 		XCompositeRedirectSubwindows(dpy, RootWindow(dpy, scr_no), CompositeRedirectAutomatic);
 		/*   XCompositeRedirectSubwindows(dpy, RootWindow(dpy, scr_no), CompositeRedirectManual);*/
 		XSelectInput(dpy, RootWindow(dpy, scr_no),
-					 SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);
-	
+		             SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);
+
 		XQueryTree(dpy, RootWindow(dpy, scr_no), &root_return, &parent_return, &children, &nchildren);
 		for (i = 0; i < (int)nchildren; i++) {
 			win = window_add(dpy, children[i]);

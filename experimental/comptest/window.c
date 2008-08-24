@@ -22,27 +22,28 @@
  */
 
 #include "comptest.h"
-#include <stdlib.h>	/* malloc(), free() */
-#include <string.h>	/* memcpy() */
-#include <stdio.h>	/* printf() */
+#include <stdlib.h> /* malloc(), free() */
+#include <string.h> /* memcpy() */
+#include <stdio.h> /* printf() */
 struct window   *window_head = NULL;
 
-void window_set_position(struct window *win) {
+void window_set_position(struct window *win)
+{
 	s3d_translate(win->oid, win->attr.x, -win->attr.y, -0.01 * win->no);
 }
 
-void window_restack(struct window *win, Window above) 
+void window_restack(struct window *win, Window above)
 {
 	struct window **wp;
 	Window old_above;
 	int i;
-	if (win->next == NULL)		old_above = None;
-	else						old_above = win->next->id;
+	if (win->next == NULL)  old_above = None;
+	else      old_above = win->next->id;
 
-	if (old_above == above)		return;
+	if (old_above == above)  return;
 
 	/* unlink from list */
-	for (wp = &window_head; *wp != NULL; wp = &(*wp)->next) 
+	for (wp = &window_head; *wp != NULL; wp = &(*wp)->next)
 		if (*wp == win)
 			break;
 
@@ -50,21 +51,21 @@ void window_restack(struct window *win, Window above)
 	*wp = win->next;
 
 	/* relink in front of the new "above" window */
-	for (wp = &window_head; *wp != NULL; wp = &(*wp)->next) 
+	for (wp = &window_head; *wp != NULL; wp = &(*wp)->next)
 		if ((*wp)->id == above)
 			break;
 
 	win->next = *wp;
 	*wp = win;
 
-	for (i=0, wp = &window_head; *wp != NULL; wp = &(*wp)->next, i++)
+	for (i = 0, wp = &window_head; *wp != NULL; wp = &(*wp)->next, i++)
 		if (i != (*wp)->no) {
 			(*wp)->no = i;
 			if ((*wp)->oid != -1)
 				window_set_position(*wp);
 		}
 }
-struct window *window_find(Window id) 
+struct window *window_find(Window id)
 {
 	struct window *window;
 	for (window = window_head; window != NULL; window = window->next) {
@@ -89,7 +90,7 @@ struct window *window_add(Display *dpy, Window id)
 		return(NULL);
 	}
 	win->id = id;
-/*	print_properties(id);*/
+	/* print_properties(id);*/
 	win->name = x11_get_name(id);
 	printf("###################### name = %s\n", win->name);
 	win->next = window_head;
@@ -108,9 +109,9 @@ struct window *window_add(Display *dpy, Window id)
 
 
 
-	/* TODO: at my place, windows are created and destroyed in the same moment. so this 
-	 * function fails sometimes. 
-	 * maybe there is a function asking something like "is there really a window with id ;win->id'...". 
+	/* TODO: at my place, windows are created and destroyed in the same moment. so this
+	 * function fails sometimes.
+	 * maybe there is a function asking something like "is there really a window with id ;win->id'...".
 	 * that would help here. */
 	if (!XGetWindowAttributes(dpy, win->id, &win->attr)) {
 		/* window does not exit, next event is probably it's removal ... */
@@ -118,21 +119,21 @@ struct window *window_add(Display *dpy, Window id)
 	}
 
 	/* XSelectInput(dpy, win->id, ExposureMask|ButtonPressMask|KeyPressMask*/
-/*	XSelectInput(dpy, win->id, SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);*/
+	/* XSelectInput(dpy, win->id, SubstructureNotifyMask | ExposureMask | StructureNotifyMask | PropertyChangeMask);*/
 	XSelectInput(dpy, win->id, 0);
 
 #if defined(__cplusplus) || defined(c_plusplus)
-	if (win->attr.c_class != InputOnly)		/* don't create damage on these windows */
+	if (win->attr.c_class != InputOnly)  /* don't create damage on these windows */
 #else
-	if (win->attr.class != InputOnly)		/* don't create damage on these windows */
-#endif 
-	
+	if (win->attr.class != InputOnly)  /* don't create damage on these windows */
+#endif
+
 		win->damage = XDamageCreate(dpy, win->id, XDamageReportNonEmpty);
-	if (win->next == NULL) 
+	if (win->next == NULL)
 		window_restack(win, None);
 	else
 		window_restack(win, win->next->id);
-	
+
 	XCompositeRedirectWindow(dpy, id, CompositeRedirectAutomatic);
 	return(win);
 }
@@ -167,7 +168,7 @@ void window_unmap(struct window *win)
 void window_remove(Window id)
 {
 	struct window **wp, *window;
-	for (wp = &window_head; *wp != NULL; wp = &(*wp)->next) 
+	for (wp = &window_head; *wp != NULL; wp = &(*wp)->next)
 		if ((*wp)->id == id)
 			break;
 
@@ -186,15 +187,15 @@ void window_remove(Window id)
 		XFreePixmap(dpy, window->pix);
 	if (window->oid != -1)
 		s3d_del_object(window->oid);
-/*  Damage is automatically destroyed */
-/*	if (window->damage != None)
-		XDamageDestroy(dpy, window->damage);	*/
+	/*  Damage is automatically destroyed */
+	/* if (window->damage != None)
+	  XDamageDestroy(dpy, window->damage); */
 
 	free(window);
 }
 void window_update_geometry(struct window *win)
 {
-	XWindowAttributes attr;	
+	XWindowAttributes attr;
 	win->geometry_update_needed = 0;
 
 	if (!XGetWindowAttributes(dpy, win->id, &attr))
@@ -202,7 +203,7 @@ void window_update_geometry(struct window *win)
 
 	if (win->oid == -1) {
 		win->content_update_needed = 1;
-	} 
+	}
 
 	if ((win->attr.width == attr.width) && (win->attr.height == attr.height)) {
 		if ((win->attr.x == attr.x) && (win->attr.y == attr.y)) {
@@ -232,44 +233,44 @@ static int image_convert(XImage *image, char *bitmap)
 	char *img_ptr, *bmp_ptr;
 	uint8_t *sc, *tc;
 
-	if (image->format != ZPixmap) 
+	if (image->format != ZPixmap)
 		return(-1);
 	switch (image->bits_per_pixel) {
-		case 32:
-			for (y = 0; y < image->height ; y++) {
-				img_ptr = image->data + (y * image->width) * 4;
-				bmp_ptr = bitmap + (y * image->width) * 4;
-				for (x = 0; x < image->width; x++) {
-					sc = (uint8_t *) img_ptr;
-					tc = (uint8_t *) bmp_ptr;
-	
-					tc[0] = sc[2];
-					tc[1] = sc[1];
-					tc[2] = sc[0];
-					tc[3] = 255;
+	case 32:
+		for (y = 0; y < image->height ; y++) {
+			img_ptr = image->data + (y * image->width) * 4;
+			bmp_ptr = bitmap + (y * image->width) * 4;
+			for (x = 0; x < image->width; x++) {
+				sc = (uint8_t *) img_ptr;
+				tc = (uint8_t *) bmp_ptr;
+
+				tc[0] = sc[2];
+				tc[1] = sc[1];
+				tc[2] = sc[0];
+				tc[3] = 255;
 
 
-					bmp_ptr += 4;
-					img_ptr += 4;
-				}
+				bmp_ptr += 4;
+				img_ptr += 4;
 			}
-			break;
-		default:
-			/* not implemented. draw a red image. */
-			for (y = 0; y < image->height ; y++) {
-				bmp_ptr = bitmap + (y * image->width) * 4;
-				for (x = 0; x < image->width; x++) {
-					tc = (uint8_t *)  bmp_ptr;
-	
-					tc[0] = 255;
-					tc[1] = 0;
-					tc[2] = 0;
-					tc[3] = 255;
+		}
+		break;
+	default:
+		/* not implemented. draw a red image. */
+		for (y = 0; y < image->height ; y++) {
+			bmp_ptr = bitmap + (y * image->width) * 4;
+			for (x = 0; x < image->width; x++) {
+				tc = (uint8_t *)  bmp_ptr;
 
-					bmp_ptr += 4;
-				}
+				tc[0] = 255;
+				tc[1] = 0;
+				tc[2] = 0;
+				tc[3] = 255;
+
+				bmp_ptr += 4;
 			}
-			break;
+		}
+		break;
 	}
 	return(-1);
 }
@@ -294,14 +295,14 @@ void window_update_content(struct window *win)
 	win->content_update.height = 0;
 	win->content_update_needed = 0;
 
-	if (win->attr.map_state == IsUnmapped)	/* not mapped images can't be grabbed */
+	if (win->attr.map_state == IsUnmapped) /* not mapped images can't be grabbed */
 		return;
 
 #if defined(__cplusplus) || defined(c_plusplus)
-	if (win->attr.c_class == InputOnly)		/* can't grab image from this source */
+	if (win->attr.c_class == InputOnly)  /* can't grab image from this source */
 		return;
 #else
-	if (win->attr.class == InputOnly)		/* can't grab image from this source */
+	if (win->attr.class == InputOnly)  /* can't grab image from this source */
 		return;
 #endif
 
@@ -322,13 +323,13 @@ void window_update_content(struct window *win)
 		image = XGetImage(dpy, win->pix, xleft, y, chunk_width, height, AllPlanes, ZPixmap);
 		if (!image) {
 			printf("XGetImage Error: xleft = %d, xright = %d, width = %d, x:y = %d:%d, width:height = %d:%d\n",
-							xleft, xright, width, x, y, width, height);
+			       xleft, xright, width, x, y, width, height);
 			exit(-1);
 			if (win->oid != -1) {
 				s3d_del_object(win->oid);
 				win->oid = -1;
 			}
-				
+
 			return;
 		}
 		if (win->oid == -1)

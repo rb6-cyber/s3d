@@ -76,7 +76,7 @@ int graphics_init_sdl(void)
 		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &samples);
 		s3dprintf(LOW, "Buffers: %d Samples: %d", buffers, samples);
 	}
-	SDL_WM_SetCaption("S3D","S3D");
+	SDL_WM_SetCaption("S3D", "S3D");
 
 	/*  print some information */
 	s3dprintf(VLOW, "Screen BPP: %d", SDL_GetVideoSurface()->format->BitsPerPixel);

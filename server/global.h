@@ -110,7 +110,7 @@ struct t_tex {
 	uint16_t tw, th;  /*  texture width */
 	uint8_t *buf;   /*  the data */
 	float xs, ys;  /*  scale data for gl-implementations which require 2^x */
-	int shmid;		/* shared memory id, is -1 if it's not attached */
+	int shmid;  /* shared memory id, is -1 if it's not attached */
 	/*  texture sizes. */
 	int32_t gl_texnum;  /*  the gl texture number. */
 };
@@ -142,8 +142,8 @@ struct t_obj {
 #define OF_3DPOINTER 0xB0000000
 
 #define OF_MASK   0x00FFFFFF
-	int32_t virtual_pid;		/* if virtual, this contains the pid */
-	int32_t clone_ooid;			/* if clone, this contains the oid of the original */
+	int32_t virtual_pid;  /* if virtual, this contains the pid */
+	int32_t clone_ooid;   /* if clone, this contains the oid of the original */
 
 	int32_t n_vertex, n_mat, n_poly, n_tex, n_line;
 	int32_t dplist;   /*  opengl display list number */

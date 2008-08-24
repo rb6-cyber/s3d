@@ -153,11 +153,11 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 			tshm->h = ntohs(tshm->h);
 
 			s3dprintf(MED, "S3D_P_S_SHMTEX: texture %d of object %d is available under shmid %d",
-						tshm->tex, tshm->oid, tshm->shmid);
+			          tshm->tex, tshm->oid, tshm->shmid);
 			_s3d_handle_texshm(tshm);
 			free(buf);
 
-		} else 
+		} else
 			s3dprintf(MED, "wrong length for S3D_P_S_SHMTEX length %d != %d", length, sizeof(struct s3d_texshm));
 		break;
 

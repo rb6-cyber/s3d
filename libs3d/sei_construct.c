@@ -489,7 +489,7 @@ static int add_segment(int segnum)
 		tr[tl].sink = i2;
 		tfirst = tl;
 	} else {    /* v0 already present */
-	       /* Get the topmost intersecting trapezoid */
+		/* Get the topmost intersecting trapezoid */
 		tfirst = locate_endpoint(&s.v0, &s.v1, s.root0);
 	}
 

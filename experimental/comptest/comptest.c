@@ -26,11 +26,11 @@
 #include <stdio.h>
 #include <stdlib.h>        /* malloc(), free() */
 #include <time.h>         /* nanosleep() */
-#include <errno.h>			/* errno */
-#include <math.h>			/* cos(), sin() */
+#include <errno.h>   /* errno */
+#include <math.h>   /* cos(), sin() */
 
-#include <sys/time.h>		/* gettimeofday() */
-#include <time.h>			/* gettimeofday() */
+#include <sys/time.h>  /* gettimeofday() */
+#include <time.h>   /* gettimeofday() */
 
 
 static struct timespec t = {
@@ -149,68 +149,68 @@ static int key(struct s3d_evt *evt)
 	if (key->keysym == S3DK_RETURN) {
 		printf("camera into position ...\n");
 
-		s3d_translate(0, 0,0, SCREEN_SCALE * ( 1 - 1/100.0));
-		s3d_rotate(0,0,0,0);
+		s3d_translate(0, 0, 0, SCREEN_SCALE * (1 - 1 / 100.0));
+		s3d_rotate(0, 0, 0, 0);
 
-		
+
 
 	}
 	return(0);
 }
-void x_rot(float vec[3], float angle) 
+void x_rot(float vec[3], float angle)
 {
 	float bak[3];
-	float c,s;
+	float c, s;
 	bak[1] = vec[1];
 	bak[2] = vec[2];
 	c = cos(angle);
 	s = sin(angle);
-	vec[1] = c*bak[1] - s*bak[2];
-	vec[2] = s*bak[1] + c*bak[2];
+	vec[1] = c * bak[1] - s * bak[2];
+	vec[2] = s * bak[1] + c * bak[2];
 }
 
-void y_rot(float vec[3], float angle) 
+void y_rot(float vec[3], float angle)
 {
 	float bak[3];
-	float c,s;
+	float c, s;
 	bak[0] = vec[0];
 	bak[2] = vec[2];
 
 	c = cos(angle);
 	s = sin(angle);
-	vec[0] = c*bak[0]  + s*bak[2];
-	vec[2] = -s*bak[0] + c*bak[2];
+	vec[0] = c * bak[0]  + s * bak[2];
+	vec[2] = -s * bak[0] + c * bak[2];
 }
-float cam_pos[3]={0,0,0};
-float cam_rot[3]={0,0,0};
-float ptr_rot[3]={0,0,0};
-float ptr_pos[3]={0,0,0};
+float cam_pos[3] = {0, 0, 0};
+float cam_rot[3] = {0, 0, 0};
+float ptr_rot[3] = {0, 0, 0};
+float ptr_pos[3] = {0, 0, 0};
 int cursor;
 
-static int oinfo(struct s3d_evt *evt) 
+static int oinfo(struct s3d_evt *evt)
 {
 	float ptr_dir[3];
 	float t;
-	struct s3d_obj_info *oinf= (struct s3d_obj_info *)evt->buf;
+	struct s3d_obj_info *oinf = (struct s3d_obj_info *)evt->buf;
 	switch (oinf->object) {
-		case 0:	/* camera */
-			cam_pos[0] = oinf->trans_x;
-			cam_pos[1] = oinf->trans_y;
-			cam_pos[2] = oinf->trans_z;
-			cam_rot[0] = M_PI/180.0*oinf->rot_x;
-			cam_rot[1] = M_PI/180.0*oinf->rot_y;
-			cam_rot[2] = M_PI/180.0*oinf->rot_z;
-			break;
-		case 1:	/* pointer */
-			ptr_rot[0] = M_PI/180.0*oinf->rot_x;
-			ptr_rot[1] = M_PI/180.0*oinf->rot_y;
-			ptr_rot[2] = M_PI/180.0*oinf->rot_z;
-			break;
+	case 0: /* camera */
+		cam_pos[0] = oinf->trans_x;
+		cam_pos[1] = oinf->trans_y;
+		cam_pos[2] = oinf->trans_z;
+		cam_rot[0] = M_PI / 180.0 * oinf->rot_x;
+		cam_rot[1] = M_PI / 180.0 * oinf->rot_y;
+		cam_rot[2] = M_PI / 180.0 * oinf->rot_z;
+		break;
+	case 1: /* pointer */
+		ptr_rot[0] = M_PI / 180.0 * oinf->rot_x;
+		ptr_rot[1] = M_PI / 180.0 * oinf->rot_y;
+		ptr_rot[2] = M_PI / 180.0 * oinf->rot_z;
+		break;
 	}
 	if (oinf->object >= 2)
 		return(-1);
 
-	
+
 	printf("object info for object %d, name %s\n", oinf->object, oinf->name);
 	printf("trans: %3.3f %3.3f %3.3f\n", oinf->trans_x, oinf->trans_y, oinf->trans_z);
 	printf("rot:   %3.3f %3.3f %3.3f\n", oinf->rot_x, oinf->rot_y, oinf->rot_z);
@@ -234,13 +234,13 @@ static int oinfo(struct s3d_evt *evt)
 	if (fabs(ptr_dir[2]) < 1e-3)
 		return(-1);
 
-	t = - cam_pos[2]/ptr_dir[2];
-	ptr_pos[0] = cam_pos[0] + t *ptr_dir[0];
-	ptr_pos[1] = cam_pos[1] + t *ptr_dir[1];
+	t = - cam_pos[2] / ptr_dir[2];
+	ptr_pos[0] = cam_pos[0] + t * ptr_dir[0];
+	ptr_pos[1] = cam_pos[1] + t * ptr_dir[1];
 	ptr_pos[2] = 0;
 
 	printf("pointer position: %3.3f %3.3f\n", ptr_pos[0], ptr_pos[1]);
-	
+
 	s3d_translate(cursor, ptr_pos[0], ptr_pos[1], ptr_pos[2]);
 
 	return(0);
@@ -249,15 +249,16 @@ int screen_width = 0;
 int screen_height = 0;
 int screen_oid = -1;
 
-static void set_screenpos(void) {
+static void set_screenpos(void)
+{
 	XWindowAttributes    attr;
 	XGetWindowAttributes(dpy, RootWindow(dpy, 0), &attr);
 	screen_width = attr.width;
 	screen_height = attr.height;
 
 	screen_oid = s3d_new_object();
-	s3d_translate(screen_oid, -SCREEN_SCALE * (float)screen_width/((float) screen_height), SCREEN_SCALE, 0);
-	s3d_scale(screen_oid, 2* SCREEN_SCALE/((float)screen_height));
+	s3d_translate(screen_oid, -SCREEN_SCALE * (float)screen_width / ((float) screen_height), SCREEN_SCALE, 0);
+	s3d_scale(screen_oid, 2* SCREEN_SCALE / ((float)screen_height));
 
 }
 

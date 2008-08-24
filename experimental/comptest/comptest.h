@@ -40,15 +40,15 @@
 #endif
 
 #define MAXEVENTS 50  /* maximum events per loop. */
-#define SCREEN_SCALE	5.0
+#define SCREEN_SCALE 5.0
 
 /* must be 2^x */
 #define TEXW 256
 #define TEXH 256
 #define TEXNUM(win, x, y) \
   ((((win->attr.height + TEXH - 1)& ~(TEXH-1))/TEXH) * ((int)(x/TEXH)) + ((int)(y/TEXW)))
-#define MIN(x,y)	(((x)<(y))?(x):(y))
-#define MAX(x,y)	(((x)>(y))?(x):(y))
+#define MIN(x,y) (((x)<(y))?(x):(y))
+#define MAX(x,y) (((x)>(y))?(x):(y))
 
 
 struct window {
@@ -56,14 +56,14 @@ struct window {
 	XWindowAttributes    attr;   /* position, size etc. */
 	XImage     *image;
 	Damage      damage;  /* damage notification */
-	Pixmap		pix;
-	int			geometry_update_needed;
-	int     	content_update_needed;
-	XRectangle	content_update;
-	int			oid;
-	int			no;
-	int 		mapped;
-	char		*name;
+	Pixmap  pix;
+	int   geometry_update_needed;
+	int      content_update_needed;
+	XRectangle content_update;
+	int   oid;
+	int   no;
+	int   mapped;
+	char  *name;
 
 	struct window     *next;
 };
@@ -93,6 +93,6 @@ int error(Display *COMPUNUSED(dpy), XErrorEvent *event);
 int print_event(Display *COMPUNUSED(dpy), XEvent *event);
 void x11_addwindows();
 char *x11_get_prop(Window win, char *prop);
-char *x11_get_name(Window win); 
+char *x11_get_name(Window win);
 void print_properties(Window win);
 extern Display *dpy;

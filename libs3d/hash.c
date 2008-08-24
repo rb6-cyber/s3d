@@ -2,7 +2,7 @@
  * hash.h
  *
  * Copyright (C) 2004-2007 Simon Wunderlich <dotslash@packetmixer.de>
- * 						   Marek Lindner
+ *          Marek Lindner
  *
  * This file is part of the s3d API, the API of s3d (the 3d network display server).
  * See http://s3d.berlios.de/ for more updates.
@@ -23,16 +23,17 @@
  */
 
 
-#include <stdio.h>		/* NULL */
-#include <stdlib.h>		/* malloc(), free() */
+#include <stdio.h>  /* NULL */
+#include <stdlib.h>  /* malloc(), free() */
 #include "hash.h"
 
 
 /* clears the hash */
-void _s3d_hash_init(struct hashtable_t *hash) {
+void _s3d_hash_init(struct hashtable_t *hash)
+{
 	int i;
-	hash->elements=0;
-	for (i=0 ; i<hash->size ; i++) {
+	hash->elements = 0;
+	for (i = 0 ; i < hash->size ; i++) {
 		hash->table[i] = NULL;
 	}
 }
@@ -41,20 +42,21 @@ void _s3d_hash_init(struct hashtable_t *hash) {
 /* remove the hash structure. if hashdata_free_cb != NULL,
  * this function will be called to remove the elements inside of the hash.
  * if you don't remove the elements, memory might be leaked. */
-void _s3d_hash_delete(struct hashtable_t *hash, hashdata_free_cb free_cb) {
+void _s3d_hash_delete(struct hashtable_t *hash, hashdata_free_cb free_cb)
+{
 	struct element_t *bucket, *last_bucket;
 	int i;
 
-	for (i=0; i<hash->size; i++) {
+	for (i = 0; i < hash->size; i++) {
 
-		bucket= hash->table[i];
+		bucket = hash->table[i];
 		while (bucket != NULL) {
 
-			if (free_cb!=NULL)
-				free_cb( bucket->data );
+			if (free_cb != NULL)
+				free_cb(bucket->data);
 
-			last_bucket= bucket;
-			bucket= bucket->next;
+			last_bucket = bucket;
+			bucket = bucket->next;
 			free(last_bucket);
 
 		}
@@ -66,10 +68,11 @@ void _s3d_hash_delete(struct hashtable_t *hash, hashdata_free_cb free_cb) {
 
 
 /* free only the hashtable and the hash itself. */
-void _s3d_hash_destroy(struct hashtable_t *hash) {
+void _s3d_hash_destroy(struct hashtable_t *hash)
+{
 
-	free( hash->table);
-	free( hash);
+	free(hash->table);
+	free(hash);
 
 }
 
@@ -82,24 +85,24 @@ struct hash_it_t *_s3d_hash_iterate(struct hashtable_t *hash, struct hash_it_t *
 	struct hash_it_t *iter;
 
 	if (iter_in == NULL) {
-		iter= (struct hash_it_t*)malloc(sizeof(struct hash_it_t));
+		iter = (struct hash_it_t*)malloc(sizeof(struct hash_it_t));
 		iter->index =  -1;
 		iter->bucket = NULL;
 		iter->prev_bucket = NULL;
 	} else
-		iter= iter_in;
+		iter = iter_in;
 
 	/* sanity checks first (if our bucket got deleted in the last iteration): */
-	if (iter->bucket!=NULL) {
+	if (iter->bucket != NULL) {
 		if (iter->first_bucket != NULL) {
 
 			/* we're on the first element and it got removed after the last iteration. */
 			if ((*iter->first_bucket) != iter->bucket) {
 
 				/* there are still other elements in the list */
-				if ( (*iter->first_bucket) != NULL ) {
+				if ((*iter->first_bucket) != NULL) {
 					iter->prev_bucket = NULL;
-					iter->bucket= (*iter->first_bucket);
+					iter->bucket = (*iter->first_bucket);
 					iter->first_bucket = &hash->table[ iter->index ];
 					return(iter);
 				} else {
@@ -108,23 +111,23 @@ struct hash_it_t *_s3d_hash_iterate(struct hashtable_t *hash, struct hash_it_t *
 
 			}
 
-		} else if ( iter->prev_bucket != NULL ) {
+		} else if (iter->prev_bucket != NULL) {
 
 			/* we're not on the first element, and the bucket got removed after the last iteration.
 			* the last bucket's next pointer is not pointing to our actual bucket anymore.
 			* select the next. */
-			if ( iter->prev_bucket->next != iter->bucket )
-				iter->bucket= iter->prev_bucket;
+			if (iter->prev_bucket->next != iter->bucket)
+				iter->bucket = iter->prev_bucket;
 
 		}
 
 	}
 
 	/* now as we are sane, select the next one if there is some */
-	if (iter->bucket!=NULL) {
-		if (iter->bucket->next!=NULL) {
-			iter->prev_bucket= iter->bucket;
-			iter->bucket= iter->bucket->next;
+	if (iter->bucket != NULL) {
+		if (iter->bucket->next != NULL) {
+			iter->prev_bucket = iter->bucket;
+			iter->bucket = iter->bucket->next;
 			iter->first_bucket = NULL;
 			return(iter);
 		}
@@ -132,14 +135,14 @@ struct hash_it_t *_s3d_hash_iterate(struct hashtable_t *hash, struct hash_it_t *
 	/* if not returned yet, we've reached the last one on the index and have to search forward */
 
 	iter->index++;
-	while ( iter->index < hash->size ) {		/* go through the entries of the hash table */
-		if ((hash->table[ iter->index ]) != NULL){
+	while (iter->index < hash->size) {    /* go through the entries of the hash table */
+		if ((hash->table[ iter->index ]) != NULL) {
 			iter->prev_bucket = NULL;
 			iter->bucket = hash->table[ iter->index ];
 			iter->first_bucket = &hash->table[ iter->index ];
-			return(iter);						/* if this table entry is not null, return it */
+			return(iter);      /* if this table entry is not null, return it */
 		} else
-			iter->index++;						/* else, go to the next */
+			iter->index++;      /* else, go to the next */
 	}
 	/* nothing to iterate over anymore */
 	free(iter);
@@ -151,48 +154,49 @@ struct hash_it_t *_s3d_hash_iterate(struct hashtable_t *hash, struct hash_it_t *
 struct hashtable_t *_s3d_hash_new(int size, hashdata_compare_cb compare, hashdata_choose_cb choose) {
 	struct hashtable_t *hash;
 
-	hash= (struct hashtable_t*)malloc( sizeof(struct hashtable_t));
-	if ( hash == NULL ) 			/* could not allocate the hash control structure */
+	hash = (struct hashtable_t*)malloc(sizeof(struct hashtable_t));
+	if (hash == NULL)      /* could not allocate the hash control structure */
 		return (NULL);
 
-	hash->size= size;
-	hash->table= (struct element_t **)malloc( sizeof(struct element_t *) * size);
-	if ( hash->table == NULL ) {	/* could not allocate the table */
+	hash->size = size;
+	hash->table = (struct element_t **)malloc(sizeof(struct element_t *) * size);
+	if (hash->table == NULL) {   /* could not allocate the table */
 		free(hash);
 		return(NULL);
 	}
 	_s3d_hash_init(hash);
-	hash->compare= compare;
-	hash->choose= choose;
+	hash->compare = compare;
+	hash->choose = choose;
 	return(hash);
 }
 
 
 /* adds data to the hashtable. returns 0 on success, -1 on error */
-int _s3d_hash_add(struct hashtable_t *hash, void *data) {
+int _s3d_hash_add(struct hashtable_t *hash, void *data)
+{
 	int index;
 	struct element_t *bucket, *prev_bucket = NULL;
 
-	index = hash->choose( data, hash->size );
+	index = hash->choose(data, hash->size);
 	bucket = hash->table[index];
 
-	while ( bucket!=NULL ) {
-		if (0 == hash->compare( bucket->data, data ))
+	while (bucket != NULL) {
+		if (0 == hash->compare(bucket->data, data))
 			return(-1);
 
 		prev_bucket = bucket;
-		bucket= bucket->next;
+		bucket = bucket->next;
 	}
 
 	/* found the tail of the list, add new element */
 	if (NULL == (bucket = (struct element_t*)malloc(sizeof(struct element_t))))
 		return(-1); /* malloc failed */
 
-	bucket->data= data;				/* init the new bucket */
-	bucket->next= NULL;
+	bucket->data = data;   /* init the new bucket */
+	bucket->next = NULL;
 
 	/* and link it */
-	if ( prev_bucket == NULL ) {
+	if (prev_bucket == NULL) {
 		hash->table[index] = bucket;
 	} else {
 		prev_bucket->next = bucket;
@@ -203,18 +207,19 @@ int _s3d_hash_add(struct hashtable_t *hash, void *data) {
 
 }
 /* finds data, based on the key in keydata. returns the found data on success, or NULL on error */
-void *_s3d_hash_find(struct hashtable_t *hash, void *keydata) {
+void *_s3d_hash_find(struct hashtable_t *hash, void *keydata)
+{
 	int index;
 	struct element_t *bucket;
 
-	index = hash->choose( keydata , hash->size );
+	index = hash->choose(keydata , hash->size);
 	bucket = hash->table[index];
 
-	while ( bucket!=NULL ) {
-		if (0 == hash->compare( bucket->data, keydata ))
-			return( bucket->data );
+	while (bucket != NULL) {
+		if (0 == hash->compare(bucket->data, keydata))
+			return(bucket->data);
 
-		bucket= bucket->next;
+		bucket = bucket->next;
 	}
 
 	return(NULL);
@@ -224,21 +229,22 @@ void *_s3d_hash_find(struct hashtable_t *hash, void *keydata) {
 /* remove bucket (this might be used in hash_iterate() if you already found the bucket
  * you want to delete and don't need the overhead to find it again with hash_remove().
  * But usually, you don't want to use this function, as it fiddles with hash-internals. */
-void *_s3d_hash_remove_bucket(struct hashtable_t *hash, struct hash_it_t *hash_it_t) {
+void *_s3d_hash_remove_bucket(struct hashtable_t *hash, struct hash_it_t *hash_it_t)
+{
 	void *data_save;
 
-	data_save = hash_it_t->bucket->data;	/* save the pointer to the data */
+	data_save = hash_it_t->bucket->data; /* save the pointer to the data */
 
-	if ( hash_it_t->prev_bucket != NULL ) {
+	if (hash_it_t->prev_bucket != NULL) {
 		hash_it_t->prev_bucket->next = hash_it_t->bucket->next;
-	} else if ( hash_it_t->first_bucket != NULL ) {
+	} else if (hash_it_t->first_bucket != NULL) {
 		(*hash_it_t->first_bucket) = hash_it_t->bucket->next;
 	}
 
 	free(hash_it_t->bucket);
 
 	hash->elements--;
-	return( data_save );
+	return(data_save);
 
 }
 
@@ -247,21 +253,22 @@ void *_s3d_hash_remove_bucket(struct hashtable_t *hash, struct hash_it_t *hash_i
  * so you can remove the used structure yourself, or NULL on error .
  * data could be the structure you use with just the key filled,
  * we just need the key for comparing. */
-void *_s3d_hash_remove(struct hashtable_t *hash, void *data) {
+void *_s3d_hash_remove(struct hashtable_t *hash, void *data)
+{
 	struct hash_it_t hash_it_t;
 
-	hash_it_t.index = hash->choose( data, hash->size );
+	hash_it_t.index = hash->choose(data, hash->size);
 	hash_it_t.bucket = hash->table[hash_it_t.index];
 	hash_it_t.prev_bucket = NULL;
 
-	while ( hash_it_t.bucket!=NULL ) {
-		if (0 == hash->compare( hash_it_t.bucket->data, data )) {
+	while (hash_it_t.bucket != NULL) {
+		if (0 == hash->compare(hash_it_t.bucket->data, data)) {
 			hash_it_t.first_bucket = (hash_it_t.bucket == hash->table[hash_it_t.index] ? &hash->table[ hash_it_t.index ] : NULL);
-			return( _s3d_hash_remove_bucket(hash, &hash_it_t) );
+			return(_s3d_hash_remove_bucket(hash, &hash_it_t));
 		}
 
 		hash_it_t.prev_bucket = hash_it_t.bucket;
-		hash_it_t.bucket= hash_it_t.bucket->next;
+		hash_it_t.bucket = hash_it_t.bucket->next;
 	}
 
 	return(NULL);
@@ -276,35 +283,36 @@ struct hashtable_t *_s3d_hash_resize(struct hashtable_t *hash, int size) {
 	int i;
 
 	/* initialize a new hash with the new size */
-	if (NULL == (new_hash= _s3d_hash_new(size, hash->compare, hash->choose)))
+	if (NULL == (new_hash = _s3d_hash_new(size, hash->compare, hash->choose)))
 		return(NULL);
 
 	/* copy the elements */
-	for (i=0; i<hash->size; i++) {
-		bucket= hash->table[i];
+	for (i = 0; i < hash->size; i++) {
+		bucket = hash->table[i];
 		while (bucket != NULL) {
-			_s3d_hash_add( new_hash, bucket->data );
-			bucket= bucket->next;
+			_s3d_hash_add(new_hash, bucket->data);
+			bucket = bucket->next;
 		}
 	}
-	_s3d_hash_delete(hash, NULL);	/* remove hash and eventual overflow buckets but not the content itself. */
+	_s3d_hash_delete(hash, NULL); /* remove hash and eventual overflow buckets but not the content itself. */
 
-	return( new_hash);
+	return(new_hash);
 }
 
 
 /* print the hash table for debugging */
-void _s3d_hash_debug(struct hashtable_t *hash) {
+void _s3d_hash_debug(struct hashtable_t *hash)
+{
 	int i;
 	struct element_t *bucket;
 
-	for (i=0; i<hash->size;i++) {
-		printf("[%d] ",i);
-		bucket= hash->table[i];
+	for (i = 0; i < hash->size;i++) {
+		printf("[%d] ", i);
+		bucket = hash->table[i];
 
 		while (bucket != NULL) {
 			printf("-> [%10p] ", (void *)bucket);
-			bucket= bucket->next;
+			bucket = bucket->next;
 		}
 
 		printf("\n");

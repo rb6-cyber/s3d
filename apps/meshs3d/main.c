@@ -155,7 +155,7 @@ static void handle_node(void)
 				tmp_node = (struct node *) tmp_hashit->bucket->data;
 
 
-				if ( node != tmp_node ) {
+				if (node != tmp_node) {
 					ip[0] = max(node->ip, tmp_node->ip);
 					ip[1] = min(node->ip, tmp_node->ip);
 

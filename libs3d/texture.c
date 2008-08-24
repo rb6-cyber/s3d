@@ -28,9 +28,9 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #endif
-#include <stdlib.h>		/* malloc(), free() */
-#include <errno.h>		/* errno */
-#include <string.h>		/* memcpy() */
+#include <stdlib.h>  /* malloc(), free() */
+#include <errno.h>  /* errno */
+#include <string.h>  /* memcpy() */
 
 static int _s3d_compare_cb(void *d1, void *d2);
 static int _s3d_choose_cb(void *d1, int size);
@@ -40,7 +40,7 @@ static struct hashtable_t *tex_hash = NULL;
 static int _s3d_choose_cb(void *d1, int size)
 {
 	struct s3d_texshm *t1 = (struct s3d_texshm *)d1;
-	return((t1->oid*32 + t1->tex)%size);
+	return((t1->oid*32 + t1->tex) % size);
 }
 
 static int _s3d_compare_cb(void *d1, void *d2)
@@ -56,10 +56,10 @@ static int _s3d_compare_cb(void *d1, void *d2)
 static void _s3d_free_s3dtex(void *d1)
 {
 	struct s3d_tex *tex = (struct s3d_tex *)d1;
-#ifdef SHM	
+#ifdef SHM
 	if (tex->buf != NULL) {
 		shmdt(tex->buf);
-		tex->buf= NULL;
+		tex->buf = NULL;
 	}
 	shmctl(tex->tshm.shmid, IPC_RMID, NULL);
 	free(tex);
@@ -67,7 +67,7 @@ static void _s3d_free_s3dtex(void *d1)
 	return;
 }
 
-void _s3d_handle_texshm(struct s3d_texshm *tshm) 
+void _s3d_handle_texshm(struct s3d_texshm *tshm)
 {
 	struct s3d_tex *tex = NULL;
 	s3dprintf(HIGH, "handling new texture ...");
@@ -104,18 +104,18 @@ int _s3d_load_texture_shm(int object, uint32_t tid, uint16_t xpos, uint16_t ypos
 		return(-1);
 	check.oid = object;
 	check.tex = tid;
-	tex = (struct s3d_tex *)_s3d_hash_find(tex_hash, (void *)&check);
+	tex = (struct s3d_tex *)_s3d_hash_find(tex_hash, (void *) & check);
 	if (tex == NULL)
 		return(-1); /* coudn't find */
 	s3dprintf(VLOW, "texture: oid %d, tex %d, shmid %d, tw %d, th %d, w %d, h %d ...",
-					tex->tshm.oid, tex->tshm.tex, tex->tshm.shmid, tex->tshm.tw, tex->tshm.th, tex->tshm.w, tex->tshm.th);
+	          tex->tshm.oid, tex->tshm.tex, tex->tshm.shmid, tex->tshm.tw, tex->tshm.th, tex->tshm.w, tex->tshm.th);
 	/* found it, assume that it's properly attached. */
 	m = tex->tshm.w * tex->tshm.th + tex->tshm.tw;     /*  maximum: position of the last pixel in the buffer */
-	if ((xpos + w) > tex->tshm.tw)	mw = (tex->tshm.tw - xpos);
-	else							mw = w;
-	if ((ypos + h) > tex->tshm.th)	mh = (tex->tshm.th - ypos);
-	else							mh = h;
-	
+	if ((xpos + w) > tex->tshm.tw) mw = (tex->tshm.tw - xpos);
+	else       mw = w;
+	if ((ypos + h) > tex->tshm.th) mh = (tex->tshm.th - ypos);
+	else       mh = h;
+
 	if (mw <= 0) { /*  nothing to do */
 		return(0);
 	}
@@ -125,9 +125,9 @@ int _s3d_load_texture_shm(int object, uint32_t tid, uint16_t xpos, uint16_t ypos
 		if (p1 > m) {
 			break;   /*  need to break here. */
 		}
-		memcpy(	tex->buf + 4*p1,    /*  draw at p1 position ... */
-				data + 4*i*w,   /*  scanline number i ... */
-				4*p2);
+		memcpy(tex->buf + 4*p1,     /*  draw at p1 position ... */
+		       data + 4*i*w,   /*  scanline number i ... */
+		       4*p2);
 	}
 	return(0);
 }
@@ -139,11 +139,11 @@ int _s3d_texture_init(void)
 	else
 		return(0);
 }
-int _s3d_texture_quit(void) 
+int _s3d_texture_quit(void)
 {
 	if (tex_hash == NULL)
 		return(-1);
 	_s3d_hash_delete(tex_hash, _s3d_free_s3dtex);
-	tex_hash= NULL;
+	tex_hash = NULL;
 	return(0);
 }

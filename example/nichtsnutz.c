@@ -117,7 +117,8 @@ static int keypress(struct s3d_evt *event)
 	int key;
 	key = *((unsigned short *)event->buf);
 	switch (key) {
-	default: ;
+	default:
+		;
 	}
 	return(0);
 }

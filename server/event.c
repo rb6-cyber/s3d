@@ -121,8 +121,8 @@ int event_texshm(struct t_process *p, int32_t oid, int32_t tex)
 		uint16_t tw, th, w, h;
 	} __attribute__((__packed__)) shmtex_packet;
 	if (OBJ_VALID(p, oid, o)) {
-		s3dprintf(LOW, "informing process about new texture on oid %d, texture %d, which is available under id %d\n", 
-						oid, tex, o->p_tex[tex].shmid);
+		s3dprintf(LOW, "informing process about new texture on oid %d, texture %d, which is available under id %d\n",
+		          oid, tex, o->p_tex[tex].shmid);
 		shmtex_packet.oid = htonl(oid);
 		shmtex_packet.tex = htonl(tex);
 		shmtex_packet.shmid = htonl(o->p_tex[tex].shmid);

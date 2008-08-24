@@ -176,7 +176,7 @@
 #define S3D_P_S_MBUTTON 5
 /*  1b: button number */
 /*  2b: button state */
-#define S3D_P_S_SHMTEX	6
+#define S3D_P_S_SHMTEX 6
 /*  4b: object id */
 /*  4b: texture number */
 /*  4b: shmid */

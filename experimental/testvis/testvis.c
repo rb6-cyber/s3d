@@ -213,7 +213,7 @@ int main(void)
 			tmp_buffer += 4;
 			t = (struct data *)malloc(sizeof(*t));
 			strncpy(t->line, tmp_buffer, LINE_SIZE);
-			t->line[LINE_SIZE - 1] = 0;	/* make sure it's terminated */
+			t->line[LINE_SIZE - 1] = 0; /* make sure it's terminated */
 			t->index = ++index;
 			t->active = 1;
 			t->next = head->next;

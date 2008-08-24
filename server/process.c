@@ -198,7 +198,7 @@ static int p_del(struct t_process *p)
 				}
 			obj_free(mcp_p, p->mcp_oid);  /*  free the mcp-app-object. */
 			mcp_del_object(p->mcp_oid);   /*  tell MCP that it's object is beeing deleted. */
-		} /* else 
+		} /* else
    errs("p_del()","bad mcp_oid, unable to free mcp object");*/
 		if (i > 0) {
 			for (i = 0;i < p->n_obj;i++)
