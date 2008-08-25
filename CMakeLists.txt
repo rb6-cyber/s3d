@@ -13,7 +13,11 @@ endif(COMMAND cmake_policy)
 list(APPEND CMAKE_MODULE_PATH "${s3d_SOURCE_DIR}/cmake/modules")
 
 # set path to objects
-set(OBJECTPATH "${CMAKE_INSTALL_PREFIX}/share/s3d/objs:${s3d_SOURCE_DIR}/objs")
+set(OBJECTPATH "${CMAKE_INSTALL_PREFIX}/share/s3d/objs")
+STRING(TOUPPER "${CMAKE_BUILD_TYPE}" BUILD_TYPE)
+if (NOT BUILD_TYPE MATCHES "REL(WITHDEBINFO|EASE)")
+	set(OBJECTPATH "${OBJECTPATH}:${s3d_SOURCE_DIR}/objs")
+endif (NOT BUILD_TYPE MATCHES "REL(WITHDEBINFO|EASE)")
 
 # set debug level with -DDEBUG=level
 include(SetDebugLevel)
