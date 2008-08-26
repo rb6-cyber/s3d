@@ -59,7 +59,7 @@ static void err(cwiid_wiimote_t *wiimote, const char *s, va_list ap)
 }
 
 
-int wii_init(char *addr)
+static int wii_init(char *addr)
 {
 	int i, j;
 	bdaddr_t bdaddr; /* bluetooth device address */
@@ -92,7 +92,7 @@ int wii_init(char *addr)
 	return(0);
 
 }
-void wii_calcdata()
+static void wii_calcdata(void)
 {
 	struct cwiid_state state; /* wiimote state */
 	float z_normvec[3] = { 0, -1, 0};

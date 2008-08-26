@@ -157,7 +157,7 @@ static int key(struct s3d_evt *evt)
 	}
 	return(0);
 }
-void x_rot(float vec[3], float angle)
+static void x_rot(float vec[3], float angle)
 {
 	float bak[3];
 	float c, s;
@@ -169,7 +169,7 @@ void x_rot(float vec[3], float angle)
 	vec[2] = s * bak[1] + c * bak[2];
 }
 
-void y_rot(float vec[3], float angle)
+static void y_rot(float vec[3], float angle)
 {
 	float bak[3];
 	float c, s;
@@ -181,11 +181,11 @@ void y_rot(float vec[3], float angle)
 	vec[0] = c * bak[0]  + s * bak[2];
 	vec[2] = -s * bak[0] + c * bak[2];
 }
-float cam_pos[3] = {0, 0, 0};
-float cam_rot[3] = {0, 0, 0};
-float ptr_rot[3] = {0, 0, 0};
-float ptr_pos[3] = {0, 0, 0};
-int cursor;
+static float cam_pos[3] = {0, 0, 0};
+static float cam_rot[3] = {0, 0, 0};
+static float ptr_rot[3] = {0, 0, 0};
+static float ptr_pos[3] = {0, 0, 0};
+static int cursor;
 
 static int oinfo(struct s3d_evt *evt)
 {
