@@ -1,7 +1,7 @@
 /*
  * dot_mcp.h
  *
- * Copyright (C) 2004-2006 Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2004-2008 Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of dot_mcp, a mcp for s3d.
  * See http://s3d.berlios.de/ for more updates.

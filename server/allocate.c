@@ -1,7 +1,7 @@
 /*
  * allocate.c
  *
- * Copyright (C) 2006  Marek Lindner <lindner_marek@yahoo.de>
+ * Copyright (C) 2006-2008  Marek Lindner <lindner_marek@yahoo.de>
  *       Thomas Lopatic
  *       Corinna 'Elektra' Aichele
  *       Axel Neumann
