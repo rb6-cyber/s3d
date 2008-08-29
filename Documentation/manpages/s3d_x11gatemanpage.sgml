@@ -39,11 +39,10 @@
 		</para>
 		<variablelist>
 			<varlistentry>
-				<term><option>-h</option>,
-					<option>--help</option>
+				<term><option>-h</option>, <option>--help</option>
 				</term>
 				<listitem>
-					<para> Show summary of options and exit. </para>
+					<para>Show summary of options and exit. </para>
 				</listitem>
 			</varlistentry>
 			<varlistentry>
