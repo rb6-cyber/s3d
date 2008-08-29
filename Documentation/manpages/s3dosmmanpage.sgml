@@ -41,17 +41,14 @@
 		</para>
 		<variablelist>
 			<varlistentry>
-				<term><option>-h</option>,
-					<option>--help</option>
+				<term><option>-h</option>, <option>--help</option>
 				</term>
 				<listitem>
 					<para> Show summary of options and exit. </para>
 				</listitem>
 			</varlistentry>
 			<varlistentry>
-				<term><option>-o</option>,
-					<option>--osm</option>
-					<replaceable>MINLAT</replaceable>,<replaceable>MINLON</replaceable>,<replaceable>MAXLAT</replaceable>,<replaceable>MAXLON</replaceable>
+				<term><option>-o</option>, <option>--osm</option> <replaceable>MINLAT</replaceable>,<replaceable>MINLON</replaceable>,<replaceable>MAXLAT</replaceable>,<replaceable>MAXLON</replaceable>
 				</term>
 				<listitem>
 					<para> Load a map with the given bounding box from the openstreetmap server. </para>
@@ -71,6 +68,7 @@
 		<para>
 		<screen
 ><prompt>$ </prompt><userinput>s3osm --osm <replaceable>12.90142,50.82475,12.93352,50.84592</replaceable></userinput>
+
 <prompt>$ </prompt><userinput>s3osm <replaceable>osmdata</replaceable>.xml</userinput>
 </screen>
 
