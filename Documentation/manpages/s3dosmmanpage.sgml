@@ -68,6 +68,7 @@
 		<para>
 		<screen
 ><prompt>$ </prompt><userinput>s3osm --osm <replaceable>12.90142,50.82475,12.93352,50.84592</replaceable></userinput>
+
 <prompt>$ </prompt><userinput>s3osm <replaceable>osmdata</replaceable>.xml</userinput>
 </screen>
 
