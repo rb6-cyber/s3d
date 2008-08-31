@@ -21,6 +21,8 @@
  * along with the s3d API; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+
 #ifndef LIBS3D_H
 #define LIBS3D_H
 
@@ -32,13 +34,23 @@
 
 #include <stdint.h>  /* [u]intXX_t type definitions*/
 /* definitions */
+
+/**
+ * This is the event information holder.
+ */
 struct s3d_evt {
-	uint8_t event;
-	int length;
-	char *buf;
-	struct s3d_evt *next;
+	uint8_t event; /**< gives the event type */
+	int length; /**< gives the length of the buffer *buf */
+	char *buf; /**< is the pointer to the multiple purpose buffer,
+             *  which will have more specific information about the object */
+	struct s3d_evt *next; /**< can be safely ignored ;) */
 };
 
+/**
+ * This defines the callback format. Each callback should return void and take
+ * an argument of struct s3d_evt *. Callbacks can be defined with
+ * s3d_set_callback().
+ */
 typedef int (*s3d_cb)(struct s3d_evt *);
 
 #define S3D_EVENT_OBJ_CLICK  1
@@ -60,6 +72,10 @@ typedef int (*s3d_cb)(struct s3d_evt *);
 #define S3D_OF_VISIBLE   0x00000001
 #define S3D_OF_SELECTABLE  0x00000002
 #define S3D_OF_POINTABLE  0x00000004
+
+/**
+ *  \deprecated don't use, to be removed soon (use struct s3d_but_info). ;)
+ */
 struct mcp_object {
 	uint32_t object;
 	float trans_x, trans_y, trans_z;
@@ -67,6 +83,16 @@ struct mcp_object {
 #define MCP_NEW_OBJECT 1
 	char name[256];
 };
+/**
+ * Can be used on the buffer of an event of type S3D_EVENT_OBJ_INFO. name will
+ * usually contain nothing for usual objects, but mcp objects will contain the
+ * applications names here. r is the radius of the convex sphere an object,
+ * which will also be interesting for the mcp.
+ *
+ * Special objects like camera, pointer will have the "sys_" prefix in the name
+ * and will be named "pointer0", "pointer1" ... or "cam0", "cam1" ... For cam
+ * object, scale will contain the aspect ratio.
+ */
 struct s3d_obj_info {
 	uint32_t object;
 	uint32_t flags;
@@ -76,6 +102,10 @@ struct s3d_obj_info {
 	float r;
 	char name[256];
 };
+
+/**
+ * Can be used on the buffer of an event of type S3D_EVENT_MBUTTON.
+ */
 struct s3d_but_info {
 	uint8_t button; /* 0 = left, 1 = middle, 2 = right */
 	uint8_t state;  /* 0 = down, 1 = up, 2 = moving */
@@ -96,7 +126,7 @@ extern "C"
 	S3DEXPORT void s3d_usage(void);
 	S3DEXPORT int s3d_init(int *argc, char ***argv, const char *name);
 	S3DEXPORT int s3d_quit(void);
-	S3DEXPORT int s3d_mainloop(void (*f)(void));
+	S3DEXPORT int s3d_mainloop(void(*f)(void));
 
 	/* object manipulations */
 	S3DEXPORT int s3d_push_vertex(int object, float x, float y, float z);

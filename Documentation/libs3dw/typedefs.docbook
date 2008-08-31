@@ -1,0 +1,16 @@
+<sect2 id="s3dw_widget"><title>typedef s3dw_widget</title><programlisting>typedef struct _s3dw_widget s3dw_widget</programlisting><para>
+        </para></sect2><sect2 id="s3dw_button"><title>typedef s3dw_button</title><programlisting>typedef struct _s3dw_button s3dw_button</programlisting><para>
+        </para></sect2><sect2 id="s3dw_label"><title>typedef s3dw_label</title><programlisting>typedef struct _s3dw_label s3dw_label</programlisting><para>
+        </para></sect2><sect2 id="s3dw_textbox"><title>typedef s3dw_textbox</title><programlisting>typedef struct _s3dw_textbox s3dw_textbox</programlisting><para>
+        </para></sect2><sect2 id="s3dw_scrollbar"><title>typedef s3dw_scrollbar</title><programlisting>typedef struct _s3dw_scrollbar s3dw_scrollbar</programlisting><para>
+        </para></sect2><sect2 id="s3dw_input"><title>typedef s3dw_input</title><programlisting>typedef struct _s3dw_input s3dw_input</programlisting><para>
+        </para></sect2><sect2 id="s3dw_surface"><title>typedef s3dw_surface</title><programlisting>typedef struct _s3dw_surface s3dw_surface</programlisting><para>
+        </para></sect2><sect2 id="s3dw_style"><title>typedef s3dw_style</title><programlisting>typedef struct _s3dw_style s3dw_style</programlisting><para>
+        </para></sect2><sect2 id="s3dw_callback"><title>typedef s3dw_callback</title><programlisting>typedef void(* s3dw_callback)(s3dw_widget *)</programlisting><para>
+</para><para>The callback type. Receive the widget which is affected as argument.</para><programlisting> // example
+ void my_handler(s3dw_widget *widget)
+ {
+         // do something with the widget
+         ...
+ }
+</programlisting><para>         </para></sect2>

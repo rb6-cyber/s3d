@@ -25,17 +25,66 @@
 #include <s3dw.h>
 #include <s3dw_int.h>
 
+/**
+ * If you want your widgets on mouseclicks (believe me, you want that), you have
+ * to call this either in your clickhandler-function or specifiy it itself as
+ * the clickhandler.
+ *
+ * \code
+ * // way 1:
+ * s3d_set_callback(S3D_EVENT_OBJ_CLICK,s3dw_handle_click);
+ *
+ * // way 2:
+ * ...
+ * void click(struct s3d_evt *evt)
+ * {
+ *         s3dw_handle_click(evt);
+ *         ....
+ *         // your own clickhandler code
+ *         ...
+ * }
+ * ....
+ * s3d_set_callback(S3D_EVENT_OBJ_CLICK,click);
+ * \endcode
+ */
 int s3dw_handle_click(const struct s3d_evt *evt)
 {
 	uint32_t oid = *((uint32_t *)evt->buf);
 	return(s3dw_widget_event_click(s3dw_getroot(), oid));
 }
+
+/**
+ * This is somehow useful to call in your keyhandler functions if you want to
+ * have input-boxes work. ;)
+ *
+ * \code
+ * // way 1:
+ * s3d_set_callback(S3D_EVENT_KEY,s3dw_handle_key);
+ *
+ * // way 2:
+ * ...
+ * void key(struct s3d_evt *evt)
+ * {
+ *         s3dw_handle_key(evt);
+ *         ....
+ *         // your own keyhandler code
+ *         ...
+ * }
+ * ....
+ * s3d_set_callback(S3D_EVENT_KEY,key);
+ * \endcode
+ */
 int s3dw_handle_key(const struct s3d_evt *evt)
 {
 	struct s3d_key_event *keys = (struct s3d_key_event *)evt->buf;
 	return(s3dw_widget_event_key(s3dw_getroot(), keys));
 }
 
+/**
+ * This can be used to let s3dw handle S3D_EVENT_OBJ_INFO-events. With this,
+ * s3dw can consider the camera position and makes things like following the
+ * camera possible.
+ */
 int s3dw_object_info(struct s3d_evt *evt)
 {
 	struct s3d_obj_info *info = (struct s3d_obj_info *)evt->buf;

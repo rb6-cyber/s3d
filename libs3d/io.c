@@ -64,6 +64,11 @@ static void sigint_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? *
 }
 
 #endif
+
+/**
+ * Prints the possible parameter for the client library (which can be passed in
+ * s3d_init())
+ */
 void s3d_usage(void)
 {
 	printf("s3d-parameters:\n");
@@ -110,6 +115,23 @@ static int parse_args(int *argc, char ***argv)
 	return(0);
 }
 /*  external functions go here ... */
+/**
+ * This will initialize the s3d-library and the connection to the Server. It
+ * will return 0 on success in Server initializion. name specifies the your
+ * programs name.
+ *
+ * \code
+ * int main(char argc, char **argv)
+ * {
+ *         if (!s3d_init(&argc, &argv, "Hello world"))
+ *         {
+ *                 ...
+ *                 s3d_quit();
+ *         }
+ *         return(0);
+ * }
+ * \endcode
+ */
 int s3d_init(int *argc, char ***argv, const char *name)
 {
 	char     *s;
@@ -165,7 +187,11 @@ int s3d_init(int *argc, char ***argv, const char *name)
 	}
 	return(-1);
 }
-/*  shuts down the socket, clearing the stack */
+
+/**
+ * closes the connection and cleares the event-stack. it can also be used to
+ * leave the s3d_mainloop().
+ */
 int s3d_quit(void)
 {
 	struct s3d_evt *ret;
@@ -196,8 +222,23 @@ int s3d_quit(void)
 	}
 	return(0);
 }
-/*  apps should use that as main loop for their programs. */
-int s3d_mainloop(void (*f)())
+
+/**
+ * takes a function as argument. it will loop this function until a quit-event
+ * is received. you can pass NULL if you have no function to be looped, but its
+ * better to sleep some time if you have nothing to do anyway to save cpu-time.
+ *
+ * \code
+ * void mainloop(void)
+ * {
+ *         usleep(1000); // sleep 1 ms in every cycle
+ * }
+ * ...
+ *
+ * s3d_mainloop(mainloop());
+ * \endcode
+ */
+int s3d_mainloop(void (*f)(void))
 {
 	while (con_type != CON_NULL) {
 		cb_lock++;   /* no callbacks while we are in mainloop */
@@ -208,8 +249,12 @@ int s3d_mainloop(void (*f)())
 	}
 	return(0);
 }
-/*  opens a file returning it's filesize  */
-/*  and setting *pointer to the buffer. to be freed */
+
+/**
+ * This opens the file fname, setting *pointer to it's memory position. the
+ * function will return the size of buffer. you can free() the pointer when
+ * you're finished.
+ */
 int s3d_open_file(const char *fname, char **pointer)
 {
 	FILE *fp;

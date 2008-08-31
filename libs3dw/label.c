@@ -49,7 +49,10 @@ void s3dw_label_hide(s3dw_widget *widget)
 {
 	s3d_flags_off(widget->oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 }
-/* change label text */
+
+/**
+ * Change the text in the referenced label to the specified text.
+ */
 void s3dw_label_change_text(s3dw_label *label, const char *text)
 {
 	s3dw_widget *widget = (s3dw_widget *)label;
@@ -63,8 +66,12 @@ void s3dw_label_change_text(s3dw_label *label, const char *text)
 		s3dw_label_show(widget);
 }
 
-
-/* create a new label in the surface */
+/**
+ * Creates a new label on the surface, with "text" written on it and the upper
+ * left corner at (posx,posy) on the surface.
+ *
+ * See s3dw_label for information about callbacks which may be defined.
+ */
 s3dw_label *s3dw_label_new(const s3dw_surface *surface, const char *text, float posx, float posy)
 {
 	s3dw_label *label;

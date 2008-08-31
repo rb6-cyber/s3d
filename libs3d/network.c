@@ -65,6 +65,12 @@ static int _s3d_net_receive(void)
 	return(_s3d_tcp_net_receive());
 }
 #endif
+/**
+ * This functions is for programs which do not employ a mainloop, hence they
+ * need to check for new events on their own. Programs like these must make sure
+ * to call this function from time to time to convince the server that they did
+ * not freeze or bail out.
+ */
 int s3d_net_check(void)
 {
 	switch (con_type) {

@@ -26,16 +26,11 @@
 #include <math.h>  /* sqrt() */
 #include "s3d.h"
 
-/***
- *
- * calculate length of a vector => http://en.wikipedia.org/wiki/Vector_%28spatial%29#Length_of_a_vector
- *
- *   vector   =>   given vector
- *
- *   return length
- *
- ***/
-
+/**
+ * Calculates and returns the length of the given vector (which should be of the
+ * type float[3]). More info on wikipedia
+ * http://en.wikipedia.org/wiki/Vector_(spatial)
+ */
 float s3d_vector_length(const float vector[])
 {
 
@@ -43,17 +38,11 @@ float s3d_vector_length(const float vector[])
 
 }
 
-
-/***
- *
- * substract vector1 from vector2 => http://en.wikipedia.org/wiki/Vector_%28spatial%29#Vector_addition_and_subtraction
- *
- *   vector1         =>   given vector1
- *   vector2         =>   given vector2
- *   result_vector   =>   save resulting vector here
- *
- ***/
-
+/**
+ * Subtracts vector1 from vector2, writing result into result_vector. All vectors
+ * should have the format float[3]. More info on wikipedia.
+ * http://en.wikipedia.org/wiki/Vector_(spatial)
+ */
 void s3d_vector_subtract(const float vector1[], const float vector2[], float result_vector[])
 {
 
@@ -63,52 +52,35 @@ void s3d_vector_subtract(const float vector1[], const float vector2[], float res
 
 }
 
-/***
- *
- * calculate dot product of 2 vectors => http://en.wikipedia.org/wiki/Vector_%28spatial%29#Dot_product
- *
- *   vector1   =>   given vector1
- *   vector2   =>   given vector2
- *
- *   return dot product
- *
- ***/
-
+/**
+ * Calculates and returns the dot product of vector1 and vector2. All vectors
+ * should have the format float[3]. More info on wikipedia.
+ * http://en.wikipedia.org/wiki/Vector_(spatial)
+ */
 float s3d_vector_dot_product(const float vector1[], const float vector2[])
 {
 	return (vector1[0] * vector2[0] + vector1[1] * vector2[1] + vector1[2] * vector2[2]);
 }
 
-/***
- *
- * calculate cross product of 2 vectors => http://en.wikipedia.org/wiki/Cross_product
- *
- *   vector1         =>   given vector1
- *   vector2         =>   given vector2
- *  result_vector   =>   save resulting vector here
- *   return dot product
- *
- ***/
-
+/**
+ * Calculates and returns the cross product of vector1 and vector2. All vectors
+ * should have the format float[3]. More info on wikipedia.
+ * http://en.wikipedia.org/wiki/Vector_(spatial)
+ */
 void s3d_vector_cross_product(const float vector1[], const float vector2[], float result_vector[])
 {
 	result_vector[0] = vector1[1] * vector2[2] - vector1[2] * vector2[1];
 	result_vector[1] = vector1[2] * vector2[0] - vector1[0] * vector2[2];
 	result_vector[2] = vector1[0] * vector2[1] - vector1[1] * vector2[0];
 }
-/***
- *
- * calculate angle between 2 vectors => http://en.wikipedia.org/wiki/Vector_%28spatial%29#Dot_product
- *
- *   vector1   =>   given vector1
- *   vector2   =>   given vector2
- *
- *   return angle
- *
- *   NOTE: angle is between 0 and PI, therefore not covering the whole period!
- *
- ***/
 
+/**
+ * Calculates and returns the angle between vector1 and vector2. Please note that
+ * the resulting angle is between 0 and PI, therefore not covering the whole
+ * period! To convert in degrees just do result*180/M_PI. All vectors should
+ * have the format float[3]. More info on wikipedia.
+ * http://en.wikipedia.org/wiki/Vector_(spatial)
+ */
 float s3d_vector_angle(const float vector1[], const float vector2[])
 {
 
@@ -116,18 +88,13 @@ float s3d_vector_angle(const float vector1[], const float vector2[])
 
 }
 
-/***
- *
- * rotate e.g. description text so that it is always readable
- *
- *   obj_id    =>   id of object
- *   obj_pos   =>   position vector (x,y,z) of object
- *   cam_pos   =>   position vector (x,y,z) of camera
- *
- *   return degree to rotate
- *
- ***/
-
+/**
+ * Given obj_pos and cam_pos in the format float[3], angle_rad about which angle
+ * the object should be rotated around the y-axis so that it faces the camera.
+ * This might become handy if you have some text floating in space and want it
+ * to face the camera.
+ * http://en.wikipedia.org/wiki/Vector_(spatial)
+ */
 float s3d_angle_to_cam(const float obj_pos[], const float cam_pos[], float *angle_rad)
 {
 

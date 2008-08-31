@@ -86,7 +86,12 @@ void s3dw_button_draw(s3dw_widget *widget)
 	widget->height = 2;
 }
 
-/* create a new button in the surface */
+/**
+ * Creates a new button on the surface, with "text" written on it and the upper
+ * left corner at (posx,posy) on the surface.
+ *
+ * See s3dw_button for information about callbacks which may be defined.
+ */
 s3dw_button *s3dw_button_new(const s3dw_surface *surface, const char *text, float posx, float posy)
 {
 	s3dw_button *button;

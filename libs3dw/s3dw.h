@@ -70,10 +70,36 @@ typedef struct _s3dw_scrollbar  s3dw_scrollbar;
 typedef struct _s3dw_input   s3dw_input;
 typedef struct _s3dw_surface   s3dw_surface;
 typedef struct _s3dw_style   s3dw_style;
-typedef void (*s3dw_callback)(s3dw_widget *);
 
+/**
+ * With s3dw_style you can change the colors/materials of your widgets.
+ * materials are in the same as in s3d_push_materials_a, that means
+ * red,green,blue and alpha float values (between 0.0 and 1.0) for Ambience,
+ * Specular and Diffuse Color.
+ */
+struct _s3dw_style {
+	char *name;     /**< name of the style ... kind of redundant */
+	char *fontface;    /**< font face for all used fonts */
+	float surface_mat[12];  /**< material for the surface background */
+	float input_mat[12];  /**< material for buttonboxes and other widgets */
+	float inputback_mat[12]; /**< material for inputfield background */
+	float text_mat[12];   /**< material for the text on buttons and inputs */
+	float title_mat[12];  /**< material for the title bar */
+	float title_text_mat[12]; /**< material for the text on the title bar */
+};
 
-struct _s3dw_widget {
+/**
+ * This is the most basic widget type, it contains all the "general" widget
+ * information. If you want to move a widget, you'd change x,y,z,s and rx,ry,rz
+ * and call s3dw_moveit to turn your action reality. Every other widget has this
+ * type as first entry, so a simple typecast to s3dw_widget will give you the
+ * widgets "general" information. For typecast, you may use S3DWIDGET().
+ *
+ * The pointer ptr allows linking to user-specific datastructures. That comes in
+ * handy if the widget is called back by an event, and the program must now find
+ * out on which data the user reacted.
+ */
+ struct _s3dw_widget {
 	/* private .. */
 	int      type;
 	s3dw_widget *parent;
@@ -94,7 +120,24 @@ struct _s3dw_widget {
 	float    rx, ry, rz;  /* rotation around the axis */
 };
 
+/**
+ * The callback type. Receive the widget which is affected as argument.
+ *
+ * \code
+ * // example
+ * void my_handler(s3dw_widget *widget)
+ * {
+ *         // do something with the widget
+ *         ...
+ * }
+ * \endcode
+ */
+typedef void (*s3dw_callback)(s3dw_widget *);
 
+/**
+ * The buttons is just a button as you would expect it in a 2D widget library.
+ * It only reacts on clicks.
+ */
 struct _s3dw_button {
 	/* private */
 	s3dw_widget   widget;
@@ -103,14 +146,25 @@ struct _s3dw_button {
 	/* public */
 	s3dw_callback   onclick;
 };
+
+/**
+ * The labels is an label-field where a user may type things. onclick reacts on
+ * click in the field, onedit notifies you when someone writes in the field.
+ */
 struct _s3dw_label {
 	/* private */
 	s3dw_widget   widget;
 	char    *text;
 	/* public */
 	s3dw_callback   onclick;
-
 };
+
+/**
+ * The Scrollbar should be placed around scrollable content. Currently only the
+ * left and right icons are clickable (lonclick and ronclick callbacks), in
+ * vertical mode lonclick is the callback for the up icon, ronclick the callback
+ * for the down icon.
+ */
 struct _s3dw_scrollbar {
 	/* private */
 	s3dw_widget   widget;
@@ -123,6 +177,10 @@ struct _s3dw_scrollbar {
 
 };
 
+/**
+ * A textbox shows some text with scrollbars to scroll around. It can currently
+ * only react to a click event.
+ */
 struct _s3dw_textbox {
 	/* private */
 	s3dw_widget   widget;
@@ -136,6 +194,10 @@ struct _s3dw_textbox {
 
 };
 
+/**
+ * The inputs is an input-field where a user may type things. onclick reacts on
+ * click in the field, onedit notifies you when someone writes in the field.
+ */
 struct _s3dw_input {
 	/* private */
 	s3dw_widget   widget;
@@ -146,24 +208,16 @@ struct _s3dw_input {
 	s3dw_callback   onedit;
 };
 
+/**
+ * A surface is the window of this widget library, holding all of our elements
+ * like buttons, inputfields etc ...
+ */
 struct _s3dw_surface {
 	/* private */
 	s3dw_widget     widget;
 	uint32_t     oid_title;
 	uint32_t     oid_tbar;
 	char     *title;
-};
-
-/* style */
-struct _s3dw_style {
-	char *name;     /* name of the style ... kind of redundant */
-	char *fontface;    /* font face for all used fonts */
-	float surface_mat[12];  /* material for the surface background */
-	float input_mat[12];  /* material for buttonboxes and other widgets */
-	float inputback_mat[12]; /* material for inputfield background */
-	float text_mat[12];   /* material for the text on buttons and inputs */
-	float title_mat[12];  /* material for the title bar */
-	float title_text_mat[12]; /* material for the text on the title bar */
 };
 
 #if defined(__cplusplus) || defined(c_plusplus)

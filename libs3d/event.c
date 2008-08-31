@@ -29,6 +29,11 @@
 
 static struct s3d_evt *s3d_stack;
 int cb_lock = 2;  /*  callback lock */
+
+/**
+ * Pushes an event onto the event-stack. Usually you don't need to do this
+ * manually.
+ */
 void s3d_push_event(struct s3d_evt *newevt)
 {
 	struct s3d_evt *p;
@@ -56,12 +61,22 @@ void s3d_push_event(struct s3d_evt *newevt)
 	} else
 		s3d_stack = newevt;
 }
+
+/**
+ * Pops the latest event from the stack. Don't forget to free() both the event
+ * and its buffer! Returns a pointer to struct s3d_evt.
+ */
 struct s3d_evt *s3d_pop_event(void) {
 	struct s3d_evt *ret;
 	if ((ret = s3d_stack) != NULL)
 		s3d_stack = s3d_stack->next;
 	return ret;
 }
+
+/**
+ * Finds the latest occurence of an event, giving the event type as argument.
+ * Returns a pointer to struct s3d_evt.
+ */
 struct s3d_evt *s3d_find_event(uint8_t event) {
 	struct s3d_evt *p;
 	p = s3d_stack;
@@ -72,6 +87,11 @@ struct s3d_evt *s3d_find_event(uint8_t event) {
 	}
 	return(NULL);
 }
+
+/**
+ * deletes an event, the argument is the pointer to the event which is to be
+ * deleted (maybe obtained from s3d_find_event).
+ */
 int s3d_delete_event(const struct s3d_evt *devt)
 {
 	struct s3d_evt *previous = NULL;
@@ -93,7 +113,14 @@ int s3d_delete_event(const struct s3d_evt *devt)
 	}
 	return(-1);
 }
-/*  this function checks the stack for callbacks. */
+
+/**
+ * This function goes through all function of the event-stack and will call
+ * functions. this is useful when you define a new function but still have a lot
+ * of events of this type on the stack.
+ *
+ * \deprecated This is probably obsolete
+ */
 void s3d_process_stack(void)
 {
 	struct s3d_evt *p;

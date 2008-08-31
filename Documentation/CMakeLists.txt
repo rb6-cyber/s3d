@@ -14,7 +14,13 @@ if (DOCBOOK2HTML_COMPILER)
 			${Documentation_SOURCE_DIR}/bookinfo.docbook
 			${Documentation_SOURCE_DIR}/server/server.docbook
 			${Documentation_SOURCE_DIR}/libs3dw/libs3dw.docbook
+			${Documentation_SOURCE_DIR}/libs3dw/functions.docbook
+			${Documentation_SOURCE_DIR}/libs3dw/structs.docbook
+			${Documentation_SOURCE_DIR}/libs3dw/typedefs.docbook
 			${Documentation_SOURCE_DIR}/libs3d/libs3d.docbook
+			${Documentation_SOURCE_DIR}/libs3d/functions.docbook
+			${Documentation_SOURCE_DIR}/libs3d/structs.docbook
+			${Documentation_SOURCE_DIR}/libs3d/typedefs.docbook
 		COMMENT "Build s3d documentation"
 	)
 

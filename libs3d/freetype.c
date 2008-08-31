@@ -301,6 +301,16 @@ static int _s3d_draw_tessbuf(int oid, uint16_t a, int *voff, float *xoff)
 	*xoff += tess_buf[a].xoff;  /*  xoffset */
 	return(0);
 }
+
+/**
+ * This selects a font for the s3d_draw_string() function.
+ *
+ * \remarks Of course, you won't forget to toggle it visible, won't you?
+ *
+ * \code
+ * s3d_select_font("vera"); // will use the vera font face
+ * \endcode
+ */
 int s3d_select_font(const char *path)
 {
 	char    *oldfont = memory_font;
@@ -337,7 +347,19 @@ int s3d_select_font(const char *path)
 	return(-1);
 }
 
-/*  draws a simple string. */
+/**
+ * Renders the string str with in Truetype format with the height 1, returns the
+ * length of the rendered string in *xlen (or set len=NULL to disable this).
+ *
+ * \code
+ * char str="hello world!";
+ * float len;
+ * s3d_select_font("vera");
+ * s3d_draw_string(str, len);
+ *
+ * // not interested in the length? do that: s3d_draw_string(str, NULL);
+ * \endcode
+ */
 int s3d_draw_string(const char *str, float *xlen)
 {
 	int i;
@@ -366,7 +388,12 @@ int s3d_draw_string(const char *str, float *xlen)
 	if (xlen != NULL) *xlen = xoff;
 	return(f_oid);
 }
-/* get the string length before actually drawing it. */
+
+/**
+ * Returns the length of the string if it were rendered with the currently
+ * selected font. That might be useful to estimate the size used for a text and
+ * render the background or bounding box before inserting the text.
+ */
 float s3d_strlen(const char *str)
 {
 	int i;

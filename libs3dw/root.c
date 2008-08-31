@@ -76,7 +76,20 @@ const char *s3dw_get_type_string(int type)
 	return(NULL);
 }
 
-/* get the root .... if it's NULL, the lib is not initialized, so do this too ... */
+/**
+ * Returns the root-widget, which holds all the surfaces. E.g. if you want to
+ * move all widgets at once, adjust the root-widgets x,y,z and use s3dw_moveit()
+ *
+ * \code
+ * s3dw_widget *root = s3dw_getroot();
+ * // move widget center to (0,5,0). upon creation, it's centered at (0,0,0),
+ * // so this might move it up
+ * root->x=0;
+ * root->y=5;
+ * root->z=0;
+ * s3dw_moveit(root);
+ * \endcode
+ */
 s3dw_widget* s3dw_getroot(void)
 {
 	if (root == NULL) {

@@ -143,7 +143,24 @@ void s3dw_ani_needarr(void)
 
 }
 
-/* doing the whole animation thing */
+/**
+ * Just call this in your mainloop if you want some nice window sliding
+ * animations. it's somewhat bloating, but you don't want to miss it ;)
+ *
+ * \code
+ * #include <time.h>   // nanosleep()
+ * static struct timespec t={0.33*1000*1000}; // 33 mili seconds
+ * void mainloop()
+ * {
+ *         // keep this in your mainloop. this will do smooth animations for you ...
+ *         s3dw_ani_mate();
+ *         nanosleep(&t,NULL);
+ * }
+ *
+ * ....
+ * s3d_mainloop(mainloop);
+ * \endcode
+ */
 void s3dw_ani_mate(void)
 {
 	int i;

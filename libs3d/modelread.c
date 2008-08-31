@@ -42,7 +42,13 @@ static struct material2texture *mat2tex_root = NULL;
 
 #define MAXSTRN  20
 static int model_load(char *file);
-/*  just a helper function for reading from file instead of memory. */
+/**
+ * Imports an 3d object file and returns the object number. Quite a number of
+ * formats are supported, like 3D Studio (.3ds, .prj), Lightwave (.lw, .lwb,
+ * .lwo), Quake Models (.md3), or simply everything libg3d supports. :)
+ *
+ * \remarks Of course, you won't forget to toggle it visible, won't you?
+ */
 int s3d_import_model_file(const char *fname)
 {
 	char *buf, *ptr, *next;

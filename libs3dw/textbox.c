@@ -195,7 +195,13 @@ static void _s3dw_textbox_scrollbar_right(s3dw_widget *widget)
 	s3dw_textbox_scrollright((s3dw_textbox *)widget->parent);
 }
 
-/* create a new textbox in the surface */
+/**
+ * Creates a new textbox on the surface, with "text" written on it and the upper
+ * left corner at (posx,posy) on the surface. Width and height define the size
+ * of the textbox including scrollbars which are rendered around the textfield.
+ *
+ * See s3dw_textbox for information about callbacks which may be defined.
+ */
 s3dw_textbox *s3dw_textbox_new(const s3dw_surface *surface, const char *text, float posx, float posy, float width, float height)
 {
 	s3dw_textbox *textbox;
@@ -232,29 +238,49 @@ static void s3dw_textbox_redraw(s3dw_widget *widget)
 		s3dw_textbox_show(widget);
 }
 
+/**
+ * Scrolls the text in the textbox up by one line, if possible.
+ */
 void s3dw_textbox_scrollup(s3dw_textbox *textbox)
 {
 	if (textbox->window_y > 0)
 		textbox->window_y--;
 	s3dw_textbox_redraw(S3DWIDGET(textbox));
 }
+
+/**
+ * Scrolls the text in the textbox down by one line, if possible.
+ */
 void s3dw_textbox_scrolldown(s3dw_textbox *textbox)
 {
 	textbox->window_y++;
 	s3dw_textbox_redraw(S3DWIDGET(textbox));
 
 }
+
+/**
+ * Scrolls the text in the textbox to the left by one character, if possible.
+ */
 void s3dw_textbox_scrollleft(s3dw_textbox *textbox)
 {
 	if (textbox->window_x > 0)
 		textbox->window_x--;
 	s3dw_textbox_redraw(S3DWIDGET(textbox));
 }
+
+/**
+ * Scrolls the text in the textbox to the right by one character, if possible.
+ */
 void s3dw_textbox_scrollright(s3dw_textbox *textbox)
 {
 	textbox->window_x++;
 	s3dw_textbox_redraw(S3DWIDGET(textbox));
 }
+
+/**
+ * Scrolls the text in the textbox so that the character in row y, column x is
+ * in the top left corner of the textbox.
+ */
 void s3dw_textbox_scrollto(s3dw_textbox *textbox, int x, int y)
 {
 	s3dw_widget *widget = (s3dw_widget *)textbox;
@@ -265,6 +291,9 @@ void s3dw_textbox_scrollto(s3dw_textbox *textbox, int x, int y)
 	s3dw_textbox_redraw(widget);
 }
 
+/**
+ * Change the text in the referenced textbox to the specified text.
+ */
 void s3dw_textbox_change_text(s3dw_textbox *textbox, const char *text)
 {
 	s3dw_widget *widget = (s3dw_widget *)textbox;
