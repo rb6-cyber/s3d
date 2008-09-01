@@ -1,0 +1,26 @@
+.TH "s3d_mainloop" "3" 
+.SH "NAME" 
+s3d_mainloop \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_mainloop\fP\fR( 
+\fB	void(*)(void) \fBf\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+takes a function as argument. it will loop this function until a quit-event is received. you can pass NULL if you have no function to be looped, but its better to sleep some time if you have nothing to do anyway to save cpu-time. 
+.PP 
+.nf 
+void mainloop(void) 
+{ 
+usleep(1000); // sleep 1 ms in every cycle 
+} 
+... 
+ 
+s3d_mainloop(mainloop()); 
+.fi 
+.PP 
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

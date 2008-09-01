@@ -1,0 +1,18 @@
+.TH "s3d_push_vertex" "3" 
+.SH "NAME" 
+s3d_push_vertex \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_push_vertex\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	float \fBx\fR\fR, 
+\fB	float \fBy\fR\fR, 
+\fB	float \fBz\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+pushes a vertex onto the vertex stack. make sure that you count how many vertices you've pushed because you'll need that for referencing when you push your polygons.          
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

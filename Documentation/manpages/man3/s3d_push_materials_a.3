@@ -1,0 +1,39 @@
+.TH "s3d_push_materials_a" "3" 
+.SH "NAME" 
+s3d_push_materials_a \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_push_materials_a\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	const float *\fBmbuf\fR\fR, 
+\fB	uint16_t \fBn\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+Pushes a buffer of Materials. Those Materials are in the format float[n*12], with 
+.PP 
+mbuf[n*12 + 0-3] \- ambience 
+.PP 
+mbuf[n*12 + 4-7] \- specular 
+.PP 
+mbuf[n *12 + 8-11] \- diffusion values 
+.PP 
+of each entry. n is the number of materials pushed. The values are in the order r,g,b,a. If you only want to push one material, use the more easy s3d_push_material_a() function. 
+.PP 
+.nf 
+// each line has r,g,b,a value 
+float bla[24]= 
+{1, 0, 0, 1, 
+1, 0, 0, 1, 
+1, 0, 0, 1, 
+0, 1, 1, 1, 
+0, 1, 1, 1, 
+0, 1, 1, 1}; 
+ 
+s3d_push_materials_a(object, mbuf, 2); // push a red and a cyan material 
+.fi 
+.PP 
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

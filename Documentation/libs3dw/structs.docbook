@@ -7,16 +7,7 @@
 	float text_mat;
 	float title_mat;
 	float title_text_mat;
-}</programlisting><para>
-</para><para>With s3dw_style you can change the colors/materials of your widgets. materials are in the same as in s3d_push_materials_a, that means red,green,blue and alpha float values (between 0.0 and 1.0) for Ambience, Specular and Diffuse Color.     </para><variablelist><varlistentry><term>name</term><listitem><para>
-</para><para>name of the style ... kind of redundant         </para></listitem></varlistentry><varlistentry><term>fontface</term><listitem><para>
-</para><para>font face for all used fonts         </para></listitem></varlistentry><varlistentry><term>surface_mat</term><listitem><para>
-</para><para>material for the surface background         </para></listitem></varlistentry><varlistentry><term>input_mat</term><listitem><para>
-</para><para>material for buttonboxes and other widgets         </para></listitem></varlistentry><varlistentry><term>inputback_mat</term><listitem><para>
-</para><para>material for inputfield background         </para></listitem></varlistentry><varlistentry><term>text_mat</term><listitem><para>
-</para><para>material for the text on buttons and inputs         </para></listitem></varlistentry><varlistentry><term>title_mat</term><listitem><para>
-</para><para>material for the title bar         </para></listitem></varlistentry><varlistentry><term>title_text_mat</term><listitem><para>
-</para><para>material for the text on the title bar         </para></listitem></varlistentry></variablelist></sect2><sect2 id="struct_s3dw_widget"><title>struct _s3dw_widget</title><programlisting>struct _s3dw_widget {
+}</programlisting><para>With s3dw_style you can change the colors/materials of your widgets. materials are in the same as in s3d_push_materials_a, that means red,green,blue and alpha float values (between 0.0 and 1.0) for Ambience, Specular and Diffuse Color.     </para><variablelist><varlistentry><term>name</term><listitem><para>name of the style ... kind of redundant         </para></listitem></varlistentry><varlistentry><term>fontface</term><listitem><para>font face for all used fonts         </para></listitem></varlistentry><varlistentry><term>surface_mat</term><listitem><para>material for the surface background         </para></listitem></varlistentry><varlistentry><term>input_mat</term><listitem><para>material for buttonboxes and other widgets         </para></listitem></varlistentry><varlistentry><term>inputback_mat</term><listitem><para>material for inputfield background         </para></listitem></varlistentry><varlistentry><term>text_mat</term><listitem><para>material for the text on buttons and inputs         </para></listitem></varlistentry><varlistentry><term>title_mat</term><listitem><para>material for the title bar         </para></listitem></varlistentry><varlistentry><term>title_text_mat</term><listitem><para>material for the text on the title bar         </para></listitem></varlistentry></variablelist></sect2><sect2 id="struct_s3dw_widget"><title>struct _s3dw_widget</title><programlisting>struct _s3dw_widget {
 	int type;
 	s3dw_widget *parent;
 	s3dw_style *style;
@@ -42,19 +33,16 @@
 	float rx;
 	float ry;
 	float rz;
-}</programlisting><para>
-</para><para>This is the most basic widget type, it contains all the &quot;general&quot; widget information. If you want to move a widget, you'd change x,y,z,s and rx,ry,rz and call s3dw_moveit to turn your action reality. Every other widget has this type as first entry, so a simple typecast to s3dw_widget will give you the widgets &quot;general&quot; information. For typecast, you may use S3DWIDGET().</para><para>The pointer ptr allows linking to user-specific datastructures. That comes in handy if the widget is called back by an event, and the program must now find out on which data the user reacted.     </para></sect2><sect2 id="struct_s3dw_button"><title>struct _s3dw_button</title><programlisting>struct _s3dw_button {
+}</programlisting><para>This is the most basic widget type, it contains all the &quot;general&quot; widget information. If you want to move a widget, you'd change x,y,z,s and rx,ry,rz and call s3dw_moveit to turn your action reality. Every other widget has this type as first entry, so a simple typecast to s3dw_widget will give you the widgets &quot;general&quot; information. For typecast, you may use S3DWIDGET().</para><para>The pointer ptr allows linking to user-specific datastructures. That comes in handy if the widget is called back by an event, and the program must now find out on which data the user reacted.     </para></sect2><sect2 id="struct_s3dw_button"><title>struct _s3dw_button</title><programlisting>struct _s3dw_button {
 	s3dw_widget widget;
 	char *text;
 	uint32_t oid_text;
 	s3dw_callback onclick;
-}</programlisting><para>
-</para><para>The buttons is just a button as you would expect it in a 2D widget library. It only reacts on clicks.     </para></sect2><sect2 id="struct_s3dw_label"><title>struct _s3dw_label</title><programlisting>struct _s3dw_label {
+}</programlisting><para>The buttons is just a button as you would expect it in a 2D widget library. It only reacts on clicks.     </para></sect2><sect2 id="struct_s3dw_label"><title>struct _s3dw_label</title><programlisting>struct _s3dw_label {
 	s3dw_widget widget;
 	char *text;
 	s3dw_callback onclick;
-}</programlisting><para>
-</para><para>The labels is an label-field where a user may type things. onclick reacts on click in the field, onedit notifies you when someone writes in the field.     </para></sect2><sect2 id="struct_s3dw_scrollbar"><title>struct _s3dw_scrollbar</title><programlisting>struct _s3dw_scrollbar {
+}</programlisting><para>The labels is an label-field where a user may type things. onclick reacts on click in the field, onedit notifies you when someone writes in the field.     </para></sect2><sect2 id="struct_s3dw_scrollbar"><title>struct _s3dw_scrollbar</title><programlisting>struct _s3dw_scrollbar {
 	s3dw_widget widget;
 	float pos;
 	float max;
@@ -64,8 +52,7 @@
 	int baroid;
 	s3dw_callback lonclick;
 	s3dw_callback ronclick;
-}</programlisting><para>
-</para><para>The Scrollbar should be placed around scrollable content. Currently only the left and right icons are clickable (lonclick and ronclick callbacks), in vertical mode lonclick is the callback for the up icon, ronclick the callback for the down icon.     </para></sect2><sect2 id="struct_s3dw_textbox"><title>struct _s3dw_textbox</title><programlisting>struct _s3dw_textbox {
+}</programlisting><para>The Scrollbar should be placed around scrollable content. Currently only the left and right icons are clickable (lonclick and ronclick callbacks), in vertical mode lonclick is the callback for the up icon, ronclick the callback for the down icon.     </para></sect2><sect2 id="struct_s3dw_textbox"><title>struct _s3dw_textbox</title><programlisting>struct _s3dw_textbox {
 	s3dw_widget widget;
 	s3dw_scrollbar *scroll_vertical;
 	s3dw_scrollbar *scroll_horizontal;
@@ -75,18 +62,15 @@
 	int window_x;
 	int window_y;
 	s3dw_callback onclick;
-}</programlisting><para>
-</para><para>A textbox shows some text with scrollbars to scroll around. It can currently only react to a click event.     </para></sect2><sect2 id="struct_s3dw_input"><title>struct _s3dw_input</title><programlisting>struct _s3dw_input {
+}</programlisting><para>A textbox shows some text with scrollbars to scroll around. It can currently only react to a click event.     </para></sect2><sect2 id="struct_s3dw_input"><title>struct _s3dw_input</title><programlisting>struct _s3dw_input {
 	s3dw_widget widget;
 	char *text;
 	uint32_t oid_text;
 	s3dw_callback onclick;
 	s3dw_callback onedit;
-}</programlisting><para>
-</para><para>The inputs is an input-field where a user may type things. onclick reacts on click in the field, onedit notifies you when someone writes in the field.     </para></sect2><sect2 id="struct_s3dw_surface"><title>struct _s3dw_surface</title><programlisting>struct _s3dw_surface {
+}</programlisting><para>The inputs is an input-field where a user may type things. onclick reacts on click in the field, onedit notifies you when someone writes in the field.     </para></sect2><sect2 id="struct_s3dw_surface"><title>struct _s3dw_surface</title><programlisting>struct _s3dw_surface {
 	s3dw_widget widget;
 	uint32_t oid_title;
 	uint32_t oid_tbar;
 	char *title;
-}</programlisting><para>
-</para><para>A surface is the window of this widget library, holding all of our elements like buttons, inputfields etc ...     </para></sect2>
+}</programlisting><para>A surface is the window of this widget library, holding all of our elements like buttons, inputfields etc ...     </para></sect2>

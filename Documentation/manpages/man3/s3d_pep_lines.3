@@ -1,0 +1,17 @@
+.TH "s3d_pep_lines" "3" 
+.SH "NAME" 
+s3d_pep_lines \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_pep_lines\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	const uint32_t *\fBlbuf\fR\fR, 
+\fB	uint16_t \fBn\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+Alter the latest n pushed lines. lbuf holds the values which are used to overwrite the old data, n entries with each 3 uint32_t specifying first, second vertex and material of each line.          
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

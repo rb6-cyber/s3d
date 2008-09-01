@@ -1,0 +1,19 @@
+.TH "s3d_pep_line_normals" "3" 
+.SH "NAME" 
+s3d_pep_line_normals \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_pep_line_normals\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	const float *\fBnbuf\fR\fR, 
+\fB	uint16_t \fBn\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+Adds normal information to lines, giving each vertex of a line a normal information. This makes lines somewhat nicer, you'll need that especially when you're going to build wireframe models. 
+.PP 
+nbuf should contain n * 6 float values, for each vertex a normal vector (x,y,z), and you have 2 Vertices for each line so that makes 6 float values per line in Total.          
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

@@ -1,0 +1,22 @@
+.TH "_s3dw_label" "9" 
+.SH "NAME" 
+struct _s3dw_label \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3dw.h> 
+.fi 
+.SH "Structure Members" 
+.PP 
+.nf 
+struct _s3dw_label { 
+s3dw_widget widget; 
+char *text; 
+s3dw_callback onclick; 
+} 
+.fi 
+.PP 
+.SH "Description" 
+.PP 
+The labels is an label-field where a user may type things. onclick reacts on click in the field, onedit notifies you when someone writes in the field.      
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

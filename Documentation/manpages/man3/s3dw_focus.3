@@ -1,0 +1,15 @@
+.TH "s3dw_focus" "3" 
+.SH "NAME" 
+s3dw_focus \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3dw.h> 
+.sp 1 
+\fBvoid \fBs3dw_focus\fP\fR( 
+\fB	s3dw_widget *\fBfocus\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+Gives focus to the widget, relative to its parent. That means you can focus a surface, and each surface can focus one of its element, e.g. an input field. Should be casted with S3DWIDGET().          
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

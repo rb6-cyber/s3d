@@ -1,2 +1,1 @@
-<sect2 id="s3d_cb"><title>typedef s3d_cb</title><programlisting>typedef int(* s3d_cb)(struct s3d_evt *)</programlisting><para>
-</para><para>This defines the callback format. Each callback should return void and take an argument of struct s3d_evt *. Callbacks can be defined with s3d_set_callback().         </para></sect2>
+<sect2 id="s3d_cb"><title>typedef s3d_cb</title><programlisting>typedef int(* s3d_cb)(struct s3d_evt *)</programlisting><para>This defines the callback format. Each callback should return void and take an argument of struct s3d_evt *. Callbacks can be defined with s3d_set_callback().         </para></sect2>

@@ -1,0 +1,17 @@
+.TH "s3d_push_lines" "3" 
+.SH "NAME" 
+s3d_push_lines \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_push_lines\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	const uint32_t *\fBlbuf\fR\fR, 
+\fB	uint16_t \fBn\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+Pushing n lines on the linestack of the object, each lbuf has a size of n*3, each entry has the index number of the first vertex, second vertex and material number just as in s3d_push_line().          
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

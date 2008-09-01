@@ -1,0 +1,35 @@
+.TH "s3d_set_callback" "3" 
+.SH "NAME" 
+s3d_set_callback \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBvoid \fBs3d_set_callback\fP\fR( 
+\fB	uint8_t \fBevent\fR\fR, 
+\fB	s3d_cb \fBfunc\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+sets a callback for a certain event. this is very useful for event-oriented applications. event callbacks will not interrupt each other or the mainloop. 
+.PP 
+.RS 
+\fBWarning:   
+.PP 
+Defining callbacks will only work after calling s3d_init() 
+.RE 
+.PP 
+.nf 
+#include <inttypes.h> 
+ 
+void obj_click(struct s3d_evt event) 
+{ 
+printf("object id %"PRIu32" got clicked", *((uint32_t *)event->buf)); 
+} 
+... 
+s3d_set_callback(S3D_EVENT_NEW_OBJECT, obj_click); 
+// this will tell you when a object got clicked 
+.fi 
+.PP 
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

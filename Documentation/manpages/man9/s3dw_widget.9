@@ -1,0 +1,46 @@
+.TH "_s3dw_widget" "9" 
+.SH "NAME" 
+struct _s3dw_widget \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3dw.h> 
+.fi 
+.SH "Structure Members" 
+.PP 
+.nf 
+struct _s3dw_widget { 
+int type; 
+s3dw_widget *parent; 
+s3dw_style *style; 
+int nobj; 
+s3dw_widget **pobj; 
+int focus; 
+int flags; 
+float ax; 
+float ay; 
+float az; 
+float as; 
+float arx; 
+float ary; 
+float arz; 
+float width; 
+float height; 
+uint32_t oid; 
+void *ptr; 
+float x; 
+float y; 
+float z; 
+float s; 
+float rx; 
+float ry; 
+float rz; 
+} 
+.fi 
+.PP 
+.SH "Description" 
+.PP 
+This is the most basic widget type, it contains all the "general" widget information. If you want to move a widget, you'd change x,y,z,s and rx,ry,rz and call s3dw_moveit to turn your action reality. Every other widget has this type as first entry, so a simple typecast to s3dw_widget will give you the widgets "general" information. For typecast, you may use S3DWIDGET(). 
+.PP 
+The pointer ptr allows linking to user-specific datastructures. That comes in handy if the widget is called back by an event, and the program must now find out on which data the user reacted.      
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

@@ -1,0 +1,24 @@
+.TH "s3d_push_material" "3" 
+.SH "NAME" 
+s3d_push_material \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_push_material\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	float \fBamb_r\fR\fR, 
+\fB	float \fBamb_g\fR\fR, 
+\fB	float \fBamb_b\fR\fR, 
+\fB	float \fBspec_r\fR\fR, 
+\fB	float \fBspec_g\fR\fR, 
+\fB	float \fBspec_b\fR\fR, 
+\fB	float \fBdiff_r\fR\fR, 
+\fB	float \fBdiff_g\fR\fR, 
+\fB	float \fBdiff_b\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+pushes a material for an object. you will have to count them yourself too, as polygons will ask for the material index number. the material properties are given in rgb (red/green/blue) color codes, in float. 0.0 is the minimum, 1.0 is the maximum a color value can be. the specular color is the color which is directly reflected from the light source. the diffuse color is the color which can be seen in the bright side of the object, and the ambience color is the color of the shadow side of the object.          
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

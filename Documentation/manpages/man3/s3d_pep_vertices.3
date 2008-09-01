@@ -1,0 +1,17 @@
+.TH "s3d_pep_vertices" "3" 
+.SH "NAME" 
+s3d_pep_vertices \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_pep_vertices\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	const float *\fBvbuf\fR\fR, 
+\fB	uint16_t \fBn\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+Alter the latest n pushed vertex. vbuf holds the values which are used to overwrite the old data, n entries with each 3 floats specifying x,y,z of the vertices.          
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

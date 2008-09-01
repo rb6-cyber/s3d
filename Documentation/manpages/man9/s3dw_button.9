@@ -1,0 +1,23 @@
+.TH "_s3dw_button" "9" 
+.SH "NAME" 
+struct _s3dw_button \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3dw.h> 
+.fi 
+.SH "Structure Members" 
+.PP 
+.nf 
+struct _s3dw_button { 
+s3dw_widget widget; 
+char *text; 
+uint32_t oid_text; 
+s3dw_callback onclick; 
+} 
+.fi 
+.PP 
+.SH "Description" 
+.PP 
+The buttons is just a button as you would expect it in a 2D widget library. It only reacts on clicks.      
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

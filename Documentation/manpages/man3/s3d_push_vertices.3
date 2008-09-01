@@ -1,0 +1,25 @@
+.TH "s3d_push_vertices" "3" 
+.SH "NAME" 
+s3d_push_vertices \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_push_vertices\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	const float *\fBvbuf\fR\fR, 
+\fB	uint16_t \fBn\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+push some vertices from an array. that's much better for performing than using s3d_push_vertex() if you have a lot of vertices (and that's probably the usual case).  
+.PP 
+.nf 
+float vertices[] = { 0.0, 0.0, 0.0, 
+1.0, 2.0, 3.0, 
+3.0, 2.0, 1.0}; 
+s3d_push_vertices(object, vertices, 3); // pushing 3 vertices 
+.fi 
+.PP 
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

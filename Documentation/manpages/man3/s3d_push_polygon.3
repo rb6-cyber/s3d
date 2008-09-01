@@ -1,0 +1,30 @@
+.TH "s3d_push_polygon" "3" 
+.SH "NAME" 
+s3d_push_polygon \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_push_polygon\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	uint32_t \fBv1\fR\fR, 
+\fB	uint32_t \fBv2\fR\fR, 
+\fB	uint32_t \fBv3\fR\fR, 
+\fB	uint32_t \fBmaterial\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+push one polygon on the polygonstack of the object. it takes 3 vertex-index numbers and one material material-index-nr. as argument. 
+.PP 
+.nf 
+int oid = s3d_new_object();   // create a new object 
+s3d_push_vertex(oid, 0.0, 0.0, 0.0); 
+s3d_push_vertex(oid, 0.0, 1.0, 0.0); 
+s3d_push_vertex(oid, 1.0, 0.0, 0.0); 
+s3d_push_material(oid, 0.3, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0); 
+s3d_push_polygon(oid, 0, 1, 2, 0); 
+// this will create a red polygon 
+.fi 
+.PP 
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

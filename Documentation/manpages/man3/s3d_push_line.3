@@ -1,0 +1,18 @@
+.TH "s3d_push_line" "3" 
+.SH "NAME" 
+s3d_push_line \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_push_line\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	uint32_t \fBv1\fR\fR, 
+\fB	uint32_t \fBv2\fR\fR, 
+\fB	uint32_t \fBmaterial\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+Push one line on the linestack of the object. It takes 2 vertex-index- numbers and one material material-index-nr. as argument. If you have a lot of lines to push, use s3d_push_lines()          
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

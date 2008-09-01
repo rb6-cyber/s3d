@@ -1,0 +1,26 @@
+.TH "s3d_select_font" "3" 
+.SH "NAME" 
+s3d_select_font \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_select_font\fP\fR( 
+\fB	const char *\fBmask\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+This selects a font for the s3d_draw_string() function. 
+.PP 
+.RS 
+\fBWarning:   
+.PP 
+Of course, you won't forget to toggle it visible, won't you? 
+.RE 
+.PP 
+.nf 
+s3d_select_font("vera"); // will use the vera font face 
+.fi 
+.PP 
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

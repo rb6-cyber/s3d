@@ -1,0 +1,33 @@
+.TH "s3dw_handle_click" "3" 
+.SH "NAME" 
+s3dw_handle_click \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3dw.h> 
+.sp 1 
+\fBint \fBs3dw_handle_click\fP\fR( 
+\fB	const struct s3d_evt *\fBevent\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+If you want your widgets on mouseclicks (believe me, you want that), you have to call this either in your clickhandler-function or specifiy it itself as the clickhandler. 
+.PP 
+.nf 
+// way 1: 
+s3d_set_callback(S3D_EVENT_OBJ_CLICK,s3dw_handle_click); 
+ 
+// way 2: 
+... 
+void click(struct s3d_evt *evt) 
+{ 
+s3dw_handle_click(evt); 
+.... 
+// your own clickhandler code 
+... 
+} 
+.... 
+s3d_set_callback(S3D_EVENT_OBJ_CLICK,click); 
+.fi 
+.PP 
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

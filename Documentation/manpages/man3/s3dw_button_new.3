@@ -1,0 +1,20 @@
+.TH "s3dw_button_new" "3" 
+.SH "NAME" 
+s3dw_button_new \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3dw.h> 
+.sp 1 
+\fBs3dw_button * \fBs3dw_button_new\fP\fR( 
+\fB	const s3dw_surface *\fBsurface\fR\fR, 
+\fB	const char *\fBtext\fR\fR, 
+\fB	float \fBposx\fR\fR, 
+\fB	float \fBposy\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+Creates a new button on the surface, with "text" written on it and the upper left corner at (posx,posy) on the surface. 
+.PP 
+See s3dw_button for information about callbacks which may be defined.          
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

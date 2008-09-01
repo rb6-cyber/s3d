@@ -1,0 +1,29 @@
+.TH "s3d_push_polygons" "3" 
+.SH "NAME" 
+s3d_push_polygons \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_push_polygons\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	const uint32_t *\fBpbuf\fR\fR, 
+\fB	uint16_t \fBn\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+as for vertices, you can push arrays of polygons to have greater performance. the pbuf should contain n polygons which consist of 4 uint32_t values of 3 vertices indices and 1 material index. 
+.PP 
+.nf 
+uint32_t pbuf[] = { 0, 1, 2, 0}; 
+int oid = s3d_new_object();   // create a new object 
+s3d_push_vertex(oid, 0.0, 0.0, 0.0); 
+s3d_push_vertex(oid, 0.0, 1.0, 0.0); 
+s3d_push_vertex(oid, 1.0, 0.0, 0.0); 
+s3d_push_material(oid, 0.3, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0); 
+s3d_push_polygons(oid, pbuf, 1); 
+// push one polygon with the pbuf data 
+.fi 
+.PP 
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

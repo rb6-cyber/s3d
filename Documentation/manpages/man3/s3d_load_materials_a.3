@@ -1,0 +1,18 @@
+.TH "s3d_load_materials_a" "3" 
+.SH "NAME" 
+s3d_load_materials_a \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_load_materials_a\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	const float *\fBmbuf\fR\fR, 
+\fB	uint32_t \fBstart\fR\fR, 
+\fB	uint16_t \fBn\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+Loads n materials starting from index position start into the Material stack. See s3d_push_materials_a for more informatino about the values in mbuf.          
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

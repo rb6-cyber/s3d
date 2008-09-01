@@ -1,0 +1,31 @@
+.TH "s3d_evt" "9" 
+.SH "NAME" 
+struct s3d_evt \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.fi 
+.SH "Structure Members" 
+.PP 
+.nf 
+struct s3d_evt { 
+uint8_t event; 
+int length; 
+char *buf; 
+struct s3d_evt *next; 
+} 
+.fi 
+.PP 
+.SH "Description" 
+.PP 
+This is the event information holder.      
+.IP "event" 10 
+gives the event type          
+.IP "length" 10 
+gives the length of the buffer *buf          
+.IP "buf" 10 
+is the pointer to the multiple purpose buffer, which will have more specific information about the object          
+.IP "next" 10 
+can be safely ignored ;)          
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

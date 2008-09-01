@@ -1,0 +1,16 @@
+.TH "s3d_open_file" "3" 
+.SH "NAME" 
+s3d_open_file \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_open_file\fP\fR( 
+\fB	const char *\fBfname\fR\fR, 
+\fB	char **\fBpointer\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+This opens the file fname, setting *pointer to it's memory position. the function will return the size of buffer. you can free() the pointer when you're finished.          
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

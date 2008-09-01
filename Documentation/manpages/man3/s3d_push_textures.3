@@ -1,0 +1,17 @@
+.TH "s3d_push_textures" "3" 
+.SH "NAME" 
+s3d_push_textures \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_push_textures\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	const uint16_t *\fBtbuf\fR\fR, 
+\fB	uint16_t \fBn\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+As for vertices, you can push arrays of textures on the texture stack to have greater performance. The tbuf should contain n texture sizes which consist of 2 uint16_t values for width and height for each texture.          
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

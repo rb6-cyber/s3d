@@ -1,0 +1,31 @@
+.TH "s3d_translate" "3" 
+.SH "NAME" 
+s3d_translate \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_translate\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	float \fBx\fR\fR, 
+\fB	float \fBy\fR\fR, 
+\fB	float \fBz\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+Move the object to some position in space. when you create an object, it's always located at 0.0 , 0.0, 0.0. 
+.PP 
+.RS 
+\fBWarning:   
+.PP 
+Translation is absolute, not relative! 
+.RE 
+.PP 
+.nf 
+s3d_translate(object, 2, 0, 0); 
+s3d_translate(object, 4, 0, 0); 
+// object will end up at 4,0,0 and not 6,0,0!! 
+.fi 
+.PP 
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

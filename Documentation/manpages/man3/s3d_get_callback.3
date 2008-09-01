@@ -1,0 +1,23 @@
+.TH "s3d_get_callback" "3" 
+.SH "NAME" 
+s3d_get_callback \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBs3d_cb \fBs3d_get_callback\fP\fR( 
+\fB	uint8_t \fBevent\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+Returns the Callback-function of the event. 
+.PP 
+.nf 
+struct s3d_evt e; 
+... 
+s3d_get_callback(S3D_EVENT_KEY)(e); 
+// will call the key-handling function with argument e. 
+.fi 
+.PP 
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

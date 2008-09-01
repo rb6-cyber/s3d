@@ -1,6 +1,5 @@
 add_subdirectory(libs3d)
 add_subdirectory(libs3dw)
-add_subdirectory(manpages)
 add_subdirectory(server)
 
 project(Documentation C)
@@ -29,7 +28,7 @@ if (DOCBOOK2HTML_COMPILER)
 	)
 
 	# install
-	set(DOC_DIR ${CMAKE_INSTALL_PREFIX}/share/doc/s3d)
+	set(DOC_DIR "${CMAKE_INSTALL_PREFIX}/share/doc/s3d")
 	install(CODE "file(GLOB DOCS ${Documentation_BINARY_DIR}/doc_output/*)\n foreach(file \${DOCS}) \n file(INSTALL DESTINATION ${DOC_DIR} TYPE FILE FILES \"\${file}\") \n endforeach (file \"\${DOCS}\")")
 else (DOCBOOK2HTML_COMPILER)
 	PkgStatus_Later("docbook2html (pkg name: docbook-utils)")
@@ -37,3 +36,5 @@ else (DOCBOOK2HTML_COMPILER)
 	# print late status
 	Collected_PkgStatus("documentation")
 endif (DOCBOOK2HTML_COMPILER)
+
+add_subdirectory(manpages)

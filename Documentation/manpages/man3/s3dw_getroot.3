@@ -1,0 +1,26 @@
+.TH "s3dw_getroot" "3" 
+.SH "NAME" 
+s3dw_getroot \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3dw.h> 
+.sp 1 
+\fBs3dw_widget * \fBs3dw_getroot\fP\fR( 
+\fB	void\fR); 
+.fi 
+.SH "Description" 
+.PP 
+Returns the root-widget, which holds all the surfaces. E.g. if you want to move all widgets at once, adjust the root-widgets x,y,z and use s3dw_moveit() 
+.PP 
+.nf 
+s3dw_widget *root = s3dw_getroot(); 
+// move widget center to (0,5,0). upon creation, it's centered at (0,0,0), 
+// so this might move it up 
+root->x=0; 
+root->y=5; 
+root->z=0; 
+s3dw_moveit(root); 
+.fi 
+.PP 
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

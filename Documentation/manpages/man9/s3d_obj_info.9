@@ -1,0 +1,32 @@
+.TH "s3d_obj_info" "9" 
+.SH "NAME" 
+struct s3d_obj_info \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.fi 
+.SH "Structure Members" 
+.PP 
+.nf 
+struct s3d_obj_info { 
+uint32_t object; 
+uint32_t flags; 
+float trans_x; 
+float trans_y; 
+float trans_z; 
+float rot_x; 
+float rot_y; 
+float rot_z; 
+float scale; 
+float r; 
+char name; 
+} 
+.fi 
+.PP 
+.SH "Description" 
+.PP 
+Can be used on the buffer of an event of type S3D_EVENT_OBJ_INFO. name will usually contain nothing for usual objects, but mcp objects will contain the applications names here. r is the radius of the convex sphere an object, which will also be interesting for the mcp. 
+.PP 
+Special objects like camera, pointer will have the "sys_" prefix in the name and will be named "pointer0", "pointer1" ... or "cam0", "cam1" ... For cam object, scale will contain the aspect ratio.      
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

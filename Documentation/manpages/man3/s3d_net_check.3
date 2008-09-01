@@ -1,0 +1,15 @@
+.TH "s3d_net_check" "3" 
+.SH "NAME" 
+s3d_net_check \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_net_check\fP\fR( 
+\fB	void\fR); 
+.fi 
+.SH "Description" 
+.PP 
+This functions is for programs which do not employ a mainloop, hence they need to check for new events on their own. Programs like these must make sure to call this function from time to time to convince the server that they did not freeze or bail out.          
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

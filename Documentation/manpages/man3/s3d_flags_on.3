@@ -1,0 +1,23 @@
+.TH "s3d_flags_on" "3" 
+.SH "NAME" 
+s3d_flags_on \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3d.h> 
+.sp 1 
+\fBint \fBs3d_flags_on\fP\fR( 
+\fB	int \fBobject\fR\fR, 
+\fB	uint32_t \fBflags\fR\fR); 
+.fi 
+.SH "Description" 
+.PP 
+turn some flags on for object. 
+.PP 
+.RS 
+\fBWarning:   
+.PP 
+If you don't toggle OF_VISIBLE on, you won't see your object. usually you want this. (at least after you *push()d all your content)  
+ 
+.RE 
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

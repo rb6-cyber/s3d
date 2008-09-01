@@ -1,0 +1,28 @@
+.TH "_s3dw_scrollbar" "9" 
+.SH "NAME" 
+struct _s3dw_scrollbar \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3dw.h> 
+.fi 
+.SH "Structure Members" 
+.PP 
+.nf 
+struct _s3dw_scrollbar { 
+s3dw_widget widget; 
+float pos; 
+float max; 
+int type; 
+int loid; 
+int roid; 
+int baroid; 
+s3dw_callback lonclick; 
+s3dw_callback ronclick; 
+} 
+.fi 
+.PP 
+.SH "Description" 
+.PP 
+The Scrollbar should be placed around scrollable content. Currently only the left and right icons are clickable (lonclick and ronclick callbacks), in vertical mode lonclick is the callback for the up icon, ronclick the callback for the down icon.      
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 

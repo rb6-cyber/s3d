@@ -1,0 +1,30 @@
+.TH "s3dw_ani_mate" "3" 
+.SH "NAME" 
+s3dw_ani_mate \(em  
+.SH "SYNOPSIS" 
+.PP 
+.nf 
+#include <s3dw.h> 
+.sp 1 
+\fBvoid \fBs3dw_ani_mate\fP\fR( 
+\fB	void\fR); 
+.fi 
+.SH "Description" 
+.PP 
+Just call this in your mainloop if you want some nice window sliding animations. it's somewhat bloating, but you don't want to miss it ;) 
+.PP 
+.nf 
+#include <time.h>   // nanosleep() 
+static struct timespec t={0.33*1000*1000}; // 33 mili seconds 
+void mainloop() 
+{ 
+// keep this in your mainloop. this will do smooth animations for you ... 
+s3dw_ani_mate(); 
+nanosleep(&t,NULL); 
+} 
+ 
+.... 
+s3d_mainloop(mainloop); 
+.fi 
+.PP 
+.\" created by instant / docbook-to-man, Mon 01 Sep 2008, 20:31 
