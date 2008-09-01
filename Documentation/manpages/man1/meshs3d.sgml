@@ -1,0 +1,80 @@
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+
+  <!ENTITY program     "meshs3d">
+]>
+<refentry id="meshs3d">
+
+	<refmeta> 
+		<refentrytitle>&program;</refentrytitle>
+		<manvolnum>1</manvolnum>
+	</refmeta> 
+	
+	<refnamediv> 
+		<refname>&program;</refname>
+		<refpurpose> olsr/batman topology visualizer for s3d </refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv> 
+		<cmdsynopsis> 
+			<command>&program;</command>
+			<arg choice="opt">-d</arg>
+			<arg choice="opt">-H <replaceable>node</replaceable></arg>
+			<arg choice="opt">-h|--help</arg>
+			<arg choice="opt">--s3d-url <replaceable>url</replaceable></arg>
+		</cmdsynopsis>
+	</refsynopsisdiv> 
+	
+	<refsect1> 
+		<title>DESCRIPTION</title> 
+		<para>
+			<command>&program;(1)</command> is a 3D topology visualizer for olsr/batman and compatible data.
+		</para>
+		<para> </para>
+	</refsect1> 
+	
+	<refsect1>
+		<title>OPTIONS</title> 
+		<para> 
+			This program follows the usual &gnu; command line syntax. A summary of
+			the options supported by <command>&program;</command> is below.
+		</para>
+		<variablelist>
+			<varlistentry>
+				<term><option>-h</option>, <option>--help</option>
+				</term>
+				<listitem> 
+					<para> Show summary of options and exit. </para> 
+				</listitem> 
+			</varlistentry> 
+			<varlistentry> 
+				<term><option>-d</option></term>
+				<listitem> 
+					<para> Enable debug mode </para>
+				</listitem>
+			</varlistentry> 
+			<varlistentry> 
+				<term><option>-H <replaceable>node</replaceable></option></term>
+				<listitem> 
+					<para> connect to olsr node. By default &program; uses localhost</para>
+				</listitem> 
+			</varlistentry>
+			<varlistentry>
+				<term><option>--s3d-url <replaceable>url</replaceable></option></term>
+				<listitem>
+					<para> skip S3D environment and connect to this url </para>
+				</listitem>
+			</varlistentry>
+		</variablelist> 
+	</refsect1> 
+		
+	<refsect1> 
+		<title>SEE ALSO</title>
+		<para> <command>s3d</command>(1), <command>olsrd</command>(8), <command>batmand</command> (8).</para>
+
+		<para> <ulink url="http://s3d.berlios.de/"> s3d project page on berlios </ulink> </para>
+		<!--TODO: ADD REFERENCE TO APPS AND /usr/share/doc/s3d/ -->
+	</refsect1>
+	
+</refentry> 
+

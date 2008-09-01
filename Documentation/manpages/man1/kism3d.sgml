@@ -1,0 +1,59 @@
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+
+  <!ENTITY program     "kism3d">
+]>
+<refentry id="kism3d">
+
+	<refmeta> 
+		<refentrytitle>&program;</refentrytitle>
+		<manvolnum>1</manvolnum>
+	</refmeta> 
+	
+	<refnamediv> 
+		<refname>&program;</refname>
+		<refpurpose> 802.11 visualizer for s3d </refpurpose>
+	</refnamediv>
+	
+	<refsynopsisdiv> 
+		<cmdsynopsis> 
+			<command>&program;</command>
+			<arg choice="opt">--s3d-url <replaceable>url</replaceable></arg>
+			<arg choice="plain"><replaceable>HOST</replaceable>:<replaceable>PORT</replaceable></arg>
+		</cmdsynopsis>
+	</refsynopsisdiv> 
+	
+	<refsect1> 
+		<title>DESCRIPTION</title> 
+		<para>
+			<command>&program;(1)</command> is a 3D 802.11 visualizer for kismet.
+		</para>
+		<para> </para>
+	</refsect1> 
+	
+	<refsect1>
+		<title>OPTIONS</title> 
+		<para> 
+			This program follows the usual &gnu; command line syntax. A summary of
+			the options supported by <command>&program;</command> is below.
+		</para>
+		<variablelist>
+			<varlistentry>
+				<term><option>--s3d-url <replaceable>url</replaceable></option></term>
+				<listitem>
+					<para> skip S3D environment and connect to this url </para>
+				</listitem>
+			</varlistentry>
+		</variablelist> 
+	</refsect1> 
+		
+	<refsect1> 
+		<title>SEE ALSO</title>
+		<para> <command>s3d</command>(1), <command>kismet</command>(1).</para>
+
+		<para> <ulink url="http://s3d.berlios.de/"> s3d project page on berlios </ulink> </para>
+		<!--TODO: ADD REFERENCE TO APPS AND /usr/share/doc/s3d/ -->
+	</refsect1>
+	
+</refentry> 
+
