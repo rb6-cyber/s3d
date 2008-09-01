@@ -279,11 +279,9 @@ class docbook_functions:
 		create_append_text(sgml, func, function['name'])
 
 		# add parameter to function definition
-		paramdef = create_append(sgml, funcprototype, 'paramdef')
 		param_num = len(function['param'])
 		for i in range(0, param_num):
-			if i != 0:
-				create_append_text(sgml, paramdef, ", ")
+			paramdef = create_append(sgml, funcprototype, 'paramdef')
 
 			create_append_text(sgml, paramdef, function['param'][i]['type'])
 
