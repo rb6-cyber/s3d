@@ -141,16 +141,26 @@ def remove_exportdefinitions(function_return):
 """
 Create new node with tag name node_type and add it to father
 """
-def create_append(document, father, node_type):
-	t = document.createElement(node_type)
+def create_append(father, node_type):
+	if father.ownerDocument:
+		t = father.ownerDocument.createElement(node_type)
+	else:
+		# no father -> so it must be a document
+		t = father.createElement(node_type)
+
 	father.appendChild(t)
 	return t
 
 """
 Create new text node with text and add it to father
 """
-def create_append_text(document, father, text):
-	t = document.createTextNode(text)
+def create_append_text(father, text):
+	if father.ownerDocument:
+		t = father.ownerDocument.createTextNode(text)
+	else:
+		# no father -> so it must be a document
+		t = father.createTextNode(text)
+		
 	father.appendChild(t)
 	return t
 
@@ -162,14 +172,14 @@ def help_append(sgml, sect, help):
 		if p['text'] != '':
 			if p['type'] in ['warning']:
 				# add para in warning before adding help text
-				extra_para = create_append(sgml, sect, p['type'])
-				para = create_append(sgml, extra_para, 'para')
-				create_append_text(sgml, para, p['text'])
+				extra_para = create_append(sect, p['type'])
+				para = create_append(extra_para, 'para')
+				create_append_text(para, p['text'])
 			else:
 				if p['text'].strip() == '':
 					continue
-				para = create_append(sgml, sect, p['type'])
-				create_append_text(sgml, para, p['text'])
+				para = create_append(sect, p['type'])
+				create_append_text(para, p['text'])
 
 """
 Extract function informations from doxygen dom
@@ -291,42 +301,42 @@ class docbook_functions:
 	"""
 	def generate_sgml(function, synopsis):
 		sgml = xml.dom.minidom.Document()
-		sect2 = create_append(sgml, sgml, 'sect2')
+		sect2 = create_append(sgml, 'sect2')
 		sect2.setAttribute('id', function['name'])
 
-		title = create_append(sgml, sect2, 'title')
-		create_append_text(sgml, title, function['name'])
+		title = create_append(sect2, 'title')
+		create_append_text(title, function['name'])
 
 		# synopsis
-		funcsynopsis = create_append(sgml, sect2, 'funcsynopsis')
-		funcsynopsisinfo = create_append(sgml, funcsynopsis, 'funcsynopsisinfo')
-		create_append_text(sgml, funcsynopsisinfo, "#include <"+synopsis+">")
+		funcsynopsis = create_append(sect2, 'funcsynopsis')
+		funcsynopsisinfo = create_append(funcsynopsis, 'funcsynopsisinfo')
+		create_append_text(funcsynopsisinfo, "#include <"+synopsis+">")
 
 		# prototype
-		funcprototype = create_append(sgml, funcsynopsis, 'funcprototype')
+		funcprototype = create_append(funcsynopsis, 'funcprototype')
 
-		funcdef = create_append(sgml, funcprototype, 'funcdef')
-		create_append_text(sgml, funcdef, function['return']+" ")
+		funcdef = create_append(funcprototype, 'funcdef')
+		create_append_text(funcdef, function['return']+" ")
 
-		func = create_append(sgml, funcdef, 'function')
-		create_append_text(sgml, func, function['name'])
+		func = create_append(funcdef, 'function')
+		create_append_text(func, function['name'])
 
 		# add parameter to function definition
 		param_num = len(function['param'])
 		for i in range(0, param_num):
-			paramdef = create_append(sgml, funcprototype, 'paramdef')
+			paramdef = create_append(funcprototype, 'paramdef')
 
-			create_append_text(sgml, paramdef, function['param'][i]['type'])
+			create_append_text(paramdef, function['param'][i]['type'])
 
 			if function['param'][i]['declname'] != '':
 				if function['param'][i]['type'][-1:] != "*":
 					# dont add space between * and name
-					create_append_text(sgml, paramdef, " ")
-				parameter = create_append(sgml, paramdef, 'parameter')
-				create_append_text(sgml, parameter, function['param'][i]['declname'])
+					create_append_text(paramdef, " ")
+				parameter = create_append(paramdef, 'parameter')
+				create_append_text(parameter, function['param'][i]['declname'])
 
 			if function['param'][i]['array'] != '':
-				create_append_text(sgml, paramdef, function['param'][i]['array'])
+				create_append_text(paramdef, function['param'][i]['array'])
 
 		# add help to function
 		help_append(sgml, sect2, function['help'])
@@ -353,37 +363,37 @@ class docbook_structs:
 	"""
 	def generate_sgml(struct):
 		sgml = xml.dom.minidom.Document()
-		sect2 = create_append(sgml, sgml, 'sect2')
+		sect2 = create_append(sgml, 'sect2')
 		sect2.setAttribute('id', 'struct'+struct['name'])
 
-		title = create_append(sgml, sect2, 'title')
-		create_append_text(sgml, title, 'struct '+struct['name'])
+		title = create_append(sect2, 'title')
+		create_append_text(title, 'struct '+struct['name'])
 
 		# add definition of struct
-		programlisting = create_append(sgml, sect2, 'programlisting')
-		create_append_text(sgml, programlisting, 'struct '+struct['name']+' {\n')
+		programlisting = create_append(sect2, 'programlisting')
+		create_append_text(programlisting, 'struct '+struct['name']+' {\n')
 		for element in struct['elements']:
-			create_append_text(sgml, programlisting, '\t'+element['type'])
+			create_append_text(programlisting, '\t'+element['type'])
 			if element['type'][-1:] != "*":
 				# dont add space between * and name
-				create_append_text(sgml, programlisting, " ")
-			create_append_text(sgml, programlisting, element['name']+';\n')
-		create_append_text(sgml, programlisting, '}')
+				create_append_text(programlisting, " ")
+			create_append_text(programlisting, element['name']+';\n')
+		create_append_text(programlisting, '}')
 
 		# add help to struct
 		help_append(sgml, sect2, struct['help'])
 
 		# add list of struct members with their help
-		variablelist = create_append(sgml, sect2, 'variablelist')
+		variablelist = create_append(sect2, 'variablelist')
 		for element in struct['elements']:
 			# ignore members with empty help texts
 			if len(element['help']) == 1 and element['help'][0]['text'].strip() == '':
 				continue
 
-			varlistentry = create_append(sgml, variablelist, 'varlistentry')
-			term = create_append(sgml, varlistentry, 'term')
-			create_append_text(sgml, term, element['name'])
-			listitem = create_append(sgml, varlistentry, 'listitem')
+			varlistentry = create_append(variablelist, 'varlistentry')
+			term = create_append(varlistentry, 'term')
+			create_append_text(term, element['name'])
+			listitem = create_append(varlistentry, 'listitem')
 
 			# add help to struct member
 			help_append(sgml, listitem, element['help'])
@@ -414,15 +424,15 @@ class docbook_typedefs:
 	"""
 	def generate_sgml(typedef):
 		sgml = xml.dom.minidom.Document()
-		sect2 = create_append(sgml, sgml, 'sect2')
+		sect2 = create_append(sgml, 'sect2')
 		sect2.setAttribute('id', typedef['name'])
 
-		title = create_append(sgml, sect2, 'title')
-		create_append_text(sgml, title, 'typedef '+typedef['name'])
+		title = create_append(sect2, 'title')
+		create_append_text(title, 'typedef '+typedef['name'])
 
 		# add definition of typedef
-		programlisting = create_append(sgml, sect2, 'programlisting')
-		create_append_text(sgml, programlisting, typedef['definition'])
+		programlisting = create_append(sect2, 'programlisting')
+		create_append_text(programlisting, typedef['definition'])
 
 		# add help to typedef
 		help_append(sgml, sect2, typedef['help'])
@@ -451,60 +461,60 @@ class manpage_functions:
 	def generate_sgml(function, synopsis):
 		sgml = xml.dom.minidom.Document()
 
-		refentry = create_append(sgml, sgml, 'refentry')
+		refentry = create_append(sgml, 'refentry')
 		refentry.setAttribute('id', cleanup_stringbegin(function['name']))
 
-		refmeta = create_append(sgml, refentry, 'refmeta')
+		refmeta = create_append(refentry, 'refmeta')
 
-		refentrytitle = create_append(sgml, refmeta, 'refentrytitle')
-		create_append_text(sgml, refentrytitle, function['name'])
+		refentrytitle = create_append(refmeta, 'refentrytitle')
+		create_append_text(refentrytitle, function['name'])
 
-		manvolnum = create_append(sgml, refmeta, 'manvolnum')
-		create_append_text(sgml, manvolnum, '3')
+		manvolnum = create_append(refmeta, 'manvolnum')
+		create_append_text(manvolnum, '3')
 
-		refnamediv = create_append(sgml, refentry, 'refnamediv')
+		refnamediv = create_append(refentry, 'refnamediv')
 
-		refname = create_append(sgml, refnamediv, 'refname')
-		create_append_text(sgml, refname, function['name'])
-		refpurpose = create_append(sgml, refnamediv, 'refpurpose')
-		create_append_text(sgml, refpurpose, "")
+		refname = create_append(refnamediv, 'refname')
+		create_append_text(refname, function['name'])
+		refpurpose = create_append(refnamediv, 'refpurpose')
+		create_append_text(refpurpose, "")
 
 		# synopsis
-		refsynopsisdiv = create_append(sgml, refentry, 'refsynopsisdiv')
-		funcsynopsis = create_append(sgml, refsynopsisdiv, 'funcsynopsis')
-		funcsynopsisinfo = create_append(sgml, funcsynopsis, 'funcsynopsisinfo')
-		create_append_text(sgml, funcsynopsisinfo, "#include <"+synopsis+">")
+		refsynopsisdiv = create_append(refentry, 'refsynopsisdiv')
+		funcsynopsis = create_append(refsynopsisdiv, 'funcsynopsis')
+		funcsynopsisinfo = create_append(funcsynopsis, 'funcsynopsisinfo')
+		create_append_text(funcsynopsisinfo, "#include <"+synopsis+">")
 
 		# prototype
-		funcprototype = create_append(sgml, funcsynopsis, 'funcprototype')
+		funcprototype = create_append(funcsynopsis, 'funcprototype')
 
-		funcdef = create_append(sgml, funcprototype, 'funcdef')
-		create_append_text(sgml, funcdef, function['return']+" ")
+		funcdef = create_append(funcprototype, 'funcdef')
+		create_append_text(funcdef, function['return']+" ")
 
-		func = create_append(sgml, funcdef, 'function')
-		create_append_text(sgml, func, function['name'])
+		func = create_append(funcdef, 'function')
+		create_append_text(func, function['name'])
 
 		# add parameter to function definition
 		
 		param_num = len(function['param'])
 		for i in range(0, param_num):
-			paramdef = create_append(sgml, funcprototype, 'paramdef')
-			create_append_text(sgml, paramdef, "\t"+function['param'][i]['type'])
+			paramdef = create_append(funcprototype, 'paramdef')
+			create_append_text(paramdef, "\t"+function['param'][i]['type'])
 
 			if function['param'][i]['declname'] != '':
 				if function['param'][i]['type'][-1:] != "*":
 					# dont add space between * and name
-					create_append_text(sgml, paramdef, " ")
-				parameter = create_append(sgml, paramdef, 'parameter')
-				create_append_text(sgml, parameter, function['param'][i]['declname'])
+					create_append_text(paramdef, " ")
+				parameter = create_append(paramdef, 'parameter')
+				create_append_text(parameter, function['param'][i]['declname'])
 
 			if function['param'][i]['array'] != '':
-				create_append_text(sgml, paramdef, function['param'][i]['array'])
+				create_append_text(paramdef, function['param'][i]['array'])
 
 		# add help to function
-		refsect1 = create_append(sgml, refentry, 'refsect1')
-		title = create_append(sgml, refsect1, 'title')
-		create_append_text(sgml, title, "Description")
+		refsect1 = create_append(refentry, 'refsect1')
+		title = create_append(refsect1, 'title')
+		create_append_text(title, "Description")
 		help_append(sgml, refsect1, function['help'])
 
 		return refentry
@@ -531,62 +541,62 @@ class manpage_structs:
 	def generate_sgml(struct, synopsis):
 		sgml = xml.dom.minidom.Document()
 
-		refentry = create_append(sgml, sgml, 'refentry')
+		refentry = create_append(sgml, 'refentry')
 		refentry.setAttribute('id', cleanup_stringbegin(struct['name']))
 
-		refmeta = create_append(sgml, refentry, 'refmeta')
+		refmeta = create_append(refentry, 'refmeta')
 
-		refentrytitle = create_append(sgml, refmeta, 'refentrytitle')
-		create_append_text(sgml, refentrytitle, struct['name'])
+		refentrytitle = create_append(refmeta, 'refentrytitle')
+		create_append_text(refentrytitle, struct['name'])
 
-		manvolnum = create_append(sgml, refmeta, 'manvolnum')
-		create_append_text(sgml, manvolnum, '9')
+		manvolnum = create_append(refmeta, 'manvolnum')
+		create_append_text(manvolnum, '9')
 
-		refnamediv = create_append(sgml, refentry, 'refnamediv')
+		refnamediv = create_append(refentry, 'refnamediv')
 
-		refname = create_append(sgml, refnamediv, 'refname')
-		create_append_text(sgml, refname, 'struct ' + struct['name'])
-		refpurpose = create_append(sgml, refnamediv, 'refpurpose')
-		create_append_text(sgml, refpurpose, "")
+		refname = create_append(refnamediv, 'refname')
+		create_append_text(refname, 'struct ' + struct['name'])
+		refpurpose = create_append(refnamediv, 'refpurpose')
+		create_append_text(refpurpose, "")
 
 		# synopsis
-		refsynopsisdiv = create_append(sgml, refentry, 'refsynopsisdiv')
-		funcsynopsis = create_append(sgml, refsynopsisdiv, 'funcsynopsis')
-		funcsynopsisinfo = create_append(sgml, funcsynopsis, 'funcsynopsisinfo')
-		create_append_text(sgml, funcsynopsisinfo, "#include <"+synopsis+">")
+		refsynopsisdiv = create_append(refentry, 'refsynopsisdiv')
+		funcsynopsis = create_append(refsynopsisdiv, 'funcsynopsis')
+		funcsynopsisinfo = create_append(funcsynopsis, 'funcsynopsisinfo')
+		create_append_text(funcsynopsisinfo, "#include <"+synopsis+">")
 
 		# add definition of struct
-		refsect1 = create_append(sgml, refentry, 'refsect1')
-		title = create_append(sgml, refsect1, 'title')
-		create_append_text(sgml, title, "Structure Members")
+		refsect1 = create_append(refentry, 'refsect1')
+		title = create_append(refsect1, 'title')
+		create_append_text(title, "Structure Members")
 		
-		programlisting = create_append(sgml, refsect1, 'programlisting')
-		create_append_text(sgml, programlisting, 'struct '+struct['name']+' {\n')
+		programlisting = create_append(refsect1, 'programlisting')
+		create_append_text(programlisting, 'struct '+struct['name']+' {\n')
 		for element in struct['elements']:
-			create_append_text(sgml, programlisting, '\t'+element['type'])
+			create_append_text(programlisting, '\t'+element['type'])
 			if element['type'][-1:] != "*":
 				# dont add space between * and name
-				create_append_text(sgml, programlisting, " ")
-			create_append_text(sgml, programlisting, element['name']+';\n')
-		create_append_text(sgml, programlisting, '}')
+				create_append_text(programlisting, " ")
+			create_append_text(programlisting, element['name']+';\n')
+		create_append_text(programlisting, '}')
 
 		# add help to struct
-		refsect1 = create_append(sgml, refentry, 'refsect1')
-		title = create_append(sgml, refsect1, 'title')
-		create_append_text(sgml, title, "Description")
+		refsect1 = create_append(refentry, 'refsect1')
+		title = create_append(refsect1, 'title')
+		create_append_text(title, "Description")
 		help_append(sgml, refsect1, struct['help'])
 
 		# add list of struct members with their help
-		variablelist = create_append(sgml, refsect1, 'variablelist')
+		variablelist = create_append(refsect1, 'variablelist')
 		for element in struct['elements']:
 			# ignore members with empty help texts
 			if len(element['help']) == 1 and element['help'][0]['text'].strip() == '':
 				continue
 
-			varlistentry = create_append(sgml, variablelist, 'varlistentry')
-			term = create_append(sgml, varlistentry, 'term')
-			create_append_text(sgml, term, element['name'])
-			listitem = create_append(sgml, varlistentry, 'listitem')
+			varlistentry = create_append(variablelist, 'varlistentry')
+			term = create_append(varlistentry, 'term')
+			create_append_text(term, element['name'])
+			listitem = create_append(varlistentry, 'listitem')
 
 			# add help to struct member
 			help_append(sgml, listitem, element['help'])
