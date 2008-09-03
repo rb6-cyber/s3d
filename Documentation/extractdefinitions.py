@@ -461,6 +461,34 @@ class docbook_typedefs:
 	generate = Callable(generate)
 	generate_sgml = Callable(generate_sgml)
 
+
+def manpage_header(root, name, mannum, ref_name, ref_namediv, synopsisinfo):
+	refentry = create_append(root, 'refentry')
+	refentry.setAttribute('id', cleanup_stringbegin(name))
+
+	refmeta = create_append(refentry, 'refmeta')
+
+	refentrytitle = create_append(refmeta, 'refentrytitle')
+	create_append_text(refentrytitle, name)
+
+	manvolnum = create_append(refmeta, 'manvolnum')
+	create_append_text(manvolnum, mannum)
+
+	refnamediv = create_append(refentry, 'refnamediv')
+
+	refname = create_append(refnamediv, 'refname')
+	create_append_text(refname, ref_name)
+	refpurpose = create_append(refnamediv, 'refpurpose')
+	create_append_text(refpurpose, ref_namediv)
+
+	# synopsis
+	refsynopsisdiv = create_append(refentry, 'refsynopsisdiv')
+	funcsynopsis = create_append(refsynopsisdiv, 'funcsynopsis')
+	funcsynopsisinfo = create_append(funcsynopsis, 'funcsynopsisinfo')
+	create_append_text(funcsynopsisinfo, synopsisinfo)
+
+	return (refentry, funcsynopsis)
+
 class manpage_functions:
 	"""
 	Generate manpage docbook file with informations to functions
@@ -479,29 +507,7 @@ class manpage_functions:
 	def generate_sgml(function, synopsis):
 		sgml = xml.dom.minidom.Document()
 
-		refentry = create_append(sgml, 'refentry')
-		refentry.setAttribute('id', cleanup_stringbegin(function['name']))
-
-		refmeta = create_append(refentry, 'refmeta')
-
-		refentrytitle = create_append(refmeta, 'refentrytitle')
-		create_append_text(refentrytitle, function['name'])
-
-		manvolnum = create_append(refmeta, 'manvolnum')
-		create_append_text(manvolnum, '3')
-
-		refnamediv = create_append(refentry, 'refnamediv')
-
-		refname = create_append(refnamediv, 'refname')
-		create_append_text(refname, function['name'])
-		refpurpose = create_append(refnamediv, 'refpurpose')
-		create_append_text(refpurpose, "")
-
-		# synopsis
-		refsynopsisdiv = create_append(refentry, 'refsynopsisdiv')
-		funcsynopsis = create_append(refsynopsisdiv, 'funcsynopsis')
-		funcsynopsisinfo = create_append(funcsynopsis, 'funcsynopsisinfo')
-		create_append_text(funcsynopsisinfo, "#include <"+synopsis+">")
+		(refentry, funcsynopsis) = manpage_header(sgml, function['name'], '3', function['name'], "", "#include <"+synopsis+">")
 
 		# prototype
 		funcprototype = create_append(funcsynopsis, 'funcprototype')
@@ -548,29 +554,7 @@ class manpage_structs:
 	def generate_sgml(struct, synopsis):
 		sgml = xml.dom.minidom.Document()
 
-		refentry = create_append(sgml, 'refentry')
-		refentry.setAttribute('id', cleanup_stringbegin(struct['name']))
-
-		refmeta = create_append(refentry, 'refmeta')
-
-		refentrytitle = create_append(refmeta, 'refentrytitle')
-		create_append_text(refentrytitle, struct['name'])
-
-		manvolnum = create_append(refmeta, 'manvolnum')
-		create_append_text(manvolnum, '9')
-
-		refnamediv = create_append(refentry, 'refnamediv')
-
-		refname = create_append(refnamediv, 'refname')
-		create_append_text(refname, 'struct ' + struct['name'])
-		refpurpose = create_append(refnamediv, 'refpurpose')
-		create_append_text(refpurpose, "")
-
-		# synopsis
-		refsynopsisdiv = create_append(refentry, 'refsynopsisdiv')
-		funcsynopsis = create_append(refsynopsisdiv, 'funcsynopsis')
-		funcsynopsisinfo = create_append(funcsynopsis, 'funcsynopsisinfo')
-		create_append_text(funcsynopsisinfo, "#include <"+synopsis+">")
+		(refentry, funcsynopsis) = manpage_header(sgml, struct['name'], '9', 'struct ' + struct['name'], "", "#include <"+synopsis+">")
 
 		# add definition of struct
 		refsect1 = create_append(refentry, 'refsect1')
