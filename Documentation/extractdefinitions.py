@@ -77,60 +77,86 @@ def get_text(node):
 	return t
 
 
-"""
-Generate linear list of text and section types
-"""
-def get_text_complex(node):
+class detaileddescription:
 	t = []
-	for node in node.childNodes:
-		if node.nodeType == Node.TEXT_NODE:
-			t.append(node.data)
-		else:
-			if node.nodeName == 'sp':
-				t.append(" ")
-			elif node.nodeName == 'para':
-				t.append({'type': 'para', 'text': ''})
-				t += get_text_complex(node)
-			elif node.nodeName == 'programlisting':
-				t.append({'type': 'programlisting', 'text': ''})
-				t += get_text_complex(node)
-				t.append({'type': 'para', 'text': ''})
-			elif node.nodeName == 'simplesect':
-				if node.attributes['kind'].nodeValue == 'remark':
-					t.append({'type': 'warning', 'text': ''})
-					t += get_text_complex(node)
-					t.append({'type': 'para', 'text': ''})
+
+	def __init__(self, node):
+		self.t = []
+		self.__get_text_complex(node)
+		self.__complex2simplearray()
+
+	"""
+	Generate linear list of text and section types
+	"""
+	def __get_text_complex(self, node):
+		for node in node.childNodes:
+			if node.nodeType == Node.TEXT_NODE:
+				self.t.append(node.data)
+			else:
+				if node.nodeName == 'sp':
+					self.t.append(" ")
+				elif node.nodeName == 'para':
+					self.t.append({'type': 'para', 'text': ''})
+					self.__get_text_complex(node)
+				elif node.nodeName == 'programlisting':
+					self.t.append({'type': 'programlisting', 'text': ''})
+					self.__get_text_complex(node)
+					self.t.append({'type': 'para', 'text': ''})
+				elif node.nodeName == 'simplesect':
+					if node.attributes['kind'].nodeValue == 'remark':
+						self.t.append({'type': 'warning', 'text': ''})
+						self.__get_text_complex(node)
+						self.t.append({'type': 'para', 'text': ''})
+					else:
+						self.t.append({'type': 'para', 'text': ''})
+						self.__get_text_complex(node)
 				else:
-					t.append({'type': 'para', 'text': ''})
-					t += get_text_complex(node)
-			else:
-				t += get_text_complex(node)
-	return t
+					self.__get_text_complex(node)
 
-"""
-Convert linear list of text and section types to list of section types with corresponding text
-"""
-def complex2simplearray(objects):
-	cur_object = 0
-	array = []
-	for element in objects:
-		if type(element) != dict:
-			# add text to last section type
-			if cur_object == 0:
-				array.append({'type': 'para', 'text': element})
-				cur_object = array[0]
+	"""
+	Convert linear list of text and section types to list of section types with corresponding text
+	"""
+	def __complex2simplearray(self):
+		cur_object = 0
+		array = []
+		for element in self.t:
+			if type(element) != dict:
+				# add text to last section type
+				if cur_object == 0:
+					array.append({'type': 'para', 'text': element})
+					cur_object = array[0]
+				else:
+					cur_object['text'] += element
 			else:
-				cur_object['text'] += element
-		else:
-			# add new section type
-			if element['type'] == 'para' and len(array) != 0 and array[-1]['type'] in ['warning']:
-				# ignore para inside warning and add text to last section type
-				cur_object['text'] += element['text']
-			else:
-				cur_object = element
-				array.append(element)
+				# add new section type
+				if element['type'] == 'para' and len(array) != 0 and array[-1]['type'] in ['warning']:
+					# ignore para inside warning and add text to last section type
+					cur_object['text'] += element['text']
+				else:
+					cur_object = element
+					array.append(element)
 
-	return array
+		self.t = array
+
+	"""
+	Append complex help section to dom
+	"""
+	def dom_append(self, sect):
+		for p in self.t:
+			if p['text'] != '':
+				if p['type'] in ['warning']:
+					# add para in warning before adding help text
+					extra_para = create_append(sect, p['type'])
+					para = create_append(extra_para, 'para')
+					create_append_text(para, p['text'])
+				else:
+					if p['text'].strip() == '':
+						continue
+					para = create_append(sect, p['type'])
+					create_append_text(para, p['text'])
+
+	def isempty(self):
+		return (len(self.t) == 0) or (len(self.t) == 1 and self.t[0]['text'].strip() == '')
 
 def remove_exportdefinitions(function_return):
 	exports = ["S3DEXPORT", "S3DWEXPORT"]
@@ -165,23 +191,6 @@ def create_append_text(father, text):
 	return t
 
 """
-Append complex help section to sect
-"""
-def help_append(sgml, sect, help):
-	for p in help:
-		if p['text'] != '':
-			if p['type'] in ['warning']:
-				# add para in warning before adding help text
-				extra_para = create_append(sect, p['type'])
-				para = create_append(extra_para, 'para')
-				create_append_text(para, p['text'])
-			else:
-				if p['text'].strip() == '':
-					continue
-				para = create_append(sect, p['type'])
-				create_append_text(para, p['text'])
-
-"""
 Extract function informations from doxygen dom
 """
 def extract_functions(dom):
@@ -214,8 +223,7 @@ def extract_functions(dom):
 				function['param'].append(param)
 
 			if node2.nodeName == 'detaileddescription':
-				help = get_text_complex(node2)
-				function['help'] = complex2simplearray(help)
+				function['help'] = detaileddescription(node2)
 
 		functionlist.append(function)
 
@@ -239,8 +247,7 @@ def extract_structs(dom):
 
 		for node in dom.getElementsByTagName('compounddef')[0].childNodes:
 			if node.nodeName == 'detaileddescription':
-				help = get_text_complex(node)
-				struct['help'] = complex2simplearray(help)
+				struct['help'] = detaileddescription(node)
 
 		for node in dom.getElementsByTagName("memberdef"):
 			element = {'type': '', 'name' : '', 'help': []}
@@ -252,8 +259,7 @@ def extract_structs(dom):
 					element['type'] = get_text(node2)
 
 				if node2.nodeName == 'detaileddescription':
-					help = get_text_complex(node2)
-					element['help'] = complex2simplearray(help)
+					element['help'] = detaileddescription(node2)
 
 			struct['elements'].append(element)
 
@@ -278,8 +284,7 @@ def extract_typedefs(dom):
 				typedef['definition'] = get_text(node2)
 
 			if node2.nodeName == 'detaileddescription':
-				help = get_text_complex(node2)
-				typedef['help'] = complex2simplearray(help)
+				typedef['help'] = detaileddescription(node2)
 
 		typedeflist.append(typedef)
 
@@ -339,7 +344,7 @@ class docbook_functions:
 				create_append_text(paramdef, function['param'][i]['array'])
 
 		# add help to function
-		help_append(sgml, sect2, function['help'])
+		function['help'].dom_append(sect2)
 
 		return sect2
 
@@ -381,13 +386,13 @@ class docbook_structs:
 		create_append_text(programlisting, '}')
 
 		# add help to struct
-		help_append(sgml, sect2, struct['help'])
+		struct['help'].dom_append(sect2)
 
 		# add list of struct members with their help
 		variablelist = create_append(sect2, 'variablelist')
 		for element in struct['elements']:
 			# ignore members with empty help texts
-			if len(element['help']) == 1 and element['help'][0]['text'].strip() == '':
+			if element['help'].isempty():
 				continue
 
 			varlistentry = create_append(variablelist, 'varlistentry')
@@ -396,7 +401,7 @@ class docbook_structs:
 			listitem = create_append(varlistentry, 'listitem')
 
 			# add help to struct member
-			help_append(sgml, listitem, element['help'])
+			element['help'].dom_append(listitem)
 
 		# remove empty variablelist
 		if len(variablelist.childNodes) == 0:
@@ -435,7 +440,7 @@ class docbook_typedefs:
 		create_append_text(programlisting, typedef['definition'])
 
 		# add help to typedef
-		help_append(sgml, sect2, typedef['help'])
+		typedef['help'].dom_append(sect2)
 
 		return sect2
 
@@ -515,7 +520,7 @@ class manpage_functions:
 		refsect1 = create_append(refentry, 'refsect1')
 		title = create_append(refsect1, 'title')
 		create_append_text(title, "Description")
-		help_append(sgml, refsect1, function['help'])
+		function['help'].dom_append(refsect1)
 
 		return refentry
 
@@ -584,13 +589,13 @@ class manpage_structs:
 		refsect1 = create_append(refentry, 'refsect1')
 		title = create_append(refsect1, 'title')
 		create_append_text(title, "Description")
-		help_append(sgml, refsect1, struct['help'])
+		struct['help'].dom_append(refsect1)
 
 		# add list of struct members with their help
 		variablelist = create_append(refsect1, 'variablelist')
 		for element in struct['elements']:
 			# ignore members with empty help texts
-			if len(element['help']) == 1 and element['help'][0]['text'].strip() == '':
+			if element['help'].isempty():
 				continue
 
 			varlistentry = create_append(variablelist, 'varlistentry')
@@ -599,7 +604,7 @@ class manpage_structs:
 			listitem = create_append(varlistentry, 'listitem')
 
 			# add help to struct member
-			help_append(sgml, listitem, element['help'])
+			element['help'].dom_append(listitem)
 
 		# remove empty variablelist
 		if len(variablelist.childNodes) == 0:
