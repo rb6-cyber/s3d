@@ -186,6 +186,39 @@ class function_param:
 		if self.param['array'] != '':
 			create_append_text(paramdef, self.param['array'])
 
+class struct_element:
+	def __init__(self, node):
+		self.element = {'type': '', 'name' : '', 'help': []}
+		for node2 in node.childNodes:
+			if node2.nodeName == "name":
+				self.element['name'] = get_text(node2)
+
+			if node2.nodeName == "type":
+				self.element['type'] = get_text(node2)
+
+			if node2.nodeName == 'detaileddescription':
+				self.element['help'] = detaileddescription(node2)
+
+	def dom_append(self, programlisting):
+		create_append_text(programlisting, '\t'+self.element['type'])
+		if self.element['type'][-1:] != "*":
+			# dont add space between * and name
+			create_append_text(programlisting, " ")
+		create_append_text(programlisting, self.element['name']+';\n')
+
+	def dom_append_help(self, variablelist):
+		# ignore members with empty help texts
+		if self.element['help'].isempty():
+			return
+
+		varlistentry = create_append(variablelist, 'varlistentry')
+		term = create_append(varlistentry, 'term')
+		create_append_text(term, self.element['name'])
+		listitem = create_append(varlistentry, 'listitem')
+
+		# add help to struct member
+		self.element['help'].dom_append(listitem)
+
 def remove_exportdefinitions(function_return):
 	exports = ["S3DEXPORT", "S3DWEXPORT"]
 	for export in exports:
@@ -267,18 +300,7 @@ def extract_structs(dom):
 				struct['help'] = detaileddescription(node)
 
 		for node in dom.getElementsByTagName("memberdef"):
-			element = {'type': '', 'name' : '', 'help': []}
-			for node2 in node.childNodes:
-				if node2.nodeName == "name":
-					element['name'] = get_text(node2)
-
-				if node2.nodeName == "type":
-					element['type'] = get_text(node2)
-
-				if node2.nodeName == 'detaileddescription':
-					element['help'] = detaileddescription(node2)
-
-			struct['elements'].append(element)
+			struct['elements'].append(struct_element(node))
 
 	return structlist
 
@@ -383,11 +405,7 @@ class docbook_structs:
 		programlisting = create_append(sect2, 'programlisting')
 		create_append_text(programlisting, 'struct '+struct['name']+' {\n')
 		for element in struct['elements']:
-			create_append_text(programlisting, '\t'+element['type'])
-			if element['type'][-1:] != "*":
-				# dont add space between * and name
-				create_append_text(programlisting, " ")
-			create_append_text(programlisting, element['name']+';\n')
+			element.dom_append(programlisting)
 		create_append_text(programlisting, '}')
 
 		# add help to struct
@@ -396,17 +414,7 @@ class docbook_structs:
 		# add list of struct members with their help
 		variablelist = create_append(sect2, 'variablelist')
 		for element in struct['elements']:
-			# ignore members with empty help texts
-			if element['help'].isempty():
-				continue
-
-			varlistentry = create_append(variablelist, 'varlistentry')
-			term = create_append(varlistentry, 'term')
-			create_append_text(term, element['name'])
-			listitem = create_append(varlistentry, 'listitem')
-
-			# add help to struct member
-			element['help'].dom_append(listitem)
+			element.dom_append_help(variablelist)
 
 		# remove empty variablelist
 		if len(variablelist.childNodes) == 0:
@@ -572,11 +580,7 @@ class manpage_structs:
 		programlisting = create_append(refsect1, 'programlisting')
 		create_append_text(programlisting, 'struct '+struct['name']+' {\n')
 		for element in struct['elements']:
-			create_append_text(programlisting, '\t'+element['type'])
-			if element['type'][-1:] != "*":
-				# dont add space between * and name
-				create_append_text(programlisting, " ")
-			create_append_text(programlisting, element['name']+';\n')
+			element.dom_append(programlisting)
 		create_append_text(programlisting, '}')
 
 		# add help to struct
@@ -588,17 +592,7 @@ class manpage_structs:
 		# add list of struct members with their help
 		variablelist = create_append(refsect1, 'variablelist')
 		for element in struct['elements']:
-			# ignore members with empty help texts
-			if element['help'].isempty():
-				continue
-
-			varlistentry = create_append(variablelist, 'varlistentry')
-			term = create_append(varlistentry, 'term')
-			create_append_text(term, element['name'])
-			listitem = create_append(varlistentry, 'listitem')
-
-			# add help to struct member
-			element['help'].dom_append(listitem)
+			element.dom_append_help(variablelist)
 
 		# remove empty variablelist
 		if len(variablelist.childNodes) == 0:
