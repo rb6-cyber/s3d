@@ -158,6 +158,34 @@ class detaileddescription:
 	def isempty(self):
 		return (len(self.t) == 0) or (len(self.t) == 1 and self.t[0]['text'].strip() == '')
 
+class function_param:
+	def __init__(self, node):
+		self.param = {'type' : '', 'declname' : '', 'array' : ''}
+		for n in node.childNodes:
+			if n.nodeName == 'type':
+				self.param['type'] = get_text(n)
+
+			if n.nodeName == 'declname':
+				self.param['declname'] = get_text(n)
+
+			if n.nodeName == 'array':
+				self.param['array'] = get_text(n)
+
+	def dom_append(self, funcprototype, intent = ""):
+		paramdef = create_append(funcprototype, 'paramdef')
+
+		create_append_text(paramdef, intent+self.param['type'])
+
+		if self.param['declname'] != '':
+			if self.param['type'][-1:] != "*":
+				# dont add space between * and name
+				create_append_text(paramdef, " ")
+			parameter = create_append(paramdef, 'parameter')
+			create_append_text(parameter, self.param['declname'])
+
+		if self.param['array'] != '':
+			create_append_text(paramdef, self.param['array'])
+
 def remove_exportdefinitions(function_return):
 	exports = ["S3DEXPORT", "S3DWEXPORT"]
 	for export in exports:
@@ -209,18 +237,7 @@ def extract_functions(dom):
 				function['return'] = remove_exportdefinitions(get_text(node2))
 
 			if node2.nodeName == "param":
-				param = {'type' : '', 'declname' : '', 'array' : ''}
-				for n in node2.childNodes:
-					if n.nodeName == 'type':
-						param['type'] = get_text(n)
-
-					if n.nodeName == 'declname':
-						param['declname'] = get_text(n)
-
-					if n.nodeName == 'array':
-						param['array'] = get_text(n)
-
-				function['param'].append(param)
+				function['param'].append(function_param(node2))
 
 			if node2.nodeName == 'detaileddescription':
 				function['help'] = detaileddescription(node2)
@@ -329,19 +346,7 @@ class docbook_functions:
 		# add parameter to function definition
 		param_num = len(function['param'])
 		for i in range(0, param_num):
-			paramdef = create_append(funcprototype, 'paramdef')
-
-			create_append_text(paramdef, function['param'][i]['type'])
-
-			if function['param'][i]['declname'] != '':
-				if function['param'][i]['type'][-1:] != "*":
-					# dont add space between * and name
-					create_append_text(paramdef, " ")
-				parameter = create_append(paramdef, 'parameter')
-				create_append_text(parameter, function['param'][i]['declname'])
-
-			if function['param'][i]['array'] != '':
-				create_append_text(paramdef, function['param'][i]['array'])
+			function['param'][i].dom_append(funcprototype)
 
 		# add help to function
 		function['help'].dom_append(sect2)
@@ -503,18 +508,7 @@ class manpage_functions:
 		
 		param_num = len(function['param'])
 		for i in range(0, param_num):
-			paramdef = create_append(funcprototype, 'paramdef')
-			create_append_text(paramdef, "\t"+function['param'][i]['type'])
-
-			if function['param'][i]['declname'] != '':
-				if function['param'][i]['type'][-1:] != "*":
-					# dont add space between * and name
-					create_append_text(paramdef, " ")
-				parameter = create_append(paramdef, 'parameter')
-				create_append_text(parameter, function['param'][i]['declname'])
-
-			if function['param'][i]['array'] != '':
-				create_append_text(paramdef, function['param'][i]['array'])
+			function['param'][i].dom_append(funcprototype, "\t")
 
 		# add help to function
 		refsect1 = create_append(refentry, 'refsect1')
