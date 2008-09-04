@@ -261,7 +261,7 @@ def extract_functions(dom):
 		if node.attributes['kind'].nodeValue != 'function':
 			continue
 
-		function = {'return': '', 'name': '', 'param': [], 'help': []}
+		function = {'return': '', 'name': '', 'param': [], 'brief': '', 'help': []}
 		for node2 in node.childNodes:
 			if node2.nodeName == "name":
 				function['name'] = get_text(node2)
@@ -271,6 +271,9 @@ def extract_functions(dom):
 
 			if node2.nodeName == "param":
 				function['param'].append(function_param(node2))
+
+			if node2.nodeName == "briefdescription":
+				function['brief'] = get_text(node2)
 
 			if node2.nodeName == 'detaileddescription':
 				function['help'] = detaileddescription(node2)
@@ -286,7 +289,7 @@ def extract_structs(dom):
 	structlist = []
 	# find refs (names of xml files) of structs
 	for node in dom.getElementsByTagName("innerclass"):
-		struct = {'name': '', 'ref': '', 'elements': [], 'help': []}
+		struct = {'name': '', 'ref': '', 'elements': [], 'brief': '', 'help': []}
 		struct['name'] = get_text(node)
 		struct['ref'] = node.attributes['refid'].nodeValue
 		structlist.append(struct)
@@ -296,6 +299,9 @@ def extract_structs(dom):
 		dom = xml.dom.minidom.parse("xml/"+struct['ref']+".xml")
 
 		for node in dom.getElementsByTagName('compounddef')[0].childNodes:
+			if node.nodeName == "briefdescription":
+				struct['brief'] = get_text(node)
+
 			if node.nodeName == 'detaileddescription':
 				struct['help'] = detaileddescription(node)
 
@@ -507,7 +513,7 @@ class manpage_functions:
 	def generate_sgml(function, synopsis):
 		sgml = xml.dom.minidom.Document()
 
-		(refentry, funcsynopsis) = manpage_header(sgml, function['name'], '3', function['name'], "", "#include <"+synopsis+">")
+		(refentry, funcsynopsis) = manpage_header(sgml, function['name'], '3', function['name'], function['brief'].strip(), "#include <"+synopsis+">")
 
 		# prototype
 		funcprototype = create_append(funcsynopsis, 'funcprototype')

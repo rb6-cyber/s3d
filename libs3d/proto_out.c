@@ -38,7 +38,8 @@
 
 #define MF_LEN 65530  /*  maximum fragmentation length */
 
-/**
+/** \brief create new object
+ *
  * Creates a new object, returning the object id.
  *
  * \remarks Of course, you won't forget to toggle it visible, won't you?
@@ -53,7 +54,8 @@ int s3d_new_object(void)
 	return(oid);
 }
 
-/**
+/** \brief clone object
+ *
  * Clones an already exisiting object. They get just look the same as the
  * parent-object and will change when the parent-object changes. Cloning
  * especially makes sense if you want to use the same object a lot of times.
@@ -68,7 +70,8 @@ int s3d_clone(int oid)
 	return(res);
 }
 
-/**
+/** \brief changes the target of a clone-object
+ *
  * Changes the clone target of oid to another object (toid). This assumes you've
  * got oid from s3d_clone before.
  */
@@ -82,7 +85,8 @@ int s3d_clone_target(int oid, int toid)
 	return oid;
 }
 
-/**
+/** \brief delete an object
+ *
  * Deletes the object referenced by oid.
  */
 int s3d_del_object(int oid)
@@ -92,7 +96,8 @@ int s3d_del_object(int oid)
 	return oid;
 }
 
-/**
+/** \brief link object to another one
+ *
  * A linked object will move along with it's link parent. For example if you
  * have a book on a table, you can link the book to the table so the book will
  * "keep on the table" if you move the table around in space. It will also
@@ -107,7 +112,8 @@ int s3d_link(int oid_from, int oid_to)
 	return(0);
 }
 
-/**
+/** \brief removes link from another object
+ *
  * Remove the link of object oid to its target.
  */
 int s3d_unlink(int oid)
@@ -119,7 +125,8 @@ int s3d_unlink(int oid)
 }
 /*  pushing functions */
 
-/**
+/** \brief push vertex
+ *
  * pushes a vertex onto the vertex stack. make sure that you count how many
  * vertices you've pushed because you'll need that for referencing when you push
  * your polygons.
@@ -142,7 +149,8 @@ int s3d_push_vertex(int object, float x, float y, float z)
 	return(0);
 }
 
-/**
+/** \brief push many vertices
+ *
  * push some vertices from an array. that's much better for performing than
  * using s3d_push_vertex() if you have a lot of vertices (and that's probably
  * the usual case).
@@ -178,7 +186,8 @@ int s3d_push_vertices(int object, const float *vbuf, uint16_t n)
 	return(0);
 }
 
-/**
+/** \brief push material
+ *
  * pushes a material for an object. you will have to count them yourself too,
  * as polygons will ask for the material index number. the material properties
  * are given in rgb (red/green/blue) color codes, in float. 0.0 is the minimum,
@@ -229,7 +238,8 @@ int s3d_push_material(int object,
 	return(0);  /*  nothing yet */
 }
 
-/**
+/** \brief push material with alpha
+ *
  * Same as s3d_push_material, but color has alpha value added. Use
  * s3d_push_materials_a() if you have a lot of materials to push.
  */
@@ -275,7 +285,8 @@ int s3d_push_material_a(int object,
 	return(0);  /*  nothing yet */
 }
 
-/**
+/** \brief push many materials
+ *
  * Pushes a buffer of Materials. Those Materials are in the format float[n*12],
  * with
  * - mbuf[n*12 + 0-3] - ambience
@@ -324,7 +335,8 @@ int s3d_push_materials_a(int object, const float *mbuf, uint16_t n)
 	return(0);
 }
 
-/**
+/** \brief push polygon
+ *
  * push one polygon on the polygonstack of the object. it takes 3 vertex-index
  * numbers and one material material-index-nr. as argument.
  *
@@ -358,7 +370,8 @@ int s3d_push_polygon(int object, uint32_t v1, uint32_t v2, uint32_t v3, uint32_t
 	return(0);
 }
 
-/**
+/** \brief push line
+ *
  * Push one line on the linestack of the object. It takes 2 vertex-index-
  * numbers and one material material-index-nr. as argument. If you have a lot of
  * lines to push, use s3d_push_lines()
@@ -381,7 +394,8 @@ int s3d_push_line(int object, uint32_t v1, uint32_t v2, uint32_t material)
 	return(0);
 }
 
-/**
+/** \brief push many polygons
+ *
  * as for vertices, you can push arrays of polygons to have greater performance. the pbuf should contain n polygons which consist of 4 uint32_t values of 3 vertices indices and 1 material index.
  *
  * \code
@@ -421,7 +435,8 @@ int s3d_push_polygons(int object, const uint32_t *pbuf, uint16_t n)
 	return(0);
 }
 
-/**
+/** \brief push many lines
+ *
  * Pushing n lines on the linestack of the object, each lbuf has a size of n*3,
  * each entry has the index number of the first vertex, second vertex and
  * material number just as in s3d_push_line().
@@ -454,7 +469,8 @@ int s3d_push_lines(int object, const uint32_t *lbuf, uint16_t n)
 	return(0);
 }
 
-/**
+/** \brief push texture
+ *
  * Adds a new texture with height w and height h on the texturestack.
  */
 int s3d_push_texture(int object, uint16_t w, uint16_t h)
@@ -472,7 +488,8 @@ int s3d_push_texture(int object, uint16_t w, uint16_t h)
 	return(0);
 }
 
-/**
+/** \brief push many textures
+ *
  * As for vertices, you can push arrays of textures on the texture stack to have
  * greater performance. The tbuf should contain n texture sizes which consist of
  * 2 uint16_t values for width and height for each texture.
@@ -506,7 +523,8 @@ int s3d_push_textures(int object, const uint16_t *tbuf, uint16_t n)
 }
 /*  popping functions  */
 
-/**
+/** \brief remove vertices
+ *
  * Deletes the latest n vertices from the vertex stack of the object.
  */
 int s3d_pop_vertex(int object, uint32_t n)
@@ -519,7 +537,8 @@ int s3d_pop_vertex(int object, uint32_t n)
 
 }
 
-/**
+/** \brief remove materials
+ *
  * Deletes the latest n material from the material stack of the object.
  */
 int s3d_pop_material(int object, uint32_t n)
@@ -532,7 +551,8 @@ int s3d_pop_material(int object, uint32_t n)
 
 }
 
-/**
+/** \brief remove polygons
+ *
  * Deletes the latest n polygon from the polygon stack of the object.
  */
 int s3d_pop_polygon(int object, uint32_t n)
@@ -545,7 +565,8 @@ int s3d_pop_polygon(int object, uint32_t n)
 
 }
 
-/**
+/** \brief remove lines
+ *
  * Deletes the latest n lines from the line stack of the object.
  */
 int s3d_pop_line(int object, uint32_t n)
@@ -558,7 +579,8 @@ int s3d_pop_line(int object, uint32_t n)
 
 }
 
-/**
+/** \brief remove textures
+ *
  * Deletes the latest n textures from the texture stack of the object.
  */
 int s3d_pop_texture(int object, uint32_t n)
@@ -572,7 +594,8 @@ int s3d_pop_texture(int object, uint32_t n)
 }
 /*  pepping/loading functions */
 
-/**
+/** \brief rewrite material
+ *
  * Overwriting the latest pushed Material, overwriting the current value with
  * the specified one. See s3d_pep_materials_a if you want to pep more materials.
  */
@@ -618,7 +641,8 @@ int s3d_pep_material(int object,
 	return(0);  /*  nothing yet */
 }
 
-/**
+/** \brief rewrite material with alpha
+ *
  * Overwriting the latest pushed Material, overwriting the current value with
  * the specified one, with alpha value in contrast to s3d_pep_material See
  * s3d_push_materials_a if you want to pep more materials.
@@ -665,7 +689,8 @@ int s3d_pep_material_a(int object,
 	return(0);  /*  nothing yet */
 }
 
-/**
+/** \brief rewrite materials with alpha
+ *
  * Alters the last n pushed Materials. See s3d_push_materials_a() for more
  * information how mbuf should look like. Use s3d_pep_material_a() if you only
  * want to alter the latest material.
@@ -683,7 +708,8 @@ int s3d_pep_materials_a(int object, const float *mbuf, uint16_t n)
 	return(0);
 }
 
-/**
+/** \brief add normals to polygon
+ *
  * Adds normal information to polygons, giving each vertex of a polygon a normal
  * information. With this, you can achieve smoothed edge effects.
  *
@@ -708,7 +734,8 @@ int s3d_pep_polygon_normals(int object, const float *nbuf, uint16_t n)
 
 }
 
-/**
+/** \brief add normals to lines
+ *
  * Adds normal information to lines, giving each vertex of a line a normal
  * information. This makes lines somewhat nicer, you'll need that especially
  * when you're going to build wireframe models.
@@ -731,7 +758,8 @@ int s3d_pep_line_normals(int object, const float *nbuf, uint16_t n)
 
 }
 
-/**
+/** \brief rewrite vertex
+ *
  * Alter the latest pushed vertex, overwriting with the supplied values.
  */
 int s3d_pep_vertex(int object, float x, float y, float z)
@@ -752,7 +780,8 @@ int s3d_pep_vertex(int object, float x, float y, float z)
 	return(0);
 }
 
-/**
+/** \brief rewrite line
+ *
  * Alter the latest pushed line, overwriting with the supplied values.
  */
 int s3d_pep_line(int object, int v1, int v2, int material)
@@ -774,7 +803,8 @@ int s3d_pep_line(int object, int v1, int v2, int material)
 }
 
 
-/**
+/** \brief rewrite lines
+ *
  * Alter the latest n pushed lines. lbuf holds the values which are used to
  * overwrite the old data, n entries with each 3 uint32_t specifying first,
  * second vertex and material of each line.
@@ -795,7 +825,8 @@ int s3d_pep_lines(int object, const uint32_t *lbuf, uint16_t n)
 
 }
 
-/**
+/** \brief rewrite lines
+ *
  * Alter the latest n pushed vertex. vbuf holds the values which are used to
  * overwrite the old data, n entries with each 3 floats specifying x,y,z of the
  * vertices.
@@ -814,7 +845,8 @@ int s3d_pep_vertices(int object, const float *vbuf, uint16_t n)
 
 }
 
-/**
+/** \brief add texture coordinates to polygon
+ *
  * Pimp the last polygon pushed with some textures coordinates, x and y values
  * for each vertex point respectively. Those values may be between 0 and 1 and
  * are vertex points on the  texture defined in the material of the polygon. If
@@ -843,7 +875,8 @@ int s3d_pep_polygon_tex_coord(int object, float x1, float y1, float x2, float y2
 	return(0);
 }
 
-/**
+/** \brief add texture coordinates to polygons
+ *
  * Pimp the latest n polygons with texture coordinates. tbuf has 6*n float
  * values for its entries, which are supplied in the order as in
  * s3d_pep_polygon_tex_coord()
@@ -861,7 +894,8 @@ int s3d_pep_polygon_tex_coords(int object, const float *tbuf, uint16_t n)
 	return(0);
 }
 
-/**
+/** \brief add normals to polygon
+ *
  * Just as s3d_pep_polygon_normals(), with the difference you won't alter the
  * latest n polygons but n polygons starting with index start.
  */
@@ -893,7 +927,8 @@ int s3d_load_polygon_normals(int object, const float *nbuf, uint32_t start, uint
 	return(0);
 }
 
-/**
+/** \brief add normals to line
+ *
  * Just as s3d_pep_line_normals(), with the difference you won't alter the
  * latest n lines but n lines starting with index start.
  */
@@ -925,7 +960,8 @@ int s3d_load_line_normals(int object, const float *nbuf, uint32_t start, uint16_
 	return(0);
 }
 
-/**
+/** \brief add texture coordinates to polygons
+ *
  * Just as s3d_pep_polygon_tex_coords(), with the difference you won't alter the
  * latest n polygons but n polygons starting with index start.
  */
@@ -957,7 +993,8 @@ int s3d_load_polygon_tex_coords(int object, const float *tbuf, uint32_t start, u
 	return(0);
 }
 
-/**
+/** \brief add materials with alpha to polygons
+ *
  * Loads n materials starting from index position start into the Material stack.
  * See s3d_push_materials_a for more informatino about the values in mbuf.
  */
@@ -989,7 +1026,8 @@ int s3d_load_materials_a(int object, const float *mbuf, uint32_t start, uint16_t
 	return(0);
 }
 
-/**
+/** \brief add texture to material
+ *
  * Assign the latest material a texture referenced by the index tex. Of course,
  * you will have pushed this texture with s3d_push_texture()
  */
@@ -1025,7 +1063,8 @@ int _s3d_update_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, 
 
 }
 
-/**
+/** \brief load texture from memory
+ *
  * Creates a new object, returning the object id.
  *
  * \remarks Of course, you won't forget to toggle it visible, won't you?
@@ -1064,7 +1103,8 @@ int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uin
 	return(0);
 }
 
-/**
+/** \brief enable flags of object
+ *
  * turn some flags on for object.
  *
  * \remarks If you don't toggle OF_VISIBLE on, you won't see your object. usually
@@ -1086,7 +1126,8 @@ int s3d_flags_on(int object, uint32_t flags)
 	return(0);
 }
 
-/**
+/** \brief disable flags of object
+ *
  * turn some flags off for object.
  */
 int s3d_flags_off(int object, uint32_t flags)
@@ -1105,7 +1146,8 @@ int s3d_flags_off(int object, uint32_t flags)
 	return(0);
 }
 
-/**
+/** \brief move object to absolute position
+ *
  * Move the object to some position in space. when you create an object, it's
  * always located at 0.0 , 0.0, 0.0.
  *
@@ -1135,7 +1177,8 @@ int s3d_translate(int object, float x, float y, float z)
 
 }
 
-/**
+/** \brief rotate object
+ *
  * rotate an object around the x, y and z-axis respectively. x,y,z may have
  * values between [0,360] degrees.
  *
@@ -1171,7 +1214,8 @@ int s3d_rotate(int object, float x, float y, float z)
 	return(0);
 }
 
-/**
+/** \brief scale object
+ *
  * Scales the object. about factor s. s=1 will be the original size, -1 will
  * mirror it.
  *
@@ -1190,7 +1234,8 @@ int s3d_scale(int object, float s)
 	return(0);
 }
 
-/**
+/** \brief focus mcp object
+ *
  * This is an mcp-only function. It gives focus (for receiving key-strokes etc.)
  * to an app referenced by it's mcp-object-id.
  */

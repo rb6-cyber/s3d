@@ -30,7 +30,8 @@
 static struct s3d_evt *s3d_stack;
 int cb_lock = 2;  /*  callback lock */
 
-/**
+/** \brief push event onto stack
+ *
  * Pushes an event onto the event-stack. Usually you don't need to do this
  * manually.
  */
@@ -62,7 +63,8 @@ void s3d_push_event(struct s3d_evt *newevt)
 		s3d_stack = newevt;
 }
 
-/**
+/** \brief pop event from stack
+ *
  * Pops the latest event from the stack. Don't forget to free() both the event
  * and its buffer! Returns a pointer to struct s3d_evt.
  */
@@ -73,7 +75,8 @@ struct s3d_evt *s3d_pop_event(void) {
 	return ret;
 }
 
-/**
+/** \brief find eevnt on stack
+ *
  * Finds the latest occurence of an event, giving the event type as argument.
  * Returns a pointer to struct s3d_evt.
  */
@@ -88,7 +91,8 @@ struct s3d_evt *s3d_find_event(uint8_t event) {
 	return(NULL);
 }
 
-/**
+/** \brief delete event from stack
+ *
  * deletes an event, the argument is the pointer to the event which is to be
  * deleted (maybe obtained from s3d_find_event).
  */
@@ -114,7 +118,8 @@ int s3d_delete_event(const struct s3d_evt *devt)
 	return(-1);
 }
 
-/**
+/** \brief process all events on stack
+ *
  * This function goes through all function of the event-stack and will call
  * functions. this is useful when you define a new function but still have a lot
  * of events of this type on the stack.

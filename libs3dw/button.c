@@ -86,7 +86,8 @@ void s3dw_button_draw(s3dw_widget *widget)
 	widget->height = 2;
 }
 
-/**
+/** \brief create a new button in the surface
+ *
  * Creates a new button on the surface, with "text" written on it and the upper
  * left corner at (posx,posy) on the surface.
  *

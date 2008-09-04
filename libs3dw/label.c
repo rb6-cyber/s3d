@@ -50,7 +50,8 @@ void s3dw_label_hide(s3dw_widget *widget)
 	s3d_flags_off(widget->oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 }
 
-/**
+/** \brief change label text
+ *
  * Change the text in the referenced label to the specified text.
  */
 void s3dw_label_change_text(s3dw_label *label, const char *text)
@@ -66,7 +67,8 @@ void s3dw_label_change_text(s3dw_label *label, const char *text)
 		s3dw_label_show(widget);
 }
 
-/**
+/** \brief create a new label in the surface
+ *
  * Creates a new label on the surface, with "text" written on it and the upper
  * left corner at (posx,posy) on the surface.
  *

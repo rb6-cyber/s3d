@@ -76,7 +76,8 @@ const char *s3dw_get_type_string(int type)
 	return(NULL);
 }
 
-/**
+/** \brief get the root
+ *
  * Returns the root-widget, which holds all the surfaces. E.g. if you want to
  * move all widgets at once, adjust the root-widgets x,y,z and use s3dw_moveit()
  *

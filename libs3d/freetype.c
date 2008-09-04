@@ -302,7 +302,8 @@ static int _s3d_draw_tessbuf(int oid, uint16_t a, int *voff, float *xoff)
 	return(0);
 }
 
-/**
+/** \brief select font
+ *
  * This selects a font for the s3d_draw_string() function.
  *
  * \remarks Of course, you won't forget to toggle it visible, won't you?
@@ -347,7 +348,8 @@ int s3d_select_font(const char *path)
 	return(-1);
 }
 
-/**
+/** \brief draw a simple string
+ *
  * Renders the string str with in Truetype format with the height 1, returns the
  * length of the rendered string in *xlen (or set len=NULL to disable this).
  *
@@ -389,7 +391,8 @@ int s3d_draw_string(const char *str, float *xlen)
 	return(f_oid);
 }
 
-/**
+/** \brief get rendered string size
+ *
  * Returns the length of the string if it were rendered with the currently
  * selected font. That might be useful to estimate the size used for a text and
  * render the background or bounding box before inserting the text.

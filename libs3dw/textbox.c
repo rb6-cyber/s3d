@@ -195,7 +195,8 @@ static void _s3dw_textbox_scrollbar_right(s3dw_widget *widget)
 	s3dw_textbox_scrollright((s3dw_textbox *)widget->parent);
 }
 
-/**
+/** \brief create a new textbox in the surface
+ *
  * Creates a new textbox on the surface, with "text" written on it and the upper
  * left corner at (posx,posy) on the surface. Width and height define the size
  * of the textbox including scrollbars which are rendered around the textfield.
@@ -238,7 +239,8 @@ static void s3dw_textbox_redraw(s3dw_widget *widget)
 		s3dw_textbox_show(widget);
 }
 
-/**
+/** \brief scroll text up
+ *
  * Scrolls the text in the textbox up by one line, if possible.
  */
 void s3dw_textbox_scrollup(s3dw_textbox *textbox)
@@ -248,7 +250,8 @@ void s3dw_textbox_scrollup(s3dw_textbox *textbox)
 	s3dw_textbox_redraw(S3DWIDGET(textbox));
 }
 
-/**
+/** \brief scroll text down
+ *
  * Scrolls the text in the textbox down by one line, if possible.
  */
 void s3dw_textbox_scrolldown(s3dw_textbox *textbox)
@@ -258,7 +261,8 @@ void s3dw_textbox_scrolldown(s3dw_textbox *textbox)
 
 }
 
-/**
+/** \brief scroll text left
+ *
  * Scrolls the text in the textbox to the left by one character, if possible.
  */
 void s3dw_textbox_scrollleft(s3dw_textbox *textbox)
@@ -268,7 +272,8 @@ void s3dw_textbox_scrollleft(s3dw_textbox *textbox)
 	s3dw_textbox_redraw(S3DWIDGET(textbox));
 }
 
-/**
+/** \brief scroll text right
+ *
  * Scrolls the text in the textbox to the right by one character, if possible.
  */
 void s3dw_textbox_scrollright(s3dw_textbox *textbox)
@@ -277,7 +282,8 @@ void s3dw_textbox_scrollright(s3dw_textbox *textbox)
 	s3dw_textbox_redraw(S3DWIDGET(textbox));
 }
 
-/**
+/** \brief scroll text to position
+ *
  * Scrolls the text in the textbox so that the character in row y, column x is
  * in the top left corner of the textbox.
  */
@@ -291,7 +297,8 @@ void s3dw_textbox_scrollto(s3dw_textbox *textbox, int x, int y)
 	s3dw_textbox_redraw(widget);
 }
 
-/**
+/** \brief change text
+ *
  * Change the text in the referenced textbox to the specified text.
  */
 void s3dw_textbox_change_text(s3dw_textbox *textbox, const char *text)

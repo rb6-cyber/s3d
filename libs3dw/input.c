@@ -138,7 +138,8 @@ void s3dw_input_hide(s3dw_widget *widget)
 	s3d_flags_off(input->oid_text, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 }
 
-/**
+/** \brief create a new input in the surface
+ *
  * Creates a new input-box on the surface with a input width of "width", the
  * upper left corner at (posx,posy) on the surface. The input-box is empty on
  * creation and can be change with s3dw_input_change_text, and received with
@@ -181,7 +182,8 @@ void s3dw_input_destroy(s3dw_widget *widget)
 	free(input);
 }
 
-/**
+/** \brief changes the text of the input
+ *
  * Change the text in the referenced input-box to the specified text.
  */
 void s3dw_input_change_text(s3dw_input *input, const char *text)
@@ -244,7 +246,8 @@ int s3dw_input_event_click(s3dw_widget *widget, uint32_t oid)
 	return(0);
 }
 
-/**
+/** \brief get text of input
+ *
  * Returns the text which is currently entered in the referenced input-box.
  */
 char *s3dw_input_gettext(s3dw_input *input)

@@ -98,7 +98,8 @@ static void s3dw_widget_remove(s3dw_widget *widget)
 		}
 }
 
-/**
+/** \brief delete widget
+ *
  * Deletes any widget. Should be casted with S3DWIDGET().
  */
 void s3dw_delete(s3dw_widget *widget)
@@ -111,7 +112,8 @@ void s3dw_delete(s3dw_widget *widget)
 	s3dwcb_destroy[widget->type](widget); /* type-specific destroy */
 }
 
-/**
+/** \brief make widget visible
+ *
  * Switches a widget visible. Should be casted with S3DWIDGET().
  */
 void s3dw_show(s3dw_widget *widget)
@@ -120,7 +122,8 @@ void s3dw_show(s3dw_widget *widget)
 	s3dw_widget_visible(widget);
 }
 
-/**
+/** \brief give widget focus
+ *
  * Gives focus to the widget, relative to its parent. That means you can focus a
  * surface, and each surface can focus one of its element, e.g. an input field.
  * Should be casted with S3DWIDGET().
@@ -149,7 +152,8 @@ void s3dw_widget_visible(s3dw_widget *widget)
 	s3dwcb_show[widget->type](widget);
 }
 
-/**
+/** \brief apply widgets moving function
+ *
  * Moves/translates the widget as you specified in it's private s3dw_widget
  * structure. Should be casted with S3DWIDGET().
  */

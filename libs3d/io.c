@@ -65,7 +65,8 @@ static void sigint_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? *
 
 #endif
 
-/**
+/** \brief print s3d parameter
+ *
  * Prints the possible parameter for the client library (which can be passed in
  * s3d_init())
  */
@@ -115,7 +116,8 @@ static int parse_args(int *argc, char ***argv)
 	return(0);
 }
 /*  external functions go here ... */
-/**
+/** \brief initialize s3d library
+ *
  * This will initialize the s3d-library and the connection to the Server. It
  * will return 0 on success in Server initializion. name specifies the your
  * programs name.
@@ -188,7 +190,8 @@ int s3d_init(int *argc, char ***argv, const char *name)
 	return(-1);
 }
 
-/**
+/** \brief shutdown s3d library
+ *
  * closes the connection and cleares the event-stack. it can also be used to
  * leave the s3d_mainloop().
  */
@@ -223,7 +226,8 @@ int s3d_quit(void)
 	return(0);
 }
 
-/**
+/** \brief set mainloop of program
+ *
  * takes a function as argument. it will loop this function until a quit-event
  * is received. you can pass NULL if you have no function to be looped, but its
  * better to sleep some time if you have nothing to do anyway to save cpu-time.
@@ -250,7 +254,8 @@ int s3d_mainloop(void (*f)(void))
 	return(0);
 }
 
-/**
+/** \brief copy file into memory
+ *
  * This opens the file fname, setting *pointer to it's memory position. the
  * function will return the size of buffer. you can free() the pointer when
  * you're finished.

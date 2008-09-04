@@ -143,7 +143,8 @@ void s3dw_ani_needarr(void)
 
 }
 
-/**
+/** \brief doing the whole animation thing
+ *
  * Just call this in your mainloop if you want some nice window sliding
  * animations. it's somewhat bloating, but you don't want to miss it ;)
  *

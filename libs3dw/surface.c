@@ -126,7 +126,8 @@ void s3dw_surface_hide(s3dw_widget *widget)
 	s3d_flags_off(surface->oid_tbar, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 }
 
-/**
+/** \brief create a new surface
+ *
  * Creates a new surface (a new window) with title "title" and dimension "width"
  * x "height".
  *

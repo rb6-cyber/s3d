@@ -57,7 +57,8 @@ static int _s3d_ignore(struct s3d_evt *S3DUNUSED(evt))
 	return(0);
 }
 
-/**
+/** \brief sets a callback
+ *
  * sets a callback for a certain event. this is very useful for event-oriented
  * applications. event callbacks will not interrupt each other or the mainloop.
  *
@@ -81,7 +82,8 @@ void s3d_set_callback(uint8_t event, s3d_cb func)
 	s3d_process_stack();
 }
 
-/**
+/** \brief clears a callback
+ *
  * Clears the callback which is associated with the event.
  */
 void s3d_clear_callback(uint8_t event)
@@ -89,7 +91,8 @@ void s3d_clear_callback(uint8_t event)
 	s3d_cb_list[(int)event] = S3D_CBNIL;
 }
 
-/**
+/** \brief ignores an event
+ *
  * Sets the callback on ignore, that means it won't be queued up for later use.
  * An incoming event of this type will simply be skipped.
  */
@@ -98,7 +101,8 @@ void s3d_ignore_callback(uint8_t event)
 	s3d_set_callback(event, _s3d_ignore);
 }
 
-/**
+/** \brief get callback of event
+ *
  * Returns the Callback-function of the event.
  *
  * \code

@@ -25,9 +25,10 @@
 #include <s3dw.h>
 #include <s3dw_int.h>
 
-/**
+/** \brief handle click on widget
+ *
  * If you want your widgets on mouseclicks (believe me, you want that), you have
- * to call this either in your clickhandler-function or specifiy it itself as
+ * to call this either in your clickhandler-function or specify it itself as
  * the clickhandler.
  *
  * \code
@@ -53,7 +54,8 @@ int s3dw_handle_click(const struct s3d_evt *evt)
 	return(s3dw_widget_event_click(s3dw_getroot(), oid));
 }
 
-/**
+/** \brief handle key input on widget
+ *
  * This is somehow useful to call in your keyhandler functions if you want to
  * have input-boxes work. ;)
  *
@@ -80,7 +82,8 @@ int s3dw_handle_key(const struct s3d_evt *evt)
 	return(s3dw_widget_event_key(s3dw_getroot(), keys));
 }
 
-/**
+/** \brief handle object info events
+ *
  * This can be used to let s3dw handle S3D_EVENT_OBJ_INFO-events. With this,
  * s3dw can consider the camera position and makes things like following the
  * camera possible.
