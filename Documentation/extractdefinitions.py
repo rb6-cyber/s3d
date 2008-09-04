@@ -4,6 +4,7 @@
 import xml.dom.minidom
 from xml.dom.minidom import Node
 import os
+import re
 
 class Callable:
     def __init__(self, func):
@@ -62,6 +63,10 @@ def cleanup_stringbegin(string):
 	while new_str[0] in ['_']:
 		new_str = new_str[1:]
 	return new_str
+
+def filter_xmldirectclosed(xml):
+	p = re.compile('<([^<>]+)\s*/>')
+	return p.sub(r'<\1>', xml)
 	
 
 """
@@ -75,7 +80,6 @@ def get_text(node):
 		else:
 			t += get_text(node)
 	return t
-
 
 class detaileddescription:
 	t = []
@@ -185,6 +189,12 @@ class function_param:
 
 		if self.param['array'] != '':
 			create_append_text(paramdef, self.param['array'])
+
+	def is_void(self):
+		if self.param['type'] == 'void' and self.param['declname'] == '':
+			return 1
+		else:
+			return 0
 
 class struct_element:
 	def __init__(self, node):
@@ -343,7 +353,8 @@ class docbook_functions:
 		func_file = open(name+'/functions.docbook', "w")
 		for func in functionlist:
 			sgml = docbook_functions.generate_sgml(func, synopsis)
-			sgml.writexml(func_file)
+			cleanml = filter_xmldirectclosed(sgml.toxml())
+			func_file.write(cleanml)
 		func_file.close()
 
 	"""
@@ -393,7 +404,8 @@ class docbook_structs:
 		struct_file = open(name+'/structs.docbook', "w")
 		for struct in structlist:
 			sgml = docbook_structs.generate_sgml(struct)
-			sgml.writexml(struct_file)
+			cleanml = filter_xmldirectclosed(sgml.toxml())
+			struct_file.write(cleanml)
 		struct_file.close()
 
 	"""
@@ -440,7 +452,8 @@ class docbook_typedefs:
 		typedef_file = open(name+'/typedefs.docbook', "w")
 		for typedef in typedeflist:
 			sgml = docbook_typedefs.generate_sgml(typedef)
-			sgml.writexml(typedef_file)
+			cleanml = filter_xmldirectclosed(sgml.toxml())
+			typedef_file.write(cleanml)
 		typedef_file.close()
 
 	"""
@@ -504,7 +517,8 @@ class manpage_functions:
 			func_file = open('./manpages/man3/'+cleanup_stringbegin(func['name'])+'.sgml', "w")
 			func_file.write('<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN">\n')
 			sgml = manpage_functions.generate_sgml(func, synopsis)
-			sgml.writexml(func_file)
+			cleanml = filter_xmldirectclosed(sgml.toxml())
+			func_file.write(cleanml)
 			func_file.close()
 
 	"""
@@ -525,10 +539,12 @@ class manpage_functions:
 		create_append_text(func, function['name'])
 
 		# add parameter to function definition
-		
 		param_num = len(function['param'])
-		for i in range(0, param_num):
-			function['param'][i].dom_append(funcprototype, "\t")
+		if param_num == 1 and function['param'][0].is_void():
+			void = create_append(funcprototype, 'void')
+		else:
+			for i in range(0, param_num):
+				function['param'][i].dom_append(funcprototype, "\t")
 
 		# add help to function
 		refsect1 = create_append(refentry, 'refsect1')
@@ -551,7 +567,8 @@ class manpage_structs:
 			func_file = open('./manpages/man9/'+cleanup_stringbegin(func['name'])+'.sgml', "w")
 			func_file.write('<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN">\n')
 			sgml = manpage_structs.generate_sgml(func, synopsis)
-			sgml.writexml(func_file)
+			cleanml = filter_xmldirectclosed(sgml.toxml())
+			func_file.write(cleanml)
 			func_file.close()
 
 	"""
