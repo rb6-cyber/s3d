@@ -59,7 +59,7 @@ static int _s3d_ignore(struct s3d_evt *S3DUNUSED(evt))
 
 /** \brief sets a callback
  *
- * sets a callback for a certain event. this is very useful for event-oriented
+ * Sets a callback for a certain event. this is very useful for event-oriented
  * applications. event callbacks will not interrupt each other or the mainloop.
  *
  * \remarks Defining callbacks will only work after calling s3d_init()

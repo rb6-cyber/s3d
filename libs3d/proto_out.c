@@ -127,7 +127,7 @@ int s3d_unlink(int oid)
 
 /** \brief push vertex
  *
- * pushes a vertex onto the vertex stack. make sure that you count how many
+ * Pushes a vertex onto the vertex stack. make sure that you count how many
  * vertices you've pushed because you'll need that for referencing when you push
  * your polygons.
  */
@@ -151,7 +151,7 @@ int s3d_push_vertex(int object, float x, float y, float z)
 
 /** \brief push many vertices
  *
- * push some vertices from an array. that's much better for performing than
+ * Push some vertices from an array. that's much better for performing than
  * using s3d_push_vertex() if you have a lot of vertices (and that's probably
  * the usual case).
  * \code
@@ -188,10 +188,10 @@ int s3d_push_vertices(int object, const float *vbuf, uint16_t n)
 
 /** \brief push material
  *
- * pushes a material for an object. you will have to count them yourself too,
+ * Pushes a material for an object. you will have to count them yourself too,
  * as polygons will ask for the material index number. the material properties
  * are given in rgb (red/green/blue) color codes, in float. 0.0 is the minimum,
- * 1.0 is the maximum a color value can be. the specular color is the color
+ * 1.0 is the maximum a color value can be. The specular color is the color
  * which is directly reflected from the light source. the diffuse color is the
  * color which can be seen in the bright side of the object, and the ambience
  * color is the color of the shadow side of the object.
@@ -337,7 +337,7 @@ int s3d_push_materials_a(int object, const float *mbuf, uint16_t n)
 
 /** \brief push polygon
  *
- * push one polygon on the polygonstack of the object. it takes 3 vertex-index
+ * Push one polygon on the polygonstack of the object. it takes 3 vertex-index
  * numbers and one material material-index-nr. as argument.
  *
  * \code
@@ -396,7 +396,7 @@ int s3d_push_line(int object, uint32_t v1, uint32_t v2, uint32_t material)
 
 /** \brief push many polygons
  *
- * as for vertices, you can push arrays of polygons to have greater performance. the pbuf should contain n polygons which consist of 4 uint32_t values of 3 vertices indices and 1 material index.
+ * As for vertices, you can push arrays of polygons to have greater performance. The pbuf should contain n polygons which consist of 4 uint32_t values of 3 vertices indices and 1 material index.
  *
  * \code
  * uint32_t pbuf[] = { 0, 1, 2, 0};
@@ -742,7 +742,7 @@ int s3d_pep_polygon_normals(int object, const float *nbuf, uint16_t n)
  *
  * nbuf should contain n * 6 float values, for each vertex a normal vector
  * (x,y,z), and you have 2 Vertices for each line so that makes 6 float values
- * per line in Total.
+ * per line in total.
  */
 int s3d_pep_line_normals(int object, const float *nbuf, uint16_t n)
 {
@@ -1105,7 +1105,7 @@ int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uin
 
 /** \brief enable flags of object
  *
- * turn some flags on for object.
+ * Turn some flags on for object.
  *
  * \remarks If you don't toggle OF_VISIBLE on, you won't see your object. usually
  * you want this. (at least after you *push()d all your content)
@@ -1128,7 +1128,7 @@ int s3d_flags_on(int object, uint32_t flags)
 
 /** \brief disable flags of object
  *
- * turn some flags off for object.
+ * Turn some flags off for object.
  */
 int s3d_flags_off(int object, uint32_t flags)
 {
@@ -1179,7 +1179,7 @@ int s3d_translate(int object, float x, float y, float z)
 
 /** \brief rotate object
  *
- * rotate an object around the x, y and z-axis respectively. x,y,z may have
+ * Rotate an object around the x, y and z-axis respectively. x,y,z may have
  * values between [0,360] degrees.
  *
  * You will usually only rotate around one axis, leaving the unused fields on 0,

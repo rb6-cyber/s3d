@@ -93,7 +93,7 @@ struct s3d_evt *s3d_find_event(uint8_t event) {
 
 /** \brief delete event from stack
  *
- * deletes an event, the argument is the pointer to the event which is to be
+ * Deletes an event, the argument is the pointer to the event which is to be
  * deleted (maybe obtained from s3d_find_event).
  */
 int s3d_delete_event(const struct s3d_evt *devt)

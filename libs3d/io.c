@@ -192,7 +192,7 @@ int s3d_init(int *argc, char ***argv, const char *name)
 
 /** \brief shutdown s3d library
  *
- * closes the connection and cleares the event-stack. it can also be used to
+ * Closes the connection and cleares the event-stack. It can also be used to
  * leave the s3d_mainloop().
  */
 int s3d_quit(void)
@@ -228,8 +228,8 @@ int s3d_quit(void)
 
 /** \brief set mainloop of program
  *
- * takes a function as argument. it will loop this function until a quit-event
- * is received. you can pass NULL if you have no function to be looped, but its
+ * Takes a function as argument. It will loop this function until a quit-event
+ * is received. You can pass NULL if you have no function to be looped, but its
  * better to sleep some time if you have nothing to do anyway to save cpu-time.
  *
  * \code
