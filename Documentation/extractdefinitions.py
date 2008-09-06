@@ -271,10 +271,11 @@ def extract_functions(dom):
 		if node.attributes['kind'].nodeValue != 'function':
 			continue
 
-		function = {'return': '', 'name': '', 'param': [], 'brief': '', 'help': []}
+		function = {'return': '', 'name': '', 'id': '', 'param': [], 'brief': '', 'help': []}
 		for node2 in node.childNodes:
 			if node2.nodeName == "name":
 				function['name'] = get_text(node2)
+				function['id'] = function['name']
 
 			if node2.nodeName == "type":
 				function['return'] = remove_exportdefinitions(get_text(node2))
@@ -299,8 +300,9 @@ def extract_structs(dom):
 	structlist = []
 	# find refs (names of xml files) of structs
 	for node in dom.getElementsByTagName("innerclass"):
-		struct = {'name': '', 'ref': '', 'elements': [], 'brief': '', 'help': []}
+		struct = {'name': '', 'id': '', 'ref': '', 'elements': [], 'brief': '', 'help': []}
 		struct['name'] = get_text(node)
+		struct['id'] = 'struct'+struct['name']
 		struct['ref'] = node.attributes['refid'].nodeValue
 		structlist.append(struct)
 
@@ -330,10 +332,11 @@ def extract_typedefs(dom):
 		if node.attributes['kind'].nodeValue != 'typedef':
 			continue
 
-		typedef = {'name': '', 'definition': '', 'help': []}
+		typedef = {'name': '', 'id': '', 'definition': '', 'help': []}
 		for node2 in node.childNodes:
 			if node2.nodeName == 'name':
 				typedef['name'] = get_text(node2)
+				typedef['id'] = typedef['name']
 
 			if node2.nodeName == 'definition':
 				typedef['definition'] = get_text(node2)
@@ -363,7 +366,7 @@ class docbook_functions:
 	def generate_sgml(function, synopsis):
 		sgml = xml.dom.minidom.Document()
 		sect2 = create_append(sgml, 'sect2')
-		sect2.setAttribute('id', function['name'])
+		sect2.setAttribute('id', function['id'])
 
 		title = create_append(sect2, 'title')
 		create_append_text(title, function['name'])
@@ -414,7 +417,7 @@ class docbook_structs:
 	def generate_sgml(struct):
 		sgml = xml.dom.minidom.Document()
 		sect2 = create_append(sgml, 'sect2')
-		sect2.setAttribute('id', 'struct'+struct['name'])
+		sect2.setAttribute('id', struct['id'])
 
 		title = create_append(sect2, 'title')
 		create_append_text(title, 'struct '+struct['name'])
@@ -462,7 +465,7 @@ class docbook_typedefs:
 	def generate_sgml(typedef):
 		sgml = xml.dom.minidom.Document()
 		sect2 = create_append(sgml, 'sect2')
-		sect2.setAttribute('id', typedef['name'])
+		sect2.setAttribute('id', typedef['id'])
 
 		title = create_append(sect2, 'title')
 		create_append_text(title, 'typedef '+typedef['name'])
@@ -481,9 +484,9 @@ class docbook_typedefs:
 	generate_sgml = Callable(generate_sgml)
 
 
-def manpage_header(root, name, mannum, ref_name, ref_namediv, synopsisinfo):
+def manpage_header(root, name, refid, mannum, ref_name, ref_namediv, synopsisinfo):
 	refentry = create_append(root, 'refentry')
-	refentry.setAttribute('id', cleanup_stringbegin(name))
+	refentry.setAttribute('id', cleanup_stringbegin(refid))
 
 	refmeta = create_append(refentry, 'refmeta')
 
@@ -527,7 +530,7 @@ class manpage_functions:
 	def generate_sgml(function, synopsis):
 		sgml = xml.dom.minidom.Document()
 
-		(refentry, funcsynopsis) = manpage_header(sgml, function['name'], '3', function['name'], function['brief'].strip(), "#include <"+synopsis+">")
+		(refentry, funcsynopsis) = manpage_header(sgml, function['name'], function['id'], '3', function['name'], function['brief'].strip(), "#include <"+synopsis+">")
 
 		# prototype
 		funcprototype = create_append(funcsynopsis, 'funcprototype')
@@ -577,7 +580,7 @@ class manpage_structs:
 	def generate_sgml(struct, synopsis):
 		sgml = xml.dom.minidom.Document()
 
-		(refentry, funcsynopsis) = manpage_header(sgml, struct['name'], '9', 'struct ' + struct['name'], "", "#include <"+synopsis+">")
+		(refentry, funcsynopsis) = manpage_header(sgml, struct['name'], struct['id'], '9', 'struct ' + struct['name'], "", "#include <"+synopsis+">")
 
 		# add definition of struct
 		refsect1 = create_append(refentry, 'refsect1')
