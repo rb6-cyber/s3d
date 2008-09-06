@@ -1,16 +1,16 @@
-<sect2 id="structs3d_evt"><title>struct s3d_evt</title><programlisting>struct s3d_evt {
+<sect2 id="structs3d_evt"><title>struct s3d_evt</title><programlisting>struct <link linkend="structs3d_evt">s3d_evt</link> {
 	uint8_t event;
 	int length;
 	char *buf;
-	struct s3d_evt *next;
-}</programlisting><para>This is the event information holder.     </para><variablelist><varlistentry><term>event</term><listitem><para>gives the event type         </para></listitem></varlistentry><varlistentry><term>length</term><listitem><para>gives the length of the buffer *buf         </para></listitem></varlistentry><varlistentry><term>buf</term><listitem><para>is the pointer to the multiple purpose buffer, which will have more specific information about the object         </para></listitem></varlistentry><varlistentry><term>next</term><listitem><para>can be safely ignored ;)         </para></listitem></varlistentry></variablelist></sect2><sect2 id="structmcp_object"><title>struct mcp_object</title><programlisting>struct mcp_object {
+	struct <link linkend="structs3d_evt">s3d_evt</link> *next;
+}</programlisting><para>This is the event information holder.     </para><variablelist><varlistentry><term>event</term><listitem><para>gives the event type         </para></listitem></varlistentry><varlistentry><term>length</term><listitem><para>gives the length of the buffer *buf         </para></listitem></varlistentry><varlistentry><term>buf</term><listitem><para>is the pointer to the multiple purpose buffer, which will have more specific information about the object         </para></listitem></varlistentry><varlistentry><term>next</term><listitem><para>can be safely ignored ;)         </para></listitem></varlistentry></variablelist></sect2><sect2 id="structmcp_object"><title>struct mcp_object</title><programlisting>struct <link linkend="structmcp_object">mcp_object</link> {
 	uint32_t object;
 	float trans_x;
 	float trans_y;
 	float trans_z;
 	float r;
 	char name;
-}</programlisting><para>Deprecated</para><para>don't use, to be removed soon (use struct s3d_but_info). ;)     </para></sect2><sect2 id="structs3d_obj_info"><title>struct s3d_obj_info</title><programlisting>struct s3d_obj_info {
+}</programlisting><para>Deprecated</para><para>don't use, to be removed soon (use struct <link linkend="structs3d_but_info">s3d_but_info</link>). ;)     </para></sect2><sect2 id="structs3d_obj_info"><title>struct s3d_obj_info</title><programlisting>struct <link linkend="structs3d_obj_info">s3d_obj_info</link> {
 	uint32_t object;
 	uint32_t flags;
 	float trans_x;
@@ -22,10 +22,10 @@
 	float scale;
 	float r;
 	char name;
-}</programlisting><para>Can be used on the buffer of an event of type S3D_EVENT_OBJ_INFO. name will usually contain nothing for usual objects, but mcp objects will contain the applications names here. r is the radius of the convex sphere an object, which will also be interesting for the mcp.</para><para>Special objects like camera, pointer will have the &quot;sys_&quot; prefix in the name and will be named &quot;pointer0&quot;, &quot;pointer1&quot; ... or &quot;cam0&quot;, &quot;cam1&quot; ... For cam object, scale will contain the aspect ratio.     </para></sect2><sect2 id="structs3d_but_info"><title>struct s3d_but_info</title><programlisting>struct s3d_but_info {
+}</programlisting><para>Can be used on the buffer of an event of type S3D_EVENT_OBJ_INFO. name will usually contain nothing for usual objects, but mcp objects will contain the applications names here. r is the radius of the convex sphere an object, which will also be interesting for the mcp.</para><para>Special objects like camera, pointer will have the &quot;sys_&quot; prefix in the name and will be named &quot;pointer0&quot;, &quot;pointer1&quot; ... or &quot;cam0&quot;, &quot;cam1&quot; ... For cam object, scale will contain the aspect ratio.     </para></sect2><sect2 id="structs3d_but_info"><title>struct s3d_but_info</title><programlisting>struct <link linkend="structs3d_but_info">s3d_but_info</link> {
 	uint8_t button;
 	uint8_t state;
-}</programlisting><para>Can be used on the buffer of an event of type S3D_EVENT_MBUTTON.     </para></sect2><sect2 id="structs3d_key_event"><title>struct s3d_key_event</title><programlisting>struct s3d_key_event {
+}</programlisting><para>Can be used on the buffer of an event of type S3D_EVENT_MBUTTON.     </para></sect2><sect2 id="structs3d_key_event"><title>struct s3d_key_event</title><programlisting>struct <link linkend="structs3d_key_event">s3d_key_event</link> {
 	uint16_t keysym;
 	uint16_t unicode;
 	uint16_t modifier;

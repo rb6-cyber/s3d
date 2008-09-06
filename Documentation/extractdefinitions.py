@@ -12,27 +12,31 @@ class Callable:
 
 def main():
 	print 'reading with "doxygen xml.doxygen" generated files'
+	refidlist = []
 
 	libs3d = xml.dom.minidom.parse("xml/s3d_8h.xml")
 	libs3dw = xml.dom.minidom.parse("xml/s3dw_8h.xml")
 
 	libs3d_func = extract_functions(libs3d)
 	libs3dw_func = extract_functions(libs3dw)
+	refidlist += libs3d_func + libs3dw_func
 
 	libs3d_struct = extract_structs(libs3d)
 	libs3dw_struct = extract_structs(libs3dw)
+	refidlist += libs3d_struct + libs3dw_struct
 
 	libs3d_typedef = extract_typedefs(libs3d)
 	libs3dw_typedef = extract_typedefs(libs3dw)
+	refidlist += libs3d_typedef + libs3dw_typedef
 
-	docbook_functions.generate('libs3d', "s3d.h", libs3d_func)
-	docbook_functions.generate('libs3dw', "s3dw.h", libs3dw_func)
+	docbook_functions.generate('libs3d', "s3d.h", libs3d_func, refidlist)
+	docbook_functions.generate('libs3dw', "s3dw.h", libs3dw_func, refidlist)
 
-	docbook_structs.generate('libs3d', libs3d_struct)
-	docbook_structs.generate('libs3dw', libs3dw_struct)
+	docbook_structs.generate('libs3d', libs3d_struct, refidlist)
+	docbook_structs.generate('libs3dw', libs3dw_struct, refidlist)
 
-	docbook_typedefs.generate('libs3d', libs3d_typedef)
-	docbook_typedefs.generate('libs3dw', libs3dw_typedef)
+	docbook_typedefs.generate('libs3d', libs3d_typedef, refidlist)
+	docbook_typedefs.generate('libs3dw', libs3dw_typedef, refidlist)
 
 	rm_files('./manpages/man3/')
 	manpage_functions.generate("s3d.h", libs3d_func)
@@ -67,7 +71,6 @@ def cleanup_stringbegin(string):
 def filter_xmldirectclosed(xml):
 	p = re.compile('<([^<>]+)\s*/>')
 	return p.sub(r'<\1>', xml)
-	
 
 """
 Generate text from all childNodes
@@ -80,6 +83,62 @@ def get_text(node):
 		else:
 			t += get_text(node)
 	return t
+
+"""
+Add references to docbook dom
+"""
+def link_refids(dom, refidlist):
+	for refitem in refidlist:
+		link_refid(dom, refitem['name'], refitem['id'])
+
+"""
+Search text in dom for name to replace it by link to refid
+"""
+def link_refid(dom, name, refid):
+	num_nodes = len(dom.childNodes)
+	i = 0
+	while i < num_nodes:
+		node = dom.childNodes[i]
+		if node.nodeType == Node.TEXT_NODE:
+			string = node.data
+			valid_suround = ['', ',', '.', ' ', '(', ')', '\n', '\r', '!', '?']
+			found = 0
+			while found != -1:
+				found =  string.find(name, found)
+				if found != -1:
+					next_char = ''
+					prev_char = ''
+
+					# check for valid surounding chars
+					if (found + len(name)) < len(string):
+						next_char = string[found + len(name)]
+					if found > 0:
+						prev_char = string[found - 1]
+
+					if next_char in valid_suround and prev_char in valid_suround:
+						# suroundings chars ok -> safe beginning and link
+						create_before_text(dom, string[:found], node)
+						link = create_before(dom, 'link', node)
+						link.setAttribute('linkend', refid)
+						create_append_text(link, name)
+						num_nodes = num_nodes + 2
+						i = i + 2
+
+						# continue search after laster found
+						string = string[(found + len(name)):]
+						found = 0
+					else:
+						#no valid surounding chars found -> move on
+						found = found + 1
+
+				else:
+					# finishes search and can now remove old strings
+					create_before_text(dom, string, node)
+					dom.removeChild(node)
+		else:
+			if node.nodeName not in ['funcprototype', 'title']:
+				link_refid(node, name, refid)
+		i = i + 1
 
 class detaileddescription:
 	t = []
@@ -262,6 +321,32 @@ def create_append_text(father, text):
 	return t
 
 """
+Create new node with tag name node_type and add it to father before refnode
+"""
+def create_before(father, node_type, refnode):
+	if father.ownerDocument:
+		t = father.ownerDocument.createElement(node_type)
+	else:
+		# no father -> so it must be a document
+		t = father.createElement(text)
+
+	father.insertBefore(t, refnode)
+	return t
+
+"""
+Create new text node with text and add it to father before refnode
+"""
+def create_before_text(father, text, refnode):
+	if father.ownerDocument:
+		t = father.ownerDocument.createTextNode(text)
+	else:
+		# no father -> so it must be a document
+		t = father.createTextNode(text)
+
+	father.insertBefore(t, refnode)
+	return t
+
+"""
 Extract function informations from doxygen dom
 """
 def extract_functions(dom):
@@ -352,10 +437,11 @@ class docbook_functions:
 	"""
 	Generate docbook file with informations to all functions
 	"""
-	def generate(name, synopsis, functionlist):
+	def generate(name, synopsis, functionlist, refidlist):
 		func_file = open(name+'/functions.docbook', "w")
 		for func in functionlist:
 			sgml = docbook_functions.generate_sgml(func, synopsis)
+			link_refids(sgml, refidlist)
 			cleanml = filter_xmldirectclosed(sgml.toxml())
 			func_file.write(cleanml)
 		func_file.close()
@@ -403,10 +489,11 @@ class docbook_structs:
 	"""
 	Generate docbook file with informations to all structs
 	"""
-	def generate(name, structlist):
+	def generate(name, structlist, refidlist):
 		struct_file = open(name+'/structs.docbook', "w")
 		for struct in structlist:
 			sgml = docbook_structs.generate_sgml(struct)
+			link_refids(sgml, refidlist)
 			cleanml = filter_xmldirectclosed(sgml.toxml())
 			struct_file.write(cleanml)
 		struct_file.close()
@@ -451,10 +538,11 @@ class docbook_typedefs:
 	"""
 	Generate docbook file with informations to all typedefs
 	"""
-	def generate(name, typedeflist):
+	def generate(name, typedeflist, refidlist):
 		typedef_file = open(name+'/typedefs.docbook', "w")
 		for typedef in typedeflist:
 			sgml = docbook_typedefs.generate_sgml(typedef)
+			link_refids(sgml, refidlist)
 			cleanml = filter_xmldirectclosed(sgml.toxml())
 			typedef_file.write(cleanml)
 		typedef_file.close()
