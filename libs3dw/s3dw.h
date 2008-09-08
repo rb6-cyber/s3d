@@ -149,7 +149,7 @@ struct _s3dw_button {
 
 /**
  * The labels is an label-field where a user may type things. onclick reacts on
- * click in the field, onedit notifies you when someone writes in the field.
+ * click in the field.
  */
 struct _s3dw_label {
 	/* private */

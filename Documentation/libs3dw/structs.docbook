@@ -45,7 +45,7 @@
 	s3dw_widget widget;
 	char *text;
 	s3dw_callback onclick;
-}</programlisting><para>The labels is an label-field where a user may type things. onclick reacts on click in the field, onedit notifies you when someone writes in the field.     </para></sect2>
+}</programlisting><para>The labels is an label-field where a user may type things. onclick reacts on click in the field.     </para></sect2>
 <sect2 id="struct_s3dw_scrollbar"><title>struct _s3dw_scrollbar</title><programlisting>struct <link linkend="struct_s3dw_scrollbar">_s3dw_scrollbar</link> {
 	s3dw_widget widget;
 	float pos;
