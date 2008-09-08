@@ -17,12 +17,5 @@ s3d_load_texture \(em load texture from memory
 .fi 
 .SH "Description" 
 .PP 
-Creates a new object, returning the object id. 
-.PP 
-.RS 
-\fBWarning:   
-.PP 
-Of course, you won't forget to toggle it visible, won't you?  
- 
-.RE 
+This will load an 32bit rgba image supplied in data at position xpos,ypos of the texture tex. The image has the width w and height h. This can be used to update only parts of the texture. It's no problem to supply big textures, as the image will be sent to server in fragments. Of course, you will have created the texture with s3d_push_texture, have an material assigned to the texture with s3d_pep_material_texture() and have your polygons set sane polygon texture coords using s3d_pep_polygon_tex_coord().          
 .\" created by instant / docbook-to-man

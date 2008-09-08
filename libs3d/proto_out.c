@@ -1067,9 +1067,13 @@ int _s3d_update_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, 
 
 /** \brief load texture from memory
  *
- * Creates a new object, returning the object id.
- *
- * \remarks Of course, you won't forget to toggle it visible, won't you?
+ * This will load an 32bit rgba image supplied in data at position xpos,ypos of
+ * the texture tex. The image has the width w and height h. This can be used to
+ * update only parts of the texture. It's no problem to supply big textures,
+ * as the image will be sent to server in fragments. Of course, you will have
+ * created the texture with s3d_push_texture, have an material assigned to the
+ * texture with s3d_pep_material_texture() and have your polygons set sane
+ * polygon texture coords using s3d_pep_polygon_tex_coord().
  */
 int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h, const uint8_t *data)
 {
