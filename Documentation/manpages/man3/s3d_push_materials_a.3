@@ -13,7 +13,7 @@ s3d_push_materials_a \(em push many materials
 .fi 
 .SH "Description" 
 .PP 
-Pushes a buffer of Materials. Those Materials are in the format float[n*12], with 
+Pushes a buffer of materials. Those materials are in the format float[n*12], with 
 .PP 
 mbuf[n*12 + 0-3] \- ambience 
 .PP 
@@ -33,7 +33,7 @@ float bla[24]=
 0, 1, 1, 1, 
 0, 1, 1, 1}; 
  
-s3d_push_materials_a(object, mbuf, 2); // push a red and a cyan material 
+s3d_push_materials_a(object, bla, 2); // push a red and a cyan material 
 .fi 
 .PP 
 .\" created by instant / docbook-to-man

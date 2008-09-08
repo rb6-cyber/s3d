@@ -56,7 +56,7 @@ int s3d_new_object(void)
 
 /** \brief clone object
  *
- * Clones an already exisiting object. They get just look the same as the
+ * Clones an already existing object. They get just look the same as the
  * parent-object and will change when the parent-object changes. Cloning
  * especially makes sense if you want to use the same object a lot of times.
  * Move and transform is independent from the parent. The function returns the
@@ -127,7 +127,7 @@ int s3d_unlink(int oid)
 
 /** \brief push vertex
  *
- * Pushes a vertex onto the vertex stack. make sure that you count how many
+ * Pushes a vertex onto the vertex stack. Make sure that you count how many
  * vertices you've pushed because you'll need that for referencing when you push
  * your polygons.
  */
@@ -189,10 +189,10 @@ int s3d_push_vertices(int object, const float *vbuf, uint16_t n)
 /** \brief push material
  *
  * Pushes a material for an object. you will have to count them yourself too,
- * as polygons will ask for the material index number. the material properties
+ * as polygons will ask for the material index number. The material properties
  * are given in rgb (red/green/blue) color codes, in float. 0.0 is the minimum,
  * 1.0 is the maximum a color value can be. The specular color is the color
- * which is directly reflected from the light source. the diffuse color is the
+ * which is directly reflected from the light source. The diffuse color is the
  * color which can be seen in the bright side of the object, and the ambience
  * color is the color of the shadow side of the object.
  */
@@ -287,7 +287,7 @@ int s3d_push_material_a(int object,
 
 /** \brief push many materials
  *
- * Pushes a buffer of Materials. Those Materials are in the format float[n*12],
+ * Pushes a buffer of materials. Those materials are in the format float[n*12],
  * with
  * - mbuf[n*12 + 0-3] - ambience
  * - mbuf[n*12 + 4-7] - specular
@@ -307,7 +307,7 @@ int s3d_push_material_a(int object,
  *          0, 1, 1, 1,
  *          0, 1, 1, 1};
  *
- * s3d_push_materials_a(object, mbuf, 2); // push a red and a cyan material
+ * s3d_push_materials_a(object, bla, 2); // push a red and a cyan material
  * \endcode
  */
 int s3d_push_materials_a(int object, const float *mbuf, uint16_t n)
@@ -337,8 +337,8 @@ int s3d_push_materials_a(int object, const float *mbuf, uint16_t n)
 
 /** \brief push polygon
  *
- * Push one polygon on the polygonstack of the object. it takes 3 vertex-index
- * numbers and one material material-index-nr. as argument.
+ * Push one polygon on the polygon stack of the object. It takes 3 vertex-index
+ * numbers and one material material-index-no. as argument.
  *
  * \code
  * int oid = s3d_new_object();   // create a new object
@@ -372,9 +372,9 @@ int s3d_push_polygon(int object, uint32_t v1, uint32_t v2, uint32_t v3, uint32_t
 
 /** \brief push line
  *
- * Push one line on the linestack of the object. It takes 2 vertex-index-
- * numbers and one material material-index-nr. as argument. If you have a lot of
- * lines to push, use s3d_push_lines()
+ * Push one line on the line stack of the object. It takes 2 vertex-index-no,
+ * and one material material-index-no. as argument. If you have a lot of lines
+ * to push, use s3d_push_lines()
  */
 int s3d_push_line(int object, uint32_t v1, uint32_t v2, uint32_t material)
 {
@@ -396,7 +396,9 @@ int s3d_push_line(int object, uint32_t v1, uint32_t v2, uint32_t material)
 
 /** \brief push many polygons
  *
- * As for vertices, you can push arrays of polygons to have greater performance. The pbuf should contain n polygons which consist of 4 uint32_t values of 3 vertices indices and 1 material index.
+ * As for vertices, you can push arrays of polygons to have greater performance.
+ * The pbuf should contain n polygons which consist of 4 uint32_t values of 3
+ * vertices indices and 1 material index.
  *
  * \code
  * uint32_t pbuf[] = { 0, 1, 2, 0};
@@ -437,7 +439,7 @@ int s3d_push_polygons(int object, const uint32_t *pbuf, uint16_t n)
 
 /** \brief push many lines
  *
- * Pushing n lines on the linestack of the object, each lbuf has a size of n*3,
+ * Pushing n lines on the line stack of the object, each lbuf has a size of n*3,
  * each entry has the index number of the first vertex, second vertex and
  * material number just as in s3d_push_line().
  */
@@ -471,7 +473,7 @@ int s3d_push_lines(int object, const uint32_t *lbuf, uint16_t n)
 
 /** \brief push texture
  *
- * Adds a new texture with height w and height h on the texturestack.
+ * Adds a new texture with height w and height h on the texture stack.
  */
 int s3d_push_texture(int object, uint16_t w, uint16_t h)
 {
@@ -596,7 +598,7 @@ int s3d_pop_texture(int object, uint32_t n)
 
 /** \brief rewrite material
  *
- * Overwriting the latest pushed Material, overwriting the current value with
+ * Overwriting the latest pushed material, overwriting the current value with
  * the specified one. See s3d_pep_materials_a if you want to pep more materials.
  */
 int s3d_pep_material(int object,
@@ -643,7 +645,7 @@ int s3d_pep_material(int object,
 
 /** \brief rewrite material with alpha
  *
- * Overwriting the latest pushed Material, overwriting the current value with
+ * Overwriting the latest pushed material, overwriting the current value with
  * the specified one, with alpha value in contrast to s3d_pep_material See
  * s3d_push_materials_a if you want to pep more materials.
  */
@@ -691,7 +693,7 @@ int s3d_pep_material_a(int object,
 
 /** \brief rewrite materials with alpha
  *
- * Alters the last n pushed Materials. See s3d_push_materials_a() for more
+ * Alters the last n pushed materials. See s3d_push_materials_a() for more
  * information how mbuf should look like. Use s3d_pep_material_a() if you only
  * want to alter the latest material.
  */
@@ -714,8 +716,8 @@ int s3d_pep_materials_a(int object, const float *mbuf, uint16_t n)
  * information. With this, you can achieve smoothed edge effects.
  *
  * nbuf should contain n * 9 float values, for each vertex a normal vector
- * (x,y,z), and you have 3 Vertices for each Polygon so that makes 9 float
- * values per Polygon in Total. Don't worry if you don't use this, it's kind of
+ * (x,y,z), and you have 3 vertices for each Polygon so that makes 9 float
+ * values per Polygon in total. Don't worry if you don't use this, it's kind of
  * hard to calculate and the server will always use some proper normal values
  * (same for every vertex, calculated by the plane which is defined by the 3
  * points of the polygon.
@@ -741,7 +743,7 @@ int s3d_pep_polygon_normals(int object, const float *nbuf, uint16_t n)
  * when you're going to build wireframe models.
  *
  * nbuf should contain n * 6 float values, for each vertex a normal vector
- * (x,y,z), and you have 2 Vertices for each line so that makes 6 float values
+ * (x,y,z), and you have 2 vertices for each line so that makes 6 float values
  * per line in total.
  */
 int s3d_pep_line_normals(int object, const float *nbuf, uint16_t n)
@@ -995,8 +997,8 @@ int s3d_load_polygon_tex_coords(int object, const float *tbuf, uint32_t start, u
 
 /** \brief add materials with alpha to polygons
  *
- * Loads n materials starting from index position start into the Material stack.
- * See s3d_push_materials_a for more informatino about the values in mbuf.
+ * Loads n materials starting from index position start into the material stack.
+ * See s3d_push_materials_a for more informations about the values in mbuf.
  */
 int s3d_load_materials_a(int object, const float *mbuf, uint32_t start, uint16_t n)
 {

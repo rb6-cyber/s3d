@@ -119,7 +119,7 @@ static int parse_args(int *argc, char ***argv)
 /** \brief initialize s3d library
  *
  * This will initialize the s3d-library and the connection to the Server. It
- * will return 0 on success in Server initializion. name specifies the your
+ * will return 0 on success in server initialization. name specifies the your
  * programs name.
  *
  * \code
@@ -192,7 +192,7 @@ int s3d_init(int *argc, char ***argv, const char *name)
 
 /** \brief shutdown s3d library
  *
- * Closes the connection and cleares the event-stack. It can also be used to
+ * Closes the connection and clears the event-stack. It can also be used to
  * leave the s3d_mainloop().
  */
 int s3d_quit(void)

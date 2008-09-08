@@ -6,7 +6,7 @@
 <sect2 id="gettingstarted_s3dw">
 <title>Getting started</title>
 <para>
-	Assuming you have already read about the lowlevel <link linkend="libs3d">libs3d s3d api</link>, the s3d widget library is 
+	Assuming you have already read about the low level <link linkend="libs3d">libs3d s3d api</link>, the s3d widget library is 
 	build on top of it and should be (hopefully) easy to use as any other widget library.
 	Just include
 	

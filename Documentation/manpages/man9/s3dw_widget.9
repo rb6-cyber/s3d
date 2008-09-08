@@ -42,5 +42,5 @@ float rz;
 .PP 
 This is the most basic widget type, it contains all the "general" widget information. If you want to move a widget, you'd change x,y,z,s and rx,ry,rz and call s3dw_moveit to turn your action reality. Every other widget has this type as first entry, so a simple typecast to s3dw_widget will give you the widgets "general" information. For typecast, you may use S3DWIDGET(). 
 .PP 
-The pointer ptr allows linking to user-specific datastructures. That comes in handy if the widget is called back by an event, and the program must now find out on which data the user reacted.      
+The pointer ptr allows linking to user-specific data structures. That comes in handy if the widget is called back by an event, and the program must now find out on which data the user reacted.      
 .\" created by instant / docbook-to-man

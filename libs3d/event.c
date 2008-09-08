@@ -77,7 +77,7 @@ struct s3d_evt *s3d_pop_event(void) {
 
 /** \brief find eevnt on stack
  *
- * Finds the latest occurence of an event, giving the event type as argument.
+ * Finds the latest occurrence of an event, giving the event type as argument.
  * Returns a pointer to struct s3d_evt.
  */
 struct s3d_evt *s3d_find_event(uint8_t event) {

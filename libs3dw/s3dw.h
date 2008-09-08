@@ -74,15 +74,15 @@ typedef struct _s3dw_style   s3dw_style;
 /**
  * With s3dw_style you can change the colors/materials of your widgets.
  * materials are in the same as in s3d_push_materials_a, that means
- * red,green,blue and alpha float values (between 0.0 and 1.0) for Ambience,
- * Specular and Diffuse Color.
+ * red,green,blue and alpha float values (between 0.0 and 1.0) for ambience,
+ * specular and diffuse color.
  */
 struct _s3dw_style {
 	char *name;     /**< name of the style ... kind of redundant */
 	char *fontface;    /**< font face for all used fonts */
 	float surface_mat[12];  /**< material for the surface background */
-	float input_mat[12];  /**< material for buttonboxes and other widgets */
-	float inputback_mat[12]; /**< material for inputfield background */
+	float input_mat[12];  /**< material for button boxes and other widgets */
+	float inputback_mat[12]; /**< material for input field background */
 	float text_mat[12];   /**< material for the text on buttons and inputs */
 	float title_mat[12];  /**< material for the title bar */
 	float title_text_mat[12]; /**< material for the text on the title bar */
@@ -95,9 +95,9 @@ struct _s3dw_style {
  * type as first entry, so a simple typecast to s3dw_widget will give you the
  * widgets "general" information. For typecast, you may use S3DWIDGET().
  *
- * The pointer ptr allows linking to user-specific datastructures. That comes in
- * handy if the widget is called back by an event, and the program must now find
- * out on which data the user reacted.
+ * The pointer ptr allows linking to user-specific data structures. That comes
+ * in handy if the widget is called back by an event, and the program must now
+ * find out on which data the user reacted.
  */
  struct _s3dw_widget {
 	/* private .. */
@@ -210,7 +210,7 @@ struct _s3dw_input {
 
 /**
  * A surface is the window of this widget library, holding all of our elements
- * like buttons, inputfields etc ...
+ * like buttons, input fields etc ...
  */
 struct _s3dw_surface {
 	/* private */

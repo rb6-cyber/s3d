@@ -150,7 +150,7 @@ void my_key_handler(struct s3d_evt *event_data)
 <sect2 id="s3d_object_flags">
 <title>S3D Object Flags</title>
 <para>
-Objects can have several flags to change their behaviour in the server and can be set with 
+Objects can have several flags to change their behavior in the server and can be set with
 <link linkend="s3d_flags_on">s3d_flags_on()</link> and
 <link linkend="s3d_flags_off">s3d_flags_off()</link>
 <variablelist>
@@ -160,7 +160,7 @@ Objects can have several flags to change their behaviour in the server and can b
 Obviously, if this flag is toggled the user can see it, if not it will be hidden. ;)
 </para><para>
 When an object is created it's turned off, so you will be able push your geometry data and
-turn it on after you're done. That avaoids flickering and stuff.
+turn it on after you're done. That avoids flickering and stuff.
 </para></listitem>
 </varlistentry>
 
@@ -191,7 +191,7 @@ Placeholder for pointer (onmouseover-event enabler) events. Not implemented yet.
 <title>About alpha transparency</title>
 <para>
 Alpha transparency works, but polygons don't get ordered in view direction on the server yet. So please don't
-use this feature yet. If you have an easy idea how to do that with opengl please drop me a line.
+use this feature yet. If you have an easy idea how to do that with OpenGL please drop me a line.
 </para>
 </sect2>
 </sect1>
