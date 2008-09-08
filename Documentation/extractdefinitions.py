@@ -442,7 +442,7 @@ class docbook_functions:
 		for func in functionlist:
 			sgml = docbook_functions.generate_sgml(func, synopsis)
 			link_refids(sgml, refidlist)
-			cleanml = filter_xmldirectclosed(sgml.toxml())
+			cleanml = filter_xmldirectclosed(sgml.toxml()+'\n')
 			func_file.write(cleanml)
 		func_file.close()
 
@@ -494,7 +494,7 @@ class docbook_structs:
 		for struct in structlist:
 			sgml = docbook_structs.generate_sgml(struct)
 			link_refids(sgml, refidlist)
-			cleanml = filter_xmldirectclosed(sgml.toxml())
+			cleanml = filter_xmldirectclosed(sgml.toxml()+'\n')
 			struct_file.write(cleanml)
 		struct_file.close()
 
@@ -543,7 +543,7 @@ class docbook_typedefs:
 		for typedef in typedeflist:
 			sgml = docbook_typedefs.generate_sgml(typedef)
 			link_refids(sgml, refidlist)
-			cleanml = filter_xmldirectclosed(sgml.toxml())
+			cleanml = filter_xmldirectclosed(sgml.toxml()+'\n')
 			typedef_file.write(cleanml)
 		typedef_file.close()
 
