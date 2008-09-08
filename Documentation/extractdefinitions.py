@@ -466,7 +466,10 @@ class docbook_functions:
 		funcprototype = create_append(funcsynopsis, 'funcprototype')
 
 		funcdef = create_append(funcprototype, 'funcdef')
-		create_append_text(funcdef, function['return']+" ")
+		create_append_text(funcdef, function['return'])
+		if function['return'][-1:] != "*":
+				# dont add space between * and name
+				create_append_text(funcdef, " ")
 
 		func = create_append(funcdef, 'function')
 		create_append_text(func, function['name'])
@@ -624,7 +627,10 @@ class manpage_functions:
 		funcprototype = create_append(funcsynopsis, 'funcprototype')
 
 		funcdef = create_append(funcprototype, 'funcdef')
-		create_append_text(funcdef, function['return']+" ")
+		create_append_text(funcdef, function['return'])
+		if function['return'][-1:] != "*":
+				# dont add space between * and name
+				create_append_text(funcdef, " ")
 
 		func = create_append(funcdef, 'function')
 		create_append_text(func, function['name'])
