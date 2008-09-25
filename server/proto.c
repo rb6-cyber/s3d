@@ -24,9 +24,9 @@
 
 #include "global.h"
 #include "proto.h"
-/* #include <string.h>  / *  memcpy() * / */
 #include <stdlib.h>  /*  malloc() */
 #include <string.h>  /*  strncpy(),memset() */
+#include <stdint.h>
 #ifdef WIN32
 #include <winsock2.h>
 #else
@@ -61,7 +61,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 		}
 	}
 	length = ntohs(*((uint16_t *)((uint8_t *)pbuf + 1)));
-	cptr = buf = pbuf + 3;
+	cptr = buf = pbuf + sizeof(int_least32_t);
 	/*  if (mcp_oid==-1) s3dprintf(HIGH,"couldn't find mcp-oid for pid %d!",p->id); */
 	switch (command) {
 	case S3D_P_C_INIT:

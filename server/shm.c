@@ -42,6 +42,7 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <time.h> /* nanosleep() */
+#include <stdint.h>
 
 static struct t_shmcb waiting_comblock;
 
@@ -243,7 +244,7 @@ int shm_prot_com_in(struct t_process *p)
 			length = ntohs(*((uint16_t *)((uint8_t *)ibuf + 1)));
 			s3dprintf(VLOW, "command %d, length %d", ibuf[0], length);
 			if (length > 0) {
-				shm_readn(dai, ibuf + 3, length);
+				shm_readn(dai, ibuf + sizeof(int_least32_t), length);
 			}
 			prot_com_in(p, ibuf);
 		}
