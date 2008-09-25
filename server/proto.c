@@ -304,17 +304,17 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 	case S3D_P_C_UPDATE_TEX:
 		if (length == 16) {
 			oid = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+			cptr += sizeof(uint32_t);
 			toid = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+			cptr += sizeof(uint32_t);
 			x = ntohs(*((uint16_t *)cptr));
-			cptr += 2;
+			cptr += sizeof(uint16_t);
 			y = ntohs(*((uint16_t *)cptr));
-			cptr += 2;
+			cptr += sizeof(uint16_t);
 			w = ntohs(*((uint16_t *)cptr));
-			cptr += 2;
+			cptr += sizeof(uint16_t);
 			h = ntohs(*((uint16_t *)cptr));
-			cptr += 2;
+
 			s3dprintf(VLOW, "UPDATE_TEX[%d]: oid %d, texture %d, [%d x %d] data at [%d x %d] ", length, oid, toid, w, h, x, y);
 			obj_update_tex(p, oid, toid, x, y, w, h, NULL);
 		}
@@ -323,9 +323,9 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 	case S3D_P_C_DEL_VERTEX:
 		if (length == 8) {
 			oid = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+			cptr += sizeof(uint32_t);
 			num = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+
 			/*      s3dprintf(LOW,"deleting %d vertices for object oid...%d", num, oid); */
 			obj_del_vertex(p, oid, num);
 		}
@@ -333,9 +333,9 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 	case S3D_P_C_DEL_POLY:
 		if (length == 8) {
 			oid = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+			cptr += sizeof(uint32_t);
 			num = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+
 			/*      s3dprintf(LOW,"deleting %d vertices for object oid...%d", num, oid); */
 			obj_del_poly(p, oid, num);
 		}
@@ -343,9 +343,9 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 	case S3D_P_C_DEL_LINE:
 		if (length == 8) {
 			oid = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+			cptr += sizeof(uint32_t);
 			num = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+
 			s3dprintf(VLOW, "deleting %d lines for object oid...%d", num, oid);
 			obj_del_line(p, oid, num);
 		}
@@ -354,9 +354,9 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 	case S3D_P_C_DEL_MAT:
 		if (length == 8) {
 			oid = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+			cptr += sizeof(uint32_t);
 			num = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+
 			/*      s3dprintf(LOW,"deleting %d materials for object oid...%d", num, oid); */
 			obj_del_mat(p, oid, num);
 		}
@@ -364,9 +364,9 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 	case S3D_P_C_DEL_TEX:
 		if (length == 8) {
 			oid = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+			cptr += sizeof(uint32_t);
 			num = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+
 			/*      s3dprintf(LOW,"deleting %d textures for object oid...%d", num, oid); */
 			obj_del_tex(p, oid, num);
 		}
@@ -374,18 +374,18 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 	case S3D_P_C_TOGGLE_FLAGS:
 		if (length == 9) {
 			oid = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+			cptr += sizeof(uint32_t);;
 			type = *cptr;
-			cptr += 1;
+			cptr += sizeof(unsigned char);
 			flags = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+
 			obj_toggle_flags(p, oid, type, flags);
 		}
 		break;
 	case S3D_P_C_TRANSLATE:
 		if (length >= 16) {
 			oid = ntohl(*((uint32_t *)cptr));
-			cptr += 4;
+			cptr += sizeof(uint32_t);
 			ntohfb((float *)cptr, 3);
 			obj_translate(p, oid, (float *)cptr);
 		}

@@ -250,7 +250,6 @@ static int model_load(char *file)
 				s3d_push_polygons(obj_id, polybuf, npoly);
 				if (oldflags & G3D_FLAG_FAC_NORMALS)  s3d_pep_polygon_normals(obj_id, normalbuf,   npoly);
 				if (oldflags & G3D_FLAG_FAC_TEXMAP)   s3d_pep_polygon_tex_coords(obj_id, texcoordbuf, npoly);
-				npoly = 0;
 			}
 
 			voff += object->vertex_count; /* increase vertex offset */
