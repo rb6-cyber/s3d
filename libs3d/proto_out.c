@@ -685,7 +685,7 @@ int s3d_load_polygon_normals(int object, const float *nbuf, uint32_t start, uint
 		else
 			flen = (len - i * stepl);
 		memcpy(ptr, (char *)nbuf + i*stepl, flen);
-		net_send(S3D_P_C_PEP_POLY_NORMAL, buf, flen + 8);
+		net_send(S3D_P_C_LOAD_POLY_NORMAL, buf, flen + 8);
 		mstart += stepl;
 	}
 	return(0);
@@ -713,7 +713,7 @@ int s3d_load_line_normals(int object, const float *nbuf, uint32_t start, uint16_
 		else
 			flen = (len - i * stepl);
 		memcpy(ptr, (char *)nbuf + i*stepl, flen);
-		net_send(S3D_P_C_PEP_LINE_NORMAL, buf, flen + 8);
+		net_send(S3D_P_C_LOAD_LINE_NORMAL, buf, flen + 8);
 		mstart += stepl;
 	}
 	return(0);
@@ -741,7 +741,7 @@ int s3d_load_polygon_tex_coords(int object, const float *tbuf, uint32_t start, u
 		else
 			flen = (len - i * stepl);
 		memcpy(ptr, (char *)tbuf + i*stepl, flen);
-		net_send(S3D_P_C_PEP_POLY_TEXC, buf, flen + 8);
+		net_send(S3D_P_C_LOAD_POLY_TEXC, buf, flen + 8);
 		mstart += stepl;
 	}
 	return(0);
@@ -769,7 +769,7 @@ int s3d_load_materials_a(int object, const float *mbuf, uint32_t start, uint16_t
 		else
 			flen = (len - i * stepl);
 		memcpy(ptr, (char *)mbuf + i*stepl, flen);
-		net_send(S3D_P_C_PEP_MAT, buf, flen + 8);
+		net_send(S3D_P_C_LOAD_MAT, buf, flen + 8);
 		mstart += stepl;
 	}
 	return(0);
