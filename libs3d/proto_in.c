@@ -86,8 +86,9 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 				keyevent->state = ntohs(keyevent->state);
 				s3devt->buf = buf;
 				s3devt->event = (keyevent->state == 0) ? S3D_EVENT_KEYDOWN : S3D_EVENT_KEYUP;
+
+				s3dprintf(VLOW, "S3D_P_S_KEY: key %d hit!!", *((uint16_t *)s3devt->buf));
 			}
-			s3dprintf(VLOW, "S3D_P_S_KEY: key %d hit!!", *((uint16_t *)s3devt->buf));
 		}
 		break;
 	case S3D_P_S_MBUTTON:
@@ -96,8 +97,8 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 				s3devt->event = S3D_EVENT_MBUTTON;
 				s3devt->length = 2;
 				s3devt->buf = buf;
+				s3dprintf(VLOW, "S3D_P_S_MBUTTON: mbutton %d, state %d !!", *((uint8_t *)s3devt->buf), *(1 + (uint8_t *)s3devt->buf));
 			}
-			s3dprintf(VLOW, "S3D_P_S_MBUTTON: mbutton %d, state %d !!", *((uint8_t *)s3devt->buf), *(1 + (uint8_t *)s3devt->buf));
 		}
 		break;
 	case S3D_P_MCP_OBJECT:

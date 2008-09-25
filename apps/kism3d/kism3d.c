@@ -227,8 +227,15 @@ static void parse_buffer(struct kismet_src *kismet_src)
 
 				}
 
-				wlan_network->type = atoi(type);
-				wlan_network->chan = atoi(channel);
+				if (channel != NULL)
+					wlan_network->chan = atoi(channel);
+				else
+					wlan_network->chan = 0;
+
+				if (type != NULL)
+					wlan_network->type = atoi(type);
+				else
+					wlan_network->type = 0;
 
 				if (wlan_network->ssid != NULL)
 					free(wlan_network->ssid);
