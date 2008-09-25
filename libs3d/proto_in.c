@@ -28,6 +28,7 @@
 #include <netinet/in.h>  /*  htons(),htonl() */
 #include <errno.h>   /*  errno */
 #include <stdlib.h>   /*  malloc(), free() */
+
 /*  this proccesses the commands and pushes s3d-events, or does other things ;) */
 int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 {
@@ -108,6 +109,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 				s3devt->length = length;
 				mo = (struct mcp_object *)buf;
 				*((uint32_t *)buf) = ntohl(*((uint32_t *)buf));  /*  revert oid */
+				ntohfb(&mo->trans_x, 4);
 
 				buf[length-1] = '\0';  /*  put a null byte at the end  */
 				/*  for the not so careful users */
@@ -127,6 +129,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 				oi = (struct s3d_obj_info *)buf;
 				oi->object = ntohl(oi->object);
 				oi->flags = ntohl(oi->flags);
+				ntohfb(&oi->trans_x, 8);
 
 				buf[length-1] = '\0';  /*  put a null byte at the end  */
 				/*  for the not so careful users */

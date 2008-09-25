@@ -37,7 +37,6 @@
 int focus_oid = -1;  /*  initially focus the pid */
 /*  handle an incoming command from the client .. */
 
-
 int prot_com_in(struct t_process *p, uint8_t *pbuf)
 {
 	uint8_t  command;
@@ -115,6 +114,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			oid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
 			num = (length - 4) / (4 * 3);
+			ntohfb((float *)cptr, num * 3);
 			/*      s3dprintf(LOW,"received %d new vertices for object oid...%d", num, oid); */
 			obj_push_vertex(p, oid, (float  *)cptr, num);
 		}
@@ -124,6 +124,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			oid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
 			num = (length - 4) / (4 * 12);
+			ntohfb((float *)cptr, num * 12);
 			/*      s3dprintf(LOW,"received %d new materials for object oid...%d", num, oid); */
 			obj_push_mat(p, oid, (float *)cptr, num);
 		}
@@ -134,9 +135,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			cptr += 4;
 			num = (length - 4) / (4 * 4);
 			/*      s3dprintf(LOW,"received %d new polygons for object oid...%d", num, oid); */
-			for (i = 0;i < (num*4);i++)
-				*((uint32_t *)cptr + i) =
-				        ntohl(*((uint32_t *)cptr + i));
+			ntohlb((uint32_t *)cptr, num*4);
 			/*  convert index names */
 			obj_push_poly(p, oid, (uint32_t *)cptr, num);
 		}
@@ -147,9 +146,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			cptr += 4;
 			num = (length - 4) / (4 * 3);
 			s3dprintf(VLOW, "received %d new lines for object oid...%d", num, oid);
-			for (i = 0;i < (num*3);i++)
-				*((uint32_t *)cptr + i) =
-				        ntohl(*((uint32_t *)cptr + i));
+			ntohlb((uint32_t *)cptr, num*3);
 			/*  convert index names */
 			obj_push_line(p, oid, (uint32_t *)cptr, num);
 		}
@@ -160,9 +157,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			cptr += 4;
 			num = (length - 4) / (2 * 2);
 			s3dprintf(LOW, "received %d new textures for object oid...%d", num, oid);
-			for (i = 0;i < (num*2);i++)
-				*((uint16_t *)cptr + i) =
-				        ntohs(*((uint16_t *)cptr + i));
+			ntohsb((uint16_t *)cptr , num*2);
 			/*  convert index names */
 			obj_push_tex(p, oid, (uint16_t *)cptr, num);
 		}
@@ -172,6 +167,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			oid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
 			num = (length - 4) / (9 * 4);
+			ntohfb((float *)cptr, num * 9);
 			s3dprintf(VLOW, "PEP_POLY_NORMAL[%d]: oid %d, %f polys", length, oid, (length - 4) / (9.0*4.0));
 			obj_pep_poly_normal(p, oid, (float *)cptr, num);
 		}
@@ -181,6 +177,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			oid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
 			num = (length - 4) / (6 * 4);
+			ntohfb((float *)cptr, num * 6);
 			s3dprintf(VLOW, "PEP_LINE_NORMAL[%d]: oid %d, %.1f lines", length, oid, (length - 4) / (6.0*4.0));
 			obj_pep_line_normal(p, oid, (float *)cptr, num);
 		}
@@ -190,6 +187,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			oid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
 			num = (length - 4) / (6 * 4);
+			ntohfb((float *)cptr, num * 6);
 			s3dprintf(VLOW, "PEP_POLY_TEXC[%d]: oid %d, %f polys", length, oid, (length - 4) / (6.0*4.0));
 			obj_pep_poly_texc(p, oid, (float *)cptr, num);
 		}
@@ -199,6 +197,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			oid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
 			num = (length - 4) / (4 * 12);
+			ntohfb((float *)cptr, num * 12);
 			s3dprintf(VLOW, "PEP_MAT[%d]: %d materials for object oid...%d", length, num, oid);
 			obj_pep_mat(p, oid, (float *)cptr, num);
 		}
@@ -208,6 +207,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			oid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
 			num = (length - 4) / (4 * 3);
+			ntohfb((float *)cptr, num * 3);
 			s3dprintf(VLOW, "pepping %d new vertices for object oid...%d", num, oid);
 			obj_pep_vertex(p, oid, (float  *)cptr, num);
 		}
@@ -219,9 +219,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			cptr += 4;
 			num = (length - 4) / (4);
 			s3dprintf(VLOW, "PEP_MAT_TEX[%d]: %d materials for object oid...%d", length, num, oid);
-			for (i = 0;i < num;i++)
-				*((uint32_t *)cptr + i) =
-				        ntohl(*((uint32_t *)cptr + i));
+			ntohlb((uint32_t *)cptr, num);
 			obj_pep_mat_tex(p, oid, (uint32_t *)cptr, num);
 		}
 		break;
@@ -231,9 +229,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			cptr += 4;
 			num = (length - 4) / (4 * 3);
 			s3dprintf(VLOW, "pepping %d new lines for object oid...%d", num, oid);
-			for (i = 0;i < (num*3);i++)
-				*((uint32_t *)cptr + i) =
-				        ntohl(*((uint32_t *)cptr + i));
+			ntohlb((uint32_t *)cptr, num*3);
 			obj_pep_line(p, oid, (uint32_t *)cptr, num);
 		}
 		break;
@@ -244,6 +240,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			toid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
 			num = (length - 8) / (6 * 4);
+			ntohfb((float *)cptr, num * 6);
 			s3dprintf(VLOW, "LOAD_POLY_NORMAL[%d]: oid %d, %.2f lines", length, oid, (length - 8) / (6.0*4.0));
 			obj_load_line_normal(p, oid, (float *)cptr, toid, num);
 		}
@@ -255,6 +252,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			toid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
 			num = (length - 8) / (9 * 4);
+			ntohfb((float *)cptr, num * 9);
 			s3dprintf(MED, "LOAD_POLY_NORMAL[%d]: oid %d, %f polys", length, oid, (length - 8) / (9.0*4.0));
 			obj_load_poly_normal(p, oid, (float *)cptr, toid, num);
 		}
@@ -266,6 +264,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			toid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
 			num = (length - 8) / (6 * 4);
+			ntohfb((float *)cptr, num * 6);
 			s3dprintf(MED, "LOAD_POLY_TEXC[%d]: oid %d, %f polys", length, oid, (length - 8) / (6.0*4.0));
 			obj_load_poly_texc(p, oid, (float *)cptr, toid, num);
 		}
@@ -277,6 +276,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			toid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
 			num = (length - 8) / (4 * 12);
+			ntohfb((float *)cptr, num * 12);
 			s3dprintf(LOW, "LOAD_MAT[%d]: %d materials for object oid...%d", length, num, oid);
 			obj_load_mat(p, oid, (float *)cptr, toid, num);
 		}
@@ -386,6 +386,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 		if (length >= 16) {
 			oid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
+			ntohfb((float *)cptr, 3);
 			obj_translate(p, oid, (float *)cptr);
 		}
 		break;
@@ -393,6 +394,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 		if (length >= 16) {
 			oid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
+			ntohfb((float *)cptr, 3);
 			obj_rotate(p, oid, (float *)cptr);
 		}
 		break;
@@ -400,6 +402,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 		if (length >= 8) {
 			oid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
+			ntohfb((float *)cptr, 3);
 			obj_scale(p, oid, *((float *)cptr));
 		}
 		break;

@@ -1,7 +1,7 @@
 include_directories(${s3d_SOURCE_DIR}/libs3d)
 
 # base files
-set(server_src allocate.c cull.c error.c event.c graphics.c
+set(server_src allocate.c cull.c endian.c error.c event.c graphics.c
 	main.c matrix.c mcp.c navigation.c network.c object.c
 	process.c proto.c shm.c	shm_ringbuf.c tcp.c user.c)
 

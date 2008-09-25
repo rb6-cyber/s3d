@@ -31,7 +31,6 @@
 #endif
 #include <string.h>    /*  strncpy() */
 
-
 /*  this interacts with the actual mcp client */
 struct mcp_object {
 	uint32_t object;
@@ -73,6 +72,8 @@ int mcp_rep_object(int32_t mcp_oid)
 	mo.trans_y = p->object[mcp_oid]->translate.y;
 	mo.trans_z = p->object[mcp_oid]->translate.z;
 	mo.r = p->object[mcp_oid]->r;
+
+	htonfb(&mo.trans_x, 4);
 	/*  mo.event=MCP_NEW_OBJECT; */
 	ap = get_proc_by_pid(p->object[mcp_oid]->virtual_pid);
 	strncpy(mo.name, ap->name, S3D_NAME_MAX);

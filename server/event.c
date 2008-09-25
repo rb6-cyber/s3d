@@ -179,6 +179,7 @@ int event_obj_info(struct t_process *p, int32_t oid)
 			break;
 
 		}
+		htonfb(&mo.trans_x, 8);
 		prot_com_out(p, S3D_P_S_OINFO, (uint8_t *)&mo, sizeof(mo));
 	}
 	return(0);
