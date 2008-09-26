@@ -442,7 +442,7 @@ class docbook_functions:
 		for func in functionlist:
 			sgml = docbook_functions.generate_sgml(func, synopsis)
 			link_refids(sgml, refidlist)
-			cleanml = filter_xmldirectclosed(sgml.toxml()+'\n')
+			cleanml = sgml.toxml()+'\n'
 			func_file.write(cleanml)
 		func_file.close()
 
@@ -476,8 +476,11 @@ class docbook_functions:
 
 		# add parameter to function definition
 		param_num = len(function['param'])
-		for i in range(0, param_num):
-			function['param'][i].dom_append(funcprototype)
+		if param_num == 1 and function['param'][0].is_void():
+			void = create_append(funcprototype, 'void')
+		else:
+			for i in range(0, param_num):
+				function['param'][i].dom_append(funcprototype)
 
 		# add help to function
 		function['help'].dom_append(sect2)
@@ -497,7 +500,7 @@ class docbook_structs:
 		for struct in structlist:
 			sgml = docbook_structs.generate_sgml(struct)
 			link_refids(sgml, refidlist)
-			cleanml = filter_xmldirectclosed(sgml.toxml()+'\n')
+			cleanml = sgml.toxml()+'\n'
 			struct_file.write(cleanml)
 		struct_file.close()
 
@@ -546,7 +549,7 @@ class docbook_typedefs:
 		for typedef in typedeflist:
 			sgml = docbook_typedefs.generate_sgml(typedef)
 			link_refids(sgml, refidlist)
-			cleanml = filter_xmldirectclosed(sgml.toxml()+'\n')
+			cleanml = sgml.toxml()+'\n'
 			typedef_file.write(cleanml)
 		typedef_file.close()
 
