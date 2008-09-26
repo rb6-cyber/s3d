@@ -9,7 +9,7 @@ if (DOCBOOK2HTML_COMPILER)
 	add_custom_command(
 		OUTPUT  ${Documentation_BINARY_DIR}/doc_output/index.html
 		COMMAND ${DOCBOOK2HTML_COMPILER}
-		ARGS    ${Documentation_SOURCE_DIR}/s3d.docbook -o ${Documentation_BINARY_DIR}/doc_output
+		ARGS    ${DOCBOOK2HTML_ARGS} ${Documentation_SOURCE_DIR}/s3d.docbook -o ${Documentation_BINARY_DIR}/doc_output
 		DEPENDS ${Documentation_SOURCE_DIR}/s3d.docbook
 			${Documentation_SOURCE_DIR}/bookinfo.docbook
 			${Documentation_SOURCE_DIR}/server/server.docbook
@@ -26,7 +26,7 @@ if (DOCBOOK2HTML_COMPILER)
 	set(DOC_DIR ${CMAKE_INSTALL_PREFIX}/share/doc/s3d)
 	install(CODE "file(GLOB DOCS ${Documentation_BINARY_DIR}/doc_output/*)\n foreach(file \${DOCS}) \n file(INSTALL DESTINATION ${DOC_DIR} TYPE FILE FILES \"\${file}\") \n endforeach (file \"\${DOCS}\")")
 else (DOCBOOK2HTML_COMPILER)
-	PkgStatus_Later("docbook2html (pkg name: docbook-utils)")
+	PkgStatus_Later("xmlto (pkg name: xmlto)")
 
 	# print late status
 	Collected_PkgStatus("documentation")
