@@ -304,6 +304,19 @@ def create_append(father, node_type):
 	return t
 
 """
+Create new processing instruction with tag name node_type and add it to father
+"""
+def create_append_pi(father, node_type, instruction):
+	if father.ownerDocument:
+		t = father.ownerDocument.createProcessingInstruction(node_type, instruction)
+	else:
+		# no father -> so it must be a document
+		t = father.createProcessingInstruction(node_type, instruction)
+
+	father.appendChild(t)
+	return t
+
+"""
 Create new text node with text and add it to father
 """
 def create_append_text(father, text):
@@ -460,6 +473,8 @@ class docbook_functions:
 
 		# prototype
 		funcprototype = create_append(funcsynopsis, 'funcprototype')
+
+		dbhtml = create_append_pi(funcsynopsis, 'dbhtml', "funcsynopsis-style='ansi'")
 
 		funcdef = create_append(funcprototype, 'funcdef')
 		create_append_text(funcdef, function['return'])
@@ -624,6 +639,8 @@ class manpage_functions:
 
 		# prototype
 		funcprototype = create_append(funcsynopsis, 'funcprototype')
+
+		dbhtml = create_append_pi(funcsynopsis, 'dbhtml', "funcsynopsis-style='ansi'")
 
 		funcdef = create_append(funcprototype, 'funcdef')
 		create_append_text(funcdef, function['return'])
