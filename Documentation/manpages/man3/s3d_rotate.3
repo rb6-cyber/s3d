@@ -1,33 +1,45 @@
-.TH "s3d_rotate" "3" 
-.SH "NAME" 
-s3d_rotate \(em rotate object 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_rotate\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	float \fBx\fR\fR, 
-\fB	float \fBy\fR\fR, 
-\fB	float \fBz\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Rotate an object around the x, y and z-axis respectively. x,y,z may have values between [0,360] degrees. 
-.PP 
-You will usually only rotate around one axis, leaving the unused fields on 0, I guess. If you want to rotate around more than one axis, please note: The order of the rotation applies is y-axis, x-axis, and then z-axis. You can think of it as the earth position coordinates: x is the longitude, y is the latitude, and z is the rotation at this point of the earth around your bodies axis. (I wonder if that makes it any clearer ;) 
-.PP 
-.RS 
-\fBWarning:   
-.PP 
-Rotate is absolute, not relative! 
-.RE 
-.PP 
-.nf 
-s3d_rotate(object, 90,  0, 0); 
-s3d_rotate(object, 180, 0, 0); 
-// object will be rotated 180 degrees around the x-axis, not 270 degress! 
-.fi 
-.PP 
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_rotate
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_ROTATE" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_rotate \- rotate object
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 15
+.BI "int s3d_rotate(int\ " "object" ", float\ " "x" ", float\ " "y" ", float\ " "z" ");"
+.SH "DESCRIPTION"
+.PP
+Rotate an object around the x, y and z\-axis respectively\&. x,y,z may have values between [0,360] degrees\&.
+.PP
+You will usually only rotate around one axis, leaving the unused fields on 0, I guess\&. If you want to rotate around more than one axis, please note: The order of the rotation applies is y\-axis, x\-axis, and then z\-axis\&. You can think of it as the earth position coordinates: x is the longitude, y is the latitude, and z is the rotation at this point of the earth around your bodies axis\&. (I wonder if that makes it any clearer ;)
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Warning
+.PP
+Rotate is absolute, not relative!
+
+.sp
+.RS 4
+.nf
+ s3d_rotate(object, 90,  0, 0);
+ s3d_rotate(object, 180, 0, 0);
+ // object will be rotated 180 degrees around the x\-axis, not 270 degress!
+.fi
+.RE

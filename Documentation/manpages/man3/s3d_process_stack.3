@@ -1,18 +1,30 @@
-.TH "s3d_process_stack" "3" 
-.SH "NAME" 
-s3d_process_stack \(em process all events on stack 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBvoid \fBs3d_process_stack\fP\fR(\fBvoid\fR) 
-.fi 
-.SH "Description" 
-.PP 
-This function goes through all function of the event-stack and will call functions. this is useful when you define a new function but still have a lot of events of this type on the stack. 
-.PP 
-Deprecated 
-.PP 
-This is probably obsolete          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_process_stack
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_PROCESS_STACK" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_process_stack \- process all events on stack
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 23
+.BI "void s3d_process_stack(void);"
+.SH "DESCRIPTION"
+.PP
+This function goes through all function of the event\-stack and will call functions\&. this is useful when you define a new function but still have a lot of events of this type on the stack\&.
+.PP
+Deprecated
+.PP
+This is probably obsolete

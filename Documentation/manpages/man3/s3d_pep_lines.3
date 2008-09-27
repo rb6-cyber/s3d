@@ -1,17 +1,26 @@
-.TH "s3d_pep_lines" "3" 
-.SH "NAME" 
-s3d_pep_lines \(em rewrite lines 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_pep_lines\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	const uint32_t *\fBlbuf\fR\fR, 
-\fB	uint16_t \fBn\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Alter the latest n pushed lines. lbuf holds the values which are used to overwrite the old data, n entries with each 3 uint32_t specifying first, second vertex and material of each line.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_pep_lines
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_PEP_LINES" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_pep_lines \- rewrite lines
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 18
+.BI "int s3d_pep_lines(int\ " "object" ", const\ uint32_t\ *" "lbuf" ", uint16_t\ " "n" ");"
+.SH "DESCRIPTION"
+.PP
+Alter the latest n pushed lines\&. lbuf holds the values which are used to overwrite the old data, n entries with each 3 uint32_t specifying first, second vertex and material of each line\&.

@@ -1,18 +1,26 @@
-.TH "s3d_push_line" "3" 
-.SH "NAME" 
-s3d_push_line \(em push line 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_push_line\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	uint32_t \fBv1\fR\fR, 
-\fB	uint32_t \fBv2\fR\fR, 
-\fB	uint32_t \fBmaterial\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Push one line on the line stack of the object. It takes 2 vertex-index-no, and one material material-index-no. as argument. If you have a lot of lines to push, use s3d_push_lines()          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_push_line
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_PUSH_LINE" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_push_line \- push line
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 18
+.BI "int s3d_push_line(int\ " "object" ", uint32_t\ " "v1" ", uint32_t\ " "v2" ", uint32_t\ " "material" ");"
+.SH "DESCRIPTION"
+.PP
+Push one line on the line stack of the object\&. It takes 2 vertex\-index\-no, and one material material\-index\-no\&. as argument\&. If you have a lot of lines to push, use s3d_push_lines()

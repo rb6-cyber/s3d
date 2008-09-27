@@ -1,17 +1,26 @@
-.TH "s3d_pep_materials_a" "3" 
-.SH "NAME" 
-s3d_pep_materials_a \(em rewrite materials with alpha 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_pep_materials_a\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	const float *\fBmbuf\fR\fR, 
-\fB	uint16_t \fBn\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Alters the last n pushed materials. See s3d_push_materials_a() for more information how mbuf should look like. Use s3d_pep_material_a() if you only want to alter the latest material.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_pep_materials_a
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_PEP_MATERIALS_A" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_pep_materials_a \- rewrite materials with alpha
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 24
+.BI "int s3d_pep_materials_a(int\ " "object" ", const\ float\ *" "mbuf" ", uint16_t\ " "n" ");"
+.SH "DESCRIPTION"
+.PP
+Alters the last n pushed materials\&. See s3d_push_materials_a() for more information how mbuf should look like\&. Use s3d_pep_material_a() if you only want to alter the latest material\&.

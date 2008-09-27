@@ -1,18 +1,26 @@
-.TH "s3d_load_line_normals" "3" 
-.SH "NAME" 
-s3d_load_line_normals \(em add normals to line 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_load_line_normals\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	const float *\fBnbuf\fR\fR, 
-\fB	uint32_t \fBstart\fR\fR, 
-\fB	uint16_t \fBn\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Just as s3d_pep_line_normals(), with the difference you won't alter the latest n lines but n lines starting with index start.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_load_line_normals
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_LOAD_LINE_NORMAL" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_load_line_normals \- add normals to line
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 26
+.BI "int s3d_load_line_normals(int\ " "object" ", const\ float\ *" "nbuf" ", uint32_t\ " "start" ", uint16_t\ " "n" ");"
+.SH "DESCRIPTION"
+.PP
+Just as s3d_pep_line_normals(), with the difference you won\'t alter the latest n lines but n lines starting with index start\&.

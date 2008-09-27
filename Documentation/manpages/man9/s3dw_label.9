@@ -1,22 +1,35 @@
-.TH "_s3dw_label" "9" 
-.SH "NAME" 
-struct _s3dw_label \(em  
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3dw.h> 
-.fi 
-.SH "Structure Members" 
-.PP 
-.nf 
-struct _s3dw_label { 
-s3dw_widget widget; 
-char *text; 
-s3dw_callback onclick; 
-} 
-.fi 
-.PP 
-.SH "Description" 
-.PP 
-The labels is an label-field where a user may type things. onclick reacts on click in the field.      
-.\" created by instant / docbook-to-man
+.\"     Title: _s3dw_label
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "_S3DW_LABEL" "9" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3dw_label
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3dw\&.h>
+.fi
+.ft
+.SH "STRUCTURE MEMBERS"
+.sp
+.RS 4
+.nf
+struct _s3dw_label {
+	s3dw_widget widget;
+	char *text;
+	s3dw_callback onclick;
+}
+.fi
+.RE
+.SH "DESCRIPTION"
+.PP
+The labels is an label\-field where a user may type things\&. onclick reacts on click in the field\&.

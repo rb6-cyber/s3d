@@ -1,19 +1,28 @@
-.TH "s3d_pep_polygon_normals" "3" 
-.SH "NAME" 
-s3d_pep_polygon_normals \(em add normals to polygon 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_pep_polygon_normals\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	const float *\fBnbuf\fR\fR, 
-\fB	uint16_t \fBn\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Adds normal information to polygons, giving each vertex of a polygon a normal information. With this, you can achieve smoothed edge effects. 
-.PP 
-nbuf should contain n * 9 float values, for each vertex a normal vector (x,y,z), and you have 3 vertices for each Polygon so that makes 9 float values per Polygon in total. Don't worry if you don't use this, it's kind of hard to calculate and the server will always use some proper normal values (same for every vertex, calculated by the plane which is defined by the 3 points of the polygon.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_pep_polygon_normals
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_PEP_POLYGON_NORM" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_pep_polygon_normals \- add normals to polygon
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 28
+.BI "int s3d_pep_polygon_normals(int\ " "object" ", const\ float\ *" "nbuf" ", uint16_t\ " "n" ");"
+.SH "DESCRIPTION"
+.PP
+Adds normal information to polygons, giving each vertex of a polygon a normal information\&. With this, you can achieve smoothed edge effects\&.
+.PP
+nbuf should contain n * 9 float values, for each vertex a normal vector (x,y,z), and you have 3 vertices for each Polygon so that makes 9 float values per Polygon in total\&. Don\'t worry if you don\'t use this, it\'s kind of hard to calculate and the server will always use some proper normal values (same for every vertex, calculated by the plane which is defined by the 3 points of the polygon\&.

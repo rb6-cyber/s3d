@@ -1,30 +1,38 @@
-.TH "s3d_push_polygon" "3" 
-.SH "NAME" 
-s3d_push_polygon \(em push polygon 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_push_polygon\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	uint32_t \fBv1\fR\fR, 
-\fB	uint32_t \fBv2\fR\fR, 
-\fB	uint32_t \fBv3\fR\fR, 
-\fB	uint32_t \fBmaterial\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Push one polygon on the polygon stack of the object. It takes 3 vertex-index numbers and one material material-index-no. as argument. 
-.PP 
-.nf 
-int oid = s3d_new_object();   // create a new object 
-s3d_push_vertex(oid, 0.0, 0.0, 0.0); 
-s3d_push_vertex(oid, 0.0, 1.0, 0.0); 
-s3d_push_vertex(oid, 1.0, 0.0, 0.0); 
-s3d_push_material(oid, 0.3, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0); 
-s3d_push_polygon(oid, 0, 1, 2, 0); 
-// this will create a red polygon 
-.fi 
-.PP 
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_push_polygon
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_PUSH_POLYGON" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_push_polygon \- push polygon
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 21
+.BI "int s3d_push_polygon(int\ " "object" ", uint32_t\ " "v1" ", uint32_t\ " "v2" ", uint32_t\ " "v3" ", uint32_t\ " "material" ");"
+.SH "DESCRIPTION"
+.PP
+Push one polygon on the polygon stack of the object\&. It takes 3 vertex\-index numbers and one material material\-index\-no\&. as argument\&.
+.sp
+.RS 4
+.nf
+ int oid = s3d_new_object();   // create a new object
+ s3d_push_vertex(oid, 0\&.0, 0\&.0, 0\&.0);
+ s3d_push_vertex(oid, 0\&.0, 1\&.0, 0\&.0);
+ s3d_push_vertex(oid, 1\&.0, 0\&.0, 0\&.0);
+ s3d_push_material(oid, 0\&.3, 0\&.0, 0\&.0, 1\&.0, 1\&.0, 1\&.0, 1\&.0, 0\&.0, 0\&.0);
+ s3d_push_polygon(oid, 0, 1, 2, 0);
+ // this will create a red polygon
+.fi
+.RE

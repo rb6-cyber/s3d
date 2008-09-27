@@ -1,24 +1,26 @@
-.TH "s3d_push_material" "3" 
-.SH "NAME" 
-s3d_push_material \(em push material 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_push_material\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	float \fBamb_r\fR\fR, 
-\fB	float \fBamb_g\fR\fR, 
-\fB	float \fBamb_b\fR\fR, 
-\fB	float \fBspec_r\fR\fR, 
-\fB	float \fBspec_g\fR\fR, 
-\fB	float \fBspec_b\fR\fR, 
-\fB	float \fBdiff_r\fR\fR, 
-\fB	float \fBdiff_g\fR\fR, 
-\fB	float \fBdiff_b\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Pushes a material for an object. you will have to count them yourself too, as polygons will ask for the material index number. The material properties are given in rgb (red/green/blue) color codes, in float. 0.0 is the minimum, 1.0 is the maximum a color value can be. The specular color is the color which is directly reflected from the light source. The diffuse color is the color which can be seen in the bright side of the object, and the ambience color is the color of the shadow side of the object.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_push_material
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_PUSH_MATERIAL" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_push_material \- push material
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 22
+.BI "int s3d_push_material(int\ " "object" ", float\ " "amb_r" ", float\ " "amb_g" ", float\ " "amb_b" ", float\ " "spec_r" ", float\ " "spec_g" ", float\ " "spec_b" ", float\ " "diff_r" ", float\ " "diff_g" ", float\ " "diff_b" ");"
+.SH "DESCRIPTION"
+.PP
+Pushes a material for an object\&. you will have to count them yourself too, as polygons will ask for the material index number\&. The material properties are given in rgb (red/green/blue) color codes, in float\&. 0\&.0 is the minimum, 1\&.0 is the maximum a color value can be\&. The specular color is the color which is directly reflected from the light source\&. The diffuse color is the color which can be seen in the bright side of the object, and the ambience color is the color of the shadow side of the object\&.

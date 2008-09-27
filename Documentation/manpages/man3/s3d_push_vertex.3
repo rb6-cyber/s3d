@@ -1,18 +1,26 @@
-.TH "s3d_push_vertex" "3" 
-.SH "NAME" 
-s3d_push_vertex \(em push vertex 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_push_vertex\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	float \fBx\fR\fR, 
-\fB	float \fBy\fR\fR, 
-\fB	float \fBz\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Pushes a vertex onto the vertex stack. Make sure that you count how many vertices you've pushed because you'll need that for referencing when you push your polygons.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_push_vertex
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_PUSH_VERTEX" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_push_vertex \- push vertex
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 20
+.BI "int s3d_push_vertex(int\ " "object" ", float\ " "x" ", float\ " "y" ", float\ " "z" ");"
+.SH "DESCRIPTION"
+.PP
+Pushes a vertex onto the vertex stack\&. Make sure that you count how many vertices you\'ve pushed because you\'ll need that for referencing when you push your polygons\&.

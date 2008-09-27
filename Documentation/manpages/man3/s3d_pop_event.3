@@ -1,14 +1,26 @@
-.TH "s3d_pop_event" "3" 
-.SH "NAME" 
-s3d_pop_event \(em pop event from stack 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBstruct s3d_evt *\fBs3d_pop_event\fP\fR(\fBvoid\fR) 
-.fi 
-.SH "Description" 
-.PP 
-Pops the latest event from the stack. Don't forget to free() both the event and its buffer! Returns a pointer to struct s3d_evt.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_pop_event
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_POP_EVENT" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_pop_event \- pop event from stack
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 30
+.BI "struct s3d_evt *s3d_pop_event(void);"
+.SH "DESCRIPTION"
+.PP
+Pops the latest event from the stack\&. Don\'t forget to free() both the event and its buffer! Returns a pointer to struct s3d_evt\&.

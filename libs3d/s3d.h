@@ -110,6 +110,9 @@ struct s3d_but_info {
 	uint8_t button; /* 0 = left, 1 = middle, 2 = right */
 	uint8_t state;  /* 0 = down, 1 = up, 2 = moving */
 };
+/**
+ * Can be used on the buffer of an event of type S3D_EVENT_KEY*.
+ */
 struct s3d_key_event {
 	uint16_t keysym;  /* the symbol, use this with s3d_keysym.h */
 	uint16_t unicode;  /* the unicode or "actually typed" character */

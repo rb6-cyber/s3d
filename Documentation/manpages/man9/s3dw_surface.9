@@ -1,23 +1,36 @@
-.TH "_s3dw_surface" "9" 
-.SH "NAME" 
-struct _s3dw_surface \(em  
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3dw.h> 
-.fi 
-.SH "Structure Members" 
-.PP 
-.nf 
-struct _s3dw_surface { 
-s3dw_widget widget; 
-uint32_t oid_title; 
-uint32_t oid_tbar; 
-char *title; 
-} 
-.fi 
-.PP 
-.SH "Description" 
-.PP 
-A surface is the window of this widget library, holding all of our elements like buttons, input fields etc ...      
-.\" created by instant / docbook-to-man
+.\"     Title: _s3dw_surface
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "_S3DW_SURFACE" "9" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3dw_surface
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3dw\&.h>
+.fi
+.ft
+.SH "STRUCTURE MEMBERS"
+.sp
+.RS 4
+.nf
+struct _s3dw_surface {
+	s3dw_widget widget;
+	uint32_t oid_title;
+	uint32_t oid_tbar;
+	char *title;
+}
+.fi
+.RE
+.SH "DESCRIPTION"
+.PP
+A surface is the window of this widget library, holding all of our elements like buttons, input fields etc \&.\&.\&.

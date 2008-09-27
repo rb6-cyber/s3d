@@ -1,19 +1,28 @@
-.TH "s3d_pep_line_normals" "3" 
-.SH "NAME" 
-s3d_pep_line_normals \(em add normals to lines 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_pep_line_normals\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	const float *\fBnbuf\fR\fR, 
-\fB	uint16_t \fBn\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Adds normal information to lines, giving each vertex of a line a normal information. This makes lines somewhat nicer, you'll need that especially when you're going to build wireframe models. 
-.PP 
-nbuf should contain n * 6 float values, for each vertex a normal vector (x,y,z), and you have 2 vertices for each line so that makes 6 float values per line in total.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_pep_line_normals
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_PEP_LINE_NORMALS" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_pep_line_normals \- add normals to lines
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 25
+.BI "int s3d_pep_line_normals(int\ " "object" ", const\ float\ *" "nbuf" ", uint16_t\ " "n" ");"
+.SH "DESCRIPTION"
+.PP
+Adds normal information to lines, giving each vertex of a line a normal information\&. This makes lines somewhat nicer, you\'ll need that especially when you\'re going to build wireframe models\&.
+.PP
+nbuf should contain n * 6 float values, for each vertex a normal vector (x,y,z), and you have 2 vertices for each line so that makes 6 float values per line in total\&.

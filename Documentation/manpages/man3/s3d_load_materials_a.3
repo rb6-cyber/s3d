@@ -1,18 +1,26 @@
-.TH "s3d_load_materials_a" "3" 
-.SH "NAME" 
-s3d_load_materials_a \(em add materials with alpha to polygons 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_load_materials_a\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	const float *\fBmbuf\fR\fR, 
-\fB	uint32_t \fBstart\fR\fR, 
-\fB	uint16_t \fBn\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Loads n materials starting from index position start into the material stack. See s3d_push_materials_a for more informations about the values in mbuf.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_load_materials_a
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_LOAD_MATERIALS_A" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_load_materials_a \- add materials with alpha to polygons
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 25
+.BI "int s3d_load_materials_a(int\ " "object" ", const\ float\ *" "mbuf" ", uint32_t\ " "start" ", uint16_t\ " "n" ");"
+.SH "DESCRIPTION"
+.PP
+Loads n materials starting from index position start into the material stack\&. See s3d_push_materials_a for more informations about the values in mbuf\&.

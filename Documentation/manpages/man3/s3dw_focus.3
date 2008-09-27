@@ -1,15 +1,26 @@
-.TH "s3dw_focus" "3" 
-.SH "NAME" 
-s3dw_focus \(em give widget focus 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3dw.h> 
-.sp 1 
-\fBvoid \fBs3dw_focus\fP\fR( 
-\fB	s3dw_widget *\fBfocus\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Gives focus to the widget, relative to its parent. That means you can focus a surface, and each surface can focus one of its element, e.g. an input field. Should be casted with S3DWIDGET().          
-.\" created by instant / docbook-to-man
+.\"     Title: s3dw_focus
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3DW_FOCUS" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3dw_focus \- give widget focus
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3dw\&.h>
+.fi
+.ft
+.HP 16
+.BI "void s3dw_focus(s3dw_widget\ *" "focus" ");"
+.SH "DESCRIPTION"
+.PP
+Gives focus to the widget, relative to its parent\&. That means you can focus a surface, and each surface can focus one of its element, e\&.g\&. an input field\&. Should be casted with S3DWIDGET()\&.

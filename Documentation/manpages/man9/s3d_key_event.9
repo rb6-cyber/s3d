@@ -1,21 +1,36 @@
-.TH "s3d_key_event" "9" 
-.SH "NAME" 
-struct s3d_key_event \(em  
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.fi 
-.SH "Structure Members" 
-.PP 
-.nf 
-struct s3d_key_event { 
-uint16_t keysym; 
-uint16_t unicode; 
-uint16_t modifier; 
-uint16_t state; 
-} 
-.fi 
-.PP 
-.SH "Description" 
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_key_event
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_KEY_EVENT" "9" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_key_event
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.SH "STRUCTURE MEMBERS"
+.sp
+.RS 4
+.nf
+struct s3d_key_event {
+	uint16_t keysym;
+	uint16_t unicode;
+	uint16_t modifier;
+	uint16_t state;
+}
+.fi
+.RE
+.SH "DESCRIPTION"
+.PP
+Can be used on the buffer of an event of type S3D_EVENT_KEY*\&.

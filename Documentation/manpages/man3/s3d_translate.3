@@ -1,31 +1,43 @@
-.TH "s3d_translate" "3" 
-.SH "NAME" 
-s3d_translate \(em move object to absolute position 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_translate\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	float \fBx\fR\fR, 
-\fB	float \fBy\fR\fR, 
-\fB	float \fBz\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Move the object to some position in space. when you create an object, it's always located at 0.0 , 0.0, 0.0. 
-.PP 
-.RS 
-\fBWarning:   
-.PP 
-Translation is absolute, not relative! 
-.RE 
-.PP 
-.nf 
-s3d_translate(object, 2, 0, 0); 
-s3d_translate(object, 4, 0, 0); 
-// object will end up at 4,0,0 and not 6,0,0!! 
-.fi 
-.PP 
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_translate
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_TRANSLATE" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_translate \- move object to absolute position
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 18
+.BI "int s3d_translate(int\ " "object" ", float\ " "x" ", float\ " "y" ", float\ " "z" ");"
+.SH "DESCRIPTION"
+.PP
+Move the object to some position in space\&. when you create an object, it\'s always located at 0\&.0 , 0\&.0, 0\&.0\&.
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+Warning
+.PP
+Translation is absolute, not relative!
+
+.sp
+.RS 4
+.nf
+ s3d_translate(object, 2, 0, 0);
+ s3d_translate(object, 4, 0, 0);
+ // object will end up at 4,0,0 and not 6,0,0!!
+.fi
+.RE

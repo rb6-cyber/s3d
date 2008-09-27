@@ -1,27 +1,26 @@
-.TH "s3d_push_material_a" "3" 
-.SH "NAME" 
-s3d_push_material_a \(em push material with alpha 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_push_material_a\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	float \fBamb_r\fR\fR, 
-\fB	float \fBamb_g\fR\fR, 
-\fB	float \fBamb_b\fR\fR, 
-\fB	float \fBamb_a\fR\fR, 
-\fB	float \fBspec_r\fR\fR, 
-\fB	float \fBspec_g\fR\fR, 
-\fB	float \fBspec_b\fR\fR, 
-\fB	float \fBspec_a\fR\fR, 
-\fB	float \fBdiff_r\fR\fR, 
-\fB	float \fBdiff_g\fR\fR, 
-\fB	float \fBdiff_b\fR\fR, 
-\fB	float \fBdiff_a\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Same as s3d_push_material, but color has alpha value added. Use s3d_push_materials_a() if you have a lot of materials to push.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_push_material_a
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_PUSH_MATERIAL_A" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_push_material_a \- push material with alpha
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 24
+.BI "int s3d_push_material_a(int\ " "object" ", float\ " "amb_r" ", float\ " "amb_g" ", float\ " "amb_b" ", float\ " "amb_a" ", float\ " "spec_r" ", float\ " "spec_g" ", float\ " "spec_b" ", float\ " "spec_a" ", float\ " "diff_r" ", float\ " "diff_g" ", float\ " "diff_b" ", float\ " "diff_a" ");"
+.SH "DESCRIPTION"
+.PP
+Same as s3d_push_material, but color has alpha value added\&. Use s3d_push_materials_a() if you have a lot of materials to push\&.

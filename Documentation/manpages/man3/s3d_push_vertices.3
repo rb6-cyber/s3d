@@ -1,25 +1,35 @@
-.TH "s3d_push_vertices" "3" 
-.SH "NAME" 
-s3d_push_vertices \(em push many vertices 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_push_vertices\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	const float *\fBvbuf\fR\fR, 
-\fB	uint16_t \fBn\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Push some vertices from an array. that's much better for performing than using s3d_push_vertex() if you have a lot of vertices (and that's probably the usual case).  
-.PP 
-.nf 
-float vertices[] = { 0.0, 0.0, 0.0, 
-1.0, 2.0, 3.0, 
-3.0, 2.0, 1.0}; 
-s3d_push_vertices(object, vertices, 3); // pushing 3 vertices 
-.fi 
-.PP 
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_push_vertices
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_PUSH_VERTICES" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_push_vertices \- push many vertices
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 22
+.BI "int s3d_push_vertices(int\ " "object" ", const\ float\ *" "vbuf" ", uint16_t\ " "n" ");"
+.SH "DESCRIPTION"
+.PP
+Push some vertices from an array\&. that\'s much better for performing than using s3d_push_vertex() if you have a lot of vertices (and that\'s probably the usual case)\&.
+.sp
+.RS 4
+.nf
+ float vertices[] = { 0\&.0, 0\&.0, 0\&.0,
+                      1\&.0, 2\&.0, 3\&.0,
+                      3\&.0, 2\&.0, 1\&.0};
+ s3d_push_vertices(object, vertices, 3); // pushing 3 vertices
+.fi
+.RE

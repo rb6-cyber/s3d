@@ -1,22 +1,28 @@
-.TH "s3dw_textbox_new" "3" 
-.SH "NAME" 
-s3dw_textbox_new \(em create a new textbox in the surface 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3dw.h> 
-.sp 1 
-\fBs3dw_textbox *\fBs3dw_textbox_new\fP\fR( 
-\fB	const s3dw_surface *\fBsurface\fR\fR, 
-\fB	const char *\fBtext\fR\fR, 
-\fB	float \fBposx\fR\fR, 
-\fB	float \fBposy\fR\fR, 
-\fB	float \fBwidth\fR\fR, 
-\fB	float \fBheight\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Creates a new textbox on the surface, with "text" written on it and the upper left corner at (posx,posy) on the surface. Width and height define the size of the textbox including scrollbars which are rendered around the textfield. 
-.PP 
-See s3dw_textbox for information about callbacks which may be defined.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3dw_textbox_new
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3DW_TEXTBOX_NEW" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3dw_textbox_new \- create a new textbox in the surface
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3dw\&.h>
+.fi
+.ft
+.HP 31
+.BI "s3dw_textbox *s3dw_textbox_new(const\ s3dw_surface\ *" "surface" ", const\ char\ *" "text" ", float\ " "posx" ", float\ " "posy" ", float\ " "width" ", float\ " "height" ");"
+.SH "DESCRIPTION"
+.PP
+Creates a new textbox on the surface, with "text" written on it and the upper left corner at (posx,posy) on the surface\&. Width and height define the size of the textbox including scrollbars which are rendered around the textfield\&.
+.PP
+See s3dw_textbox for information about callbacks which may be defined\&.

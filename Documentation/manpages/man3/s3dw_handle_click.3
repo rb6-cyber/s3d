@@ -1,33 +1,45 @@
-.TH "s3dw_handle_click" "3" 
-.SH "NAME" 
-s3dw_handle_click \(em handle click on widget 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3dw.h> 
-.sp 1 
-\fBint \fBs3dw_handle_click\fP\fR( 
-\fB	const struct s3d_evt *\fBevent\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-If you want your widgets on mouseclicks (believe me, you want that), you have to call this either in your clickhandler-function or specify it itself as the clickhandler. 
-.PP 
-.nf 
-// way 1: 
-s3d_set_callback(S3D_EVENT_OBJ_CLICK,s3dw_handle_click); 
- 
-// way 2: 
-... 
-void click(struct s3d_evt *evt) 
-{ 
-s3dw_handle_click(evt); 
-.... 
-// your own clickhandler code 
-... 
-} 
-.... 
-s3d_set_callback(S3D_EVENT_OBJ_CLICK,click); 
-.fi 
-.PP 
-.\" created by instant / docbook-to-man
+.\"     Title: s3dw_handle_click
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3DW_HANDLE_CLICK" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3dw_handle_click \- handle click on widget
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3dw\&.h>
+.fi
+.ft
+.HP 22
+.BI "int s3dw_handle_click(const\ struct\ s3d_evt\ *" "event" ");"
+.SH "DESCRIPTION"
+.PP
+If you want your widgets on mouseclicks (believe me, you want that), you have to call this either in your clickhandler\-function or specify it itself as the clickhandler\&.
+.sp
+.RS 4
+.nf
+ // way 1:
+ s3d_set_callback(S3D_EVENT_OBJ_CLICK,s3dw_handle_click);
+
+ // way 2:
+ \&.\&.\&.
+ void click(struct s3d_evt *evt)
+ {
+         s3dw_handle_click(evt);
+         \&.\&.\&.\&.
+         // your own clickhandler code
+         \&.\&.\&.
+ }
+ \&.\&.\&.\&.
+ s3d_set_callback(S3D_EVENT_OBJ_CLICK,click);
+.fi
+.RE

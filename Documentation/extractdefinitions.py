@@ -68,10 +68,6 @@ def cleanup_stringbegin(string):
 		new_str = new_str[1:]
 	return new_str
 
-def filter_xmldirectclosed(xml):
-	p = re.compile('<([^<>]+)\s*/>')
-	return p.sub(r'<\1>', xml)
-
 """
 Generate text from all childNodes
 """
@@ -593,7 +589,7 @@ def manpage_header(root, name, refid, mannum, ref_name, ref_namediv, synopsisinf
 	refnamediv = create_append(refentry, 'refnamediv')
 
 	refname = create_append(refnamediv, 'refname')
-	create_append_text(refname, ref_name)
+	create_append_text(refname, cleanup_stringbegin(ref_name))
 	refpurpose = create_append(refnamediv, 'refpurpose')
 	create_append_text(refpurpose, ref_namediv)
 
@@ -612,10 +608,10 @@ class manpage_functions:
 	def generate(synopsis, functionlist):
 		for func in functionlist:
 			func_file = open('./manpages/man3/'+cleanup_stringbegin(func['name'])+'.sgml', "w")
-			func_file.write('<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN">\n')
+			func_file.write('<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"\n'+
+					'"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">\n')
 			sgml = manpage_functions.generate_sgml(func, synopsis)
-			cleanml = filter_xmldirectclosed(sgml.toxml())
-			func_file.write(cleanml)
+			sgml.writexml(func_file)
 			func_file.close()
 
 	"""
@@ -665,10 +661,10 @@ class manpage_structs:
 	def generate(synopsis, structlist):
 		for func in structlist:
 			func_file = open('./manpages/man9/'+cleanup_stringbegin(func['name'])+'.sgml', "w")
-			func_file.write('<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN">\n')
+			func_file.write('<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"\n'+
+					'"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">\n')
 			sgml = manpage_structs.generate_sgml(func, synopsis)
-			cleanml = filter_xmldirectclosed(sgml.toxml())
-			func_file.write(cleanml)
+			sgml.writexml(func_file)
 			func_file.close()
 
 	"""
@@ -677,7 +673,7 @@ class manpage_structs:
 	def generate_sgml(struct, synopsis):
 		sgml = xml.dom.minidom.Document()
 
-		(refentry, funcsynopsis) = manpage_header(sgml, struct['name'], struct['id'], '9', 'struct ' + struct['name'], "", "#include <"+synopsis+">")
+		(refentry, funcsynopsis) = manpage_header(sgml, struct['name'], struct['id'], '9', struct['name'], "", "#include <"+synopsis+">")
 
 		# add definition of struct
 		refsect1 = create_append(refentry, 'refsect1')

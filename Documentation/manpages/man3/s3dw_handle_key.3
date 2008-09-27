@@ -1,33 +1,45 @@
-.TH "s3dw_handle_key" "3" 
-.SH "NAME" 
-s3dw_handle_key \(em handle key input on widget 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3dw.h> 
-.sp 1 
-\fBint \fBs3dw_handle_key\fP\fR( 
-\fB	const struct s3d_evt *\fBevent\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-This is somehow useful to call in your keyhandler functions if you want to have input-boxes work. ;) 
-.PP 
-.nf 
-// way 1: 
-s3d_set_callback(S3D_EVENT_KEY,s3dw_handle_key); 
- 
-// way 2: 
-... 
-void key(struct s3d_evt *evt) 
-{ 
-s3dw_handle_key(evt); 
-.... 
-// your own keyhandler code 
-... 
-} 
-.... 
-s3d_set_callback(S3D_EVENT_KEY,key); 
-.fi 
-.PP 
-.\" created by instant / docbook-to-man
+.\"     Title: s3dw_handle_key
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3DW_HANDLE_KEY" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3dw_handle_key \- handle key input on widget
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3dw\&.h>
+.fi
+.ft
+.HP 20
+.BI "int s3dw_handle_key(const\ struct\ s3d_evt\ *" "event" ");"
+.SH "DESCRIPTION"
+.PP
+This is somehow useful to call in your keyhandler functions if you want to have input\-boxes work\&. ;)
+.sp
+.RS 4
+.nf
+ // way 1:
+ s3d_set_callback(S3D_EVENT_KEY,s3dw_handle_key);
+
+ // way 2:
+ \&.\&.\&.
+ void key(struct s3d_evt *evt)
+ {
+         s3dw_handle_key(evt);
+         \&.\&.\&.\&.
+         // your own keyhandler code
+         \&.\&.\&.
+ }
+ \&.\&.\&.\&.
+ s3d_set_callback(S3D_EVENT_KEY,key);
+.fi
+.RE

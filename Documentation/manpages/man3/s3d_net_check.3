@@ -1,14 +1,26 @@
-.TH "s3d_net_check" "3" 
-.SH "NAME" 
-s3d_net_check \(em get events from server 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_net_check\fP\fR(\fBvoid\fR) 
-.fi 
-.SH "Description" 
-.PP 
-This functions is for programs which do not employ a mainloop, hence they need to check for new events on their own. Programs like these must make sure to call this function from time to time to convince the server that they did not freeze or bail out.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_net_check
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_NET_CHECK" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_net_check \- get events from server
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 18
+.BI "int s3d_net_check(void);"
+.SH "DESCRIPTION"
+.PP
+This functions is for programs which do not employ a mainloop, hence they need to check for new events on their own\&. Programs like these must make sure to call this function from time to time to convince the server that they did not freeze or bail out\&.

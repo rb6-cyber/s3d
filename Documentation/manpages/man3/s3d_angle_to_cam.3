@@ -1,17 +1,26 @@
-.TH "s3d_angle_to_cam" "3" 
-.SH "NAME" 
-s3d_angle_to_cam \(em calculate angle between vector and cam 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBfloat \fBs3d_angle_to_cam\fP\fR( 
-\fB	const float \fBobj_pos\fR[]\fR, 
-\fB	const float \fBcam_pos\fR[]\fR, 
-\fB	float *\fBangle_rad\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Given obj_pos and cam_pos in the format float[3], angle_rad about which angle the object should be rotated around the y-axis so that it faces the camera. This might become handy if you have some text floating in space and want it to face the camera. http://en.wikipedia.org/wiki/Vector_(spatial)          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_angle_to_cam
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_ANGLE_TO_CAM" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_angle_to_cam \- calculate angle between vector and cam
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 23
+.BI "float s3d_angle_to_cam(const\ float\ " "obj_pos" "[], const\ float\ " "cam_pos" "[], float\ *" "angle_rad" ");"
+.SH "DESCRIPTION"
+.PP
+Given obj_pos and cam_pos in the format float[3], angle_rad about which angle the object should be rotated around the y\-axis so that it faces the camera\&. This might become handy if you have some text floating in space and want it to face the camera\&. http://en\&.wikipedia\&.org/wiki/Vector_(spatial)

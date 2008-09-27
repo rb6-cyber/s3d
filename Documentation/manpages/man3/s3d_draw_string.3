@@ -1,26 +1,37 @@
-.TH "s3d_draw_string" "3" 
-.SH "NAME" 
-s3d_draw_string \(em draw a simple string 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_draw_string\fP\fR( 
-\fB	const char *\fBstr\fR\fR, 
-\fB	float *\fBxlen\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Renders the string str with in Truetype format with the height 1, returns the length of the rendered string in *xlen (or set len=NULL to disable this). 
-.PP 
-.nf 
-char str="hello world!"; 
-float len; 
-s3d_select_font("vera"); 
-s3d_draw_string(str, len); 
- 
-// not interested in the length? do that: s3d_draw_string(str, NULL); 
-.fi 
-.PP 
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_draw_string
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_DRAW_STRING" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_draw_string \- draw a simple string
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 20
+.BI "int s3d_draw_string(const\ char\ *" "str" ", float\ *" "xlen" ");"
+.SH "DESCRIPTION"
+.PP
+Renders the string str with in Truetype format with the height 1, returns the length of the rendered string in *xlen (or set len=NULL to disable this)\&.
+.sp
+.RS 4
+.nf
+ char str="hello world!";
+ float len;
+ s3d_select_font("vera");
+ s3d_draw_string(str, len);
+
+ // not interested in the length? do that: s3d_draw_string(str, NULL);
+.fi
+.RE

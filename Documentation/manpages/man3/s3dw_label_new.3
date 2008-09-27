@@ -1,20 +1,28 @@
-.TH "s3dw_label_new" "3" 
-.SH "NAME" 
-s3dw_label_new \(em create a new label in the surface 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3dw.h> 
-.sp 1 
-\fBs3dw_label *\fBs3dw_label_new\fP\fR( 
-\fB	const s3dw_surface *\fBsurface\fR\fR, 
-\fB	const char *\fBtext\fR\fR, 
-\fB	float \fBposx\fR\fR, 
-\fB	float \fBposy\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Creates a new label on the surface, with "text" written on it and the upper left corner at (posx,posy) on the surface. 
-.PP 
-See s3dw_label for information about callbacks which may be defined.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3dw_label_new
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3DW_LABEL_NEW" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3dw_label_new \- create a new label in the surface
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3dw\&.h>
+.fi
+.ft
+.HP 27
+.BI "s3dw_label *s3dw_label_new(const\ s3dw_surface\ *" "surface" ", const\ char\ *" "text" ", float\ " "posx" ", float\ " "posy" ");"
+.SH "DESCRIPTION"
+.PP
+Creates a new label on the surface, with "text" written on it and the upper left corner at (posx,posy) on the surface\&.
+.PP
+See s3dw_label for information about callbacks which may be defined\&.

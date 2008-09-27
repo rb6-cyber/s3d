@@ -1,27 +1,40 @@
-.TH "mcp_object" "9" 
-.SH "NAME" 
-struct mcp_object \(em  
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.fi 
-.SH "Structure Members" 
-.PP 
-.nf 
-struct mcp_object { 
-uint32_t object; 
-float trans_x; 
-float trans_y; 
-float trans_z; 
-float r; 
-char name; 
-} 
-.fi 
-.PP 
-.SH "Description" 
-.PP 
-Deprecated 
-.PP 
-don't use, to be removed soon (use struct s3d_but_info). ;)      
-.\" created by instant / docbook-to-man
+.\"     Title: mcp_object
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "MCP_OBJECT" "9" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+mcp_object
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.SH "STRUCTURE MEMBERS"
+.sp
+.RS 4
+.nf
+struct mcp_object {
+	uint32_t object;
+	float trans_x;
+	float trans_y;
+	float trans_z;
+	float r;
+	char name;
+}
+.fi
+.RE
+.SH "DESCRIPTION"
+.PP
+Deprecated
+.PP
+don\'t use, to be removed soon (use struct s3d_but_info)\&. ;)

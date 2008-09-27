@@ -1,15 +1,26 @@
-.TH "s3d_strlen" "3" 
-.SH "NAME" 
-s3d_strlen \(em get rendered string size 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBfloat \fBs3d_strlen\fP\fR( 
-\fB	const char *\fBstr\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Returns the length of the string if it were rendered with the currently selected font. That might be useful to estimate the size used for a text and render the background or bounding box before inserting the text.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_strlen
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_STRLEN" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_strlen \- get rendered string size
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 17
+.BI "float s3d_strlen(const\ char\ *" "str" ");"
+.SH "DESCRIPTION"
+.PP
+Returns the length of the string if it were rendered with the currently selected font\&. That might be useful to estimate the size used for a text and render the background or bounding box before inserting the text\&.

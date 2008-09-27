@@ -1,15 +1,26 @@
-.TH "s3d_find_event" "3" 
-.SH "NAME" 
-s3d_find_event \(em find eevnt on stack 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBstruct s3d_evt *\fBs3d_find_event\fP\fR( 
-\fB	uint8_t \fBevent\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Finds the latest occurrence of an event, giving the event type as argument. Returns a pointer to struct s3d_evt.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_find_event
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_FIND_EVENT" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_find_event \- find eevnt on stack
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 31
+.BI "struct s3d_evt *s3d_find_event(uint8_t\ " "event" ");"
+.SH "DESCRIPTION"
+.PP
+Finds the latest occurrence of an event, giving the event type as argument\&. Returns a pointer to struct s3d_evt\&.

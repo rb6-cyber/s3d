@@ -1,39 +1,49 @@
-.TH "s3d_push_materials_a" "3" 
-.SH "NAME" 
-s3d_push_materials_a \(em push many materials 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_push_materials_a\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	const float *\fBmbuf\fR\fR, 
-\fB	uint16_t \fBn\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Pushes a buffer of materials. Those materials are in the format float[n*12], with 
-.PP 
-mbuf[n*12 + 0-3] \- ambience 
-.PP 
-mbuf[n*12 + 4-7] \- specular 
-.PP 
-mbuf[n *12 + 8-11] \- diffusion values 
-.PP 
-of each entry. n is the number of materials pushed. The values are in the order r,g,b,a. If you only want to push one material, use the more easy s3d_push_material_a() function. 
-.PP 
-.nf 
-// each line has r,g,b,a value 
-float bla[24]= 
-{1, 0, 0, 1, 
-1, 0, 0, 1, 
-1, 0, 0, 1, 
-0, 1, 1, 1, 
-0, 1, 1, 1, 
-0, 1, 1, 1}; 
- 
-s3d_push_materials_a(object, bla, 2); // push a red and a cyan material 
-.fi 
-.PP 
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_push_materials_a
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_PUSH_MATERIALS_A" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_push_materials_a \- push many materials
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 25
+.BI "int s3d_push_materials_a(int\ " "object" ", const\ float\ *" "mbuf" ", uint16_t\ " "n" ");"
+.SH "DESCRIPTION"
+.PP
+Pushes a buffer of materials\&. Those materials are in the format float[n*12], with
+.PP
+mbuf[n*12 + 0\-3] \- ambience
+.PP
+mbuf[n*12 + 4\-7] \- specular
+.PP
+mbuf[n *12 + 8\-11] \- diffusion values
+.PP
+of each entry\&. n is the number of materials pushed\&. The values are in the order r,g,b,a\&. If you only want to push one material, use the more easy s3d_push_material_a() function\&.
+.sp
+.RS 4
+.nf
+ // each line has r,g,b,a value
+ float bla[24]=
+         {1, 0, 0, 1,
+          1, 0, 0, 1,
+          1, 0, 0, 1,
+          0, 1, 1, 1,
+          0, 1, 1, 1,
+          0, 1, 1, 1};
+
+ s3d_push_materials_a(object, bla, 2); // push a red and a cyan material
+.fi
+.RE

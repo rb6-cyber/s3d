@@ -1,31 +1,56 @@
-.TH "s3d_evt" "9" 
-.SH "NAME" 
-struct s3d_evt \(em  
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.fi 
-.SH "Structure Members" 
-.PP 
-.nf 
-struct s3d_evt { 
-uint8_t event; 
-int length; 
-char *buf; 
-struct s3d_evt *next; 
-} 
-.fi 
-.PP 
-.SH "Description" 
-.PP 
-This is the event information holder.      
-.IP "event" 10 
-gives the event type          
-.IP "length" 10 
-gives the length of the buffer *buf          
-.IP "buf" 10 
-is the pointer to the multiple purpose buffer, which will have more specific information about the object          
-.IP "next" 10 
-can be safely ignored ;)          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_evt
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_EVT" "9" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_evt
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.SH "STRUCTURE MEMBERS"
+.sp
+.RS 4
+.nf
+struct s3d_evt {
+	uint8_t event;
+	int length;
+	char *buf;
+	struct s3d_evt *next;
+}
+.fi
+.RE
+.SH "DESCRIPTION"
+.PP
+This is the event information holder\&.
+.PP
+event
+.RS 4
+gives the event type
+.RE
+.PP
+length
+.RS 4
+gives the length of the buffer *buf
+.RE
+.PP
+buf
+.RS 4
+is the pointer to the multiple purpose buffer, which will have more specific information about the object
+.RE
+.PP
+next
+.RS 4
+can be safely ignored ;)
+.RE

@@ -1,43 +1,80 @@
-.TH "_s3dw_style" "9" 
-.SH "NAME" 
-struct _s3dw_style \(em  
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3dw.h> 
-.fi 
-.SH "Structure Members" 
-.PP 
-.nf 
-struct _s3dw_style { 
-char *name; 
-char *fontface; 
-float surface_mat; 
-float input_mat; 
-float inputback_mat; 
-float text_mat; 
-float title_mat; 
-float title_text_mat; 
-} 
-.fi 
-.PP 
-.SH "Description" 
-.PP 
-With s3dw_style you can change the colors/materials of your widgets. materials are in the same as in s3d_push_materials_a, that means red,green,blue and alpha float values (between 0.0 and 1.0) for ambience, specular and diffuse color.      
-.IP "name" 10 
-name of the style ... kind of redundant          
-.IP "fontface" 10 
-font face for all used fonts          
-.IP "surface_mat" 10 
-material for the surface background          
-.IP "input_mat" 10 
-material for button boxes and other widgets          
-.IP "inputback_mat" 10 
-material for input field background          
-.IP "text_mat" 10 
-material for the text on buttons and inputs          
-.IP "title_mat" 10 
-material for the title bar          
-.IP "title_text_mat" 10 
-material for the text on the title bar          
-.\" created by instant / docbook-to-man
+.\"     Title: _s3dw_style
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "_S3DW_STYLE" "9" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3dw_style
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3dw\&.h>
+.fi
+.ft
+.SH "STRUCTURE MEMBERS"
+.sp
+.RS 4
+.nf
+struct _s3dw_style {
+	char *name;
+	char *fontface;
+	float surface_mat;
+	float input_mat;
+	float inputback_mat;
+	float text_mat;
+	float title_mat;
+	float title_text_mat;
+}
+.fi
+.RE
+.SH "DESCRIPTION"
+.PP
+With s3dw_style you can change the colors/materials of your widgets\&. materials are in the same as in s3d_push_materials_a, that means red,green,blue and alpha float values (between 0\&.0 and 1\&.0) for ambience, specular and diffuse color\&.
+.PP
+name
+.RS 4
+name of the style \&.\&.\&. kind of redundant
+.RE
+.PP
+fontface
+.RS 4
+font face for all used fonts
+.RE
+.PP
+surface_mat
+.RS 4
+material for the surface background
+.RE
+.PP
+input_mat
+.RS 4
+material for button boxes and other widgets
+.RE
+.PP
+inputback_mat
+.RS 4
+material for input field background
+.RE
+.PP
+text_mat
+.RS 4
+material for the text on buttons and inputs
+.RE
+.PP
+title_mat
+.RS 4
+material for the title bar
+.RE
+.PP
+title_text_mat
+.RS 4
+material for the text on the title bar
+.RE

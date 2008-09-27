@@ -1,18 +1,26 @@
-.TH "s3d_load_polygon_tex_coords" "3" 
-.SH "NAME" 
-s3d_load_polygon_tex_coords \(em add texture coordinates to polygons 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_load_polygon_tex_coords\fP\fR( 
-\fB	int \fBobject\fR\fR, 
-\fB	const float *\fBtbuf\fR\fR, 
-\fB	uint32_t \fBstart\fR\fR, 
-\fB	uint16_t \fBn\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-Just as s3d_pep_polygon_tex_coords(), with the difference you won't alter the latest n polygons but n polygons starting with index start.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_load_polygon_tex_coords
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_LOAD_POLYGON_TEX" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_load_polygon_tex_coords \- add texture coordinates to polygons
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 32
+.BI "int s3d_load_polygon_tex_coords(int\ " "object" ", const\ float\ *" "tbuf" ", uint32_t\ " "start" ", uint16_t\ " "n" ");"
+.SH "DESCRIPTION"
+.PP
+Just as s3d_pep_polygon_tex_coords(), with the difference you won\'t alter the latest n polygons but n polygons starting with index start\&.

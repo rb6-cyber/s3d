@@ -1,16 +1,26 @@
-.TH "s3d_open_file" "3" 
-.SH "NAME" 
-s3d_open_file \(em copy file into memory 
-.SH "SYNOPSIS" 
-.PP 
-.nf 
-#include <s3d.h> 
-.sp 1 
-\fBint \fBs3d_open_file\fP\fR( 
-\fB	const char *\fBfname\fR\fR, 
-\fB	char **\fBpointer\fR\fR); 
-.fi 
-.SH "Description" 
-.PP 
-This opens the file fname, setting *pointer to it's memory position. the function will return the size of buffer. you can free() the pointer when you're finished.          
-.\" created by instant / docbook-to-man
+.\"     Title: s3d_open_file
+.\"    Author:
+.\" Generator: DocBook XSL Stylesheets
+.\"
+.\"    Manual:
+.\"    Source:
+.\"
+.TH "S3D_OPEN_FILE" "3" "" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+s3d_open_file \- copy file into memory
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <s3d\&.h>
+.fi
+.ft
+.HP 18
+.BI "int s3d_open_file(const\ char\ *" "fname" ", char\ **" "pointer" ");"
+.SH "DESCRIPTION"
+.PP
+This opens the file fname, setting *pointer to it\'s memory position\&. the function will return the size of buffer\&. you can free() the pointer when you\'re finished\&.

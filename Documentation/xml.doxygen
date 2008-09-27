@@ -134,3 +134,5 @@ SKIP_FUNCTION_MACROS   = YES
 # Configuration::additions related to the search engine   
 #---------------------------------------------------------------------------
 SEARCHENGINE           = NO
+GENERATE_HTML          = NO
+GENERATE_LATEX         = NO
