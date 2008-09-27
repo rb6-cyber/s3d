@@ -38,6 +38,11 @@
 #define OLSRS3DUNUSED(x) x
 #endif
 #endif
+#ifdef __GNUC_MINOR__
+#define NO_RETURN  __attribute__ ((__noreturn__))
+#else
+#define NO_RETURN
+#endif
 
 extern int Debug;
 
@@ -77,7 +82,7 @@ int net_init(char *host);
 int net_main(void);
 int net_quit(void);
 /* main */
-void out_of_mem(void);
+void out_of_mem(void) NO_RETURN;
 void print_etx(void);
 float dist(float p1[], float p2[]);
 void window_error(const char *msg);
