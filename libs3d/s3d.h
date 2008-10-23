@@ -34,8 +34,10 @@
 
 #ifdef __GNUC_MINOR__
 #define S3D_WARN_UNUSED_RESULT  __attribute__ ((warn_unused_result))
+#define S3D_CONST  __attribute__ ((const))
 #else
 #define S3D_WARN_UNUSED_RESULT
+#define S3D_CONST
 #endif
 
 #include <stdint.h>  /* [u]intXX_t type definitions*/
@@ -210,12 +212,12 @@ extern "C"
 
 	/* some vector calculation helpers */
 
-	S3DEXPORT float s3d_vector_length(const float vector[]);
-	S3DEXPORT float s3d_vector_dot_product(const float vector1[], const float vector2[]);
-	S3DEXPORT void s3d_vector_subtract(const float vector1[], const float vector2[], float result_vector[]);
-	S3DEXPORT float s3d_vector_angle(const float vector1[], const float vector2[]);
-	S3DEXPORT float s3d_angle_to_cam(const float obj_pos[], const float cam_pos[], float *angle_rad);
-	S3DEXPORT void s3d_vector_cross_product(const float vector1[], const float vector2[], float result_vector[]);
+	S3DEXPORT float s3d_vector_length(const float vector[]) S3D_CONST;
+	S3DEXPORT float s3d_vector_dot_product(const float vector1[], const float vector2[]) S3D_CONST;
+	S3DEXPORT void s3d_vector_subtract(const float vector1[], const float vector2[], float result_vector[]) S3D_CONST;
+	S3DEXPORT float s3d_vector_angle(const float vector1[], const float vector2[]) S3D_CONST;
+	S3DEXPORT float s3d_angle_to_cam(const float obj_pos[], const float cam_pos[], float *angle_rad) S3D_CONST;
+	S3DEXPORT void s3d_vector_cross_product(const float vector1[], const float vector2[], float result_vector[]) S3D_CONST;
 
 	/* event handlers */
 	S3DEXPORT void s3d_push_event(struct s3d_evt *newevt);
