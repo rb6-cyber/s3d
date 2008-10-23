@@ -32,6 +32,12 @@
 #define S3DEXPORT
 #endif
 
+#ifdef __GNUC_MINOR__
+#define S3D_WARN_UNUSED_RESULT  __attribute__ ((warn_unused_result))
+#else
+#define S3D_WARN_UNUSED_RESULT
+#endif
+
 #include <stdint.h>  /* [u]intXX_t type definitions*/
 /* definitions */
 
@@ -180,10 +186,10 @@ extern "C"
 	S3DEXPORT int s3d_load_polygon_tex_coords(int object, const float *tbuf, uint32_t start, uint16_t n);
 	S3DEXPORT int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h, const uint8_t *data);
 
-	S3DEXPORT int s3d_new_object(void);
+	S3DEXPORT int s3d_new_object(void) S3D_WARN_UNUSED_RESULT;
 	S3DEXPORT int s3d_del_object(int oid);
 
-	S3DEXPORT int s3d_clone(int oid);
+	S3DEXPORT int s3d_clone(int oid) S3D_WARN_UNUSED_RESULT;
 	S3DEXPORT int s3d_clone_target(int oid, int toid);
 
 	S3DEXPORT int s3d_link(int oid_from, int oid_to);
@@ -196,7 +202,7 @@ extern "C"
 	S3DEXPORT int s3d_scale(int object, float s);
 
 	/* high-level object creating */
-	S3DEXPORT int s3d_import_model_file(const char *fname);
+	S3DEXPORT int s3d_import_model_file(const char *fname) S3D_WARN_UNUSED_RESULT;
 	S3DEXPORT int s3d_open_file(const char *fname, char **pointer);
 	S3DEXPORT int s3d_select_font(const char *mask);
 	S3DEXPORT int s3d_draw_string(const char *str, float *xlen);
@@ -213,7 +219,7 @@ extern "C"
 
 	/* event handlers */
 	S3DEXPORT void s3d_push_event(struct s3d_evt *newevt);
-	S3DEXPORT struct s3d_evt *s3d_pop_event(void);
+	S3DEXPORT struct s3d_evt *s3d_pop_event(void) S3D_WARN_UNUSED_RESULT;
 	S3DEXPORT struct s3d_evt *s3d_find_event(uint8_t event);
 	S3DEXPORT int s3d_delete_event(const struct s3d_evt *devt);
 

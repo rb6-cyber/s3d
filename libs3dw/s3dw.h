@@ -34,6 +34,12 @@
 #define S3DWEXPORT
 #endif
 
+#ifdef __GNUC_MINOR__
+#define S3DW_WARN_UNUSED_RESULT  __attribute__ ((warn_unused_result))
+#else
+#define S3DW_WARN_UNUSED_RESULT
+#endif
+
 /* we want this widget visible, as long as the widgets below are also visible.
  * on for all widgets, except surfaces which have to be switched visible
  * with s3dw_show() */
@@ -233,7 +239,7 @@ extern "C"
 	S3DWEXPORT char     *s3dw_input_gettext(s3dw_input *input);
 	S3DWEXPORT void      s3dw_input_change_text(s3dw_input *input, const char *text);
 	S3DWEXPORT void      s3dw_label_change_text(s3dw_label *label, const char *text);
-	S3DWEXPORT s3dw_surface   *s3dw_surface_new(const char *title, float width, float height);
+	S3DWEXPORT s3dw_surface   *s3dw_surface_new(const char *title, float width, float height) S3DW_WARN_UNUSED_RESULT;
 
 	S3DWEXPORT s3dw_widget   *s3dw_getroot(void);
 	S3DWEXPORT void     s3dw_moveit(s3dw_widget *widget);
