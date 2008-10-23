@@ -46,6 +46,12 @@ extern int running;   /*  server running flag */
 #endif
 #endif
 
+#ifdef __GNUC_MINOR__
+#define S3D_FORMAT(type, fmt_pos, arg_pos)  __attribute__ ((format (type, fmt_pos, arg_pos)))
+#else
+#define S3D_FORMAT(type, fmt_pos, arg_pos)
+#endif
+
 #ifndef S3D_NAME_MAX
 #define S3D_NAME_MAX 256   /*  limit for names [e.g. process names] */
 #endif /* S3D_NAME_MAX */
@@ -271,9 +277,12 @@ void errnf(const char *func, int en);
 void errs(const char *func, const char *msg);
 void errsf(const char *func, const char *msg);
 #ifdef DEBUG
-void errds(int relevance, const char *func, const char *fmt, ...);
-void s3dprintf(int relevance, const char *msg, ...);
+void errds(int relevance, const char *func, const char *fmt, ...)  S3D_FORMAT(printf, 3, 4);
+void s3dprintf(int relevance, const char *msg, ...) S3D_FORMAT(printf, 2, 3);
 #else
+static void errds(int relevance, const char *func, const char *fmt, ...)  S3D_FORMAT(printf, 3, 4);
+static void s3dprintf(int relevance, const char *msg, ...) S3D_FORMAT(printf, 2, 3);
+
 static __inline__ void errds(int relevance __attribute__((unused)),
                              const char *func __attribute__((unused)),
                              const char *fmt __attribute__((unused)), ...) {}

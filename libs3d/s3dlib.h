@@ -47,6 +47,12 @@
 #define S3DEXPORT
 #endif
 
+#ifdef __GNUC_MINOR__
+#define S3D_FORMAT(type, fmt_pos, arg_pos)  __attribute__ ((format (type, fmt_pos, arg_pos)))
+#else
+#define S3D_FORMAT(type, fmt_pos, arg_pos)
+#endif
+
 #define VLOW 1
 #define LOW  2
 #define MED  3
@@ -96,10 +102,14 @@ struct s3d_tex {
 } __attribute__((__packed__));
 
 #ifdef DEBUG
-S3DEXPORT void s3dprintf(int relevance, const char *fmt, ...);
+S3DEXPORT void s3dprintf(int relevance, const char *fmt, ...) S3D_FORMAT(printf, 2, 3);
 S3DEXPORT void errdn(int relevance, const char *func, int en);
-S3DEXPORT void errds(int relevance, const char *func, const char *fmt, ...);
+S3DEXPORT void errds(int relevance, const char *func, const char *fmt, ...) S3D_FORMAT(printf, 3, 4);
 #else
+static void s3dprintf(int relevance, const char *fmt, ...) S3D_FORMAT(printf, 2, 3);
+static void errdn(int relevance, const char *func, int en);
+static void errds(int relevance, const char *func, const char *fmt, ...) S3D_FORMAT(printf, 3, 4);
+
 static __inline__ void s3dprintf(int S3DUNUSED(relevance),
                                  const char *S3DUNUSED(fmt), ...) {}
 static __inline__ void errdn(int S3DUNUSED(relevance),
