@@ -28,6 +28,7 @@
 #include <netinet/in.h>  /*  htons(),htonl() */
 #include <errno.h>   /*  errno */
 #include <stdlib.h>   /*  malloc(), free() */
+#include <inttypes.h>
 
 /*  this proccesses the commands and pushes s3d-events, or does other things ;) */
 int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
@@ -118,7 +119,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 				s3dprintf(VLOW, "S3D_P_MCP_OBEJCT: something is happening to object %d, name %s",  mo->object, mo->name);
 
 			}
-		} else s3dprintf(MED, "wrong length for S3D_P_MCP_OBJECT length %d != %d", length, sizeof(struct mcp_object));
+		} else s3dprintf(MED, "wrong length for S3D_P_MCP_OBJECT length %"PRId16" != %d", length, (int)sizeof(struct mcp_object));
 		break;
 	case S3D_P_S_OINFO:
 		if (length == sizeof(struct s3d_obj_info)) {
@@ -141,7 +142,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 				         );
 
 			}
-		} else s3dprintf(MED, "wrong length for S3D_P_S_OINFO length %d != %d", length, sizeof(struct s3d_obj_info));
+		} else s3dprintf(MED, "wrong length for S3D_P_S_OINFO length %"PRId16" != %d", length, (int)sizeof(struct s3d_obj_info));
 		break;
 	case S3D_P_S_SHMTEX:
 		if (length == sizeof(struct s3d_texshm)) {
@@ -162,7 +163,7 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 			free(buf);
 
 		} else
-			s3dprintf(MED, "wrong length for S3D_P_S_SHMTEX length %d != %d", length, sizeof(struct s3d_texshm));
+			s3dprintf(MED, "wrong length for S3D_P_S_SHMTEX length %"PRId16" != %d", length, (int)sizeof(struct s3d_texshm));
 		break;
 
 

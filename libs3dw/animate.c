@@ -47,7 +47,7 @@ int s3dw_ani_stackpos(s3dw_widget *f)
 void s3dw_ani_add(s3dw_widget *f)
 {
 
-	s3dprintf(VLOW, "[A]ni ADD (%010p), oid = %d, ani_n = %d, type is %s\n", f, f->oid, ani_n, s3dw_get_type_string(f->type));
+	s3dprintf(VLOW, "[A]ni ADD (%10p), oid = %d, ani_n = %d, type is %s\n", (void*)f, f->oid, ani_n, s3dw_get_type_string(f->type));
 	if ((f->oid == 0) && (f->type != S3DW_TCAM)) {
 		s3dprintf(HIGH, "s3dw_ani_add() assert failed: weird, moving cam but its not a cam object?");
 		return;

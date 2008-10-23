@@ -125,7 +125,7 @@ void render_virtual_object(struct t_obj *o)
 	glGetFloatv(GL_MODELVIEW_MATRIX, m);
 	cull_get_planes();
 	if (NULL == (ap = get_proc_by_pid(o->virtual_pid))) { /*  the clean way */
-		errds(HIGH, "render_by_mcp()", "not existing pid (%d) referenced by mcp-object!!", o);
+		errds(HIGH, "render_by_mcp()", "not existing pid (%p) referenced by mcp-object!!", (void*)o);
 	} else {
 		/*  now go throu the objects of our app  */
 		for (j = 0;j < ap->n_obj;j++) {
