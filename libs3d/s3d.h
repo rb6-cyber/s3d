@@ -35,9 +35,11 @@
 #ifdef __GNUC_MINOR__
 #define S3D_WARN_UNUSED_RESULT  __attribute__ ((warn_unused_result))
 #define S3D_CONST  __attribute__ ((const))
+#define S3D_PURE  __attribute__ ((pure))
 #else
 #define S3D_WARN_UNUSED_RESULT
 #define S3D_CONST
+#define S3D_PURE
 #endif
 
 #include <stdint.h>  /* [u]intXX_t type definitions*/
@@ -222,13 +224,13 @@ extern "C"
 	/* event handlers */
 	S3DEXPORT void s3d_push_event(struct s3d_evt *newevt);
 	S3DEXPORT struct s3d_evt *s3d_pop_event(void) S3D_WARN_UNUSED_RESULT;
-	S3DEXPORT struct s3d_evt *s3d_find_event(uint8_t event);
+	S3DEXPORT struct s3d_evt *s3d_find_event(uint8_t event) S3D_PURE;
 	S3DEXPORT int s3d_delete_event(const struct s3d_evt *devt);
 
 	S3DEXPORT void s3d_set_callback(uint8_t event, s3d_cb func);
 	S3DEXPORT void s3d_clear_callback(uint8_t event);
 	S3DEXPORT void s3d_ignore_callback(uint8_t event);
-	S3DEXPORT s3d_cb s3d_get_callback(uint8_t event);
+	S3DEXPORT s3d_cb s3d_get_callback(uint8_t event) S3D_PURE;
 	S3DEXPORT void s3d_process_stack(void);
 
 	/* mcp special */
