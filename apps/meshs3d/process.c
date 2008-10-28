@@ -2,8 +2,8 @@
  * process.c
  *
  * Copyright (C) 2004-2008 Simon Wunderlich <dotslash@packetmixer.de>
- *                         Marek Lindner <lindner_marek@yahoo.de>
- *                         Andreas Langer <andreas_lbg@gmx.de>
+ * Copyright (C) 2004-2008 Marek Lindner <lindner_marek@yahoo.de>
+ * Copyright (C) 2004-2008 Andreas Langer <andreas_lbg@gmx.de>
  *
  * This file is part of meshs3d, an olsr/batman topology visualizer for s3d.
  * See http://s3d.berlios.de/ for more updates.
