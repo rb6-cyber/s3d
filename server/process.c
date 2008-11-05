@@ -32,7 +32,7 @@ struct t_process  *procs_p = NULL;  /* pointer to the processes */
 int       procs_n;      /* number of processes */
 static int p_del(struct t_process *p);   /*  local prototype */
 static int process_list_rm(int pid);
-int process_sys_init(struct t_process *p);
+static int process_sys_init(struct t_process *p);
 
 /* protocol request for process initialization */
 struct t_process *process_protinit(struct t_process *p, const char *name) {
@@ -87,7 +87,7 @@ struct t_process *process_protinit(struct t_process *p, const char *name) {
 	return(p);
 }
 /* adds system objects to the app, like camera, pointers etc ... */
-int process_sys_init(struct t_process *p)
+static int process_sys_init(struct t_process *p)
 {
 	int cam, ptr;
 	struct t_obj *o;

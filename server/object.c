@@ -42,10 +42,10 @@
 #define MAXLOOP 10
 /*  if oid is always unsigned, we don't have to check oid>=0 */
 
-void obj_sys_update(struct t_process *p, int32_t oid);
+static void obj_sys_update(struct t_process *p, int32_t oid);
 
-int texture_shm_register(struct t_tex *tex, int bufsize);
-void texture_delete(struct t_tex *tex);
+static int texture_shm_register(struct t_tex *tex, int bufsize);
+static void texture_delete(struct t_tex *tex);
 /*  debugging function for objects, prints out some stuff known about it... */
 int obj_debug(struct t_process *p, int32_t oid)
 {
@@ -261,7 +261,7 @@ int obj_push_line(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 }
 
 /* register the texture, if possible */
-int texture_shm_register(struct t_tex *tex, int bufsize)
+static int texture_shm_register(struct t_tex *tex, int bufsize)
 {
 #ifdef SHM
 	int key;
@@ -284,7 +284,7 @@ int texture_shm_register(struct t_tex *tex, int bufsize)
 }
 
 /* delete the texture, eventually detach from the shm segment */
-void texture_delete(struct t_tex *tex)
+static void texture_delete(struct t_tex *tex)
 {
 	GLuint t;
 	s3dprintf(HIGH, "texture delete: shmid = %d, buf = %010p\n", tex->shmid, tex->buf);
@@ -1343,7 +1343,7 @@ void obj_recalc_tmat(struct t_process *p, int32_t oid)
 		p->object[oid]->m_uptodate = 1;
 	}
 }
-void obj_sys_update(struct t_process *p, int32_t oid)
+static void obj_sys_update(struct t_process *p, int32_t oid)
 {
 	struct t_process *mcp_p = get_proc_by_pid(MCP);
 	struct t_obj  *o;

@@ -34,7 +34,7 @@
 #endif
 /*  this file handles graphics routines */
 /*  local prototypes ... */
-void render_virtual_object(struct t_obj *o);
+static void render_virtual_object(struct t_obj *o);
 /*  ... and types/variables */
 static int select_mode = 0;
 int winw, winh;
@@ -113,7 +113,7 @@ void graphics_reshape(int w, int h)
 	if (procs_p != NULL)
 		event_cam_changed();
 }
-void render_virtual_object(struct t_obj *o)
+static void render_virtual_object(struct t_obj *o)
 {
 	struct t_process *ap;
 	struct t_vertex x, y;

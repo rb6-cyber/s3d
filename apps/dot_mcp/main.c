@@ -67,7 +67,7 @@ static float focus_r = 0;
 static float alpha = 0;
 static int rotate, reset, min_but, close_but, sphere, menu = -1;
 
-void place_apps(void);
+static void place_apps(void);
 
 #define SIDES 60
 #define RINGS 60
@@ -242,7 +242,7 @@ static int stop(struct s3d_evt* DOTMCPUNUSED(evt))
 	return(0);
 }
 
-void place_apps(void)
+static void place_apps(void)
 {
 	struct app *a = apps;
 	int j = 0;

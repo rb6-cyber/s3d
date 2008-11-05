@@ -41,9 +41,9 @@ static struct olsr_node **search_node = NULL;
 static float _return_point[2][3];    /* cam position before move to the widget */
 static int  _search_status = NOTHING;   /* status of search */
 
-void _search_node(s3dw_widget *dummy);
-void _new_search_node(s3dw_widget *dummy);
-void _abort_search(s3dw_widget *dummy);
+static void _search_node(s3dw_widget *dummy);
+static void _new_search_node(s3dw_widget *dummy);
+static void _abort_search(s3dw_widget *dummy);
 
 
 /* public */
@@ -287,7 +287,7 @@ void set_node_root(struct olsr_node *root)
 	_node_root = root;
 }
 /* private */
-void _new_search_node(s3dw_widget *dummy)
+static void _new_search_node(s3dw_widget *dummy)
 {
 	char *ip;
 	int result;
@@ -330,7 +330,7 @@ void follow_node_by_click(struct olsr_node *olsr_node)
 }
 
 /* private */
-void _search_node(s3dw_widget *OLSRS3DUNUSED(dummy))
+static void _search_node(s3dw_widget *OLSRS3DUNUSED(dummy))
 {
 	char *ip;
 	int result;

@@ -52,7 +52,7 @@ static float      lat, lon, tlat, tlon; /* we have the same in nav.c, this one i
 static float     lat_old, lon_old;
 static float     speed_old = 0.0;
 void      show_gpsdata(struct gps_data_t *dgps);
-void     show_position(struct gps_data_t *dgps);
+static void     show_position(struct gps_data_t *dgps);
 
 void show_gpsdata(struct gps_data_t *dgps)
 {
@@ -100,7 +100,7 @@ void show_gpsdata(struct gps_data_t *dgps)
 	}
 }
 #define BUFSIZE  1024
-void show_position(struct gps_data_t *dgps)
+static void show_position(struct gps_data_t *dgps)
 {
 	int fix = 1;
 	float la, lo, heading, speed, slen;
