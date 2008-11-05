@@ -27,6 +27,7 @@
 #include <stdio.h>    /*  NULL,perror() */
 #include <string.h>   /*  memcpy() */
 #include <stdlib.h>   /*  atoi() */
+#include <ctype.h>    /*  isdigit() */
 #define MOVE_RIGHT  1
 #define MOVE_LEFT  2
 #define MOVE_UP   3
@@ -406,7 +407,7 @@ static int parseansi(char curchar)
 		default:
 			printf("***unknown***");
 		}
-		if (!((curchar >= '0' && curchar <= '9') || curchar == ';')) { /*  clean our args */
+		if (!(isdigit(curchar) || curchar == ';')) { /*  clean our args */
 			args[0][0] = '\0';
 			args[1][0] = '\0';
 			args[2][0] = '\0';
