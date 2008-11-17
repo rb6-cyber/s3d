@@ -7,7 +7,8 @@ add_library(s3d SHARED callback.c endian.c error.c event.c fontselect.c
 	proto_out.c sei_construct.c sei_misc.c sei_monotone.c sei_tri.c shm.c
 	shm_ringbuf.c tcp.c vector.c hash.c texture.c)
 target_link_libraries(s3d ${S3D_LIBRARY_DEPENDENCIES})
-set_target_properties(s3d PROPERTIES VERSION ${VERSION} SOVERSION 2)
+set_target_properties(s3d PROPERTIES VERSION ${VERSION} SOVERSION 2
+                      LINK_INTERFACE_LIBRARIES "")
 set(S3D_LIBRARIES ${S3D_LIBRARY_DEPENDENCIES} s3d CACHE PATHS "Path to libraries")
 
 # install
