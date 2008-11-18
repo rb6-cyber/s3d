@@ -7,7 +7,6 @@ add_library(s3dw SHARED animate.c arrange.c button.c event.c input.c
 target_link_libraries(s3dw ${S3DW_LIBRARY_DEPENDENCIES})
 set_target_properties(s3dw PROPERTIES VERSION ${VERSION} SOVERSION 2
                       LINK_INTERFACE_LIBRARIES "")
-set(S3DW_LIBRARIES s3dw CACHE PATHS "Path to libraries")
 
 # install
 install(TARGETS s3dw

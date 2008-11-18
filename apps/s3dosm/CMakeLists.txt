@@ -8,8 +8,8 @@ if (LIBXML2_FOUND AND SQLITE3_FOUND)
 		io.c kismet.c main.c nav.c object.c osm.c
 		tag.c ui.c)
 
-	target_link_libraries(s3dosm ${S3D_LIBRARIES} ${S3DW_LIBRARIES}
-		${LIBXML2_LIBRARIES} ${SQLITE3_LIBRARIES})
+	target_link_libraries(s3dosm s3d s3dw ${MATH_LIBRARIES} ${LIBXML2_LIBRARIES}
+	                      ${SQLITE3_LIBRARIES})
 
 	if (GPS_FOUND)
 		target_link_libraries(s3dosm ${GPS_LIBRARIES})

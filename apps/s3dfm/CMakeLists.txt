@@ -5,8 +5,7 @@ if (PTHREADS_FOUND)
 
 	add_executable(s3dfm animation.c box.c dialog.c event.c fly.c focus.c fs.c
 		icon.c main.c node.c parse.c string.c)
-	target_link_libraries(s3dfm ${S3D_LIBRARIES} ${S3DW_LIBRARIES}
-		${PTHREADS_LIBRARIES} ${MATH_LIBRARIES})
+	target_link_libraries(s3dfm s3d s3dw ${PTHREADS_LIBRARIES} ${MATH_LIBRARIES})
 
 	# install
 	install(TARGETS s3dfm RUNTIME DESTINATION bin)
