@@ -1,7 +1,7 @@
 # This module defines a bunch of variables used as locations for install directories.
 #
 #  BIN_INSTALL_DIR  - the directory where executables will be installed
-#  CFG_INSTALL_DIR  - the directory where executables will be installed
+#  CFG_INSTALL_DIR  - the directory where configuration will be installed
 #  LIB_INSTALL_DIR  - the directory where libraries will be installed
 #  INCLUDE_INSTALL_DIR  - the directory where header will be installed
 #  DATA_INSTALL_DIR - the parent directory where applications can install their data
