@@ -21,4 +21,4 @@ target_link_libraries(server ${OPENGL_LIBRARY} ${MATH_LIBRARIES} ${server_libs})
 set_target_properties(server PROPERTIES OUTPUT_NAME "s3d")
 
 # install
-install(TARGETS server RUNTIME DESTINATION bin)
+install(TARGETS server RUNTIME DESTINATION "${BIN_INSTALL_DIR}")

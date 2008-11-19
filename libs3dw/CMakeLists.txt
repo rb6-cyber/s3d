@@ -10,12 +10,12 @@ set(S3DW_LIBRARIES s3dw CACHE PATHS "Path to libraries")
 
 # install
 install(TARGETS s3dw
-	LIBRARY DESTINATION lib
-	ARCHIVE DESTINATION lib
+	LIBRARY DESTINATION "${LIB_INSTALL_DIR}"
+	ARCHIVE DESTINATION "${LIB_INSTALL_DIR}"
 )
 
-install(FILES s3dw.h DESTINATION include/)
+install(FILES s3dw.h DESTINATION "${INCLUDE_INSTALL_DIR}")
 
 #pkg config
 configure_file(libs3dw.pc.cmake ${s3d_BINARY_DIR}/libs3dw/libs3dw.pc @ONLY)
-install(FILES ${s3d_BINARY_DIR}/libs3dw/libs3dw.pc DESTINATION lib/pkgconfig/)
+install(FILES ${s3d_BINARY_DIR}/libs3dw/libs3dw.pc DESTINATION "${PKGCFG_INSTALL_DIR}")

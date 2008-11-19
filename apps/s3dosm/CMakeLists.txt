@@ -19,7 +19,7 @@ if (LIBXML2_FOUND AND SQLITE3_FOUND)
 
 	Collected_PkgStatusPartial("s3dosm")
 	# install
-	install(TARGETS s3dosm RUNTIME DESTINATION bin)
+	install(TARGETS s3dosm RUNTIME DESTINATION "${BIN_INSTALL_DIR}")
 else (LIBXML2_FOUND AND SQLITE3_FOUND)
 	if (NOT LIBXML2_FOUND)
 		PkgStatus_Later("libxml2 (pkg name: libxml2-dev)")

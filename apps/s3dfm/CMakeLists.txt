@@ -9,7 +9,7 @@ if (PTHREADS_FOUND)
 		${PTHREADS_LIBRARIES} ${MATH_LIBRARIES})
 
 	# install
-	install(TARGETS s3dfm RUNTIME DESTINATION bin)
+	install(TARGETS s3dfm RUNTIME DESTINATION "${BIN_INSTALL_DIR}")
 else (PTHREADS_FOUND)
 	PkgStatus_Later("pthreads")
 

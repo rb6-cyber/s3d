@@ -5,7 +5,7 @@ if (PTHREADS_FOUND)
 	target_link_libraries(testvis ${PTHREADS_LIBRARIES})
 
 	# install
-	install(TARGETS testvis RUNTIME DESTINATION bin)
+	install(TARGETS testvis RUNTIME DESTINATION "${BIN_INSTALL_DIR}")
 else (PTHREADS_FOUND)
 	PkgStatus_Later("pthreads")
 

@@ -7,7 +7,7 @@ if (CWIID_FOUND)
 	target_link_libraries(wiitest ${S3D_LIBRARIES} ${CWIID_LIBRARIES} ${MATH_LIBRARIES})
 
 	# install
-	install(TARGETS wiitest RUNTIME DESTINATION bin)
+	install(TARGETS wiitest RUNTIME DESTINATION "${BIN_INSTALL_DIR}")
 else (CWIID_FOUND)
 	if (NOT CWIID_FOUND)
 		if (NOT BLUETOOTH_FOUND)

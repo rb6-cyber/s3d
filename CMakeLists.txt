@@ -12,8 +12,11 @@ endif(COMMAND cmake_policy)
 # Add directory with library checks to search path
 list(APPEND CMAKE_MODULE_PATH "${s3d_SOURCE_DIR}/cmake/modules")
 
+# Set default installation paths
+include(InstallPaths)
+
 # set path to objects
-set(OBJECTPATH "${CMAKE_INSTALL_PREFIX}/share/s3d/objs")
+set(OBJECTPATH "${S3D_DATA_INSTALL_DIR}")
 STRING(TOUPPER "${CMAKE_BUILD_TYPE}" BUILD_TYPE)
 if (NOT BUILD_TYPE MATCHES "REL(WITHDEBINFO|EASE)")
 	set(OBJECTPATH "${OBJECTPATH}:${s3d_SOURCE_DIR}/objs")
@@ -50,5 +53,5 @@ if (INCLUDE_EXPERIMENTAL)
 endif (INCLUDE_EXPERIMENTAL)
 
 # Generate s3drc
-configure_file(s3drc.cmake ${s3d_BINARY_DIR}/s3drc)
-install(PROGRAMS ${s3d_BINARY_DIR}/s3drc DESTINATION /etc)
+configure_file(s3drc.cmake "${s3d_BINARY_DIR}/s3drc")
+install(PROGRAMS "${s3d_BINARY_DIR}/s3drc" DESTINATION "${CFG_INSTALL_DIR}")

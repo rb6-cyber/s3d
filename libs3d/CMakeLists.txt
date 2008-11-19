@@ -12,12 +12,12 @@ set(S3D_LIBRARIES ${S3D_LIBRARY_DEPENDENCIES} s3d CACHE PATHS "Path to libraries
 
 # install
 install(TARGETS s3d
-	LIBRARY DESTINATION lib
-	ARCHIVE DESTINATION lib
+	LIBRARY DESTINATION "${LIB_INSTALL_DIR}"
+	ARCHIVE DESTINATION "${LIB_INSTALL_DIR}"
 )
 
-install(FILES s3d.h s3d_keysym.h DESTINATION include/)
+install(FILES s3d.h s3d_keysym.h DESTINATION "${INCLUDE_INSTALL_DIR}")
 
 #pkg config
 configure_file(libs3d.pc.cmake ${s3d_BINARY_DIR}/libs3d/libs3d.pc @ONLY)
-install(FILES ${s3d_BINARY_DIR}/libs3d/libs3d.pc DESTINATION lib/pkgconfig/)
+install(FILES ${s3d_BINARY_DIR}/libs3d/libs3d.pc DESTINATION "${PKGCFG_INSTALL_DIR}")

@@ -1,5 +1,5 @@
 set(s3d-objs abs2.3ds abs.3ds accesspoint.3ds accesspoint_inet.3ds arrow2.3ds
-	arrow.3ds AUTHORS big_p.3ds bigsphere.3ds btn_close.3ds btn_maximize.3ds
+	arrow.3ds big_p.3ds bigsphere.3ds btn_close.3ds btn_maximize.3ds
 	btn_minimize.3ds btn_rotate.3ds clock_bg.3ds comp.3ds cube.3ds cubey.3ds
 	cubeyholes.3ds dot.3ds dotdot.3ds duno.3ds film.3ds folder.3ds
 	geometry.3ds go_button.3ds internet.3ds katze_body.3ds katze_leg.3ds
@@ -10,4 +10,4 @@ set(s3d-objs abs2.3ds abs.3ds accesspoint.3ds accesspoint_inet.3ds arrow2.3ds
 	wtf.3ds xyz.3ds)
 
 # install
-install(FILES ${s3d-objs} DESTINATION share/s3d/objs)
+install(FILES ${s3d-objs} DESTINATION "${DATA_INSTALL_DIR}")

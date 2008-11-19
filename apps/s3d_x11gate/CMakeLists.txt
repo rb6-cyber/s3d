@@ -8,7 +8,7 @@ if (XTST_FOUND AND XTST_FOUND)
 		${X11_LIBRARIES} ${XTST_LIBRARIES} ${MATH_LIBRARIES})
 
 	# install
-	install(TARGETS s3d_x11gate RUNTIME DESTINATION bin)
+	install(TARGETS s3d_x11gate RUNTIME DESTINATION "${BIN_INSTALL_DIR}")
 else (XTST_FOUND AND XTST_FOUND)
 	if (NOT XTST_FOUND)
 		PkgStatus_Later("xtst (pkg name: libxtst-dev)")

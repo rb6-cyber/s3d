@@ -8,7 +8,7 @@ if (PTHREADS_FOUND)
 		${PTHREADS_LIBRARIES} ${MATH_LIBRARIES})
 
 	# install
-	install(TARGETS kism3d RUNTIME DESTINATION bin)
+	install(TARGETS kism3d RUNTIME DESTINATION "${BIN_INSTALL_DIR}")
 else (PTHREADS_FOUND)
 	PkgStatus_Later("pthreads")
 

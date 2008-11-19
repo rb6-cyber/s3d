@@ -7,4 +7,4 @@ target_link_libraries(olsrs3d ${S3D_LIBRARIES} ${S3DW_LIBRARIES}
 		${MATH_LIBRARIES})
 
 # install
-install(TARGETS olsrs3d RUNTIME DESTINATION bin)
+install(TARGETS olsrs3d RUNTIME DESTINATION "${BIN_INSTALL_DIR}")
