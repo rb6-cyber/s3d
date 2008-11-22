@@ -41,7 +41,7 @@ static int norc = 0;
 int running;
 static const char *rc = NULL;
 static const char *homerc = "~/.s3drc";
-static const char *etcrc = CFG_INSTALL_DIR"/s3drc";
+static const char *etcrc = S3D_CFG_INSTALL_DIR"/s3drc";
 /*static int father_done=0;*/
 static const char **s3drc[] = {&rc, &homerc, &etcrc};
 
