@@ -120,7 +120,7 @@ int event_click(struct s3d_evt *evt)
 	int oid;
 	t_node *f;
 	s3dw_handle_click(evt);
-	oid = (int) * ((u_int32_t *)evt->buf);
+	oid = (int) * ((uint32_t *)evt->buf);
 	if (NULL != (f = node_getbyoid(&root, oid))) {
 		if (f->objs.close == oid) {
 			box_close(f, 1);
