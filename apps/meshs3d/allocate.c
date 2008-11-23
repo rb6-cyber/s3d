@@ -262,7 +262,7 @@ void *debugRealloc(void *memoryParameter, uint32_t length, int32_t tag)
 	return result;
 }
 
-void debugFree(void *memoryParameter, int tag)
+void debugFree(void *memoryParameter, int32_t tag)
 {
 	unsigned char *memory;
 	struct chunkHeader *chunkHeader;
