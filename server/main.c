@@ -183,11 +183,13 @@ void quit(void)
 		network_quit();
 		graphics_quit();
 		process_quit();
+#ifdef SIGS
 		if (kidpid != 0) { /* our kid is most probably still alive. kill it!! */
 			s3dprintf(HIGH, "kill all the kids!!");
 			kill(kidpid, SIGTERM);
 			kidpid = 0;
 		}
+#endif
 	}
 	running = 0;
 	s3dprintf(VHIGH, "byebye, s3d quitting ...");
