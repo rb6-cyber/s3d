@@ -72,6 +72,7 @@ int parse_dir(t_node *dir)
 				dir->sub[i]->type = T_DUNO;
 				dir->sub[i]->pindex = i;
 				strncpy(ndir, path, M_DIR);
+				mstrncat(ndir, "/", M_DIR);
 				strncat(ndir, namelist[n]->d_name, M_DIR);
 				if (fs_isdir(ndir))
 					dir->sub[i]->type = T_FOLDER;
