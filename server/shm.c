@@ -180,7 +180,6 @@ int shm_main(void)
 	/* do*/
 	{
 		/*  found=0;*/
-		turn = 1;
 		iterations = 0;
 		for (i = 0;i < procs_n;i++) {
 			iterations++;
