@@ -131,6 +131,20 @@ void fs_approx(char *source, int *files, int *dirs, int *bytes)
 	*bytes += s.st_size;
 	/* printf("end: %d files, %d dirs, %d bytes in %s\n",*files,*dirs,*bytes,source);*/
 }
+
+/* returns 1 if source is a directory */
+int fs_isdir(const char *source)
+{
+	struct stat s;
+
+	if (-1 == stat(source, &s))
+		return 0;
+	if (S_ISDIR(s.st_mode)) {
+		return 1;
+	}
+	return 0;
+}
+
 /* approximate the heaviness of our source ...*/
 void fs_fl_approx(filelist *fl, int *files, int *dirs, int *bytes)
 {

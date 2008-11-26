@@ -34,7 +34,6 @@ int parse_dir(t_node *dir)
 	struct dirent **namelist;
 	int n, i;
 	int oldn;
-	DIR  *dirhd = NULL;
 	char *nstr = NULL;
 	char path[M_DIR];
 	char ndir[M_DIR];
@@ -74,13 +73,8 @@ int parse_dir(t_node *dir)
 				dir->sub[i]->pindex = i;
 				strncpy(ndir, path, M_DIR);
 				strncat(ndir, namelist[n]->d_name, M_DIR);
-#ifdef DT_DIR
-				if ((namelist[n]->d_type == DT_DIR) || ((namelist[n]->d_type == DT_UNKNOWN)))
-					if ((dirhd = opendir(ndir)) != NULL) {
-						dir->sub[i]->type = T_FOLDER;
-						closedir(dirhd);
-					}
-#endif /* DT_DIR */
+				if (fs_isdir(ndir))
+					dir->sub[i]->type = T_FOLDER;
 				dir->sub[i]->check = 0; /* check=0 means we've already processed this item */
 			}
 			free(namelist[n]);
