@@ -142,8 +142,10 @@ endloop:
 		if (setsid() < 0)
 			printf("ERROR (setsid)\n");
 		/*     tcflush(curpty, TCIOFLUSH); */
+#ifdef TIOCSCTTY
 		if (ioctl(curtty, TIOCSCTTY, NULL))
 			printf("ERROR! (ttyflush)\n");;
+#endif /* TIOCSCTTY */
 		dup2(curtty, 0);
 		dup2(curtty, 1);
 		dup2(curtty, 2);
