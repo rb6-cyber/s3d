@@ -25,6 +25,7 @@
 #include <string.h>   /*  memcpy() */
 
 #include <GL/gl.h>   /*  GLint */
+#include <GL/glext.h>   /*  GL_RESCALE_NORMAL */
 #ifdef G_SDL
 #include <SDL.h>  /*  SDL_GL_SwapBuffers */
 #endif

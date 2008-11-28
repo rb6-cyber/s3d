@@ -27,6 +27,7 @@
 #include <stdlib.h>   /*  malloc(),realloc(),free() */
 #include <string.h>   /*  memcpy() */
 #include <GL/gl.h>   /*  gl*, GL* */
+#include <GL/glext.h>   /* GL_GENERATE_MIPMAP */
 #ifndef _ISOC99_SOURCE /* we want isnan() */
 #define _ISOC99_SOURCE
 #endif
