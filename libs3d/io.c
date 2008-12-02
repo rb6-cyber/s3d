@@ -218,7 +218,7 @@ int s3d_open_file(const char *fname, char **pointer)
 	int filesize;
 	struct stat bf;
 	*pointer = NULL;
-	/* if ((fp = fopen(fname, "rt")) == NULL)
+	/* if ((fp = fopen(fname, "rb")) == NULL)
 	 { errn("s3d_open_file():fopen()",errno); return(0);}
 	 if (fseek(fp, 0, SEEK_END) != 0)
 	 { errn("s3d_open_file():fseek()",errno); return(0);}
@@ -227,7 +227,7 @@ int s3d_open_file(const char *fname, char **pointer)
 	 if (fseek(fp, 0, SEEK_SET) != 0)
 	 { errn("s3d_open_file():fseek()",errno); return(0);}*/
 
-	if ((fp = fopen(fname, "rt")) == NULL) {
+	if ((fp = fopen(fname, "rb")) == NULL) {
 		errdn(VLOW, "s3d_open_file():fopen()", errno);
 		return(-1);
 	}

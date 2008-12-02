@@ -64,7 +64,7 @@ int shm_init(void)
 	key_t key;
 
 	/* create an empty token file */
-	fp = fopen(ftoken, "w");
+	fp = fopen(ftoken, "wb");
 	fclose(fp);
 	/* make the key: */
 	if ((key = ftok(ftoken, 'R')) == -1) {

@@ -38,7 +38,7 @@ char *read_file(const char *fname, int *fsize)
 	int filesize;
 	struct stat bf;
 
-	if ((fp = fopen(fname, "rt")) == NULL) {
+	if ((fp = fopen(fname, "rb")) == NULL) {
 		fprintf(stderr, "read_file( %s ):fopen(): %s", fname, strerror(errno));
 		return(NULL);
 	}

@@ -191,13 +191,13 @@ int fs_copy(char *source, char *dest)
 	default:
 		printf("fs_copy -> atomic copy\n");
 		printf("open source...");
-		if (NULL == (fps = fopen(source, "r"))) {
+		if (NULL == (fps = fopen(source, "rb"))) {
 			fs_error("fs_copy():fopen(source)", source);
 			return(-1);
 		}
 		printf("ok\n");
 		printf("open dest...");
-		if (NULL == (fpd = fopen(dest, "w"))) {
+		if (NULL == (fpd = fopen(dest, "wb"))) {
 			fs_error("fs_copy():fopen(source)", source);
 			return(-1);
 		}
