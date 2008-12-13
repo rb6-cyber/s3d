@@ -6,12 +6,8 @@ from xml.dom.minidom import Node
 import os
 import re
 
-class Callable:
-    def __init__(self, func):
-        self.__call__ = func
-
 def main():
-	print 'reading with "doxygen xml.doxygen" generated files'
+	print('reading with "doxygen xml.doxygen" generated files')
 	refidlist = []
 
 	libs3d = xml.dom.minidom.parse("xml/s3d_8h.xml")
@@ -499,8 +495,8 @@ class docbook_functions:
 		return sect2
 
 	# make functions "static"
-	generate = Callable(generate)
-	generate_sgml = Callable(generate_sgml)
+	generate = staticmethod(generate)
+	generate_sgml = staticmethod(generate_sgml)
 
 class docbook_structs:
 	"""
@@ -548,8 +544,8 @@ class docbook_structs:
 		return sect2
 
 	# make functions "static"
-	generate = Callable(generate)
-	generate_sgml = Callable(generate_sgml)
+	generate = staticmethod(generate)
+	generate_sgml = staticmethod(generate_sgml)
 
 class docbook_typedefs:
 	"""
@@ -585,8 +581,8 @@ class docbook_typedefs:
 		return sect2
 
 	# make functions "static"
-	generate = Callable(generate)
-	generate_sgml = Callable(generate_sgml)
+	generate = staticmethod(generate)
+	generate_sgml = staticmethod(generate_sgml)
 
 
 def manpage_header(root, name, refid, mannum, ref_name, ref_namediv, synopsisinfo):
@@ -668,8 +664,8 @@ class manpage_functions:
 		return refentry
 
 	# make functions "static"
-	generate = Callable(generate)
-	generate_sgml = Callable(generate_sgml)
+	generate = staticmethod(generate)
+	generate_sgml = staticmethod(generate_sgml)
 
 class manpage_structs:
 	"""
@@ -721,8 +717,8 @@ class manpage_structs:
 		return refentry
 
 	# make functions "static"
-	generate = Callable(generate)
-	generate_sgml = Callable(generate_sgml)
+	generate = staticmethod(generate)
+	generate_sgml = staticmethod(generate_sgml)
 
 if __name__ == '__main__':
 	main()
