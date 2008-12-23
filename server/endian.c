@@ -1,5 +1,5 @@
 /*
- * event.c
+ * endian.c
  *
  * Copyright (C) 2004-2008 S3D contributors
  *
@@ -23,6 +23,7 @@
 
 #include <arpa/inet.h> /*  htonl(),htons() */
 #include <stdint.h>
+#include "global.h"
 
 /* convert buffer with floats from host to network endianess */
 void htonfb(float* netfloat, int num)
