@@ -94,7 +94,7 @@ void event(void);
 int xinit(void);
 int error(Display *COMPUNUSED(dpy), XErrorEvent *event);
 int print_event(Display *COMPUNUSED(dpy), XEvent *event);
-void x11_addwindows();
+void x11_addwindows(void);
 char *x11_get_prop(Window win, char *prop);
 char *x11_get_name(Window win);
 void print_properties(Window win);
