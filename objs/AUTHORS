@@ -1,9 +1,10 @@
-All those objects in here (except for martin sterns, from whom I don't know yet) are 
-may be used under the term GPL-2+, that means you may distribute and modify or alter them
-as you want, if you give full credits and redistribute them under GPL-2+ again.
-Too bad we don't have source code for them. maybe GPL-2+ is no good idea, but o well. :)
+All those objects in here may be used under the term GPL-2+, that means you may
+distribute and modify or alter them as you want, if you give full credits and
+redistribute them under GPL-2+ again. Too bad we don't have source code for
+them. maybe GPL-2+ is no good idea, but o well. :)
 
-I know, some of them (especially mine) are mostly junk, but maybe you find them useful ;)
+I know, some of them (especially mine) are mostly junk, but maybe you find them
+useful ;)
 
 ### Mike Greanz (mog):
 
@@ -17,10 +18,6 @@ btn_rotate.3ds
 accesspoint.3ds
 accesspoint_inet.3ds
 internet.3ds
-
-### Martin Stern:
-
-martin_stern/*
 
 ### Christiane Weidauer (yd):
 
