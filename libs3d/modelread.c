@@ -25,6 +25,7 @@
 #include "s3d.h"
 #include "s3dlib.h"
 #include <g3d/g3d.h>
+#include <g3d/matrix.h>
 #include <stdlib.h>   /*  exit(), malloc() */
 #include <math.h>   /*  sqrt() */
 #include <string.h>   /*  strncpy() */
@@ -122,6 +123,7 @@ static int model_load(char *file)
 	G3DObject     *object;
 	G3DFace     *face;
 	GSList      *oitem, *oface;
+	G3DMatrix rmatrix[16];
 	struct material2texture *mat2tex;
 	unsigned int i, k;
 	int       j, material_count, texture_count, voff, obj_id;
@@ -136,6 +138,9 @@ static int model_load(char *file)
 	model = g3d_model_load_full(context, file, 0);
 
 	if (model) {
+		g3d_matrix_identity(rmatrix);
+		g3d_matrix_rotate_xyz(G_PI * 90.0 / 180, 0.0, 0.0, rmatrix);
+		g3d_model_transform(model, rmatrix);
 
 		oitem = model->objects;
 		obj_id = s3d_new_object();

@@ -11,5 +11,5 @@ if (G3D_LIBRARIES AND G3D_INCLUDE_DIRS)
 else (G3D_LIBRARIES AND G3D_INCLUDE_DIRS)
 	find_package(PkgConfig)
 
-	pkg_search_module(G3D libg3d>=0.0.6)
+	pkg_search_module(G3D libg3d>=0.0.7)
 endif (G3D_LIBRARIES AND G3D_INCLUDE_DIRS)
