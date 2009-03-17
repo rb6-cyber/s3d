@@ -51,7 +51,7 @@ endif (MATH_FOUND)
 # find required lib and add include dir for OPENGL
 find_package(OpenGL)
 if (OPENGL_FOUND)
-	include_directories(${OPENGL_INCLUDE_DIRS})
+	include_directories(${OPENGL_INCLUDE_DIR})
 else (OPENGL_FOUND)
 	PkgError_Later("Could not find OpenGL libs and headers")
 endif (OPENGL_FOUND)
@@ -95,6 +95,7 @@ endif (PTHREADS_FOUND)
 # try to find lib and add include dir for SQLite3
 find_package(SQLite3)
 if (SQLITE3_FOUND)
+	include_directories(${SQLITE3_INCLUDE_DIRS})
 	add_definitions(${SQLITE3_DEFINITIONS})
 endif (SQLITE3_FOUND)
 
@@ -102,7 +103,7 @@ endif (SQLITE3_FOUND)
 # try to find lib and add include dir for LibXml2
 find_package(LibXml2)
 if (LIBXML2_FOUND)
-	include_directories(${LIBXML2_INCLUDE_DIRS})
+	include_directories(${LIBXML2_INCLUDE_DIR})
 	add_definitions(${LIBXML2_DEFINITIONS})
 endif (LIBXML2_FOUND)
 
@@ -110,37 +111,43 @@ endif (LIBXML2_FOUND)
 # try to find lib and add include dir for Xcomposite
 find_package(Xcomposite)
 if (XCOMPOSITE_FOUND)
+	include_directories(${XCOMPOSITE_INCLUDE_DIRS})
 	add_definitions(${XCOMPOSITE_DEFINITIONS})
 endif (XCOMPOSITE_FOUND)
 
 # try to find lib and add include dir for Xdamage
 find_package(Xdamage)
 if (XDAMAGE_FOUND)
+	include_directories(${XDAMAGE_INCLUDE_DIRS})
 	add_definitions(${XDAMAGE_DEFINITIONS})
 endif (XDAMAGE_FOUND)
 
 # try to find lib and add include dir for Xfixes
 find_package(Xfixes)
 if (XFIXES_FOUND)
+	include_directories(${XFIXES_INCLUDE_DIRS})
 	add_definitions(${XFIXES_DEFINITIONS})
 endif (XFIXES_FOUND)
 
 # try to find lib and add include dir for Xrender
 find_package(Xrender)
 if (XRENDER_FOUND)
+	include_directories(${XRENDER_INCLUDE_DIRS})
 	add_definitions(${XRENDER_DEFINITIONS})
 endif (XRENDER_FOUND)
 
 # try to find lib and add include dir for Xtst
 find_package(Xtst)
 if (XTST_FOUND)
+	include_directories(${XTST_INCLUDE_DIRS})
 	add_definitions(${XTST_DEFINITIONS})
 endif (XTST_FOUND)
 
 # try to find lib and add include dir for Xtst
 find_package(X11)
 if (X11_FOUND)
-	add_definitions(${XTST_DEFINITIONS})
+	include_directories(${X11_INCLUDE_DIRS})
+	add_definitions(${X11_DEFINITIONS})
 endif (X11_FOUND)
 
 
