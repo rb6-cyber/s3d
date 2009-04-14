@@ -82,6 +82,9 @@ find_package(Docbook)
 find_package(GPS)
 if (GPS_FOUND)
 	set(HAVE_GPS GPS_FOUND)
+	if (GPS_NEW_STRUCT)
+		set(HAVE_GPS_NEW GPS_NEW_STRUCT)
+	endif  (GPS_NEW_STRUCT)
 endif (GPS_FOUND)
 
 
