@@ -69,7 +69,7 @@ int process_args(int argc, char **argv)
 	};
 	optind = 0;
 	opterr = 0;
-	while (-1 != (c = getopt_long(argc, argv, "dH:?ho", long_options, &lopt_idx))) {
+	while (-1 != (c = getopt_long(argc, argv, "dH:?ho:", long_options, &lopt_idx))) {
 		switch (c) {
 		case 0:
 			break;
