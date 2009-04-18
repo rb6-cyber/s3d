@@ -149,7 +149,7 @@ layer_t *load_osm_web(float minlon, float minlat, float maxlon, float maxlat)
 	char url[1024];
 	char *fileBuf;      /* Pointer to downloaded data */
 	layer_t *layer;
-	snprintf(url, 1024, "www.openstreetmap.org/api/0.5/map?bbox=%f,%f,%f,%f", minlon, minlat, maxlon, maxlat);
+	snprintf(url, 1024, "www.openstreetmap.org/api/0.6/map?bbox=%f,%f,%f,%f", minlon, minlat, maxlon, maxlat);
 	printf("downloading url [ %s ]\n", url);
 
 	ret = http_fetch(url, &fileBuf); /* Downloads page */
