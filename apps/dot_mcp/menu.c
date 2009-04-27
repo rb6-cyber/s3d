@@ -66,14 +66,21 @@ void menu_click(int oid)
 	if (act) {
 		for (i = 0;i < (sizeof(menu) / sizeof(struct menu_entry));i++) {
 			if ((oid == menu[i].icon_oid) || (oid == menu[i].str_oid)) {
+				int len;
 				if (0 == strncmp(menu[i].path, "LOGOUT", 6)) {
 					s3d_quit();
 					return;
 				}
 				strncpy(exec, menu[i].path, 256);
-				strncat(exec, "> /dev/null 2>&1 &", 256); /* ignoring output, starting in background */
-				printf("executing [%s]\n", exec);
-				system(exec);
+				exec[255]= '\0';
+				len = strlen(exec);
+				if (len < 256) {
+					strncat(exec, "> /dev/null 2>&1 &", 255 - len); /* ignoring output, starting in background */
+					printf("executing [%s]\n", exec);
+					system(exec);
+				} else {
+					fprintf(stderr, "path too long to execute\n");
+				}
 				return;
 			}
 		}

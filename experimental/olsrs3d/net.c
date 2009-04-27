@@ -73,6 +73,7 @@ int net_init(char *host)
 
 int net_main(void)
 {
+	int len_lbuf;
 
 	if ((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) == -1) {
 		if (errno == EAGAIN)
@@ -89,22 +90,25 @@ int net_main(void)
 	buf[numbytes] = '\0';
 
 	/* check for potential buffer overflow */
-	if ((strlen(lbuf) + strlen(buf)) < MAXLINESIZE) {
+	len_lbuf = strlen(lbuf);
+	if ((len_lbuf + strlen(buf)) < MAXLINESIZE) {
 
-		strncat(lbuf, buf, MAXLINESIZE);
+		strncat(lbuf, buf, MAXLINESIZE - len_lbuf - 1);
 
 	} else {
 
 		/* hope that carriage return is now in buf */
-		if (strlen(lbuf) < MAXLINESIZE) {
+		if (len_lbuf < MAXLINESIZE) {
 
 			if (Debug) printf("WARNING: lbuf almost filled without *any* carriage return within that data !\nAppending truncated buf to lbuf to prevent buffer overflow.\n");
-			strncat(lbuf, buf, MAXLINESIZE - strlen(lbuf));
+			strncat(lbuf, buf, MAXLINESIZE - len_lbuf - 1);
 
 		} else {
 
 			if (Debug) printf("ERROR: lbuf filled without *any* carriage return within that data !\nClearing lbuf to prevent buffer overflow.\n");
 			strncpy(lbuf, buf, MAXLINESIZE);
+			if (MAXLINESIZE > 0)
+				lbuf[MAXLINESIZE - 1] = '\0';
 
 		}
 
