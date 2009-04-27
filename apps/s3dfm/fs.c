@@ -199,6 +199,7 @@ int fs_copy(char *source, char *dest)
 		printf("open dest...");
 		if (NULL == (fpd = fopen(dest, "wb"))) {
 			fs_error("fs_copy():fopen(source)", source);
+			fclose(fps);
 			return(-1);
 		}
 		printf("ok\n");
