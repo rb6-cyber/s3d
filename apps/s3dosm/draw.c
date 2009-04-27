@@ -56,7 +56,6 @@ struct nodelist {
 	float la, lo, alt;  /* earth coords */
 	float x[3];    /* euclid coords */
 	float normal[3];
-	float len;
 };
 /* list element for adjacent nodes */
 struct adjlist {

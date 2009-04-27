@@ -44,7 +44,7 @@ static struct tver campos, camrot;
 static float xdif = 0, ydif = 0;
 
 struct app {
-	int oid, oid_c;
+	int oid;
 	float r;
 	int init;
 	float trans_x, trans_y, trans_z;
