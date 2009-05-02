@@ -124,7 +124,7 @@ static void sig(int VISUNUSED(signr))
 	return;
 }
 
-static void *server(void *args)
+static void* server(void *args)
 {
 	struct t_data *t = (struct t_data*)args;
 	int listen_fd, yes = 1;
@@ -184,6 +184,8 @@ static void *server(void *args)
 
 		}
 	}
+
+	return NULL;
 }
 
 int main(void)
