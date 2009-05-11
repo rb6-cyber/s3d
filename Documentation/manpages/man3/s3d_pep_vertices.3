@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_pep_vertices
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_PEP_VERTICES" "3" "" "" ""
+.TH "S3D_PEP_VERTICES" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_pep_vertices \- rewrite lines
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_pep_vertices \- rewrite lines
 #include <s3d\&.h>
 .fi
 .ft
-.HP 21
+.HP \w'int\ s3d_pep_vertices('u
 .BI "int s3d_pep_vertices(int\ " "object" ", const\ float\ *" "vbuf" ", uint16_t\ " "n" ");"
 .SH "DESCRIPTION"
 .PP
 Alter the latest n pushed vertex\&. vbuf holds the values which are used to overwrite the old data, n entries with each 3 floats specifying x,y,z of the vertices\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

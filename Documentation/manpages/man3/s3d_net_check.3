@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_net_check
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_NET_CHECK" "3" "" "" ""
+.TH "S3D_NET_CHECK" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_net_check \- get events from server
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_net_check \- get events from server
 #include <s3d\&.h>
 .fi
 .ft
-.HP 18
+.HP \w'int\ s3d_net_check('u
 .BI "int s3d_net_check(void);"
 .SH "DESCRIPTION"
 .PP
 This functions is for programs which do not employ a mainloop, hence they need to check for new events on their own\&. Programs like these must make sure to call this function from time to time to convince the server that they did not freeze or bail out\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

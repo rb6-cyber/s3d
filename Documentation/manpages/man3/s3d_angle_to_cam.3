@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_angle_to_cam
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_ANGLE_TO_CAM" "3" "" "" ""
+.TH "S3D_ANGLE_TO_CAM" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_angle_to_cam \- calculate angle between vector and cam
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_angle_to_cam \- calculate angle between vector and cam
 #include <s3d\&.h>
 .fi
 .ft
-.HP 23
+.HP \w'float\ s3d_angle_to_cam('u
 .BI "float s3d_angle_to_cam(const\ float\ " "obj_pos" "[], const\ float\ " "cam_pos" "[], float\ *" "angle_rad" ");"
 .SH "DESCRIPTION"
 .PP
 Given obj_pos and cam_pos in the format float[3], angle_rad about which angle the object should be rotated around the y\-axis so that it faces the camera\&. This might become handy if you have some text floating in space and want it to face the camera\&. http://en\&.wikipedia\&.org/wiki/Vector_(spatial)
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

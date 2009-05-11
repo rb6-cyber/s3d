@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_delete_event
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_DELETE_EVENT" "3" "" "" ""
+.TH "S3D_DELETE_EVENT" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_delete_event \- delete event from stack
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_delete_event \- delete event from stack
 #include <s3d\&.h>
 .fi
 .ft
-.HP 21
+.HP \w'int\ s3d_delete_event('u
 .BI "int s3d_delete_event(const\ struct\ s3d_evt\ *" "devt" ");"
 .SH "DESCRIPTION"
 .PP
 Deletes an event, the argument is the pointer to the event which is to be deleted (maybe obtained from s3d_find_event)\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

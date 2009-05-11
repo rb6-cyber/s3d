@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3dw_surface_new
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3DW_SURFACE_NEW" "3" "" "" ""
+.TH "S3DW_SURFACE_NEW" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3dw_surface_new \- create a new surface
 .SH "SYNOPSIS"
@@ -19,10 +27,16 @@ s3dw_surface_new \- create a new surface
 #include <s3dw\&.h>
 .fi
 .ft
-.HP 31
+.HP \w's3dw_surface\ *s3dw_surface_new('u
 .BI "s3dw_surface *s3dw_surface_new(const\ char\ *" "title" ", float\ " "width" ", float\ " "height" ");"
 .SH "DESCRIPTION"
 .PP
 Creates a new surface (a new window) with title "title" and dimension "width" x "height"\&.
 .PP
 See s3dw_surface for information about callbacks which may be defined\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_link
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_LINK" "3" "" "" ""
+.TH "S3D_LINK" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_link \- link object to another one
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_link \- link object to another one
 #include <s3d\&.h>
 .fi
 .ft
-.HP 13
+.HP \w'int\ s3d_link('u
 .BI "int s3d_link(int\ " "oid_from" ", int\ " "oid_to" ");"
 .SH "DESCRIPTION"
 .PP
 A linked object will move along with it\'s link parent\&. For example if you have a book on a table, you can link the book to the table so the book will "keep on the table" if you move the table around in space\&. It will also rotate with the table etc\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

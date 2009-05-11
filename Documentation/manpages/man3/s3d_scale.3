@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_scale
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_SCALE" "3" "" "" ""
+.TH "S3D_SCALE" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_scale \- scale object
 .SH "SYNOPSIS"
@@ -19,17 +27,30 @@ s3d_scale \- scale object
 #include <s3d\&.h>
 .fi
 .ft
-.HP 14
+.HP \w'int\ s3d_scale('u
 .BI "int s3d_scale(int\ " "object" ", float\ " "s" ");"
 .SH "DESCRIPTION"
 .PP
 Scales the object\&. about factor s\&. s=1 will be the original size, \-1 will mirror it\&.
+.if n \{\
 .sp
+.\}
+.RS 4
 .it 1 an-trap
 .nr an-no-space-flag 1
 .nr an-break-flag 1
 .br
-Warning
+.ps +1
+\fBWarning\fR
+.ps -1
+.br
 .PP
 s=0 is forbidden and will be ignored! s3d_scale is also absolute, not relative!
-
+.sp .5v
+.RE
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

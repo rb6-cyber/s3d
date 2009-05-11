@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_push_materials_a
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_PUSH_MATERIALS_A" "3" "" "" ""
+.TH "S3D_PUSH_MATERIALS_A" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_push_materials_a \- push many materials
 .SH "SYNOPSIS"
@@ -19,7 +27,7 @@ s3d_push_materials_a \- push many materials
 #include <s3d\&.h>
 .fi
 .ft
-.HP 25
+.HP \w'int\ s3d_push_materials_a('u
 .BI "int s3d_push_materials_a(int\ " "object" ", const\ float\ *" "mbuf" ", uint16_t\ " "n" ");"
 .SH "DESCRIPTION"
 .PP
@@ -33,7 +41,9 @@ mbuf[n *12 + 8\-11] \- diffusion values
 .PP
 of each entry\&. n is the number of materials pushed\&. The values are in the order r,g,b,a\&. If you only want to push one material, use the more easy s3d_push_material_a() function\&.
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
  // each line has r,g,b,a value
  float bla[24]=
@@ -46,4 +56,12 @@ of each entry\&. n is the number of materials pushed\&. The values are in the or
 
  s3d_push_materials_a(object, bla, 2); // push a red and a cyan material
 .fi
+.if n \{\
+.RE
+.\}
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
 .RE

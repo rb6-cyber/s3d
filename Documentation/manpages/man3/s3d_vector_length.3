@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_vector_length
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_VECTOR_LENGTH" "3" "" "" ""
+.TH "S3D_VECTOR_LENGTH" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_vector_length \- calculate length of vector
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_vector_length \- calculate length of vector
 #include <s3d\&.h>
 .fi
 .ft
-.HP 24
+.HP \w'float\ s3d_vector_length('u
 .BI "float s3d_vector_length(const\ float\ " "vector" "[]);"
 .SH "DESCRIPTION"
 .PP
 Calculates and returns the length of the given vector (which should be of the type float[3])\&. More info on wikipedia http://en\&.wikipedia\&.org/wiki/Vector_(spatial)
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

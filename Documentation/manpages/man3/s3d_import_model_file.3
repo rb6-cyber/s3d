@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_import_model_file
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_IMPORT_MODEL_FIL" "3" "" "" ""
+.TH "S3D_IMPORT_MODEL_FIL" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_import_model_file \- read model from file
 .SH "SYNOPSIS"
@@ -19,17 +27,30 @@ s3d_import_model_file \- read model from file
 #include <s3d\&.h>
 .fi
 .ft
-.HP 26
+.HP \w'int\ s3d_import_model_file('u
 .BI "int s3d_import_model_file(const\ char\ *" "fname" ");"
 .SH "DESCRIPTION"
 .PP
 Imports an 3d object file and returns the object number\&. Quite a number of formats are supported, like 3D Studio (\&.3ds, \&.prj), Lightwave (\&.lw, \&.lwb, \&.lwo), Quake Models (\&.md3), or simply everything libg3d supports\&. :)
+.if n \{\
 .sp
+.\}
+.RS 4
 .it 1 an-trap
 .nr an-no-space-flag 1
 .nr an-break-flag 1
 .br
-Warning
+.ps +1
+\fBWarning\fR
+.ps -1
+.br
 .PP
 Of course, you won\'t forget to toggle it visible, won\'t you?
-
+.sp .5v
+.RE
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_pep_lines
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_PEP_LINES" "3" "" "" ""
+.TH "S3D_PEP_LINES" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_pep_lines \- rewrite lines
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_pep_lines \- rewrite lines
 #include <s3d\&.h>
 .fi
 .ft
-.HP 18
+.HP \w'int\ s3d_pep_lines('u
 .BI "int s3d_pep_lines(int\ " "object" ", const\ uint32_t\ *" "lbuf" ", uint16_t\ " "n" ");"
 .SH "DESCRIPTION"
 .PP
 Alter the latest n pushed lines\&. lbuf holds the values which are used to overwrite the old data, n entries with each 3 uint32_t specifying first, second vertex and material of each line\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

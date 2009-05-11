@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_push_textures
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_PUSH_TEXTURES" "3" "" "" ""
+.TH "S3D_PUSH_TEXTURES" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_push_textures \- push many textures
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_push_textures \- push many textures
 #include <s3d\&.h>
 .fi
 .ft
-.HP 22
+.HP \w'int\ s3d_push_textures('u
 .BI "int s3d_push_textures(int\ " "object" ", const\ uint16_t\ *" "tbuf" ", uint16_t\ " "n" ");"
 .SH "DESCRIPTION"
 .PP
 As for vertices, you can push arrays of textures on the texture stack to have greater performance\&. The tbuf should contain n texture sizes which consist of 2 uint16_t values for width and height for each texture\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_load_materials_a
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_LOAD_MATERIALS_A" "3" "" "" ""
+.TH "S3D_LOAD_MATERIALS_A" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_load_materials_a \- add materials with alpha to polygons
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_load_materials_a \- add materials with alpha to polygons
 #include <s3d\&.h>
 .fi
 .ft
-.HP 25
+.HP \w'int\ s3d_load_materials_a('u
 .BI "int s3d_load_materials_a(int\ " "object" ", const\ float\ *" "mbuf" ", uint32_t\ " "start" ", uint16_t\ " "n" ");"
 .SH "DESCRIPTION"
 .PP
 Loads n materials starting from index position start into the material stack\&. See s3d_push_materials_a for more informations about the values in mbuf\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

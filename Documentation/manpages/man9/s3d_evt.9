@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_evt
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_EVT" "9" "" "" ""
+.TH "S3D_EVT" "9" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_evt
 .SH "SYNOPSIS"
@@ -21,7 +29,9 @@ s3d_evt
 .ft
 .SH "STRUCTURE MEMBERS"
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
 struct s3d_evt {
 	uint8_t event;
@@ -30,7 +40,9 @@ struct s3d_evt {
 	struct s3d_evt *next;
 }
 .fi
+.if n \{\
 .RE
+.\}
 .SH "DESCRIPTION"
 .PP
 This is the event information holder\&.
@@ -53,4 +65,10 @@ is the pointer to the multiple purpose buffer, which will have more specific inf
 next
 .RS 4
 can be safely ignored ;)
+.RE
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
 .RE

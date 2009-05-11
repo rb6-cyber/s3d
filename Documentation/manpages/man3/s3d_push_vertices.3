@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_push_vertices
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_PUSH_VERTICES" "3" "" "" ""
+.TH "S3D_PUSH_VERTICES" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_push_vertices \- push many vertices
 .SH "SYNOPSIS"
@@ -19,17 +27,27 @@ s3d_push_vertices \- push many vertices
 #include <s3d\&.h>
 .fi
 .ft
-.HP 22
+.HP \w'int\ s3d_push_vertices('u
 .BI "int s3d_push_vertices(int\ " "object" ", const\ float\ *" "vbuf" ", uint16_t\ " "n" ");"
 .SH "DESCRIPTION"
 .PP
 Push some vertices from an array\&. that\'s much better for performing than using s3d_push_vertex() if you have a lot of vertices (and that\'s probably the usual case)\&.
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
  float vertices[] = { 0\&.0, 0\&.0, 0\&.0,
                       1\&.0, 2\&.0, 3\&.0,
                       3\&.0, 2\&.0, 1\&.0};
  s3d_push_vertices(object, vertices, 3); // pushing 3 vertices
 .fi
+.if n \{\
+.RE
+.\}
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
 .RE

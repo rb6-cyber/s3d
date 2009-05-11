@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_key_event
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_KEY_EVENT" "9" "" "" ""
+.TH "S3D_KEY_EVENT" "9" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_key_event
 .SH "SYNOPSIS"
@@ -21,7 +29,9 @@ s3d_key_event
 .ft
 .SH "STRUCTURE MEMBERS"
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
 struct s3d_key_event {
 	uint16_t keysym;
@@ -30,7 +40,15 @@ struct s3d_key_event {
 	uint16_t state;
 }
 .fi
+.if n \{\
 .RE
+.\}
 .SH "DESCRIPTION"
 .PP
 Can be used on the buffer of an event of type S3D_EVENT_KEY*\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

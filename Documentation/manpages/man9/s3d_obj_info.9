@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_obj_info
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_OBJ_INFO" "9" "" "" ""
+.TH "S3D_OBJ_INFO" "9" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_obj_info
 .SH "SYNOPSIS"
@@ -21,7 +29,9 @@ s3d_obj_info
 .ft
 .SH "STRUCTURE MEMBERS"
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
 struct s3d_obj_info {
 	uint32_t object;
@@ -37,9 +47,17 @@ struct s3d_obj_info {
 	char name;
 }
 .fi
+.if n \{\
 .RE
+.\}
 .SH "DESCRIPTION"
 .PP
 Can be used on the buffer of an event of type S3D_EVENT_OBJ_INFO\&. name will usually contain nothing for usual objects, but mcp objects will contain the applications names here\&. r is the radius of the convex sphere an object, which will also be interesting for the mcp\&.
 .PP
 Special objects like camera, pointer will have the "sys_" prefix in the name and will be named "pointer0", "pointer1" \&.\&.\&. or "cam0", "cam1" \&.\&.\&. For cam object, scale will contain the aspect ratio\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_ignore_callback
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_IGNORE_CALLBACK" "3" "" "" ""
+.TH "S3D_IGNORE_CALLBACK" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_ignore_callback \- ignores an event
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_ignore_callback \- ignores an event
 #include <s3d\&.h>
 .fi
 .ft
-.HP 25
+.HP \w'void\ s3d_ignore_callback('u
 .BI "void s3d_ignore_callback(uint8_t\ " "event" ");"
 .SH "DESCRIPTION"
 .PP
 Sets the callback on ignore, that means it won\'t be queued up for later use\&. An incoming event of this type will simply be skipped\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

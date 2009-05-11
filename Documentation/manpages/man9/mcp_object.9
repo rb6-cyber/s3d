@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: mcp_object
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "MCP_OBJECT" "9" "" "" ""
+.TH "MCP_OBJECT" "9" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 mcp_object
 .SH "SYNOPSIS"
@@ -21,7 +29,9 @@ mcp_object
 .ft
 .SH "STRUCTURE MEMBERS"
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
 struct mcp_object {
 	uint32_t object;
@@ -32,9 +42,17 @@ struct mcp_object {
 	char name;
 }
 .fi
+.if n \{\
 .RE
+.\}
 .SH "DESCRIPTION"
 .PP
 Deprecated
 .PP
 don\'t use, to be removed soon (use struct s3d_but_info)\&. ;)
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

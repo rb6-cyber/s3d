@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: _s3dw_widget
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "_S3DW_WIDGET" "9" "" "" ""
+.TH "_S3DW_WIDGET" "9" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3dw_widget
 .SH "SYNOPSIS"
@@ -21,7 +29,9 @@ s3dw_widget
 .ft
 .SH "STRUCTURE MEMBERS"
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
 struct _s3dw_widget {
 	int type;
@@ -51,9 +61,17 @@ struct _s3dw_widget {
 	float rz;
 }
 .fi
+.if n \{\
 .RE
+.\}
 .SH "DESCRIPTION"
 .PP
 This is the most basic widget type, it contains all the "general" widget information\&. If you want to move a widget, you\'d change x,y,z,s and rx,ry,rz and call s3dw_moveit to turn your action reality\&. Every other widget has this type as first entry, so a simple typecast to s3dw_widget will give you the widgets "general" information\&. For typecast, you may use S3DWIDGET()\&.
 .PP
 The pointer ptr allows linking to user\-specific data structures\&. That comes in handy if the widget is called back by an event, and the program must now find out on which data the user reacted\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

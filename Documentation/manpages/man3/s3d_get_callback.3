@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_get_callback
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_GET_CALLBACK" "3" "" "" ""
+.TH "S3D_GET_CALLBACK" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_get_callback \- get callback of event
 .SH "SYNOPSIS"
@@ -19,17 +27,27 @@ s3d_get_callback \- get callback of event
 #include <s3d\&.h>
 .fi
 .ft
-.HP 24
+.HP \w's3d_cb\ s3d_get_callback('u
 .BI "s3d_cb s3d_get_callback(uint8_t\ " "event" ");"
 .SH "DESCRIPTION"
 .PP
 Returns the Callback\-function of the event\&.
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
  struct s3d_evt e;
  \&.\&.\&.
  s3d_get_callback(S3D_EVENT_KEY)(e);
  // will call the key\-handling function with argument e\&.
 .fi
+.if n \{\
+.RE
+.\}
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
 .RE

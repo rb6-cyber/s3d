@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3dw_handle_key
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3DW_HANDLE_KEY" "3" "" "" ""
+.TH "S3DW_HANDLE_KEY" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3dw_handle_key \- handle key input on widget
 .SH "SYNOPSIS"
@@ -19,13 +27,15 @@ s3dw_handle_key \- handle key input on widget
 #include <s3dw\&.h>
 .fi
 .ft
-.HP 20
+.HP \w'int\ s3dw_handle_key('u
 .BI "int s3dw_handle_key(const\ struct\ s3d_evt\ *" "event" ");"
 .SH "DESCRIPTION"
 .PP
 This is somehow useful to call in your keyhandler functions if you want to have input\-boxes work\&. ;)
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
  // way 1:
  s3d_set_callback(S3D_EVENT_KEY,s3dw_handle_key);
@@ -42,4 +52,12 @@ This is somehow useful to call in your keyhandler functions if you want to have 
  \&.\&.\&.\&.
  s3d_set_callback(S3D_EVENT_KEY,key);
 .fi
+.if n \{\
+.RE
+.\}
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
 .RE

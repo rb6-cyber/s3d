@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_translate
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_TRANSLATE" "3" "" "" ""
+.TH "S3D_TRANSLATE" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_translate \- move object to absolute position
 .SH "SYNOPSIS"
@@ -19,25 +27,42 @@ s3d_translate \- move object to absolute position
 #include <s3d\&.h>
 .fi
 .ft
-.HP 18
+.HP \w'int\ s3d_translate('u
 .BI "int s3d_translate(int\ " "object" ", float\ " "x" ", float\ " "y" ", float\ " "z" ");"
 .SH "DESCRIPTION"
 .PP
 Move the object to some position in space\&. when you create an object, it\'s always located at 0\&.0 , 0\&.0, 0\&.0\&.
+.if n \{\
 .sp
+.\}
+.RS 4
 .it 1 an-trap
 .nr an-no-space-flag 1
 .nr an-break-flag 1
 .br
-Warning
+.ps +1
+\fBWarning\fR
+.ps -1
+.br
 .PP
 Translation is absolute, not relative!
-
+.sp .5v
+.RE
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
  s3d_translate(object, 2, 0, 0);
  s3d_translate(object, 4, 0, 0);
  // object will end up at 4,0,0 and not 6,0,0!!
 .fi
+.if n \{\
+.RE
+.\}
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
 .RE

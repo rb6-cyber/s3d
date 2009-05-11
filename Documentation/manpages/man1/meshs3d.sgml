@@ -6,10 +6,20 @@
   <!ENTITY program     "meshs3d">
 ]>
 <refentry id="meshs3d">
+	<refentryinfo>
+		<productname>s3d</productname>
+		<author>
+			<firstname>Simon</firstname>
+			<surname>Wunderlich</surname>
+			<contrib>Author of s3d</contrib>
+		</author>
+	</refentryinfo>
 
 	<refmeta> 
 		<refentrytitle>&program;</refentrytitle>
 		<manvolnum>1</manvolnum>
+		<refmiscinfo class="manual">s3d Manual</refmiscinfo>
+		<refmiscinfo class="source">s3d</refmiscinfo>
 	</refmeta> 
 	
 	<refnamediv> 

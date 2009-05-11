@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_push_line
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_PUSH_LINE" "3" "" "" ""
+.TH "S3D_PUSH_LINE" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_push_line \- push line
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_push_line \- push line
 #include <s3d\&.h>
 .fi
 .ft
-.HP 18
+.HP \w'int\ s3d_push_line('u
 .BI "int s3d_push_line(int\ " "object" ", uint32_t\ " "v1" ", uint32_t\ " "v2" ", uint32_t\ " "material" ");"
 .SH "DESCRIPTION"
 .PP
 Push one line on the line stack of the object\&. It takes 2 vertex\-index\-no, and one material material\-index\-no\&. as argument\&. If you have a lot of lines to push, use s3d_push_lines()
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

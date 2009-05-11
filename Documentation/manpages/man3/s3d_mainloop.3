@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_mainloop
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_MAINLOOP" "3" "" "" ""
+.TH "S3D_MAINLOOP" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_mainloop \- set mainloop of program
 .SH "SYNOPSIS"
@@ -19,13 +27,15 @@ s3d_mainloop \- set mainloop of program
 #include <s3d\&.h>
 .fi
 .ft
-.HP 17
+.HP \w'int\ s3d_mainloop('u
 .BI "int s3d_mainloop(void(*)(void)\ " "f" ");"
 .SH "DESCRIPTION"
 .PP
 Takes a function as argument\&. It will loop this function until a quit\-event is received\&. You can pass NULL if you have no function to be looped, but its better to sleep some time if you have nothing to do anyway to save cpu\-time\&.
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
  void mainloop(void)
  {
@@ -35,4 +45,12 @@ Takes a function as argument\&. It will loop this function until a quit\-event i
 
  s3d_mainloop(mainloop());
 .fi
+.if n \{\
+.RE
+.\}
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
 .RE

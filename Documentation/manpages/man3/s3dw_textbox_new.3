@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3dw_textbox_new
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3DW_TEXTBOX_NEW" "3" "" "" ""
+.TH "S3DW_TEXTBOX_NEW" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3dw_textbox_new \- create a new textbox in the surface
 .SH "SYNOPSIS"
@@ -19,10 +27,16 @@ s3dw_textbox_new \- create a new textbox in the surface
 #include <s3dw\&.h>
 .fi
 .ft
-.HP 31
+.HP \w's3dw_textbox\ *s3dw_textbox_new('u
 .BI "s3dw_textbox *s3dw_textbox_new(const\ s3dw_surface\ *" "surface" ", const\ char\ *" "text" ", float\ " "posx" ", float\ " "posy" ", float\ " "width" ", float\ " "height" ");"
 .SH "DESCRIPTION"
 .PP
 Creates a new textbox on the surface, with "text" written on it and the upper left corner at (posx,posy) on the surface\&. Width and height define the size of the textbox including scrollbars which are rendered around the textfield\&.
 .PP
 See s3dw_textbox for information about callbacks which may be defined\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_pep_polygon_tex_coords
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_PEP_POLYGON_TEX_" "3" "" "" ""
+.TH "S3D_PEP_POLYGON_TEX_" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_pep_polygon_tex_coords \- add texture coordinates to polygons
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_pep_polygon_tex_coords \- add texture coordinates to polygons
 #include <s3d\&.h>
 .fi
 .ft
-.HP 31
+.HP \w'int\ s3d_pep_polygon_tex_coords('u
 .BI "int s3d_pep_polygon_tex_coords(int\ " "object" ", const\ float\ *" "tbuf" ", uint16_t\ " "n" ");"
 .SH "DESCRIPTION"
 .PP
 Pimp the latest n polygons with texture coordinates\&. tbuf has 6*n float values for its entries, which are supplied in the order as in s3d_pep_polygon_tex_coord()
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

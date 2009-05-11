@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3dw_handle_click
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3DW_HANDLE_CLICK" "3" "" "" ""
+.TH "S3DW_HANDLE_CLICK" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3dw_handle_click \- handle click on widget
 .SH "SYNOPSIS"
@@ -19,13 +27,15 @@ s3dw_handle_click \- handle click on widget
 #include <s3dw\&.h>
 .fi
 .ft
-.HP 22
+.HP \w'int\ s3dw_handle_click('u
 .BI "int s3dw_handle_click(const\ struct\ s3d_evt\ *" "event" ");"
 .SH "DESCRIPTION"
 .PP
 If you want your widgets on mouseclicks (believe me, you want that), you have to call this either in your clickhandler\-function or specify it itself as the clickhandler\&.
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
  // way 1:
  s3d_set_callback(S3D_EVENT_OBJ_CLICK,s3dw_handle_click);
@@ -42,4 +52,12 @@ If you want your widgets on mouseclicks (believe me, you want that), you have to
  \&.\&.\&.\&.
  s3d_set_callback(S3D_EVENT_OBJ_CLICK,click);
 .fi
+.if n \{\
+.RE
+.\}
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
 .RE

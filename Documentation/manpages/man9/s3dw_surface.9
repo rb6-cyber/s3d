@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: _s3dw_surface
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "_S3DW_SURFACE" "9" "" "" ""
+.TH "_S3DW_SURFACE" "9" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3dw_surface
 .SH "SYNOPSIS"
@@ -21,7 +29,9 @@ s3dw_surface
 .ft
 .SH "STRUCTURE MEMBERS"
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
 struct _s3dw_surface {
 	s3dw_widget widget;
@@ -30,7 +40,15 @@ struct _s3dw_surface {
 	char *title;
 }
 .fi
+.if n \{\
 .RE
+.\}
 .SH "DESCRIPTION"
 .PP
 A surface is the window of this widget library, holding all of our elements like buttons, input fields etc \&.\&.\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

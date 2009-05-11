@@ -589,6 +589,17 @@ def manpage_header(root, name, refid, mannum, ref_name, ref_namediv, synopsisinf
 	refentry = create_append(root, 'refentry')
 	refentry.setAttribute('id', cleanup_stringbegin(refid))
 
+	refentryinfo = create_append(refentry, 'refentryinfo')
+	productname = create_append(refentryinfo, 'productname')
+	create_append_text(productname, 's3d')
+	author = create_append(refentryinfo, 'author')
+	firstname = create_append(author, 'firstname')
+	create_append_text(firstname, 'Simon')
+	surname = create_append(author, 'surname')
+	create_append_text(surname, 'Wunderlich')
+	contrib = create_append(author, 'contrib')
+	create_append_text(contrib, 'Author of s3d')
+
 	refmeta = create_append(refentry, 'refmeta')
 
 	refentrytitle = create_append(refmeta, 'refentrytitle')
@@ -596,6 +607,13 @@ def manpage_header(root, name, refid, mannum, ref_name, ref_namediv, synopsisinf
 
 	manvolnum = create_append(refmeta, 'manvolnum')
 	create_append_text(manvolnum, mannum)
+
+	refmiscinfo_manual = create_append(refmeta, 'refmiscinfo')
+	refmiscinfo_manual.setAttribute('class', 'manual')
+	create_append_text(refmiscinfo_manual, 's3d Manual')
+	refmiscinfo_source = create_append(refmeta, 'refmiscinfo')
+	refmiscinfo_source.setAttribute('class', 'source')
+	create_append_text(refmiscinfo_source, 's3d')
 
 	refnamediv = create_append(refentry, 'refnamediv')
 

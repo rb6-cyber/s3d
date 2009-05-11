@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: _s3dw_style
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "_S3DW_STYLE" "9" "" "" ""
+.TH "_S3DW_STYLE" "9" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3dw_style
 .SH "SYNOPSIS"
@@ -21,7 +29,9 @@ s3dw_style
 .ft
 .SH "STRUCTURE MEMBERS"
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
 struct _s3dw_style {
 	char *name;
@@ -34,7 +44,9 @@ struct _s3dw_style {
 	float title_text_mat;
 }
 .fi
+.if n \{\
 .RE
+.\}
 .SH "DESCRIPTION"
 .PP
 With s3dw_style you can change the colors/materials of your widgets\&. materials are in the same as in s3d_push_materials_a, that means red,green,blue and alpha float values (between 0\&.0 and 1\&.0) for ambience, specular and diffuse color\&.
@@ -77,4 +89,10 @@ material for the title bar
 title_text_mat
 .RS 4
 material for the text on the title bar
+.RE
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
 .RE

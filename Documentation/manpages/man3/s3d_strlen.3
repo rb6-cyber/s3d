@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_strlen
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_STRLEN" "3" "" "" ""
+.TH "S3D_STRLEN" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_strlen \- get rendered string size
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_strlen \- get rendered string size
 #include <s3d\&.h>
 .fi
 .ft
-.HP 17
+.HP \w'float\ s3d_strlen('u
 .BI "float s3d_strlen(const\ char\ *" "str" ");"
 .SH "DESCRIPTION"
 .PP
 Returns the length of the string if it were rendered with the currently selected font\&. That might be useful to estimate the size used for a text and render the background or bounding box before inserting the text\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

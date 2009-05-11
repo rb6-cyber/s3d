@@ -1,19 +1,27 @@
+'\" t
 .\"     Title: s3dosm
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3DOSM" "1" "" "" ""
+.TH "S3DOSM" "1" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3dosm \- gps card application for s3d
 .SH "SYNOPSIS"
-.HP 7
+.HP \w'\fBs3dosm\fR\ 'u
 \fBs3dosm\fR [\-o|\-\-osm\ \fIMINLAT\fR,\fIMINLON\fR,\fIMAXLAT\fR,\fIMAXLON\fR] [\-h|\-\-help] [\-\-s3d\-url\ \fIurl\fR] [\fIfiles\fR]
 .SH "DESCRIPTION"
 .PP
@@ -47,13 +55,17 @@ skip S3D environment and connect to this url
 .PP
 
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
 $ \fBs3osm \-\-osm \fR\fB\fI12\&.90142,50\&.82475,12\&.93352,50\&.84592\fR\fR
 
 $ \fBs3osm \fR\fB\fIosmdata\fR\fR\fB\&.xml\fR
 .fi
+.if n \{\
 .RE
+.\}
 .sp
 .SH "SEE ALSO"
 .PP
@@ -61,7 +73,13 @@ $ \fBs3osm \fR\fB\fIosmdata\fR\fR\fB\&.xml\fR
 \fBs3d\fR(1)\&.
 .PP
 
-\fI s3d project page on berlios \fR\&[1]
+\m[blue]\fB s3d project page on berlios \fR\m[]\&\s-2\u[1]\d\s+2
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE
 .SH "NOTES"
 .IP " 1." 4
 s3d project page on berlios

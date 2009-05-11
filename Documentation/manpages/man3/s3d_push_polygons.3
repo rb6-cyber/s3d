@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_push_polygons
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_PUSH_POLYGONS" "3" "" "" ""
+.TH "S3D_PUSH_POLYGONS" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_push_polygons \- push many polygons
 .SH "SYNOPSIS"
@@ -19,13 +27,15 @@ s3d_push_polygons \- push many polygons
 #include <s3d\&.h>
 .fi
 .ft
-.HP 22
+.HP \w'int\ s3d_push_polygons('u
 .BI "int s3d_push_polygons(int\ " "object" ", const\ uint32_t\ *" "pbuf" ", uint16_t\ " "n" ");"
 .SH "DESCRIPTION"
 .PP
 As for vertices, you can push arrays of polygons to have greater performance\&. The pbuf should contain n polygons which consist of 4 uint32_t values of 3 vertices indices and 1 material index\&.
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
  uint32_t pbuf[] = { 0, 1, 2, 0};
  int oid = s3d_new_object();   // create a new object
@@ -36,4 +46,12 @@ As for vertices, you can push arrays of polygons to have greater performance\&. 
  s3d_push_polygons(oid, pbuf, 1);
  // push one polygon with the pbuf data
 .fi
+.if n \{\
+.RE
+.\}
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
 .RE

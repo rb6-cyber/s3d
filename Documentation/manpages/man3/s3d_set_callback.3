@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_set_callback
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_SET_CALLBACK" "3" "" "" ""
+.TH "S3D_SET_CALLBACK" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_set_callback \- sets a callback
 .SH "SYNOPSIS"
@@ -19,22 +27,31 @@ s3d_set_callback \- sets a callback
 #include <s3d\&.h>
 .fi
 .ft
-.HP 22
+.HP \w'void\ s3d_set_callback('u
 .BI "void s3d_set_callback(uint8_t\ " "event" ", s3d_cb\ " "func" ");"
 .SH "DESCRIPTION"
 .PP
 Sets a callback for a certain event\&. this is very useful for event\-oriented applications\&. event callbacks will not interrupt each other or the mainloop\&.
+.if n \{\
 .sp
+.\}
+.RS 4
 .it 1 an-trap
 .nr an-no-space-flag 1
 .nr an-break-flag 1
 .br
-Warning
+.ps +1
+\fBWarning\fR
+.ps -1
+.br
 .PP
 Defining callbacks will only work after calling s3d_init()
-
+.sp .5v
+.RE
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
  #include <inttypes\&.h>
 
@@ -46,4 +63,12 @@ Defining callbacks will only work after calling s3d_init()
  s3d_set_callback(S3D_EVENT_NEW_OBJECT, obj_click);
  // this will tell you when a object got clicked
 .fi
+.if n \{\
+.RE
+.\}
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
 .RE

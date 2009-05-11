@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_load_polygon_normals
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_LOAD_POLYGON_NOR" "3" "" "" ""
+.TH "S3D_LOAD_POLYGON_NOR" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_load_polygon_normals \- add normals to polygon
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_load_polygon_normals \- add normals to polygon
 #include <s3d\&.h>
 .fi
 .ft
-.HP 29
+.HP \w'int\ s3d_load_polygon_normals('u
 .BI "int s3d_load_polygon_normals(int\ " "object" ", const\ float\ *" "nbuf" ", uint32_t\ " "start" ", uint16_t\ " "n" ");"
 .SH "DESCRIPTION"
 .PP
 Just as s3d_pep_polygon_normals(), with the difference you won\'t alter the latest n polygons but n polygons starting with index start\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

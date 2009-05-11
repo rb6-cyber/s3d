@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: _s3dw_input
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "_S3DW_INPUT" "9" "" "" ""
+.TH "_S3DW_INPUT" "9" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3dw_input
 .SH "SYNOPSIS"
@@ -21,7 +29,9 @@ s3dw_input
 .ft
 .SH "STRUCTURE MEMBERS"
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
 struct _s3dw_input {
 	s3dw_widget widget;
@@ -31,7 +41,15 @@ struct _s3dw_input {
 	s3dw_callback onedit;
 }
 .fi
+.if n \{\
 .RE
+.\}
 .SH "DESCRIPTION"
 .PP
 The inputs is an input\-field where a user may type things\&. onclick reacts on click in the field, onedit notifies you when someone writes in the field\&.
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE

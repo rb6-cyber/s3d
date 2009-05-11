@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_draw_string
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_DRAW_STRING" "3" "" "" ""
+.TH "S3D_DRAW_STRING" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_draw_string \- draw a simple string
 .SH "SYNOPSIS"
@@ -19,13 +27,15 @@ s3d_draw_string \- draw a simple string
 #include <s3d\&.h>
 .fi
 .ft
-.HP 20
+.HP \w'int\ s3d_draw_string('u
 .BI "int s3d_draw_string(const\ char\ *" "str" ", float\ *" "xlen" ");"
 .SH "DESCRIPTION"
 .PP
 Renders the string str with in Truetype format with the height 1, returns the length of the rendered string in *xlen (or set len=NULL to disable this)\&.
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
  char str="hello world!";
  float len;
@@ -34,4 +44,12 @@ Renders the string str with in Truetype format with the height 1, returns the le
 
  // not interested in the length? do that: s3d_draw_string(str, NULL);
 .fi
+.if n \{\
+.RE
+.\}
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
 .RE

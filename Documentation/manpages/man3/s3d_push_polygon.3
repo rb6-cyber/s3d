@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_push_polygon
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_PUSH_POLYGON" "3" "" "" ""
+.TH "S3D_PUSH_POLYGON" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_push_polygon \- push polygon
 .SH "SYNOPSIS"
@@ -19,13 +27,15 @@ s3d_push_polygon \- push polygon
 #include <s3d\&.h>
 .fi
 .ft
-.HP 21
+.HP \w'int\ s3d_push_polygon('u
 .BI "int s3d_push_polygon(int\ " "object" ", uint32_t\ " "v1" ", uint32_t\ " "v2" ", uint32_t\ " "v3" ", uint32_t\ " "material" ");"
 .SH "DESCRIPTION"
 .PP
 Push one polygon on the polygon stack of the object\&. It takes 3 vertex\-index numbers and one material material\-index\-no\&. as argument\&.
 .sp
+.if n \{\
 .RS 4
+.\}
 .nf
  int oid = s3d_new_object();   // create a new object
  s3d_push_vertex(oid, 0\&.0, 0\&.0, 0\&.0);
@@ -35,4 +45,12 @@ Push one polygon on the polygon stack of the object\&. It takes 3 vertex\-index 
  s3d_push_polygon(oid, 0, 1, 2, 0);
  // this will create a red polygon
 .fi
+.if n \{\
+.RE
+.\}
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
 .RE

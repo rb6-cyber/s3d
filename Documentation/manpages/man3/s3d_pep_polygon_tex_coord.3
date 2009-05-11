@@ -1,15 +1,23 @@
+'\" t
 .\"     Title: s3d_pep_polygon_tex_coord
-.\"    Author:
+.\"    Author: Simon Wunderlich
 .\" Generator: DocBook XSL Stylesheets
 .\"
-.\"    Manual:
-.\"    Source:
+.\"    Manual: s3d Manual
+.\"    Source: s3d
+.\"  Language: English
 .\"
-.TH "S3D_PEP_POLYGON_TEX_" "3" "" "" ""
+.TH "S3D_PEP_POLYGON_TEX_" "3" "" "s3d" "s3d Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
 .\" disable hyphenation
 .nh
 .\" disable justification (adjust text to left margin only)
 .ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
 .SH "NAME"
 s3d_pep_polygon_tex_coord \- add texture coordinates to polygon
 .SH "SYNOPSIS"
@@ -19,8 +27,14 @@ s3d_pep_polygon_tex_coord \- add texture coordinates to polygon
 #include <s3d\&.h>
 .fi
 .ft
-.HP 30
+.HP \w'int\ s3d_pep_polygon_tex_coord('u
 .BI "int s3d_pep_polygon_tex_coord(int\ " "object" ", float\ " "x1" ", float\ " "y1" ", float\ " "x2" ", float\ " "y2" ", float\ " "x3" ", float\ " "y3" ");"
 .SH "DESCRIPTION"
 .PP
 Pimp the last polygon pushed with some textures coordinates, x and y values for each vertex point respectively\&. Those values may be between 0 and 1 and are vertex points on the texture defined in the material of the polygon\&. If you have more polygons which should get a texture, use s3d_pep_polygon_tex_coords()
+.SH "AUTHOR"
+.PP
+\fBSimon Wunderlich\fR
+.RS 4
+Author of s3d
+.RE
