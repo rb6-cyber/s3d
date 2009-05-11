@@ -704,7 +704,7 @@ class manpage_structs:
 	def generate_sgml(struct, synopsis):
 		sgml = xml.dom.minidom.Document()
 
-		(refentry, funcsynopsis) = manpage_header(sgml, struct['name'], struct['id'], '9', struct['name'], "", "#include <"+synopsis+">")
+		(refentry, funcsynopsis) = manpage_header(sgml, struct['name'], struct['id'], '9', struct['name'], struct['brief'].strip(), "#include <"+synopsis+">")
 
 		# add definition of struct
 		refsect1 = create_append(refentry, 'refsect1')

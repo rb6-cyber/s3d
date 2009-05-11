@@ -77,7 +77,8 @@ typedef struct _s3dw_input   s3dw_input;
 typedef struct _s3dw_surface   s3dw_surface;
 typedef struct _s3dw_style   s3dw_style;
 
-/**
+/** \brief style of s3d widget
+ *
  * With s3dw_style you can change the colors/materials of your widgets.
  * materials are in the same as in s3d_push_materials_a, that means
  * red,green,blue and alpha float values (between 0.0 and 1.0) for ambience,
@@ -94,7 +95,8 @@ struct _s3dw_style {
 	float title_text_mat[12]; /**< material for the text on the title bar */
 };
 
-/**
+/** \brief s3d widget information
+ *
  * This is the most basic widget type, it contains all the "general" widget
  * information. If you want to move a widget, you'd change x,y,z,s and rx,ry,rz
  * and call s3dw_moveit to turn your action reality. Every other widget has this
@@ -140,7 +142,8 @@ struct _s3dw_style {
  */
 typedef void (*s3dw_callback)(s3dw_widget *);
 
-/**
+/** \brief button of s3d widget
+ *
  * The buttons is just a button as you would expect it in a 2D widget library.
  * It only reacts on clicks.
  */
@@ -153,7 +156,8 @@ struct _s3dw_button {
 	s3dw_callback   onclick;
 };
 
-/**
+/** \brief label of s3d widget
+ *
  * The labels is an label-field where a user may type things. onclick reacts on
  * click in the field.
  */
@@ -165,7 +169,8 @@ struct _s3dw_label {
 	s3dw_callback   onclick;
 };
 
-/**
+/** \brief scrollbar of s3d widget
+ *
  * The Scrollbar should be placed around scrollable content. Currently only the
  * left and right icons are clickable (lonclick and ronclick callbacks), in
  * vertical mode lonclick is the callback for the up icon, ronclick the callback
@@ -183,7 +188,8 @@ struct _s3dw_scrollbar {
 
 };
 
-/**
+/** \brief textbox of s3d widget
+ *
  * A textbox shows some text with scrollbars to scroll around. It can currently
  * only react to a click event.
  */
@@ -200,7 +206,8 @@ struct _s3dw_textbox {
 
 };
 
-/**
+/** \brief input field of s3d widget
+ *
  * The inputs is an input-field where a user may type things. onclick reacts on
  * click in the field, onedit notifies you when someone writes in the field.
  */
@@ -214,7 +221,8 @@ struct _s3dw_input {
 	s3dw_callback   onedit;
 };
 
-/**
+/** \brief root of s3d widget
+ *
  * A surface is the window of this widget library, holding all of our elements
  * like buttons, input fields etc ...
  */

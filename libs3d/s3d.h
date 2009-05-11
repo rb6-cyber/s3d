@@ -45,7 +45,8 @@
 #include <stdint.h>  /* [u]intXX_t type definitions*/
 /* definitions */
 
-/**
+/** \brief event information
+ *
  * This is the event information holder.
  */
 struct s3d_evt {
@@ -83,8 +84,9 @@ typedef int (*s3d_cb)(struct s3d_evt *);
 #define S3D_OF_SELECTABLE  0x00000002
 #define S3D_OF_POINTABLE  0x00000004
 
-/**
- *  \deprecated don't use, to be removed soon (use struct s3d_but_info). ;)
+/** \brief master control program object
+ *
+ * \deprecated don't use, to be removed soon (use struct s3d_but_info). ;)
  */
 struct mcp_object {
 	uint32_t object;
@@ -93,7 +95,8 @@ struct mcp_object {
 #define MCP_NEW_OBJECT 1
 	char name[256];
 };
-/**
+/** \brief object information
+ *
  * Can be used on the buffer of an event of type S3D_EVENT_OBJ_INFO. name will
  * usually contain nothing for usual objects, but mcp objects will contain the
  * applications names here. r is the radius of the convex sphere an object,
@@ -113,14 +116,16 @@ struct s3d_obj_info {
 	char name[256];
 };
 
-/**
+/** \brief status of a button
+ *
  * Can be used on the buffer of an event of type S3D_EVENT_MBUTTON.
  */
 struct s3d_but_info {
 	uint8_t button; /* 0 = left, 1 = middle, 2 = right */
 	uint8_t state;  /* 0 = down, 1 = up, 2 = moving */
 };
-/**
+/** \brief key event information
+ *
  * Can be used on the buffer of an event of type S3D_EVENT_KEY*.
  */
 struct s3d_key_event {
