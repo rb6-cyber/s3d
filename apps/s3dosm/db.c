@@ -254,7 +254,7 @@ int db_exec(const char *query, sqlite3_callback callback, const void *arg)
 	if (callback == NULL) { /* we can stack it */
 		int len;
 		len = strlen(query);
-		if (len + qlen >= QBUF) {
+		if (len + qlen >= QBUF)
 			db_flush();
 
 		if (len >= QBUF) {
