@@ -110,7 +110,7 @@ static void handle_node(void)
 	struct node *node, *tmp_node;
 	struct node_con *con;
 	struct hash_it_t *hashit, *tmp_hashit = NULL;
-	int ip[2];
+	struct node_con ids;
 	float angle, angle_rad;
 	float tmp_mov_vec[3], desc_norm_vec[3] = {0, 0, -1};
 
@@ -135,7 +135,7 @@ static void handle_node(void)
 
 			s3d_flags_on(node->obj_id, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 
-			node->desc_id = s3d_draw_string(node->ip_string, &node->desc_length);
+			node->desc_id = s3d_draw_string(node->name_string, &node->desc_length);
 			s3d_link(node->desc_id, node->obj_id);
 			s3d_translate(node->desc_id, - node->desc_length / 2, -2, 0);
 			s3d_flags_on(node->desc_id, S3D_OF_VISIBLE);
@@ -156,10 +156,10 @@ static void handle_node(void)
 
 
 				if (node != tmp_node) {
-					ip[0] = max(node->ip, tmp_node->ip);
-					ip[1] = min(node->ip, tmp_node->ip);
+					ids.address[0] = max_id(node->address, tmp_node->address);
+					ids.address[1] = min_id(node->address, tmp_node->address);
 
-					if (NULL != (con = (struct node_con*)hash_find(con_hash, ip))) {
+					if (NULL != (con = (struct node_con*)hash_find(con_hash, &ids))) {
 						s3d_del_object(con->obj_id);
 						con->obj_id = -1;
 					}
@@ -321,7 +321,7 @@ static void calc_node_mov(void)
 	float distance;
 	float tmp_mov_vec[3], vertex_buf[6];
 	float f, wish_distance;
-	int ip[2];
+	struct node_con ids;
 	struct node_con *con;
 	struct node *first_node, *sec_node;
 	struct hash_it_t *hashit1, *hashit2;
@@ -338,18 +338,21 @@ static void calc_node_mov(void)
 			continue;
 
 		while (NULL != (hashit2 = hash_iterate(node_hash, hashit2))) {
+			struct node_id max_node;
 
 			sec_node = (struct node *) hashit2->bucket->data;
 			if (!sec_node->visible)
 				continue;
 
-			if (first_node != sec_node && (max(first_node->ip, sec_node->ip) == first_node->ip)) {
+			max_node = max_id(first_node->address, sec_node->address);
 
-				ip[0] = first_node->ip;
-				ip[1] = sec_node->ip;
+			if (first_node != sec_node && id_comp(&max_node, &first_node->address) == 0) {
+
+				ids.address[0] = first_node->address;
+				ids.address[1] = sec_node->address;
 				distance = dirt(first_node->pos_vec, sec_node->pos_vec, tmp_mov_vec);
 
-				if ((NULL != (con = (struct node_con*)hash_find(con_hash, ip)))) {
+				if ((NULL != (con = (struct node_con*)hash_find(con_hash, &ids)))) {
 
 					/* we have a connection */
 					wish_distance = ((con->etx1_sqrt + con->etx2_sqrt)) + 4;

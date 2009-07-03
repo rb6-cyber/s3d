@@ -45,26 +45,79 @@ char lbuf[MAXLINESIZE];
 struct hashtable_t *node_hash;
 struct hashtable_t *con_hash;
 
+int id_comp(const struct node_id* id1, const struct node_id* id2)
+{
+	if (id1->type == id2->type) {
+		switch (id1->type) {
+		case node_ip:
+			if (id1->id.ip == id2->id.ip) {
+				return 0;
+			} else if (id1->id.ip < id2->id.ip) {
+				return -1;
+			} else {
+				return 1;
+			}
+			break;
+		case node_undefined:
+			return 0;
+		};
+	} else if (id1->type < id2->type) {
+		return -1;
+	} else {
+		return 1;
+	}
+
+	return 0;
+}
+
+static int id_choose(const struct node_id *id, int32_t size)
+{
+	uint32_t hash = 0;
+	size_t i;
+	struct node_id tmp = *id;
+
+	switch (id->type) {
+	case node_ip:
+		for (i = 0; i < sizeof(id->id.ip); i++) {
+			hash += tmp.id.ip & 0xff;
+			tmp.id.ip = tmp.id.ip >> 8;
+			hash += (hash << 10);
+			hash ^= (hash >> 6);
+		}
+		break;
+	case node_undefined:
+		hash = 0;
+	};
+
+	hash += (hash << 3);
+	hash ^= (hash >> 11);
+	hash += (hash << 15);
+	return (hash % size);
+}
 
 static int long_comp(const void *data1, const void *data2)
 {
-	return(memcmp(data1, data2, 8));
+	struct node_con *con1 = (struct node_con*)data1;
+	struct node_con *con2 = (struct node_con*)data2;
+	int cmp1, cmp2;
+
+	cmp1 = id_comp(&con1->address[0], &con2->address[0]);
+	cmp2 = id_comp(&con1->address[1], &con2->address[1]);
+
+	if (cmp1 == 0) {
+		return cmp2;
+	} else {
+		return cmp1;
+	}
+
+	return 0;
 }
 
 static int long_choose(const void *data, int32_t size)
 {
-	unsigned char *key = (unsigned char*)data;
-	uint32_t hash = 0;
-	size_t i;
+	struct node_con *con = (struct node_con*)data;
+	int hash = id_choose(&con->address[0], size)+id_choose(&con->address[1], size);
 
-	for (i = 0; i < 8; i++) {
-		hash += key[i];
-		hash += (hash << 10);
-		hash ^= (hash >> 6);
-	}
-	hash += (hash << 3);
-	hash ^= (hash >> 11);
-	hash += (hash << 15);
 	return (hash % size);
 }
 
@@ -112,21 +165,21 @@ void process_init(void)
 	return;
 }
 
-static void handle_con(unsigned int ip1, unsigned int ip2, float etx)
+static void handle_con(struct node_id id1, struct node_id id2, float etx)
 {
 
-	unsigned int ip[2];
+	struct node_con ids;
 	struct node_con *con;
 	struct hashtable_t *swaphash;
 
-	ip[0] = max(ip1, ip2);
-	ip[1] = min(ip1, ip2);
+	ids.address[0] = max_id(id1, id2);
+	ids.address[1] = min_id(id1, id2);
 
-	con = (struct node_con*) hash_find(con_hash, ip);
+	con = (struct node_con*) hash_find(con_hash, &ids);
 	if (con == NULL) {
 		con = (struct node_con *) debugMalloc(sizeof(struct node_con), 102);
-		con->ip[0] = ip[0];
-		con->ip[1] = ip[1];
+		con->address[0] = ids.address[0];
+		con->address[1] = ids.address[1];
 		con->color = 0;
 		/* draw line */
 		con->obj_id = s3d_new_object();
@@ -159,7 +212,7 @@ static void handle_con(unsigned int ip1, unsigned int ip2, float etx)
 		s3d_flags_on(con->obj_id, S3D_OF_VISIBLE);
 	}
 
-	if (con->ip[0] == ip1) {
+	if (id_comp(&con->address[0], &id1) == 0) {
 		con->etx1 = etx;
 		if (etx != -1000.00)
 			con->etx1_sqrt = sqrt(etx);
@@ -185,7 +238,7 @@ static void handle_con(unsigned int ip1, unsigned int ip2, float etx)
 
 }
 
-static struct node *handle_mesh_node(unsigned int ip, char *ip_string)
+static struct node *handle_mesh_node(struct node_id id, char *name_string)
 {
 	struct node *orig_node;
 	struct hashtable_t *swaphash;
@@ -196,12 +249,12 @@ static struct node *handle_mesh_node(unsigned int ip, char *ip_string)
 			exit_error("Couldn't resize hash table \n");
 		node_hash = swaphash;
 	}
-	orig_node = (struct node *) hash_find(node_hash, &ip);
+	orig_node = (struct node *) hash_find(node_hash, &id);
 
 	if (NULL == orig_node) {
 		orig_node = (struct node *)debugMalloc(sizeof(struct node), 101);
-		orig_node->ip = ip;
-		strncpy(orig_node->ip_string, ip_string, NAMEMAX);
+		orig_node->address = id;
+		strncpy(orig_node->name_string, name_string, NAMEMAX);
 
 		orig_node->node_type = 0;
 		orig_node->node_type_modified = 1;
@@ -240,7 +293,8 @@ int process_main(void)
 	char hna_node[NAMEMAX];
 
 	struct node *tmp_node;
-	unsigned int int_con_from = 0, int_con_to = 0, address;
+	struct node_id int_con_from, int_con_to;
+	unsigned int address;
 
 	lbuf_ptr = lbuf;
 	last_cr_ptr = NULL;
@@ -248,6 +302,8 @@ int process_main(void)
 	con_from = con_from_end = con_to = con_to_end = etx = etx_end = NULL;
 	dn = 0;
 
+	memset(&int_con_from, '\0', sizeof(struct node_id));
+	memset(&int_con_to, '\0', sizeof(struct node_id));
 
 	while ((*lbuf_ptr) != '\0') {
 		if ((*lbuf_ptr) == '\n') {
@@ -293,6 +349,7 @@ int process_main(void)
 							printf("%s is not a valid ip address\n", con_from);
 							continue;
 						}
+						int_con_from.type = node_ip;
 
 						tmp_node = handle_mesh_node(int_con_from, con_from);
 
@@ -300,7 +357,7 @@ int process_main(void)
 
 							tmp_node->node_type = 1;
 							tmp_node->node_type_modified = 1;
-							if (Global.debug) printf("new internet: %s\n", tmp_node->ip_string);
+							if (Global.debug) printf("new internet: %s\n", tmp_node->name_string);
 
 						}
 
@@ -320,10 +377,12 @@ int process_main(void)
 							printf("%s is not a valid ip address\n", con_from);
 							continue;
 						}
+						int_con_from.type = node_ip;
 						if (inet_pton(AF_INET, hna_node, &int_con_to) < 1) {
 							printf("%s is not a valid ip address\n", hna_node);
 							continue;
 						}
+						int_con_to.type = node_ip;
 						tmp_char[0] = '/';
 
 						handle_mesh_node(int_con_from, con_from);
@@ -333,7 +392,7 @@ int process_main(void)
 
 							tmp_node->node_type = 2;
 							tmp_node->node_type_modified = 1;
-							if (Global.debug) printf("new hna network: %s\n", tmp_node->ip_string);
+							if (Global.debug) printf("new hna network: %s\n", tmp_node->name_string);
 
 						}
 
@@ -351,10 +410,12 @@ int process_main(void)
 						printf("%s is not a valid ip address\n", con_from);
 						continue;
 					}
+					int_con_from.type = node_ip;
 					if (inet_pton(AF_INET, con_to, &int_con_to) < 1) {
 						printf("%s is not a valid ip address\n", con_to);
 						continue;
 					}
+					int_con_to.type = node_ip;
 
 					handle_mesh_node(int_con_from, con_from);
 					handle_mesh_node(int_con_to, con_to);
@@ -363,8 +424,8 @@ int process_main(void)
 				}
 				/* remove zerobyte */
 				(*con_from_end) = (*con_to_end) = (*etx_end) = '"';
-				int_con_from = 0;
-				int_con_to = 0;
+				memset(&int_con_from, '\0', sizeof(struct node_id));
+				memset(&int_con_to, '\0', sizeof(struct node_id));
 				con_from = con_from_end = con_to = con_to_end = etx = etx_end = NULL;
 				dn = 0;
 				last_cr_ptr = lbuf_ptr;

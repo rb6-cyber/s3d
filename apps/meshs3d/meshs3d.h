@@ -28,13 +28,29 @@
 
 #define max(x,y) ((x)>(y)?(x):(y))
 #define min(x,y) ((x)<(y)?(x):(y))
+#define max_id(x,y) (id_comp(&(x), &(y)) > 0?(x):(y))
+#define min_id(x,y) (id_comp(&(x), &(y)) <=0?(x):(y))
+
 #define NAMEMAX  128
 #define MAXLINESIZE 1000  /* lines in a digraph just shouldn't get that longer ... */
 #define MAXDATASIZE 100   /* max number of bytes we can get at once  */
 
+enum node_type {
+	node_undefined = 0,
+	node_ip /*,
+	node_mac */
+};
+
+struct node_id {
+	union {
+		uint32_t ip;
+	} id;
+	enum node_type type;
+};
+
 /* linked list for the all connections */
 struct node_con {
-	unsigned int ip[2];
+	struct node_id address[2];
 	float etx1;       /* etx of left olsr node */
 	float etx2;      /* etx of right olsr node */
 	float etx1_sqrt;     /* sqrt of etx of left olsr node */
@@ -54,8 +70,8 @@ struct olsr_neigh_list {
 
 /* we contruct a binary tree to handle the nodes */
 struct node {
-	unsigned int ip;
-	char ip_string[NAMEMAX];  /* host ip */
+	struct node_id address;
+	char name_string[NAMEMAX];  /* host ip */
 	int node_type;     /* normal = 0, internet gateway = 1, via hna announced network = 2 */
 	int node_type_modified;   /* node_type modified flag */
 	int last_seen;     /* last seen counter */
@@ -65,14 +81,6 @@ struct node {
 	int obj_id;      /* id of node object in s3d */
 	int desc_id;     /* id of node description object in s3d */
 	float desc_length;    /* length of node description object in s3d */
-};
-
-
-struct obj_to_ip {
-	int id;
-	struct olsr_node *olsr_node;
-	struct obj_to_ip *next;
-	struct obj_to_ip *prev;
 };
 
 struct glob {
@@ -108,6 +116,7 @@ struct olsr_node *lst_search(int id);
 void lst_out(void);
 struct olsr_node *move_lst_ptr(int *id);
 */
+int id_comp(const struct node_id* id1, const struct node_id* id2);
 int process_main(void);
 void process_init(void);
 
