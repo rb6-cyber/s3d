@@ -58,6 +58,8 @@ int id_comp(const struct node_id* id1, const struct node_id* id2)
 				return 1;
 			}
 			break;
+		case node_mac:
+			return memcmp(id1->id.mac, id2->id.mac, sizeof(id1->id.mac));
 		case node_undefined:
 			return 0;
 		};
@@ -81,6 +83,13 @@ static int id_choose(const struct node_id *id, int32_t size)
 		for (i = 0; i < sizeof(id->id.ip); i++) {
 			hash += tmp.id.ip & 0xff;
 			tmp.id.ip = tmp.id.ip >> 8;
+			hash += (hash << 10);
+			hash ^= (hash >> 6);
+		}
+		break;
+	case node_mac:
+		for (i = 0; i < sizeof(id->id.mac); i++) {
+			hash += tmp.id.mac[i];
 			hash += (hash << 10);
 			hash ^= (hash >> 6);
 		}
