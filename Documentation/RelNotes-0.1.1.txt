@@ -1,0 +1,6 @@
+S3D v0.1.1 Release Notes
+========================
+
+ * client is now libs3d
+ * added widget library libs3dw
+ * olsrs3d uses widgets for search input

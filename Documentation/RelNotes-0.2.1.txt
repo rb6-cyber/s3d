@@ -1,0 +1,11 @@
+S3D v0.2.1 Release Notes
+========================
+
+ * GLUT specific parts were removed from server
+ *  server will generate mipmaps for textures
+ * SHM connected server and clients will now share their texture buffers
+   over shm. Clients will only send update notices to inform the
+   server
+ * s3dosm is now OSM api 0.5 compatible
+ * C++ compatible api headers (no abi changes)
+ * of course: fixed various bugs (Thanks Sven for your effort!!)
