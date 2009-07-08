@@ -1,7 +1,7 @@
 /*
  * cull.c
  *
- * Copyright (C) 2004-2008 Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2004-2008  Simon Wunderlich <dotslash@packetmixer.de>
  * code originated from  http://www.racer.nl/reference/vfc.htm
  * which is (C) Ruud van Gaal
  *

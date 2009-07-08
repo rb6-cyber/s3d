@@ -1,7 +1,7 @@
 /*
  * main.c
  *
- * Copyright (C) 2004-2008 Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2004-2008  Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3dfm, a s3d file manager.
  * See http://s3d.berlios.de/ for more updates.

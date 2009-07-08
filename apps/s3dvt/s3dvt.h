@@ -1,8 +1,8 @@
 /*
  * s3dvt.h
  *
- * Copyright (C) 2004-2008 Simon Wunderlich <dotslash@packetmixer.de>
- * Copyright (C) 2002 Alexander Graf <helly@gmx.net>
+ * Copyright (C) 2004-2008  Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2002  Alexander Graf <helly@gmx.net>
  *
  * This file is part of s3dvt, a 3d terminal emulator for s3d.
  * See http://s3d.berlios.de/ for more updates.

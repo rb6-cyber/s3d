@@ -3,7 +3,7 @@
 # PkgStatus_Later(errmsg)
 # Collected_PkgStatus(modulename)
 #
-# Copyright (c) 2007-2008 Sven Eckelmann <sven.eckelmann@gmx.de>
+# Copyright (C) 2007-2008  Sven Eckelmann <sven.eckelmann@gmx.de>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions

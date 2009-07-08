@@ -1,8 +1,8 @@
 /*
  * allocate.c
  *
- * Copyright (C) 2006-2008 Marek Lindner <lindner_marek@yahoo.de>
- * Copyright (C) 2006-2008 Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2006-2008  Marek Lindner <lindner_marek@yahoo.de>
+ * Copyright (C) 2006-2008  Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.berlios.de/ for more updates.

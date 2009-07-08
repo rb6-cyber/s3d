@@ -1,7 +1,7 @@
 /* http_error_codes.c - Error code declarations
  *
  * HTTP Fetcher
- *  Copyright (C) 2001 Lyle Hanson (lhanson@cs.nmu.edu)
+ *  Copyright (C) 2001  Lyle Hanson <lhanson@cs.nmu.edu>
  *
  * This file is part of s3dosm, a gps card application for s3d.
  * See http://s3d.berlios.de/ for more updates.

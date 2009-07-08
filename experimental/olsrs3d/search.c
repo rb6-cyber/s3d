@@ -1,7 +1,7 @@
 /*
  * search.c
  *
- * Copyright (C) 2006 Andreas Langer <andreas_lbg@gmx.de>
+ * Copyright (C) 2006  Andreas Langer <andreas_lbg@gmx.de>
  *
  * This file is part of the olsrs3d, an olsr topology visualizer for s3d.
  * See http://s3d.berlios.de/ for more updates.

@@ -3,7 +3,7 @@
 #  XDAMAGE_LIBRARIES - the libraries to link against
 #  XDAMAGE_DEFINITIONS - switches required for Xdamage
 #
-# Copyright (c) 2007-2008 Sven Eckelmann <sven.eckelmann@gmx.de>
+# Copyright (C) 2007-2008  Sven Eckelmann <sven.eckelmann@gmx.de>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions

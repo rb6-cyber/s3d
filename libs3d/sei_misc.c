@@ -1,8 +1,8 @@
 /*
  * sei_misc.c
  *
- * Copyright (C) 2006-2008 Simon Wunderlich <dotslash@packetmixer.de>
- * Copyright (C) 1994 A. Narkhede and D .Manocha, who released their code
+ * Copyright (C) 2006-2008  Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 1994  A. Narkhede and D .Manocha, who released their code
  * for public domain:
  * <snip>
  *
