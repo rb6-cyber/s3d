@@ -43,6 +43,7 @@
 #endif
 #include <unistd.h>   /*  read(),write(),getpid(),close() */
 #include <stdlib.h>   /*  malloc(),free() */
+#include <stdint.h>
 
 static int tcp_sockid;
 int tcp_init(void)
@@ -190,7 +191,7 @@ int tcp_prot_com_in(struct t_process *p)
 		length = ntohs(*((uint16_t *)((uint8_t *)ibuf + 1)));
 		s3dprintf(VLOW, "command %d, length %d", ibuf[0], length);
 		if (length > 0) {
-			tcp_readn(p->sockid, ibuf + 3, length);   /*  uint16_t is limited to 65536, so  */
+			tcp_readn(p->sockid, ibuf + sizeof(int_least32_t), length);   /*  uint16_t is limited to 65536, so  */
 			/*  length can't be bigger than that ... lucky */
 		}
 		prot_com_in(p, ibuf);

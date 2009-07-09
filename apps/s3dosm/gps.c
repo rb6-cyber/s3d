@@ -28,12 +28,6 @@
 #ifdef HAVE_GPS
 static int user_icon = -1, user_icon_rotator = -1;
 #include <gps.h>  /* gps_*() */
-#ifdef NMEA_CHANNELS
-#define GPS_NEW
-#endif
-#ifdef SIRF_CHANNELS
-#define GPS_NEW
-#endif
 
 #include <errno.h>  /* errno */
 #include <stdlib.h> /* malloc(), free() */
@@ -58,7 +52,7 @@ void show_gpsdata(struct gps_data_t *dgps)
 {
 	if (!dgps->online)
 		printf("WARNING: no connection to gps device\n");
-#ifdef GPS_NEW
+#ifdef HAVE_GPS_NEW
 	printf("[%d] lat/long: [%f|%f], altitude %f\n", frame, dgps->fix.latitude, dgps->fix.longitude, dgps->fix.altitude);
 	printf("speed [kph]: %f\n", dgps->fix.speed / KNOTS_TO_KPH);
 	printf("used %d/%d satellits\n", dgps->satellites_used, dgps->satellites);
@@ -79,7 +73,7 @@ void show_gpsdata(struct gps_data_t *dgps)
 		printf("status: dgps fix\n");
 		break;
 	}
-#ifdef GPS_NEW
+#ifdef HAVE_GPS_NEW
 	switch (dgps->fix.mode)
 #else
 	switch (dgps->mode)
@@ -105,7 +99,7 @@ static void show_position(struct gps_data_t *dgps)
 	int fix = 1;
 	float la, lo, heading, speed, slen;
 	char buf[BUFSIZE+1];
-#ifdef GPS_NEW
+#ifdef HAVE_GPS_NEW
 	if (!dgps->online)
 		fix = 0;
 	switch (dgps->fix.mode) {

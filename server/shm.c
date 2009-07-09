@@ -42,6 +42,7 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <time.h> /* nanosleep() */
+#include <stdint.h>
 
 static struct t_shmcb waiting_comblock;
 
@@ -63,7 +64,7 @@ int shm_init(void)
 	key_t key;
 
 	/* create an empty token file */
-	fp = fopen(ftoken, "w");
+	fp = fopen(ftoken, "wb");
 	fclose(fp);
 	/* make the key: */
 	if ((key = ftok(ftoken, 'R')) == -1) {
@@ -179,7 +180,6 @@ int shm_main(void)
 	/* do*/
 	{
 		/*  found=0;*/
-		turn = 1;
 		iterations = 0;
 		for (i = 0;i < procs_n;i++) {
 			iterations++;
@@ -243,7 +243,7 @@ int shm_prot_com_in(struct t_process *p)
 			length = ntohs(*((uint16_t *)((uint8_t *)ibuf + 1)));
 			s3dprintf(VLOW, "command %d, length %d", ibuf[0], length);
 			if (length > 0) {
-				shm_readn(dai, ibuf + 3, length);
+				shm_readn(dai, ibuf + sizeof(int_least32_t), length);
 			}
 			prot_com_in(p, ibuf);
 		}

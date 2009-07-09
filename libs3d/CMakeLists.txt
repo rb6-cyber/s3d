@@ -2,16 +2,17 @@ include_directories(${s3d_SOURCE_DIR}/server)
 
 set(S3D_LIBRARY_DEPENDENCIES  ${MATH_LIBRARIES} ${G3D_LIBRARIES} ${FONTCONFIG_LIBRARIES} ${FREETYPE_LIBRARIES})
 
-s3d_add_library(s3d SHARED callback.c error.c event.c fontselect.c freetype.c
-	io.c modelread.c network.c object_queue.c proto_in.c proto_out.c
-	sei_construct.c sei_misc.c sei_monotone.c sei_tri.c shm.c
+s3d_add_library(s3d SHARED callback.c endian.c error.c event.c fontselect.c
+	freetype.c io.c modelread.c network.c object_queue.c proto_in.c
+	proto_out.c sei_construct.c sei_misc.c sei_monotone.c sei_tri.c shm.c
 	shm_ringbuf.c tcp.c vector.c hash.c texture.c)
 target_link_libraries(s3d ${S3D_LIBRARY_DEPENDENCIES})
-set_target_properties(s3d PROPERTIES VERSION ${VERSION} SOVERSION 2)
-set(S3D_LIBRARIES ${S3D_LIBRARY_DEPENDENCIES} s3d CACHE PATHS "Path to libraries")
+set_target_properties(s3d PROPERTIES VERSION ${VERSION} SOVERSION 2
+                      LINK_INTERFACE_LIBRARIES "")
 
 # install
 install(TARGETS s3d
+	RUNTIME DESTINATION "${BIN_INSTALL_DIR}"
 	LIBRARY DESTINATION "${LIB_INSTALL_DIR}"
 	ARCHIVE DESTINATION "${LIB_INSTALL_DIR}"
 )

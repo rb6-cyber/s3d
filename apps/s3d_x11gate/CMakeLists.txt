@@ -4,8 +4,8 @@ if (XTST_FOUND AND XTST_FOUND)
 	include_directories(${s3d_SOURCE_DIR}/libs3d ${s3d_SOURCE_DIR}/libs3dw)
 
 	s3d_add_executable(s3d_x11gate s3d_x11gate.c)
-	target_link_libraries(s3d_x11gate ${S3D_LIBRARIES} ${S3DW_LIBRARIES}
-		${X11_LIBRARIES} ${XTST_LIBRARIES} ${MATH_LIBRARIES})
+	target_link_libraries(s3d_x11gate s3d s3dw ${X11_LIBRARIES}
+	                      ${XTST_LIBRARIES} ${MATH_LIBRARIES})
 
 	# install
 	install(TARGETS s3d_x11gate RUNTIME DESTINATION "${BIN_INSTALL_DIR}")

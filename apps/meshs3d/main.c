@@ -253,7 +253,7 @@ static void color_handler(struct node_con *con)
 			rgb = 2.0 - etx;
 
 			c = 3;
-			c1 = con->color == 3 && (int) rintf(con->rgb * 10) != (int) rintf(rgb * 10) ? 1 : 0;
+			c1 = con->color == 3 && rintf(con->rgb * 10) != rintf(rgb * 10) ? 1 : 0;
 			r = 1.0;
 			g = 1.0;
 			b = rgb;
@@ -264,7 +264,7 @@ static void color_handler(struct node_con *con)
 			rgb = 1.5 - (etx / 2.0);
 
 			c = 4;
-			c1 = con->color == 4 && (int) rintf(con->rgb * 10) != (int) rintf(rgb * 10) ? 1 : 0;
+			c1 = con->color == 4 && rintf(con->rgb * 10) != rintf(rgb * 10) ? 1 : 0;
 			r = 1.0;
 			g = rgb;
 
@@ -274,7 +274,7 @@ static void color_handler(struct node_con *con)
 			rgb = 1.75 - (etx / 4.0);
 
 			c = 5;
-			c1 = con->color == 5 && (int) rintf(con->rgb * 10) != (int) rintf(rgb * 10) ? 1 : 0;
+			c1 = con->color == 5 && rintf(con->rgb * 10) != rintf(rgb * 10) ? 1 : 0;
 
 			r = rgb;
 			g = rgb - 0.5;
@@ -286,7 +286,7 @@ static void color_handler(struct node_con *con)
 			rgb = 1000.0 / (1500.0 + etx);
 
 			c = 6;
-			c1 = con->color == 6 && (int) rintf(con->rgb * 10) != (int) rintf(rgb * 10) ? 1 : 0;
+			c1 = con->color == 6 && rintf(con->rgb * 10) != rintf(rgb * 10) ? 1 : 0;
 
 			r = g = b = rgb;
 

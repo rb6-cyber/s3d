@@ -38,7 +38,7 @@ char *read_file(const char *fname, int *fsize)
 	int filesize;
 	struct stat bf;
 
-	if ((fp = fopen(fname, "rt")) == NULL) {
+	if ((fp = fopen(fname, "rb")) == NULL) {
 		fprintf(stderr, "read_file( %s ):fopen(): %s", fname, strerror(errno));
 		return(NULL);
 	}
@@ -69,7 +69,7 @@ int process_args(int argc, char **argv)
 	};
 	optind = 0;
 	opterr = 0;
-	while (-1 != (c = getopt_long(argc, argv, "dH:?ho", long_options, &lopt_idx))) {
+	while (-1 != (c = getopt_long(argc, argv, "dH:?ho:", long_options, &lopt_idx))) {
 		switch (c) {
 		case 0:
 			break;

@@ -131,6 +131,20 @@ void fs_approx(char *source, int *files, int *dirs, int *bytes)
 	*bytes += s.st_size;
 	/* printf("end: %d files, %d dirs, %d bytes in %s\n",*files,*dirs,*bytes,source);*/
 }
+
+/* returns 1 if source is a directory */
+int fs_isdir(const char *source)
+{
+	struct stat s;
+
+	if (-1 == stat(source, &s))
+		return 0;
+	if (S_ISDIR(s.st_mode)) {
+		return 1;
+	}
+	return 0;
+}
+
 /* approximate the heaviness of our source ...*/
 void fs_fl_approx(filelist *fl, int *files, int *dirs, int *bytes)
 {
@@ -177,14 +191,15 @@ int fs_copy(char *source, char *dest)
 	default:
 		printf("fs_copy -> atomic copy\n");
 		printf("open source...");
-		if (NULL == (fps = fopen(source, "r"))) {
+		if (NULL == (fps = fopen(source, "rb"))) {
 			fs_error("fs_copy():fopen(source)", source);
 			return(-1);
 		}
 		printf("ok\n");
 		printf("open dest...");
-		if (NULL == (fpd = fopen(dest, "w"))) {
+		if (NULL == (fpd = fopen(dest, "wb"))) {
 			fs_error("fs_copy():fopen(source)", source);
+			fclose(fps);
 			return(-1);
 		}
 		printf("ok\n");

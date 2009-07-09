@@ -144,7 +144,8 @@ int s3d_push_vertex(int object, float x, float y, float z)
 	*((float *)ptr) = y;
 	ptr += sizeof(float);
 	*((float *)ptr) = z;
-	ptr += sizeof(float);
+
+	htonfb((float*)(buf + sizeof(uint32_t)), 3);
 	net_send(S3D_P_C_PUSH_VERTEX, buf, len);
 	return(0);
 }
@@ -180,6 +181,7 @@ int s3d_push_vertices(int object, const float *vbuf, uint16_t n)
 		else
 			flen = (len - i * stepl);
 		memcpy(ptr, (char *)vbuf + i*stepl, flen);
+		htonfb((float*)(ptr), flen / 4);
 		net_send(S3D_P_C_PUSH_VERTEX, buf, flen + 4);
 	}
 	/*  free(buf); */
@@ -232,8 +234,8 @@ int s3d_push_material(int object,
 	*((float *)ptr) = diff_b;
 	ptr += sizeof(float);
 	*((float *)ptr) = 1.0;
-	ptr += sizeof(float);
 
+	htonfb((float*)(buf + sizeof(uint32_t)), 12);
 	net_send(S3D_P_C_PUSH_MAT, buf, len);
 	return(0);  /*  nothing yet */
 }
@@ -279,8 +281,8 @@ int s3d_push_material_a(int object,
 	*((float *)ptr) = diff_b;
 	ptr += sizeof(float);
 	*((float *)ptr) = diff_a;
-	ptr += sizeof(float);
 
+	htonfb((float*)(buf + sizeof(uint32_t)), 12);
 	net_send(S3D_P_C_PUSH_MAT, buf, len);
 	return(0);  /*  nothing yet */
 }
@@ -329,6 +331,7 @@ int s3d_push_materials_a(int object, const float *mbuf, uint16_t n)
 		else
 			flen = (len - i * stepl);
 		memcpy(ptr, (char *)mbuf + i*stepl, flen);
+		htonfb((float*)(ptr), flen / 4);
 		net_send(S3D_P_C_PUSH_MAT, buf, flen + 4);
 	}
 	/*  free(buf); */
@@ -364,7 +367,6 @@ int s3d_push_polygon(int object, uint32_t v1, uint32_t v2, uint32_t v3, uint32_t
 	*((uint32_t *)ptr) = htonl(v3);
 	ptr += sizeof(uint32_t);
 	*((uint32_t *)ptr) = htonl(material);
-	ptr += sizeof(uint32_t);
 
 	net_send(S3D_P_C_PUSH_POLY, buf, len);
 	return(0);
@@ -388,7 +390,6 @@ int s3d_push_line(int object, uint32_t v1, uint32_t v2, uint32_t material)
 	*((uint32_t *)ptr) = htonl(v2);
 	ptr += sizeof(uint32_t);
 	*((uint32_t *)ptr) = htonl(material);
-	ptr += sizeof(uint32_t);
 
 	net_send(S3D_P_C_PUSH_LINE, buf, len);
 	return(0);
@@ -637,8 +638,8 @@ int s3d_pep_material(int object,
 	*((float *)ptr) = diff_b;
 	ptr += sizeof(float);
 	*((float *)ptr) = 1.0;
-	ptr += sizeof(float);
 
+	htonfb((float*)(buf + sizeof(uint32_t)), 12);
 	net_send(S3D_P_C_PEP_MAT, buf, len);
 	return(0);  /*  nothing yet */
 }
@@ -685,8 +686,8 @@ int s3d_pep_material_a(int object,
 	*((float *)ptr) = diff_b;
 	ptr += sizeof(float);
 	*((float *)ptr) = diff_a;
-	ptr += sizeof(float);
 
+	htonfb((float*)(buf + sizeof(uint32_t)), 12);
 	net_send(S3D_P_C_PEP_MAT, buf, len);
 	return(0);  /*  nothing yet */
 }
@@ -706,6 +707,7 @@ int s3d_pep_materials_a(int object, const float *mbuf, uint16_t n)
 	}
 	*((uint32_t *)buf) = htonl(object);  /*  object id */
 	memcpy(buf + 4, mbuf, 12*n*sizeof(float));
+	htonfb((float*)(buf + sizeof(uint32_t)), n*12);
 	net_send(S3D_P_C_PEP_MAT, buf, n*12*sizeof(float) + 4);
 	return(0);
 }
@@ -731,6 +733,7 @@ int s3d_pep_polygon_normals(int object, const float *nbuf, uint16_t n)
 	}
 	*((uint32_t *)buf) = htonl(object);
 	memcpy(buf + 4, nbuf, 9*n*sizeof(float));
+	htonfb((float*)(buf + sizeof(uint32_t)), 9*n);
 	net_send(S3D_P_C_PEP_POLY_NORMAL, (char *)buf, n*9*sizeof(float) + 4);
 	return(0);
 
@@ -755,6 +758,7 @@ int s3d_pep_line_normals(int object, const float *nbuf, uint16_t n)
 	}
 	*((uint32_t *)buf) = htonl(object);
 	memcpy(buf + 4, nbuf, 6*n*sizeof(float));
+	htonfb((float*)(buf + sizeof(uint32_t)), 6*n);
 	net_send(S3D_P_C_PEP_LINE_NORMAL, (char *)buf, n*6*sizeof(float) + 4);
 	return(0);
 
@@ -777,7 +781,8 @@ int s3d_pep_vertex(int object, float x, float y, float z)
 	*((float *)ptr) = y;
 	ptr += sizeof(float);
 	*((float *)ptr) = z;
-	ptr += sizeof(float);
+
+	htonfb((float*)(buf + sizeof(uint32_t)), 3);
 	net_send(S3D_P_C_PEP_VERTEX, buf, len);
 	return(0);
 }
@@ -798,7 +803,6 @@ int s3d_pep_line(int object, int v1, int v2, int material)
 	*((uint32_t *)ptr) = htonl(v2);
 	ptr += sizeof(uint32_t);
 	*((uint32_t *)ptr) = htonl(material);
-	ptr += sizeof(uint32_t);
 
 	net_send(S3D_P_C_PEP_LINE, buf, len);
 	return(0);
@@ -842,6 +846,7 @@ int s3d_pep_vertices(int object, const float *vbuf, uint16_t n)
 	}
 	*((uint32_t *)buf) = htonl(object);
 	memcpy(buf + 4, vbuf, 3*n*sizeof(float));
+	htonfb((float*)(buf + sizeof(uint32_t)), 3*n);
 	net_send(S3D_P_C_PEP_VERTEX, (char *)buf, n*3*sizeof(float) + 4);
 	return(0);
 
@@ -860,19 +865,20 @@ int s3d_pep_polygon_tex_coord(int object, float x1, float y1, float x2, float y2
 	char *ptr, buf[4*6+4];
 	ptr = buf;
 	*((uint32_t *)buf) = htonl(object);
-	ptr += 4;
+	ptr += sizeof(uint32_t);
 	*((float *)ptr) = x1;
-	ptr += 4;
+	ptr += sizeof(float);
 	*((float *)ptr) = y1;
-	ptr += 4;
+	ptr += sizeof(float);
 	*((float *)ptr) = x2;
-	ptr += 4;
+	ptr += sizeof(float);
 	*((float *)ptr) = y2;
-	ptr += 4;
+	ptr += sizeof(float);
 	*((float *)ptr) = x3;
-	ptr += 4;
+	ptr += sizeof(float);
 	*((float *)ptr) = y3;
-	ptr += 4;
+
+	htonfb((float*)(buf + sizeof(uint32_t)), 6);
 	net_send(S3D_P_C_PEP_POLY_TEXC, (char *)buf, 6*4 + 4);
 	return(0);
 }
@@ -892,6 +898,7 @@ int s3d_pep_polygon_tex_coords(int object, const float *tbuf, uint16_t n)
 	}
 	*((uint32_t *)buf) = htonl(object);
 	memcpy(buf + 4, tbuf, 6*n*sizeof(float));
+	htonfb((float*)(buf + sizeof(uint32_t)), 6*n);
 	net_send(S3D_P_C_PEP_POLY_TEXC, (char *)buf, n*6*sizeof(float) + 4);
 	return(0);
 }
@@ -923,7 +930,8 @@ int s3d_load_polygon_normals(int object, const float *nbuf, uint32_t start, uint
 		else
 			flen = (len - i * stepl);
 		memcpy(ptr, (char *)nbuf + i*stepl, flen);
-		net_send(S3D_P_C_PEP_POLY_NORMAL, buf, flen + 8);
+		htonfb((float*)(ptr), flen / 4);
+		net_send(S3D_P_C_LOAD_POLY_NORMAL, buf, flen + 8);
 		mstart += stepl;
 	}
 	return(0);
@@ -956,7 +964,8 @@ int s3d_load_line_normals(int object, const float *nbuf, uint32_t start, uint16_
 		else
 			flen = (len - i * stepl);
 		memcpy(ptr, (char *)nbuf + i*stepl, flen);
-		net_send(S3D_P_C_PEP_LINE_NORMAL, buf, flen + 8);
+		htonfb((float*)(ptr), flen / 4);
+		net_send(S3D_P_C_LOAD_LINE_NORMAL, buf, flen + 8);
 		mstart += stepl;
 	}
 	return(0);
@@ -989,7 +998,8 @@ int s3d_load_polygon_tex_coords(int object, const float *tbuf, uint32_t start, u
 		else
 			flen = (len - i * stepl);
 		memcpy(ptr, (char *)tbuf + i*stepl, flen);
-		net_send(S3D_P_C_PEP_POLY_TEXC, buf, flen + 8);
+		htonfb((float*)(ptr), flen / 4);
+		net_send(S3D_P_C_LOAD_POLY_TEXC, buf, flen + 8);
 		mstart += stepl;
 	}
 	return(0);
@@ -1022,7 +1032,8 @@ int s3d_load_materials_a(int object, const float *mbuf, uint32_t start, uint16_t
 		else
 			flen = (len - i * stepl);
 		memcpy(ptr, (char *)mbuf + i*stepl, flen);
-		net_send(S3D_P_C_PEP_MAT, buf, flen + 8);
+		htonfb((float*)(ptr), flen / 4);
+		net_send(S3D_P_C_LOAD_MAT, buf, flen + 8);
 		mstart += stepl;
 	}
 	return(0);
@@ -1040,7 +1051,7 @@ int s3d_pep_material_texture(int object, uint32_t tex)
 	*((uint32_t *)ptr) = htonl(object);
 	ptr += sizeof(uint32_t);  /*  object id */
 	*((uint32_t *)ptr) = htonl(tex);
-	ptr += sizeof(uint32_t);   /*  texture index numer */
+
 	net_send(S3D_P_C_PEP_MAT_TEX, buf, 8);
 	return(0);
 }
@@ -1059,7 +1070,7 @@ int _s3d_update_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, 
 	*((uint16_t *)ptr) = htons(w);
 	ptr += sizeof(uint16_t);  /*  width */
 	*((uint16_t *)ptr) = htons(h);
-	ptr += sizeof(uint16_t);  /*  height */
+
 	net_send(S3D_P_C_UPDATE_TEX, buf, 16);
 	return(0);
 
@@ -1123,11 +1134,11 @@ int s3d_flags_on(int object, uint32_t flags)
 	ptr = buf;
 	/*  s3dprintf(VLOW, "toggling flags on .. %010x", flags); */
 	*((uint32_t *)ptr) = htonl(object);
-	ptr += 4;
+	ptr += sizeof(uint32_t);
 	*ptr = OF_TURN_ON;
-	ptr += 1;
+	ptr += sizeof(unsigned char);
 	*((uint32_t *)ptr) = htonl(flags);
-	ptr += 4;
+
 	net_send(S3D_P_C_TOGGLE_FLAGS, buf, len);
 	return(0);
 }
@@ -1143,11 +1154,11 @@ int s3d_flags_off(int object, uint32_t flags)
 	ptr = buf;
 	/*  s3dprintf(VLOW, "toggling flags off .. %010x", flags); */
 	*((uint32_t *)ptr) = htonl(object);
-	ptr += 4;
+	ptr += sizeof(uint32_t);
 	*ptr = OF_TURN_OFF;
-	ptr += 1;
+	ptr += sizeof(unsigned char);
 	*((uint32_t *)ptr) = htonl(flags);
-	ptr += 4;
+
 	net_send(S3D_P_C_TOGGLE_FLAGS, buf, len);
 	return(0);
 }
@@ -1178,6 +1189,8 @@ int s3d_translate(int object, float x, float y, float z)
 	*((float *)ptr) = y;
 	ptr += 4;
 	*((float *)ptr) = z;
+
+	htonfb((float*)(buf + sizeof(uint32_t)), 3);
 	net_send(S3D_P_C_TRANSLATE, buf, len);
 	return(0);
 
@@ -1216,6 +1229,8 @@ int s3d_rotate(int object, float x, float y, float z)
 	*((float *)ptr) = y;
 	ptr += 4;
 	*((float *)ptr) = z;
+
+	htonfb((float*)(buf + sizeof(uint32_t)), 3);
 	net_send(S3D_P_C_ROTATE, buf, len);
 	return(0);
 }
@@ -1236,6 +1251,8 @@ int s3d_scale(int object, float s)
 	*((uint32_t *)ptr) = htonl(object);
 	ptr += 4;
 	*((float *)ptr) = s;
+
+	htonfb((float*)(buf + sizeof(uint32_t)), 1);
 	net_send(S3D_P_C_SCALE, buf, len);
 	return(0);
 }

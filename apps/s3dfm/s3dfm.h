@@ -186,6 +186,7 @@ int    fs_copy(char *source, char *dest);
 int    fs_move(char *source, char *dest);
 int    fs_unlink(char *dest);
 int    fs_error(const char *message, char *file);
+int    fs_isdir(const char *source);
 /* icon.c */
 int    icon_draw(t_node *dir);
 int    icon_undisplay(t_node *dir);

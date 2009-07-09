@@ -220,7 +220,7 @@ int main(void)
 			t->active = 1;
 			t->next = head->next;
 			head->next = t;
-		} else if ((tmp_buffer = strstr(buffer, "list")) != NULL) {
+		} else if (strstr(buffer, "list") != NULL) {
 
 			list_data(head, z);
 
@@ -242,7 +242,7 @@ int main(void)
 			tmp_buffer += 4;
 			act_data(atoi(tmp_buffer), head, z);
 
-		} else if ((tmp_buffer = strstr(buffer, "quit")) != NULL) {
+		} else if (strstr(buffer, "quit") != NULL) {
 
 			break;
 

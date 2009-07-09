@@ -256,9 +256,14 @@ int db_exec(const char *query, sqlite3_callback callback, const void *arg)
 		len = strlen(query);
 		if (len + qlen >= QBUF)
 			db_flush();
-		strncat(qbuf, query, QBUF);
-		qlen += strlen(query);
-		ret = 0;
+
+		if (len >= QBUF) {
+			ret = db_really_exec(query, callback, arg);  /* pass it to the real function */
+		} else {
+			strncat(qbuf, query, QBUF - qlen - 1);
+			qlen += strlen(query);
+			ret = 0;
+		}
 	} else
 #endif
 

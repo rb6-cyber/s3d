@@ -92,6 +92,8 @@ int net_turn_off(int S3DUNUSED(interval))
 /*  this basicly polls for new connection */
 int network_main(void)
 {
+	turn = 1;
+
 #ifdef TCP
 #ifdef SIGS
 	if (sigio == 1) { /*  as long as there is no locking/threadsafety, do like this ... */

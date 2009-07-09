@@ -27,6 +27,7 @@
 #include <stdlib.h>   /*  malloc(),realloc(),free() */
 #include <string.h>   /*  memcpy() */
 #include <GL/gl.h>   /*  gl*, GL* */
+#include <GL/glext.h>   /* GL_GENERATE_MIPMAP */
 #ifndef _ISOC99_SOURCE /* we want isnan() */
 #define _ISOC99_SOURCE
 #endif
@@ -287,7 +288,7 @@ static int texture_shm_register(struct t_tex *tex, int bufsize)
 static void texture_delete(struct t_tex *tex)
 {
 	GLuint t;
-	s3dprintf(HIGH, "texture delete: shmid = %d, buf = %010p\n", tex->shmid, tex->buf);
+	s3dprintf(HIGH, "texture delete: shmid = %d, buf = %10p\n", tex->shmid, (void*)tex->buf);
 #ifdef SHM
 	if (tex->shmid != -1) {
 		if (tex->buf != NULL) {
@@ -1319,7 +1320,7 @@ void obj_check_biggest_object(struct t_process *p, int32_t oid)
 					}
 				}
 			if (found) {
-				s3dprintf(VLOW, "there is a new biggest object in [%d:\"\"]", p->id, p->name);
+				s3dprintf(VLOW, "there is a new biggest object in [%d:\"%s\"]", p->id, p->name);
 				mcp_o->r = r;  /*  save the new size */
 				mcp_rep_object(p->mcp_oid);   /*  and tell the mcp */
 			}
@@ -1403,7 +1404,7 @@ void obj_pos_update(struct t_process *p, int32_t oid, int32_t first_oid)
 	struct t_obj   *ao, *o;
 	struct t_process *ap;
 	o = p->object[oid];
-	s3dprintf(VLOW, "[obj_pos_upd|pid %d] %d", p->id, oid, first_oid);
+	s3dprintf(VLOW, "[obj_pos_upd|pid %d] %d, %d", p->id, oid, first_oid);
 	o->m_uptodate = 0;
 	obj_recalc_tmat(p, oid);
 	if (p->id != MCP) {/*  mcp does not need that. */
@@ -1858,7 +1859,7 @@ int obj_new(struct t_process *p)
 			p->n_obj++;      /*  increment counter */
 		}
 		p->object[pos] = obj;
-		s3dprintf(VLOW, "pid %d added new object %d at %010p [pos %d]", p->id, pos, obj, pos);
+		s3dprintf(VLOW, "pid %d added new object %d at %10p [pos %d]", p->id, pos, (void*)obj, pos);
 		return (pos);
 	} else {
 		return(-1);
@@ -1879,7 +1880,7 @@ int obj_clone_change(struct t_process *p, int32_t oid, int32_t toid)
 		/*  get obj pointer and check for availability of the other object. */
 		if (((already_clone = (o->oflags & OF_CLONE)) || (!(o->n_vertex | o->n_mat | o->n_poly | o->n_tex))) && (!(o->oflags & OF_VIRTUAL))) {
 			if (no->oflags&OF_CLONE) {  /*  target is clone */
-				errds(VHIGH, "obj_clone_change()", "couldn't clone %d from %d (on pid %d): clone target is already clone.", oid, toid, p->id, oid);
+				errds(VHIGH, "obj_clone_change()", "couldn't clone %d from %d (on pid %d): clone target is already clone.", oid, toid, p->id);
 				return(-1);
 			}
 			if (!already_clone) { /*  some other object could link to us, so we check the other objects and forward them just in case. */
@@ -1889,7 +1890,7 @@ int obj_clone_change(struct t_process *p, int32_t oid, int32_t toid)
 						if (p->object[i] != NULL)
 							if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->clone_ooid == oid)) { /*  it's linking to our object! */
 								errds(VHIGH, "obj_clone_change()", "couldn't clone %d from %d (on pid %d): object %d is already cloning from object %d.",
-								      oid, toid, p->id, oid, i, oid);
+								      oid, toid, p->id, oid, i);
 								return(-1);
 							}
 					if (!is_clnsrc) {
@@ -1906,7 +1907,7 @@ int obj_clone_change(struct t_process *p, int32_t oid, int32_t toid)
 				s3dprintf(LOW, "changed clone-target of obj %d to %d of process %d", oid, toid, p->id);
 				if (p->id != MCP) obj_check_biggest_object(p, oid);
 			} else {
-				errds(MED, "obj_clone_change()", "couldn't clone %d from %d (on pid %d): cloning from itself doesn't make sense!", oid, toid, p->id, oid);
+				errds(MED, "obj_clone_change()", "couldn't clone %d from %d (on pid %d): cloning from itself doesn't make sense!", oid, toid, p->id);
 				return(-1);
 			}
 		} else {

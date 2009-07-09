@@ -15,18 +15,16 @@
 1.REASONS
 ---------
 
-There are several reasons for this project, one of the most influencing
-ones is boredem. i'm bored and blessed with too much time, and my gpu is bored
-as well with all this computing power which remains unused on common
-desktops.
+Many people, have been fascinated by 3D Desktops. There were/are projects like
+3dwm and SUNs Looking Glass among others which try to replace your daily 
+boring 2D Desktop. However, 3D GUIs are still hard and uncomfortable to use.
 
-I think a 3d desktop would/could be a very interesting thing (when it works :),
-since it gives so many new possibility's in GUI design (or possibilitys in
-confusing users, depends on readers view).
-there are/were other projects like 3dwm which died somehow (3dwm.org is not
-accessable, for me), and I did not understand it's system thou ... looking
-glass from sun seems to be very interesting too, but I haven't tried it out
-yet ... so my ignorance and stupidity were reasons for this project as well :)
+S3d unfortunately does not change that, but gives you a big playground to try 
+your own ideas of 3D GUIs. With the simple API you can easily implement own 
+interfaces without caring about writing object interaction, model loading or
+3D widgets yourself. Many 3D applications can coexist in the same space 
+(unlike usual OpenGL apps), just as the windows on your screen. And who knows, 
+maybe we can really have a complete usable 3D desktop someday? :)
 
 2.INSTALL
 ---------

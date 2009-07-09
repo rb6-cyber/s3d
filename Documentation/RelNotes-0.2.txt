@@ -1,0 +1,17 @@
+S3D v0.2 Release Notes
+======================
+
+ * Released S3D Version 0.2
+ * now using cmake instead of autohell, which seems to be faster,
+   more configurable and at least comprehensible (Thanks to Sven
+   Eckelmann)
+ * meshs3d is a complete rewrite of olsrs3d, using faster
+   data structures and clean design (implemented by Andreas Langer)
+ * s3dosm is a new program to navigate on openstreetmap maps.
+   it has gps-support, superseding the old s3dgps which operated
+   on bitmap map files.
+ * kism3d (implemented by Marek Lindner) visualizes the wireless
+   networks and works as a frontend to kismet
+ * texture support is now using mipmaps
+ * added a few widgets (textbox/scrollbars)
+ * of course: fixed various bugs

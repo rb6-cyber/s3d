@@ -40,16 +40,18 @@ int graphics_init_sdl(void)
 		errsf("SDL_Init()", SDL_GetError());
 	if ((VideoInfo = (SDL_VideoInfo *)SDL_GetVideoInfo()) == NULL)
 		errs("SDL_GetVIdeoInfo()", SDL_GetError());
-	if (VideoInfo -> hw_available) {
-		s3dprintf(LOW, "detected HW_SURFACE");
-		SDLFlags |= SDL_HWSURFACE;
-	} else {
-		s3dprintf(LOW, "detected SW_SURFACE");
-		SDLFlags |= SDL_SWSURFACE;
+	else {
+		if (VideoInfo->hw_available) {
+			s3dprintf(LOW, "detected HW_SURFACE");
+			SDLFlags |= SDL_HWSURFACE;
+		} else {
+			s3dprintf(LOW, "detected SW_SURFACE");
+			SDLFlags |= SDL_SWSURFACE;
+		}
+		if (VideoInfo->blit_hw)
+			SDLFlags |= SDL_HWACCEL;
+		/*     if(SDL_WM_ToggleFullScreen(GLwin) == 0)         SDLerror("SDL_WM_ToggleFullScreen"); */
 	}
-	if (VideoInfo -> blit_hw)
-		SDLFlags |= SDL_HWACCEL;
-	/*     if(SDL_WM_ToggleFullScreen(GLwin) == 0)         SDLerror("SDL_WM_ToggleFullScreen"); */
 
 
 	/*  set some opengl-attributes */

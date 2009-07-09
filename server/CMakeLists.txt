@@ -1,7 +1,7 @@
 include_directories(${s3d_SOURCE_DIR}/libs3d)
 
 # base files
-set(server_src allocate.c cull.c error.c event.c graphics.c
+set(server_src allocate.c cull.c endian.c error.c event.c graphics.c
 	main.c matrix.c mcp.c navigation.c network.c object.c
 	process.c proto.c shm.c	shm_ringbuf.c tcp.c user.c)
 
@@ -17,7 +17,7 @@ endif (SDL_FOUND)
 # compile base files + sdl specific parts
 s3d_add_executable(server ${server_src})
 
-target_link_libraries(server ${OPENGL_LIBRARY} ${MATH_LIBRARIES} ${server_libs})
+target_link_libraries(server ${OPENGL_gl_LIBRARY} ${MATH_LIBRARIES} ${server_libs})
 set_target_properties(server PROPERTIES OUTPUT_NAME "s3d")
 
 # install

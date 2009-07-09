@@ -409,4 +409,12 @@ void debugFree(void *memoryParameter);
 #define realloc(x,y) debugRealloc(x,y,42)
 #endif
 
+/* endian.c */
+void htonfb(float* netfloat, int num);
+void ntohfb(float* netfloat, int num);
+void htonlb(uint32_t* netint32, int num);
+void ntohlb(uint32_t* netint32, int num);
+void htonsb(uint16_t* netint16, int num);
+void ntohsb(uint16_t* netint16, int num);
+
 #endif /* _GLOBAL_H_ */

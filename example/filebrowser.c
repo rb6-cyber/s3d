@@ -32,6 +32,7 @@
 #include <unistd.h>  /*  chdir() */
 #include <math.h>  /*  sin(),cos() */
 #include <time.h> /* nanosleep() */
+#include <sys/stat.h>
 #include "example.h" /* S3DUNUSED */
 static struct timespec t = {
 	0, 100*1000*1000
@@ -67,6 +68,7 @@ static int display_dir(const char *dir, int S3DUNUSED(depth), int  posx, int pos
 	char *nstr;
 	float alpha, al, radius, f;
 	char ndir[M_DIR+1];
+	struct stat s;
 	if (n_item) {
 		printf("freeing %d old items\n", n_item);
 		for (i = 0;i < n_item;i++) {
@@ -100,10 +102,12 @@ static int display_dir(const char *dir, int S3DUNUSED(depth), int  posx, int pos
 				strncat(ndir, "/", M_DIR - strlen(ndir));
 				strncat(ndir, namelist[n]->d_name, M_DIR - strlen(ndir));
 				/*     printf("displaying %s\n",ndir); */
-				if ((namelist[n]->d_type == DT_DIR) ||
-				                ((namelist[n]->d_type == DT_UNKNOWN) && (opendir(ndir) != NULL)))
+				stat(ndir, &s);
+				if (S_ISDIR(s.st_mode)) {
 					item[n].type = T_FOLDER;
-				else {
+				}
+				else
+				{
 					if (ext != NULL) {
 						if (0 == strncmp(ext, ".3ds", strlen(ext) < 4 ? strlen(ext) : 4))
 							item[n].type = T_GEOMETRY;
@@ -186,7 +190,6 @@ static int display_dir(const char *dir, int S3DUNUSED(depth), int  posx, int pos
 			/*    r=s3d_get_radius(p); */
 			/*    s3d_scale(p,1.0/r,1.0/r,1.0/r); */
 			s3d_flags_on(item[n].descr_oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
-			printf("%s [%d]\n", nstr, namelist[n]->d_type);
 			printf("string %d linked to %d\n", item[n].descr_oid, item[n].icon_oid);
 			free(namelist[n]);
 		}

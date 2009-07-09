@@ -170,7 +170,7 @@ int _shm_net_receive(void)
 {
 	int      found = 0;
 	char     opcode, *buf;
-	u_int16_t   length;
+	uint16_t   length;
 	struct shmid_ds   d;
 
 	if (data_in == NULL)

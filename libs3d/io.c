@@ -56,7 +56,6 @@ static char    *url = NULL;
 /*  this file is the client-lib-implementation which holds the function to connect and control the server. */
 #ifdef SIGS
 int _s3d_sigio = 0;
-int _s3d_ready = 0;
 static void sigint_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? */
 {
 	/*s3d_quit();*/ /* TODO: sometimes no clean quit ?!*/
@@ -64,6 +63,7 @@ static void sigint_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? *
 }
 
 #endif
+int _s3d_ready = 0;
 
 /** \brief print s3d parameter
  *
@@ -81,16 +81,22 @@ static int parse_args(int *argc, char ***argv)
 {
 	int     c;
 	int      lopt_idx;
+	int     old_argc, curopt;
 	struct option long_options[] = {
-		{"s3d-url", 1, NULL, 0
-		}, {"help", 0, NULL, 'h'}, {"s3d-help", 0, NULL, 'h'}, {NULL, 0, NULL, 0}
+		{"s3d-url", 1, NULL, 'u'},
+		{"help", 0, NULL, 'h'},
+		{"s3d-help", 0, NULL, 'h'},
+		{NULL, 0, NULL, 0}
 	};
 	if ((argc == NULL) || (argv == NULL)) return(0); /* nothing to parse */
+	old_argc = *argc;
 	optind = 0;
 	opterr = 0; /* we don't want to be bothered if there is some error */
-	while (-1 != (c = getopt_long(*argc, *argv, "?h", long_options, &lopt_idx))) {
+	*argc = 1;
+	curopt = 1;
+	while (-1 != (c = getopt_long(old_argc, *argv, "-h", long_options, &lopt_idx))) {
 		switch (c) {
-		case 0:
+		case 'u':
 			if (0 == strcmp(long_options[lopt_idx].name, "s3d-url")) {
 				if (optarg) {
 					url = optarg;
@@ -104,13 +110,15 @@ static int parse_args(int *argc, char ***argv)
 			return(-1);
 		default:
 			/* ignore args which are not for us, but maybe the app which builds on us */
+			(*argv)[(*argc)] = (*argv)[curopt];
+			(*argc)++;
 			break;
 		}
+		curopt = optind;
 	}
-	if (*argc > 0) {
-		*argc -= (optind - 1);  /*  hide s3d-options */
-		(*argv)[optind-1] = (*argv)[0]; /*  restore program path */
-		*argv += (optind - 1);  /*  set the string pointer at the right position */
+	for (c = optind; c < old_argc; c++) {
+		(*argv)[(*argc)] = (*argv)[c];
+		(*argc)++;
 	}
 	optind = 0;
 	return(0);
@@ -267,7 +275,7 @@ int s3d_open_file(const char *fname, char **pointer)
 	int filesize;
 	struct stat bf;
 	*pointer = NULL;
-	/* if ((fp = fopen(fname, "rt")) == NULL)
+	/* if ((fp = fopen(fname, "rb")) == NULL)
 	 { errn("s3d_open_file():fopen()",errno); return(0);}
 	 if (fseek(fp, 0, SEEK_END) != 0)
 	 { errn("s3d_open_file():fseek()",errno); return(0);}
@@ -276,7 +284,7 @@ int s3d_open_file(const char *fname, char **pointer)
 	 if (fseek(fp, 0, SEEK_SET) != 0)
 	 { errn("s3d_open_file():fseek()",errno); return(0);}*/
 
-	if ((fp = fopen(fname, "rt")) == NULL) {
+	if ((fp = fopen(fname, "rb")) == NULL) {
 		errdn(VLOW, "s3d_open_file():fopen()", errno);
 		return(-1);
 	}
