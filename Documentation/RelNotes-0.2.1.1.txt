@@ -14,4 +14,3 @@ S3D v0.2.1.1 Release Notes
  * Reduce number of libraries an executable links against
  * Enable compilation under cygwin
  * Correct file loading on systems with CRLF newlines
- 
