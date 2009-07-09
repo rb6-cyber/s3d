@@ -21,7 +21,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
+#ifndef _KISM3D_H_
+#define _KISM3D_H_
 
 #include "list.h"
 #include <pthread.h>
@@ -118,3 +119,5 @@ extern pthread_mutex_t Network_list_mutex;
 extern pthread_mutex_t Client_list_mutex;
 extern int Kism3d_aborted;
 extern int Num_networks;
+
+#endif /* _KISM3D_H_ */

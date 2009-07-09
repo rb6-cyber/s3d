@@ -29,7 +29,8 @@ directory, but we recommend to create a directory from where you start cmake.
 $ mkdir build
 $ cd build
 $ cmake .. [-DPROFILING=ON|OFF] [-DDEBUG=VLOW|LOW|MED|HIGH|VHIGH] \
-           [-DCMAKE_INSTALL_PREFIX=...] [-DEXAMPLES=ON|OFF]
+           [-DENABLE_FINAL=ON|OFF] [-DEXAMPLES=ON|OFF] \
+	   [-DCMAKE_INSTALL_PREFIX=...]
 
 This will configure s3d. Use the -DCMAKE_INSTALL_PREFIX command line argument to
 select a different prefix to install s3d into. The default is /usr/local, so
@@ -37,6 +38,9 @@ binaries will get installed into /usr/local/bin, libraries into /usr/local/lib,
 and documentation into /usr/local/share/doc/s3d-version. If you are intending to
 work on s3d, you can use the -DDEBUG argument to enable building a debug
 version. Likewise, -DPROFILING=ON will enable a version compiled for profiling.
+Pseudo global optimisation can be enabled by setting -DENABLE_FINAL=ON. This
+will create a single file for each target which includes all other files and
+the compiler will only compile that specific file.
 
 You can use ccmake to ccmake to set additional cmake cache variables.
 

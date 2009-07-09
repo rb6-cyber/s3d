@@ -21,6 +21,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef LIBS3DW_INT_H
+#define LIBS3DW_INT_H
+
 #include <s3dlib.h> /* s3dprintf() */
 #define MAXANI  128
 #define ZOOMS  5
@@ -121,3 +124,5 @@ void s3dw_arrange(void);
 void s3dw_arr_widgetcenter(s3dw_widget *widget, float *center);
 void s3dw_arr_normdir(float *dir);
 void s3dw_turn(void);
+
+#endif /* LIBS3DW_INT_H */

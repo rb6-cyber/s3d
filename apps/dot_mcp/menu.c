@@ -36,7 +36,7 @@ struct menu_entry {
 
 static int go = -1;
 static int act;
-static struct menu_entry menu[] = {
+static struct menu_entry menu_items[] = {
 	{"objs/comp.3ds", "terminal", "s3dvt",    0, 0},
 	{"objs/comp.3ds", "meshs3d", "meshs3d",    0, 0},
 	{"objs/comp.3ds", "s3d_x11gate", "s3d_x11gate",  0, 0},
@@ -51,26 +51,26 @@ void menu_click(int oid)
 	printf("%d got clicked\n", oid);
 	if (oid == go) {
 		act = !act;
-		for (i = 0;i < (sizeof(menu) / sizeof(struct menu_entry));i++) {
+		for (i = 0;i < (sizeof(menu_items) / sizeof(struct menu_entry));i++) {
 			if (act) {
-				s3d_flags_on(menu[i].icon_oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
-				s3d_flags_on(menu[i].str_oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
+				s3d_flags_on(menu_items[i].icon_oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
+				s3d_flags_on(menu_items[i].str_oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 			} else {
-				s3d_flags_off(menu[i].icon_oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
-				s3d_flags_off(menu[i].str_oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
+				s3d_flags_off(menu_items[i].icon_oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
+				s3d_flags_off(menu_items[i].str_oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 			}
 
 		}
 		return;
 	}
 	if (act) {
-		for (i = 0;i < (sizeof(menu) / sizeof(struct menu_entry));i++) {
-			if ((oid == menu[i].icon_oid) || (oid == menu[i].str_oid)) {
-				if (0 == strncmp(menu[i].path, "LOGOUT", 6)) {
+		for (i = 0;i < (sizeof(menu_items) / sizeof(struct menu_entry));i++) {
+			if ((oid == menu_items[i].icon_oid) || (oid == menu_items[i].str_oid)) {
+				if (0 == strncmp(menu_items[i].path, "LOGOUT", 6)) {
 					s3d_quit();
 					return;
 				}
-				strncpy(exec, menu[i].path, 256);
+				strncpy(exec, menu_items[i].path, 256);
 				strncat(exec, "> /dev/null 2>&1 &", 256); /* ignoring output, starting in background */
 				printf("executing [%s]\n", exec);
 				system(exec);
@@ -89,17 +89,17 @@ int menu_init(void)
 	go = s3d_import_model_file("objs/s3dstart.3ds");
 	s3d_flags_on(go, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 	s3d_link(go, menu_o);
-	for (i = 0; i < (sizeof(menu) / sizeof(struct menu_entry)); i++) {
-		if (-1 == (menu[i].icon_oid = s3d_import_model_file(menu[i].icon)))
-			menu[i].icon_oid = s3d_new_object();
-		menu[i].str_oid = s3d_draw_string(menu[i].name, NULL);
-		s3d_link(menu[i].str_oid, menu[i].icon_oid);
-		s3d_link(menu[i].icon_oid, menu_o);
-		s3d_translate(menu[i].icon_oid, 0, -3 + (-3 * (signed)i), 0);
-		s3d_translate(menu[i].str_oid, 2, 0, 0);
-		/*  s3d_flags_on(menu[i].icon_oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
-		  s3d_flags_on(menu[i].str_oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);*/
-		printf("menu item menu[%d], icon_oid=%d, icon_str=%d\n", i, menu[i].icon_oid, menu[i].str_oid);
+	for (i = 0; i < (sizeof(menu_items) / sizeof(struct menu_entry)); i++) {
+		if (-1 == (menu_items[i].icon_oid = s3d_import_model_file(menu_items[i].icon)))
+			menu_items[i].icon_oid = s3d_new_object();
+		menu_items[i].str_oid = s3d_draw_string(menu_items[i].name, NULL);
+		s3d_link(menu_items[i].str_oid, menu_items[i].icon_oid);
+		s3d_link(menu_items[i].icon_oid, menu_o);
+		s3d_translate(menu_items[i].icon_oid, 0, -3 + (-3 * (signed)i), 0);
+		s3d_translate(menu_items[i].str_oid, 2, 0, 0);
+		/*  s3d_flags_on(menu_items[i].icon_oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);
+		  s3d_flags_on(menu_items[i].str_oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);*/
+		printf("menu item menu[%d], icon_oid=%d, icon_str=%d\n", i, menu_items[i].icon_oid, menu_items[i].str_oid);
 	}
 	return(menu_o);
 }

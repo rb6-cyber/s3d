@@ -21,6 +21,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef _COMPTEST_H_
+#define _COMPTEST_H_
+
 #include <s3d.h>
 #include <X11/Xlib.h>       /* Ximage, Display, X*() */
 #include <X11/Xutil.h>       /* XDestroyImage() */
@@ -96,3 +99,5 @@ char *x11_get_prop(Window win, char *prop);
 char *x11_get_name(Window win);
 void print_properties(Window win);
 extern Display *dpy;
+
+#endif /* _COMPTEST_H_ */

@@ -21,6 +21,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef _S3DLIB_H_
+#define _S3DLIB_H_
 
 #include <stdint.h>
 #include "config.h"
@@ -182,3 +184,5 @@ int _s3d_texture_quit(void);
 void _s3d_handle_texshm(struct s3d_texshm *tshm);
 int _s3d_load_texture_shm(int object, uint32_t tid, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h, const uint8_t *data);
 
+
+#endif /* _S3DLIB_H_ */

@@ -21,6 +21,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef _LIST_H_
+#define _LIST_H_
+
 #include <stdlib.h>
 
 struct list_head {
@@ -129,3 +132,4 @@ static inline void list_del(struct list_head *entry)
 	entry->prev = NULL;
 }
 
+#endif /* _LIST_H_ */

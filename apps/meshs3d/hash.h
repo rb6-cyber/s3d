@@ -22,6 +22,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef _HASH_H_
+#define _HASH_H_
 
 typedef int (*hashdata_compare_cb)(const void *, const void *);
 typedef int (*hashdata_choose_cb)(const void *, int);
@@ -92,3 +94,4 @@ void      hash_debug(struct hashtable_t *hash);
  * use the returned iterator to access the elements until hash_it_t returns NULL. */
 struct hash_it_t *hash_iterate(struct hashtable_t *hash, struct hash_it_t *iter_in);
 
+#endif /* _HASH_H_ */

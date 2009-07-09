@@ -3,7 +3,7 @@ project(s3dfm C)
 if (PTHREADS_FOUND)
 	include_directories(${s3d_SOURCE_DIR}/libs3d ${s3d_SOURCE_DIR}/libs3dw)
 
-	add_executable(s3dfm animation.c box.c dialog.c event.c fly.c focus.c fs.c
+	s3d_add_executable(s3dfm animation.c box.c dialog.c event.c fly.c focus.c fs.c
 		icon.c main.c node.c parse.c string.c)
 	target_link_libraries(s3dfm ${S3D_LIBRARIES} ${S3DW_LIBRARIES}
 		${PTHREADS_LIBRARIES} ${MATH_LIBRARIES})

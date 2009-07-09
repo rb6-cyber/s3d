@@ -23,6 +23,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef _MESHS3D_H_
+#define _MESHS3D_H_
+
 #define max(x,y) ((x)>(y)?(x):(y))
 #define min(x,y) ((x)<(y)?(x):(y))
 #define NAMEMAX  128
@@ -120,3 +123,5 @@ void print_etx( void );
 float dist(float p1[], float p2[]);
 void window_error(char *msg);
 */
+
+#endif /* _MESHS3D_H_ */

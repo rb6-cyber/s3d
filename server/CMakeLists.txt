@@ -15,7 +15,7 @@ if (SDL_FOUND)
 endif (SDL_FOUND)
 
 # compile base files + sdl specific parts
-add_executable(server ${server_src})
+s3d_add_executable(server ${server_src})
 
 target_link_libraries(server ${OPENGL_LIBRARY} ${MATH_LIBRARIES} ${server_libs})
 set_target_properties(server PROPERTIES OUTPUT_NAME "s3d")

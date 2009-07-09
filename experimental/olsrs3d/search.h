@@ -21,6 +21,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef _SEARCH_H_
+#define _SEARCH_H_
+
 #define NOTHING 0  /* nothing ;) */
 #define ABORT 1   /* widget has no focus */
 #define WIDGET 2  /* focus on widget */
@@ -39,3 +42,5 @@ void follow_node(float cam_position_t[], float cam_position_r[], float rotate);
 void follow_node_by_click(struct olsr_node *olsr_node);
 
 void show_search_window(void);
+
+#endif /* _SEARCH_H_ */

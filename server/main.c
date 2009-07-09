@@ -128,11 +128,12 @@ static void mainloop(void)
 /*  things which should be done each time in main loop go here! this is */
 /*  just for the case we use a function for the mainloop like we do for glut... */
 
-static struct timespec t = {
-	0, 10*1000*1000
-}; /* 10 mili seconds */
 void one_time(void)
 {
+	struct timespec t = {
+		0, 10*1000*1000
+	}; /* 10 mili seconds */
+
 	nanosleep(&t, NULL);
 	user_main();
 	network_main();

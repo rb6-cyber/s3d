@@ -21,6 +21,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef _GLOBAL_H_
+#define _GLOBAL_H_
 
 #include "config.h"
 #ifdef __APPLE__
@@ -406,3 +408,5 @@ void debugFree(void *memoryParameter);
 #define free(x)   debugFree(x);
 #define realloc(x,y) debugRealloc(x,y,42)
 #endif
+
+#endif /* _GLOBAL_H_ */

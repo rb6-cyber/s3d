@@ -45,9 +45,6 @@ static unsigned int *queue;     /*  the object id's */
 static int queue_size = 0;   /*  the size of the object queue */
 static int requested;      /*  counter of how many addtional */
 /*  objects have been requested */
-static struct timespec t = {
-	0, 10*1000
-}; /* 10 micro seconds */
 /*  initializes the object queue */
 int _queue_init(void)
 {
@@ -96,6 +93,10 @@ unsigned int _queue_want_object(void)
 {
 	unsigned int ret;
 	int i, j;
+	static struct timespec t = {
+		0, 10*1000
+	}; /* 10 micro seconds */
+
 	j = 0;
 	do {
 		for (i = 0;i < queue_size;i++)

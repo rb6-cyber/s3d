@@ -12,8 +12,7 @@ endif(COMMAND cmake_policy)
 # Add directory with library checks to search path
 list(APPEND CMAKE_MODULE_PATH "${s3d_SOURCE_DIR}/cmake/modules")
 
-# Set default installation paths
-include(InstallPaths)
+include(S3DInternals)
 
 # set path to objects
 set(OBJECTPATH "${S3D_DATA_INSTALL_DIR}")

@@ -23,6 +23,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef _OLSRS3D_H_
+#define _OLSRS3D_H_
+
 #include "structs.h"
 #include <config-s3d.h>
 
@@ -86,3 +89,5 @@ void out_of_mem(void) NO_RETURN;
 void print_etx(void);
 float dist(float p1[], float p2[]);
 void window_error(const char *msg);
+
+#endif /* _OLSRS3D_H_ */

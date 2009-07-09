@@ -21,6 +21,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef _S3DOSM_H_
+#define _S3DOSM_H_
+
 #include <sqlite3.h>
 #include <s3d.h> /* s3devt structure */
 #include <config-s3d.h>
@@ -228,3 +231,5 @@ void olsr_main(void);
 int olsr_init(void);
 int olsr_quit(void);
 int olsr_parse_args(int argc, char **argv);
+
+#endif /* _S3DOSM_H_ */

@@ -22,6 +22,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef _S3D_KEYSYM_H_
+#define _S3D_KEYSYM_H_
+
 /* this is just a copy of SDL_keysym.sh from the SDL Simple DirectMedia Layer Package,
  * which seems to have a pretty useful Key definition base.
  * For more Information about SDL, check http://sdlorg*/
@@ -312,3 +315,4 @@ typedef enum {
 #define S3D_KMOD_ALT (KMOD_LALT|KMOD_RALT)
 #define S3D_KMOD_META (KMOD_LMETA|KMOD_RMETA)
 
+#endif /* _S3D_KEYSYM_H_ */

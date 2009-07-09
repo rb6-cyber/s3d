@@ -21,6 +21,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef _S3DFM_H_
+#define _S3DFM_H_
 
 #include <s3d.h>
 #include <s3dw.h>
@@ -208,3 +210,5 @@ char  *mstrncpy(char *dest, const char *src, int n);
 /* fly.c */
 int    fly_set_absolute_position(t_node *node);
 t_node   *fly_create_anode(t_node *node);
+
+#endif /* _S3DFM_H_ */

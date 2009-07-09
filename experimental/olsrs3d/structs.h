@@ -23,6 +23,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef _STRUCTS_H_
+#define _STRUCTS_H_
+
 #define NAMEMAX  128
 #define MAXLINESIZE 1000  /* lines in a digraph just shouldn't get that longer ... */
 #define MAXDATASIZE 100   /* max number of bytes we can get at once  */
@@ -75,3 +78,4 @@ struct Obj_to_ip {
 	struct Obj_to_ip *prev;
 };
 
+#endif /* _STRUCTS_H_ */

@@ -22,6 +22,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifndef _S3DVT_H_
+#define _S3DVT_H_
+
 #include <config-s3d.h>
 
 #ifndef S3DVTUNUSED
@@ -66,3 +69,5 @@ void AddChar(char *_toadd);
 
 extern int gotnewdata;
 extern int cx, cy;
+
+#endif /* _S3DVT_H_ */

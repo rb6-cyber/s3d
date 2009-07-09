@@ -3,7 +3,7 @@ project(kism3d C)
 if (PTHREADS_FOUND)
 	include_directories(${s3d_SOURCE_DIR}/libs3d ${s3d_SOURCE_DIR}/libs3dw)
 
-	add_executable(kism3d client.c gui.c kism3d.c network.c)
+	s3d_add_executable(kism3d client.c gui.c kism3d.c network.c)
 	target_link_libraries(kism3d ${S3D_LIBRARIES} ${S3DW_LIBRARIES}
 		${PTHREADS_LIBRARIES} ${MATH_LIBRARIES})
 
