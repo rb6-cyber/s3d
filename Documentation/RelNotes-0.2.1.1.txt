@@ -1,0 +1,17 @@
+S3D v0.2.1.1 Release Notes
+==========================
+
+ * Fixes sigbus on MIPS
+ * Fix wrong send commands by libs3d
+ * Generate endian safe floats when sending over the network
+ * Allow to go more then two levels deep in s3dfm
+ * Depend on libg3d 0.0.7 to fix orientation of loaded objects
+ * Correct build warnings and errors with never cmake, gpsd
+ * Correct parsing of libs3d parameters in some situations
+ * Port s3dosm to api version 0.6 of OpenstreetMap.org
+ * Added extra checks to fix crashes in unlikely situations
+ * Remove object files with unknown copyright situation
+ * Reduce number of libraries an executable links against
+ * Enable compilation under cygwin
+ * Correct file loading on systems with CRLF newlines
+ * Build API documentation with xmlto instead of docbook2html

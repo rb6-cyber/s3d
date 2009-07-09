@@ -9,8 +9,9 @@ Layout:
    definition of a feature release is given later.
    Setting this branch to the release is done by _merging_ the release
    into maint. master will merge maint from time to time.
-   In a perfect release maint is merged into master, master merged to
-   maint and the feature release is tagged from the master branch.
+   In a perfect feature release 'maint' is merged into master, master
+   merged to maint and the feature release is tagged from the master
+   branch.
    Further feature modifications are done in master and maintenance is
    done in maint.
 
@@ -35,7 +36,8 @@ Feature release:
  - A feature release is named vX.Y.Z. It should include bugfixes and
    enhancements. It should be free of known bugs and regressions.
    A new feature release will stop the current maintenance of the old
-   feature release.
+   feature release. All changes in the maint branch must be included
+   into the master branch.
 
 Maintenance release:
  - A maintenance release is named vX.Y.Z.W and includes only bugfixes
@@ -47,11 +49,15 @@ Preparing a release:
    directory will not be stripped from release tarball
 
  - Check again that you are on the right branch. 'maint' for a
-   maintenance release vX.Y.Z and master for a feature release vX.Y.Z.W
+   maintenance release vX.Y.Z.W and master for a feature release vX.Y.Z
+
+ - Check the mailing list if there are any patches for the maint branch
 
  - Merge branch maint if needed
 
- - Test if the whole repository builds.
+ - Test if the whole repository builds with all dependencies fulfilled.
+   Try build with configure options -DENABLE_FINAL=ON and
+   -DENABLE_FINAL=OFF
 
  - Search for existing bugs which are blockers for the upcoming release
 
@@ -61,26 +67,26 @@ Preparing a release:
 
  - Push heads and tags with
      $ git push
-	 $ git push --tags
+     $ git push --tags
 
  - Create compressed source tarballs with
      $ VERSION=X.Y.Z
      $ git archive --format=tar --prefix="s3d-$VERSION/" "v$VERSION"  >  "s3d-$VERSION.tar"
      $ gzip -n -m -c "s3d-$VERSION.tar" > "s3d-$VERSION.tar.gz"
-	 $ xz "s3d-$VERSION.tar"
+     $ xz "s3d-$VERSION.tar"
 
  - Create the api tarballs with
      $ VERSION=X.Y.Z
      $ rm -rf api_build
-	 $ mkdir api_build
-	 $ cd api_build
-	 $ cmake ..
-	 $ cd Documentation
-	 $ make
-	 $ mv doc_output s3dapi_doc-"$VERSION"
-	 $ tar cf s3dapi_doc-"$VERSION".tar --owner 0 --group 0 --numeric-owner --mode 0644 s3dapi_doc-"$VERSION"
+     $ mkdir api_build
+     $ cd api_build
+     $ cmake ..
+     $ cd Documentation
+     $ make
+     $ mv doc_output s3dapi_doc-"$VERSION"
+     $ tar cf s3dapi_doc-"$VERSION".tar --owner 0 --group 0 --numeric-owner --mode 0644 s3dapi_doc-"$VERSION"
      $ gzip -n -m -c "s3dapi_doc-$VERSION.tar" > "s3dapi_doc-$VERSION.tar.gz"
-	 $ xz "s3dapi_doc-$VERSION.tar"
+     $ xz "s3dapi_doc-$VERSION.tar"
 
  - Upload the compressed source tarballs to ftp://ftp.berlios.de/incoming/
 
@@ -90,12 +96,12 @@ Preparing a release:
 
  - Clone current webpage from git+ssh://git.berlios.de/home/groups/s3d/htdocs
 
- - Change index.xhtml to anounce the new release
+ - Change index.xhtml to announce the new release
 
  - Extract api tarball to doc/X.Y.Z
 
  - Add it to repository with `git add doc/X.Y.Z` and insert it to doc/index.xhtml
 
- - Push commited changes to the htdocs repository
+ - Push committed changes to the htdocs repository
 
  - Add a release note to http://freshmeat.net/projects/s3d_
