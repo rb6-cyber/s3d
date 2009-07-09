@@ -96,12 +96,12 @@ Preparing a release:
 
  - Clone current webpage from git+ssh://git.berlios.de/home/groups/s3d/htdocs
 
- - Change index.xhtml to anounce the new release
+ - Change index.xhtml to announce the new release
 
  - Extract api tarball to doc/X.Y.Z
 
  - Add it to repository with `git add doc/X.Y.Z` and insert it to doc/index.xhtml
 
- - Push commited changes to the htdocs repository
+ - Push committed changes to the htdocs repository
 
  - Add a release note to http://freshmeat.net/projects/s3d_
