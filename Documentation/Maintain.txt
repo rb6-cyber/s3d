@@ -105,3 +105,30 @@ Preparing a release:
  - Push committed changes to the htdocs repository
 
  - Add a release note to http://freshmeat.net/projects/s3d_
+
+Preparing debian -1 revision:
+ - Check that ~/.devscripts says 'DEBCHANGE_RELEASE_HEURISTIC=changelog'
+
+ - Rename tar.gz to s3d_$VERSION.orig.tar.gz
+
+ - Merge release into debian `git merge v$VERSION`
+
+ - Import orig.tar.gz into pristine-tar
+    $ pristine-tar commit s3d_$VERSION.orig.tar.gz v$VERSION
+
+ - Create a 'New upstream release' entry inside debian/changelog
+    $ dch -v$VERSION-1
+
+ - Check debian/copyright and debian/patches
+
+ - Usual debian quality assurance
+
+ - Testbuild package with `git-buildpackage`
+
+ - Finally create release
+    $ dch -r
+    $ git buildpackage --git-tag
+
+ - Push changes to berlios
+    $ git push
+    $ git push --tags
