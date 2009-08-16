@@ -290,6 +290,18 @@ static struct node *handle_mesh_node(struct node_id id, char *name_string)
 	return(orig_node);
 }
 
+static int parse_address(const char *src, struct node_id *dst)
+{
+	/* try to read ip */
+	if (inet_pton(AF_INET, src, &dst->id.ip) == 1) {
+		dst->type = node_ip;
+		return 0;
+	}
+
+	/* failure */
+	return 1;
+}
+
 int process_main(void)
 {
 
@@ -354,11 +366,10 @@ int process_main(void)
 
 					if (strncmp(con_to, "0.0.0.0/0.0.0.0", NAMEMAX) == 0) {
 
-						if (inet_pton(AF_INET, con_from, &int_con_from) < 1) {
-							printf("%s is not a valid ip address\n", con_from);
+						if (parse_address(con_from, &int_con_from) != 0) {
+							printf("%s is not a valid address\n", con_from);
 							continue;
 						}
-						int_con_from.type = node_ip;
 
 						tmp_node = handle_mesh_node(int_con_from, con_from);
 
@@ -383,16 +394,14 @@ int process_main(void)
 
 						if (tmp_char != NULL)
 							tmp_char[0] = '\0';
-						if (inet_pton(AF_INET, con_from, &int_con_from) < 1) {
-							printf("%s is not a valid ip address\n", con_from);
+						if (parse_address(con_from, &int_con_from) != 0) {
+							printf("%s is not a valid address\n", con_from);
 							continue;
 						}
-						int_con_from.type = node_ip;
-						if (inet_pton(AF_INET, hna_node, &int_con_to) < 1) {
-							printf("%s is not a valid ip address\n", hna_node);
+						if (parse_address(hna_node, &int_con_to) != 0) {
+							printf("%s is not a valid address\n", hna_node);
 							continue;
 						}
-						int_con_to.type = node_ip;
 						if (tmp_char != NULL)
 							tmp_char[0] = '/';
 
@@ -417,16 +426,14 @@ int process_main(void)
 					if (f < 1.0)
 						f = 999.0;
 
-					if (inet_pton(AF_INET, con_from, &int_con_from) < 1) {
-						printf("%s is not a valid ip address\n", con_from);
+					if (parse_address(con_from, &int_con_from) != 0) {
+						printf("%s is not a valid address\n", con_from);
 						continue;
 					}
-					int_con_from.type = node_ip;
-					if (inet_pton(AF_INET, con_to, &int_con_to) < 1) {
-						printf("%s is not a valid ip address\n", con_to);
+					if (parse_address(con_to, &int_con_to) != 0) {
+						printf("%s is not a valid address\n", con_to);
 						continue;
 					}
-					int_con_to.type = node_ip;
 
 					handle_mesh_node(int_con_from, con_from);
 					handle_mesh_node(int_con_to, con_to);
