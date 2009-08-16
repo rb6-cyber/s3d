@@ -132,26 +132,17 @@ static int long_choose(const void *data, int32_t size)
 
 static int orig_comp(const void *data1, const void *data2)
 {
-	return(memcmp(data1, data2, 4));
+	struct node_id *id1 = (struct node_id*)data1;
+	struct node_id *id2 = (struct node_id*)data2;
+	return id_comp(id1, id2);
 }
 
 /* hashfunction to choose an entry in a hash table of given size */
 /* hash algorithm from http://en.wikipedia.org/wiki/Hash_table */
 static int orig_choose(const void *data, int32_t size)
 {
-	unsigned char *key = (unsigned char*)data;
-	uint32_t hash = 0;
-	size_t i;
-
-	for (i = 0; i < 4; i++) {
-		hash += key[i];
-		hash += (hash << 10);
-		hash ^= (hash >> 6);
-	}
-	hash += (hash << 3);
-	hash ^= (hash >> 11);
-	hash += (hash << 15);
-	return (hash % size);
+	struct node_id *id = (struct node_id*)data;
+	return id_choose(id, size);
 }
 
 static void exit_error(const char *format, ...)
