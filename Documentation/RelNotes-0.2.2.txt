@@ -6,8 +6,10 @@ S3D v0.2.2 Release Notes
  * Allow pseudo global optimisations for each module using -DENABLE_FINAL=ON as
    cmake parameter
 
+ * Support batman-adv visualisation output in meshs3d
+
 ---
 exec >/var/tmp/1
 echo O=`git describe master`
-O=v0.2.1.1-52-g0a0156b
+O=v0.2.1.1-58-gb4f8287
 git shortlog --no-merges $O..master '^maint'
