@@ -378,10 +378,11 @@ int process_main(void)
 							address = (int) - inet_network(tmp_char);
 							sprintf(hna_name, "%u", (unsigned int)(32 - ceil(log(address) / log(2))));
 							strcpy(tmp_char, hna_name);
+							tmp_char--;
 						}
 
-						tmp_char--;
-						tmp_char[0] = 0;
+						if (tmp_char != NULL)
+							tmp_char[0] = '\0';
 						if (inet_pton(AF_INET, con_from, &int_con_from) < 1) {
 							printf("%s is not a valid ip address\n", con_from);
 							continue;
@@ -392,7 +393,8 @@ int process_main(void)
 							continue;
 						}
 						int_con_to.type = node_ip;
-						tmp_char[0] = '/';
+						if (tmp_char != NULL)
+							tmp_char[0] = '/';
 
 						handle_mesh_node(int_con_from, con_from);
 						tmp_node = handle_mesh_node(int_con_to, hna_node);
