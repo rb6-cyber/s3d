@@ -281,8 +281,38 @@ static struct node *handle_mesh_node(struct node_id id, char *name_string)
 	return(orig_node);
 }
 
+static int parse_mac(const char *src, uint8_t dst[6])
+{
+	unsigned int n[6];
+	int i;
+	if (sscanf(src, "%x:%x:%x:%x:%x:%x",
+	    &n[0], &n[1], &n[2], &n[3], &n[4], &n[5]) != 6) {
+		if(sscanf(src, "%2x%2x.%2x%2x.%2x%2x",
+		   &n[0], &n[1], &n[2], &n[3], &n[4], &n[5]) != 6) {
+			return 1;
+		}
+	}
+
+	for (i = 0; i < 6; i++) {
+		if (n[i] <= 255)
+			dst[i] = (uint8_t)n[i];
+		else
+			return 1;
+	}
+
+	return 0;
+}
+
 static int parse_address(const char *src, struct node_id *dst)
 {
+	dst->type = node_undefined;
+
+	/* try to read mac */
+	if (parse_mac(src, dst->id.mac) == 0) {
+		dst->type = node_mac;
+		return 0;
+	}
+
 	/* try to read ip */
 	if (inet_pton(AF_INET, src, &dst->id.ip) == 1) {
 		dst->type = node_ip;
