@@ -36,7 +36,7 @@ if (G3D_FOUND)
 	include_directories(${G3D_INCLUDE_DIRS})
 	add_definitions(${G3D_DEFINITIONS})
 else (G3D_FOUND)
-	PkgError_Later("Could not find libg3d (pkg name: libg3d-dev)")
+	PkgError_Later("Could not find libg3d >=0.0.7 (pkg name: libg3d-dev)")
 endif (G3D_FOUND)
 
 

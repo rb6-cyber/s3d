@@ -55,6 +55,8 @@ Preparing a release:
 
  - Merge branch maint if needed
 
+ - Update the version number at the beginning of /CMakeLists.txt
+
  - Test if the whole repository builds with all dependencies fulfilled.
    Try build with configure options -DENABLE_FINAL=ON and
    -DENABLE_FINAL=OFF

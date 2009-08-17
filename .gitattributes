@@ -1,3 +1,5 @@
 experimental	export-ignore
 .gitignore	export-ignore
 .gitattributes	export-ignore
+*.3ds binary
+*.png binary
