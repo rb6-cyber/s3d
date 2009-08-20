@@ -58,6 +58,8 @@ int id_comp(const struct node_id* id1, const struct node_id* id2)
 				return 1;
 			}
 			break;
+		case node_ip6:
+			return memcmp(id1->id.ip6, id2->id.ip6, sizeof(id1->id.ip6));
 		case node_mac:
 			return memcmp(id1->id.mac, id2->id.mac, sizeof(id1->id.mac));
 		case node_undefined:
@@ -83,6 +85,13 @@ static int id_choose(const struct node_id *id, int32_t size)
 		for (i = 0; i < sizeof(id->id.ip); i++) {
 			hash += tmp.id.ip & 0xff;
 			tmp.id.ip = tmp.id.ip >> 8;
+			hash += (hash << 10);
+			hash ^= (hash >> 6);
+		}
+		break;
+	case node_ip6:
+		for (i = 0; i < sizeof(id->id.ip6); i++) {
+			hash += tmp.id.ip6[i];
 			hash += (hash << 10);
 			hash ^= (hash >> 6);
 		}
@@ -316,6 +325,12 @@ static int parse_address(const char *src, struct node_id *dst)
 	/* try to read ip */
 	if (inet_pton(AF_INET, src, &dst->id.ip) == 1) {
 		dst->type = node_ip;
+		return 0;
+	}
+
+	/* try to read ipv6 */
+	if (inet_pton(AF_INET6, src, &dst->id.ip6) == 1) {
+		dst->type = node_ip6;
 		return 0;
 	}
 

@@ -38,12 +38,14 @@
 enum node_type {
 	node_undefined = 0,
 	node_ip,
+	node_ip6,
 	node_mac
 };
 
 struct node_id {
 	union {
 		uint32_t ip;
+		uint8_t ip6[16];
 		uint8_t mac[6];
 	} id;
 	enum node_type type;
