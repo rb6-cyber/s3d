@@ -53,7 +53,7 @@ static void sigio_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? */
 }
 #endif
 
-int _tcp_init(char *sv, int pn)
+int _tcp_init(const char *sv, int pn)
 {
 	int       sd;
 	int      res;

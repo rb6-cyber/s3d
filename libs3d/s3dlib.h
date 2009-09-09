@@ -133,7 +133,7 @@ int s3d_net_init(char *urlc);
 int _s3d_update_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h);
 #ifdef TCP
 /* tcp.c */
-int _tcp_init(char *sv, int pn);
+int _tcp_init(const char *sv, int pn);
 int _tcp_quit(void);
 int _s3d_tcp_net_receive(void);
 int tcp_writen(char *str, int s);
