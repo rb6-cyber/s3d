@@ -39,7 +39,8 @@ enum node_type {
 	node_undefined = 0,
 	node_ip,
 	node_ip6,
-	node_mac
+	node_mac,
+	node_generic
 };
 
 struct node_id {
@@ -47,6 +48,7 @@ struct node_id {
 		uint32_t ip;
 		uint8_t ip6[16];
 		uint8_t mac[6];
+		char* generic;
 	} id;
 	enum node_type type;
 };

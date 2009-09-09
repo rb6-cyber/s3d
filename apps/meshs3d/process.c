@@ -62,6 +62,18 @@ int id_comp(const struct node_id* id1, const struct node_id* id2)
 			return memcmp(id1->id.ip6, id2->id.ip6, sizeof(id1->id.ip6));
 		case node_mac:
 			return memcmp(id1->id.mac, id2->id.mac, sizeof(id1->id.mac));
+		case node_generic:
+			if (id1->id.generic == NULL) {
+				if (id2->id.generic == NULL)
+					return 0;
+				else
+					return -1;
+			} else {
+				if (id2->id.generic == NULL)
+					return 1;
+				else
+					return strcmp(id1->id.generic, id2->id.generic);
+			}
 		case node_undefined:
 			return 0;
 		};
@@ -102,6 +114,14 @@ static int id_choose(const struct node_id *id, int32_t size)
 			hash += (hash << 10);
 			hash ^= (hash >> 6);
 		}
+		break;
+	case node_generic:
+		hash = 0x1505;
+		if (id->id.generic == NULL)
+			return hash;
+		for (i = strlen(id->id.generic); i != 0; i--)
+			hash += (hash << 5) + id->id.generic[i - 1];
+		return (hash % size);
 		break;
 	case node_undefined:
 		hash = 0;
@@ -174,6 +194,21 @@ void process_init(void)
 	return;
 }
 
+static void free_mesh_node(struct node_id* id)
+{
+	if (id->type == node_generic && id->id.generic != NULL)
+		free(id->id.generic);
+	memset(id, '\0', sizeof(struct node_id));
+}
+
+static void copy_mesh_node(struct node_id* dst, struct node_id* src)
+{
+	*dst = *src;
+	if (src->type == node_generic && src->id.generic != NULL) {
+		dst->id.generic = strdup(src->id.generic);
+	}
+}
+
 static void handle_con(struct node_id id1, struct node_id id2, float etx)
 {
 
@@ -187,8 +222,8 @@ static void handle_con(struct node_id id1, struct node_id id2, float etx)
 	con = (struct node_con*) hash_find(con_hash, &ids);
 	if (con == NULL) {
 		con = (struct node_con *) debugMalloc(sizeof(struct node_con), 102);
-		con->address[0] = ids.address[0];
-		con->address[1] = ids.address[1];
+		copy_mesh_node(&con->address[0], &ids.address[0]);
+		copy_mesh_node(&con->address[1], &ids.address[1]);
 		con->color = 0;
 		/* draw line */
 		con->obj_id = s3d_new_object();
@@ -247,7 +282,8 @@ static void handle_con(struct node_id id1, struct node_id id2, float etx)
 
 }
 
-static struct node *handle_mesh_node(struct node_id id, char *name_string) {
+static struct node *handle_mesh_node(struct node_id id, char *name_string)
+{
 	struct node *orig_node;
 	struct hashtable_t *swaphash;
 
@@ -261,7 +297,7 @@ static struct node *handle_mesh_node(struct node_id id, char *name_string) {
 
 	if (NULL == orig_node) {
 		orig_node = (struct node *)debugMalloc(sizeof(struct node), 101);
-		orig_node->address = id;
+		copy_mesh_node(&orig_node->address, &id);
 		strncpy(orig_node->name_string, name_string, NAMEMAX);
 
 		orig_node->node_type = 0;
@@ -330,6 +366,11 @@ static int parse_address(const char *src, struct node_id *dst)
 	/* try to read ipv6 */
 	if (inet_pton(AF_INET6, src, &dst->id.ip6) == 1) {
 		dst->type = node_ip6;
+		return 0;
+	}
+
+	if ((dst->id.generic = strdup(src))) {
+		dst->type = node_generic;
 		return 0;
 	}
 
@@ -477,8 +518,8 @@ int process_main(void)
 				}
 				/* remove zerobyte */
 				(*con_from_end) = (*con_to_end) = (*etx_end) = '"';
-				memset(&int_con_from, '\0', sizeof(struct node_id));
-				memset(&int_con_to, '\0', sizeof(struct node_id));
+				free_mesh_node(&int_con_from);
+				free_mesh_node(&int_con_to);
 				con_from = con_from_end = con_to = con_to_end = etx = etx_end = NULL;
 				dn = 0;
 				last_cr_ptr = lbuf_ptr;
