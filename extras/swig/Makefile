@@ -8,8 +8,8 @@ python:		$(PYTHON_MOD)
 perl:		$(PERL_MOD)
 $(PYTHON_MOD):	s3d.i
 	 swig -python s3d.i
-	 gcc -fPIC -c s3d_wrap.c -I/usr/include/python2.3/
-	 gcc -shared s3d_wrap.o -ls3d -o $(PYTHON_MOD)
+	 gcc -fPIC -c s3d_wrap.c `python-config --cflags`
+	 gcc -shared s3d_wrap.o -ls3d -o $(PYTHON_MOD) `python-config --ldflags`
 $(PERL_MOD):	s3d.i
 	swig -perl5 s3d.i
 	gcc -fPIC -c s3d_wrap.c  `perl -MExtUtils::Embed -e ccopts`
