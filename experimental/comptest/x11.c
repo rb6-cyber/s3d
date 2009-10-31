@@ -206,7 +206,7 @@ void print_properties(Window win)
 	}
 	XFree(p);
 }
-char *x11_get_prop(Window win, char *prop)
+char *x11_get_prop(Window win, const char *prop)
 {
 	Atom type;
 	int format;

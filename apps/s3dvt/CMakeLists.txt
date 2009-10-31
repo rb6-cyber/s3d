@@ -4,7 +4,7 @@ if (PTHREADS_FOUND)
 	include_directories(${s3d_SOURCE_DIR}/libs3d)
 
 	s3d_add_executable(s3dvt main.c terminal.c)
-	target_link_libraries(s3dvt s3d ${PTHREADS_LIBRARIES} ${MATH_LIBRARIES})
+	target_link_libraries(s3dvt s3d ${PTHREADS_LIBRARIES})
 
 	# install
 	install(TARGETS s3dvt RUNTIME DESTINATION "${BIN_INSTALL_DIR}")

@@ -1,55 +1,57 @@
 Layout:
- - 'master' branch is used to prepare for the next feature release. The
-   formal definition for a feature release is given later.
 
- - 'maint' branch is used to prepare the next maintenance release.
-   After the release of an feature release this branch is set to this
-   version and bug fixes will accumulated in this branch. After some
-   time this version is tagged as a maintenance release. The formal
-   definition of a feature release is given later.
-   Setting this branch to the release is done by _merging_ the release
-   into maint. master will merge maint from time to time.
-   In a perfect feature release 'maint' is merged into master, master
-   merged to maint and the feature release is tagged from the master
-   branch.
-   Further feature modifications are done in master and maintenance is
-   done in maint.
+ - 'master' branch is used to prepare for the next feature release. The formal
+   definition for a feature release is given later.
 
- - 'debian' branch is used to prepare packages for debian.
-   Modifications to this branch should only be done by people currently
-   in the Maintainer and Uploaders field of debian/control. All other
-   changes should be send to the debian bugtracker for the source
-   package s3d. Don't forget to add a patch and mark the bug with the
-   tag patch.
+ - 'maint' branch is used to prepare the next maintenance release. After the
+   release of an feature release this branch is set to this version and bug
+   fixes will accumulated in this branch. After some time this version is
+   tagged as a maintenance release. The formal definition of a feature release
+   is given later. Setting this branch to the release is done by _merging_ the
+   release into maint. master will merge maint from time to time. In a perfect
+   feature release 'maint' is merged into master, master merged to maint and
+   the feature release is tagged from the master branch.
 
- - 'pristine-tar' branch is used by the debian branch to create the
-   orig.tar.gz from repository without storing the whole tar.gz inside
-   of it.
+   Further feature modifications are done in master and maintenance is done in
+   maint.
 
- - 'debian-xxx' branch is used to create special debian releases for
-   already released debian versions. xxx has to be replaced by the
-   official release name. This could be for example 'etch', 'lenny' or
-   'squeeze'. Releases for unstable must always go into debian and not
-   in the named debian-xxx branch.
+ - 'debian' branch is used to prepare packages for debian. Modifications to
+   this branch should only be done by people currently in the Maintainer and
+   Uploaders field of debian/control. All other changes should be send to the
+   debian bugtracker for the source package s3d. Don't forget to add a patch
+   and mark the bug with the tag patch.
+
+ - 'pristine-tar' branch is used by the debian branch to create the orig.tar.gz
+   from repository without storing the whole tar.gz inside of it.
+
+ - 'debian-xxx' branch is used to create special debian releases for already
+   released debian versions. xxx has to be replaced by the official release
+   name. This could be for example 'etch', 'lenny' or 'squeeze'. Releases for
+   unstable must always go into debian and not in the named debian-xxx branch.
+
 
 Feature release:
+
  - A feature release is named vX.Y.Z. It should include bugfixes and
-   enhancements. It should be free of known bugs and regressions.
-   A new feature release will stop the current maintenance of the old
-   feature release. All changes in the maint branch must be included
-   into the master branch.
+   enhancements. It should be free of known bugs and regressions. A new feature
+   release will stop the current maintenance of the old feature release. All
+   changes in the maint branch must be included into the master branch.
+
 
 Maintenance release:
- - A maintenance release is named vX.Y.Z.W and includes only bugfixes
-   for the vX.Y.Z feature release and previous maintenance releases of
-   the vX.Y.Z feature release.
+
+ - A maintenance release is named vX.Y.Z.W and includes only bugfixes for the
+   vX.Y.Z feature release and previous maintenance releases of the vX.Y.Z
+   feature release.
+
 
 Preparing a release:
+
  - Check if you are using git 1.6.x or better - otherwise the experimental
    directory will not be stripped from release tarball
 
- - Check again that you are on the right branch. 'maint' for a
-   maintenance release vX.Y.Z.W and master for a feature release vX.Y.Z
+ - Check again that you are on the right branch. 'maint' for a maintenance
+   release vX.Y.Z.W and master for a feature release vX.Y.Z
 
  - Check the mailing list if there are any patches for the maint branch
 
@@ -58,8 +60,19 @@ Preparing a release:
  - Update the version number at the beginning of /CMakeLists.txt
 
  - Test if the whole repository builds with all dependencies fulfilled.
-   Try build with configure options -DENABLE_FINAL=ON and
-   -DENABLE_FINAL=OFF
+
+   - Try build with configure options -DENABLE_FINAL=ON and-DENABLE_FINAL=OFF
+
+   - Try to compile it with stricter linker flags to test correct linking
+     behavior of all libraries and executables
+
+       $ mkdir build
+       $ cd build
+       $ LDFLAGS="-Wl,--no-add-needed -Wl,--no-undefined" cmake ..
+       $ make
+
+     --no-add-needed can be omitted with GNU gold as it doesn't support the
+     option but uses the behavior as default.
 
  - Search for existing bugs which are blockers for the upcoming release
 
@@ -68,16 +81,19 @@ Preparing a release:
  - Tag the current version with `git tag -s vX.Y.Z -m 's3d X.Y.Z'`
 
  - Push heads and tags with
+
      $ git push
      $ git push --tags
 
  - Create compressed source tarballs with
+
      $ VERSION=X.Y.Z
      $ git archive --format=tar --prefix="s3d-$VERSION/" "v$VERSION"  >  "s3d-$VERSION.tar"
      $ gzip -n -m -c "s3d-$VERSION.tar" > "s3d-$VERSION.tar.gz"
      $ xz "s3d-$VERSION.tar"
 
  - Create the api tarballs with
+
      $ VERSION=X.Y.Z
      $ rm -rf api_build
      $ mkdir api_build
@@ -108,7 +124,9 @@ Preparing a release:
 
  - Add a release note to http://freshmeat.net/projects/s3d_
 
+
 Preparing debian -1 revision:
+
  - Check that ~/.devscripts says 'DEBCHANGE_RELEASE_HEURISTIC=changelog'
 
  - Rename tar.gz to s3d_$VERSION.orig.tar.gz
@@ -116,9 +134,11 @@ Preparing debian -1 revision:
  - Merge release into debian `git merge v$VERSION`
 
  - Import orig.tar.gz into pristine-tar
+
     $ pristine-tar commit s3d_$VERSION.orig.tar.gz v$VERSION
 
  - Create a 'New upstream release' entry inside debian/changelog
+
     $ dch -v$VERSION-1
 
  - Check debian/copyright and debian/patches
@@ -128,9 +148,11 @@ Preparing debian -1 revision:
  - Testbuild package with `git-buildpackage`
 
  - Finally create release
+
     $ dch -r
     $ git buildpackage --git-tag
 
  - Push changes to berlios
+
     $ git push
     $ git push --tags

@@ -85,8 +85,8 @@ typedef struct _s3dw_style   s3dw_style;
  * specular and diffuse color.
  */
 struct _s3dw_style {
-	char *name;     /**< name of the style ... kind of redundant */
-	char *fontface;    /**< font face for all used fonts */
+	const char *name;     /**< name of the style ... kind of redundant */
+	const char *fontface;    /**< font face for all used fonts */
 	float surface_mat[12];  /**< material for the surface background */
 	float input_mat[12];  /**< material for button boxes and other widgets */
 	float inputback_mat[12]; /**< material for input field background */

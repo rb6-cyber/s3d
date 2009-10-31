@@ -2,8 +2,13 @@ include(LateErrors)
 include(LateStatus)
 include(LateStatusPartial)
 
+find_package(PkgConfig)
+if (NOT PKG_CONFIG_FOUND)
+	message(FATAL_ERROR "Could not find pkg-config (pkg name: pkg-config)")
+endif (NOT PKG_CONFIG_FOUND)
+
 # find required lib and add include dir for FREETYPE
-find_package(FREETYPE)
+pkg_search_module(FREETYPE freetype2)
 if (FREETYPE_FOUND)
 	include_directories(${FREETYPE_INCLUDE_DIRS})
 else (FREETYPE_FOUND)
@@ -12,7 +17,7 @@ endif (FREETYPE_FOUND)
 
 
 # find required lib and add include dir for FONTCONFIG
-find_package(Fontconfig)
+pkg_search_module(FONTCONFIG fontconfig)
 if (FONTCONFIG_FOUND)
 	include_directories(${FONTCONFIG_INCLUDE_DIRS})
 else (FONTCONFIG_FOUND)
@@ -21,7 +26,7 @@ endif (FONTCONFIG_FOUND)
 
 
 # find required lib and add include dir for GLIB
-find_package(GLIB)
+pkg_search_module(GLIB2 glib-2.0)
 if (GLIB2_FOUND)
 	include_directories(${GLIB2_INCLUDE_DIRS})
 	add_definitions(${GLIB2_DEFINITIONS})
@@ -31,7 +36,7 @@ endif (GLIB2_FOUND)
 
 
 # find required lib and add include dir for G3D
-find_package(G3D)
+pkg_search_module(G3D libg3d>=0.0.7)
 if (G3D_FOUND)
 	include_directories(${G3D_INCLUDE_DIRS})
 	add_definitions(${G3D_DEFINITIONS})
@@ -68,7 +73,7 @@ endif (SDL_FOUND)
 
 
 # find lib and add include dir for CWiid
-find_package(CWiid)
+pkg_search_module(CWIID cwiid)
 if (CWIID_FOUND)
 	include_directories(${CWIID_INCLUDE_DIRS})
 endif (CWIID_FOUND)
@@ -96,7 +101,7 @@ endif (PTHREADS_FOUND)
 
 
 # try to find lib and add include dir for SQLite3
-find_package(SQLite3)
+pkg_search_module(SQLITE3 sqlite3)
 if (SQLITE3_FOUND)
 	include_directories(${SQLITE3_INCLUDE_DIRS})
 	add_definitions(${SQLITE3_DEFINITIONS})
@@ -112,35 +117,35 @@ endif (LIBXML2_FOUND)
 
 
 # try to find lib and add include dir for Xcomposite
-find_package(Xcomposite)
+pkg_search_module(XCOMPOSITE xcomposite)
 if (XCOMPOSITE_FOUND)
 	include_directories(${XCOMPOSITE_INCLUDE_DIRS})
 	add_definitions(${XCOMPOSITE_DEFINITIONS})
 endif (XCOMPOSITE_FOUND)
 
 # try to find lib and add include dir for Xdamage
-find_package(Xdamage)
+pkg_search_module(XDAMAGE xdamage)
 if (XDAMAGE_FOUND)
 	include_directories(${XDAMAGE_INCLUDE_DIRS})
 	add_definitions(${XDAMAGE_DEFINITIONS})
 endif (XDAMAGE_FOUND)
 
 # try to find lib and add include dir for Xfixes
-find_package(Xfixes)
+pkg_search_module(XFIXES xfixes)
 if (XFIXES_FOUND)
 	include_directories(${XFIXES_INCLUDE_DIRS})
 	add_definitions(${XFIXES_DEFINITIONS})
 endif (XFIXES_FOUND)
 
 # try to find lib and add include dir for Xrender
-find_package(Xrender)
+pkg_search_module(XRENDER xrender)
 if (XRENDER_FOUND)
 	include_directories(${XRENDER_INCLUDE_DIRS})
 	add_definitions(${XRENDER_DEFINITIONS})
 endif (XRENDER_FOUND)
 
 # try to find lib and add include dir for Xtst
-find_package(Xtst)
+pkg_search_module(XTST xtst)
 if (XTST_FOUND)
 	include_directories(${XTST_INCLUDE_DIRS})
 	add_definitions(${XTST_DEFINITIONS})
