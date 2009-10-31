@@ -63,6 +63,17 @@ Preparing a release:
 
    - Try build with configure options -DENABLE_FINAL=ON and-DENABLE_FINAL=OFF
 
+   - Try to compile it with stricter linker flags to test correct linking
+     behavior of all libraries and executables
+
+       $ mkdir build
+       $ cd build
+       $ LDFLAGS="-Wl,--no-add-needed -Wl,--no-undefined" cmake ..
+       $ make
+
+     --no-add-needed can be omitted with GNU gold as it doesn't support the
+     option but uses the behavior as default.
+
  - Search for existing bugs which are blockers for the upcoming release
 
  - Update the release notes in Documentation/RelNotes-X.Y.Z.txt
