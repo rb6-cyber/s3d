@@ -1,0 +1,69 @@
+S3D v0.0.1 Release Notes
+========================
+
+2005-01-27 Simon Wunderlich <dotslash@packetmixer.de>
+
+ * dot_mcp close button works :D
+ * fixed picking problems
+ * some Makefile enhancements
+
+2005-01-22 Simon Wunderlich <dotslash@packetmixer.de>
+
+ * removed funky debugging colors from freetype.c
+ * fixed drawing problems in s3dvt.c
+ * saving font file in memory for performance reasons
+ * icons in the mcp
+ * changed the link-loop in the right direction with a recursive solution
+
+2005-01-21 Simon Wunderlich <dotslash@packetmixer.de>
+
+ * fixed some little picking glitch
+ * polygon packet fragmentation
+
+2005-01-12 Simon Wunderlich <dotslash@packetmixer.de>
+
+ * client is now operating with sigio
+ * some advances in dot_mcp and minor fixes
+
+2005-01-08 Simon Wunderlich <dotslash@packetmixer.de>
+
+ * merged headerfiles graphics.h, user.h into global.h
+ * masking flags private
+ * some cleanup in user.c, mousewheel can now be used, using
+   mouse-move-difference now.
+ * the camera is now an object
+ * implemented rotate and scale
+ * picking now goes throu render_mcp()
+
+2005-01-07 Simon Wunderlich <dotslash@packetmixer.de>
+
+ * implemented mcp-focus, unlinking and changing targets for clones
+ * freetype fonts normalized to height 1
+
+2005-01-06 Simon Wunderlich <dotslash@packetmixer.de>
+
+ * cleared some bad code, s3dvt works now
+ * changed SIGIO so polling will only be called throu network_main(), because
+   things are not thread-safe now.
+
+2005-01-04 Simon Wunderlich <dotslash@packetmixer.de>
+
+ * changed the malloc(), memcpy()-rest things to realloc()
+
+2005-01-03 Simon Wunderlich <dotslash@packetmixer.de>
+
+ * changed network polling to SIGIO
+ * some minor cleanups
+
+2005-01-02 Simon Wunderlich <dotslash@packetmixer.de>
+
+ * started changelog ;)
+ * finished basic truetype support
+ * s3dvt.c started
+ * some minor graphics optimizations
+ * added usleep() into 3dsloader.c
+ ...
+
+2004-08-?? Simon Wunderlich <dotslash@packetmixer.de>
+
+ * s3d started. dunno the correct date thou :X

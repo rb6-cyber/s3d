@@ -5,7 +5,6 @@
 
 #cmakedefine G_SDL 1
 #cmakedefine HAVE_GPS 1
-#cmakedefine HAVE_GPS_NEW 1
 #cmakedefine SHM 1
 #cmakedefine SIGS 1
 #cmakedefine TCP 1

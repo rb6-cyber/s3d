@@ -52,16 +52,11 @@ void show_gpsdata(struct gps_data_t *dgps)
 {
 	if (!dgps->online)
 		printf("WARNING: no connection to gps device\n");
-#ifdef HAVE_GPS_NEW
+
 	printf("[%d] lat/long: [%f|%f], altitude %f\n", frame, dgps->fix.latitude, dgps->fix.longitude, dgps->fix.altitude);
 	printf("speed [kph]: %f\n", dgps->fix.speed / KNOTS_TO_KPH);
-	printf("used %d/%d satellits\n", dgps->satellites_used, dgps->satellites);
-#else
-	printf("[%d] lat/long: [%f|%f], altitude %f\n", frame, dgps->latitude, dgps->longitude, dgps->altitude);
-	printf("speed [kph]: %f\n", dgps->speed / KNOTS_TO_KPH);
-	printf("used %d/%d satellits\n", dgps->satellites_used, dgps->satellites);
+	printf("used %d/%d satellits\n", dgps->satellites_used, dgps->satellites_visible);
 
-#endif
 	switch (dgps->status) {
 	case STATUS_NO_FIX:
 		printf("status: no fix\n");
@@ -73,12 +68,8 @@ void show_gpsdata(struct gps_data_t *dgps)
 		printf("status: dgps fix\n");
 		break;
 	}
-#ifdef HAVE_GPS_NEW
-	switch (dgps->fix.mode)
-#else
-	switch (dgps->mode)
-#endif
-	{
+
+	switch (dgps->fix.mode)	{
 	case MODE_NOT_SEEN:
 		printf("mode: not seen yet\n");
 		break;
@@ -99,7 +90,7 @@ static void show_position(struct gps_data_t *dgps)
 	int fix = 1;
 	float la, lo, heading, speed, slen;
 	char buf[BUFSIZE+1];
-#ifdef HAVE_GPS_NEW
+
 	if (!dgps->online)
 		fix = 0;
 	switch (dgps->fix.mode) {
@@ -116,22 +107,6 @@ static void show_position(struct gps_data_t *dgps)
 	heading = -dgps->fix.track;
 	speed = dgps->fix.speed;
 
-#else
-	if (!dgps->online)
-		fix = 0;
-	switch (dgps->mode) {
-	case MODE_NOT_SEEN:
-		fix = 0;
-		break;
-	case MODE_NO_FIX:
-		fix = 0;
-		break;
-	}
-	la = dgps->latitude;
-	lo = dgps->longitude;
-	heading = -dgps->track;
-	speed = dgps->speed * KNOTS_TO_MPH / METERS_TO_MILES / 3600; /* speed in knots -> miles per hour -> meter per hour -> meter per secon */
-#endif
 	tlat = la;
 	tlon = lo;
 	if (fix) {
@@ -213,7 +188,7 @@ int gps_init(const char *gpshost)
 	tlat = lat = lat_old = 0.0;
 	tlon = lon = lon_old = 0.0;
 	gps_active = 1;
-	gps_query(dgps, "w+x\n");
+	gps_stream(dgps, WATCH_ENABLE, NULL);
 	return(0);
 }
 int gps_main(void)
