@@ -84,12 +84,10 @@ find_package(Docbook)
 
 
 # try to find lib and add include dir for GPS
-find_package(GPS)
+pkg_search_module(GPS libgps>=2.90)
 if (GPS_FOUND)
 	set(HAVE_GPS GPS_FOUND)
-	if (GPS_NEW_STRUCT)
-		set(HAVE_GPS_NEW GPS_NEW_STRUCT)
-	endif  (GPS_NEW_STRUCT)
+	include_directories(${GPS_INCLUDE_DIRS})
 endif (GPS_FOUND)
 
 
