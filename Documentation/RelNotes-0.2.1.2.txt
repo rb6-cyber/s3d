@@ -1,0 +1,18 @@
+S3D v0.2.1.2 Release Notes
+==========================
+
+ * Stricter const usage for strings to better integrate into (e)glibc's stricter
+   const usage in version 2.10.
+
+ * Added better support for libraries in unusual places using pkg-config.
+
+ * Reduced library dependencies of compiled shared objects.
+
+ * Depend on libgps 2.90 for s3dosm GPS support as it is the first version with
+   longer binary and API stability.
+
+---
+exec >/var/tmp/1
+echo O=`git describe maint`
+O=v0.2.1.1-13-g7e7dff2
+git shortlog --no-merges $O..maint
