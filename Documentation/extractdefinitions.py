@@ -352,7 +352,7 @@ def create_before_text(father, text, refnode):
 	return t
 
 """
-Extract function informations from doxygen dom
+Extract function information from doxygen dom
 """
 def extract_functions(dom):
 	functionlist = []
@@ -384,7 +384,7 @@ def extract_functions(dom):
 	return functionlist
 
 """
-Extract struct informations from doxygen dom
+Extract struct information from doxygen dom
 """
 def extract_structs(dom):
 	structlist = []
@@ -396,7 +396,7 @@ def extract_structs(dom):
 		struct['ref'] = node.attributes['refid'].nodeValue
 		structlist.append(struct)
 
-	# open xml files and extract informations from them
+	# open xml files and extract information from them
 	for struct in structlist:
 		dom = xml.dom.minidom.parse("xml/"+struct['ref']+".xml")
 
@@ -413,7 +413,7 @@ def extract_structs(dom):
 	return structlist
 
 """
-Extract typedef informations from doxygen dom
+Extract typedef information from doxygen dom
 """
 def extract_typedefs(dom):
 	typedeflist = []
@@ -440,7 +440,7 @@ def extract_typedefs(dom):
 
 class docbook_functions:
 	"""
-	Generate docbook file with informations to all functions
+	Generate docbook file with information to all functions
 	"""
 	def generate(name, synopsis, functionlist, refidlist):
 		func_file = open(name+'/functions.docbook', "w")
@@ -452,7 +452,7 @@ class docbook_functions:
 		func_file.close()
 
 	"""
-	Generate docbook sect2 dom with informations to a specific function
+	Generate docbook sect2 dom with information to a specific function
 	"""
 	def generate_sgml(function, synopsis):
 		sgml = xml.dom.minidom.Document()
@@ -500,7 +500,7 @@ class docbook_functions:
 
 class docbook_structs:
 	"""
-	Generate docbook file with informations to all structs
+	Generate docbook file with information to all structs
 	"""
 	def generate(name, structlist, refidlist):
 		struct_file = open(name+'/structs.docbook', "w")
@@ -512,7 +512,7 @@ class docbook_structs:
 		struct_file.close()
 
 	"""
-	Generate docbook sect2 dom with informations to a specific struct
+	Generate docbook sect2 dom with information to a specific struct
 	"""
 	def generate_sgml(struct):
 		sgml = xml.dom.minidom.Document()
@@ -549,7 +549,7 @@ class docbook_structs:
 
 class docbook_typedefs:
 	"""
-	Generate docbook file with informations to all typedefs
+	Generate docbook file with information to all typedefs
 	"""
 	def generate(name, typedeflist, refidlist):
 		typedef_file = open(name+'/typedefs.docbook', "w")
@@ -561,7 +561,7 @@ class docbook_typedefs:
 		typedef_file.close()
 
 	"""
-	Generate docbook sect2 dom with informations to a specific typedef
+	Generate docbook sect2 dom with information to a specific typedef
 	"""
 	def generate_sgml(typedef):
 		sgml = xml.dom.minidom.Document()
@@ -632,7 +632,7 @@ def manpage_header(root, name, refid, mannum, ref_name, ref_namediv, synopsisinf
 
 class manpage_functions:
 	"""
-	Generate manpage docbook file with informations to functions
+	Generate manpage docbook file with information to functions
 	"""
 	def generate(synopsis, functionlist):
 		for func in functionlist:
@@ -644,7 +644,7 @@ class manpage_functions:
 			func_file.close()
 
 	"""
-	Generate manpage docbook dom with informations to a specific function
+	Generate manpage docbook dom with information to a specific function
 	"""
 	def generate_sgml(function, synopsis):
 		sgml = xml.dom.minidom.Document()
@@ -687,7 +687,7 @@ class manpage_functions:
 
 class manpage_structs:
 	"""
-	Generate manpage docbook file with informations to all structs
+	Generate manpage docbook file with information to all structs
 	"""
 	def generate(synopsis, structlist):
 		for func in structlist:
@@ -699,7 +699,7 @@ class manpage_structs:
 			func_file.close()
 
 	"""
-	Generate manpage docbook dom with informations to a specific struct
+	Generate manpage docbook dom with information to a specific struct
 	"""
 	def generate_sgml(struct, synopsis):
 		sgml = xml.dom.minidom.Document()

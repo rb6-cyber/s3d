@@ -1008,7 +1008,7 @@ int s3d_load_polygon_tex_coords(int object, const float *tbuf, uint32_t start, u
 /** \brief add materials with alpha to polygons
  *
  * Loads n materials starting from index position start into the material stack.
- * See s3d_push_materials_a for more informations about the values in mbuf.
+ * See s3d_push_materials_a for more information about the values in mbuf.
  */
 int s3d_load_materials_a(int object, const float *mbuf, uint32_t start, uint16_t n)
 {
