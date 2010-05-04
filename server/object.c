@@ -26,8 +26,12 @@
 #include "global.h"
 #include <stdlib.h>   /*  malloc(),realloc(),free() */
 #include <string.h>   /*  memcpy() */
+#if G_SDL
+#include <SDL_opengl.h>   /* GL_GENERATE_MIPMAP */
+#else
 #include <GL/gl.h>   /*  gl*, GL* */
 #include <GL/glext.h>   /* GL_GENERATE_MIPMAP */
+#endif
 #ifndef _ISOC99_SOURCE /* we want isnan() */
 #define _ISOC99_SOURCE
 #endif

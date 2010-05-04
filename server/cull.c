@@ -26,7 +26,11 @@
 
 #include "global.h"
 #include <math.h> /* sqrt() */
-#include <GL/gl.h> /* glGetFloatv() */
+#if G_SDL
+#include <SDL_opengl.h>   /*  glGetFloatv */
+#else
+#include <GL/gl.h>   /*  glGetFloatv */
+#endif
 struct t_plane {
 	struct t_vertex n;
 	float d;

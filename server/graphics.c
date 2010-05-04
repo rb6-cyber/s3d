@@ -23,11 +23,12 @@
 
 #include "global.h"
 #include <string.h>   /*  memcpy() */
-
+#if G_SDL
+#include <SDL_opengl.h>   /*  GL_RESCALE_NORMAL */
+#include <SDL.h>  /*  SDL_GL_SwapBuffers */
+#else
 #include <GL/gl.h>   /*  GLint */
 #include <GL/glext.h>   /*  GL_RESCALE_NORMAL */
-#ifdef G_SDL
-#include <SDL.h>  /*  SDL_GL_SwapBuffers */
 #endif
 #include <math.h>   /*  sin(),cos() */
 #ifndef INFINITY
