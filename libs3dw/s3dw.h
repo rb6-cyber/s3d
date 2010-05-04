@@ -29,10 +29,18 @@
 #include <stdint.h>  /* [u]intXX_t type definitions*/
 
 #ifdef HAVE_GCCVISIBILITY
-#define S3DWEXPORT __attribute__ ((visibility("default")))
+#define S3DWEXPORT_VISIBILITY __attribute__ ((visibility("default")))
 #else
-#define S3DWEXPORT
+#define S3DWEXPORT_VISIBILITY
 #endif
+
+#ifdef HAVE_GCCEXTERNALLY
+#define S3DWEXPORT_EXTERNAL __attribute__((externally_visible))
+#else
+#define S3DWEXPORT_EXTERNAL
+#endif
+
+#define S3DWEXPORT S3DWEXPORT_VISIBILITY S3DWEXPORT_EXTERNAL
 
 #ifdef __GNUC_MINOR__
 #define S3DW_WARN_UNUSED_RESULT  __attribute__ ((warn_unused_result))

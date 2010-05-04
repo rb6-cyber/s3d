@@ -54,6 +54,11 @@ set(PKGCFG_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" CACHE PATH "The s
 # add option for enabling/disabling pseudo 'global' optimisation
 option(ENABLE_FINAL "Enable/disable support for 'global' optimisation" OFF)
 
+if (ENABLE_FINAL)
+	# test for -fwhole-program
+	include(TestGCCExternally)
+endif (ENABLE_FINAL)
+
 macro (s3d_add_library _target _type)
 	if (ENABLE_FINAL)
 		s3d_create_final_include(${CMAKE_CURRENT_BINARY_DIR}/${_target_NAME}/final_include.c excluded ${ARGN})

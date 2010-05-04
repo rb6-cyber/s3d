@@ -27,10 +27,18 @@
 #define LIBS3D_H
 
 #ifdef HAVE_GCCVISIBILITY
-#define S3DEXPORT __attribute__ ((visibility("default")))
+#define S3DEXPORT_VISIBILITY __attribute__ ((visibility("default")))
 #else
-#define S3DEXPORT
+#define S3DEXPORT_VISIBILITY
 #endif
+
+#ifdef HAVE_GCCEXTERNALLY
+#define S3DEXPORT_EXTERNAL __attribute__((externally_visible))
+#else
+#define S3DEXPORT_EXTERNAL
+#endif
+
+#define S3DEXPORT S3DEXPORT_VISIBILITY S3DEXPORT_EXTERNAL
 
 #ifdef __GNUC_MINOR__
 #define S3D_WARN_UNUSED_RESULT  __attribute__ ((warn_unused_result))

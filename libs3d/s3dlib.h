@@ -43,12 +43,6 @@
 #endif
 #endif
 
-#ifdef HAVE_GCCVISIBILITY
-#define S3DEXPORT __attribute__ ((visibility("default")))
-#else
-#define S3DEXPORT
-#endif
-
 #ifdef __GNUC_MINOR__
 #define S3D_FORMAT(type, fmt_pos, arg_pos)  __attribute__ ((format (type, fmt_pos, arg_pos)))
 #else
