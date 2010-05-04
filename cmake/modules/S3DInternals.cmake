@@ -57,6 +57,8 @@ option(ENABLE_FINAL "Enable/disable support for 'global' optimisation" OFF)
 if (ENABLE_FINAL)
 	# test for -fwhole-program
 	include(TestGCCExternally)
+	# test for -fdata-sections and -ffunction-sections
+	include(TestGCCSections)
 endif (ENABLE_FINAL)
 
 macro (s3d_add_library _target _type)
