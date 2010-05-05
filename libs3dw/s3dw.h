@@ -115,7 +115,7 @@ struct _s3dw_style {
  * in handy if the widget is called back by an event, and the program must now
  * find out on which data the user reacted.
  */
- struct _s3dw_widget {
+struct _s3dw_widget {
 	/* private .. */
 	int      type;
 	s3dw_widget *parent;
@@ -205,7 +205,7 @@ struct _s3dw_textbox {
 	/* private */
 	s3dw_widget   widget;
 	s3dw_scrollbar *scroll_vertical,
-	*scroll_horizontal;
+	               *scroll_horizontal;
 	char    *text;
 	int    n_lineoids, *p_lineoids;
 	int    window_x, window_y;

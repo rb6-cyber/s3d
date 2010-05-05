@@ -93,8 +93,9 @@ static int process_sys_init(struct t_process *p)
 	struct t_obj *o;
 	cam = obj_new(p);
 	ptr = obj_new(p);
-	if (p->id == MCP) {   /* this is only called once within process_init, later mcp's are
-     will be registered as "real" apps first */
+	if (p->id == MCP) {
+		/* this is only called once within process_init, later mcp's are
+		     will be registered as "real" apps first */
 		p->object[cam]->translate.z = 5;
 		p->object[cam]->oflags = OF_CAM;
 		p->object[ptr]->translate.z = -1;
@@ -188,7 +189,7 @@ static int p_del(struct t_process *p)
 	int j, i = p->n_obj;
 	if (p->id != MCP) {
 		if (p->mcp_oid != -1) {
-			for (j = 0;j < mcp_p->n_obj;j++)  /*  remove clones and links pointing on this app-object ... */
+			for (j = 0; j < mcp_p->n_obj; j++) /*  remove clones and links pointing on this app-object ... */
 				if (mcp_p->object[j] != NULL) {
 					if ((mcp_p->object[j]->oflags&OF_CLONE) && (mcp_p->object[j]->clone_ooid == p->mcp_oid)) { /*  it's linking to our object! */
 						mcp_p->object[j]->oflags &= ~OF_CLONE;  /*  disable clone flag */
@@ -201,7 +202,7 @@ static int p_del(struct t_process *p)
 		} /* else
    errs("p_del()","bad mcp_oid, unable to free mcp object");*/
 		if (i > 0) {
-			for (i = 0;i < p->n_obj;i++)
+			for (i = 0; i < p->n_obj; i++)
 				if (p->object[i]) obj_free(p, i);
 			free(p->object);
 		}
@@ -210,7 +211,7 @@ static int p_del(struct t_process *p)
 		/*  so we just delete the objects added */
 		/*  by the last mcp */
 		s3dprintf(MED, "clean up mcp's junk ...");
-		for (i = 0;i < p->n_obj;i++) {
+		for (i = 0; i < p->n_obj; i++) {
 			if (p->object[i] != NULL)
 				if (!(p->object[i]->oflags&(OF_SYSTEM | OF_VIRTUAL)))
 					obj_free(p, i);
@@ -233,7 +234,7 @@ int process_quit(void)
 {
 	int i;
 	s3dprintf(HIGH, "telling %d processes to go away", procs_n);
-	for (i = (procs_n - 1);i >= 0;i--) {
+	for (i = (procs_n - 1); i >= 0; i--) {
 		s3dprintf(HIGH, "[QUIT] for %d", i);
 		event_quit(&procs_p[i]);
 		/*  process_del(procs_p[i].id);*/

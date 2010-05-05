@@ -69,7 +69,7 @@ void show_gpsdata(struct gps_data_t *dgps)
 		break;
 	}
 
-	switch (dgps->fix.mode)	{
+	switch (dgps->fix.mode) {
 	case MODE_NOT_SEEN:
 		printf("mode: not seen yet\n");
 		break;

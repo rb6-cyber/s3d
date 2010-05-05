@@ -74,7 +74,7 @@ void s3dw_turn(void)
 	a[0] = 0;
 	a[1] = 0;
 	a[2] = 1;
-	for (i = 0;i < root->nobj;i++) {
+	for (i = 0; i < root->nobj; i++) {
 		w = root->pobj[i];
 		if ((w->oid != 0) && (w->flags&S3DW_TURN_CAM)) {
 			s3dw_arr_widgetcenter(w, op);
@@ -124,7 +124,7 @@ static void s3dw_follow(void)
 	float b[3];
 	float op[3];
 	float lsqr, l;
-	for (i = 0;i < root->nobj;i++) {
+	for (i = 0; i < root->nobj; i++) {
 		w = root->pobj[i];
 		if ((w->oid != 0) && (w->flags&S3DW_FOLLOW_CAM))
 
@@ -159,7 +159,7 @@ void s3dw_arrange(void)
 
 	/* test if there is anything to arrange ... */
 	arranged = 1;
-	for (i = 0;i < root->nobj;i++)
+	for (i = 0; i < root->nobj; i++)
 		if (!(root->pobj[i]->flags&S3DW_ARRANGED)) arranged = 0;
 	if (arranged && !ani_need_arr) return; /* no arrangement necceasary .... */
 
@@ -170,10 +170,10 @@ void s3dw_arrange(void)
 		return;
 	}
 	allarr = 1;
-	for (i = 0;i < root->nobj;i++) {
+	for (i = 0; i < root->nobj; i++) {
 		w1 = root->pobj[i];
 		arranged = 1;
-		for (j = 0;j < root->nobj;j++) {
+		for (j = 0; j < root->nobj; j++) {
 			w2 = root->pobj[j];
 			if ((i != j) && ((w1->oid != 0) && (w2->oid != 0))) {
 				s3dw_arr_widgetcenter(w1, f1);

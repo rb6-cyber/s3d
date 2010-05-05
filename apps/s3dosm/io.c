@@ -64,7 +64,8 @@ int process_args(int argc, char **argv)
 	float    minlat, minlon, maxlat, maxlon;
 	char     info[1024];
 	struct option long_options[] = {
-		{"help", 0, NULL, 'h'
+		{
+			"help", 0, NULL, 'h'
 		}, {"osm", 1, NULL, 'o'}, {NULL, 0, NULL, 0}
 	};
 	optind = 0;
@@ -97,7 +98,7 @@ int process_args(int argc, char **argv)
 			break;
 		}
 	}
-	for (i = 1;i < argc;i++) {
+	for (i = 1; i < argc; i++) {
 		if (strstr(argv[i], ".osm") - argv[i] == (signed)(strlen(argv[i]) - 4)) {
 			snprintf(info, 1024, "loading OSM-File: %s", argv[i]);
 			load_window(info);

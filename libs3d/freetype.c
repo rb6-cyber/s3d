@@ -68,7 +68,7 @@ static int s3d_ft_init(void)
 	if (error)
 		return (-1);
 	ft_init = 1;
-	for (i = 0; i < 256;i++) {
+	for (i = 0; i < 256; i++) {
 		tess_buf[i].vbuf = NULL;
 		tess_buf[i].pbuf = NULL;
 	}
@@ -98,11 +98,11 @@ static int _s3d_clear_tessbuf(void)
 {
 	int i;
 
-	for (i = 0; i < 256;i++) {
+	for (i = 0; i < 256; i++) {
 		if (tess_buf[i].vbuf != NULL) free(tess_buf[i].vbuf);
 		if (tess_buf[i].pbuf != NULL) free(tess_buf[i].pbuf);
 	}
-	for (i = 0; i < 256;i++) {
+	for (i = 0; i < 256; i++) {
 		tess_buf[i].vbuf = NULL;
 		tess_buf[i].pbuf = NULL;
 	}
@@ -143,7 +143,7 @@ static int _s3d_add_tessbuf(uint16_t a)
 
 		j = 0;
 		ncontours = face->glyph->outline.n_contours;
-		for (c = 0;c < ncontours;c++) {
+		for (c = 0; c < ncontours; c++) {
 			i = 0;
 			ncon = face->glyph->outline.contours[c]; /* position of the end of ths contour */
 			cntr[c] = ncon - j + 1;  /* how many points do we have here? */
@@ -169,12 +169,12 @@ static int _s3d_add_tessbuf(uint16_t a)
 		/* now as we have the areas and sizes of the contours, we need to order our contours so that
 		 * the outlines and their holes are grouped together */
 		n = ncontours;
-		for (i = 0;i < n;i++)
+		for (i = 0; i < n; i++)
 			perm[i] = i; /* initialise permutation */
 		while (n != 0) {
 			outl = -1;
 			/* find an outline */
-			for (i = 0;i < n;i++)
+			for (i = 0; i < n; i++)
 				if (area[perm[i]] > 0) {
 					outl = i; /* found. that was easy ;) */
 					break;
@@ -183,7 +183,7 @@ static int _s3d_add_tessbuf(uint16_t a)
 				s3dprintf(HIGH, "hole without outline found, exiting ... %c", a);
 				return(-1);
 			}
-			for (i = 0;i < n;i++) {
+			for (i = 0; i < n; i++) {
 				if (area[perm[i]] < 0) {
 					/* test for a hole inside by taking one (the first) point of the hole and doing the test */
 					xa = vertices[csta[perm[i]]][0];
@@ -191,7 +191,7 @@ static int _s3d_add_tessbuf(uint16_t a)
 					s = csta[perm[outl]];     /* start point of outline */
 					e = (csta[perm[outl]] + cntr[perm[outl]]) - 1;  /* end point */
 					ar = 0;
-					for (j = s;j < e;j++) { /* for all points of the outline, sum: */
+					for (j = s; j < e; j++) { /* for all points of the outline, sum: */
 						ar += atan2((vertices[j+1][1] - ya) * (vertices[j][0] - xa) - (vertices[j+1][0] - xa) * (vertices[j][1] - ya),
 						            (vertices[j+1][0] - xa) * (vertices[j][0] - xa) + (vertices[j+1][1] - ya) * (vertices[j][1] - ya));
 					}
@@ -221,9 +221,9 @@ static int _s3d_add_tessbuf(uint16_t a)
 		}
 		/* finished the permutation, now apply the new order .... */
 		n = 1;
-		for (c = 0;c < ncontours;c++) {
+		for (c = 0; c < ncontours; c++) {
 			ncsta[c] = n - 1;
-			for (j = csta[perm[c]];j < (csta[perm[c]] + cntr[perm[c]]);j++) {
+			for (j = csta[perm[c]]; j < (csta[perm[c]] + cntr[perm[c]]); j++) {
 				nvertices[n][0] = vertices[j][0];
 				nvertices[n][1] = vertices[j][1];
 				tess_buf[a].vbuf[(n-1)*3] = nvertices[n][0];
@@ -236,12 +236,12 @@ static int _s3d_add_tessbuf(uint16_t a)
 		n = 0;
 		tess_buf[a].pbuf = (uint32_t*)malloc(sizeof(uint32_t) * 4 * (face->glyph->outline.n_points + 2 * face->glyph->outline.n_contours));
 		k = 0;
-		for (c = ncontours - 1;c >= 0;c--) {
+		for (c = ncontours - 1; c >= 0; c--) {
 			n++;     /* count out and inlines ... */
 			if (area[perm[c]] > 0) { /* outline? start! */
 				s3dprintf(VLOW, "[T]riangulation from outline %d (%d contours, area = %f)", perm[c], n, area[perm[c]]);
 				np = sei_triangulate_polygon(n, ncntr + c, nvertices + (ncsta[c]), triangles);
-				for (i = 0;i < np;i++) {
+				for (i = 0; i < np; i++) {
 					tess_buf[a].pbuf[k*4] =  triangles[i][0] + ncsta[c] - 1;
 					tess_buf[a].pbuf[k*4+1] = triangles[i][2] + ncsta[c] - 1;
 					tess_buf[a].pbuf[k*4+2] = triangles[i][1] + ncsta[c] - 1;
@@ -274,14 +274,14 @@ static int _s3d_draw_tessbuf(int oid, uint16_t a, int *voff, float *xoff)
 		memcpy(pbuf, tess_buf[a].pbuf, sizeof(uint32_t)*4*tess_buf[a].pn);
 		/*  prepare the buffs ... */
 		/*  s3dprintf(LOW,"drawing [%c] (%d vertices, %d polys",a,tess_buf[a].vn,tess_buf[a].pn); */
-		for (i = 0;i < tess_buf[a].vn;i++) {
+		for (i = 0; i < tess_buf[a].vn; i++) {
 			vbuf[i*3] += *xoff;
 			/*  s3dprintf(LOW,"vertex [%c:%d] %f %f %f",a,i,
 			      vbuf[i*3],
 			      vbuf[i*3+1],
 			      vbuf[i*3+2]);*/
 		}
-		for (i = 0;i < tess_buf[a].pn;i++) {
+		for (i = 0; i < tess_buf[a].pn; i++) {
 			pbuf[i*4] += *voff;
 			pbuf[i*4+1] += *voff;
 			pbuf[i*4+2] += *voff;
@@ -384,7 +384,7 @@ int s3d_draw_string(const char *str, float *xlen)
 	xoff = 0;
 	voff = 0;
 	len = strlen(str);
-	for (i = 0;i < len; i++)
+	for (i = 0; i < len; i++)
 		_s3d_draw_tessbuf(f_oid, (uint8_t)str[i], &voff, &xoff);
 	/*  s3d_ft_quit(); */
 	if (xlen != NULL) *xlen = xoff;
@@ -415,7 +415,7 @@ float s3d_strlen(const char *str)
 	/*  standard material */
 	xoff = 0;
 	len = strlen(str);
-	for (i = 0;i < len; i++) {
+	for (i = 0; i < len; i++) {
 		a = (uint8_t)str[i];
 		if (!(tess_buf[a].vbuf && tess_buf[a].pbuf))
 			_s3d_add_tessbuf(a);

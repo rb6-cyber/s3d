@@ -95,7 +95,7 @@ void cull_get_planes(void)
 	p->d = m[15] + m[14];
 
 	/* Normalize all plane normals */
-	for (i = 0;i < 6;i++) {
+	for (i = 0; i < 6; i++) {
 		p = &frustumPlane[i];
 		d = sqrt(p->n.x * p->n.x + p->n.y * p->n.y + p->n.z * p->n.z);
 		if (d != 0.0) {
@@ -111,7 +111,7 @@ int cull_sphere_in_frustum(struct t_vertex *center, float radius)
 {
 	int i;
 	struct t_plane *p;
-	for (i = 0;i < 6;i++) {
+	for (i = 0; i < 6; i++) {
 		p = &frustumPlane[i];
 		if (p->n.x*center->x + p->n.y*center->y + p->n.z*center->z + p->d <= -radius) {
 			/*   s3dprintf(MED,"out of %d plane (n %f %f %f |d %f)",i,p->n.x,p->n.y,p->n.z,p->d);*/

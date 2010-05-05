@@ -50,10 +50,10 @@ static void _abort_search(s3dw_widget *dummy);
 void follow_node(float cam_position_t[], float cam_position_r[], float rotate)
 {
 	float real_node_pos[3],
-	cam_target[3],
-	tmp_vec[3],
-	diff_vec[3],
-	angle;
+	      cam_target[3],
+	      tmp_vec[3],
+	      diff_vec[3],
+	      angle;
 
 	real_node_pos[0] = (*search_node)->pos_vec[0] * cos(rotate * M_PI / 180.0) - (*search_node)->pos_vec[2] * -sin(rotate * M_PI / 180.0);
 	real_node_pos[1] = (*search_node)->pos_vec[1];

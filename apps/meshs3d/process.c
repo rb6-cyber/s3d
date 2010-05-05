@@ -247,8 +247,7 @@ static void handle_con(struct node_id id1, struct node_id id2, float etx)
 
 }
 
-static struct node *handle_mesh_node(struct node_id id, char *name_string)
-{
+static struct node *handle_mesh_node(struct node_id id, char *name_string) {
 	struct node *orig_node;
 	struct hashtable_t *swaphash;
 
@@ -295,9 +294,9 @@ static int parse_mac(const char *src, uint8_t dst[6])
 	unsigned int n[6];
 	int i;
 	if (sscanf(src, "%x:%x:%x:%x:%x:%x",
-	    &n[0], &n[1], &n[2], &n[3], &n[4], &n[5]) != 6) {
+	                &n[0], &n[1], &n[2], &n[3], &n[4], &n[5]) != 6) {
 		if(sscanf(src, "%2x%2x.%2x%2x.%2x%2x",
-		   &n[0], &n[1], &n[2], &n[3], &n[4], &n[5]) != 6) {
+		                &n[0], &n[1], &n[2], &n[3], &n[4], &n[5]) != 6) {
 			return 1;
 		}
 	}

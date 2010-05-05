@@ -52,7 +52,7 @@ int _queue_init(void)
 	queue_size = 1;
 	requested = 0;
 	queue = (unsigned int*)malloc(sizeof(unsigned int) * queue_size);
-	for (i = 0;i < queue_size;i++) {
+	for (i = 0; i < queue_size; i++) {
 		queue[i] = Q_UNUSED;
 	}
 	_queue_fill();
@@ -62,7 +62,7 @@ int _queue_init(void)
 int _queue_fill(void)
 {
 	int i;
-	for (i = 0;i < queue_size;i++)
+	for (i = 0; i < queue_size; i++)
 		if (queue[i] == Q_UNUSED)
 			net_send(S3D_P_C_NEW_OBJ, NULL, 0);
 	return(0);
@@ -72,7 +72,7 @@ int _queue_new_object(unsigned int oid)
 {
 	int i;
 	/*  s3dprintf(LOW,"having a new object (%d) in the queue!!",oid); */
-	for (i = 0;i < queue_size;i++)
+	for (i = 0; i < queue_size; i++)
 		if (queue[i] == Q_UNUSED) {
 			/*    s3dprintf(LOW,"placing it at position %d",i); */
 			queue[i] = oid;
@@ -99,7 +99,7 @@ unsigned int _queue_want_object(void)
 
 	j = 0;
 	do {
-		for (i = 0;i < queue_size;i++)
+		for (i = 0; i < queue_size; i++)
 			if (queue[i] != Q_UNUSED) {
 				ret = queue[i];
 				queue[i] = Q_UNUSED;

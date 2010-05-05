@@ -38,7 +38,7 @@ icon_t icons[ICON_NUM] = {
 static void ui_loadicons(void)
 {
 	int i;
-	for (i = 0;i < ICON_NUM;i++)
+	for (i = 0; i < ICON_NUM; i++)
 		icons[i].oid = s3d_import_model_file(icons[i].path);
 }
 

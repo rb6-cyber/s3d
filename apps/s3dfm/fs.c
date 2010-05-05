@@ -61,7 +61,7 @@ filelist *fl_new(char *path)
 		j = 0;
 		fl->n = n - 2 ; /* ignore . and .. */
 		fl->p = (struct _t_file*)malloc(sizeof(t_file) * fl->n);
-		for (i = 0;i < n;i++) {
+		for (i = 0; i < n; i++) {
 			name = namelist[i]->d_name;
 			if (!((strcmp(name, ".") == 0) || (strcmp(name, "..") == 0))) { /* ignore */
 				fl->p[j].name = (char*)malloc(strlen(name) + strlen(path) + 2);
@@ -88,7 +88,7 @@ filelist *fl_new(char *path)
 void fl_del(filelist *fl)
 {
 	int i;
-	for (i = 0;i < fl->n;i++) {
+	for (i = 0; i < fl->n; i++) {
 		free(fl->p[i].name);
 		if (fl->p[i].anode != NULL) {
 			/* maybe let node_delete do that? */
@@ -155,7 +155,7 @@ void fs_fl_approx(filelist *fl, int *files, int *dirs, int *bytes)
 	*dirs = 0;
 	*bytes = 0;
 
-	for (i = 0;i < fl->n;i++) {
+	for (i = 0; i < fl->n; i++) {
 		fs_approx(fl->p[i].name, &sfiles, &sdirs, &sbytes);
 		*files +=  sfiles;
 		*dirs +=   sdirs;
@@ -229,7 +229,7 @@ int fs_fl_copy(filelist *fl, const char *dest)
 	char *sdest;
 	char *bname;
 	r = 0;
-	for (i = 0;i < fl->n;i++) {
+	for (i = 0; i < fl->n; i++) {
 		fl->p[i].state = STATE_INUSE;
 		bname = basename(fl->p[i].name);
 		sdest = (char*)malloc(strlen(dest) + strlen(bname) + 2);
@@ -279,7 +279,7 @@ int fs_fl_unlink(filelist *fl)
 {
 	int i, r;
 	r = 0;
-	for (i = 0;i < fl->n;i++) {
+	for (i = 0; i < fl->n; i++) {
 		fl->p[i].state = STATE_INUSE;
 		printf("-> atomic unlink %s\n", fl->p[i].name);
 		r |= fs_unlink(fl->p[i].name);
@@ -313,7 +313,7 @@ int fs_fl_move(filelist *fl, const char *dest)
 	char *sdest;
 	char *bname;
 	r = 0;
-	for (i = 0;i < fl->n;i++) {
+	for (i = 0; i < fl->n; i++) {
 		fl->p[i].state = STATE_INUSE;
 		bname = basename(fl->p[i].name);
 		sdest = (char*)malloc(strlen(dest) + strlen(bname) + 2);

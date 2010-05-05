@@ -35,9 +35,9 @@ static int parse_osm_tags(object_t *obj, xmlNodePtr cur)
 	xmlAttrPtr attr;
 	char *v, *k;
 	v = k = NULL;
-	for (c = cur->children;c != NULL; c = c->next) {
+	for (c = cur->children; c != NULL; c = c->next) {
 		if (0 == strcmp((char *)c->name, "tag")) {
-			for (attr = c->properties;attr;attr = attr->next) {
+			for (attr = c->properties; attr; attr = attr->next) {
 				if (0 == strcmp((char *)attr->name, "k"))     k = (char *)attr->children->content;
 				else if (0 == strcmp((char *)attr->name, "v"))   v = (char *)attr->children->content;
 			}
@@ -60,13 +60,13 @@ static void parse_osm_way(xmlNodePtr cur)
 	way_init(&way);
 
 	way.base.layerid = layerid;
-	for (attr = cur->properties;attr;attr = attr->next)
+	for (attr = cur->properties; attr; attr = attr->next)
 		if (0 == strcmp((char *)attr->name, "id"))    way.base.id = strtol((char *)attr->children->content, NULL, 10);
 	db_insert_way_only(&way);
 	parse_osm_tags(OBJECT_T(&way), cur);
-	for (kids = cur->children;kids != NULL;kids = kids->next) {
+	for (kids = cur->children; kids != NULL; kids = kids->next) {
 		if (0 == strcmp((char *)kids->name, "nd")) {
-			for (kattr = kids->properties;kattr;kattr = kattr->next)
+			for (kattr = kids->properties; kattr; kattr = kattr->next)
 				if (0 == strcmp((char *)kattr->name, "ref"))    nd = strtol((char *)kattr->children->content, NULL, 10);
 
 			if (last_nd != 0 && nd != 0) {
@@ -96,7 +96,7 @@ static void parse_osm_node(xmlNodePtr cur)
 	node_init(&node);
 
 	node.base.layerid = layerid;
-	for (attr = cur->properties;attr;attr = attr->next) {
+	for (attr = cur->properties; attr; attr = attr->next) {
 		if (0 == strcmp((char *)attr->name, "id"))    node.base.id =  strtol((char *)attr->children->content, NULL, 10);
 		else if (0 == strcmp((char *)attr->name, "lat"))   node.lat =   strtod((char *)attr->children->content, NULL);
 		else if (0 == strcmp((char *)attr->name, "lon"))   node.lon =   strtod((char *)attr->children->content, NULL);
@@ -131,7 +131,7 @@ layer_t *parse_osm(const char *buf, int length)
 	}
 	layerid = db_insert_layer("osm");
 	for (c = cur->children;  c != NULL;   c = c->next)   n++; /* count */
-	for (cur = cur->children;cur != NULL; cur = cur->next) {
+	for (cur = cur->children; cur != NULL; cur = cur->next) {
 		if (cur->type == XML_ELEMENT_NODE) {
 			if (0 == strcmp((char *)cur->name, "node"))    parse_osm_node(cur);
 			else if (0 == strcmp((char *)cur->name, "way"))   parse_osm_way(cur);

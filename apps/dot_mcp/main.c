@@ -86,8 +86,8 @@ static int greentorus(void)
 	s3d_push_material_a(o, 0.2, 0.6, 0.2, 0.5,
 	                    1  , 1  , 1  , 0.5,
 	                    0.2, 0.6, 0.2, 0.5);
-	for (i = 0;i < RINGS;i++) {
-		for (j = 0;j < SIDES;j++) {
+	for (i = 0; i < RINGS; i++) {
+		for (j = 0; j < SIDES; j++) {
 			ia = a * ((float)i * 360.0 / RINGS);
 			ja = a * ((float)j * 360.0 / SIDES);
 			iap = a * ((float)(i + 1) * 360.0 / RINGS);
@@ -195,8 +195,7 @@ static int add_app(struct app *a)
 	return(0);
 }
 
-static struct app* find_app(int oid)
-{
+static struct app* find_app(int oid) {
 	struct app *a = apps;
 	while (a != NULL) {
 		if (oid == a->oid)

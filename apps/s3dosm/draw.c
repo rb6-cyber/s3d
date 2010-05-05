@@ -192,10 +192,10 @@ static void waylist_draw(const char *filter)
 	street_width = (0.5 + waytype / 10) / RESCALE;
 	/* put nodes of the graph into a list */
 	nodelist_n = 0;
-	for (i = 0;i < waylist_n*2;i++) {
+	for (i = 0; i < waylist_n*2; i++) {
 		if (i % 2)    node_id = waylist_p[i/2].node_from;
 		else     node_id = waylist_p[i/2].node_to;
-		for (j = 0;j < nodelist_n;j++)
+		for (j = 0; j < nodelist_n; j++)
 			if (nodelist_p[j].node_id == node_id) break;
 		if (j == nodelist_n) { /* we still need to add this node */
 			/*   printf("[way %d] add node %d to nodelist as %d\n",lastid, node_id, nodelist_n);*/
@@ -214,11 +214,11 @@ static void waylist_draw(const char *filter)
 	}
 	V_COPY(point_zero, nodelist_p[0].x);
 	/* iterate for all nodes */
-	for (i = 0;i < nodelist_n;i++) {
+	for (i = 0; i < nodelist_n; i++) {
 		/* find adjacent segments */
 		adjlist_n = 0;
 		node_id = nodelist_p[i].node_id;
-		for (j = 0;j <= waylist_n;j++) {
+		for (j = 0; j <= waylist_n; j++) {
 			if (waylist_p[j].node_from == node_id) {
 				adjlist_p[adjlist_n].node_id = waylist_p[j].node_to_int;
 				adjlist_p[adjlist_n].seg_id = j;
@@ -232,8 +232,8 @@ static void waylist_draw(const char *filter)
 
 		if (adjlist_n > 1) { /* more than one adjacent, need to order and calculate intersections */
 			if (adjlist_n > 2) { /* no ordering needed for 2 incoming segments */
-				for (j = 0;j < adjlist_n - 2;j++)
-					for (k = j + 2;k < adjlist_n;k++) {
+				for (j = 0; j < adjlist_n - 2; j++)
+					for (k = j + 2; k < adjlist_n; k++) {
 						float test[3], normal[3], linevector[3];
 						/* (re)calc test direction */
 						V_SUB(nodelist_p[adjlist_p[j].node_id].x, nodelist_p[adjlist_p[j+1].node_id].x, linevector);
@@ -241,9 +241,10 @@ static void waylist_draw(const char *filter)
 						while (k < adjlist_n) {
 							/* determine on which side the point is. if its between our testvector, we'll need to swap. */
 							V_SUB(nodelist_p[adjlist_p[j].node_id].x, nodelist_p[adjlist_p[k].node_id].x, test);
-							if (s3d_vector_dot_product(normal, test) > 0) { /* same side, means adjacent line k is nearer to our point j
-                   than our point j+1 which is supposed to be the nearest point,
-                   so we swap them and call a break to get the new test-normal */
+							if (s3d_vector_dot_product(normal, test) > 0) {
+								/* same side, means adjacent line k is nearer to our point j
+								                   than our point j+1 which is supposed to be the nearest point,
+								                   so we swap them and call a break to get the new test-normal */
 								struct adjlist swap;
 								memcpy(&swap, &(adjlist_p[j+1]), sizeof(struct adjlist));
 								memcpy(&(adjlist_p[j+1]), &(adjlist_p[k]), sizeof(struct adjlist));
@@ -260,7 +261,7 @@ static void waylist_draw(const char *filter)
 			V_NORM(right);
 
 
-			for (j = 0;j < adjlist_n;j++) {
+			for (j = 0; j < adjlist_n; j++) {
 				swap = left;
 				left = right; /* use last right segment as new left segment */
 				right = swap; /* get space for the next right segment */
@@ -301,7 +302,7 @@ static void waylist_draw(const char *filter)
 			}
 			if (adjlist_n >= 3) {
 				/* we know that the last adjlist_n vertices set belong to our intersection here .. */
-				for (j = vert - adjlist_n + 1;j < (vert - 1);j++)
+				for (j = vert - adjlist_n + 1; j < (vert - 1); j++)
 					s3d_push_polygon(way_obj, vert - adjlist_n, j, j + 1, 0);
 			}
 		} else {
@@ -335,7 +336,7 @@ static void waylist_draw(const char *filter)
 			}
 		}
 	}
-	for (i = 0;i < waylist_n;i++) {
+	for (i = 0; i < waylist_n; i++) {
 		uint32_t polys[8];
 		/* printf("drawing way from points %d %d %d %d\n",waylist_p[i].node_from_l, waylist_p[i].node_to_l, waylist_p[i].node_to_r,waylist_p[i].node_from_r);*/
 		polys[0] = waylist_p[i].node_from_l;

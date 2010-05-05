@@ -22,14 +22,15 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
+#define _GNU_SOURCE
 #include "s3dvt.h"
 #include <stdio.h>    /*  FILE,NULL */
 #include <unistd.h>   /*  read(),write(), sleep(),close() ... */
 #include <errno.h>   /*  errno() */
 #include <fcntl.h>    /*  open() */
 #include <signal.h>   /*  signal() */
-#include <stdlib.h>   /*  exit(),getenv(),setenv() */
+#include <stdlib.h>   /*  exit(),getenv(),setenv(), getpt */
+#include <stropts.h>  /*  isastream */
 #include <sys/ioctl.h>   /*  ioctl() */
 #include <pthread.h>  /*  pthread_create() */
 #include <s3d.h>   /*  s3d_* */
@@ -101,28 +102,55 @@ static void* thread_terminal(void *S3DVTUNUSED(a))
 	}
 	return(NULL); /* huh?! */
 }
+
+static int open_pty_pair(int *amaster, int *aslave)
+{
+	int master, slave;
+	char *name;
+
+	master = getpt();
+	if (master < 0)
+		return 0;
+
+	if (grantpt (master) < 0 || unlockpt (master) < 0)
+		goto close_master;
+	name = ptsname(master);
+	if (name == NULL)
+		goto close_master;
+
+	slave = open(name, O_RDWR);
+	if (slave == -1)
+		goto close_master;
+
+	if (isastream(slave)) {
+		if (ioctl (slave, I_PUSH, "ptem") < 0 || ioctl (slave, I_PUSH, "ldterm") < 0)
+			goto close_slave;
+	}
+
+	*amaster = master;
+	*aslave = slave;
+	return 1;
+
+close_slave:
+	close (slave);
+
+close_master:
+	close (master);
+	return 0;
+}
+
 static int pty_init_terminal(void)
 {
-	int i;
-	char buf[256];
 	char tmpstr[1024];
 	int curtty;
 	int uid = 0, gid = 0;
 	char exe[] = "/bin/bash";
-	char curchar;
 
 	uid = getuid();
 	gid = getgid();
 	term_mode = M_PTY;
-	for (curchar = 'p'; curchar < 'z';curchar++) {
-		for (i = 0;i < 16;i++) {
-			sprintf(buf, "/dev/pty%c%x", curchar, i);
-			curpty = open(buf, O_RDWR);
-			if (curpty >= 0)
-				goto endloop;
-		}
-	}
-endloop:
+	open_pty_pair(&curpty, &curtty);
+
 	if (curpty < 0) {
 		printf("Error opening pty\n");
 		return 0;
@@ -131,8 +159,6 @@ endloop:
 	signal(SIGCHLD, SIG_IGN);
 	pid = fork();
 	if (!pid) {
-		buf[5] = 't';
-		curtty = open(buf, O_RDWR);
 		if (curtty < 0) {
 			printf("Error opening tty\n");
 			return 0;
@@ -234,7 +260,7 @@ static int pipe_init_terminal(void)
 static int init_terminal(void)
 {
 	int i;
-	for (i = 0;i < 5;i++)
+	for (i = 0; i < 5; i++)
 		if (pty_init_terminal())  /*  find an open pty. */
 			return(0);
 	return(pipe_init_terminal());  /*  if not, fallback to pipe mode */
@@ -267,9 +293,9 @@ void paintit(void)
 
 	s3d_translate(cursor, cx*X_RATIO*CS - CS*X_RATIO*MAX_CHARS / 2, -cy*CS + CS*MAX_LINES / 2, 0);
 	s3d_scale(cursor, CS);
-	for (cline = 0;cline < MAX_LINES;cline++) {
+	for (cline = 0; cline < MAX_LINES; cline++) {
 		line_end = 0;
-		for (c = 0;c < MAX_CHARS;c++) {
+		for (c = 0; c < MAX_CHARS; c++) {
 			i = cline * MAX_CHARS + c;    /*  calculate position */
 			if (((ch = line[cline].chars[c].character) != last_c[i])) {
 				if (screenbuf[i] == -1) {
@@ -307,10 +333,10 @@ void paintit(void)
 	int len;
 	int changed;
 	char cl[MAX_CHARS];
-	for (cline = 0;cline < MAX_LINES;cline++) {
+	for (cline = 0; cline < MAX_LINES; cline++) {
 		len = MAX_CHARS;
 		changed = 0;
-		for (c = MAX_CHARS;c >= 0;c--) {
+		for (c = MAX_CHARS; c >= 0; c--) {
 			cl[c] = line[cline].chars[c].character;
 			if (line[cline].chars[c].character != line[cline].chars[c].last_c) {
 				changed = c + 1;
@@ -508,11 +534,11 @@ static void chars_s3d_init(void)
 #ifdef M_CHAR
 	char c[2];
 	c[1] = '\0';
-	for (i = 0;i < 128;i++) {
+	for (i = 0; i < 128; i++) {
 		c[0] = i;
 		charbuf[i] = s3d_draw_string(c, NULL);
 	}
-	for (i = 128;i < 256;i++) {
+	for (i = 128; i < 256; i++) {
 		charbuf[i] = s3d_new_object();
 	}
 	cursor = s3d_new_object();
@@ -523,8 +549,8 @@ static void chars_init(void)
 {
 #ifdef M_CHAR
 	int x, y;
-	for (y = 0;y < (MAX_LINES);y++)
-		for (x = 0;x < (MAX_CHARS);x++) {
+	for (y = 0; y < (MAX_LINES); y++)
+		for (x = 0; x < (MAX_CHARS); x++) {
 			line[y].chars[x].character = line[y].chars[x].character = 0;
 			i = y * MAX_CHARS + x;
 			screenbuf[i] = -1;
@@ -533,7 +559,7 @@ static void chars_init(void)
 #endif
 #ifdef M_LINE
 	int i;
-	for (i = 0;i < MAX_LINES;i++)
+	for (i = 0; i < MAX_LINES; i++)
 		lines[i] = -1;
 #endif
 }

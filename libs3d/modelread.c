@@ -88,8 +88,7 @@ int s3d_import_model_file(const char *fname)
 	return(-1); /* nothing in search path ... */
 }
 
-static struct material2texture* get_mat2tex(struct material2texture **mat2tex, void *mat_ptr)
-{
+static struct material2texture* get_mat2tex(struct material2texture **mat2tex, void *mat_ptr) {
 	while ((*mat2tex) != NULL) {
 
 		if ((*mat2tex)->material_ptr == mat_ptr) return (*mat2tex);

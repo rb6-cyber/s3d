@@ -130,7 +130,7 @@ static void render_virtual_object(struct t_obj *o)
 		errds(HIGH, "render_by_mcp()", "not existing pid (%p) referenced by mcp-object!!", (void*)o);
 	} else {
 		/*  now go throu the objects of our app  */
-		for (j = 0;j < ap->n_obj;j++) {
+		for (j = 0; j < ap->n_obj; j++) {
 			if (ap->object[j] != NULL) {
 				if (((select_mode == 0) && ap->object[j]->oflags&OF_VISIBLE) || ((select_mode == 1) && (ap->object[j]->oflags&OF_SELECTABLE))) { /* either select mode is off or it's selectable */
 					x.x = x.y = x.z = 0.0f;
@@ -284,7 +284,7 @@ int graphics_pick_obj(int x, int y)
 			ptr++;
 			if (z1 < big) {
 				mcp_o = o = -1;
-				for (j = 0;j < names;j++) {
+				for (j = 0; j < names; j++) {
 					switch (j) {
 					case 0:
 						mcp_o = *ptr;
@@ -297,7 +297,7 @@ int graphics_pick_obj(int x, int y)
 				}
 				big = z1;
 			} else
-				for (j = 0;j < names;j++)
+				for (j = 0; j < names; j++)
 					ptr++;
 			s3dprintf(VLOW, "[HIT %d] names %d [z1:%f|z2:%f] mcp_o=%d, o=%d ", i, names, z1, z2, mcp_o, o);
 		}
@@ -305,14 +305,13 @@ int graphics_pick_obj(int x, int y)
 		if (mcp_o == -1) { /* it's an mcp object */
 			s3dprintf(LOW, "clicked on mcp-object no. %d", o);
 			event_obj_click(p, o);
-		} else
-			if ((names > 1) && ((mcp_o >= 0) && (mcp_o < p->n_obj))) { /* it's an usual object */
-				s3dprintf(LOW, "clicked on mcp-object %d, object %d", mcp_o, o);
-				if (p->object[mcp_o] != NULL) { /*  that shouldn't happen anyways ... */
-					obj_debug(get_proc_by_pid(p->object[mcp_o]->virtual_pid), o);
-					event_obj_click(get_proc_by_pid(p->object[mcp_o]->virtual_pid), o);
-				}
+		} else if ((names > 1) && ((mcp_o >= 0) && (mcp_o < p->n_obj))) { /* it's an usual object */
+			s3dprintf(LOW, "clicked on mcp-object %d, object %d", mcp_o, o);
+			if (p->object[mcp_o] != NULL) { /*  that shouldn't happen anyways ... */
+				obj_debug(get_proc_by_pid(p->object[mcp_o]->virtual_pid), o);
+				event_obj_click(get_proc_by_pid(p->object[mcp_o]->virtual_pid), o);
 			}
+		}
 	}
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();

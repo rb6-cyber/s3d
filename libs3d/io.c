@@ -187,7 +187,7 @@ int s3d_init(int *argc, char ***argv, const char *name)
 	if (signal(SIGTERM, (sig_t)sigint_handler) == SIG_ERR)
 		errdn(LOW, "s3d_init():signal()", errno);
 #endif
-	for (i = 0;i < 100;i++) {
+	for (i = 0; i < 100; i++) {
 		s3d_net_check(); /* wait for init packet */
 		nanosleep(&t, NULL);
 		if (_s3d_ready) {

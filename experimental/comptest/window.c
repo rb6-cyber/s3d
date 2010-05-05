@@ -65,8 +65,7 @@ void window_restack(struct window *win, Window above)
 				window_set_position(*wp);
 		}
 }
-struct window *window_find(Window id)
-{
+struct window *window_find(Window id) {
 	struct window *window;
 	for (window = window_head; window != NULL; window = window->next) {
 		if (window->id == id)
@@ -76,8 +75,7 @@ struct window *window_find(Window id)
 
 }
 
-struct window *window_add(Display *dpy, Window id)
-{
+struct window *window_add(Display *dpy, Window id) {
 	struct window *win;
 	win = (struct window *)malloc(sizeof(struct window));
 	if (!win)

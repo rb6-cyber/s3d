@@ -34,7 +34,7 @@ static int ani_n = 0;
 int ani_onstack(t_node *f)
 {
 	int i;
-	for (i = 0;i < ani_n;i++)
+	for (i = 0; i < ani_n; i++)
 		if (ani_s[i] == f)
 			return(i);  /* already in list */
 	return(-1);
@@ -108,7 +108,7 @@ void ani_mate(void)
 	int i;
 	t_node *f;
 	s3dw_ani_mate();
-	for (i = 0;i < ani_n;i++) {
+	for (i = 0; i < ani_n; i++) {
 		f = ani_s[i];
 		if (f->oid == -1) { /* kick out bad animations */
 			ani_del(i);

@@ -617,15 +617,15 @@ static int triangulate_single_polygon(int nvert, int posmax, int side, int op[][
 				op[op_idx][2] = v;
 				op_idx++;
 				ri--;
-			} else  /* non-convex */
-			{  /* add v to the chain */
+			} else { /* non-convex */
+				/* add v to the chain */
 				ri++;
 				rc[ri] = v;
 				vpos = mchain[vpos].next;
 				v = mchain[vpos].vnum;
 			}
-		} else   /* reflex-chain empty: add v to the */
-		{   /* reflex chain and advance it  */
+		} else { /* reflex-chain empty: add v to the */
+			/* reflex chain and advance it  */
 			rc[++ri] = v;
 			vpos = mchain[vpos].next;
 			v = mchain[vpos].vnum;

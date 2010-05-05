@@ -71,7 +71,7 @@ static int display_dir(const char *dir, int S3DUNUSED(depth), int  posx, int pos
 	struct stat s;
 	if (n_item) {
 		printf("freeing %d old items\n", n_item);
-		for (i = 0;i < n_item;i++) {
+		for (i = 0; i < n_item; i++) {
 			printf("deleting %d and %d\n", item[i].icon_oid, item[i].descr_oid);
 			s3d_del_object(item[i].descr_oid);
 			s3d_del_object(item[i].icon_oid);
@@ -105,9 +105,7 @@ static int display_dir(const char *dir, int S3DUNUSED(depth), int  posx, int pos
 				stat(ndir, &s);
 				if (S_ISDIR(s.st_mode)) {
 					item[n].type = T_FOLDER;
-				}
-				else
-				{
+				} else {
 					if (ext != NULL) {
 						if (0 == strncmp(ext, ".3ds", strlen(ext) < 4 ? strlen(ext) : 4))
 							item[n].type = T_GEOMETRY;
@@ -204,7 +202,7 @@ static int object_click(struct s3d_evt *evt)
 	char execstr[256];
 	oid = (int) * ((unsigned long *)evt->buf);
 	printf("!!!!!!!!! clicked object %d\n", oid);
-	for (i = 0;i < n_item;i++) {
+	for (i = 0; i < n_item; i++) {
 		if (((oid == item[i].icon_oid) || (oid == item[i].descr_oid)) ||
 		                (oid == item[i].pie_oid)) {
 			switch (item[i].type) {

@@ -181,7 +181,7 @@ int shm_main(void)
 	{
 		/*  found=0;*/
 		iterations = 0;
-		for (i = 0;i < procs_n;i++) {
+		for (i = 0; i < procs_n; i++) {
 			iterations++;
 #ifdef G_SDL
 			SDL_SetTimer(100, (SDL_TimerCallback) net_turn_off);

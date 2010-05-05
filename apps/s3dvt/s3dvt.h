@@ -54,7 +54,7 @@ typedef struct char_struct {
 	char character;
 	char fgcolor;
 	char bgcolor;
-}t_char;
+} t_char;
 
 typedef struct line_struct {
 	t_char chars[MAX_CHARS+1];

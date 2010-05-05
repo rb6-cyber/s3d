@@ -45,7 +45,7 @@ void box_draw_icons(t_node *dir)
 {
 	int i;
 	printf("box_draw_icons(%s, %d subs)\n", dir->name, dir->n_sub);
-	for (i = 0;i < dir->n_sub;i++) {
+	for (i = 0; i < dir->n_sub; i++) {
 		if (dir->sub[i]->disp == D_NONE) icon_draw(dir->sub[i]);
 	}
 	box_order_icons(dir);
@@ -314,7 +314,7 @@ int box_close(t_node *dir, int force)
 	}
 	/* closing kids. ret will be != 0 if any of the kids did not close correctly */
 	ret = 0;
-	for (i = 0;i < dir->n_sub;i++)
+	for (i = 0; i < dir->n_sub; i++)
 		if (dir->sub[i]->disp == D_DIR)
 			ret |= box_close(dir->sub[i], force);
 	if (ret && !force) { /* if anything got wrong, return here ... */
@@ -323,7 +323,7 @@ int box_close(t_node *dir, int force)
 	} else {
 		/* also remove the icons */
 		if (focus == dir)   focus_set(dir->parent);
-		for (i = 0;i < dir->n_sub;i++)
+		for (i = 0; i < dir->n_sub; i++)
 			if (dir->sub[i]->disp == D_ICON) {
 				icon_undisplay(dir->sub[i]);
 				dir->detached = 0;
@@ -360,7 +360,7 @@ void box_order_subdirs(t_node *dir)
 	case 0:
 		return;
 	case 1:
-		for (i = 0;i < dir->n_sub;i++) {
+		for (i = 0; i < dir->n_sub; i++) {
 			if (dir->sub[i]->disp == D_DIR) {
 				dir->sub[i]->px = 0.0;
 				dir->sub[i]->py = BOXHEIGHT + dir->sub[i]->detached * DETHEIGHT;
@@ -372,7 +372,7 @@ void box_order_subdirs(t_node *dir)
 		break;
 	default:
 		j = 0;
-		for (i = 0;i < dir->n_sub;i++) {
+		for (i = 0; i < dir->n_sub; i++) {
 			if (dir->sub[i]->disp == D_DIR) {
 				dir->sub[i]->px = 0.8 * sin(((float)j * 2 * M_PI) / ((float)dir->dirs_opened));
 				dir->sub[i]->py = BOXHEIGHT + dir->sub[i]->detached * DETHEIGHT;
@@ -389,7 +389,7 @@ void box_order_icons(t_node *dir)
 {
 	int dps, i;
 	dps = ceil(sqrt(dir->n_sub)); /* directories per line */
-	for (i = 0;i < dir->n_sub;i++) {
+	for (i = 0; i < dir->n_sub; i++) {
 		if (dir->sub[i]->disp == D_ICON) {
 			dir->sub[i]->px = -1 + 2 * ((float)((int)i % dps) + 0.5) / ((float)dps);
 			dir->sub[i]->py = 0.5 + ((float)((int)i / dps) + 0.5) / ((float)dps) - 0.5;

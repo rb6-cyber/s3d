@@ -37,10 +37,10 @@ static struct timespec t = {
 static int object, foll;
 static float al, r, alpha = 0.0, angle;
 static float CamPosition[2][3],
-TmpMove[3],
-Tmp[3],
-RotCam[2][3],
-CatPos[3];
+       TmpMove[3],
+       Tmp[3],
+       RotCam[2][3],
+       CatPos[3];
 
 static float length;
 

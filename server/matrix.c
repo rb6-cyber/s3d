@@ -51,10 +51,10 @@ void myMultMatrix(t_mtrx mat2)
 {
 	int i, j, k;
 	t_mtrx mat_d;  /*  destination matrix */
-	for (i = 0;i < 4;i++)
-		for (j = 0;j < 4;j++) {
+	for (i = 0; i < 4; i++)
+		for (j = 0; j < 4; j++) {
 			mat_d[I(i,j)] = 0.0F;
-			for (k = 0;k < 4;k++)
+			for (k = 0; k < 4; k++)
 				mat_d[I(i,j)] += M(k, j) * mat2[I(i,k)];
 		}
 	memcpy(MAT, mat_d, sizeof(t_mtrx));
@@ -112,7 +112,7 @@ int myInvert(void)
 	/* s3dprintf(LOW,"inverting matrix, we shall begin now ...");*/
 
 	/* step 1 */
-	for (l = 0;l < 4;l++) {
+	for (l = 0; l < 4; l++) {
 check:
 		if (M(l, l)*M(l, l) > 0.00000001F) { /* it won't work with real zero */
 
@@ -120,32 +120,32 @@ check:
 			/* normalize */
 			f = 1 / M(l, l);
 			M(l, l) = 1.0;
-			for (i = l + 1;i < 4;i++)
+			for (i = l + 1; i < 4; i++)
 				M(i, l) *= f; /* the left side ... */
-			for (i = 0;i < 4;i++)
+			for (i = 0; i < 4; i++)
 				P(i, l) *= f; /* ... and the right */
 			/*   mat_debug(Mm);
 			   s3dprintf(MED,"-");
 			   mat_debug(Pm);*/
 			/* mult/fac */
-			for (lh = l + 1;lh < 4;lh++) {
+			for (lh = l + 1; lh < 4; lh++) {
 				/* s3dprintf(MED,"adding line %d for %d",lh,l);*/
 				if (M(l, lh) != 0) { /* "first" element of the line */
 					f = -M(l, lh);
 					M(l, lh) = 0.0; /* yes, this WILL be zero! ... */
-					for (i = l + 1;i < 4;i++) /* left side */
+					for (i = l + 1; i < 4; i++) /* left side */
 						M(i, lh) += f * M(i, l);
-					for (i = 0;i < 4;i++) /* ... and the right one! */
+					for (i = 0; i < 4; i++) /* ... and the right one! */
 						P(i, lh) += f * P(i, l);
 				} /*else s3dprintf(MED,"element already zero!");*/
 			}
 		} else {
 			M(l, l) = 0.0F;
 			/*   s3dprintf(MED,"already zero now check and try to swap lines ...");*/
-			for (lh = l + 1;lh < 4;lh++)
+			for (lh = l + 1; lh < 4; lh++)
 				if (M(l, lh) != 0.0) {
 					/*     s3dprintf(MED,"swapping lines %d and %d",l,lh);*/
-					for (i = 0;i < 4;i++) {
+					for (i = 0; i < 4; i++) {
 						f = M(i, l);
 						M(i, l) = M(i, lh);
 						M(i, lh) = f;
@@ -172,14 +172,14 @@ check:
 
 	/* step 2 */
 	/* s3dprintf(MED,"S.T.E.P. 2!!");*/
-	for (l = 3;l > 0;l--) {
+	for (l = 3; l > 0; l--) {
 		/* mult/fac */
-		for (lh = l - 1;lh >= 0;lh--) {
+		for (lh = l - 1; lh >= 0; lh--) {
 			/*   s3dprintf(MED,"adding line %d for %d",lh,l);*/
 			if (M(l, lh) != 0) { /* "first" element of the line */
 				f = -M(l, lh);
 				M(l, lh) = 0;
-				for (i = 0;i < 4;i++) { /* ... and the right one! */
+				for (i = 0; i < 4; i++) { /* ... and the right one! */
 					P(i, lh) += f * P(i, l);
 				}
 

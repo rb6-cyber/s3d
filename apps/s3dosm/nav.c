@@ -118,8 +118,8 @@ float get_heading(float la1, float lo1, float la2, float lo2)
 	calc_earth_to_eukl(la1, lo1, 0, p1);
 	calc_earth_to_eukl(la2, lo2, 0, p2);
 	calc_earth_to_eukl(la1 + 1, lo1, 0, p1_north);
-	for (i = 0;i < 3;i++)  north[i] = p1_north[i] - p1[i];
-	for (i = 0;i < 3;i++)  dir[i] = p2[i] - p1[i];
+	for (i = 0; i < 3; i++)  north[i] = p1_north[i] - p1[i];
+	for (i = 0; i < 3; i++)  dir[i] = p2[i] - p1[i];
 	angle = s3d_vector_angle(dir, north);
 	angle = angle * 180.0 / M_PI;
 	if ((lo2 > lo1) || (lo1 - lo2 > 180.0))  angle = 360 - angle;

@@ -63,7 +63,7 @@ static void list_data(struct data *head, struct data *end)
 {
 	struct data *tmp;
 
-	for (tmp = head->next;tmp != end;tmp = tmp->next) {
+	for (tmp = head->next; tmp != end; tmp = tmp->next) {
 		printf("%d: %s | %d\n", tmp->index, tmp->line, tmp->active);
 	}
 }
@@ -72,7 +72,7 @@ static void rem_data(int index, struct data *head, struct data *end)
 {
 	struct data *tmp, *prev = head;
 
-	for (tmp = head->next;tmp != end;prev = tmp, tmp = tmp->next) {
+	for (tmp = head->next; tmp != end; prev = tmp, tmp = tmp->next) {
 		if (tmp->index == index)
 			break;
 	}
@@ -93,7 +93,7 @@ static void dea_data(int index, struct data *head, struct data *end)
 {
 	struct data *tmp;
 
-	for (tmp = head->next;tmp != end; tmp = tmp->next) {
+	for (tmp = head->next; tmp != end; tmp = tmp->next) {
 		if (tmp->index == index)
 			break;
 	}
@@ -108,7 +108,7 @@ static void act_data(int index, struct data *head, struct data *end)
 {
 	struct data *tmp;
 
-	for (tmp = head->next;tmp != end; tmp = tmp->next) {
+	for (tmp = head->next; tmp != end; tmp = tmp->next) {
 		if (tmp->index == index)
 			break;
 	}
@@ -164,7 +164,7 @@ static void* server(void *args)
 			strcat(buffer, start);
 			index = strlen(start);
 
-			for (tmp = t->head->next;tmp != t->end;tmp = tmp->next) {
+			for (tmp = t->head->next; tmp != t->end; tmp = tmp->next) {
 
 				if (!tmp->active)
 					continue;

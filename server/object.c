@@ -98,7 +98,7 @@ int obj_push_vertex(struct t_process *p, int32_t oid, float *x, int32_t n)
 				obj->dplist = 0;
 			}
 			obj->p_vertex = p_vertex;
-			for (i = 0;i < n;i++) {
+			for (i = 0; i < n; i++) {
 				obj->p_vertex[m+i].x = *(px++);
 				obj->p_vertex[m+i].y = *(px++);
 				obj->p_vertex[m+i].z = *(px++);
@@ -122,7 +122,7 @@ int obj_push_vertex(struct t_process *p, int32_t oid, float *x, int32_t n)
 			}
 			if (p->object[oid]->oflags&OF_CLONE_SRC) {
 				is_clnsrc = 0;
-				for (i = 0;i < p->n_obj;i++) {
+				for (i = 0; i < p->n_obj; i++) {
 					if (p->object[i] != NULL) {
 						if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->n_vertex == oid)) { /* if it's pointing to our object ... */
 							is_clnsrc = 1;
@@ -164,7 +164,7 @@ int obj_push_mat(struct t_process *p, int32_t oid, float *x, int32_t n)
 				obj->dplist = 0;
 			}
 			obj->p_mat = p_mat;
-			for (i = 0;i < n;i++) {
+			for (i = 0; i < n; i++) {
 				obj->p_mat[m+i].amb_r = *(px++);
 				obj->p_mat[m+i].amb_g = *(px++);
 				obj->p_mat[m+i].amb_b = *(px++);
@@ -209,7 +209,7 @@ int obj_push_poly(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 				obj->dplist = 0;
 			}
 			obj->p_poly = p_poly;
-			for (i = 0;i < n;i++) {
+			for (i = 0; i < n; i++) {
 				obj->p_poly[m+i].v[0] = *(px++);
 				obj->p_poly[m+i].v[1] = *(px++);
 				obj->p_poly[m+i].v[2] = *(px++);
@@ -250,7 +250,7 @@ int obj_push_line(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 				obj->dplist = 0;
 			}
 			obj->p_line = p_line;
-			for (i = 0;i < n;i++) {
+			for (i = 0; i < n; i++) {
 				obj->p_line[m+i].v[0] = *(px++);
 				obj->p_line[m+i].v[1] = *(px++);
 				obj->p_line[m+i].mat = *(px++);
@@ -336,7 +336,7 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 			    obj->dplist=0;
 			   }*/
 			obj->p_tex = p_tex;
-			for (i = 0;i < n;i++) {
+			for (i = 0; i < n; i++) {
 				obj->p_tex[m+i].gl_texnum = -1;
 				obj->p_tex[m+i].shmid = -1;
 				obj->p_tex[m+i].tw = *(px++);
@@ -417,8 +417,8 @@ int obj_pep_poly_normal(struct t_process *p, int32_t oid, float *x, int32_t n)
 			obj->dplist = 0;
 		}
 		s3dprintf(VLOW, "pepping poly's %d to %d", (m - n), m - 1);
-		for (i = (m - n);i < m;i++) {
-			for (j = 0;j < 3;j++) {
+		for (i = (m - n); i < m; i++) {
+			for (j = 0; j < 3; j++) {
 				obj->p_poly[i].n[j].x = *(px++);
 				obj->p_poly[i].n[j].y = *(px++);
 				obj->p_poly[i].n[j].z = *(px++);
@@ -461,8 +461,8 @@ int obj_pep_line_normal(struct t_process *p, int32_t oid, float *x, int32_t n)
 			obj->dplist = 0;
 		}
 		s3dprintf(VLOW, "pepping line's %d to %d", (m - n), m - 1);
-		for (i = (m - n);i < m;i++) {
-			for (j = 0;j < 2;j++) {
+		for (i = (m - n); i < m; i++) {
+			for (j = 0; j < 2; j++) {
 				obj->p_line[i].n[j].x = *(px++);
 				obj->p_line[i].n[j].y = *(px++);
 				obj->p_line[i].n[j].z = *(px++);
@@ -507,8 +507,8 @@ int obj_pep_poly_texc(struct t_process *p, int32_t oid, float *x, int32_t n)
 			obj->dplist = 0;
 		}
 		s3dprintf(VLOW, "pepping poly's %d to %d", (m - n), m - 1);
-		for (i = (m - n);i < m;i++) {
-			for (j = 0;j < 3;j++) {
+		for (i = (m - n); i < m; i++) {
+			for (j = 0; j < 3; j++) {
 				obj->p_poly[i].tc[j].x = *(px++);
 				obj->p_poly[i].tc[j].y = *(px++);
 			}
@@ -540,7 +540,7 @@ int obj_pep_mat(struct t_process *p, int32_t oid, float *x, int32_t n)
 			obj->dplist = 0;
 		}
 		s3dprintf(VLOW, "pepping mats %d to %d", (m - n), m - 1);
-		for (i = (m - n);i < m;i++) {
+		for (i = (m - n); i < m; i++) {
 			obj->p_mat[i].amb_r = *(px++);
 			obj->p_mat[i].amb_g = *(px++);
 			obj->p_mat[i].amb_b = *(px++);
@@ -581,7 +581,7 @@ int obj_pep_line(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 			obj->dplist = 0;
 		}
 		s3dprintf(VLOW, "pepping lines %d to %d", (m - n), m - 1);
-		for (i = (m - n);i < m;i++) {
+		for (i = (m - n); i < m; i++) {
 			obj->p_line[i].v[0] = *(px++);
 			obj->p_line[i].v[1] = *(px++);
 			obj->p_line[i].mat = *(px++);
@@ -620,7 +620,7 @@ int obj_pep_vertex(struct t_process *p, int32_t oid, float *x, int32_t n)
 			obj->dplist = 0;
 		}
 		s3dprintf(VLOW, "pepping vertices %d to %d", (m - n), m - 1);
-		for (i = (m - n);i < m;i++) {
+		for (i = (m - n); i < m; i++) {
 			obj->p_vertex[i].x = *(px++);
 			obj->p_vertex[i].y = *(px++);
 			obj->p_vertex[i].z = *(px++);
@@ -638,7 +638,7 @@ int obj_pep_vertex(struct t_process *p, int32_t oid, float *x, int32_t n)
 		}
 		if (p->object[oid]->oflags&OF_CLONE_SRC) {
 			is_clnsrc = 0;
-			for (i = 0;i < p->n_obj;i++) {
+			for (i = 0; i < p->n_obj; i++) {
 				if (p->object[i] != NULL) {
 					if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->clone_ooid == oid)) { /* if it's pointing to our object ... */
 						is_clnsrc = 1;
@@ -677,7 +677,7 @@ int obj_pep_mat_tex(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 			obj->dplist = 0;
 		}
 		s3dprintf(MED, "pepping mats %d to %d", (m - n), m - 1);
-		for (i = (m - n);i < m;i++)
+		for (i = (m - n); i < m; i++)
 			obj->p_mat[i].tex = *(px++);
 	} else {
 		return(-1);
@@ -707,8 +707,8 @@ int obj_load_poly_normal(struct t_process *p, int32_t oid, float *x, int32_t sta
 			glDeleteLists(obj->dplist, 1);
 			obj->dplist = 0;
 		}
-		for (i = start;i < (start + n);i++) {
-			for (j = 0;j < 3;j++) {
+		for (i = start; i < (start + n); i++) {
+			for (j = 0; j < 3; j++) {
 				obj->p_poly[i].n[j].x = *(px++);
 				obj->p_poly[i].n[j].y = *(px++);
 				obj->p_poly[i].n[j].z = *(px++);
@@ -750,8 +750,8 @@ int obj_load_line_normal(struct t_process *p, int32_t oid, float *x, int32_t sta
 			glDeleteLists(obj->dplist, 1);
 			obj->dplist = 0;
 		}
-		for (i = start;i < (start + n);i++) {
-			for (j = 0;j < 2;j++) {
+		for (i = start; i < (start + n); i++) {
+			for (j = 0; j < 2; j++) {
 				obj->p_line[i].n[j].x = *(px++);
 				obj->p_line[i].n[j].y = *(px++);
 				obj->p_line[i].n[j].z = *(px++);
@@ -792,8 +792,8 @@ int obj_load_poly_texc(struct t_process *p, int32_t oid, float *x, int32_t start
 			glDeleteLists(obj->dplist, 1);
 			obj->dplist = 0;
 		}
-		for (i = start;i < (start + n);i++) {
-			for (j = 0;j < 3;j++) {
+		for (i = start; i < (start + n); i++) {
+			for (j = 0; j < 3; j++) {
 				obj->p_poly[i].tc[j].x = *(px++);
 				obj->p_poly[i].tc[j].y = *(px++);
 			}
@@ -826,7 +826,7 @@ int obj_load_mat(struct t_process *p, int32_t oid, float *x, int32_t start, int3
 			obj->dplist = 0;
 		}
 		s3dprintf(MED, "pepping %d mats, starting at %d", n, start);
-		for (i = start;i < (start + n);i++) {
+		for (i = start; i < (start + n); i++) {
 			obj->p_mat[i].amb_r = *(px++);
 			obj->p_mat[i].amb_g = *(px++);
 			obj->p_mat[i].amb_b = *(px++);
@@ -910,7 +910,7 @@ int obj_load_tex(struct t_process *p, int32_t oid, int32_t tex, uint16_t x, uint
 					s3dprintf(MED, "oid %d: texture %d: update out of range\n", oid, tex);
 					return(-1);
 				}
-				for (i = 0;i < mh;i++) {
+				for (i = 0; i < mh; i++) {
 					p1 = (y + i) * t->w + x;  /*  scanline start position */
 					p2 = mw;  /*  and length */
 					if (p1 > m) {
@@ -1106,14 +1106,14 @@ int obj_del_tex(struct t_process *p, int32_t oid, int32_t n)
 		s3dprintf(VLOW, "deleting %d textures of pid %d/ oid %d", n, p->id, oid);
 		m = obj->n_tex;  /*  saving the first number of textures  */
 		if (n >= m) {
-			for (i = 0;i < m;i++)
+			for (i = 0; i < m; i++)
 				texture_delete(&(obj->p_tex[i]));
 			if (m > 0)
 				free(obj->p_tex);
 			obj->n_tex = 0;
 			obj->p_tex = NULL;
 		} else if (n > 0) {
-			for (i = (m - n);i < m;i++)
+			for (i = (m - n); i < m; i++)
 				texture_delete(&(obj->p_tex[i]));
 			if (NULL != (p_tex = (struct t_tex*)realloc(obj->p_tex, sizeof(struct t_tex) * (m - n)))) {
 				if (obj->dplist) {
@@ -1264,7 +1264,7 @@ void obj_size_update(struct t_process *p, int32_t oid)
 			return;
 		} else {
 			/*    printf(MED,"looking through vertices..."); */
-			for (i = 0;i < vn;i++) {
+			for (i = 0; i < vn; i++) {
 				a = &(vp[i]);
 				r = o->scale * sqrt(
 				            (a->x  * a->x) +
@@ -1275,7 +1275,7 @@ void obj_size_update(struct t_process *p, int32_t oid)
 			obj_check_biggest_object(p, oid);
 			if (p->object[oid]->oflags&OF_CLONE_SRC) {
 				is_clnsrc = 0;
-				for (i = 0;i < p->n_obj;i++) {
+				for (i = 0; i < p->n_obj; i++) {
 					if (p->object[i] != NULL) {
 						if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->clone_ooid == oid)) { /* if it's pointing to our object ... */
 							is_clnsrc = 1;
@@ -1313,7 +1313,7 @@ void obj_check_biggest_object(struct t_process *p, int32_t oid)
 	} else {
 		if (p->biggest_obj == oid) { /*  oid might now lose the status of the "biggest object". let's check: */
 			found = 0;
-			for (i = 0;i < p->n_obj;i++)
+			for (i = 0; i < p->n_obj; i++)
 				if (p->object[i] != NULL) {
 					if ((r2 = p->object[i]->r + p->object[i]->o_r) > r) { /*  this object is bigger than the old biggest one. */
 						if (!(p->object[i]->oflags&OF_SYSTEM)) {
@@ -1418,38 +1418,37 @@ void obj_pos_update(struct t_process *p, int32_t oid, int32_t first_oid)
 		myTransform3f(v);
 		/*  and get it's destination point. phew */
 		o->o_r = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-	} else
-		if (o->oflags&OF_SYSTEM) /* TODO: what will we do if $sys_object is linked to another? */
-		{ /* a system object changed position? let's update the focus'ed sys-objects */
-			if (OBJ_VALID(p, focus_oid, ao))
-				if (NULL != (ap = get_proc_by_pid(ao->virtual_pid))) {
-					if (OF_POINTER == (o->oflags&0xF0000000)) { /* we dont have to do that much in this case ... */
-						if (OBJ_VALID(ap, get_pointer(ap), ao)) { /* we can redefine ao here -> ao = focused app's pointer*/
-							ao->rotate.x = o->rotate.x;
-							ao->rotate.y = o->rotate.y;
-							ao->rotate.z = o->rotate.z;
-							ao->translate.x = o->translate.x;
-							ao->translate.y = o->translate.y;
-							ao->translate.z = o->translate.z; /* just copy */
-							obj_pos_update(ap, get_pointer(ap), get_pointer(ap));
-						}
-					} else {
-						obj_sys_update(ap, oid);
+	} else if (o->oflags&OF_SYSTEM) { /* TODO: what will we do if $sys_object is linked to another? */
+		/* a system object changed position? let's update the focus'ed sys-objects */
+		if (OBJ_VALID(p, focus_oid, ao))
+			if (NULL != (ap = get_proc_by_pid(ao->virtual_pid))) {
+				if (OF_POINTER == (o->oflags&0xF0000000)) { /* we dont have to do that much in this case ... */
+					if (OBJ_VALID(ap, get_pointer(ap), ao)) { /* we can redefine ao here -> ao = focused app's pointer*/
+						ao->rotate.x = o->rotate.x;
+						ao->rotate.y = o->rotate.y;
+						ao->rotate.z = o->rotate.z;
+						ao->translate.x = o->translate.x;
+						ao->translate.y = o->translate.y;
+						ao->translate.z = o->translate.z; /* just copy */
+						obj_pos_update(ap, get_pointer(ap), get_pointer(ap));
 					}
+				} else {
+					obj_sys_update(ap, oid);
 				}
-			switch (o->oflags&0xF0000000) {
-			case OF_CAM:
-				event_cam_changed();
-				break;
-			case OF_POINTER:
-				event_ptr_changed();
-				break;
-			default:
-				s3dprintf(LOW, "[obj_pos_upd|pid %d] %d unknown system event", p->id, oid);
-
 			}
+		switch (o->oflags&0xF0000000) {
+		case OF_CAM:
+			event_cam_changed();
+			break;
+		case OF_POINTER:
+			event_ptr_changed();
+			break;
+		default:
+			s3dprintf(LOW, "[obj_pos_upd|pid %d] %d unknown system event", p->id, oid);
 
 		}
+
+	}
 	/* if it's the root (oid==first_oid), only go down */
 
 	if (o->lsub != -1)      obj_pos_update(p, o->lsub, first_oid);
@@ -1465,7 +1464,7 @@ static int calc_normal(struct t_obj *obj, uint32_t pn)
 	int32_t vp, i;
 
 	float len;
-	for (i = 0;i < 3;i++) { /*  set and check */
+	for (i = 0; i < 3; i++) { /*  set and check */
 		vp = obj->p_poly[pn].v[i]; /*  ... get the vertices ... */
 		if (vp < obj->n_vertex)
 			v[i] = &(obj->p_vertex[vp]);
@@ -1492,7 +1491,7 @@ static int calc_normal(struct t_obj *obj, uint32_t pn)
 			n.x = n.x / len;
 			n.y = n.y / len;
 			n.z = n.z / len;
-			for (i = 0;i < 3;i++) {
+			for (i = 0; i < 3; i++) {
 				obj->p_poly[pn].n[i].x = n.x;
 				obj->p_poly[pn].n[i].y = n.y;
 				obj->p_poly[pn].n[i].z = n.z;
@@ -1506,7 +1505,7 @@ static int calc_normal(struct t_obj *obj, uint32_t pn)
 static int check_line_normal(struct t_obj *obj, uint32_t pn)
 {
 	int i, vp;
-	for (i = 0;i < 2;i++) { /*  set and check */
+	for (i = 0; i < 2; i++) { /*  set and check */
 		vp = obj->p_line[pn].v[i]; /*  ... get the vertices ... */
 		if (vp >= (int)obj->n_vertex)
 			return(-1);
@@ -1514,7 +1513,7 @@ static int check_line_normal(struct t_obj *obj, uint32_t pn)
 	if ((obj->p_line[pn].n[0].x*obj->p_line[pn].n[0].x +
 	                obj->p_line[pn].n[0].y*obj->p_line[pn].n[0].y +
 	                obj->p_line[pn].n[0].z*obj->p_line[pn].n[0].z) == 0) { /* guess we have nothing set yet, so set something */
-		for (i = 0;i < 2;i++) {
+		for (i = 0; i < 2; i++) {
 			obj->p_line[pn].n[0].x = 0;
 			obj->p_line[pn].n[0].y = 0;
 			obj->p_line[pn].n[0].z = 1;
@@ -1548,8 +1547,7 @@ static void texture_gen(struct t_obj *obj)
 	}
 }
 /* activate/bind texture for object */
-static struct t_tex* get_texture(struct t_obj *obj, struct t_mat *m)
-{
+static struct t_tex* get_texture(struct t_obj *obj, struct t_mat *m) {
 	struct t_tex *tex = NULL;
 	GLfloat matgl[4];
 	/*  int i,j; */
@@ -1666,7 +1664,7 @@ int obj_render(struct t_process *p, int32_t oid)
 			glEnd();
 		}
 		if (tex != NULL)   glBindTexture(GL_TEXTURE_2D, 0); /*  switch back to standard texture */
-		for (pn = 0;pn < obj->n_line; pn++) {
+		for (pn = 0; pn < obj->n_line; pn++) {
 			if (check_line_normal(obj, pn)) {
 				s3dprintf(HIGH, "something is wrong with line %d!", pn);
 				if (obj->dplist) glEndList();
@@ -1890,7 +1888,7 @@ int obj_clone_change(struct t_process *p, int32_t oid, int32_t toid)
 			if (!already_clone) { /*  some other object could link to us, so we check the other objects and forward them just in case. */
 				if (p->object[oid]->oflags&OF_CLONE_SRC) {
 					is_clnsrc = 0;
-					for (i = 0;i < p->n_obj;i++)
+					for (i = 0; i < p->n_obj; i++)
 						if (p->object[i] != NULL)
 							if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->clone_ooid == oid)) { /*  it's linking to our object! */
 								errds(VHIGH, "obj_clone_change()", "couldn't clone %d from %d (on pid %d): object %d is already cloning from object %d.",
@@ -1955,7 +1953,7 @@ int obj_del(struct t_process *p, int32_t oid)
 			if ((p->id != MCP) && (p->biggest_obj == oid)) { /*  if object was the biggest object, find a new one. */
 				mr = -1;
 				p->biggest_obj = -1;
-				for (i = 0;i < p->n_obj;i++)
+				for (i = 0; i < p->n_obj; i++)
 					if (p->object[i] != NULL) {
 						r = p->object[i]->r + p->object[i]->o_r;
 						if (r > mr) {
@@ -1970,7 +1968,7 @@ int obj_del(struct t_process *p, int32_t oid)
 			}
 			/*  check if someone depended on this object as clone.... */
 			if (o->oflags&OF_CLONE_SRC)
-				for (i = 0;i < p->n_obj;i++)
+				for (i = 0; i < p->n_obj; i++)
 					if (p->object[i] != NULL)
 						if ((p->object[i]->oflags&OF_CLONE) && (p->object[i]->clone_ooid == oid)) { /*  it's linking to our object! */
 							p->object[i]->oflags &= ~OF_CLONE;  /*  disable clone flag */
@@ -2006,7 +2004,7 @@ int obj_free(struct t_process *p, int32_t oid)
 		if (o->n_vertex > 0) free(o->p_vertex);
 		if (o->n_poly > 0) free(o->p_poly);
 		if (o->n_mat > 0) free(o->p_mat);
-		for (i = 0;i < o->n_tex;i++)
+		for (i = 0; i < o->n_tex; i++)
 			texture_delete(&(o->p_tex[i]));
 		if (o->n_tex > 0) free(o->p_tex);
 
@@ -2031,7 +2029,7 @@ int obj_free(struct t_process *p, int32_t oid)
 int32_t get_pointer(struct t_process *p)
 {
 	int32_t i;
-	for (i = 0;i < p->n_obj;i++) {
+	for (i = 0; i < p->n_obj; i++) {
 
 		if (OF_POINTER == (p->object[i]->oflags&0xF0000000)) {
 			return(i);

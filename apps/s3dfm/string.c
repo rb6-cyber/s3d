@@ -72,7 +72,7 @@ void dotted_int(char *s, unsigned int i)
 	}
 	if (p > 0) p--;
 	st[p+1] = 0;
-	for (i = 0;i < p + 1;i++)
+	for (i = 0; i < p + 1; i++)
 		s[i] = st[p-i];
 	s[p+1] = 0;
 }
@@ -83,12 +83,12 @@ char *mstrncat(char *dest, const char *src, int n)
 	int i, j;
 	dest[n-1] = 0;    /* for malformed destinations */
 	j = 0;
-	for (i = strlen(dest);i < (n - 1);i++) {
+	for (i = strlen(dest); i < (n - 1); i++) {
 		dest[i] = src[j];
 		if (dest[i] == 0) break;
 		j++;
 	}
-	for (;i < n;i++)
+	for (; i < n; i++)
 		dest[i] = 0; /* pad the rest with zero */
 	return(dest);
 }

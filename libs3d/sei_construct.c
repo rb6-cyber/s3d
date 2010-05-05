@@ -308,8 +308,8 @@ int locate_endpoint(point_t *v, point_t *vo, int r)
 	case T_Y:
 		if (_greater_than(v, &rptr->yval)) /* above */
 			return locate_endpoint(v, vo, rptr->right);
-		else if (_equal_to(v, &rptr->yval)) /* the point is already */
-		{             /* inserted. */
+		else if (_equal_to(v, &rptr->yval)) { /* the point is already */
+			/* inserted. */
 			if (_greater_than(vo, &rptr->yval)) /* above */
 				return locate_endpoint(v, vo, rptr->right);
 			else
@@ -368,8 +368,8 @@ static int merge_trapezoids(int segnum, int tfirst, int tlast, int side)
 
 		if (cond) {
 			if ((tr[t].lseg == tr[tnext].lseg) &&
-			                (tr[t].rseg == tr[tnext].rseg)) /* good neighbours */
-			{                 /* merge them */
+			                (tr[t].rseg == tr[tnext].rseg)) { /* good neighbours */
+				/* merge them */
 				/* Use the upper node as the new node i.e. t */
 
 				ptnext = qs[tr[tnext].sink].parent;
@@ -544,8 +544,8 @@ static int add_segment(int segnum)
 		tr[tu].sink = i1;
 		tr[tl].sink = i2;
 		tlast = tu;
-	} else    /* v1 already present */
-	{       /* Get the lowermost intersecting trapezoid */
+	} else {  /* v1 already present */
+		/* Get the lowermost intersecting trapezoid */
 		tlast = locate_endpoint(&s.v1, &s.v0, s.root1);
 		tribot = 1;
 	}

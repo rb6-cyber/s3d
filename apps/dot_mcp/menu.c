@@ -51,7 +51,7 @@ void menu_click(int oid)
 	printf("%d got clicked\n", oid);
 	if (oid == go) {
 		act = !act;
-		for (i = 0;i < (sizeof(menu_items) / sizeof(struct menu_entry));i++) {
+		for (i = 0; i < (sizeof(menu_items) / sizeof(struct menu_entry)); i++) {
 			if (act) {
 				s3d_flags_on(menu_items[i].icon_oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 				s3d_flags_on(menu_items[i].str_oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
@@ -64,7 +64,7 @@ void menu_click(int oid)
 		return;
 	}
 	if (act) {
-		for (i = 0;i < (sizeof(menu_items) / sizeof(struct menu_entry));i++) {
+		for (i = 0; i < (sizeof(menu_items) / sizeof(struct menu_entry)); i++) {
 			if ((oid == menu_items[i].icon_oid) || (oid == menu_items[i].str_oid)) {
 				int len;
 				if (0 == strncmp(menu_items[i].path, "LOGOUT", 6)) {

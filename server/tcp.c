@@ -110,24 +110,23 @@ select_again:
 			goto select_again;  /*  oh no, a goto!! that's evil */
 		} else
 			errn("tcp_pollport():select()", errno);
-	} else
-		if (FD_ISSET(tcp_sockid, &fs_port)) { /* redundant, I guess */
-			s3dprintf(HIGH, "select(): new connection!!");
-			if ((newsd = accept(tcp_sockid , (struct sockaddr *) & client_addr, &clilen)) < 0)
-				errn("accept()", errno);
-			else {
+	} else if (FD_ISSET(tcp_sockid, &fs_port)) { /* redundant, I guess */
+		s3dprintf(HIGH, "select(): new connection!!");
+		if ((newsd = accept(tcp_sockid , (struct sockaddr *) & client_addr, &clilen)) < 0)
+			errn("accept()", errno);
+		else {
 #ifdef SIGS
-				if (fcntl(newsd, F_SETFL, O_ASYNC) < 0)
-					errnf("fcntl()", errno);
-				if (fcntl(newsd, F_SETOWN, getpid()) < 0)
-					errnf("fcntl()", errno);
+			if (fcntl(newsd, F_SETFL, O_ASYNC) < 0)
+				errnf("fcntl()", errno);
+			if (fcntl(newsd, F_SETOWN, getpid()) < 0)
+				errnf("fcntl()", errno);
 #endif
-				new_p = process_add();
-				new_p->con_type = CON_TCP;
-				new_p->sockid = newsd;
-				s3dprintf(HIGH, "registered new connection %d as pid %d", new_p->sockid, new_p->id);
-			}
+			new_p = process_add();
+			new_p->con_type = CON_TCP;
+			new_p->sockid = newsd;
+			s3dprintf(HIGH, "registered new connection %d as pid %d", new_p->sockid, new_p->id);
 		}
+	}
 	return(0);
 }
 /*  this is about looking for new data on the sockets */
@@ -144,7 +143,7 @@ int tcp_pollproc(void)
 		FD_ZERO(&fs_proc);
 		unfinished = 0;
 		n = 0;
-		for (i = off;i < procs_n;i++) {
+		for (i = off; i < procs_n; i++) {
 			p = &procs_p[i];
 			if (p->con_type == CON_TCP) {
 				FD_SET(p->sockid, &fs_proc);
@@ -169,7 +168,7 @@ select_again_poll:
 			}
 		} else {
 			/*  data is available */
-			for (i = 0;i < procs_n;i++) {
+			for (i = 0; i < procs_n; i++) {
 				p = &procs_p[i];
 				if (p->con_type == CON_TCP) {
 					if (FD_ISSET(p->sockid, &fs_proc)) {

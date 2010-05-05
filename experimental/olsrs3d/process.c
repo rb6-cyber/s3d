@@ -164,8 +164,7 @@ static int add_olsr_con(struct olsr_node *con_from, struct olsr_node *con_to, fl
  *
  ***/
 
-static struct olsr_node* get_olsr_node(struct olsr_node **olsr_node, char *ip)
-{
+static struct olsr_node* get_olsr_node(struct olsr_node **olsr_node, char *ip) {
 
 	int result;   /* result of strcmp */
 
