@@ -62,9 +62,9 @@ static int wire_sphere(int slices, int stacks)
 	n = (float*)malloc(sizeof(float) * 6 * num_l);
 	l = (unsigned int*)malloc(sizeof(unsigned int) * 3 * num_l);
 	i = 0;
-	for (x = 0;x < slices;x++) {
+	for (x = 0; x < slices; x++) {
 		alpha = (x * 360.0 / slices) * M_PI / 180.0;
-		for (y = 0;y < (stacks + 1);y++) {
+		for (y = 0; y < (stacks + 1); y++) {
 			beta = ((y * 180 / slices) - 90.0) * M_PI / 180.0;
 			v[i*3+0] = cos(alpha) * cos(beta);
 			v[i*3+1] = sin(beta);
@@ -73,8 +73,8 @@ static int wire_sphere(int slices, int stacks)
 		}
 	}
 	i = 0;
-	for (x = 0;x < slices;x++) {
-		for (y = 0;y < stacks;y++) {
+	for (x = 0; x < slices; x++) {
+		for (y = 0; y < stacks; y++) {
 			if ((y != 0) && (y != stacks)) { /* no horizontal lines at the poles */
 				l[i*3+0] = (x * (stacks + 1)) + y;
 				l[i*3+1] = (((x + 1) % slices) * (stacks + 1)) + y;

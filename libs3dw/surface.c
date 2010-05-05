@@ -80,7 +80,7 @@ void s3dw_surface_draw(s3dw_widget *widget)
 		}
 	}
 	/* prepare vertices */
-	for (i = 0;i < 8;i++) {
+	for (i = 0; i < 8; i++) {
 		sver[i*3 + 0] = vertices[i*3+0] * widget->width;
 		sver[i*3 + 1] = vertices[i*3+1] * -widget->height;
 		sver[i*3 + 2] = vertices[i*3+2] * -1;
@@ -89,7 +89,7 @@ void s3dw_surface_draw(s3dw_widget *widget)
 		tver[i*3 + 2] = vertices[i*3+2] * -1;
 	}
 	/* swap */
-	for (i = 0;i < 10;i++) {
+	for (i = 0; i < 10; i++) {
 		tpol[i*4 + 0] = polygon[i*4 + 1];
 		tpol[i*4 + 1] = polygon[i*4 + 0];
 		tpol[i*4 + 2] = polygon[i*4 + 2];

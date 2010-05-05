@@ -306,7 +306,7 @@ void _s3d_hash_debug(struct hashtable_t *hash)
 	int i;
 	struct element_t *bucket;
 
-	for (i = 0; i < hash->size;i++) {
+	for (i = 0; i < hash->size; i++) {
 		printf("[%d] ", i);
 		bucket = hash->table[i];
 

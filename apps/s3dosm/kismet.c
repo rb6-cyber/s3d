@@ -39,9 +39,9 @@ static void parse_kismet_node(xmlNodePtr cur)
 	node.base.layerid = layerid;
 	node.base.id = 0;  /* let database decide */
 	node.visible = 2; /* something special */
-	for (kids = cur->children;kids;kids = kids->next) {
+	for (kids = cur->children; kids; kids = kids->next) {
 		if (0 == strcmp((char *)kids->name, "gps-info")) {
-			for (gpskids = kids->children;gpskids;gpskids = gpskids->next) {
+			for (gpskids = kids->children; gpskids; gpskids = gpskids->next) {
 				/* get median value */
 				if (0 == strcmp((char *)gpskids->name, "min-lat"))   node.lat = node.lat + strtod((char *)xmlNodeGetContent(gpskids->children), NULL) / 2;
 				if (0 == strcmp((char *)gpskids->name, "max-lat"))   node.lat = node.lat + strtod((char *)xmlNodeGetContent(gpskids->children), NULL) / 2;
@@ -57,11 +57,11 @@ static void parse_kismet_node(xmlNodePtr cur)
 	{
 
 		db_insert_node(&node);
-		for (kids = cur->children;kids;kids = kids->next) {
+		for (kids = cur->children; kids; kids = kids->next) {
 			if (0 == strcmp((char *)kids->name, "SSID"))    db_add_tag(OBJECT_T(&node), "wifi_SSID", (char *)xmlNodeGetContent(kids->children));
 			if (0 == strcmp((char *)kids->name, "BSSID"))    db_add_tag(OBJECT_T(&node), "wifi_BSSID", (char *)xmlNodeGetContent(kids->children));
 		}
-		for (attr = cur->properties;attr;attr = attr->next) {
+		for (attr = cur->properties; attr; attr = attr->next) {
 			/*  if (0==strcmp((char *)attr->name,"number"))   node->base.id=  strtol((char *)attr->children->content,NULL,10);
 			  else */
 			if (0 == strcmp((char *)attr->name, "wep"))  db_add_tag(OBJECT_T(&node), "wifi_wep", (char *)attr->children->content);
@@ -95,7 +95,7 @@ layer_t *parse_kismet(const char *buf, int length)
 	}
 	layerid = db_insert_layer("kismet");
 	for (c = cur->children;  c != NULL;   c = c->next)   n++; /* count */
-	for (cur = cur->children;cur != NULL; cur = cur->next) {
+	for (cur = cur->children; cur != NULL; cur = cur->next) {
 		if (cur->type == XML_ELEMENT_NODE) {
 			if (0 == strcmp((char *)cur->name, "wireless-network")) {
 				parse_kismet_node(cur);

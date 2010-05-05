@@ -51,7 +51,7 @@ void s3d_push_event(struct s3d_evt *newevt)
 	}
 	newevt->next = NULL;
 	if (s3d_stack != NULL) {
-		for (p = s3d_stack;p->next != NULL;p = p->next) { }  /*  go to the end */
+		for (p = s3d_stack; p->next != NULL; p = p->next) { } /*  go to the end */
 		p->next = newevt;
 	} else
 		s3d_stack = newevt;

@@ -28,13 +28,17 @@
 #include <stdlib.h>  /* memcpy() */
 static float icon_colors[T_TYPENUM][12] = {
 	/* T_DUNO */
-	{ 0, 0, 0.5, 1.0,
+	{
 		0, 0, 0.5, 1.0,
-		0, 0, 0.5, 1.0 },
+		0, 0, 0.5, 1.0,
+		0, 0, 0.5, 1.0
+	},
 	/* T_FOLDER */
-	{ 0.4, 0.4, 0, 1.0,
-	  0.4, 0.4, 0, 1.0,
-	  0.4, 0.4, 0, 1.0}
+	{
+		0.4, 0.4, 0, 1.0,
+		0.4, 0.4, 0, 1.0,
+		0.4, 0.4, 0, 1.0
+	}
 };
 
 /* gives another color for the focused item */
@@ -43,7 +47,7 @@ void icon_focus_color(t_node *dir, int on)
 	float color[12];
 	int i;
 	memcpy(color, icon_colors[dir->type], sizeof(color));
-	if (on) for (i = 0;i < 3;i++) {
+	if (on) for (i = 0; i < 3; i++) {
 			color[i*4 + 0] += 0.3;
 			color[i*4 + 1] += 0.3;
 			color[i*4 + 2] += 0.3;

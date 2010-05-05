@@ -40,7 +40,7 @@ int parse_dir(t_node *dir)
 
 	printf("parse_dir( %s )\n", dir->name);
 	node_path(dir, path);
-	for (i = 0;i < dir->n_sub;i++) {
+	for (i = 0; i < dir->n_sub; i++) {
 		dir->sub[i]->check = 1;
 	}
 	n = scandir(path, &namelist, NULL, alphasort);
@@ -52,7 +52,7 @@ int parse_dir(t_node *dir)
 		while (n--) {
 			nstr = namelist[n]->d_name;
 			/* setup kids in the sub */
-			for (i = 0;i < oldn;i++) /* see if it's already there */
+			for (i = 0; i < oldn; i++) /* see if it's already there */
 				if (dir->sub[i])
 					if (0 == strcmp(namelist[n]->d_name, dir->sub[i]->name))
 						break;
@@ -82,7 +82,7 @@ int parse_dir(t_node *dir)
 		}
 		free(namelist);
 		dir->check = 0;
-		for (i = 0;i < dir->n_sub;i++)
+		for (i = 0; i < dir->n_sub; i++)
 			if (dir->sub[i]->check) {
 				/* not checked yet... that means the item is not in the reparsed directory, ie vanished.
 				 * so we're removing it from our queue */

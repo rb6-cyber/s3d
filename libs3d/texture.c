@@ -119,7 +119,7 @@ int _s3d_load_texture_shm(int object, uint32_t tid, uint16_t xpos, uint16_t ypos
 	if (mw <= 0) { /*  nothing to do */
 		return(0);
 	}
-	for (i = 0;i < mh;i++) {
+	for (i = 0; i < mh; i++) {
 		p1 = (ypos + i) * tex->tshm.w + xpos;  /*  scanline start position */
 		p2 = mw;  /*  and length */
 		if (p1 > m) {

@@ -100,8 +100,8 @@ struct t_line {
 /*  material of surfaces, as it's usual in the OpenGL standard */
 struct t_mat {
 	float amb_r, amb_g, amb_b, amb_a,  /*  ambience */
-	spec_r, spec_g, spec_b, spec_a, /*  specualar */
-	diff_r, diff_g, diff_b, diff_a;   /*  diffusion */
+	      spec_r, spec_g, spec_b, spec_a, /*  specualar */
+	      diff_r, diff_g, diff_b, diff_a;   /*  diffusion */
 	int32_t tex;        /*  texture index, -1 if there is no */
 };
 /*  this defines a texture */

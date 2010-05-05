@@ -119,7 +119,7 @@ void s3dw_textbox_drawtext(s3dw_widget *widget)
 	width = widget->width - 1.5;
 	y = -textbox->window_y;
 	x = textbox->window_x;
-	for (i = 0;i < textbox->n_lineoids;i++)
+	for (i = 0; i < textbox->n_lineoids; i++)
 		textbox->p_lineoids[i] = -1;
 	rest = text = strdup(textbox->text);
 	while (NULL != (linefeedpos = strchr(rest, '\n'))) { /* process every line */
@@ -150,7 +150,7 @@ void s3dw_textbox_erasetext(s3dw_widget *widget)
 
 
 	if (textbox->p_lineoids != NULL) {
-		for (i = 0;i < textbox->n_lineoids;i++)
+		for (i = 0; i < textbox->n_lineoids; i++)
 			if (textbox->p_lineoids[i] != -1)
 				s3d_del_object(textbox->p_lineoids[i]);
 		free(textbox->p_lineoids);
@@ -165,7 +165,7 @@ void s3dw_textbox_show(s3dw_widget *widget)
 	s3dw_textbox *textbox = (s3dw_textbox *)widget;
 	int i;
 	s3d_flags_on(widget->oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
-	for (i = 0;i < textbox->n_lineoids;i++)
+	for (i = 0; i < textbox->n_lineoids; i++)
 		s3d_flags_on(textbox->p_lineoids[i], S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 }
 /* hides the textbox */
@@ -174,7 +174,7 @@ void s3dw_textbox_hide(s3dw_widget *widget)
 	s3dw_textbox *textbox = (s3dw_textbox *)widget;
 	int i;
 	s3d_flags_off(widget->oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
-	for (i = 0;i < textbox->n_lineoids;i++)
+	for (i = 0; i < textbox->n_lineoids; i++)
 		s3d_flags_on(textbox->p_lineoids[i], S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 
 }

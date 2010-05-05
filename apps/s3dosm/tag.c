@@ -41,7 +41,7 @@ void tag_add(object_t *obj, const char *k, char *v)
 tag_t *tag_get(object_t *obj, const char *k)
 {
 	int i;
-	for (i = 0;i < obj->tag_n;i++) {
+	for (i = 0; i < obj->tag_n; i++) {
 		if (0 == strcmp(obj->tag_p[i].k, k)) return(&(obj->tag_p[i]));
 	}
 	return(NULL);

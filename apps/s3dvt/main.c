@@ -124,7 +124,7 @@ static int open_pty_pair(int *amaster, int *aslave)
 
 	if (isastream(slave)) {
 		if (ioctl (slave, I_PUSH, "ptem") < 0 || ioctl (slave, I_PUSH, "ldterm") < 0)
-		goto close_slave;
+			goto close_slave;
 	}
 
 	*amaster = master;
@@ -134,7 +134,7 @@ static int open_pty_pair(int *amaster, int *aslave)
 close_slave:
 	close (slave);
 
-	close_master:
+close_master:
 	close (master);
 	return 0;
 }
@@ -260,7 +260,7 @@ static int pipe_init_terminal(void)
 static int init_terminal(void)
 {
 	int i;
-	for (i = 0;i < 5;i++)
+	for (i = 0; i < 5; i++)
 		if (pty_init_terminal())  /*  find an open pty. */
 			return(0);
 	return(pipe_init_terminal());  /*  if not, fallback to pipe mode */
@@ -293,9 +293,9 @@ void paintit(void)
 
 	s3d_translate(cursor, cx*X_RATIO*CS - CS*X_RATIO*MAX_CHARS / 2, -cy*CS + CS*MAX_LINES / 2, 0);
 	s3d_scale(cursor, CS);
-	for (cline = 0;cline < MAX_LINES;cline++) {
+	for (cline = 0; cline < MAX_LINES; cline++) {
 		line_end = 0;
-		for (c = 0;c < MAX_CHARS;c++) {
+		for (c = 0; c < MAX_CHARS; c++) {
 			i = cline * MAX_CHARS + c;    /*  calculate position */
 			if (((ch = line[cline].chars[c].character) != last_c[i])) {
 				if (screenbuf[i] == -1) {
@@ -333,10 +333,10 @@ void paintit(void)
 	int len;
 	int changed;
 	char cl[MAX_CHARS];
-	for (cline = 0;cline < MAX_LINES;cline++) {
+	for (cline = 0; cline < MAX_LINES; cline++) {
 		len = MAX_CHARS;
 		changed = 0;
-		for (c = MAX_CHARS;c >= 0;c--) {
+		for (c = MAX_CHARS; c >= 0; c--) {
 			cl[c] = line[cline].chars[c].character;
 			if (line[cline].chars[c].character != line[cline].chars[c].last_c) {
 				changed = c + 1;
@@ -534,11 +534,11 @@ static void chars_s3d_init(void)
 #ifdef M_CHAR
 	char c[2];
 	c[1] = '\0';
-	for (i = 0;i < 128;i++) {
+	for (i = 0; i < 128; i++) {
 		c[0] = i;
 		charbuf[i] = s3d_draw_string(c, NULL);
 	}
-	for (i = 128;i < 256;i++) {
+	for (i = 128; i < 256; i++) {
 		charbuf[i] = s3d_new_object();
 	}
 	cursor = s3d_new_object();
@@ -549,8 +549,8 @@ static void chars_init(void)
 {
 #ifdef M_CHAR
 	int x, y;
-	for (y = 0;y < (MAX_LINES);y++)
-		for (x = 0;x < (MAX_CHARS);x++) {
+	for (y = 0; y < (MAX_LINES); y++)
+		for (x = 0; x < (MAX_CHARS); x++) {
 			line[y].chars[x].character = line[y].chars[x].character = 0;
 			i = y * MAX_CHARS + x;
 			screenbuf[i] = -1;
@@ -559,7 +559,7 @@ static void chars_init(void)
 #endif
 #ifdef M_LINE
 	int i;
-	for (i = 0;i < MAX_LINES;i++)
+	for (i = 0; i < MAX_LINES; i++)
 		lines[i] = -1;
 #endif
 }

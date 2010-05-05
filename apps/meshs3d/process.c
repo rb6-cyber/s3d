@@ -185,8 +185,7 @@ static void handle_con(unsigned int ip1, unsigned int ip2, float etx)
 
 }
 
-static struct node *handle_mesh_node(unsigned int ip, char *ip_string)
-{
+static struct node *handle_mesh_node(unsigned int ip, char *ip_string) {
 	struct node *orig_node;
 	struct hashtable_t *swaphash;
 

@@ -201,7 +201,8 @@ static int process_args(int argc, char **argv)
 	int      lopt_idx;
 	int      c;
 	struct option long_options[] = {
-		{"multisample",  1, NULL, 'm'
+		{
+			"multisample",  1, NULL, 'm'
 		}, {"rc",    1, NULL, 'r'}, {"help",   0, NULL, 'h'}, {"use-sdl",   0, NULL, 's'}, {"no-rc",   0, NULL, 'n'}, {NULL, 0, NULL, 0}
 	};
 	while (-1 != (c = getopt_long(argc, argv, "?hgsnr:m:", long_options, &lopt_idx))) {

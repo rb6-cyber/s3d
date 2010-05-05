@@ -51,7 +51,7 @@ t_node *node_getbypath(const char *path)
 		}
 		/* parse ... */
 		printf("looking for a match for %s, rest is %s\n", match, s);
-		for (i = 0;i < cur->n_sub;i++)
+		for (i = 0; i < cur->n_sub; i++)
 			if (0 == strcmp(cur->sub[i]->name, match)) { /* found !! */
 				cur = cur->sub[i]; /* forward */
 				match = s; /* select next */
@@ -76,7 +76,7 @@ t_node *node_getbyoid(t_node *t, int oid)
 	if (t->objs.title == oid)  return(t);
 	if (t->objs.titlestr == oid) return(t);
 	if (t->type == T_FOLDER)
-		for (i = 0;i < t->n_sub;i++)
+		for (i = 0; i < t->n_sub; i++)
 			if ((f = node_getbyoid(t->sub[i], oid)) != NULL)
 				return(f);
 	return(NULL);
@@ -146,7 +146,7 @@ int node_delete(t_node *dir)
 	}
 	/* delete all the kids */
 	if (dir->n_sub > 0) {
-		for (i = 0;i < dir->n_sub;i++)
+		for (i = 0; i < dir->n_sub; i++)
 			node_delete(dir->sub[i]);
 		free(dir->sub);
 	}

@@ -85,13 +85,13 @@ void focus_by_key(int keysym)
 			switch (keysym) {
 			case S3DK_RIGHT:
 				/* cycle to the next directory on the ring */
-				for (i = focus->pindex - 1;i >= 0;i--)
+				for (i = focus->pindex - 1; i >= 0; i--)
 					if (focus->parent->sub[i]->disp == D_DIR) { /* found a directory before, cycle */
 						focus_set(focus->parent->sub[i]);
 						break;
 					}
 				if (i == -1) /* nothing found, wrap to the other side */
-					for (i = focus->parent->n_sub - 1;i >= focus->pindex + 1;i--)
+					for (i = focus->parent->n_sub - 1; i >= focus->pindex + 1; i--)
 						if (focus->parent->sub[i]->disp == D_DIR) { /* found a directory before, cycle */
 							focus_set(focus->parent->sub[i]);
 							break;
@@ -99,13 +99,13 @@ void focus_by_key(int keysym)
 				break;
 			case S3DK_LEFT:
 				/* cycle to the next directory on the ring */
-				for (i = focus->pindex + 1;i < focus->parent->n_sub;i++)
+				for (i = focus->pindex + 1; i < focus->parent->n_sub; i++)
 					if (focus->parent->sub[i]->disp == D_DIR) { /* found a directory before, cycle */
 						focus_set(focus->parent->sub[i]);
 						break;
 					}
 				if (i == focus->parent->n_sub) /* nothing found, wrap to the other side */
-					for (i = 0;i < focus->pindex;i++)
+					for (i = 0; i < focus->pindex; i++)
 						if (focus->parent->sub[i]->disp == D_DIR) { /* found a directory before, cycle */
 							focus_set(focus->parent->sub[i]);
 							break;
@@ -118,7 +118,7 @@ void focus_by_key(int keysym)
 				break;
 			case S3DK_DOWN:
 				/* go to first icon entry of parent,  or parent itself */
-				for (i = focus->parent->n_sub - 1;i >= 0;i--)
+				for (i = focus->parent->n_sub - 1; i >= 0; i--)
 					if (focus->parent->sub[i]->disp == D_ICON) { /* found a directory before, cycle */
 						focus_set(focus->parent->sub[i]);
 						break;
@@ -161,7 +161,7 @@ void focus_by_key(int keysym)
 				} while (focus->parent->sub[i]->disp != D_ICON);
 				if (i >= focus->parent->n_sub) {
 					/* go to the first activated dir above ... */
-					for (i = 0;i < focus->parent->n_sub;i++)
+					for (i = 0; i < focus->parent->n_sub; i++)
 						if (focus->parent->sub[i]->disp == D_DIR) { /* found a directory before, cycle */
 							focus_set(focus->parent->sub[i]);
 							break;

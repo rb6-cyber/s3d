@@ -127,7 +127,7 @@ struct _s3dw_textbox {
 	/* private */
 	s3dw_widget   widget;
 	s3dw_scrollbar *scroll_vertical,
-	*scroll_horizontal;
+	               *scroll_horizontal;
 	char    *text;
 	int    n_lineoids, *p_lineoids;
 	int    window_x, window_y;

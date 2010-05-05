@@ -51,7 +51,7 @@ static int get_selected(filelist *fp, t_node *dir)
 {
 	int i;
 	char *s;
-	for (i = 0;i < dir->n_sub;i++) {
+	for (i = 0; i < dir->n_sub; i++) {
 		if (dir->sub[i]->sub != NULL) get_selected(fp, dir->sub[i]); /* scan subdir */
 		if (dir->sub[i]->detached) {
 			fp->n++;
@@ -192,7 +192,7 @@ void window_copy(const char *S3DFMUNUSED(path))
 	}
 	/* get the longest item on the list */
 	m = 10;
-	for (i = 0;i < fp->n;i++) {
+	for (i = 0; i < fp->n; i++) {
 		if (strlen(fp->p[i].name) > m) m = strlen(fp->p[i].name);
 		printf("%d: %s\n", i, fp->p[i].name);
 	}
@@ -200,7 +200,7 @@ void window_copy(const char *S3DFMUNUSED(path))
 	l = (m + 3) * 0.7;
 	infwin = s3dw_surface_new("Copy Window", l, fp->n + 8);
 	s3dw_label_new(infwin, "Copy: ", 1, 1);
-	for (i = 0;i < fp->n;i++)
+	for (i = 0; i < fp->n; i++)
 		s3dw_label_new(infwin, fp->p[i].name, 3, 2 + i);
 	s3dw_label_new(infwin, "to:", 1, fp->n + 3);
 	node_path(node_getdir(focus), destdir);
@@ -243,13 +243,13 @@ void window_unlink(void)
 	}
 	/* get the longest item on the list */
 	m = 10;
-	for (i = 0;i < fp->n;i++)
+	for (i = 0; i < fp->n; i++)
 		if (strlen(fp->p[i].name) > m) m = strlen(fp->p[i].name);
 
 	l = (m + 3) * 0.7;
 	infwin = s3dw_surface_new("Unlink Window", l, fp->n + 8);
 	s3dw_label_new(infwin, "Unlink: ", 1, 1);
-	for (i = 0;i < fp->n;i++)
+	for (i = 0; i < fp->n; i++)
 		s3dw_label_new(infwin, fp->p[i].name, 3, 2 + i);
 
 	okbutton = s3dw_button_new(infwin, "OK", l / 2 - 3, fp->n + 3);
@@ -376,7 +376,7 @@ void window_fsani(void)
 			dummy.scale = 0.01;
 		}
 		if (fp != NULL) {
-			for (i = 0;i < fp->n;i++) {
+			for (i = 0; i < fp->n; i++) {
 				if (fp->p[i].state == STATE_FINISHED) { /* we can go and clean up now. */
 					if (NULL != (node = node_getbypath(fp->p[i].name))) {
 						printf("[CLEANUP] for node %s (%s)\n", node->name, fp->p[i].name);

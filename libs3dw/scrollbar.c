@@ -250,22 +250,22 @@ static void s3dw_scrollbar_draw(s3dw_widget *widget)
 
 
 	if (scrollbar->type == S3DW_SBAR_HORI) { /* rotate x and y for horizontal scrollbar */
-		for (i = 0;i < 32;i++) {
+		for (i = 0; i < 32; i++) {
 			temp = back_vertices[i*3];
 			back_vertices[i*3] = -back_vertices[i*3+1];
 			back_vertices[i*3+1] = -temp;
 		}
-		for (i = 0;i < 44;i++) { /* change clockwiseness */
+		for (i = 0; i < 44; i++) { /* change clockwiseness */
 			j = back_polygons[i*4];
 			back_polygons[i*4] = back_polygons[i*4+1];
 			back_polygons[i*4+1] = j;
 		}
-		for (i = 0;i < 12;i++) {
+		for (i = 0; i < 12; i++) {
 			temp = bar_vertices[i*3];
 			bar_vertices[i*3] = -bar_vertices[i*3+1];
 			bar_vertices[i*3+1] = -temp;
 		}
-		for (i = 0;i < 14;i++) { /* change clockwiseness */
+		for (i = 0; i < 14; i++) { /* change clockwiseness */
 			j = bar_polygons[i*4];
 			bar_polygons[i*4] = bar_polygons[i*4+1];
 			bar_polygons[i*4+1] = j;

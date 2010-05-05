@@ -1010,7 +1010,7 @@ void print_etx(void)
 	Olsr_neighbour_label_obj = (int*)malloc(Size * sizeof(int));
 	tmpNeighbour = Olsr_node_pEtx->olsr_neigh_list;
 
-	for (i = 0; i < Size ;i++) {
+	for (i = 0; i < Size ; i++) {
 		char nIpStr[60];
 		float mEtx = (tmpNeighbour->olsr_con->left_etx + tmpNeighbour->olsr_con->right_etx) / 2;
 

@@ -36,7 +36,7 @@ int ani_need_arr = 0;
 int s3dw_ani_stackpos(s3dw_widget *f)
 {
 	int i;
-	for (i = 0;i < ani_n;i++)
+	for (i = 0; i < ani_n; i++)
 		if (ani_s[i] == f)
 			return(i);  /* already in list */
 	return(-1);
@@ -150,7 +150,7 @@ void s3dw_ani_mate(void)
 	s3dw_widget *f;
 	animation_on = 1; /* animation is activated */
 	if (ani_need_arr) s3dw_arrange();
-	for (i = 0;i < ani_n;i++) {
+	for (i = 0; i < ani_n; i++) {
 		f = ani_s[i];
 		s3dw_ani_iterate(f);
 		if (s3dw_ani_check(f)) {

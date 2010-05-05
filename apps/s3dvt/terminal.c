@@ -65,14 +65,14 @@ static void clear_char(int lineid, int charid)
 static void clear_line(int lineid)
 {
 	int i;
-	for (i = 0;i < MAX_CHARS;i++)
+	for (i = 0; i < MAX_CHARS; i++)
 		clear_char(lineid, i);
 }
 
 static void clear_line_after_lastchar(void)
 {
 	int i;
-	for (i = cx;i < MAX_CHARS;i++)
+	for (i = cx; i < MAX_CHARS; i++)
 		clear_char(cy, i);
 }
 
@@ -143,7 +143,7 @@ static void ansi_change_graphic(char **args)
 		args[0][1] = '\0';
 	}
 
-	for (i = 0;i < 5;i++) {
+	for (i = 0; i < 5; i++) {
 		if (args[i][0]) {
 			curcol = atoi(args[i]);
 
@@ -207,7 +207,7 @@ static void move_up_x_lines(char *arg)
 
 	printf("moving up %d lines", amount);
 
-	for (i = 0;i < amount;i++) {
+	for (i = 0; i < amount; i++) {
 
 		pfirstline = (t_line*) & line + cy;
 		psecondline = pfirstline + 1;
@@ -231,7 +231,7 @@ static void move_down_x_lines(char *arg)
 
 	printf("moving down %d lines", amount);
 
-	for (i = 0;i < amount;i++) {
+	for (i = 0; i < amount; i++) {
 		pfirstline = (t_line*) & line + cy;
 		psecondline = pfirstline + 1;
 
@@ -248,7 +248,7 @@ static void delete_x_letters(char *arg1)
 
 	if (tmpint + cx > MAX_CHARS)
 		tmpint = MAX_CHARS - cx;
-	for (i = cx;i < cx + tmpint;i++)
+	for (i = cx; i < cx + tmpint; i++)
 		clear_char(cy, i);
 }
 static void move_x_letters(int mode, char *arg1)
@@ -262,14 +262,14 @@ static void move_x_letters(int mode, char *arg1)
 
 	switch (mode) {
 	case MOVE_RIGHT:
-		for (i = 0;i < tmpint;i++) {
+		for (i = 0; i < tmpint; i++) {
 			cx++;
 			if (cx == MAX_CHARS)
 				line_is_full();  /*  our line is full */
 		}
 		break;
 	case MOVE_LEFT:
-		for (i = 0;i < tmpint;i++) {
+		for (i = 0; i < tmpint; i++) {
 			cx--;
 			if (cx == -1) {
 				cy--;
@@ -290,8 +290,8 @@ static void move_x_letters(int mode, char *arg1)
 static void remove_beginning_from_curpos(void)
 {
 	int i, j = cx;
-	for (i = cy;i < MAX_LINES;i++) {
-		for (;j < MAX_CHARS;j++) {
+	for (i = cy; i < MAX_LINES; i++) {
+		for (; j < MAX_CHARS; j++) {
 			clear_char(i, j);
 		}
 		j = 0;
@@ -455,7 +455,7 @@ void AddChar(char *_toadd)
 	char *toadd;
 	char curchar;
 
-	for (toadd = _toadd;toadd[0];toadd++) {
+	for (toadd = _toadd; toadd[0]; toadd++) {
 		curchar = toadd[0];
 		/* printf("%.3d (", curchar);*/
 		if (isansi)

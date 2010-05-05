@@ -110,9 +110,9 @@ static void mainloop(void)
 		  printf("bits per pixel:%d\n",bpp);*/
 		last_change = MAGIC_CHANGED;
 		start_change = MAGIC_CHANGED;
-		for (y = 0;y < height;y++) {
+		for (y = 0; y < height; y++) {
 
-			for (x = 0;x < width;x++) {
+			for (x = 0; x < width; x++) {
 				d = *((uint32_t *)(image->data + (y * width + x) * bpp));
 				((uint32_t *)tex_image)[(y*width+x)] =
 				        (rs > 0 ? ((d & image->red_mask) >> rs) : ((d & image->red_mask) << -rs)) |
@@ -182,7 +182,7 @@ static int mouseclick(struct s3d_evt *S3DX11UNUSED(event))
 {
 	int i;
 	printf("thats it, collecting:\n");
-	for (i = 0;i < 3;i++)
+	for (i = 0; i < 3; i++)
 		printf("[%d] %f\n", i, count[i] / iterations);
 	exit(0);
 }

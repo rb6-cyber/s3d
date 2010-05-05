@@ -64,8 +64,8 @@ int main(int argc, char **argv)
 		                          1.0, 1.0,
 		                          0.0, 1.0);
 		s3d_translate(oid, 0, 0, -5);
-		for (y = 0;y < MAXY;y++)
-			for (x = 0;x < MAXX;x++) {
+		for (y = 0; y < MAXY; y++)
+			for (x = 0; x < MAXX; x++) {
 				data[(y*MAXX+x)*4+0] = (char)((x * 255) / MAXX);
 				data[(y*MAXX+x)*4+1] = (char)((x * y) / (MAXX * MAXY));
 				data[(y*MAXX+x)*4+2] = (char)((y * 255) / MAXX);

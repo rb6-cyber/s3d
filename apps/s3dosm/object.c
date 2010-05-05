@@ -29,7 +29,7 @@
 void object_free(object_t *obj)
 {
 	int i;
-	for (i = 0;i < obj->tag_n;i++)
+	for (i = 0; i < obj->tag_n; i++)
 		tag_free(&(obj->tag_p[i]));
 }
 void object_init(object_t *nobj)

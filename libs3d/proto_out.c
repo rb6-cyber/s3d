@@ -124,7 +124,7 @@ int s3d_push_vertices(int object, const float *vbuf, uint16_t n)
 	stepl = ((int)((MF_LEN - 4) / (4 * 3))) * (4 * 3);
 	f = len / (MF_LEN - 4) + 1;  /*  how many fragments? */
 	/*  buf=malloc(f>1?MF_LEN:len+4); */
-	for (i = 0;i < f;i++) {
+	for (i = 0; i < f; i++) {
 		ptr = buf;
 		*((uint32_t *)ptr) = htonl(object);
 		ptr += sizeof(uint32_t);  /*  object id */
@@ -236,7 +236,7 @@ int s3d_push_materials_a(int object, const float *mbuf, uint16_t n)
 	stepl = ((int)((MF_LEN - 4) / (4 * 12))) * (4 * 12);
 	f = len / (MF_LEN - 4) + 1;  /*  how many fragments? */
 	/*  buf=malloc(f>1?MF_LEN:len+4); */
-	for (i = 0;i < f;i++) {
+	for (i = 0; i < f; i++) {
 		ptr = buf;
 		*((uint32_t *)ptr) = htonl(object);
 		ptr += sizeof(uint32_t);  /*  object id */
@@ -302,12 +302,12 @@ int s3d_push_polygons(int object, const uint32_t *pbuf, uint16_t n)
 
 	buf[0] = htonl(object);
 	d = buf + 1;
-	for (i = 0;i < f;i++) {
+	for (i = 0; i < f; i++) {
 		if (len - i*stepl > stepl)   flen = stepl;
 		else       flen = (len - i * stepl);
 
 		s = pbuf + i * stepl / 4;
-		for (j = 0;j < flen / 4;j++)
+		for (j = 0; j < flen / 4; j++)
 			d[j] = htonl(s[j]);
 		net_send(S3D_P_C_PUSH_POLY, (char *)buf, flen + 4);
 	}
@@ -328,12 +328,12 @@ int s3d_push_lines(int object, const uint32_t *lbuf, uint16_t n)
 	buf[0] = htonl(object);
 	d = buf + 1;
 
-	for (i = 0;i < f;i++) {
+	for (i = 0; i < f; i++) {
 		if (len - i*stepl > stepl)   flen = stepl;
 		else       flen = (len - i * stepl);
 
 		s = lbuf + i * stepl / 4;
-		for (j = 0;j < flen / 4;j++)
+		for (j = 0; j < flen / 4; j++)
 			d[j] = htonl(s[j]);
 
 		net_send(S3D_P_C_PUSH_LINE, (char *)buf, flen + 4);
@@ -370,12 +370,12 @@ int s3d_push_textures(int object, const uint16_t *tbuf, uint16_t n)
 	*((uint32_t *)buf) = htonl(object);
 	d = (uint16_t *)(buf + 1);
 
-	for (i = 0;i < f;i++) {
+	for (i = 0; i < f; i++) {
 		if (len - i*stepl > stepl)   flen = stepl;
 		else       flen = (len - i * stepl);
 
 		s = tbuf + i * stepl / 2;
-		for (j = 0;j < flen / 2;j++)
+		for (j = 0; j < flen / 2; j++)
 			d[j] = htons(s[j]);
 		net_send(S3D_P_C_PUSH_TEX, (char *)buf, flen + 4);
 	}
@@ -611,7 +611,7 @@ int s3d_pep_lines(int object, const uint32_t *lbuf, uint16_t n)
 		return(-1);  /*  impossible */
 	}
 	buf[0] = htonl(object);
-	for (i = 0;i < 3*n;i++)
+	for (i = 0; i < 3*n; i++)
 		buf[i+1] = htonl(lbuf[0]);
 	net_send(S3D_P_C_PEP_LINE, (char *)buf, n*3*4 + 4);
 	return(0);
@@ -681,7 +681,7 @@ int s3d_load_polygon_normals(int object, const float *nbuf, uint32_t start, uint
 	mstart = start;
 	stepl = ((int)((MF_LEN - 8) / (9 * 4))) * (9 * 4);
 	f = len / (MF_LEN - 8) + 1;  /*  how many fragments? */
-	for (i = 0;i < f;i++) {
+	for (i = 0; i < f; i++) {
 		ptr = buf;
 		*((uint32_t *)ptr) = htonl(object);
 		ptr += sizeof(uint32_t);  /*  object id */
@@ -710,7 +710,7 @@ int s3d_load_line_normals(int object, const float *nbuf, uint32_t start, uint16_
 	mstart = start;
 	stepl = ((int)((MF_LEN - 8) / (6 * 4))) * (6 * 4);
 	f = len / (MF_LEN - 8) + 1;  /*  how many fragments? */
-	for (i = 0;i < f;i++) {
+	for (i = 0; i < f; i++) {
 		ptr = buf;
 		*((uint32_t *)ptr) = htonl(object);
 		ptr += sizeof(uint32_t);  /*  object id */
@@ -739,7 +739,7 @@ int s3d_load_polygon_tex_coords(int object, const float *tbuf, uint32_t start, u
 	mstart = start;
 	stepl = ((int)((MF_LEN - 8) / (6 * 4))) * (6 * 4);
 	f = len / (MF_LEN - 8) + 1;  /*  how many fragments? */
-	for (i = 0;i < f;i++) {
+	for (i = 0; i < f; i++) {
 		ptr = buf;
 		*((uint32_t *)ptr) = htonl(object);
 		ptr += sizeof(uint32_t);  /*  object id */
@@ -768,7 +768,7 @@ int s3d_load_materials_a(int object, const float *mbuf, uint32_t start, uint16_t
 	mstart = start;
 	stepl = ((int)((MF_LEN - 8) / (12 * 4))) * (12 * 4);
 	f = len / (MF_LEN - 8) + 1;  /*  how many fragments? */
-	for (i = 0;i < f;i++) {
+	for (i = 0; i < f; i++) {
 		ptr = buf;
 		*((uint32_t *)ptr) = htonl(object);
 		ptr += sizeof(uint32_t);  /*  object id */
@@ -829,7 +829,7 @@ int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uin
 	linestep = (MF_LEN - 16) / (w * 4);
 	if (linestep == 0)
 		return(-1);  /*  won't do that. .. yet */
-	for (i = 0;i < h;i += linestep) {
+	for (i = 0; i < h; i += linestep) {
 		ptr = buf;
 		*((uint32_t *)ptr) = htonl(object);
 		ptr += sizeof(uint32_t);  /*  object id */

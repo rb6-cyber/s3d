@@ -124,9 +124,8 @@ int s3d_net_init(char *urlc)
 	} else {
 		if (first_slash < port)
 			tcp = 0;
-		else
-			if (first_slash != NULL)
-				*first_slash = 0;
+		else if (first_slash != NULL)
+			*first_slash = 0;
 		if (!strncmp(port, "shm", 3)) {
 			tcp = 0; /* null the others */
 		} else {
