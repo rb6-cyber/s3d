@@ -22,14 +22,15 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
+#define _GNU_SOURCE
 #include "s3dvt.h"
 #include <stdio.h>    /*  FILE,NULL */
 #include <unistd.h>   /*  read(),write(), sleep(),close() ... */
 #include <errno.h>   /*  errno() */
 #include <fcntl.h>    /*  open() */
 #include <signal.h>   /*  signal() */
-#include <stdlib.h>   /*  exit(),getenv(),setenv() */
+#include <stdlib.h>   /*  exit(),getenv(),setenv(), getpt */
+#include <stropts.h>  /*  isastream */
 #include <sys/ioctl.h>   /*  ioctl() */
 #include <pthread.h>  /*  pthread_create() */
 #include <s3d.h>   /*  s3d_* */
@@ -101,28 +102,55 @@ static void* thread_terminal(void *S3DVTUNUSED(a))
 	}
 	return(NULL); /* huh?! */
 }
+
+static int open_pty_pair(int *amaster, int *aslave)
+{
+	int master, slave;
+	char *name;
+
+	master = getpt();
+	if (master < 0)
+		return 0;
+
+	if (grantpt (master) < 0 || unlockpt (master) < 0)
+		goto close_master;
+	name = ptsname(master);
+	if (name == NULL)
+		goto close_master;
+
+	slave = open(name, O_RDWR);
+	if (slave == -1)
+		goto close_master;
+
+	if (isastream(slave)) {
+		if (ioctl (slave, I_PUSH, "ptem") < 0 || ioctl (slave, I_PUSH, "ldterm") < 0)
+		goto close_slave;
+	}
+
+	*amaster = master;
+	*aslave = slave;
+	return 1;
+
+close_slave:
+	close (slave);
+
+	close_master:
+	close (master);
+	return 0;
+}
+
 static int pty_init_terminal(void)
 {
-	int i;
-	char buf[256];
 	char tmpstr[1024];
 	int curtty;
 	int uid = 0, gid = 0;
 	char exe[] = "/bin/bash";
-	char curchar;
 
 	uid = getuid();
 	gid = getgid();
 	term_mode = M_PTY;
-	for (curchar = 'p'; curchar < 'z';curchar++) {
-		for (i = 0;i < 16;i++) {
-			sprintf(buf, "/dev/pty%c%x", curchar, i);
-			curpty = open(buf, O_RDWR);
-			if (curpty >= 0)
-				goto endloop;
-		}
-	}
-endloop:
+	open_pty_pair(&curpty, &curtty);
+
 	if (curpty < 0) {
 		printf("Error opening pty\n");
 		return 0;
@@ -131,8 +159,6 @@ endloop:
 	signal(SIGCHLD, SIG_IGN);
 	pid = fork();
 	if (!pid) {
-		buf[5] = 't';
-		curtty = open(buf, O_RDWR);
 		if (curtty < 0) {
 			printf("Error opening tty\n");
 			return 0;
