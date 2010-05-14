@@ -1,15 +1,15 @@
 S3D v0.2.2 Release Notes
 ========================
 
- * Generate documentation from source code
+ * Generate documentation from source code.
 
  * Allow pseudo global optimisations for each module using -DENABLE_FINAL=ON as
-   cmake parameter
+   cmake parameter.
 
- * Support batman-adv visualisation output in meshs3d
+ * Support batman-adv visualisation output and IPv6 addresses in meshs3d.
 
 ---
 exec >/var/tmp/1
 echo O=`git describe master`
-O=v0.2.1.1-58-gb4f8287
+O=v0.2.1.1-88-g2313b92
 git shortlog --no-merges $O..master '^maint'
