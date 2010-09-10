@@ -551,7 +551,7 @@ static void chars_init(void)
 	int x, y;
 	for (y = 0; y < (MAX_LINES); y++)
 		for (x = 0; x < (MAX_CHARS); x++) {
-			line[y].chars[x].character = line[y].chars[x].character = 0;
+			line[y].chars[x].character = 0;
 			i = y * MAX_CHARS + x;
 			screenbuf[i] = -1;
 			last_c[i] = 0;
