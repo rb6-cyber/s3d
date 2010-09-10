@@ -2,6 +2,7 @@ include_directories(${s3d_SOURCE_DIR}/libs3d ${s3d_SOURCE_DIR}/libs3dw)
 
 set(S3DW_LIBRARY_DEPENDENCIES s3d ${MATH_LIBRARIES})
 
+include(FilterPIE)
 add_library(s3dw SHARED animate.c arrange.c button.c event.c input.c
 	label.c root.c scrollbar.c style.c surface.c textbox.c widget.c)
 target_link_libraries(s3dw ${S3DW_LIBRARY_DEPENDENCIES})

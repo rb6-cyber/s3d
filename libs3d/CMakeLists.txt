@@ -2,6 +2,7 @@ include_directories(${s3d_SOURCE_DIR}/server)
 
 set(S3D_LIBRARY_DEPENDENCIES  ${MATH_LIBRARIES} ${G3D_LIBRARIES} ${FONTCONFIG_LIBRARIES} ${FREETYPE_LIBRARIES})
 
+include(FilterPIE)
 add_library(s3d SHARED callback.c endian.c error.c event.c fontselect.c
 	freetype.c io.c modelread.c network.c object_queue.c proto_in.c
 	proto_out.c sei_construct.c sei_misc.c sei_monotone.c sei_tri.c shm.c
