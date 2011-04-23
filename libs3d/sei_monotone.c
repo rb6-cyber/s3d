@@ -247,27 +247,6 @@ int monotonate_trapezoids(int n)
 	/* Initialise the mon data-structure and start spanning all the */
 	/* trapezoids within the polygon */
 
-#if 0
-	for (i = 1; i <= n; i++) {
-		mchain[i].prev = i - 1;
-		mchain[i].next = i + 1;
-		mchain[i].vnum = i;
-		vert[i].pt = seg[i].v0;
-		vert[i].vnext[0] = i + 1; /* next vertex */
-		vert[i].vpos[0] = i; /* locn. of next vertex */
-		vert[i].nextfree = 1;
-	}
-	mchain[1].prev = n;
-	mchain[n].next = 1;
-	vert[n].vnext[0] = 1;
-	vert[n].vpos[0] = n;
-	chain_idx = n;
-	mon_idx = 0;
-	mon[0] = 1;   /* position of any vertex in the first */
-	/* chain  */
-
-#else
-
 	for (i = 1; i <= n; i++) {
 		mchain[i].prev = seg[i].prev;
 		mchain[i].next = seg[i].next;
@@ -282,8 +261,6 @@ int monotonate_trapezoids(int n)
 	mon_idx = 0;
 	mon[0] = 1;   /* position of any vertex in the first */
 	/* chain  */
-
-#endif
 
 	/* traverse the polygon */
 	if (tr[tr_start].u0 > 0)

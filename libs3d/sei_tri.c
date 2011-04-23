@@ -126,33 +126,3 @@ int sei_triangulate_polygon(int ncontours, int cntr[], double(*vertices)[2], int
 	return triangulate_monotone_polygons(n, nmonpoly, triangles);
 }
 
-
-/* This function returns TRUE or FALSE depending upon whether the
- * vertex is inside the polygon or not. The polygon must already have
- * been triangulated before this routine is called.
- * This routine will always detect all the points belonging to the
- * set (polygon-area - polygon-boundary). The return value for points
- * on the boundary is not consistent!!!
- */
-#if 0
-static int is_point_inside_polygon(double vertex[2])
-{
-	point_t v;
-	int trnum, rseg;
-	trap_t *t;
-
-	v.x = vertex[0];
-	v.y = vertex[1];
-
-	trnum = locate_endpoint(&v, &v, 1);
-	t = &tr[trnum];
-
-	if (t->state == ST_INVALID)
-		return FALSE;
-
-	if ((t->lseg <= 0) || (t->rseg <= 0))
-		return FALSE;
-	rseg = t->rseg;
-	return _greater_than_equal_to(&seg[rseg].v1, &seg[rseg].v0);
-}
-#endif /* 0 */

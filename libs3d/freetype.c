@@ -424,13 +424,3 @@ float s3d_strlen(const char *str)
 	return xoff;
 
 }
-
-#if 0
-static int s3d_ft_quit(void)
-{
-	_s3d_clear_tessbuf();
-	FT_Done_FreeType(library);
-	ft_init = 0;
-	return 0;
-}
-#endif /* 0 */
