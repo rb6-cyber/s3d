@@ -41,6 +41,7 @@
 
 /* extern used in net.c */
 char lbuf[MAXLINESIZE];
+int blockcnt = 0;
 
 struct hashtable_t *node_hash;
 struct hashtable_t *con_hash;
@@ -392,6 +393,7 @@ int process_main(void)
 	struct node *tmp_node;
 	struct node_id int_con_from, int_con_to;
 	unsigned int address;
+	unsigned int line_blockcnt;
 
 	lbuf_ptr = lbuf;
 	last_cr_ptr = NULL;
@@ -404,12 +406,24 @@ int process_main(void)
 
 	while ((*lbuf_ptr) != '\0') {
 		if ((*lbuf_ptr) == '\n') {
+			line_blockcnt = blockcnt;
 			last_cr_ptr = lbuf_ptr;
 			con_from = con_from_end = con_to = con_to_end = etx = etx_end = NULL;
 			dn = 0;
 		}
 
-		if ((*lbuf_ptr) == '"') {
+		if ((*lbuf_ptr) == '{') {
+			dn = 0;
+			blockcnt++;
+		}
+
+		if ((*lbuf_ptr) == '}') {
+			blockcnt--;
+			line_blockcnt = blockcnt;
+			last_cr_ptr = lbuf_ptr;
+		}
+
+		if ((*lbuf_ptr) == '"' && blockcnt == 1) {
 			switch (dn) {
 			case 0:
 				con_from = lbuf_ptr + 1;
@@ -525,7 +539,7 @@ int process_main(void)
 				last_cr_ptr = lbuf_ptr;
 			}
 
-		} else if (((*lbuf_ptr) == '}') && ((*(lbuf_ptr + 1)) == '\n')) {
+		} else if ((blockcnt == 0) && ((*lbuf_ptr) == '}') && ((*(lbuf_ptr + 1)) == '\n')) {
 
 			Global.output_block_completed = 1;
 
@@ -549,7 +563,10 @@ int process_main(void)
 
 	}
 
-	if (last_cr_ptr != NULL) memmove(lbuf, last_cr_ptr + 1, strlen(last_cr_ptr));
+	if (last_cr_ptr != NULL) {
+		blockcnt = line_blockcnt;
+		memmove(lbuf, last_cr_ptr + 1, strlen(last_cr_ptr));
+	}
 	return(0);
 
 }
