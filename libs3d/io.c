@@ -223,17 +223,10 @@ int s3d_open_file(const char *fname, char **pointer)
 {
 	FILE *fp;
 	char *buf = NULL;
-	int filesize;
+	size_t filesize;
+	size_t read_items;
 	struct stat bf;
 	*pointer = NULL;
-	/* if ((fp = fopen(fname, "rb")) == NULL)
-	 { errn("s3d_open_file():fopen()",errno); return(0);}
-	 if (fseek(fp, 0, SEEK_END) != 0)
-	 { errn("s3d_open_file():fseek()",errno); return(0);}
-	 if ((filesize = (int)ftell(fp)) == (long)-1)
-	 { errn("s3d_open_file():ftell()",errno); return(0);}
-	 if (fseek(fp, 0, SEEK_SET) != 0)
-	 { errn("s3d_open_file():fseek()",errno); return(0);}*/
 
 	if ((fp = fopen(fname, "rb")) == NULL) {
 		errdn(VLOW, "s3d_open_file():fopen()", errno);
@@ -241,16 +234,23 @@ int s3d_open_file(const char *fname, char **pointer)
 	}
 	if (fstat(fileno(fp), &bf)) {
 		errdn(VLOW, "s3d_open_file():fstat()", errno);
+		fclose(fp);
 		return(-1);
 	}
 	filesize = bf.st_size;
-	/* s3dprintf(LOW, "opening %s, filesize is %d",fname, filesize);*/
 	if ((buf = (char *)malloc(filesize)) == NULL) {
 		errn("s3d_open_3ds_file():malloc()", errno);
 		exit(-1);
 	}
-	fread(buf, 1, filesize, fp);
+	read_items = fread(buf, 1, filesize, fp);
 	fclose(fp);
+
+	if (read_items != filesize) {
+		errdn(VLOW, "s3d_open_file():fread()", errno);
+		free(buf);
+		return -1;
+	}
+
 	*pointer = buf;
 	return(filesize);
 }
