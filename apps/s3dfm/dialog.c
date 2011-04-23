@@ -68,7 +68,7 @@ static int get_selected(filelist *fp, t_node *dir)
 
 		}
 	}
-	return(0);
+	return 0;
 }
 void window_help(void)
 {
@@ -156,7 +156,7 @@ static void* thread_start(void *S3DFMUNUSED(ptr))
 		break;
 	}
 	fs_lock = TYPE_FINISHED;
-	return(NULL);
+	return NULL;
 
 }
 /* start the thread, as filesystem stuff is locked ... */

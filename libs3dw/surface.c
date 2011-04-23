@@ -158,7 +158,7 @@ s3dw_surface *s3dw_surface_new(const char *title, float width, float height)
 	s3dw_surface_draw(widget);
 	s3dw_ani_needarr();
 	s3dw_ani_add(widget);
-	return(surface);
+	return surface;
 }
 /* delete objects in the s3d context */
 void s3dw_surface_erase(s3dw_widget *widget)
@@ -179,7 +179,7 @@ void s3dw_surface_destroy(s3dw_widget *widget)
 /* handle key events */
 int s3dw_surface_event_key(s3dw_widget *S3DUNUSED(widget), struct s3d_key_event *S3DUNUSED(keys))
 {
-	return(0);
+	return 0;
 }
 /* test widgets of the surface for clicks */
 int s3dw_surface_event_click(s3dw_widget *widget, uint32_t oid)
@@ -188,13 +188,13 @@ int s3dw_surface_event_click(s3dw_widget *widget, uint32_t oid)
 	if (widget->oid == oid) {
 		s3dw_focus(widget);
 		s3dprintf(MED, "body %s clicked", surface->title);
-		return(1);
+		return 1;
 	}
 	if ((surface->oid_tbar == oid) || (surface->oid_title == oid)) {
 		s3dw_focus(widget);
 		s3dprintf(MED, "title %s clicked", surface->title);
-		return(1);
+		return 1;
 	}
-	return(0);
+	return 0;
 }
 

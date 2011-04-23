@@ -52,7 +52,7 @@ int fly_set_absolute_position(t_node *node)
 	node->pz = work.pz;
 	node->scale = work.scale;
 	/* printf("node coordinates: %3.3f %3.3f %3.3f %3.3f\n",node->px,node->py,node->pz,node->scale);*/
-	return(0);
+	return 0;
 }
 /* create a copy of *node as an icon (block) which can be moved for animation ... */
 t_node *fly_create_anode(t_node *node)
@@ -78,5 +78,5 @@ t_node *fly_create_anode(t_node *node)
 	s3d_flags_on(work->oid, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 	s3d_flags_on(work->objs.str, S3D_OF_VISIBLE | S3D_OF_SELECTABLE);
 	ani_add(work);
-	return(work);
+	return work;
 }

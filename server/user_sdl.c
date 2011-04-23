@@ -30,7 +30,7 @@
 int user_init_sdl(void)
 {
 	SDL_EnableUNICODE(1);
-	return(0);
+	return 0;
 }
 int user_main_sdl(void)
 {
@@ -154,11 +154,11 @@ int user_main_sdl(void)
 			break;
 		}
 	}
-	return(0);
+	return 0;
 
 }
 int user_quit_sdl(void)
 {
-	return(0);
+	return 0;
 }
 

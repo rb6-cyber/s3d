@@ -77,7 +77,7 @@ static int ui_getinfo_node(void *S3DOSMUNUSED(data), int argc, char **argv, char
 	button->onclick = key_button;
 	s3dw_show(S3DWIDGET(miniwin));
 
-	return(0);
+	return 0;
 }
 static int ui_getinfo_way(void *S3DOSMUNUSED(data), int argc, char **argv, char **azColName)
 {
@@ -102,31 +102,31 @@ static int ui_getinfo_way(void *S3DOSMUNUSED(data), int argc, char **argv, char 
 	button->onclick = key_button;
 	s3dw_show(S3DWIDGET(miniwin));
 
-	return(0);
+	return 0;
 }
 
 static int ui_click(struct s3d_evt *evt)
 {
 	int oid = (int) * ((uint32_t *)evt->buf);
 	char query[MAXQ];
-	if (s3dw_handle_click(evt)) return(0);
+	if (s3dw_handle_click(evt)) return 0;
 	snprintf(query, MAXQ, "SELECT * FROM node WHERE s3doid=%d;", oid);
 	db_exec(query, ui_getinfo_node, NULL);
 	snprintf(query, MAXQ, "SELECT * FROM way WHERE s3doid=%d;", oid);
 	db_exec(query, ui_getinfo_way, NULL);
 
-	return(0);
+	return 0;
 }
 static int ui_key(struct s3d_evt *evt)
 {
 	/* struct s3d_key_event *key=(struct s3d_key_event *)evt->buf;*/
-	if (s3dw_handle_key(evt)) return(0);
-	return(0);
+	if (s3dw_handle_key(evt)) return 0;
+	return 0;
 }
 static int ui_oinfo(struct s3d_evt *evt)
 {
 	s3dw_object_info(evt);
-	return(0);
+	return 0;
 }
 int ui_init(void)
 {
@@ -134,7 +134,7 @@ int ui_init(void)
 	s3d_set_callback(S3D_EVENT_OBJ_CLICK, ui_click);
 	s3d_set_callback(S3D_EVENT_KEY, ui_key);
 	s3d_set_callback(S3D_EVENT_OBJ_INFO, ui_oinfo);
-	return(0);
+	return 0;
 }
 
 /* initialize the loadwindow or change its caption text */
@@ -149,7 +149,7 @@ int load_window(const char *text)
 		s3dw_label_change_text(loadlabel, text);
 		s3dw_label_change_text(loadstatus, "");
 	}
-	return(0);
+	return 0;
 }
 /* remove it if still here */
 int load_window_remove(void)
@@ -159,7 +159,7 @@ int load_window_remove(void)
 		loadwindow = NULL;
 		loadlabel = NULL;
 	}
-	return(0);
+	return 0;
 }
 /* update the load status ... */
 int load_update_status(float percent)
@@ -170,5 +170,5 @@ int load_update_status(float percent)
 		s3dw_label_change_text(loadstatus, text);
 	}
 	mainloop();
-	return(0);
+	return 0;
 }

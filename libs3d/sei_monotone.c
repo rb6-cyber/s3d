@@ -77,7 +77,7 @@ static int inside_polygon(trap_t *t)
 
 	if (((t->u0 <= 0) && (t->u1 <= 0)) ||
 	                ((t->d0 <= 0) && (t->d1 <= 0))) /* triangle */
-		return (_greater_than(&seg[rseg].v1, &seg[rseg].v0));
+		return _greater_than(&seg[rseg].v1, &seg[rseg].v0);
 
 	return 0;
 }
@@ -110,7 +110,7 @@ static double get_angle(point_t *vp0, point_t *vpnext, point_t *vp1)
 	if (CROSS_SINE(v0, v1) >= 0) /* sine is positive */
 		return DOT(v0, v1) / LENGTH(v0) / LENGTH(v1);
 	else
-		return (-1.0 * DOT(v0, v1) / LENGTH(v0) / LENGTH(v1) - 2);
+		return -1.0 * DOT(v0, v1) / LENGTH(v0) / LENGTH(v1) - 2;
 }
 
 

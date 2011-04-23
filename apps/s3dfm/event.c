@@ -40,7 +40,7 @@ int event_oinfo(struct s3d_evt *hrmz)
 		cam.dpz = inf->trans_z;
 	}
 	s3dw_object_info(hrmz);
-	return(0);
+	return 0;
 }
 
 /* keyevent handler */
@@ -51,7 +51,7 @@ int event_key(struct s3d_evt *evt)
 	if (typeinput) { /* we have some inputfield now and want the s3dw to handle our input */
 		printf("inputting text ...\n");
 		s3dw_handle_key(evt);
-		return(0);
+		return 0;
 	}
 	node_path(node_getdir(focus), path);
 	switch (keys->keysym) {
@@ -111,7 +111,7 @@ int event_key(struct s3d_evt *evt)
 
 	}
 	s3dw_handle_key(evt);
-	return(0);
+	return 0;
 }
 
 /* object click handler */
@@ -124,17 +124,17 @@ int event_click(struct s3d_evt *evt)
 	if (NULL != (f = node_getbyoid(&root, oid))) {
 		if (f->objs.close == oid) {
 			box_close(f, 1);
-			return(0);
+			return 0;
 		}
 		if (f->objs.select == oid) {
 			printf("[S]electing %s\n", f->name);
 			node_select(f);
-			return(0);
+			return 0;
 		}
 		node_select(f);
 	} else {
 		/*  printf("[C]ould not find :/\n");*/
 	}
-	return(0);
+	return 0;
 }
 

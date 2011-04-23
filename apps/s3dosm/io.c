@@ -40,21 +40,21 @@ char *read_file(const char *fname, int *fsize)
 
 	if ((fp = fopen(fname, "rb")) == NULL) {
 		fprintf(stderr, "read_file( %s ):fopen(): %s", fname, strerror(errno));
-		return(NULL);
+		return NULL;
 	}
 	if (fstat(fileno(fp), &bf))    {
 		fprintf(stderr, "read_file( %s ):fopen(): %s", fname, strerror(errno));
-		return(NULL);
+		return NULL;
 	}
 	filesize = bf.st_size;
 	if ((buf = (char*)malloc(filesize)) == NULL)  {
 		fprintf(stderr, "read_file( %s ):malloc(): %s", fname, strerror(errno));
-		return(NULL);
+		return NULL;
 	}
 	fread(buf, filesize, 1, fp);
 	fclose(fp);
 	if (fsize != NULL) *fsize = filesize;
-	return(buf);
+	return buf;
 }
 
 int process_args(int argc, char **argv)
@@ -79,7 +79,7 @@ int process_args(int argc, char **argv)
 				layerset_add(load_osm_web(minlat, minlon, maxlat, maxlon));
 			else {
 				printf("%s: bad map bounding box", optarg);
-				return(-1);
+				return -1;
 			}
 			break;
 		case 'h':
@@ -93,7 +93,7 @@ int process_args(int argc, char **argv)
 			printf("\t+ Kismet .xml Logs\n");
 			printf("\t+ Opemstreetmap .osm files\n\n");
 			s3d_usage(); /* add s3d usage */
-			return(-1);
+			return -1;
 		default:
 			break;
 		}
@@ -121,6 +121,6 @@ int process_args(int argc, char **argv)
 		}
 	}
 	load_window_remove();
-	return(0);
+	return 0;
 }
 

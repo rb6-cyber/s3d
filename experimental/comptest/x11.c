@@ -62,16 +62,16 @@ int print_event(Display *COMPUNUSED(dpy), XEvent *event)
 		name = "Circulate";
 		break;
 	case PropertyNotify:
-		return(0);
+		return 0;
 	}
 	if (event->type == xdamage.event + XDamageNotify) {
-		return(0); /* don't report this. */
+		return 0; /* don't report this. */
 	} else if (event->type == ConfigureNotify) {
 		name = "Configure";
 	}
 
 	printf("Event: %s (%d)\n", name, event->type);
-	return(0);
+	return 0;
 }
 
 int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
@@ -175,7 +175,7 @@ int error(Display *COMPUNUSED(dpy), XErrorEvent *event)
 	}
 
 	printf("ERROR at request %s [%d]: %s\n", req, event->error_code, name);
-	return(0);
+	return 0;
 }
 
 void print_properties(Window win)
@@ -224,7 +224,7 @@ char *x11_get_prop(Window win, const char *prop)
 			XFree(reqret);
 		}
 	}
-	return(ret);
+	return ret;
 }
 char *x11_get_name(Window win)
 {
@@ -238,7 +238,7 @@ char *x11_get_name(Window win)
 	if (role != NULL) {
 		if (strcmp(role, "decoration widget") == 0) {
 			free(role);
-			return(NULL);
+			return NULL;
 		}
 		free(role);
 	}
@@ -248,11 +248,11 @@ char *x11_get_name(Window win)
 			printf("setting s3d to always on top\n");
 			x11_always_on_top(win);
 		}
-		return(name);
+		return name;
 	}
 
 	if (XQueryTree(dpy, win, &root, &parent, &children, &nchildren) == 0)
-		return(NULL);
+		return NULL;
 
 	for (j = 0; j < (int)nchildren; j++) {
 		name = x11_get_name(children[j]);
@@ -261,7 +261,7 @@ char *x11_get_name(Window win)
 	}
 	if (children != NULL)
 		XFree(children);
-	return(name);
+	return name;
 
 }
 
@@ -306,37 +306,37 @@ int xinit(void)
 
 	if (!dpy) {
 		fprintf(stderr, "Can't open display\n");
-		return(1);
+		return 1;
 	}
 	if (!XQueryExtension(dpy, COMPOSITE_NAME, &xcomposite.request, &xcomposite.event, &xcomposite.error)) {
 		fprintf(stderr, "No composite extension\n");
-		return(1);
+		return 1;
 	}
 	if (!XQueryExtension(dpy, RENDER_NAME, &xrender.request, &xrender.event, &xrender.error)) {
 		fprintf(stderr, "No render extension\n");
-		return(1);
+		return 1;
 	}
 	if (!XQueryExtension(dpy, DAMAGE_NAME, &xdamage.request, &xdamage.event, &xdamage.error)) {
 		fprintf(stderr, "No damage extension\n");
-		return(1);
+		return 1;
 	}
 	if (!XQueryExtension(dpy, XFIXES_NAME, &xfixes.request, &xfixes.event, &xfixes.error)) {
 		fprintf(stderr, "No fixes extension\n");
-		return(1);
+		return 1;
 	}
 
 
 	if (!XCompositeQueryVersion(dpy, &composite_major, &composite_minor)) {
 		fprintf(stderr, "Could not check composite version\n");
-		return(1);
+		return 1;
 	}
 	if (XCompositeVersion() < XCOMPOSITE_VERSION_0_2) {
 		fprintf(stderr, "Could not find composite version 0.2 or better\n");
-		return(1);
+		return 1;
 	}
 
 	XSetErrorHandler(error);
-	return(0);
+	return 0;
 }
 
 /* find biggest bounding rect of the two given rects, write it into dest */

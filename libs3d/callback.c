@@ -54,7 +54,7 @@ s3d_cb s3d_cb_list[MAX_CB] = {
 static int _s3d_ignore(struct s3d_evt *S3DUNUSED(evt))
 {
 	/* do plain nothing */
-	return(0);
+	return 0;
 }
 
 /** \brief sets a callback
@@ -114,5 +114,5 @@ void s3d_ignore_callback(uint8_t event)
  */
 s3d_cb s3d_get_callback(uint8_t event)
 {
-	return(s3d_cb_list[(int)event]);
+	return s3d_cb_list[(int)event];
 }

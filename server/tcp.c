@@ -78,7 +78,7 @@ int tcp_init(void)
 	if (fcntl(tcp_sockid, F_SETOWN, getpid()) < 0)
 		errnf("fcntl()", errno);
 #endif
-	return(0);
+	return 0;
 
 }
 int tcp_quit(void)
@@ -87,7 +87,7 @@ int tcp_quit(void)
 #ifdef WIN32
 	WSACleanup();
 #endif
-	return(0);
+	return 0;
 }
 /*  watches the port for new connections */
 int tcp_pollport(void)
@@ -127,7 +127,7 @@ select_again:
 			s3dprintf(HIGH, "registered new connection %d as pid %d", new_p->sockid, new_p->id);
 		}
 	}
-	return(0);
+	return 0;
 }
 /*  this is about looking for new data on the sockets */
 /*  returns 1 when there was new data. */
@@ -180,7 +180,7 @@ select_again_poll:
 			}
 		}
 	} while (unfinished);
-	return(found);
+	return found;
 }
 /* read some data from the line, pushes it into the buffer and calls prot_com_in */
 int tcp_prot_com_in(struct t_process *p)
@@ -198,7 +198,7 @@ int tcp_prot_com_in(struct t_process *p)
 		s3dprintf(LOW, "tcp_prot_com_in():n_readn():fd seems to be dead (pid %d, sock %d)", p->id, p->sockid);
 		process_del(p->id);
 	}
-	return(0);
+	return 0;
 }
 /*  shamelessly ripped from simple ftp server */
 int tcp_readn(int sock, uint8_t *str, int s)
@@ -209,13 +209,13 @@ int tcp_readn(int sock, uint8_t *str, int s)
 		no_read = read(sock, str, no_left);
 		if (no_read < 0) {
 			errn("read()", errno);
-			return(no_read);
+			return no_read;
 		}
 		if (no_read == 0) break;
 		no_left -= no_read;
 		str += no_read;
 	}
-	return(s - no_left);
+	return s - no_left;
 }
 int tcp_writen(int sock, uint8_t *str, int s)
 {
@@ -225,15 +225,15 @@ int tcp_writen(int sock, uint8_t *str, int s)
 		no_written = write(sock, str, no_left);
 		if (no_written <= 0) {
 			errn("write()", errno);
-			return(no_written);
+			return no_written;
 		}
 		no_left -= no_written;
 		str += no_written;
 	}
-	return(s - no_left);
+	return s - no_left;
 }
 int tcp_remove(int sock)
 {
-	return(close(sock));
+	return close(sock);
 }
 #endif

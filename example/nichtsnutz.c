@@ -107,7 +107,7 @@ static int object_info(struct s3d_evt *hrmz)
 		CamPosition[1][1] = inf->rot_y;
 		CamPosition[1][2] = inf->rot_z;
 	}
-	return(0);
+	return 0;
 }
 
 
@@ -120,7 +120,7 @@ static int keypress(struct s3d_evt *event)
 	default:
 		;
 	}
-	return(0);
+	return 0;
 }
 
 
@@ -136,5 +136,5 @@ int main(int argc, char **argv)
 		s3d_mainloop(mainloop);
 		s3d_quit();
 	}
-	return(0);
+	return 0;
 }

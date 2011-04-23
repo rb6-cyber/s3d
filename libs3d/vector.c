@@ -35,7 +35,7 @@
 float s3d_vector_length(const float vector[])
 {
 
-	return (sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2]));
+	return sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2]);
 
 }
 
@@ -62,7 +62,7 @@ void s3d_vector_subtract(const float vector1[], const float vector2[], float res
  */
 float s3d_vector_dot_product(const float vector1[], const float vector2[])
 {
-	return (vector1[0] * vector2[0] + vector1[1] * vector2[1] + vector1[2] * vector2[2]);
+	return vector1[0] * vector2[0] + vector1[1] * vector2[1] + vector1[2] * vector2[2];
 }
 
 /** \brief calculate cross product of two vectors
@@ -89,7 +89,7 @@ void s3d_vector_cross_product(const float vector1[], const float vector2[], floa
 float s3d_vector_angle(const float vector1[], const float vector2[])
 {
 
-	return (acos(s3d_vector_dot_product(vector1, vector2) / (s3d_vector_length(vector1) * s3d_vector_length(vector2))));
+	return acos(s3d_vector_dot_product(vector1, vector2) / (s3d_vector_length(vector1) * s3d_vector_length(vector2)));
 
 }
 

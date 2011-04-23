@@ -45,7 +45,7 @@ static int parse_osm_tags(object_t *obj, xmlNodePtr cur)
 				db_add_tag(obj, k, v);
 		}
 	}
-	return(0);
+	return 0;
 
 }
 static void parse_osm_way(xmlNodePtr cur)
@@ -121,13 +121,13 @@ layer_t *parse_osm(const char *buf, int length)
 	doc = xmlReadMemory(buf, length, "noname.xml", NULL, 0);
 	if (doc == NULL) {
 		fprintf(stderr, "Document not parsed successfully.\n");
-		return(NULL);
+		return NULL;
 	}
 	cur = xmlDocGetRootElement(doc);
 	if (cur == NULL) {
 		fprintf(stderr, "empty document\n");
 		xmlFreeDoc(doc);
-		return(NULL);
+		return NULL;
 	}
 	layerid = db_insert_layer("osm");
 	for (c = cur->children;  c != NULL;   c = c->next)   n++; /* count */
@@ -141,7 +141,7 @@ layer_t *parse_osm(const char *buf, int length)
 	xmlFreeDoc(doc);
 	db_flush();
 
-	return(layer);
+	return layer;
 }
 layer_t *load_osm_web(float minlon, float minlat, float maxlon, float maxlat)
 {
@@ -155,7 +155,7 @@ layer_t *load_osm_web(float minlon, float minlat, float maxlon, float maxlat)
 	ret = http_fetch(url, &fileBuf); /* Downloads page */
 	if (ret == -1) {
 		http_perror("http_fetch");
-		return(NULL);
+		return NULL;
 	}
 	layer = parse_osm(fileBuf, ret);
 	/* TODO: cleanup http-lib */
@@ -167,7 +167,7 @@ layer_t *load_osm_file(const char *filename)
 	int length;
 	char *file;
 	layer_t *ret;
-	if (NULL == (file = read_file(filename, &length))) return(NULL);
+	if (NULL == (file = read_file(filename, &length))) return NULL;
 	ret = parse_osm(file, length);
 	free(file);
 	return ret;

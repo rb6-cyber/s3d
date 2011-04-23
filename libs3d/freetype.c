@@ -66,14 +66,14 @@ static int s3d_ft_init(void)
 	int i;
 	oldfontpath[0] = 0;
 	if (error)
-		return (-1);
+		return -1;
 	ft_init = 1;
 	for (i = 0; i < 256; i++) {
 		tess_buf[i].vbuf = NULL;
 		tess_buf[i].pbuf = NULL;
 	}
 
-	return(0);
+	return 0;
 }
 
 static int s3d_ft_load_font(void)
@@ -81,17 +81,17 @@ static int s3d_ft_load_font(void)
 	FT_Error error;
 	if ((memory_font == NULL) || (memory_font_size == 0)) {
 		errds(HIGH, "s3d_ft_load_font()", "there is no font in memory, breaking");
-		return(-1);
+		return -1;
 	}
 	face_init = 0;
 	error = FT_New_Memory_Face(library, (uint8_t *)memory_font, memory_font_size, 0, &face);
 	if (error) {
 		errds(VHIGH, "s3d_ft_load_font():FT_New_Memory_Face", "can't load font : (%d) %s", ft_errors[error].err_code, ft_errors[error].err_msg);
-		return(-1);
+		return -1;
 	}
 	s3dprintf(LOW, "Load Font successful ...");
 	face_init = 1;
-	return(0);
+	return 0;
 }
 
 static int _s3d_clear_tessbuf(void)
@@ -106,7 +106,7 @@ static int _s3d_clear_tessbuf(void)
 		tess_buf[i].vbuf = NULL;
 		tess_buf[i].pbuf = NULL;
 	}
-	return(0);
+	return 0;
 }
 
 
@@ -133,7 +133,7 @@ static int _s3d_add_tessbuf(uint16_t a)
 	if (error) {
 
 		errds(VHIGH, "_s3d_add_tessbuf():FT_Load_Char()", "can't load character %d : (%d) %s", a, ft_errors[error].err_code, ft_errors[error].err_msg);
-		return(-1);
+		return -1;
 	}
 	s3dprintf(VLOW, "[T]riangulating character %c", a);
 	norm = 1.0 / face->glyph->metrics.vertAdvance;
@@ -181,7 +181,7 @@ static int _s3d_add_tessbuf(uint16_t a)
 				}
 			if (outl == -1) {
 				s3dprintf(HIGH, "hole without outline found, exiting ... %c", a);
-				return(-1);
+				return -1;
 			}
 			for (i = 0; i < n; i++) {
 				if (area[perm[i]] < 0) {
@@ -254,7 +254,7 @@ static int _s3d_add_tessbuf(uint16_t a)
 		tess_buf[a].pn = k;
 	}
 	tess_buf[a].xoff = 1.0 * face->glyph->metrics.horiAdvance * norm;
-	return(0);
+	return 0;
 }
 
 /* draws one charachter a */
@@ -299,7 +299,7 @@ static int _s3d_draw_tessbuf(int oid, uint16_t a, int *voff, float *xoff)
 		free(pbuf);
 	}
 	*xoff += tess_buf[a].xoff;  /*  xoffset */
-	return(0);
+	return 0;
 }
 
 /** \brief select font
@@ -321,11 +321,11 @@ int s3d_select_font(const char *path)
 	if (!ft_init)
 		if (s3d_ft_init()) {
 			errds(VHIGH, "s3d_select_font()", "error in initializtation (ft_init())");
-			return(-1);
+			return -1;
 		}
 	if (strncmp(oldfontpath, path, 256) == 0) {
 		s3dprintf(VLOW, "font already %s loaded.", path);
-		return(-1);
+		return -1;
 	}
 	/*  yse (system-specific?!) font grabber */
 	if (((c = s3d_findfont(path)) != NULL)) {
@@ -336,7 +336,7 @@ int s3d_select_font(const char *path)
 			if (!s3d_ft_load_font()) { /* success */
 				if (oldfont != NULL)    free(oldfont);
 				strncpy(oldfontpath, path, 256);
-				return(0);
+				return 0;
 			} else {
 				memory_font = oldfont;
 				memory_font_size = oldsize;
@@ -345,7 +345,7 @@ int s3d_select_font(const char *path)
 			errds(VHIGH, "s3d_select_font()", "Could not open fontfile %s", c);
 		}
 	}
-	return(-1);
+	return -1;
 }
 
 /** \brief draw a simple string
@@ -372,11 +372,11 @@ int s3d_draw_string(const char *str, float *xlen)
 	if (!ft_init)
 		if (s3d_ft_init()) {
 			errds(VHIGH, "s3d_draw_string()", "error in initializtation (ft_init())");
-			return(-1);
+			return -1;
 		}
 	if (!face_init) {
 		errds(VHIGH, "s3d_draw_string()", "no font to draw with");
-		return(-1);
+		return -1;
 	}
 	f_oid = s3d_new_object();
 	/*  standard material */
@@ -388,7 +388,7 @@ int s3d_draw_string(const char *str, float *xlen)
 		_s3d_draw_tessbuf(f_oid, (uint8_t)str[i], &voff, &xoff);
 	/*  s3d_ft_quit(); */
 	if (xlen != NULL) *xlen = xoff;
-	return(f_oid);
+	return f_oid;
 }
 
 /** \brief get rendered string size
@@ -406,11 +406,11 @@ float s3d_strlen(const char *str)
 	if (!ft_init)
 		if (s3d_ft_init()) {
 			errds(VHIGH, "s3d_draw_string()", "error in initializtation (ft_init())");
-			return(0.0);
+			return 0.0;
 		}
 	if (!face_init) {
 		errds(VHIGH, "s3d_draw_string()", "no font to draw with");
-		return(0.0);
+		return 0.0;
 	}
 	/*  standard material */
 	xoff = 0;
@@ -421,7 +421,7 @@ float s3d_strlen(const char *str)
 			_s3d_add_tessbuf(a);
 		xoff += tess_buf[a].xoff;  /*  xoffset */
 	}
-	return(xoff);
+	return xoff;
 
 }
 
@@ -431,6 +431,6 @@ static int s3d_ft_quit(void)
 	_s3d_clear_tessbuf();
 	FT_Done_FreeType(library);
 	ft_init = 0;
-	return(0);
+	return 0;
 }
 #endif /* 0 */

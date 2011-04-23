@@ -123,7 +123,7 @@ int sei_triangulate_polygon(int ncontours, int cntr[], double(*vertices)[2], int
 	initialise(n);
 	construct_trapezoids(n);
 	nmonpoly = monotonate_trapezoids(n);
-	return(triangulate_monotone_polygons(n, nmonpoly, triangles));
+	return triangulate_monotone_polygons(n, nmonpoly, triangles);
 }
 
 

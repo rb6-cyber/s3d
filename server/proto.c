@@ -415,7 +415,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 	default:
 		s3dprintf(LOW, "don't know this command (%d)", command);
 	}
-	return(0);
+	return 0;
 }
 /*  this pushes some buffer out on the wire... */
 int prot_com_out(struct t_process *p, uint8_t opcode, uint8_t *buf, uint16_t length)
@@ -431,8 +431,8 @@ int prot_com_out(struct t_process *p, uint8_t opcode, uint8_t *buf, uint16_t len
 			s3dprintf(LOW, "prot_com_out():n_writen(): connection seems to be dead (pid %d)", p->id);
 			process_del(p->id);
 		}
-		return(0);
+		return 0;
 	}
-	return(-1);
+	return -1;
 }
 

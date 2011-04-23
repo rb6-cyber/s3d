@@ -140,8 +140,8 @@ diff -Naur MPlayer-1.0pre7try2/libvo/vo_s3d.c MPlayer-1.0pre7try2.s3d/libvo/vo_s
 +		data2[(y2*image_width+x2)*4+3]=255;
 +	}
 +	s3d_load_texture(oid,0,x,y,w,h,data2);
-+	return(0);*/
-+	return(0);
++	return 0;*/
++	return 0;
 +}
 +
 +static void draw_osd(void)
@@ -312,7 +312,7 @@ diff -Naur MPlayer-1.0pre7try2/libvo/vo_s3d.c MPlayer-1.0pre7try2.s3d/libvo/vo_s
 +	if (s3d_init(&argc,&argv,"mplayer"))
 +	{
 +    	mp_msg (MSGT_VO, MSGL_WARN, "[s3d] sorry, can't reach server.\n");
-+		return(ENOSYS);
++		return ENOSYS;
 +	}
 +	oid=s3d_new_object();
 +	s3d_push_vertex(oid,-3,-3,0);

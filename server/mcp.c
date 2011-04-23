@@ -59,7 +59,7 @@ int mcp_init(void)
 			}
 	}
 	mcp_focus(-1);
-	return(0);
+	return 0;
 }
 /*  report the mcp about our object */
 int mcp_rep_object(int32_t mcp_oid)
@@ -78,7 +78,7 @@ int mcp_rep_object(int32_t mcp_oid)
 	ap = get_proc_by_pid(p->object[mcp_oid]->virtual_pid);
 	strncpy(mo.name, ap->name, S3D_NAME_MAX);
 	prot_com_out(p, S3D_P_MCP_OBJECT, (uint8_t *)&mo, sizeof(struct mcp_object));
-	return(0);
+	return 0;
 }
 /* tells the mcp that some program vanished ... */
 int mcp_del_object(int32_t mcp_oid)
@@ -89,7 +89,7 @@ int mcp_del_object(int32_t mcp_oid)
 		mcp_focus(-1);
 	}
 	prot_com_out(get_proc_by_pid(MCP), S3D_P_MCP_DEL_OBJECT, (uint8_t *)&oid, 4);
-	return(0);
+	return 0;
 }
 /* sets a new focus */
 int mcp_focus(int oid)
@@ -104,7 +104,7 @@ int mcp_focus(int oid)
 			focus_oid = oid;
 			obj_pos_update(p, 0, 0);
 		}
-	return(0);
+	return 0;
 }
 
 /*  clean up functions after the mcp left */
@@ -112,6 +112,6 @@ int mcp_focus(int oid)
 /* TODO: move things from object.c to this place!
 int mcp_quit(void)
 {
- return(0);
+ return 0;
 }
 */

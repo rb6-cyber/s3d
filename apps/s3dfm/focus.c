@@ -35,17 +35,17 @@ float focus_get_scale(t_node *f)
 		if (f->parent != NULL)
 			scale = 1.f / s * focus_get_scale(f->parent);
 		else
-			return(1.0);
+			return 1.0;
 		root.px -= f->px;
 		root.pz -= f->pz;
 		root.py -= BOXHEIGHT + f->detached * DETHEIGHT;
 		root.px *= 1 / s;
 		root.py *= 1 / s;
 		root.pz *= 1 / s;
-		return(scale);
+		return scale;
 	} else {
-		if (f->parent != NULL)  return(focus_get_scale(f->parent)); /* icons etc */
-		else        return(1.0);      /* that should never happen */
+		if (f->parent != NULL)  return focus_get_scale(f->parent); /* icons etc */
+		else        return 1.0;      /* that should never happen */
 	}
 
 }

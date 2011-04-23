@@ -56,13 +56,13 @@ int net_send(uint8_t opcode, char *buf, uint16_t length)
 		break;
 #endif
 	}
-	return(0);
+	return 0;
 }
 /* handler for socket based connection types */
 #ifdef TCP
 static int _s3d_net_receive(void)
 {
-	return(_s3d_tcp_net_receive());
+	return _s3d_tcp_net_receive();
 }
 #endif
 /** \brief get events from server
@@ -94,7 +94,7 @@ int s3d_net_check(void)
 #endif
 	}
 	s3d_process_stack();
-	return(0);
+	return 0;
 }
 int s3d_net_init(char *urlc)
 {
@@ -142,7 +142,7 @@ int s3d_net_init(char *urlc)
 #ifdef SHM
 	if (shm) {
 		if (!strncmp(port, "shm", 3))
-			if (!_shm_init(sv)) return(con_type = CON_SHM);
+			if (!_shm_init(sv)) return con_type = CON_SHM;
 	}
 #endif
 #ifdef TCP
@@ -154,8 +154,8 @@ int s3d_net_init(char *urlc)
 				pn = 6066;
 			}
 		}
-		if (!_tcp_init(sv, pn)) return(con_type = CON_TCP);
+		if (!_tcp_init(sv, pn)) return con_type = CON_TCP;
 	}
 #endif
-	return(CON_NULL);
+	return CON_NULL;
 }

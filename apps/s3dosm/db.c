@@ -49,7 +49,7 @@ int db_add_tag(object_t *obj, const char *key, const char *val)
 	clean_string(mval, val, MAXQ);
 	sqlite3_snprintf(MAXQ, tagquery, "INSERT INTO tag VALUES (%d, '%q','%q' );", (int)obj->tagid, mkey, mval);
 	db_exec(tagquery, NULL, NULL);
-	return(0);
+	return 0;
 }
 
 int db_insert_node(node_t *node)
@@ -65,7 +65,7 @@ int db_insert_node(node_t *node)
 		                 (int)node->base.layerid, (int)node->base.id, node->lat,  node->lon,  node->alt,  node->visible, (int)node->base.tagid);
 
 	db_exec(addquery, NULL, NULL);
-	return(0);
+	return 0;
 }
 
 int db_insert_segment(segment_t *seg)
@@ -83,7 +83,7 @@ int db_insert_segment(segment_t *seg)
 	                 (int)seg->base.layerid, (int)seg->base.id, (int)seg->from, (int)seg->to, (int)seg->base.tagid);
 	db_exec(addquery, NULL, NULL);
 
-	return(0);
+	return 0;
 }
 
 int db_insert_way_only(way_t *way)
@@ -92,7 +92,7 @@ int db_insert_way_only(way_t *way)
 	way->base.tagid = tagid++;
 	sqlite3_snprintf(MAXQ, addquery, "INSERT INTO way (layer_id, way_id, tag_id) VALUES (%d, %d, %d);", (int)way->base.layerid, (int)way->base.id, (int)way->base.tagid);
 	db_exec(addquery, NULL, NULL);
-	return(0);
+	return 0;
 }
 
 int db_insert_way_seg(way_t *way, int seg_n)
@@ -100,7 +100,7 @@ int db_insert_way_seg(way_t *way, int seg_n)
 	char addquery[MAXQ];
 	sqlite3_snprintf(MAXQ, addquery, "UPDATE segment SET way_id=%d WHERE seg_id=%d AND layer_id=%d;", (int)way->base.id, seg_n, (int)way->base.layerid);
 	db_exec(addquery, NULL, NULL);
-	return(0);
+	return 0;
 }
 
 int db_insert_layer(const char *layer_name)
@@ -119,7 +119,7 @@ int db_insert_layer(const char *layer_name)
 		db_flush();
 		db_exec(findquery, db_getint, &layerid);
 	}
-	return(layerid);
+	return layerid;
 }
 
 #define MAGIC 1337 /* just to elevate the nodes a little bit */
@@ -143,10 +143,10 @@ int db_olsr_check(const char *ip, float *pos)
 		pos[1] = p[1];
 		pos[2] = p[2];
 		found = 0;
-		return(1);
+		return 1;
 	}
 	found = 0;
-	return(0);
+	return 0;
 }
 
 /* initializes the starting point of nodes  by averaging its lon/lat */
@@ -155,7 +155,7 @@ int db_olsr_node_init(float *pos)
 	found = 0;
 	db_exec("SELECT AVG(latitude) as latitude, AVG(longitude) as longitude, AVG(altitude) as altitude FROM node WHERE tag_id IN (SELECT tag_id FROM tag WHERE tagkey='ip');", db_getpoint, pos);
 	printf("pos = %3.3f %3.3f %3.3f\n", pos[0], pos[1], pos[2]);
-	return(0); /* return 1 if something is found, 0 if pos[0] its still 0 */
+	return 0; /* return 1 if something is found, 0 if pos[0] its still 0 */
 }
 
 
@@ -186,7 +186,7 @@ int db_getpoint(void *data, int argc, char **argv, char **azColName)
 	p[4] = lo;
 	p[5] = alt;
 	found = 1;
-	return(0);
+	return 0;
 }
 
 /* sqlite3-callback to get an integer of the database */
@@ -202,7 +202,7 @@ static int db_getstr(void *string, int S3DOSMUNUSED(argc), char **argv, char **S
 {
 	if (argv[0])
 		strncpy((char *)string, argv[0], MAXQ);
-	return(0);
+	return 0;
 }
 
 /* get the value for a a certain tagid and keyvalue (field). Write into target, which has to be allocated with MAXQ bytes of space.
@@ -213,7 +213,7 @@ int db_gettag(int tagid, const char *field, char *target)
 	target[0] = 0;
 	sqlite3_snprintf(MAXQ, query, "SELECT tagvalue FROM tag WHERE tagkey='%q' AND tag_id=%d;", field, tagid);
 	db_exec(query, db_getstr, target);
-	return(target[0] == 0);
+	return target[0] == 0;
 }
 
 int callback(void *S3DOSMUNUSED(NotUsed), int argc, char **argv, char **azColName)
@@ -235,7 +235,7 @@ static int db_really_exec(const char *query, sqlite3_callback callback, const vo
 		fprintf(stderr, "SQL error: %s\n", zErrMsg);
 		exit(-1);
 	}
-	return(SQLITE_OK != rc); /* 0 = okay */
+	return SQLITE_OK != rc; /* 0 = okay */
 }
 
 /* call this if you're finished with a few stackable operations */
@@ -270,7 +270,7 @@ int db_exec(const char *query, sqlite3_callback callback, const void *arg)
 	{
 		ret = db_really_exec(query, callback, arg);  /* pass it to the real function */
 	}
-	return(ret);
+	return ret;
 }
 
 int db_init(const char *dbFile)
@@ -285,9 +285,9 @@ int db_init(const char *dbFile)
 	if (rc) {
 		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
 		sqlite3_close(db);
-		return(-1);
+		return -1;
 	}
-	return(0);
+	return 0;
 }
 
 int db_quit(void)
@@ -296,7 +296,7 @@ int db_quit(void)
 	if (dbFile != NULL)
 		if (unlink(dbFile))
 			perror("db_quit()");
-	return(0);
+	return 0;
 }
 
 int db_create(void)
@@ -313,6 +313,6 @@ int db_create(void)
 	db_exec("CREATE UNIQUE INDEX tag_id_index ON tag (tag_id,tagkey);", NULL, NULL);
 	*/
 	db_flush();
-	return(0);
+	return 0;
 }
 

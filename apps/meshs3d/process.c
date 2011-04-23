@@ -122,7 +122,7 @@ static int id_choose(const struct node_id *id, int32_t size)
 			return hash;
 		for (i = strlen(id->id.generic); i != 0; i--)
 			hash += (hash << 5) + id->id.generic[i - 1];
-		return (hash % size);
+		return hash % size;
 		break;
 	case node_undefined:
 		hash = 0;
@@ -131,7 +131,7 @@ static int id_choose(const struct node_id *id, int32_t size)
 	hash += (hash << 3);
 	hash ^= (hash >> 11);
 	hash += (hash << 15);
-	return (hash % size);
+	return hash % size;
 }
 
 static int long_comp(const void *data1, const void *data2)
@@ -157,7 +157,7 @@ static int long_choose(const void *data, int32_t size)
 	struct node_con *con = (struct node_con*)data;
 	int hash = id_choose(&con->address[0], size)+id_choose(&con->address[1], size);
 
-	return (hash % size);
+	return hash % size;
 }
 
 static int orig_comp(const void *data1, const void *data2)
@@ -323,7 +323,7 @@ static struct node *handle_mesh_node(struct node_id id, char *name_string)
 		Global.node_count++;
 	}
 	orig_node->last_seen = Global.output_block_counter;
-	return(orig_node);
+	return orig_node;
 }
 
 static int parse_mac(const char *src, uint8_t dst[6])
@@ -393,7 +393,7 @@ int process_main(void)
 	struct node *tmp_node;
 	struct node_id int_con_from, int_con_to;
 	unsigned int address;
-	unsigned int line_blockcnt;
+	unsigned int line_blockcnt = 0;
 
 	lbuf_ptr = lbuf;
 	last_cr_ptr = NULL;
@@ -567,6 +567,6 @@ int process_main(void)
 		blockcnt = line_blockcnt;
 		memmove(lbuf, last_cr_ptr + 1, strlen(last_cr_ptr));
 	}
-	return(0);
+	return 0;
 
 }

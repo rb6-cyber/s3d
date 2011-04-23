@@ -115,7 +115,7 @@ int rc_init(void)
 		/* father just returns */
 	}
 #endif
-	return(0);
+	return 0;
 }
 /*  the mainloop, should be handling all signals */
 static void mainloop(void)
@@ -159,7 +159,7 @@ int init(void)
 	}
 	if (!frame_mode) {
 		errsf("init()", "no framework mode available");
-		return(-1);
+		return -1;
 	}
 	graphics_init();
 	network_init();
@@ -174,7 +174,7 @@ int init(void)
 	if (kidpid != 0)
 		kill(kidpid, SIGUSR1);
 #endif
-	return(0);
+	return 0;
 }
 
 /*  things to be cleaned up  */
@@ -246,10 +246,10 @@ static int process_args(int argc, char **argv)
 #endif
 			s3dprintf(VHIGH, " --help, -?, -h: this helpful text");
 			errsf("process_args()", "exiting for users sake");
-			return(-1);
+			return -1;
 		}
 	}
-	return(0);
+	return 0;
 }
 /*  things to be done when program is started */
 int main(int argc, char **argv)
@@ -258,5 +258,5 @@ int main(int argc, char **argv)
 	init();
 	mainloop();
 	quit();
-	return(0);
+	return 0;
 }

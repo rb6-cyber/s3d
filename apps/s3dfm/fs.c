@@ -82,7 +82,7 @@ filelist *fl_new(char *path)
 		}
 		free(namelist);
 	}
-	return(fl);
+	return fl;
 }
 /* delete the filelist */
 void fl_del(filelist *fl)
@@ -171,7 +171,7 @@ int fs_copy(char *source, char *dest)
 	char buf[1024];
 	int n;
 	if (-1 == stat(source, &s))
-		return(0);
+		return 0;
 	switch (s.st_mode&S_IFMT) {
 	case S_IFDIR:
 		fl = fl_new(source);
@@ -193,14 +193,14 @@ int fs_copy(char *source, char *dest)
 		printf("open source...");
 		if (NULL == (fps = fopen(source, "rb"))) {
 			fs_error("fs_copy():fopen(source)", source);
-			return(-1);
+			return -1;
 		}
 		printf("ok\n");
 		printf("open dest...");
 		if (NULL == (fpd = fopen(dest, "wb"))) {
 			fs_error("fs_copy():fopen(source)", source);
 			fclose(fps);
-			return(-1);
+			return -1;
 		}
 		printf("ok\n");
 		/* TODO: overwrite protection etc */
@@ -219,7 +219,7 @@ int fs_copy(char *source, char *dest)
 		fclose(fpd);
 
 	}
-	return(0);
+	return 0;
 }
 /* copy the source to the destination, destination should be a directory. */
 int fs_fl_copy(filelist *fl, const char *dest)
@@ -243,7 +243,7 @@ int fs_fl_copy(filelist *fl, const char *dest)
 		fl->p[i].state = STATE_FINISHED;
 	}
 
-	return(r);
+	return r;
 }
 /* recursively unlink a dir or file. */
 int fs_unlink(char *dest)
@@ -251,28 +251,28 @@ int fs_unlink(char *dest)
 	filelist *fl;
 	struct stat s;
 
-	if (-1 == stat(dest, &s))  return(-1);
+	if (-1 == stat(dest, &s))  return -1;
 	if ((s.st_mode&S_IFMT) == S_IFDIR) {
 		printf("%s is a dir, removing below ...\n", dest);
 		fl = fl_new(dest);
 		if (fs_fl_unlink(fl)) {
 			fl_del(fl);
-			return(-1);
+			return -1;
 		} else {
 			fl_del(fl);
 			printf("removing %s\n", dest);
 			if (rmdir(dest) == -1) {
 				fs_error("fs_fl_unlink(): rmdir()", dest);
-				return(-1);
+				return -1;
 			}
 		}
 	} else {
 		if (unlink(dest) == -1) {
 			fs_error("fs_fl_unlink(): unlink()", dest);
-			return(-1);
+			return -1;
 		}
 	}
-	return(0);
+	return 0;
 }
 /* remove a lot of files */
 int fs_fl_unlink(filelist *fl)
@@ -285,7 +285,7 @@ int fs_fl_unlink(filelist *fl)
 		r |= fs_unlink(fl->p[i].name);
 		fl->p[i].state = STATE_FINISHED;
 	}
-	return(r);
+	return r;
 
 }
 int fs_move(char *source, char *dest)
@@ -298,11 +298,11 @@ int fs_move(char *source, char *dest)
 			break;
 		default:
 			fs_error("fs_move()", dest);
-			return(-1); /* can't help it */
+			return -1; /* can't help it */
 
 		}
 	}
-	return(0);
+	return 0;
 }
 
 /* moves the source to the destination */
@@ -327,7 +327,7 @@ int fs_fl_move(filelist *fl, const char *dest)
 		fl->p[i].state = STATE_FINISHED;
 	}
 
-	return(r);
+	return r;
 }
 
 /* write an error and wait for a reaction */
@@ -343,5 +343,5 @@ int fs_error(const char *message, char *file)
 	printf("[FS ERROR]: %s %s %s", message, file, strerror(errno));
 	while (fs_err.state != ESTATE_NONE)
 		nanosleep(&t, NULL); /* until situation clear, wait (and don't waste cpu-time) */
-	return(0);
+	return 0;
 }

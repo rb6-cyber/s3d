@@ -113,7 +113,7 @@ static int wire_sphere(int slices, int stacks)
 	free(v);
 	free(n);
 	free(l);
-	return(o);
+	return o;
 }
 
 
@@ -240,7 +240,7 @@ static int handle_networks(void)
 
 	pthread_mutex_unlock(&Network_list_mutex);
 
-	return(0);
+	return 0;
 
 }
 
@@ -298,7 +298,7 @@ static int handle_clients(void)
 
 	pthread_mutex_unlock(&Client_list_mutex);
 
-	return(0);
+	return 0;
 
 }
 
@@ -341,7 +341,7 @@ static int object_click(struct s3d_evt *evt)
 	Last_Click_Oid = clicked_id;
 	Last_Click_Time = get_time();
 
-	return(0);
+	return 0;
 
 }
 
@@ -374,7 +374,7 @@ static int object_info(struct s3d_evt *hrmz)
 
 	}
 
-	return(0);
+	return 0;
 
 }
 
@@ -449,5 +449,5 @@ void* gui_main(void *KISM3DUNUSED(unused))
 
 	Kism3d_aborted = 1;
 
-	return(NULL);
+	return NULL;
 }

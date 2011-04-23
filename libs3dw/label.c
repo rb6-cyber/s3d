@@ -87,7 +87,7 @@ s3dw_label *s3dw_label_new(const s3dw_surface *surface, const char *text, float 
 	label->onclick = s3dw_nothing;
 	s3dw_widget_append((s3dw_widget *)surface, widget);
 	s3dw_label_draw(widget);
-	return(label);
+	return label;
 }
 
 void s3dw_label_erase(s3dw_widget *widget)
@@ -105,7 +105,7 @@ void s3dw_label_destroy(s3dw_widget *widget)
 /* handle key events */
 int s3dw_label_event_key(s3dw_widget *S3DUNUSED(widget), struct s3d_key_event *S3DUNUSED(keys))
 {
-	return(0);
+	return 0;
 }
 /* handle click events */
 int s3dw_label_event_click(s3dw_widget *widget, uint32_t oid)
@@ -113,7 +113,7 @@ int s3dw_label_event_click(s3dw_widget *widget, uint32_t oid)
 	s3dw_label *label = (s3dw_label *)widget;
 	if (widget->oid == oid) {
 		label->onclick(widget);
-		return(1);
+		return 1;
 	}
-	return(0);
+	return 0;
 }

@@ -174,7 +174,7 @@ int gps_init(const char *gpshost)
 		}
 		/*  printf("no connection to gpsd\n");*/
 		fprintf(stderr, "s3dosm: no gpsd running or network error: %d, %s\n" ,  errno, err_str);
-		return(-1);
+		return -1;
 	}
 	sock_opts = fcntl(dgps->gps_fd, F_GETFL, 0);
 	fcntl(dgps->gps_fd, F_SETFL, sock_opts | O_NONBLOCK);
@@ -189,7 +189,7 @@ int gps_init(const char *gpshost)
 	tlon = lon = lon_old = 0.0;
 	gps_active = 1;
 	gps_stream(dgps, WATCH_ENABLE, NULL);
-	return(0);
+	return 0;
 }
 int gps_main(void)
 {
@@ -219,7 +219,7 @@ int gps_main(void)
 	}
 	draw_translate_icon(user_icon_rotator, lat, lon);
 	frame++;
-	return(0);
+	return 0;
 }
 int gps_quit(void)
 {
@@ -228,21 +228,21 @@ int gps_quit(void)
 		gps_active = 0;
 		gps_close(dgps);
 	}
-	return(0);
+	return 0;
 }
 #else
 
 int gps_init(const char *S3DOSMUNUSED(gpshost))
 {
 	printf("GPS support not compiled in!\n");
-	return(0);
+	return 0;
 }
 int gps_main(void)
 {
-	return(0);
+	return 0;
 }
 int gps_quit(void)
 {
-	return(0);
+	return 0;
 }
 #endif

@@ -48,7 +48,7 @@ static void mainloop(void)
  * want that ... */
 static int click(struct s3d_evt *evt)
 {
-	return(s3dw_handle_click(evt));
+	return s3dw_handle_click(evt);
 }
 static void key_button(s3dw_widget *button)
 {
@@ -75,7 +75,7 @@ static int key(struct s3d_evt *evt)
 		/* of couse, show it */
 		s3dw_show(S3DWIDGET(miniwin));
 	}
-	return(0);
+	return 0;
 
 }
 
@@ -173,6 +173,6 @@ int main(int argc, char **argv)
 		s3d_mainloop(mainloop);
 		s3d_quit();
 	}
-	return(0);
+	return 0;
 }
 

@@ -92,7 +92,7 @@ int icon_draw(t_node *dir)
 	s3d_rotate(dir->objs.str, 0, 0, 0);
 	s3d_link(dir->objs.str, dir->oid);
 	dir->disp = D_ICON;
-	return(0);
+	return 0;
 }
 int icon_undisplay(t_node *dir)
 {
@@ -105,5 +105,5 @@ int icon_undisplay(t_node *dir)
 		dir->objs.str = -1;
 	}
 	dir->disp = 0;
-	return(0);
+	return 0;
 }

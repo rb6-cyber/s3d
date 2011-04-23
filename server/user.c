@@ -35,10 +35,10 @@ int user_init(void)
 		break;
 #endif
 	default:
-		return(-1);
+		return -1;
 	}
 	ox = oy = 0xFFFFFF;
-	return(0);
+	return 0;
 }
 int user_main(void)
 {
@@ -48,7 +48,7 @@ int user_main(void)
 		user_main_sdl();
 #endif
 	default:
-		return(0);
+		return 0;
 	}
 }
 void user_key(uint16_t key, uint16_t unicode, uint16_t mod, int state)
@@ -118,6 +118,6 @@ void user_mouse(int button, int state, int x, int y)
 }
 int user_quit(void)
 {
-	return(0);
+	return 0;
 }
 

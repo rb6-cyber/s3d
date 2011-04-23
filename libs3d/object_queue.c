@@ -56,7 +56,7 @@ int _queue_init(void)
 		queue[i] = Q_UNUSED;
 	}
 	_queue_fill();
-	return(0);
+	return 0;
 }
 /*  checks the queue empty slots and requests new ones if needed */
 int _queue_fill(void)
@@ -65,7 +65,7 @@ int _queue_fill(void)
 	for (i = 0; i < queue_size; i++)
 		if (queue[i] == Q_UNUSED)
 			net_send(S3D_P_C_NEW_OBJ, NULL, 0);
-	return(0);
+	return 0;
 }
 /*  we have a new object from the server, trying to find a place for it */
 int _queue_new_object(unsigned int oid)
@@ -77,16 +77,16 @@ int _queue_new_object(unsigned int oid)
 			/*    s3dprintf(LOW,"placing it at position %d",i); */
 			queue[i] = oid;
 			requested--;
-			return(0);
+			return 0;
 		}
-	if (queue_size == 0) return(-1);  /*  already quit. */
+	if (queue_size == 0) return -1;  /*  already quit. */
 	/*  if we reach here, all slots all taken.  */
 	/*  s3dprintf(LOW,"no place for object, resizing stack.",i); */
 	queue = (unsigned int*)realloc(queue, sizeof(unsigned int) * (queue_size + 1));
 	queue_size += 1;
 	requested--;
 	queue[queue_size-1] = oid;
-	return(0);
+	return 0;
 }
 /*  an object is requested!! give one out: */
 unsigned int _queue_want_object(void)
@@ -104,12 +104,12 @@ unsigned int _queue_want_object(void)
 				ret = queue[i];
 				queue[i] = Q_UNUSED;
 				net_send(S3D_P_C_NEW_OBJ, NULL, 0);  /*  we already can request a new one. */
-				return(ret);
+				return ret;
 			}
 		/*  if we reach this point, our queue is empty. */
 		/*  as other request should have sent S3D_P_C_NEW_OBJ-requests,  */
 		/*  we request one more object than needed to satisfy more load in future. */
-		if (queue_size == 0) return(-1);  /*  already quit. */
+		if (queue_size == 0) return -1;  /*  already quit. */
 		if (requested < MAX_REQ) {
 			net_send(S3D_P_C_NEW_OBJ, NULL, 0);
 			requested++;
@@ -119,7 +119,7 @@ unsigned int _queue_want_object(void)
 	} while (j++ < TIMEOUT);
 
 	errds(LOW, "_queue_want_object()", "timeout is reached. server is extremly slow/laggy or dead");
-	return(-1);
+	return -1;
 }
 /*  cleans up */
 int _queue_quit(void)
@@ -129,5 +129,5 @@ int _queue_quit(void)
 		queue = NULL;
 	}
 	queue_size = 0;
-	return(0);
+	return 0;
 }

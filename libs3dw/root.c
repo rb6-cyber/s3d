@@ -46,34 +46,34 @@ void s3dw_nothing(s3dw_widget *S3DUNUSED(widget))
 }
 int s3dw_click_nothing(s3dw_widget *S3DUNUSED(widget), uint32_t S3DUNUSED(dummy))
 {
-	return(0);
+	return 0;
 }
 int s3dw_key_nothing(s3dw_widget *S3DUNUSED(widget), struct s3d_key_event *S3DUNUSED(dummy))
 {
-	return(0);
+	return 0;
 }
 
 const char *s3dw_get_type_string(int type)
 {
 	switch (type) {
 	case S3DW_TROOT:
-		return("root");
+		return "root";
 	case S3DW_TCAM:
-		return("cam");
+		return "cam";
 	case S3DW_TSURFACE:
-		return("surface");
+		return "surface";
 	case S3DW_TBUTTON:
-		return("button");
+		return "button";
 	case S3DW_TLABEL:
-		return("label");
+		return "label";
 	case S3DW_TINPUT:
-		return("input");
+		return "input";
 	case S3DW_TTEXTBOX:
-		return("textbox");
+		return "textbox";
 	case S3DW_TSCROLLBAR:
-		return("scrollbar");
+		return "scrollbar";
 	}
-	return(NULL);
+	return NULL;
 }
 
 /** \brief get the root

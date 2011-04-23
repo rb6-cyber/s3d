@@ -119,7 +119,7 @@ static int draw_icon(void *S3DOSMUNUSED(data), int argc, char **argv, char **S3D
 		}
 
 	}
-	return(0);
+	return 0;
 }
 /* just fetches node information and puts in the nodelist */
 static int insert_node(void *data, int argc, char **argv, char **azColName)
@@ -133,7 +133,7 @@ static int insert_node(void *data, int argc, char **argv, char **azColName)
 			else if (0 == strcmp(azColName[i], "altitude"))  np[nodelist_n].alt = strtod(argv[i], NULL);
 		}
 	}
-	return(0);
+	return 0;
 }
 static int select_waytype(void *data, int argc, char **argv, char **S3DOSMUNUSED(azColName))
 {
@@ -147,7 +147,7 @@ static int select_waytype(void *data, int argc, char **argv, char **S3DOSMUNUSED
 			else if (0 == strcmp(argv[i], "residential"))  *((int *) data) = 1;
 		}
 	}
-	return(0);
+	return 0;
 }
 /* draw waylist, clear the queue */
 static void waylist_draw(const char *filter)
@@ -392,7 +392,7 @@ static int way_group(void *data, int argc, char **argv, char **azColName)
 		}
 	}
 	if (p.node_from == p.node_to) /* skip */
-		return(0);
+		return 0;
 	if ((lastid != id) && (id != 0)) {
 		waylist_draw(filter);
 		/* flush/draw the list, add new  */

@@ -222,7 +222,7 @@ int box_buildblock(t_node *dir)
 	s3d_link(dir->objs.titlestr, dir->oid);
 	dir->disp = D_DIR;
 	/* printf("FULLNAME is [%s]\n",fullname);*/
-	return(0);
+	return 0;
 }
 /* display a directoy on the top of another */
 int box_expand(t_node *dir)
@@ -230,14 +230,14 @@ int box_expand(t_node *dir)
 	printf("box_expand( %s )\n", dir->name);
 	switch (dir->disp) {
 	case D_DIR:
-		return(0); /* already done */
+		return 0; /* already done */
 	case D_ICON:
 		icon_undisplay(dir); /* undisplay previously displayed types, like icons etc */
 		break;
 	case D_NONE:
 		break; /* ignore */
 	default:
-		return(-1); /* panic */
+		return -1; /* panic */
 	}
 	dir->dpx = 0.0;
 	dir->dpy = BOXHEIGHT;
@@ -251,7 +251,7 @@ int box_expand(t_node *dir)
 		s3d_link(dir->oid, dir->parent->oid);
 		box_order_subdirs(dir->parent);
 	}
-	return(0);
+	return 0;
 }
 /* remove s3d-objects of a directory node */
 int box_undisplay(t_node *dir)
@@ -279,21 +279,21 @@ int box_undisplay(t_node *dir)
 	/* keep this. icons also needs the *same* string */
 	/* if (dir->objs.str!=-1)   {  s3d_del_object(dir->objs.str); dir->objs.str=-1; }*/
 	dir->disp = D_NONE;
-	return(0);
+	return 0;
 }
 /* the opposite effect of box_expand, e.g. transforming the box back to an icon */
 int box_unexpand(t_node *dir)
 {
 	printf("box_unexpand( %s )\n", dir->name);
 	if (dir->parent == NULL) /* we can't do this on root.... */
-		return(-1);
+		return -1;
 	dir->detached = 0;
 	box_undisplay(dir);
 	icon_draw(dir);
 	dir->parent->dirs_opened--;
 	box_order_icons(dir->parent);
 	box_order_subdirs(dir->parent);
-	return(0);
+	return 0;
 }
 
 /* undisplay a directory, thus recursively removing the kids.*/
@@ -305,12 +305,12 @@ int box_close(t_node *dir, int force)
 	printf("box_close( %s )\n", dir->name);
 	if (&root == dir) {
 		printf("won't close down root box ... \n");
-		return(-1);
+		return -1;
 	}
-	if (dir->detached && !force) return(1);
+	if (dir->detached && !force) return 1;
 	if (dir->disp != D_DIR) { /* that should not be happening ... */
 		printf("[A]lready undisplayed %s, nothing to do ...\n", dir->name);
-		return(-1);
+		return -1;
 	}
 	/* closing kids. ret will be != 0 if any of the kids did not close correctly */
 	ret = 0;
@@ -319,7 +319,7 @@ int box_close(t_node *dir, int force)
 			ret |= box_close(dir->sub[i], force);
 	if (ret && !force) { /* if anything got wrong, return here ... */
 		box_order_subdirs(dir);
-		return(ret);
+		return ret;
 	} else {
 		/* also remove the icons */
 		if (focus == dir)   focus_set(dir->parent);
@@ -332,7 +332,7 @@ int box_close(t_node *dir, int force)
 			}
 		box_unexpand(dir);
 	}
-	return(ret);
+	return ret;
 }
 /*
 / * only display dir and its kids, but nothing below. * /
@@ -348,7 +348,7 @@ int box_collapse_grandkids(t_node *dir)
    if (kid->list[j].disp==D_DIR)
     box_collapse(&kid->list[j],0);
   }
- return(0);
+ return 0;
 }*/
 /* orders the directory objects on top of its parent objects
  * to be called after adding or removing things ...*/

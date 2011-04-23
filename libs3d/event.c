@@ -85,10 +85,10 @@ struct s3d_evt *s3d_find_event(uint8_t event) {
 	p = s3d_stack;
 	while (p != NULL) {
 		if (p->event == event)
-			return(p);
+			return p;
 		p = p->next;
 	}
-	return(NULL);
+	return NULL;
 }
 
 /** \brief delete event from stack
@@ -115,7 +115,7 @@ int s3d_delete_event(const struct s3d_evt *devt)
 		previous = p;
 		p = p->next;
 	}
-	return(-1);
+	return -1;
 }
 
 /** \brief process all events on stack

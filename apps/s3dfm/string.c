@@ -51,7 +51,7 @@ char *dots_at_start(char *str, unsigned int n, t_node *d)
 	} while ((d = d->parent) != NULL);
 	if (i < 0)   s[0] = s[1] = '.';
 	else     s = (char *)s + i + 1; /* jump to start of the string */
-	return(s);
+	return s;
 
 }
 /* add some dots to an integer value for better readability */
@@ -90,7 +90,7 @@ char *mstrncat(char *dest, const char *src, int n)
 	}
 	for (; i < n; i++)
 		dest[i] = 0; /* pad the rest with zero */
-	return(dest);
+	return dest;
 }
 /* same as strncpy, but have a terminating zero even if
  * source is too big */
@@ -98,6 +98,6 @@ char *mstrncpy(char *dest, const char *src, int n)
 {
 	strncpy(dest, src, n);
 	dest[n-1] = 0;
-	return(dest);
+	return dest;
 }
 

@@ -79,14 +79,14 @@ int network_init(void)
 	if (signal(SIGIO, sigio_handler) == SIG_ERR)
 		errn("s3d_init():signal()", errno);
 #endif
-	return(0);
+	return 0;
 }
 volatile int      turn;
 int net_turn_off(int S3DUNUSED(interval))
 {
 	s3dprintf(VLOW, "Warning: High traffic on Network, interrupting read.");
 	turn = 0;
-	return(0);
+	return 0;
 }
 
 /*  this basicly polls for new connection */
@@ -115,7 +115,7 @@ int network_main(void)
 #ifdef SHM
 	shm_main();
 #endif
-	return(0);
+	return 0;
 }
 int n_remove(struct t_process *p)
 {
@@ -132,7 +132,7 @@ int n_remove(struct t_process *p)
 #endif
 	}
 	p->con_type = CON_NULL;
-	return(-1);
+	return -1;
 }
 
 int n_readn(struct t_process *p, uint8_t *str, int s)
@@ -140,28 +140,28 @@ int n_readn(struct t_process *p, uint8_t *str, int s)
 	switch (p->con_type) {
 #ifdef TCP
 	case CON_TCP:
-		return(tcp_readn(p->sockid, str, s));
+		return tcp_readn(p->sockid, str, s);
 #endif
 #ifdef SHM
 	case CON_SHM:
-		return(shm_readn((struct buf_t *)p->shmsock.data_ctos, str, s));
+		return shm_readn((struct buf_t *)p->shmsock.data_ctos, str, s);
 #endif
 	}
-	return(-1);
+	return -1;
 }
 int n_writen(struct t_process *p, uint8_t *str, int s)
 {
 	switch (p->con_type) {
 #ifdef TCP
 	case CON_TCP:
-		return(tcp_writen(p->sockid, str, s));
+		return tcp_writen(p->sockid, str, s);
 #endif
 #ifdef SHM
 	case CON_SHM:
-		return(shm_writen((struct buf_t *)p->shmsock.data_stoc, str, s));
+		return shm_writen((struct buf_t *)p->shmsock.data_stoc, str, s);
 #endif
 	}
-	return(-1);
+	return -1;
 }
 
 int network_quit(void)
@@ -172,6 +172,6 @@ int network_quit(void)
 #ifdef SHM
 	shm_quit();
 #endif
-	return(0);
+	return 0;
 }
 

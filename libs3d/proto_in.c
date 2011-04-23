@@ -186,6 +186,6 @@ int net_prot_in(uint8_t opcode, uint16_t length, char *buf)
 
 		s3d_push_event(s3devt);
 	}
-	return(0);
+	return 0;
 }
 

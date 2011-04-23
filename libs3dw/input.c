@@ -36,14 +36,14 @@ uint32_t s3dw_input_draw_string(s3dw_widget *widget)
 	uint32_t oid_text;
 	int i;
 	float tlen;
-	if (widget->width < 1) return(-1);
+	if (widget->width < 1) return -1;
 	i = 0;
 	while (s3d_strlen(input->text + i) > (widget->width - 1)) i++;
 	oid_text = s3d_draw_string(input->text + i, &tlen);
 	s3d_pep_materials_a(oid_text, widget->style->text_mat, 1);
 	s3d_translate(oid_text, 0.5, -1.5, 0.30);
 	s3d_link(oid_text, widget->oid);
-	return (oid_text);
+	return oid_text;
 }
 void s3dw_input_draw(s3dw_widget *widget)
 {
@@ -164,7 +164,7 @@ s3dw_input *s3dw_input_new(const s3dw_surface *surface, float width, float posx,
 
 	s3dw_widget_append((s3dw_widget *)surface, widget);
 	s3dw_input_draw(widget);
-	return(input);
+	return input;
 }
 void s3dw_input_erase(s3dw_widget *widget)
 {
@@ -215,7 +215,7 @@ int s3dw_input_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 			newtext[len-1] = 0;
 			s3dw_input_change_text(input, newtext);
 			free(newtext);
-			return(1);
+			return 1;
 		}
 		break;
 	default:
@@ -227,11 +227,11 @@ int s3dw_input_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 			newtext[len+1] = 0;
 			s3dw_input_change_text(input, newtext);
 			free(newtext);
-			return(1);
+			return 1;
 		}
 	}
 
-	return(0);
+	return 0;
 }
 
 
@@ -241,9 +241,9 @@ int s3dw_input_event_click(s3dw_widget *widget, uint32_t oid)
 	if ((input->oid_text == oid) || (widget->oid == oid)) {
 		s3dw_focus(widget);
 		input->onclick(widget);
-		return(1);
+		return 1;
 	}
-	return(0);
+	return 0;
 }
 
 /** \brief get text of input
@@ -252,5 +252,5 @@ int s3dw_input_event_click(s3dw_widget *widget, uint32_t oid)
  */
 char *s3dw_input_gettext(s3dw_input *input)
 {
-	return(strdup(input->text));
+	return strdup(input->text);
 }

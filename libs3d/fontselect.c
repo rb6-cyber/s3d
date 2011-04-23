@@ -60,7 +60,7 @@ char *s3d_findfont(const char *mask)
 /*  this uses the xserver to get a font-path and scan it for ttf-fonts. */
 /*  if it matches, give it out ... it's not nice, right, and might not */
 /*  work on your place. */
-char *(const char *mask)
+char *s3d_findfont(const char *mask)
 {
 	char **flist = NULL;
 	int fnum = 0;
@@ -94,7 +94,7 @@ char *(const char *mask)
 								good[256] = 0;        /* just in case */
 								strncat(good, fname, 255 - strlen(good));
 								if ((strlen(mask) + 4) == strlen(fname)) {
-									return(good);
+									return good;
 								}
 							}
 						}
@@ -103,6 +103,6 @@ char *(const char *mask)
 			}
 		XCloseDisplay(dpy);
 	}
-	return(good);
+	return good;
 }
 #endif

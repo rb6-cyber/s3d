@@ -108,7 +108,7 @@ s3dw_button *s3dw_button_new(const s3dw_surface *surface, const char *text, floa
 
 	s3dw_widget_append((s3dw_widget *)surface, widget);
 	s3dw_button_draw(widget);
-	return(button);
+	return button;
 }
 /* show, make visible */
 void s3dw_button_show(s3dw_widget *widget)
@@ -143,7 +143,7 @@ void s3dw_button_destroy(s3dw_widget *widget)
 /* handle key events */
 int s3dw_button_event_key(s3dw_widget *S3DUNUSED(widget), struct s3d_key_event *S3DUNUSED(keys))
 {
-	return(0);
+	return 0;
 }
 
 /* handle click on a button */
@@ -152,7 +152,7 @@ int s3dw_button_event_click(s3dw_widget *widget, uint32_t oid)
 	s3dw_button *button = (s3dw_button *)widget;
 	if ((button->oid_text == oid) || (widget->oid == oid)) {
 		button->onclick(widget);
-		return(1);
+		return 1;
 	}
-	return(0);
+	return 0;
 }

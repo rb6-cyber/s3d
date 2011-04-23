@@ -63,21 +63,21 @@ int _shm_init(char *ftoken)
 	/* make the key: */
 	if ((key = ftok(ftoken, 'R')) == -1) {
 		errn("shm_init():ftok()", errno);
-		return(1);
+		return 1;
 	}
 	s3dprintf(MED, "init key is 0x%08x", key);
 
 	/* connect to the segment: */
 	if ((shmid = shmget(key, SHM_SIZE, 0644)) == -1) {
 		errn("shm_init():shmget()", errno);
-		return(1);
+		return 1;
 	}
 
 	/* attach to the segment to get a pointer to it: */
 	next_key = (uint32_t*)shmat(shmid, (void *)0, 0);
 	if (next_key == (uint32_t *)(-1)) {
 		errn("shm_init():shmat()", errno);
-		return(1);
+		return 1;
 	}
 	s3dprintf(MED, "right now, next_keys are: %08x, %08x", next_key[0], next_key[1]);
 	while ((0 == (key_in = next_key[1])) || (0 == (key_out = next_key[0]))) {}
@@ -86,45 +86,45 @@ int _shm_init(char *ftoken)
 	/* as we have the new key, we  can detach here now. */
 	if (shmdt(next_key) == -1) {
 		errn("shm_init():shmdt()", errno);
-		return(1);
+		return 1;
 	}
 	/* get input buffer */
 	if ((shmid_in = shmget(key_in, RB_STD_SIZE, 0644)) == -1) {
 		errn("shm_init():shmget()", errno);
-		return(1);
+		return 1;
 	}
 	/* attach to the  in segment to get a pointer to it: */
 	data_in = (struct buf_t *) shmat(shmid_in, (void *)0, 0);
 	if (data_in == (struct buf_t *)(-1)) {
 		errn("shm_init():shmat()", errno);
-		return(1);
+		return 1;
 	}
 	/* get output buffer */
 	if ((shmid_out = shmget(key_out, RB_STD_SIZE, 0644)) == -1) {
 		errn("shm_init():shmget()", errno);
-		return(1);
+		return 1;
 	}
 	/* attach to the out segment to get a pointer to it: */
 	data_out = (struct buf_t *) shmat(shmid_out, (void *)0, 0);
 	if (data_out == (struct buf_t *)(-1)) {
 		errn("shm_init():shmat()", errno);
-		return(1);
+		return 1;
 	}
-	return(0);
+	return 0;
 }
 int _shm_quit(void)
 {
 	/* detach from the segment: */
 	if (shmdt(data_in) == -1) {
 		errn("shm_init():shmdt()", errno);
-		return(1);
+		return 1;
 	}
 	if (shmdt(data_out) == -1) {
 		errn("shm_init():shmdt()", errno);
-		return(1);
+		return 1;
 	}
 	data_in = data_out = NULL;
-	return(0);
+	return 0;
 }
 int shm_writen(char *str, int s)
 {
@@ -133,17 +133,17 @@ int shm_writen(char *str, int s)
 	while (no_left > 0) {
 		no_written = shm_write(data_out, str, no_left);
 		if (no_written < 0)
-			return(no_written);
+			return no_written;
 		no_left -= no_written;
 		str += no_written;
 		if (wait++ > SHM_MAXLOOP) {
 			s3dprintf(HIGH, "shm_writen():waited too long ...");
-			return(-1);
+			return -1;
 		}
 		if (wait > 10)
 			nanosleep(&t, NULL);
 	}
-	return(s - no_left);
+	return s - no_left;
 }
 int shm_readn(char *str, int s)
 {
@@ -152,19 +152,19 @@ int shm_readn(char *str, int s)
 	while (no_left > 0) {
 		no_read = shm_read(data_in, str, no_left);
 		if (no_read < 0)
-			return(no_read);
+			return no_read;
 		if (no_read == 0)
 			break;
 		no_left -= no_read;
 		str += no_read;
 		if (wait++ > SHM_MAXLOOP) {
 			s3dprintf(HIGH, "shm_readn():waited too long ...");
-			return(-1);
+			return -1;
 		}
 		if (wait > 10)
 			nanosleep(&t, NULL);
 	}
-	return(s - no_left);
+	return s - no_left;
 }
 int _shm_net_receive(void)
 {
@@ -174,7 +174,7 @@ int _shm_net_receive(void)
 	struct shmid_ds   d;
 
 	if (data_in == NULL)
-		return(found);
+		return found;
 	if (data_in->start != data_in->end) {
 		if (1 == shm_readn(&opcode, 1)) {
 			shm_readn((char *)&length, 2);
@@ -197,6 +197,6 @@ int _shm_net_receive(void)
 				shm_idle = 0;
 		}
 	}
-	return(found);
+	return found;
 }
 #endif

@@ -38,8 +38,8 @@ int s3dw_ani_stackpos(s3dw_widget *f)
 	int i;
 	for (i = 0; i < ani_n; i++)
 		if (ani_s[i] == f)
-			return(i);  /* already in list */
-	return(-1);
+			return i;  /* already in list */
+	return -1;
 
 }
 
@@ -129,8 +129,8 @@ int s3dw_ani_check(s3dw_widget *f)
 	rz = f->arz - f->rz;
 
 	if (((fabs(f->as - f->s) / f->s) > 0.01) || (sqrt(x*x + y*y + z*z) > 0.01) || (sqrt(rx*rx + ry*ry + rz*rz) > 0.01))
-		return(0);
-	return(1);
+		return 0;
+	return 1;
 }
 
 /* need an arrangement ... */

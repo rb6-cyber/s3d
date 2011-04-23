@@ -45,15 +45,15 @@ static int init(int argc, char **argv)
 {
 	s3d_select_font("vera");
 	ui_init();
-	if (db_init(":memory:")) return(-1);
-	if (db_create()) return(-1);
-	if (process_args(argc, argv)) return(-1);
+	if (db_init(":memory:")) return -1;
+	if (db_create()) return -1;
+	if (process_args(argc, argv)) return -1;
 	nav_init();
 	nav_autocenter();
 	draw_all_layers();
 	gps_init("localhost");
 	ready = 1;
-	return(0);
+	return 0;
 }
 static int quit(void)
 {
@@ -61,13 +61,13 @@ static int quit(void)
 	gps_quit();
 	s3d_quit();
 	db_quit();
-	return(0);
+	return 0;
 }
 int main(int argc, char **argv)
 {
 	if (!s3d_init(&argc, &argv, "s3dosm")) {
 		if (!init(argc, argv)) s3d_mainloop(mainloop);
 		quit();
-	} else return(-1);
-	return(0);
+	} else return -1;
+	return 0;
 }

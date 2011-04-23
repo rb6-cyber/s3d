@@ -216,7 +216,7 @@ float dist(float p1[], float p2[])
 	p[0] = p1[0] - p2[0];
 	p[1] = p1[1] - p2[1];
 	p[2] = p1[2] - p2[2];
-	return (sqrt(p[0]*p[0]   +  p[1]*p[1]  +  p[2]*p[2]));
+	return sqrt(p[0]*p[0]   +  p[1]*p[1]  +  p[2]*p[2]);
 
 }
 
@@ -248,7 +248,7 @@ static float dirt(float p1[], float p2[], float p3[])
 		p3[1] = p2[1] - p1[1];
 		p3[2] = p2[2] - p1[2];
 	}
-	return(d);
+	return d;
 }
 
 
@@ -801,7 +801,7 @@ static int stop(struct s3d_evt* OLSRS3DUNUSED(evt))
 {
 	s3d_quit();
 	net_quit();
-	return(0);
+	return 0;
 }
 
 /***
@@ -892,7 +892,7 @@ static int keypress(struct s3d_evt *event)
 		if ((key->keysym >= S3DK_PERIOD && key->keysym <= S3DK_9) || key->keysym == S3DK_COMMA || key->keysym == S3DK_RETURN || key->keysym == S3DK_BACKSPACE)
 			search_widget_write(key->keysym);
 	}
-	return(0);
+	return 0;
 }
 
 /***
@@ -981,7 +981,7 @@ static int object_click(struct s3d_evt *evt)
 	  s3d_translate( Olsr_ip_label_obj,-Left*3.0-(Title_len * 0.2)-0.15, -Bottom*3.0-1.0, -3.0 );
 
 	 }*/
-	return(0);
+	return 0;
 }
 
 void print_etx(void)
@@ -1119,7 +1119,7 @@ static int object_info(struct s3d_evt *hrmz)
 
 	}
 	/* printf("%f %f %f\n",inf->trans_x,inf->trans_y,inf->trans_z); */
-	return(0);
+	return 0;
 }
 
 int main(int argc, char *argv[])
@@ -1144,7 +1144,7 @@ int main(int argc, char *argv[])
 		case 'h':
 		default:
 			print_usage();
-			return (0);
+			return 0;
 
 		}
 
@@ -1200,6 +1200,6 @@ int main(int argc, char *argv[])
 			net_quit();
 		}
 	}
-	return(0);
+	return 0;
 }
 

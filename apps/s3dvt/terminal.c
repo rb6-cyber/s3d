@@ -448,7 +448,7 @@ static int parseansi(char curchar)
 		endansi();
 		break;
 	}
-	return(0);
+	return 0;
 }
 
 void AddChar(char *_toadd)

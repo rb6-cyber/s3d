@@ -51,7 +51,7 @@ object_t* object_new(int key)
 	object_t *nobj = (object_t*)malloc(sizeof(object_t));
 	object_init(nobj);
 	nobj->id = key;
-	return (nobj);
+	return nobj;
 }
 /* ########### node ############### */
 void node_init(node_t *nnode)
@@ -70,7 +70,7 @@ node_t* node_new(void)
 {
 	node_t *nnode = (node_t*)malloc(sizeof(node_t));
 	node_init(nnode);
-	return(nnode);
+	return nnode;
 }
 void node_free(node_t *node)
 {
@@ -89,7 +89,7 @@ segment_t* segment_new(void)
 {
 	segment_t *nsegment = (segment_t*)malloc(sizeof(segment_t));
 	segment_init(nsegment);
-	return(nsegment);
+	return nsegment;
 }
 void segment_free(segment_t *segment)
 {
@@ -108,7 +108,7 @@ way_t* way_new(void)
 {
 	way_t *nway = (way_t*)malloc(sizeof(way_t));
 	way_init(nway);
-	return(nway);
+	return nway;
 }
 void way_free(way_t *way)
 {
@@ -122,7 +122,7 @@ layer_t* layer_new(void)
 	layer_t *nlayer = (layer_t*)malloc(sizeof(layer_t));
 	nlayer->tree = NULL;
 	nlayer->visible = 0;
-	return(nlayer);
+	return nlayer;
 }
 /* ########### layerset ############### */
 layerset_t layerset = {0, NULL};

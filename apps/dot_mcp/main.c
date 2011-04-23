@@ -126,7 +126,7 @@ static int greentorus(void)
 	 s3d_push_lines(o,   l,SIDES*RINGS*2);*/
 
 	s3d_flags_on(o, S3D_OF_VISIBLE);
-	return(o);
+	return o;
 }
 
 static void set_focus(struct app *a)
@@ -182,7 +182,7 @@ static int add_app(struct app *a)
 		prev = a2;
 		if (a2->oid == a->oid) { /*  already added, so free() and return */
 			free(a);
-			return(1);
+			return 1;
 		}
 		a2 = a2->next;  /*  go to the end */
 	}
@@ -192,7 +192,7 @@ static int add_app(struct app *a)
 	else
 		prev->next = a;
 	n_app += 1;
-	return(0);
+	return 0;
 }
 
 static struct app* find_app(int oid) {
@@ -202,7 +202,7 @@ static struct app* find_app(int oid) {
 			break;
 		a = a->next;
 	}
-	return(a);
+	return a;
 }
 
 static void* del_app(int oid)
@@ -232,13 +232,13 @@ static void* del_app(int oid)
 		free(a);
 		place_apps();
 	}
-	return(a);
+	return a;
 }
 
 static int stop(struct s3d_evt* DOTMCPUNUSED(evt))
 {
 	s3d_quit();
-	return(0);
+	return 0;
 }
 
 static void place_apps(void)
@@ -294,7 +294,7 @@ static int mcp_object(struct s3d_evt *hrmz)
 		}
 		place_apps();
 	}
-	return(0);
+	return 0;
 }
 
 static void app_init(struct app *a)
@@ -339,7 +339,7 @@ static int mcp_del_object(struct s3d_evt *hrmz)
 	struct mcp_object *mo;
 	mo = (struct mcp_object *)hrmz->buf;
 	del_app(mo->object);
-	return(0);
+	return 0;
 }
 
 static int object_click(struct s3d_evt *hrmz)
@@ -352,7 +352,7 @@ static int object_click(struct s3d_evt *hrmz)
 	i = 0;
 	if (oid == rotate) {
 		rot_flag = !rot_flag;
-		return(0);
+		return 0;
 	}
 	if (oid == reset) {
 		s3d_translate(0, 0.0, 0.0, 5.0);
@@ -361,22 +361,22 @@ static int object_click(struct s3d_evt *hrmz)
 	while (a != NULL) {
 		if (oid == a->close_but) {
 			del_app(a->oid);
-			return(0);
+			return 0;
 		} else  if (oid == a->min_but) {
 			if (a == focus) {
 				set_focus(NULL); /* nothing is focused now */
 			}
-			return(0);
+			return 0;
 		} else  if (((oid == a->title) || (oid == a->sphere)) || (oid == a->oid)) {
 			printf("giving focus to [%s], %d\n", a->name, oid);
 			set_focus(a);
-			return(0);
+			return 0;
 		}
 		i++;
 		a = a->next;
 	}
 	menu_click(oid);
-	return(0);
+	return 0;
 }
 
 static int object_info(struct s3d_evt *hrmz)
@@ -404,7 +404,7 @@ static int object_info(struct s3d_evt *hrmz)
 			place_apps(); /* replace apps */
 		}
 	}
-	return(0);
+	return 0;
 }
 
 static void mainloop(void)
@@ -464,7 +464,7 @@ static int keydown(struct s3d_evt *event)
 		xdif += 1.0;
 		break;
 	}
-	return(0);
+	return 0;
 }
 
 static int keyup(struct s3d_evt *event)
@@ -484,7 +484,7 @@ static int keyup(struct s3d_evt *event)
 		xdif -= 1.0;
 		break;
 	}
-	return(0);
+	return 0;
 
 }
 
@@ -517,5 +517,5 @@ int main(int argc, char **argv)
 		s3d_mainloop(mainloop);
 		s3d_quit();
 	}
-	return(0);
+	return 0;
 }

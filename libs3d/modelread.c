@@ -57,7 +57,7 @@ int s3d_import_model_file(const char *fname)
 	char searchpath[1024];
 	char path[1024];
 	int oid;
-	if (fname == NULL) return(-1);
+	if (fname == NULL) return -1;
 #ifndef OBJSDIR
 #define OBJSDIR  ":./:../:../../:/usr/local/share/s3d/:/usr/share/s3d/"
 #endif
@@ -77,7 +77,7 @@ int s3d_import_model_file(const char *fname)
 			strcat(path, fname);
 			if (s3d_open_file(path, &buf) != -1) { /* found something */
 				free(buf); /* TODO: badbadbad ... */
-				if (-1 != (oid = model_load(path))) return(oid);
+				if (-1 != (oid = model_load(path))) return oid;
 
 			}
 		}
@@ -85,13 +85,13 @@ int s3d_import_model_file(const char *fname)
 			ptr = next;     /* move pointer to the next position */
 	}
 	errds(LOW, "s3d_import_model_file()", "Could not open %s", fname);
-	return(-1); /* nothing in search path ... */
+	return -1; /* nothing in search path ... */
 }
 
 static struct material2texture* get_mat2tex(struct material2texture **mat2tex, void *mat_ptr) {
 	while ((*mat2tex) != NULL) {
 
-		if ((*mat2tex)->material_ptr == mat_ptr) return (*mat2tex);
+		if ((*mat2tex)->material_ptr == mat_ptr) return *mat2tex;
 
 		mat2tex = &(*mat2tex)->next_ptr;
 
@@ -112,11 +112,11 @@ static struct material2texture* get_mat2tex(struct material2texture **mat2tex, v
 		(*mat2tex)->material_id = -1;
 		(*mat2tex)->texture_id = -1;
 
-		return (*mat2tex);
+		return *mat2tex;
 
 	}
 
-	return(NULL);
+	return NULL;
 
 }
 
@@ -270,6 +270,6 @@ static int model_load(char *file)
 	}
 	g3d_context_free(context);
 
-	return(obj_id);
+	return obj_id;
 }
 

@@ -116,13 +116,13 @@ int _greater_than(point_t *v0, point_t *v1)
 	else if (v0->y < v1->y - C_EPS)
 		return FALSE;
 	else
-		return (v0->x > v1->x);
+		return v0->x > v1->x;
 }
 
 
 int _equal_to(point_t *v0, point_t *v1)
 {
-	return (FP_EQUAL(v0->y, v1->y) && FP_EQUAL(v0->x, v1->x));
+	return FP_EQUAL(v0->y, v1->y) && FP_EQUAL(v0->x, v1->x);
 }
 
 int _greater_than_equal_to(point_t *v0, point_t *v1)
@@ -132,7 +132,7 @@ int _greater_than_equal_to(point_t *v0, point_t *v1)
 	else if (v0->y < v1->y - C_EPS)
 		return FALSE;
 	else
-		return (v0->x >= v1->x);
+		return v0->x >= v1->x;
 }
 
 int _less_than(point_t *v0, point_t *v1)
@@ -142,7 +142,7 @@ int _less_than(point_t *v0, point_t *v1)
 	else if (v0->y > v1->y + C_EPS)
 		return FALSE;
 	else
-		return (v0->x < v1->x);
+		return v0->x < v1->x;
 }
 
 
@@ -340,7 +340,7 @@ int locate_endpoint(point_t *v, point_t *vo, int r)
 		errs("sei:locate_endpoint()", "Haggu!!!! (whatever)");
 		break;
 	}
-	return(-1);
+	return -1;
 }
 
 

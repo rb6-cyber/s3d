@@ -40,7 +40,7 @@ struct t_process *process_protinit(struct t_process *p, const char *name) {
 	int32_t mcp_oid;
 	if ((strncmp(name, "sys_", 4) == 0)) { /* we don't like "sys_"-apps, kicking this */
 		errds(VHIGH, "process_protinit()", "appnames starting with 'sys_' not allowed.");
-		return(NULL);
+		return NULL;
 	}
 	if ((p->id != MCP) && (strncmp(name, "mcp", 3) == 0)) {
 		if (procs_p[MCP].con_type == CON_NULL) {
@@ -58,10 +58,10 @@ struct t_process *process_protinit(struct t_process *p, const char *name) {
 			procs_p[MCP].con_type = con_type;
 			mcp_init();
 			process_list_rm(p->id); /* remove old process, but don't kill connection */
-			return(&procs_p[MCP]);
+			return &procs_p[MCP];
 		} else {
 			s3dprintf(LOW, "the place for the mcp is already taken ...");
-			return(NULL);
+			return NULL;
 		}
 	} else {
 		strncpy(p->name, name, S3D_NAME_MAX);
@@ -84,7 +84,7 @@ struct t_process *process_protinit(struct t_process *p, const char *name) {
 			s3dprintf(LOW, "couldn't add object to mcp ...");
 		}
 	}
-	return(p);
+	return p;
 }
 /* adds system objects to the app, like camera, pointers etc ... */
 static int process_sys_init(struct t_process *p)
@@ -123,7 +123,7 @@ static int process_sys_init(struct t_process *p)
 	/* obj_recalc_tmat(p,0);*/
 	event_obj_info(p, 0); /* tell the new program about the thing */
 
-	return(0);
+	return 0;
 }
 
 /* this is to be called when a new connection appears. a pointer to the added process will be returned */
@@ -143,7 +143,7 @@ struct t_process *process_add(void) {
 	new_p->biggest_obj = -1;
 	new_p->con_type = CON_NULL; /* this is to be changed by the caller */
 	new_p->name[0] = '\0';
-	return(new_p);
+	return new_p;
 }
 /* deletes the process with pid */
 int process_del(int pid)
@@ -151,15 +151,15 @@ int process_del(int pid)
 	if (pid == MCP) {
 		n_remove(&procs_p[pid]);
 		p_del(&procs_p[pid]);
-		return(0);
+		return 0;
 	}
 	if ((pid > 0) && (pid < procs_n)) {
 		n_remove(&procs_p[pid]);
 		p_del(&procs_p[pid]);
 		process_list_rm(pid);
-		return(0);
+		return 0;
 	}
-	return(-1);
+	return -1;
 }
 /* just kick process out of the process list, no network/mcp-oid cleanup */
 static int process_list_rm(int pid)
@@ -175,12 +175,12 @@ static int process_list_rm(int pid)
 	procs_n--;
 	procs_p = (struct t_process*)realloc(procs_p, sizeof(struct t_process) * procs_n); /* decrease the block,
   wipe the last one */
-	return(0);
+	return 0;
 }
 struct t_process *get_proc_by_pid(int pid) {
 	if ((pid >= 0) && (pid < procs_n))
-		return(&procs_p[pid]);
-	return(NULL);
+		return &procs_p[pid];
+	return NULL;
 }
 /*  this actually deleted the process with all it's parts */
 /* it's quite the same as the original version, but without free() */
@@ -217,7 +217,7 @@ static int p_del(struct t_process *p)
 					obj_free(p, i);
 		}
 	}
-	return(0);  /*  successfully deleted */
+	return 0;  /*  successfully deleted */
 }
 int process_init(void)
 {
@@ -228,7 +228,7 @@ int process_init(void)
 	strncpy(mcp_p->name, "mcp", S3D_NAME_MAX);
 	mcp_p->con_type = CON_NULL;
 	process_sys_init(mcp_p);
-	return(0);
+	return 0;
 }
 int process_quit(void)
 {
@@ -240,5 +240,5 @@ int process_quit(void)
 		/*  process_del(procs_p[i].id);*/
 	}
 	free(procs_p);
-	return(0);
+	return 0;
 }

@@ -40,7 +40,7 @@ static struct hashtable_t *tex_hash = NULL;
 static int _s3d_choose_cb(const void *d1, int size)
 {
 	struct s3d_texshm *t1 = (struct s3d_texshm *)d1;
-	return((t1->oid*32 + t1->tex) % size);
+	return (t1->oid*32 + t1->tex) % size;
 }
 
 static int _s3d_compare_cb(const void *d1, const void *d2)
@@ -49,8 +49,8 @@ static int _s3d_compare_cb(const void *d1, const void *d2)
 	t1 = (struct s3d_texshm *)d1;
 	t2 = (struct s3d_texshm *)d2;
 	if ((t1->oid == t2->oid) && (t1->tex == t2->tex))
-		return(0);
-	return(1);
+		return 0;
+	return 1;
 }
 
 static void _s3d_free_s3dtex(void *d1)
@@ -101,12 +101,12 @@ int _s3d_load_texture_shm(int object, uint32_t tid, uint16_t xpos, uint16_t ypos
 	int16_t mw, mh;
 
 	if (tex_hash == NULL)
-		return(-1);
+		return -1;
 	check.oid = object;
 	check.tex = tid;
 	tex = (struct s3d_tex *)_s3d_hash_find(tex_hash, (void *) & check);
 	if (tex == NULL)
-		return(-1); /* coudn't find */
+		return -1; /* coudn't find */
 	s3dprintf(VLOW, "texture: oid %d, tex %d, shmid %d, tw %d, th %d, w %d, h %d ...",
 	          tex->tshm.oid, tex->tshm.tex, tex->tshm.shmid, tex->tshm.tw, tex->tshm.th, tex->tshm.w, tex->tshm.th);
 	/* found it, assume that it's properly attached. */
@@ -117,7 +117,7 @@ int _s3d_load_texture_shm(int object, uint32_t tid, uint16_t xpos, uint16_t ypos
 	else       mh = h;
 
 	if (mw <= 0) { /*  nothing to do */
-		return(0);
+		return 0;
 	}
 	for (i = 0; i < mh; i++) {
 		p1 = (ypos + i) * tex->tshm.w + xpos;  /*  scanline start position */
@@ -129,21 +129,21 @@ int _s3d_load_texture_shm(int object, uint32_t tid, uint16_t xpos, uint16_t ypos
 		       data + 4*i*w,   /*  scanline number i ... */
 		       4*p2);
 	}
-	return(0);
+	return 0;
 }
 int _s3d_texture_init(void)
 {
 	tex_hash = _s3d_hash_new(256, _s3d_compare_cb, _s3d_choose_cb);
 	if (tex_hash == NULL)
-		return(-1);
+		return -1;
 	else
-		return(0);
+		return 0;
 }
 int _s3d_texture_quit(void)
 {
 	if (tex_hash == NULL)
-		return(-1);
+		return -1;
 	_s3d_hash_delete(tex_hash, _s3d_free_s3dtex);
 	tex_hash = NULL;
-	return(0);
+	return 0;
 }

@@ -158,7 +158,7 @@ check:
 				}
 			s3dprintf(MED, "nothing to swap, can't reverse this matrix! returning ... ");
 			mat_debug(Mm);
-			return(-1); /* the dead end!! */
+			return -1; /* the dead end!! */
 		}
 	}
 	/* matrix should look like this now: */
@@ -192,6 +192,6 @@ check:
 	/* s3dprintf(MED,"result:");
 	 mat_debug(Pm);*/
 	memcpy(MAT, Pm, sizeof(t_mtrx)); /* copy result */
-	return(0);
+	return 0;
 }
 

@@ -89,7 +89,7 @@ static int wii_init(char *addr)
 			move_data[i][j] = 0;
 		}
 	dataindex = 0;
-	return(0);
+	return 0;
 
 }
 static void wii_calcdata(void)
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
 		addr = NULL;
 
 	if (wii_init(addr))
-		return(-1);
+		return -1;
 
 	if (!s3d_init(&argc, &argv, "wiitest")) {
 		oid_head = s3d_import_model_file("objs/snow_head.3ds");

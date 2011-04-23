@@ -108,5 +108,5 @@ int menu_init(void)
 		  s3d_flags_on(menu_items[i].str_oid,S3D_OF_VISIBLE|S3D_OF_SELECTABLE);*/
 		printf("menu item menu[%d], icon_oid=%d, icon_str=%d\n", i, menu_items[i].icon_oid, menu_items[i].str_oid);
 	}
-	return(menu_o);
+	return menu_o;
 }

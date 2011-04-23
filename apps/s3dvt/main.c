@@ -100,7 +100,7 @@ static void* thread_terminal(void *S3DVTUNUSED(a))
 			}
 		}
 	}
-	return(NULL); /* huh?! */
+	return NULL; /* huh?! */
 }
 
 static int open_pty_pair(int *amaster, int *aslave)
@@ -218,7 +218,7 @@ static int pipe_init_terminal(void)
 	term_mode = M_PIPE;
 	if ((pipe(mpipe_in) == -1) || (pipe(mpipe_out) == -1)) {
 		printf("pipe failed\n");
-		return(-1);
+		return -1;
 	}
 	uid = getuid();
 	gid = getgid();
@@ -262,8 +262,8 @@ static int init_terminal(void)
 	int i;
 	for (i = 0; i < 5; i++)
 		if (pty_init_terminal())  /*  find an open pty. */
-			return(0);
-	return(pipe_init_terminal());  /*  if not, fallback to pipe mode */
+			return 0;
+	return pipe_init_terminal();  /*  if not, fallback to pipe mode */
 }
 static void term_unload(void)
 {
@@ -485,7 +485,7 @@ static int keypress(struct s3d_evt *event)
 		if ((char)keys->unicode)  /*  \0 is no good idea .. */
 			term_addchar((char)keys->unicode);
 	}
-	return(0);
+	return 0;
 
 }
 static int i = 0;
@@ -511,7 +511,7 @@ static void mainloop(void)
 static int stop(struct s3d_evt *S3DVTUNUSED(event))
 {
 	s3d_quit();
-	return(0);
+	return 0;
 }
 static unsigned int draw_background(void)
 {
@@ -527,7 +527,7 @@ static unsigned int draw_background(void)
 	s3d_push_polygon(b, 1, 2, 0, 0);
 	s3d_push_polygon(b, 2, 3, 0, 0);
 	s3d_flags_on(b, S3D_OF_VISIBLE);
-	return(b);
+	return b;
 }
 static void chars_s3d_init(void)
 {
@@ -582,5 +582,5 @@ int main(int argc, char **argv)
 		s3d_quit();
 	}
 	term_unload();
-	return(0);
+	return 0;
 }

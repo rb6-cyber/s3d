@@ -104,7 +104,7 @@ struct hash_it_t *_s3d_hash_iterate(struct hashtable_t *hash, struct hash_it_t *
 					iter->prev_bucket = NULL;
 					iter->bucket = (*iter->first_bucket);
 					iter->first_bucket = &hash->table[ iter->index ];
-					return(iter);
+					return iter;
 				} else {
 					iter->bucket = NULL;
 				}
@@ -129,7 +129,7 @@ struct hash_it_t *_s3d_hash_iterate(struct hashtable_t *hash, struct hash_it_t *
 			iter->prev_bucket = iter->bucket;
 			iter->bucket = iter->bucket->next;
 			iter->first_bucket = NULL;
-			return(iter);
+			return iter;
 		}
 	}
 	/* if not returned yet, we've reached the last one on the index and have to search forward */
@@ -140,13 +140,13 @@ struct hash_it_t *_s3d_hash_iterate(struct hashtable_t *hash, struct hash_it_t *
 			iter->prev_bucket = NULL;
 			iter->bucket = hash->table[ iter->index ];
 			iter->first_bucket = &hash->table[ iter->index ];
-			return(iter);      /* if this table entry is not null, return it */
+			return iter;      /* if this table entry is not null, return it */
 		} else
 			iter->index++;      /* else, go to the next */
 	}
 	/* nothing to iterate over anymore */
 	free(iter);
-	return(NULL);
+	return NULL;
 }
 
 
@@ -156,18 +156,18 @@ struct hashtable_t *_s3d_hash_new(int size, hashdata_compare_cb compare, hashdat
 
 	hash = (struct hashtable_t*)malloc(sizeof(struct hashtable_t));
 	if (hash == NULL)      /* could not allocate the hash control structure */
-		return (NULL);
+		return NULL;
 
 	hash->size = size;
 	hash->table = (struct element_t **)malloc(sizeof(struct element_t *) * size);
 	if (hash->table == NULL) {   /* could not allocate the table */
 		free(hash);
-		return(NULL);
+		return NULL;
 	}
 	_s3d_hash_init(hash);
 	hash->compare = compare;
 	hash->choose = choose;
-	return(hash);
+	return hash;
 }
 
 
@@ -182,7 +182,7 @@ int _s3d_hash_add(struct hashtable_t *hash, void *data)
 
 	while (bucket != NULL) {
 		if (0 == hash->compare(bucket->data, data))
-			return(-1);
+			return -1;
 
 		prev_bucket = bucket;
 		bucket = bucket->next;
@@ -190,7 +190,7 @@ int _s3d_hash_add(struct hashtable_t *hash, void *data)
 
 	/* found the tail of the list, add new element */
 	if (NULL == (bucket = (struct element_t*)malloc(sizeof(struct element_t))))
-		return(-1); /* malloc failed */
+		return -1; /* malloc failed */
 
 	bucket->data = data;   /* init the new bucket */
 	bucket->next = NULL;
@@ -203,7 +203,7 @@ int _s3d_hash_add(struct hashtable_t *hash, void *data)
 	}
 
 	hash->elements++;
-	return(0);
+	return 0;
 
 }
 /* finds data, based on the key in keydata. returns the found data on success, or NULL on error */
@@ -217,12 +217,12 @@ void *_s3d_hash_find(struct hashtable_t *hash, void *keydata)
 
 	while (bucket != NULL) {
 		if (0 == hash->compare(bucket->data, keydata))
-			return(bucket->data);
+			return bucket->data;
 
 		bucket = bucket->next;
 	}
 
-	return(NULL);
+	return NULL;
 
 }
 
@@ -244,7 +244,7 @@ void *_s3d_hash_remove_bucket(struct hashtable_t *hash, struct hash_it_t *hash_i
 	free(hash_it_t->bucket);
 
 	hash->elements--;
-	return(data_save);
+	return data_save;
 
 }
 
@@ -264,14 +264,14 @@ void *_s3d_hash_remove(struct hashtable_t *hash, void *data)
 	while (hash_it_t.bucket != NULL) {
 		if (0 == hash->compare(hash_it_t.bucket->data, data)) {
 			hash_it_t.first_bucket = (hash_it_t.bucket == hash->table[hash_it_t.index] ? &hash->table[ hash_it_t.index ] : NULL);
-			return(_s3d_hash_remove_bucket(hash, &hash_it_t));
+			return _s3d_hash_remove_bucket(hash, &hash_it_t);
 		}
 
 		hash_it_t.prev_bucket = hash_it_t.bucket;
 		hash_it_t.bucket = hash_it_t.bucket->next;
 	}
 
-	return(NULL);
+	return NULL;
 
 }
 
@@ -284,7 +284,7 @@ struct hashtable_t *_s3d_hash_resize(struct hashtable_t *hash, int size) {
 
 	/* initialize a new hash with the new size */
 	if (NULL == (new_hash = _s3d_hash_new(size, hash->compare, hash->choose)))
-		return(NULL);
+		return NULL;
 
 	/* copy the elements */
 	for (i = 0; i < hash->size; i++) {
@@ -296,7 +296,7 @@ struct hashtable_t *_s3d_hash_resize(struct hashtable_t *hash, int size) {
 	}
 	_s3d_hash_delete(hash, NULL); /* remove hash and eventual overflow buckets but not the content itself. */
 
-	return(new_hash);
+	return new_hash;
 }
 
 

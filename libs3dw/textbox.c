@@ -229,7 +229,7 @@ s3dw_textbox *s3dw_textbox_new(const s3dw_surface *surface, const char *text, fl
 	textbox->scroll_vertical->lonclick = _s3dw_textbox_scrollbar_up;
 	textbox->scroll_vertical->ronclick = _s3dw_textbox_scrollbar_down;
 
-	return(textbox);
+	return textbox;
 }
 static void s3dw_textbox_redraw(s3dw_widget *widget)
 {
@@ -326,7 +326,7 @@ void s3dw_textbox_destroy(s3dw_widget *widget)
 /* handle key events */
 int s3dw_textbox_event_key(s3dw_widget *S3DUNUSED(widget), struct s3d_key_event *S3DUNUSED(keys))
 {
-	return(0);
+	return 0;
 }
 /* handle click events */
 int s3dw_textbox_event_click(s3dw_widget *widget, uint32_t oid)
@@ -334,7 +334,7 @@ int s3dw_textbox_event_click(s3dw_widget *widget, uint32_t oid)
 	s3dw_textbox *textbox = (s3dw_textbox *)widget;
 	if (widget->oid == oid) {
 		textbox->onclick(widget);
-		return(1);
+		return 1;
 	}
-	return(0);
+	return 0;
 }

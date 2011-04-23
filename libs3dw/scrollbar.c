@@ -345,7 +345,7 @@ s3dw_scrollbar *s3dw_scrollbar_new(s3dw_widget *parent, int type, float posx, fl
 	scrollbar->ronclick = s3dw_nothing;
 	s3dw_widget_append(parent, widget);
 	s3dw_scrollbar_draw(widget);
-	return(scrollbar);
+	return scrollbar;
 }
 
 void s3dw_scrollbar_erase(s3dw_widget *widget)
@@ -366,7 +366,7 @@ void s3dw_scrollbar_destroy(s3dw_widget *widget)
 /* handle key events */
 int s3dw_scrollbar_event_key(s3dw_widget *S3DUNUSED(widget), struct s3d_key_event *S3DUNUSED(keys))
 {
-	return(0);
+	return 0;
 }
 /* handle click events */
 int s3dw_scrollbar_event_click(s3dw_widget *widget, uint32_t oid)
@@ -374,12 +374,12 @@ int s3dw_scrollbar_event_click(s3dw_widget *widget, uint32_t oid)
 	s3dw_scrollbar *scrollbar = (s3dw_scrollbar *)widget;
 	if (scrollbar->loid == (int)oid) {
 		scrollbar->lonclick(widget);
-		return(1);
+		return 1;
 	}
 	if (scrollbar->roid == (int)oid) {
 		scrollbar->ronclick(widget);
-		return(1);
+		return 1;
 	}
 
-	return(0);
+	return 0;
 }

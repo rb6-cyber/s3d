@@ -56,7 +56,7 @@ static int shm_new_comblock(key_t *data);
 int shm_next_key(void)
 {
 	mkey = mkey + 1;
-	return(mkey);
+	return mkey;
 }
 int shm_init(void)
 {
@@ -69,7 +69,7 @@ int shm_init(void)
 	/* make the key: */
 	if ((key = ftok(ftoken, 'R')) == -1) {
 		errnf("shm_init():ftok()", errno);
-		return(1);
+		return 1;
 	}
 	s3dprintf(LOW, "shm_init(): init key is 0x%08x", key);
 	mkey = key;
@@ -77,17 +77,17 @@ int shm_init(void)
 	/* connect to (and possibly create) the segment: */
 	if ((shmid = shmget(key, SHM_SIZE, 0644 | IPC_CREAT)) == -1) {
 		errnf("shm_init():shmget()", errno);
-		return(1);
+		return 1;
 	}
 
 	/* attach to the segment to get a pointer to it: */
 	data = (key_t *)shmat(shmid, (void *)0, 0);
 	if (data == (key_t *)(-1)) {
 		errnf("shm_init():shmat()", errno);
-		return(1);
+		return 1;
 	}
 	shm_new_comblock(data);
-	return(0);
+	return 0;
 }
 static void comblock_init(struct t_shmcb *p_cb)
 {
@@ -110,22 +110,22 @@ static int shm_new_comblock(key_t *data)
 	/* connect & create the client to server segment: */
 	if ((mycb->shmid_ctos = shmget(mycb->key_ctos, RB_STD_SIZE, 0644 | IPC_CREAT)) == -1) {
 		errn("shm_open_comblock:shmget()", errno);
-		return(1);
+		return 1;
 	}
 	mycb->data_ctos = (char*)shmat(mycb->shmid_ctos, (void *)0, 0);
 	if (mycb->data_ctos == (char *)(-1)) {
 		errn("shm_open_comblock:shmat()", errno);
-		return(1);
+		return 1;
 	}
 	/* connect & create the client to server segment: */
 	if ((mycb->shmid_stoc = shmget(mycb->key_stoc, RB_STD_SIZE, 0644 | IPC_CREAT)) == -1) {
 		errn("shm_open_comblock:shmget()", errno);
-		return(1);
+		return 1;
 	}
 	mycb->data_stoc = (char*)shmat(mycb->shmid_stoc, (void *)0, 0);
 	if (mycb->data_stoc == (char *)(-1)) {
 		errn("shm_open_comblock:shmat()", errno);
-		return(1);
+		return 1;
 	}
 
 	/* init ringbuffers */
@@ -135,7 +135,7 @@ static int shm_new_comblock(key_t *data)
 	data[1] = mycb->key_stoc;
 	mycb->idle = 0;
 	s3dprintf(LOW, "shm_open_comblock():data: %08x, %08x", data[0], data[1]);
-	return(0);
+	return 0;
 }
 
 int shm_quit(void)
@@ -152,7 +152,7 @@ int shm_quit(void)
 		if (shmctl(shmid, IPC_RMID, NULL) == -1)
 			errn("shm_quit():shmctl()", errno);
 	}
-	return(0);
+	return 0;
 }
 int shm_remove(struct t_process *p)
 {
@@ -166,7 +166,7 @@ int shm_remove(struct t_process *p)
 		errn("shm_quit():shmdt()", errno);
 	if (shmctl(p->shmsock.shmid_stoc, IPC_RMID, NULL) == -1)
 		errn("shm_quit():shmctl()", errno);
-	return(0);
+	return 0;
 }
 
 
@@ -228,9 +228,9 @@ int shm_main(void)
 		s3dprintf(HIGH, "shm_main():registered new connection (keys %d, %d) as pid %d", new_p->shmsock.key_ctos, new_p->shmsock.key_stoc, new_p->id);
 		s3dprintf(LOW, "shm_main():new client attached! allocating shm block for further clients ...");
 		if (shm_new_comblock(data))
-			return(1);
+			return 1;
 	}
-	return(0);
+	return 0;
 }
 int shm_prot_com_in(struct t_process *p)
 {
@@ -247,7 +247,7 @@ int shm_prot_com_in(struct t_process *p)
 			}
 			prot_com_in(p, ibuf);
 		}
-	return(0);
+	return 0;
 }
 #define SHM_MAXLOOP  20
 static struct timespec t = {
@@ -260,16 +260,16 @@ int shm_writen(struct buf_t *rb, uint8_t *buf, int n)
 	while (no_left > 0) {
 		no_written = shm_write(rb, (char *)buf, no_left);
 		if (no_written <= 0)
-			return(no_written);
+			return no_written;
 		no_left -= no_written;
 		buf += no_written;
 		if (wait++ > SHM_MAXLOOP) {
 			s3dprintf(HIGH, "shm_writen():waited too long ...");
-			return(-1);
+			return -1;
 		}
 		if (wait > 10)  nanosleep(&t, NULL);
 	}
-	return(n - no_left);
+	return n - no_left;
 }
 int shm_readn(struct buf_t *rb, uint8_t *buf, int n)
 {
@@ -278,17 +278,17 @@ int shm_readn(struct buf_t *rb, uint8_t *buf, int n)
 	while (no_left > 0) {
 		no_read = shm_read(rb, (char *)buf, no_left);
 		if (no_read < 0)
-			return(no_read);
+			return no_read;
 		if (no_read == 0)
 			break;
 		no_left -= no_read;
 		buf += no_read;
 		if (wait++ > SHM_MAXLOOP) {
 			s3dprintf(HIGH, "shm_readn():waited too long ...");
-			return(-1);
+			return -1;
 		}
 		if (wait > 10)  nanosleep(&t, NULL);
 	}
-	return(n - no_left);
+	return n - no_left;
 }
 #endif

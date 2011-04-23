@@ -51,7 +51,7 @@ int s3d_new_object(void)
 	cb_lock++; /* please, no callbacks now. */
 	oid = _queue_want_object();
 	cb_lock--; /* no new callbacks and nothing happened */
-	return(oid);
+	return oid;
 }
 
 /** \brief clone object
@@ -67,7 +67,7 @@ int s3d_clone(int oid)
 	uint32_t res;
 	res = s3d_new_object();
 	s3d_clone_target(res, oid);
-	return(res);
+	return res;
 }
 
 /** \brief changes the target of a clone-object
@@ -109,7 +109,7 @@ int s3d_link(int oid_from, int oid_to)
 	buf[0] = htonl(oid_from);
 	buf[1] = htonl(oid_to);
 	net_send(S3D_P_C_LINK, (char *)buf, 8);
-	return(0);
+	return 0;
 }
 
 /** \brief removes link from another object
@@ -121,7 +121,7 @@ int s3d_unlink(int oid)
 	uint32_t buf;
 	buf = htonl(oid);
 	net_send(S3D_P_C_LINK, (char *)&buf, 4);
-	return(0);
+	return 0;
 }
 /*  pushing functions */
 
@@ -147,7 +147,7 @@ int s3d_push_vertex(int object, float x, float y, float z)
 
 	htonfb((float*)(buf + sizeof(uint32_t)), 3);
 	net_send(S3D_P_C_PUSH_VERTEX, buf, len);
-	return(0);
+	return 0;
 }
 
 /** \brief push many vertices
@@ -168,7 +168,7 @@ int s3d_push_vertices(int object, const float *vbuf, uint16_t n)
 	int     f, i, len = n * 4 * 3;
 	int     flen, stepl;
 	if (n < 1)
-		return(-1);
+		return -1;
 	stepl = ((int)((MF_LEN - 4) / (4 * 3))) * (4 * 3);
 	f = len / (MF_LEN - 4) + 1;  /*  how many fragments? */
 	/*  buf=malloc(f>1?MF_LEN:len+4); */
@@ -185,7 +185,7 @@ int s3d_push_vertices(int object, const float *vbuf, uint16_t n)
 		net_send(S3D_P_C_PUSH_VERTEX, buf, flen + 4);
 	}
 	/*  free(buf); */
-	return(0);
+	return 0;
 }
 
 /** \brief push material
@@ -237,7 +237,7 @@ int s3d_push_material(int object,
 
 	htonfb((float*)(buf + sizeof(uint32_t)), 12);
 	net_send(S3D_P_C_PUSH_MAT, buf, len);
-	return(0);  /*  nothing yet */
+	return 0;  /*  nothing yet */
 }
 
 /** \brief push material with alpha
@@ -284,7 +284,7 @@ int s3d_push_material_a(int object,
 
 	htonfb((float*)(buf + sizeof(uint32_t)), 12);
 	net_send(S3D_P_C_PUSH_MAT, buf, len);
-	return(0);  /*  nothing yet */
+	return 0;  /*  nothing yet */
 }
 
 /** \brief push many materials
@@ -318,7 +318,7 @@ int s3d_push_materials_a(int object, const float *mbuf, uint16_t n)
 	int     f, i, len = n * 4 * 12;
 	int     flen, stepl;
 	if (n < 1)
-		return(-1);
+		return -1;
 	stepl = ((int)((MF_LEN - 4) / (4 * 12))) * (4 * 12);
 	f = len / (MF_LEN - 4) + 1;  /*  how many fragments? */
 	/*  buf=malloc(f>1?MF_LEN:len+4); */
@@ -335,7 +335,7 @@ int s3d_push_materials_a(int object, const float *mbuf, uint16_t n)
 		net_send(S3D_P_C_PUSH_MAT, buf, flen + 4);
 	}
 	/*  free(buf); */
-	return(0);
+	return 0;
 }
 
 /** \brief push polygon
@@ -369,7 +369,7 @@ int s3d_push_polygon(int object, uint32_t v1, uint32_t v2, uint32_t v3, uint32_t
 	*((uint32_t *)ptr) = htonl(material);
 
 	net_send(S3D_P_C_PUSH_POLY, buf, len);
-	return(0);
+	return 0;
 }
 
 /** \brief push line
@@ -392,7 +392,7 @@ int s3d_push_line(int object, uint32_t v1, uint32_t v2, uint32_t material)
 	*((uint32_t *)ptr) = htonl(material);
 
 	net_send(S3D_P_C_PUSH_LINE, buf, len);
-	return(0);
+	return 0;
 }
 
 /** \brief push many polygons
@@ -420,7 +420,7 @@ int s3d_push_polygons(int object, const uint32_t *pbuf, uint16_t n)
 	int     f, i, j, len = n * 4 * 4;
 	int     flen, stepl;
 	if (n < 1)
-		return(-1);
+		return -1;
 	stepl = ((int)((MF_LEN - 4) / (4 * 4))) * (4 * 4);
 	f = len / (MF_LEN - 4) + 1;  /*  how many fragments? */
 
@@ -435,7 +435,7 @@ int s3d_push_polygons(int object, const uint32_t *pbuf, uint16_t n)
 			d[j] = htonl(s[j]);
 		net_send(S3D_P_C_PUSH_POLY, (char *)buf, flen + 4);
 	}
-	return(0);
+	return 0;
 }
 
 /** \brief push many lines
@@ -452,7 +452,7 @@ int s3d_push_lines(int object, const uint32_t *lbuf, uint16_t n)
 	int     f, i, j, len = n * 4 * 3;
 	int     flen, stepl;
 	if (n < 1)
-		return(-1);
+		return -1;
 	stepl = ((int)((MF_LEN - 4) / (4 * 3))) * (4 * 3);
 	f = len / (MF_LEN - 4) + 1;  /*  how many fragments? */
 
@@ -469,7 +469,7 @@ int s3d_push_lines(int object, const uint32_t *lbuf, uint16_t n)
 
 		net_send(S3D_P_C_PUSH_LINE, (char *)buf, flen + 4);
 	}
-	return(0);
+	return 0;
 }
 
 /** \brief push texture
@@ -488,7 +488,7 @@ int s3d_push_texture(int object, uint16_t w, uint16_t h)
 	*((uint16_t *)ptr) = htons(h);
 
 	net_send(S3D_P_C_PUSH_TEX, buf, len);
-	return(0);
+	return 0;
 }
 
 /** \brief push many textures
@@ -506,7 +506,7 @@ int s3d_push_textures(int object, const uint16_t *tbuf, uint16_t n)
 	int     f, i, j, len = n * 2 * 2;
 	int     flen, stepl;
 	if (n < 1)
-		return(-1);
+		return -1;
 	stepl = ((int)((MF_LEN - 4) / (2 * 2))) * (2 * 2);
 	f = len / (MF_LEN - 4) + 1;  /*  how many fragments? */
 
@@ -522,7 +522,7 @@ int s3d_push_textures(int object, const uint16_t *tbuf, uint16_t n)
 			d[j] = htons(s[j]);
 		net_send(S3D_P_C_PUSH_TEX, (char *)buf, flen + 4);
 	}
-	return(0);
+	return 0;
 }
 /*  popping functions  */
 
@@ -536,7 +536,7 @@ int s3d_pop_vertex(int object, uint32_t n)
 	buf[0] = htonl(object);
 	buf[1] = htonl(n);
 	net_send(S3D_P_C_DEL_VERTEX, (char *)buf, 4*2);
-	return(0);
+	return 0;
 
 }
 
@@ -550,7 +550,7 @@ int s3d_pop_material(int object, uint32_t n)
 	buf[0] = htonl(object);
 	buf[1] = htonl(n);
 	net_send(S3D_P_C_DEL_MAT, (char *)buf, 4*2);
-	return(0);
+	return 0;
 
 }
 
@@ -564,7 +564,7 @@ int s3d_pop_polygon(int object, uint32_t n)
 	buf[0] = htonl(object);
 	buf[1] = htonl(n);
 	net_send(S3D_P_C_DEL_POLY, (char *)buf, 4*2);
-	return(0);
+	return 0;
 
 }
 
@@ -578,7 +578,7 @@ int s3d_pop_line(int object, uint32_t n)
 	buf[0] = htonl(object);
 	buf[1] = htonl(n);
 	net_send(S3D_P_C_DEL_LINE, (char *)buf, 4*2);
-	return(0);
+	return 0;
 
 }
 
@@ -592,7 +592,7 @@ int s3d_pop_texture(int object, uint32_t n)
 	buf[0] = htonl(object);
 	buf[1] = htonl(n);
 	net_send(S3D_P_C_DEL_TEX, (char *)buf, 4*2);
-	return(0);
+	return 0;
 
 }
 /*  pepping/loading functions */
@@ -641,7 +641,7 @@ int s3d_pep_material(int object,
 
 	htonfb((float*)(buf + sizeof(uint32_t)), 12);
 	net_send(S3D_P_C_PEP_MAT, buf, len);
-	return(0);  /*  nothing yet */
+	return 0;  /*  nothing yet */
 }
 
 /** \brief rewrite material with alpha
@@ -689,7 +689,7 @@ int s3d_pep_material_a(int object,
 
 	htonfb((float*)(buf + sizeof(uint32_t)), 12);
 	net_send(S3D_P_C_PEP_MAT, buf, len);
-	return(0);  /*  nothing yet */
+	return 0;  /*  nothing yet */
 }
 
 /** \brief rewrite materials with alpha
@@ -703,13 +703,13 @@ int s3d_pep_materials_a(int object, const float *mbuf, uint16_t n)
 	char    buf[MF_LEN+4];
 	if ((n*12*sizeof(float) + 4) > MF_LEN) {
 		errds(MED, "s3d_pep_materials_a()", "too much data");
-		return(-1);  /*  impossible */
+		return -1;  /*  impossible */
 	}
 	*((uint32_t *)buf) = htonl(object);  /*  object id */
 	memcpy(buf + 4, mbuf, 12*n*sizeof(float));
 	htonfb((float*)(buf + sizeof(uint32_t)), n*12);
 	net_send(S3D_P_C_PEP_MAT, buf, n*12*sizeof(float) + 4);
-	return(0);
+	return 0;
 }
 
 /** \brief add normals to polygon
@@ -729,13 +729,13 @@ int s3d_pep_polygon_normals(int object, const float *nbuf, uint16_t n)
 	uint8_t buf[MF_LEN+4];
 	if ((n*9*sizeof(float) + 4) > MF_LEN) {
 		errds(MED, "s3d_pep_polygon_normals()", "too much data");
-		return(-1);  /*  impossible */
+		return -1;  /*  impossible */
 	}
 	*((uint32_t *)buf) = htonl(object);
 	memcpy(buf + 4, nbuf, 9*n*sizeof(float));
 	htonfb((float*)(buf + sizeof(uint32_t)), 9*n);
 	net_send(S3D_P_C_PEP_POLY_NORMAL, (char *)buf, n*9*sizeof(float) + 4);
-	return(0);
+	return 0;
 
 }
 
@@ -754,13 +754,13 @@ int s3d_pep_line_normals(int object, const float *nbuf, uint16_t n)
 	uint8_t buf[MF_LEN+4];
 	if ((n*9*sizeof(float) + 4) > MF_LEN) {
 		errds(MED, "s3d_pep_line_normals()", "too much data");
-		return(-1);  /*  impossible */
+		return -1;  /*  impossible */
 	}
 	*((uint32_t *)buf) = htonl(object);
 	memcpy(buf + 4, nbuf, 6*n*sizeof(float));
 	htonfb((float*)(buf + sizeof(uint32_t)), 6*n);
 	net_send(S3D_P_C_PEP_LINE_NORMAL, (char *)buf, n*6*sizeof(float) + 4);
-	return(0);
+	return 0;
 
 }
 
@@ -784,7 +784,7 @@ int s3d_pep_vertex(int object, float x, float y, float z)
 
 	htonfb((float*)(buf + sizeof(uint32_t)), 3);
 	net_send(S3D_P_C_PEP_VERTEX, buf, len);
-	return(0);
+	return 0;
 }
 
 /** \brief rewrite line
@@ -805,7 +805,7 @@ int s3d_pep_line(int object, int v1, int v2, int material)
 	*((uint32_t *)ptr) = htonl(material);
 
 	net_send(S3D_P_C_PEP_LINE, buf, len);
-	return(0);
+	return 0;
 }
 
 
@@ -821,13 +821,13 @@ int s3d_pep_lines(int object, const uint32_t *lbuf, uint16_t n)
 	int    i;
 	if ((n*3*4 + 4) > MF_LEN) {
 		errds(MED, "s3d_pep_lines()", "too much data");
-		return(-1);  /*  impossible */
+		return -1;  /*  impossible */
 	}
 	buf[0] = htonl(object);
 	for (i = 0; i < 3*n; i++)
 		buf[i+1] = htonl(lbuf[0]);
 	net_send(S3D_P_C_PEP_LINE, (char *)buf, n*3*4 + 4);
-	return(0);
+	return 0;
 
 }
 
@@ -842,13 +842,13 @@ int s3d_pep_vertices(int object, const float *vbuf, uint16_t n)
 	uint8_t buf[MF_LEN+4];
 	if ((n*3*sizeof(float) + 4) > MF_LEN) {
 		errds(MED, "s3d_pep_vertices()", "too much data");
-		return(-1);  /*  impossible */
+		return -1;  /*  impossible */
 	}
 	*((uint32_t *)buf) = htonl(object);
 	memcpy(buf + 4, vbuf, 3*n*sizeof(float));
 	htonfb((float*)(buf + sizeof(uint32_t)), 3*n);
 	net_send(S3D_P_C_PEP_VERTEX, (char *)buf, n*3*sizeof(float) + 4);
-	return(0);
+	return 0;
 
 }
 
@@ -880,7 +880,7 @@ int s3d_pep_polygon_tex_coord(int object, float x1, float y1, float x2, float y2
 
 	htonfb((float*)(buf + sizeof(uint32_t)), 6);
 	net_send(S3D_P_C_PEP_POLY_TEXC, (char *)buf, 6*4 + 4);
-	return(0);
+	return 0;
 }
 
 /** \brief add texture coordinates to polygons
@@ -894,13 +894,13 @@ int s3d_pep_polygon_tex_coords(int object, const float *tbuf, uint16_t n)
 	char buf[MF_LEN+4];
 	if ((n*6*sizeof(float)) > MF_LEN) {
 		errds(MED, "s3d_pep_polygon_tex_coords()", "too much data");
-		return(-1);  /*  impossible */
+		return -1;  /*  impossible */
 	}
 	*((uint32_t *)buf) = htonl(object);
 	memcpy(buf + 4, tbuf, 6*n*sizeof(float));
 	htonfb((float*)(buf + sizeof(uint32_t)), 6*n);
 	net_send(S3D_P_C_PEP_POLY_TEXC, (char *)buf, n*6*sizeof(float) + 4);
-	return(0);
+	return 0;
 }
 
 /** \brief add normals to polygon
@@ -915,7 +915,7 @@ int s3d_load_polygon_normals(int object, const float *nbuf, uint32_t start, uint
 	int     flen, stepl;
 	uint32_t   mstart;
 	if (n < 1)
-		return(-1);
+		return -1;
 	mstart = start;
 	stepl = ((int)((MF_LEN - 8) / (9 * 4))) * (9 * 4);
 	f = len / (MF_LEN - 8) + 1;  /*  how many fragments? */
@@ -934,7 +934,7 @@ int s3d_load_polygon_normals(int object, const float *nbuf, uint32_t start, uint
 		net_send(S3D_P_C_LOAD_POLY_NORMAL, buf, flen + 8);
 		mstart += stepl;
 	}
-	return(0);
+	return 0;
 }
 
 /** \brief add normals to line
@@ -949,7 +949,7 @@ int s3d_load_line_normals(int object, const float *nbuf, uint32_t start, uint16_
 	int     flen, stepl;
 	uint32_t   mstart;
 	if (n < 1)
-		return(-1);
+		return -1;
 	mstart = start;
 	stepl = ((int)((MF_LEN - 8) / (6 * 4))) * (6 * 4);
 	f = len / (MF_LEN - 8) + 1;  /*  how many fragments? */
@@ -968,7 +968,7 @@ int s3d_load_line_normals(int object, const float *nbuf, uint32_t start, uint16_
 		net_send(S3D_P_C_LOAD_LINE_NORMAL, buf, flen + 8);
 		mstart += stepl;
 	}
-	return(0);
+	return 0;
 }
 
 /** \brief add texture coordinates to polygons
@@ -983,7 +983,7 @@ int s3d_load_polygon_tex_coords(int object, const float *tbuf, uint32_t start, u
 	int     flen, stepl;
 	uint32_t   mstart;
 	if (n < 1)
-		return(-1);
+		return -1;
 	mstart = start;
 	stepl = ((int)((MF_LEN - 8) / (6 * 4))) * (6 * 4);
 	f = len / (MF_LEN - 8) + 1;  /*  how many fragments? */
@@ -1002,7 +1002,7 @@ int s3d_load_polygon_tex_coords(int object, const float *tbuf, uint32_t start, u
 		net_send(S3D_P_C_LOAD_POLY_TEXC, buf, flen + 8);
 		mstart += stepl;
 	}
-	return(0);
+	return 0;
 }
 
 /** \brief add materials with alpha to polygons
@@ -1017,7 +1017,7 @@ int s3d_load_materials_a(int object, const float *mbuf, uint32_t start, uint16_t
 	int     flen, stepl;
 	uint32_t   mstart;
 	if (n < 1)
-		return(-1);
+		return -1;
 	mstart = start;
 	stepl = ((int)((MF_LEN - 8) / (12 * 4))) * (12 * 4);
 	f = len / (MF_LEN - 8) + 1;  /*  how many fragments? */
@@ -1036,7 +1036,7 @@ int s3d_load_materials_a(int object, const float *mbuf, uint32_t start, uint16_t
 		net_send(S3D_P_C_LOAD_MAT, buf, flen + 8);
 		mstart += stepl;
 	}
-	return(0);
+	return 0;
 }
 
 /** \brief add texture to material
@@ -1053,7 +1053,7 @@ int s3d_pep_material_texture(int object, uint32_t tex)
 	*((uint32_t *)ptr) = htonl(tex);
 
 	net_send(S3D_P_C_PEP_MAT_TEX, buf, 8);
-	return(0);
+	return 0;
 }
 int _s3d_update_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uint16_t w, uint16_t h)
 {
@@ -1072,7 +1072,7 @@ int _s3d_update_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, 
 	*((uint16_t *)ptr) = htons(h);
 
 	net_send(S3D_P_C_UPDATE_TEX, buf, 16);
-	return(0);
+	return 0;
 
 }
 
@@ -1093,11 +1093,11 @@ int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uin
 	if (_s3d_load_texture_shm(object, tex, xpos, ypos, w, h, data) == 0) {
 		/* TODO: send update event to server */
 		_s3d_update_texture(object, tex, xpos, ypos, w, h);
-		return(0); /* did it over shm */
+		return 0; /* did it over shm */
 	}
 	linestep = (MF_LEN - 16) / (w * 4);
 	if (linestep == 0)
-		return(-1);  /*  won't do that. .. yet */
+		return -1;  /*  won't do that. .. yet */
 	for (i = 0; i < h; i += linestep) {
 		ptr = buf;
 		*((uint32_t *)ptr) = htonl(object);
@@ -1117,7 +1117,7 @@ int s3d_load_texture(int object, uint32_t tex, uint16_t xpos, uint16_t ypos, uin
 		memcpy(ptr, data + (i*w*4), lines*w*4);
 		net_send(S3D_P_C_LOAD_TEX, buf, 16 + lines*w*4);
 	}
-	return(0);
+	return 0;
 }
 
 /** \brief enable flags of object
@@ -1140,7 +1140,7 @@ int s3d_flags_on(int object, uint32_t flags)
 	*((uint32_t *)ptr) = htonl(flags);
 
 	net_send(S3D_P_C_TOGGLE_FLAGS, buf, len);
-	return(0);
+	return 0;
 }
 
 /** \brief disable flags of object
@@ -1160,7 +1160,7 @@ int s3d_flags_off(int object, uint32_t flags)
 	*((uint32_t *)ptr) = htonl(flags);
 
 	net_send(S3D_P_C_TOGGLE_FLAGS, buf, len);
-	return(0);
+	return 0;
 }
 
 /** \brief move object to absolute position
@@ -1192,7 +1192,7 @@ int s3d_translate(int object, float x, float y, float z)
 
 	htonfb((float*)(buf + sizeof(uint32_t)), 3);
 	net_send(S3D_P_C_TRANSLATE, buf, len);
-	return(0);
+	return 0;
 
 }
 
@@ -1232,7 +1232,7 @@ int s3d_rotate(int object, float x, float y, float z)
 
 	htonfb((float*)(buf + sizeof(uint32_t)), 3);
 	net_send(S3D_P_C_ROTATE, buf, len);
-	return(0);
+	return 0;
 }
 
 /** \brief scale object
@@ -1254,7 +1254,7 @@ int s3d_scale(int object, float s)
 
 	htonfb((float*)(buf + sizeof(uint32_t)), 1);
 	net_send(S3D_P_C_SCALE, buf, len);
-	return(0);
+	return 0;
 }
 
 /** \brief focus mcp object
@@ -1266,5 +1266,5 @@ int s3d_mcp_focus(int object)
 {
 	uint32_t buf = htonl(object);
 	net_send(S3D_P_MCP_FOCUS, (char *)&buf, 4);
-	return(0);
+	return 0;
 }

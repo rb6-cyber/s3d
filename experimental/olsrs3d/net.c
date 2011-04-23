@@ -49,12 +49,12 @@ int net_init(char *host)
 
 	if ((he = gethostbyname(host)) == NULL) {  /* get the host info  */
 		herror("gethostbyname");
-		return(1);
+		return 1;
 	}
 
 	if ((sockfd = socket(PF_INET, SOCK_STREAM, 0)) == -1) {
 		perror("socket");
-		return(1);
+		return 1;
 	}
 
 	their_addr.sin_family = AF_INET;    /* host byte order  */
@@ -65,10 +65,10 @@ int net_init(char *host)
 	if (connect(sockfd, (struct sockaddr *)&their_addr,
 	                sizeof(struct sockaddr)) == -1) {
 		perror("connect");
-		return(1);
+		return 1;
 	}
 	fcntl(sockfd, F_SETFL, O_NONBLOCK);
-	return(0);
+	return 0;
 }
 
 int net_main(void)
@@ -77,14 +77,14 @@ int net_main(void)
 
 	if ((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) == -1) {
 		if (errno == EAGAIN)
-			return(0); /* well, that's okay ... */
+			return 0; /* well, that's okay ... */
 		perror("recv");
-		return(-1);
+		return -1;
 	}
 
 	if (numbytes == 0) {
 		printf("connection reset\n");
-		return(-1);
+		return -1;
 	}
 
 	buf[numbytes] = '\0';
@@ -117,9 +117,9 @@ int net_main(void)
 	process_main();
 
 	if (++Net_read_count > 5) {
-		return(0);   /* continue mainloop */
+		return 0;   /* continue mainloop */
 	} else {
-		return(1);   /* continue reading data from socket */
+		return 1;   /* continue reading data from socket */
 	}
 
 }

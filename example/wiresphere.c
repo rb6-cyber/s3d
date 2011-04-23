@@ -97,7 +97,7 @@ static int wire_sphere(int slices, int stacks)
 	free(v);
 	free(n);
 	free(l);
-	return(o);
+	return o;
 }
 static void stop(struct s3d_evt *S3DUNUSED(evt))
 {
@@ -123,7 +123,7 @@ int main(int argc, char **argv)
 		/*  wait for some object to be clicked */
 		s3d_quit();
 	}
-	return(0);
+	return 0;
 }
 
 

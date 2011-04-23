@@ -88,10 +88,10 @@ int graphics_init_sdl(void)
 	s3dprintf(VLOW, "Extensions : %s", glGetString(GL_EXTENSIONS));
 
 	graphics_reshape(X_RES, Y_RES);
-	return(0);
+	return 0;
 }
 int graphics_quit_sdl(void)
 {
 	SDL_Quit();
-	return(0);
+	return 0;
 }

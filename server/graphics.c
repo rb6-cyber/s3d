@@ -53,7 +53,7 @@ int graphics_init(void)
 		break;
 #endif
 	default:
-		return(-1);
+		return -1;
 	}
 	/* light */
 	glEnable(GL_LIGHTING);
@@ -97,7 +97,7 @@ int graphics_init(void)
 	/* face culling */
 	glCullFace(GL_FRONT);
 	glEnable(GL_CULL_FACE);
-	return(0);
+	return 0;
 }
 /*  this is to be called when the window is resized or created ... */
 void graphics_reshape(int w, int h)
@@ -218,7 +218,7 @@ int render_by_mcp(void)
 			}
 		}
 	}
-	return(0);
+	return 0;
 }
 /* this picks objects from their screen-positions and sends
  * OBK_CLICK-events for the selected object(s).
@@ -317,7 +317,7 @@ int graphics_pick_obj(int x, int y)
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
 	select_mode = 0;
-	return(0);
+	return 0;
 }
 
 
@@ -377,5 +377,5 @@ void graphics_main(void)
 /*  quit the graphic-interface */
 int graphics_quit(void)
 {
-	return(0);
+	return 0;
 }

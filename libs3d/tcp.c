@@ -67,12 +67,12 @@ int _tcp_init(const char *sv, int pn)
 	WSADATA datainfo;
 	if (WSAStartup(257, &datainfo) != 0) {
 		errn("_tcp_init()():startup()", errno);
-		return(-1);
+		return -1;
 	}
 #endif
 	if ((sd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
 		errn("_tcp_init()():socket()", errno);
-		return (-1);
+		return -1;
 	}
 	sock.sin_family = AF_INET;
 	if (*sv == 0)  /*  no server argument */
@@ -81,14 +81,14 @@ int _tcp_init(const char *sv, int pn)
 		memcpy(&sock.sin_addr.s_addr, server->h_addr_list[0], 4);
 	else {
 		errn("_tcp_init()():gethostbyname()", errno);
-		return(-1);
+		return -1;
 	}
 	sock.sin_port = htons(pn);
 
 	res = connect(sd, (struct sockaddr *) & sock, sizeof(struct sockaddr_in));
 	if (res < 0) {
 		errn("_tcp_init()():connect()", errno);
-		return(-1);
+		return -1;
 	}
 	/*    if ( fcntl(sd, F_SETFL, O_ASYNC | O_NONBLOCK) < 0 ) */
 	/*   errn("fcntl()",errno); */
@@ -104,7 +104,7 @@ int _tcp_init(const char *sv, int pn)
 #endif
 	s3d_socket = sd;
 	s3dprintf(MED, "connection to %s:%d established", sv, pn);
-	return(0);
+	return 0;
 }
 int _tcp_quit(void)
 {
@@ -113,7 +113,7 @@ int _tcp_quit(void)
 		close(s3d_socket);
 		s3d_socket = 0;
 	}
-	return(0);
+	return 0;
 }
 int tcp_readn(char *str, int s)
 {
@@ -121,12 +121,12 @@ int tcp_readn(char *str, int s)
 	no_left = s;
 	while (no_left > 0) {
 		no_read = read(s3d_socket, str, no_left);
-		if (no_read < 0)  return(no_read);
+		if (no_read < 0)  return no_read;
 		if (no_read == 0) break;
 		no_left -= no_read;
 		str += no_read;
 	}
-	return(s - no_left);
+	return s - no_left;
 }
 int tcp_writen(char *str, int s)
 {
@@ -134,11 +134,11 @@ int tcp_writen(char *str, int s)
 	no_left = s;
 	while (no_left > 0) {
 		no_written = write(s3d_socket, str, no_left);
-		if (no_written <= 0)  return(no_written);
+		if (no_written <= 0)  return no_written;
 		no_left -= no_written;
 		str += no_written;
 	}
-	return(s - no_left);
+	return s - no_left;
 }
 int _s3d_tcp_net_receive(void)
 {
@@ -174,5 +174,5 @@ int _s3d_tcp_net_receive(void)
 			}
 		}
 	}
-	return(found);
+	return found;
 }

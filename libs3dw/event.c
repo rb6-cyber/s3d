@@ -51,7 +51,7 @@
 int s3dw_handle_click(const struct s3d_evt *evt)
 {
 	uint32_t oid = *((uint32_t *)evt->buf);
-	return(s3dw_widget_event_click(s3dw_getroot(), oid));
+	return s3dw_widget_event_click(s3dw_getroot(), oid);
 }
 
 /** \brief handle key input on widget
@@ -79,7 +79,7 @@ int s3dw_handle_click(const struct s3d_evt *evt)
 int s3dw_handle_key(const struct s3d_evt *evt)
 {
 	struct s3d_key_event *keys = (struct s3d_key_event *)evt->buf;
-	return(s3dw_widget_event_key(s3dw_getroot(), keys));
+	return s3dw_widget_event_key(s3dw_getroot(), keys);
 }
 
 /** \brief handle object info events
@@ -103,5 +103,5 @@ int s3dw_object_info(struct s3d_evt *evt)
 		_s3dw_cam->flags &= ~S3DW_ARRANGED;
 		s3dw_ani_needarr();
 	}
-	return(0);
+	return 0;
 }

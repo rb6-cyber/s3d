@@ -91,7 +91,7 @@ int math_logstar_n(int n)
 	for (i = 0, v = (double) n; v >= 1; i++)
 		v = mlog2(v);
 
-	return (i - 1);
+	return i - 1;
 }
 
 

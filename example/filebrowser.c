@@ -83,7 +83,7 @@ static int display_dir(const char *dir, int S3DUNUSED(depth), int  posx, int pos
 	n = i = scandir(dir, &namelist, NULL, alphasort);
 	if (n < 0) {
 		perror("scandir");
-		return(-1);
+		return -1;
 	} else {
 		item = (struct t_item*)malloc(sizeof(struct t_item) * i);
 		n_item = i;
@@ -193,7 +193,7 @@ static int display_dir(const char *dir, int S3DUNUSED(depth), int  posx, int pos
 		}
 		free(namelist);
 	}
-	return(0);
+	return 0;
 }
 
 static int object_click(struct s3d_evt *evt)
@@ -212,26 +212,26 @@ static int object_click(struct s3d_evt *evt)
 				printf("going into %s\n", item[i].name);
 				chdir(item[i].name);
 				display_dir(".", 0, 0, 0, 0);
-				return(0);
+				return 0;
 				break;
 			case T_GEOMETRY:
 				printf("loading geometry %s\n", item[i].name);
 				snprintf(execstr, 256, "modelloader \"%s\"&\n", item[i].name);
 				system(execstr);
-				return(0);
+				return 0;
 				break;
 			case T_MOVIE:
 				printf("playing %s\n", item[i].name);
 				snprintf(execstr, 256, "mplayer -vo s3d \"%s\"&\n", item[i].name);
 				system(execstr);
-				return(0);
+				return 0;
 				break;
 
 
 			}
 		}
 	}
-	return(0);
+	return 0;
 }
 static void mainloop(void)
 {
@@ -254,5 +254,5 @@ int main(int argc, char **argv)
 		s3d_mainloop(mainloop);
 		s3d_quit();
 	}
-	return(0);
+	return 0;
 }

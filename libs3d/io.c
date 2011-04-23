@@ -88,7 +88,7 @@ static int parse_args(int *argc, char ***argv)
 		{"s3d-help", 0, NULL, 'h'},
 		{NULL, 0, NULL, 0}
 	};
-	if ((argc == NULL) || (argv == NULL)) return(0); /* nothing to parse */
+	if ((argc == NULL) || (argv == NULL)) return 0; /* nothing to parse */
 	old_argc = *argc;
 	optind = 0;
 	opterr = 0; /* we don't want to be bothered if there is some error */
@@ -107,7 +107,7 @@ static int parse_args(int *argc, char ***argv)
 		case 'h':
 			printf("usage: %s [options]", (*argv)[0]);
 			s3d_usage();
-			return(-1);
+			return -1;
 		default:
 			/* ignore args which are not for us, but maybe the app which builds on us */
 			(*argv)[(*argc)] = (*argv)[curopt];
@@ -121,7 +121,7 @@ static int parse_args(int *argc, char ***argv)
 		(*argc)++;
 	}
 	optind = 0;
-	return(0);
+	return 0;
 }
 /*  external functions go here ... */
 /** \brief initialize s3d library
@@ -138,7 +138,7 @@ static int parse_args(int *argc, char ***argv)
  *                 ...
  *                 s3d_quit();
  *         }
- *         return(0);
+ *         return 0;
  * }
  * \endcode
  */
@@ -164,16 +164,16 @@ int s3d_init(int *argc, char ***argv, const char *name)
 		if (s3d_net_init(urlc) == CON_NULL) {
 			strncpy(urlc, "s3d://127.0.0.1:6066/", 256);
 			if (s3d_net_init(urlc) == CON_NULL)
-				return(-1);
+				return -1;
 		}
 	} else {
 		strncpy(urlc, url, 256);  /*  this should keep buffer overflows away, maybe */
 		urlc[255] = '\0';  /*  just to make sure */
 		if (!strncmp(urlc, "s3d:// ", 6)) {
-			if (s3d_net_init(urlc) == CON_NULL) return(-1);
+			if (s3d_net_init(urlc) == CON_NULL) return -1;
 		} else {
 			errs("s3d_init()", "invalid url");
-			return(-1);
+			return -1;
 		}
 	}
 	strncpy(buf, name, 256);  /*  copy the name ... */
@@ -192,10 +192,10 @@ int s3d_init(int *argc, char ***argv, const char *name)
 		nanosleep(&t, NULL);
 		if (_s3d_ready) {
 			cb_lock--;
-			return(0);
+			return 0;
 		}
 	}
-	return(-1);
+	return -1;
 }
 
 /** \brief shutdown s3d library
@@ -231,7 +231,7 @@ int s3d_quit(void)
 		ret->length = 0;
 		s3d_push_event(ret);
 	}
-	return(0);
+	return 0;
 }
 
 /** \brief set mainloop of program
@@ -259,7 +259,7 @@ int s3d_mainloop(void (*f)(void))
 		s3d_process_stack();
 		s3d_net_check();  /* get any other packets we might have missed */
 	}
-	return(0);
+	return 0;
 }
 
 /** \brief copy file into memory
@@ -276,21 +276,21 @@ int s3d_open_file(const char *fname, char **pointer)
 	struct stat bf;
 	*pointer = NULL;
 	/* if ((fp = fopen(fname, "rb")) == NULL)
-	 { errn("s3d_open_file():fopen()",errno); return(0);}
+	 { errn("s3d_open_file():fopen()",errno); return 0;}
 	 if (fseek(fp, 0, SEEK_END) != 0)
-	 { errn("s3d_open_file():fseek()",errno); return(0);}
+	 { errn("s3d_open_file():fseek()",errno); return 0;}
 	 if ((filesize = (int)ftell(fp)) == (long)-1)
-	 { errn("s3d_open_file():ftell()",errno); return(0);}
+	 { errn("s3d_open_file():ftell()",errno); return 0;}
 	 if (fseek(fp, 0, SEEK_SET) != 0)
-	 { errn("s3d_open_file():fseek()",errno); return(0);}*/
+	 { errn("s3d_open_file():fseek()",errno); return 0;}*/
 
 	if ((fp = fopen(fname, "rb")) == NULL) {
 		errdn(VLOW, "s3d_open_file():fopen()", errno);
-		return(-1);
+		return -1;
 	}
 	if (fstat(fileno(fp), &bf)) {
 		errdn(VLOW, "s3d_open_file():fstat()", errno);
-		return(-1);
+		return -1;
 	}
 	filesize = bf.st_size;
 	/* s3dprintf(LOW, "opening %s, filesize is %d",fname, filesize);*/
@@ -301,5 +301,5 @@ int s3d_open_file(const char *fname, char **pointer)
 	fread(buf, 1, filesize, fp);
 	fclose(fp);
 	*pointer = buf;
-	return(filesize);
+	return filesize;
 }

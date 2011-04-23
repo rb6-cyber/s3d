@@ -374,7 +374,7 @@ int http_setAuth(const char *user, const char *pass)
 	if ((user == NULL) || (pass == NULL)) { /* bad input or request to clean up */
 		if (auth != NULL) free(auth); /* free old auth */
 		auth = NULL;
-		return(-1);
+		return -1;
 	}
 
 	snprintf((char *)plain, 1024, "%s:%s", user, pass);
@@ -406,7 +406,7 @@ int http_setAuth(const char *user, const char *pass)
 	b64[j] = 0;
 	if (auth != NULL) free(auth); /* free old auth */
 	auth = b64;
-	return(0);
+	return 0;
 
 
 }

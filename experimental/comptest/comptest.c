@@ -155,7 +155,7 @@ static int key(struct s3d_evt *evt)
 
 
 	}
-	return(0);
+	return 0;
 }
 static void x_rot(float vec[3], float angle)
 {
@@ -208,7 +208,7 @@ static int oinfo(struct s3d_evt *evt)
 		break;
 	}
 	if (oinf->object >= 2)
-		return(-1);
+		return -1;
 
 
 	printf("object info for object %d, name %s\n", oinf->object, oinf->name);
@@ -232,7 +232,7 @@ static int oinfo(struct s3d_evt *evt)
 	printf("pointer direction: %3.3f %3.3f %3.3f\n", ptr_dir[0], ptr_dir[1], ptr_dir[2]);
 
 	if (fabs(ptr_dir[2]) < 1e-3)
-		return(-1);
+		return -1;
 
 	t = - cam_pos[2] / ptr_dir[2];
 	ptr_pos[0] = cam_pos[0] + t * ptr_dir[0];
@@ -243,7 +243,7 @@ static int oinfo(struct s3d_evt *evt)
 
 	s3d_translate(cursor, ptr_pos[0], ptr_pos[1], ptr_pos[2]);
 
-	return(0);
+	return 0;
 }
 int screen_width = 0;
 int screen_height = 0;
@@ -267,7 +267,7 @@ int main(int argc, char **argv)
 
 
 	if (xinit())
-		return(1);
+		return 1;
 
 	if (!s3d_init(&argc, &argv, "comptest")) {
 		cursor = s3d_import_model_file("objs/arrow.3ds");
@@ -283,5 +283,5 @@ int main(int argc, char **argv)
 	}
 
 
-	return(0);
+	return 0;
 }

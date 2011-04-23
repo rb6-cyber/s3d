@@ -147,7 +147,7 @@ static int add_olsr_con(struct olsr_node *con_from, struct olsr_node *con_to, fl
 
 	}
 
-	return(0);
+	return 0;
 
 }
 
@@ -193,7 +193,7 @@ static struct olsr_node* get_olsr_node(struct olsr_node **olsr_node, char *ip) {
 
 			}
 
-			return (*olsr_node);
+			return *olsr_node;
 
 		}
 
@@ -236,10 +236,10 @@ static struct olsr_node* get_olsr_node(struct olsr_node **olsr_node, char *ip) {
 		(*olsr_node)->desc_id = -1;
 		(*olsr_node)->olsr_neigh_list = NULL;
 
-		return (*olsr_node);
+		return *olsr_node;
 
 	}
-	return(NULL);
+	return NULL;
 }
 
 /*
@@ -370,7 +370,7 @@ struct olsr_node *move_lst_ptr(int *id) {
 
 struct olsr_node *lst_search(int id) {
 
-	return(move_lst_ptr(&id));
+	return move_lst_ptr(&id);
 
 }
 
@@ -520,6 +520,6 @@ int process_main(void)
 
 	if (last_cr_ptr != NULL) memmove(lbuf, last_cr_ptr + 1, strlen(last_cr_ptr));
 	/*printf("---memmove-lbuf-start---\n%s\n---memmove-lbuf-end---\n",lbuf);*/
-	return(0);
+	return 0;
 
 }

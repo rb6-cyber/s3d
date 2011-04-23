@@ -83,6 +83,6 @@ int main(int argc, char **argv)
 		/*  wait for some object to be clicked */
 		s3d_quit();
 	}
-	return(0);
+	return 0;
 }
 

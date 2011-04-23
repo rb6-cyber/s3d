@@ -44,13 +44,13 @@ unsigned int shm_write(struct buf_t *rb, char *buf, unsigned int n)
 	while ((((s + size*(1 - wrap)) - e) < (n + 1))) { /* checking free space */
 		if /*((size*2)>RB_MAX_SIZE)*/ (1) {
 			/*  s3dprintf(MED,"buffer reached maxsize, no resizing possible");*/
-			return(0);
+			return 0;
 		}
 		/*  printf("buffer full!! resizing ... (to size %d)",(int)size*2);
 		  if (NULL==(realloc(rb, size*2+RB_OVERHEAD)))
 		  {
 		   printf("realloc failed - fatal!!");
-		   return(-1);
+		   return -1;
 		  }
 		  if (wrap)
 		  {
@@ -70,7 +70,7 @@ unsigned int shm_write(struct buf_t *rb, char *buf, unsigned int n)
 	}
 	rb->end = e + n; /* update end of the buffer */
 	if (rb->end >= rb->bufsize) rb->end -= rb->bufsize;
-	return(n);
+	return n;
 }
 unsigned int shm_read(struct buf_t *rb, char *buf, unsigned int n)
 {
@@ -96,6 +96,6 @@ unsigned int shm_read(struct buf_t *rb, char *buf, unsigned int n)
 	}
 	rb->start = s + mn;
 	if (rb->start >= rb->bufsize) rb->start -= rb->bufsize;
-	return(mn);
+	return mn;
 }
 #endif

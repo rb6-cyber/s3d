@@ -62,24 +62,24 @@ t_node *node_getbypath(const char *path)
 			return NULL; /* not found */
 		}
 	}
-	return(cur);
+	return cur;
 }
 /* finds an node in the tree by oid */
 t_node *node_getbyoid(t_node *t, int oid)
 {
 	int i;
 	t_node *f;
-	if (t->oid == oid)   return(t);
-	if (t->objs.str == oid)  return(t);
-	if (t->objs.close == oid)  return(t);
-	if (t->objs.select == oid) return(t);
-	if (t->objs.title == oid)  return(t);
-	if (t->objs.titlestr == oid) return(t);
+	if (t->oid == oid)   return t;
+	if (t->objs.str == oid)  return t;
+	if (t->objs.close == oid)  return t;
+	if (t->objs.select == oid) return t;
+	if (t->objs.title == oid)  return t;
+	if (t->objs.titlestr == oid) return t;
 	if (t->type == T_FOLDER)
 		for (i = 0; i < t->n_sub; i++)
 			if ((f = node_getbyoid(t->sub[i], oid)) != NULL)
-				return(f);
-	return(NULL);
+				return f;
+	return NULL;
 }
 /* writes the path of dir into *path. path should be of type path[M_DIR] */
 void node_path(t_node *dir, char *path)
@@ -119,20 +119,20 @@ int node_init(t_node *dir)
 	dir->scale = dir->dscale = 1.0;
 	dir->detached = 0;
 
-	return(0);
+	return 0;
 }
 /* general undisplay routine. does not handle anything recursively... */
 int node_undisplay(t_node *dir)
 {
 	switch (dir->disp) {
 	case D_DIR:
-		return(box_undisplay(dir));
+		return box_undisplay(dir);
 		break;
 	case D_ICON:
-		return(icon_undisplay(dir));
+		return icon_undisplay(dir);
 		break;
 	default:
-		return(-1);
+		return -1;
 	}
 }
 
@@ -142,7 +142,7 @@ int node_delete(t_node *dir)
 	int i;
 	if (dir->parent == NULL) {
 		printf("won't delete root window!\n");
-		return(-1);
+		return -1;
 	}
 	/* delete all the kids */
 	if (dir->n_sub > 0) {
@@ -161,7 +161,7 @@ int node_delete(t_node *dir)
 
 	if (-1 != (i = ani_onstack(dir))) ani_del(i); /* tell animation stack too */
 	free(dir);
-	return(0);
+	return 0;
 }
 /* node select handles click on the detach button. selected items can be moved, copied etc.*/
 void node_select(t_node *dir)
@@ -205,6 +205,6 @@ void node_focus_color(t_node *node, int on)
 /* get the directory of a node */
 t_node *node_getdir(t_node *node)
 {
-	if (node->type == T_FOLDER) return(node);
-	else return(node->parent);
+	if (node->type == T_FOLDER) return node;
+	else return node->parent;
 }

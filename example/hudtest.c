@@ -45,6 +45,6 @@ int main(int argc, char **argv)
 		s3d_mainloop(mainloop);
 		s3d_quit();
 	}
-	return(0);
+	return 0;
 
 }

@@ -6,7 +6,7 @@
                  ...
                  <link linkend="s3d_quit">s3d_quit</link>();
          }
-         return(0);
+         return 0;
  }
 </programlisting></sect2>
 <sect2 id="s3d_quit"><title>s3d_quit</title><funcsynopsis><funcsynopsisinfo>#include &lt;s3d.h&gt;</funcsynopsisinfo><funcprototype><funcdef>int <function>s3d_quit</function></funcdef><void/></funcprototype><?dbhtml funcsynopsis-style='ansi'?></funcsynopsis><para>Closes the connection and clears the event-stack. It can also be used to leave the <link linkend="s3d_mainloop">s3d_mainloop</link>().         </para></sect2>

@@ -69,7 +69,7 @@ static int get_shift(uint32_t t)
 		t >>= 1;
 		i++;
 	}
-	return(i);
+	return i;
 }
 static void mainloop(void)
 {
@@ -175,7 +175,7 @@ static int keypress(struct s3d_evt *event)
 	if (kc != 0)
 		XTestFakeKeyEvent(dpy, kc, 1, 1);
 	/*     XTestFakeKeyEvent(dpy, kc, 0, 1);*/
-	return(0);
+	return 0;
 
 }
 static int mouseclick(struct s3d_evt *S3DX11UNUSED(event))
@@ -196,7 +196,7 @@ int main(int argc, char **argv)
 	dpy = XOpenDisplay(disp);
 	if (!dpy) {
 		printf("couldn't open display\n");
-		return(-1);
+		return -1;
 	}
 	count[0] = count[1] = count[2] = 0;
 	iterations = 0;
@@ -260,5 +260,5 @@ int main(int argc, char **argv)
 		free(img2);
 	}
 	s3d_quit();
-	return(0);
+	return 0;
 }

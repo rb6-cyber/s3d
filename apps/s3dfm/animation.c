@@ -36,8 +36,8 @@ int ani_onstack(t_node *f)
 	int i;
 	for (i = 0; i < ani_n; i++)
 		if (ani_s[i] == f)
-			return(i);  /* already in list */
-	return(-1);
+			return i;  /* already in list */
+	return -1;
 
 }
 /* add an node on the animation stack */
@@ -99,8 +99,8 @@ int ani_check(t_node *f)
 	y = f->dpy - f->py;
 	z = f->dpz - f->pz;
 	if (((fabs(f->dscale - f->scale) / f->scale) > 0.01) || (sqrt(x*x + y*y + z*z) > 0.01))
-		return(0);
-	return(1);
+		return 0;
+	return 1;
 }
 /* doing the whole animation thing */
 void ani_mate(void)

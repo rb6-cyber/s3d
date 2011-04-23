@@ -46,7 +46,7 @@ int parse_dir(t_node *dir)
 	n = scandir(path, &namelist, NULL, alphasort);
 	if (n < 0) {
 		window_fs_errno(path);
-		return(-1);
+		return -1;
 	} else {
 		oldn = dir->n_sub;
 		while (n--) {
@@ -96,6 +96,6 @@ int parse_dir(t_node *dir)
 		if (dir->check)  dir->sub = (struct _t_node**)realloc(dir->sub , dir->n_sub * sizeof(t_node *));
 		dir->parsed = 1;
 	}
-	return(0);
+	return 0;
 }
 

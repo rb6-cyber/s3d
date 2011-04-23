@@ -69,9 +69,9 @@ struct window *window_find(Window id) {
 	struct window *window;
 	for (window = window_head; window != NULL; window = window->next) {
 		if (window->id == id)
-			return(window);
+			return window;
 	}
-	return(NULL);
+	return NULL;
 
 }
 
@@ -79,13 +79,13 @@ struct window *window_add(Display *dpy, Window id) {
 	struct window *win;
 	win = (struct window *)malloc(sizeof(struct window));
 	if (!win)
-		return(NULL);
+		return NULL;
 
 	printf("window_add(%d)\n", (int) id);
 	if (window_find(id) != NULL) {
 		printf("!!!! Window already added\n");
 		free(win);
-		return(NULL);
+		return NULL;
 	}
 	win->id = id;
 	/* print_properties(id);*/
@@ -113,7 +113,7 @@ struct window *window_add(Display *dpy, Window id) {
 	 * that would help here. */
 	if (!XGetWindowAttributes(dpy, win->id, &win->attr)) {
 		/* window does not exit, next event is probably it's removal ... */
-		return(win);
+		return win;
 	}
 
 	/* XSelectInput(dpy, win->id, ExposureMask|ButtonPressMask|KeyPressMask*/
@@ -133,7 +133,7 @@ struct window *window_add(Display *dpy, Window id) {
 		window_restack(win, win->next->id);
 
 	XCompositeRedirectWindow(dpy, id, CompositeRedirectAutomatic);
-	return(win);
+	return win;
 }
 void window_map(struct window *win)
 {
@@ -232,7 +232,7 @@ static int image_convert(XImage *image, char *bitmap)
 	uint8_t *sc, *tc;
 
 	if (image->format != ZPixmap)
-		return(-1);
+		return -1;
 	switch (image->bits_per_pixel) {
 	case 32:
 		for (y = 0; y < image->height ; y++) {
@@ -270,7 +270,7 @@ static int image_convert(XImage *image, char *bitmap)
 		}
 		break;
 	}
-	return(-1);
+	return -1;
 }
 
 /* takes a bounding box and updates its window contents */

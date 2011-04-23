@@ -106,7 +106,7 @@ static int get_center(void *data, int argc, char **argv, char **azColName)
 			else if (0 == strcmp(azColName[i], "lo"))  med[1] = strtod(argv[i], NULL);
 		}
 	}
-	return(0);
+	return 0;
 }
 /* returns the heading in degress of position P1 -> P2 */
 float get_heading(float la1, float lo1, float la2, float lo2)
@@ -123,7 +123,7 @@ float get_heading(float la1, float lo1, float la2, float lo2)
 	angle = s3d_vector_angle(dir, north);
 	angle = angle * 180.0 / M_PI;
 	if ((lo2 > lo1) || (lo1 - lo2 > 180.0))  angle = 360 - angle;
-	return(angle);
+	return angle;
 }
 /* find some good center on our own */
 void nav_autocenter(void)

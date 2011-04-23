@@ -85,13 +85,13 @@ layer_t *parse_kismet(const char *buf, int length)
 	doc = xmlReadMemory(buf, length, "noname.xml", NULL, 0);
 	if (doc == NULL) {
 		fprintf(stderr, "Document not parsed successfully.\n");
-		return(NULL);
+		return NULL;
 	}
 	cur = xmlDocGetRootElement(doc);
 	if (cur == NULL) {
 		fprintf(stderr, "empty document\n");
 		xmlFreeDoc(doc);
-		return(NULL);
+		return NULL;
 	}
 	layerid = db_insert_layer("kismet");
 	for (c = cur->children;  c != NULL;   c = c->next)   n++; /* count */
@@ -106,14 +106,14 @@ layer_t *parse_kismet(const char *buf, int length)
 	}
 	db_flush();
 	xmlFreeDoc(doc);
-	return(layer);
+	return layer;
 }
 layer_t *load_kismet_file(const char *filename)
 {
 	int length;
 	char *file;
 	layer_t *ret;
-	if (NULL == (file = read_file(filename, &length))) return(NULL);
+	if (NULL == (file = read_file(filename, &length))) return NULL;
 	ret = parse_kismet(file, length);
 	free(file);
 	return ret;

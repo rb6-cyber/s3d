@@ -37,7 +37,7 @@ static struct timespec t = {
 static int stop(struct s3d_evt *S3DUNUSED(evt))
 {
 	s3d_quit();
-	return(0);
+	return 0;
 }
 
 static void mainloop(void)
@@ -63,7 +63,7 @@ static int object_info(struct s3d_evt *hrmz)
 	if (inf->object == 1) { /* of course, a link s3d_link(o,1 would be much easier ... */
 		s3d_translate(o, (inf->trans_x)*2.0f, (inf->trans_y)*2.0f, -2);
 	}
-	return(0);
+	return 0;
 }
 static int mbutton_press(struct s3d_evt *hrmz)
 {
@@ -79,7 +79,7 @@ static int mbutton_press(struct s3d_evt *hrmz)
 	s3d_link(o, 0);  /* link to cam */
 	/* s3d_link(o,1);*/
 	s3d_flags_on(o, S3D_OF_VISIBLE);
-	return(0);
+	return 0;
 }
 int main(int argc, char **argv)
 {
@@ -99,6 +99,6 @@ int main(int argc, char **argv)
 		/*  wait for some object to be clicked */
 		s3d_quit();
 	}
-	return(0);
+	return 0;
 }
 
