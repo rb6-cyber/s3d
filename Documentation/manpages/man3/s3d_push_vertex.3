@@ -9,6 +9,15 @@
 .\"
 .TH "S3D_PUSH_VERTEX" "3" "" "s3d" "s3d Manual"
 .\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
 .\" disable hyphenation
@@ -31,7 +40,7 @@ s3d_push_vertex \- push vertex
 .BI "int s3d_push_vertex(int\ " "object" ", float\ " "x" ", float\ " "y" ", float\ " "z" ");"
 .SH "DESCRIPTION"
 .PP
-Pushes a vertex onto the vertex stack\&. Make sure that you count how many vertices you\'ve pushed because you\'ll need that for referencing when you push your polygons\&.
+Pushes a vertex onto the vertex stack\&. Make sure that you count how many vertices you\*(Aqve pushed because you\*(Aqll need that for referencing when you push your polygons\&.
 .SH "AUTHOR"
 .PP
 \fBSimon Wunderlich\fR

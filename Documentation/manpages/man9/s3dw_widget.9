@@ -9,6 +9,15 @@
 .\"
 .TH "_S3DW_WIDGET" "9" "" "s3d" "s3d Manual"
 .\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
 .\" disable hyphenation
@@ -66,7 +75,7 @@ struct _s3dw_widget {
 .\}
 .SH "DESCRIPTION"
 .PP
-This is the most basic widget type, it contains all the "general" widget information\&. If you want to move a widget, you\'d change x,y,z,s and rx,ry,rz and call s3dw_moveit to turn your action reality\&. Every other widget has this type as first entry, so a simple typecast to s3dw_widget will give you the widgets "general" information\&. For typecast, you may use S3DWIDGET()\&.
+This is the most basic widget type, it contains all the "general" widget information\&. If you want to move a widget, you\*(Aqd change x,y,z,s and rx,ry,rz and call s3dw_moveit to turn your action reality\&. Every other widget has this type as first entry, so a simple typecast to s3dw_widget will give you the widgets "general" information\&. For typecast, you may use S3DWIDGET()\&.
 .PP
 The pointer ptr allows linking to user\-specific data structures\&. That comes in handy if the widget is called back by an event, and the program must now find out on which data the user reacted\&.
 .SH "AUTHOR"

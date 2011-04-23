@@ -9,6 +9,15 @@
 .\"
 .TH "S3D_LOAD_POLYGON_NOR" "3" "" "s3d" "s3d Manual"
 .\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
 .\" disable hyphenation
@@ -31,7 +40,7 @@ s3d_load_polygon_normals \- add normals to polygon
 .BI "int s3d_load_polygon_normals(int\ " "object" ", const\ float\ *" "nbuf" ", uint32_t\ " "start" ", uint16_t\ " "n" ");"
 .SH "DESCRIPTION"
 .PP
-Just as s3d_pep_polygon_normals(), with the difference you won\'t alter the latest n polygons but n polygons starting with index start\&.
+Just as s3d_pep_polygon_normals(), with the difference you won\*(Aqt alter the latest n polygons but n polygons starting with index start\&.
 .SH "AUTHOR"
 .PP
 \fBSimon Wunderlich\fR

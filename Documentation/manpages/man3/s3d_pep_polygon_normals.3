@@ -9,6 +9,15 @@
 .\"
 .TH "S3D_PEP_POLYGON_NORM" "3" "" "s3d" "s3d Manual"
 .\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
 .\" disable hyphenation
@@ -33,7 +42,7 @@ s3d_pep_polygon_normals \- add normals to polygon
 .PP
 Adds normal information to polygons, giving each vertex of a polygon a normal information\&. With this, you can achieve smoothed edge effects\&.
 .PP
-nbuf should contain n * 9 float values, for each vertex a normal vector (x,y,z), and you have 3 vertices for each Polygon so that makes 9 float values per Polygon in total\&. Don\'t worry if you don\'t use this, it\'s kind of hard to calculate and the server will always use some proper normal values (same for every vertex, calculated by the plane which is defined by the 3 points of the polygon\&.
+nbuf should contain n * 9 float values, for each vertex a normal vector (x,y,z), and you have 3 vertices for each Polygon so that makes 9 float values per Polygon in total\&. Don\*(Aqt worry if you don\*(Aqt use this, it\*(Aqs kind of hard to calculate and the server will always use some proper normal values (same for every vertex, calculated by the plane which is defined by the 3 points of the polygon\&.
 .SH "AUTHOR"
 .PP
 \fBSimon Wunderlich\fR

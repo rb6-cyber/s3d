@@ -9,6 +9,15 @@
 .\"
 .TH "S3D_PUSH_VERTICES" "3" "" "s3d" "s3d Manual"
 .\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
 .\" disable hyphenation
@@ -31,7 +40,7 @@ s3d_push_vertices \- push many vertices
 .BI "int s3d_push_vertices(int\ " "object" ", const\ float\ *" "vbuf" ", uint16_t\ " "n" ");"
 .SH "DESCRIPTION"
 .PP
-Push some vertices from an array\&. that\'s much better for performing than using s3d_push_vertex() if you have a lot of vertices (and that\'s probably the usual case)\&.
+Push some vertices from an array\&. that\*(Aqs much better for performing than using s3d_push_vertex() if you have a lot of vertices (and that\*(Aqs probably the usual case)\&.
 .sp
 .if n \{\
 .RS 4

@@ -9,6 +9,15 @@
 .\"
 .TH "S3D_CLONE_TARGET" "3" "" "s3d" "s3d Manual"
 .\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
 .\" disable hyphenation
@@ -31,7 +40,7 @@ s3d_clone_target \- changes the target of a clone\-object
 .BI "int s3d_clone_target(int\ " "oid" ", int\ " "toid" ");"
 .SH "DESCRIPTION"
 .PP
-Changes the clone target of oid to another object (toid)\&. This assumes you\'ve got oid from s3d_clone before\&.
+Changes the clone target of oid to another object (toid)\&. This assumes you\*(Aqve got oid from s3d_clone before\&.
 .SH "AUTHOR"
 .PP
 \fBSimon Wunderlich\fR

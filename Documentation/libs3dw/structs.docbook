@@ -1,6 +1,6 @@
 <sect2 id="struct_s3dw_style"><title>struct _s3dw_style</title><programlisting>struct <link linkend="struct_s3dw_style">_s3dw_style</link> {
-	char *name;
-	char *fontface;
+	const char *name;
+	const char *fontface;
 	float surface_mat;
 	float input_mat;
 	float inputback_mat;

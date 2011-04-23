@@ -9,6 +9,15 @@
 .\"
 .TH "S3DW_MOVEIT" "3" "" "s3d" "s3d Manual"
 .\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
 .\" * set default formatting
 .\" -----------------------------------------------------------------
 .\" disable hyphenation
@@ -31,7 +40,7 @@ s3dw_moveit \- apply widgets moving function
 .BI "void s3dw_moveit(s3dw_widget\ *" "widget" ");"
 .SH "DESCRIPTION"
 .PP
-Moves/translates the widget as you specified in it\'s private s3dw_widget structure\&. Should be casted with S3DWIDGET()\&.
+Moves/translates the widget as you specified in it\*(Aqs private s3dw_widget structure\&. Should be casted with S3DWIDGET()\&.
 .SH "AUTHOR"
 .PP
 \fBSimon Wunderlich\fR
