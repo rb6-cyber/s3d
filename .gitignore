@@ -9,3 +9,5 @@ CMakeCache.txt
 config-s3d.h
 doc_output
 s3drc
+/Documentation/manpages/man*/*.sgml
+/Documentation/xml/
