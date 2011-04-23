@@ -25,7 +25,6 @@
 /* this file is taken from the batman project (www.open-mesh.net/batman)
  * to find heap corruptions... */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -91,7 +90,7 @@ void *debugMalloc(unsigned int length, int tag)
 
 	checkIntegrity();
 
-	memory = (unsigned char*)malloc(length + sizeof(struct chunkHeader) + sizeof(struct chunkTrailer));
+	memory = (unsigned char *)malloc(length + sizeof(struct chunkHeader) + sizeof(struct chunkTrailer));
 
 	if (memory == NULL) {
 		fprintf(stderr, "Cannot allocate %u bytes, tag = %d\n", (unsigned int)(length + sizeof(struct chunkHeader) + sizeof(struct chunkTrailer)), tag);
@@ -124,8 +123,8 @@ void *debugRealloc(void *memoryParameter, unsigned int length, int tag)
 
 	checkIntegrity();
 
-	if (memoryParameter) { /* if memoryParameter==NULL, realloc() should work like malloc() !! */
-		memory = (unsigned char*)memoryParameter;
+	if (memoryParameter) {	/* if memoryParameter==NULL, realloc() should work like malloc() !! */
+		memory = (unsigned char *)memoryParameter;
 		chunkHeader = (struct chunkHeader *)(memory - sizeof(struct chunkHeader));
 
 		if (chunkHeader->magicNumber != MAGIC_NUMBER) {
@@ -141,8 +140,7 @@ void *debugRealloc(void *memoryParameter, unsigned int length, int tag)
 		}
 	}
 
-
-	result = (unsigned char*)debugMalloc(length, tag);
+	result = (unsigned char *)debugMalloc(length, tag);
 	if (memoryParameter) {
 		copyLength = length;
 
@@ -152,7 +150,6 @@ void *debugRealloc(void *memoryParameter, unsigned int length, int tag)
 		memcpy(result, memoryParameter, copyLength);
 		debugFree(memoryParameter);
 	}
-
 
 	return result;
 }
@@ -167,7 +164,7 @@ void debugFree(void *memoryParameter)
 
 	checkIntegrity();
 
-	memory = (unsigned char*)memoryParameter;
+	memory = (unsigned char *)memoryParameter;
 	chunkHeader = (struct chunkHeader *)(memory - sizeof(struct chunkHeader));
 
 	if (chunkHeader->magicNumber != MAGIC_NUMBER) {

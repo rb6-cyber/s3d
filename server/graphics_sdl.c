@@ -27,7 +27,7 @@ int aa_level = 4;
 #include <SDL_opengl.h>
 #include <SDL.h>
 
-int SDLFlags = 0;      /*  some flags for SDL */
+int SDLFlags = 0;		/*  some flags for SDL */
 int graphics_init_sdl(void)
 {
 	SDL_Surface *GLwin = NULL;
@@ -38,7 +38,7 @@ int graphics_init_sdl(void)
 	SDLFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE | SDL_RESIZABLE;
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
 		errsf("SDL_Init()", SDL_GetError());
-	if ((VideoInfo = (SDL_VideoInfo *)SDL_GetVideoInfo()) == NULL)
+	if ((VideoInfo = (SDL_VideoInfo *) SDL_GetVideoInfo()) == NULL)
 		errs("SDL_GetVIdeoInfo()", SDL_GetError());
 	else {
 		if (VideoInfo->hw_available) {
@@ -56,8 +56,10 @@ int graphics_init_sdl(void)
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	do {
 		if (aa_level > 0) {
-			if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1))   s3dprintf(VHIGH, "error initializing multisampling");
-			if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, aa_level)) s3dprintf(VHIGH, "no multisampling available");
+			if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1))
+				s3dprintf(VHIGH, "error initializing multisampling");
+			if (SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, aa_level))
+				s3dprintf(VHIGH, "no multisampling available");
 		}
 
 		/*  more opengl-init-stuff */

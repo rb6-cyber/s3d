@@ -21,7 +21,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 #include "global.h"
 #include <SDL.h>
 /*  this file reads user input */
@@ -35,7 +34,7 @@ int user_init_sdl(void)
 
 int user_main_sdl(void)
 {
-	SDL_Event  event;
+	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
 		case SDL_MOUSEMOTION:

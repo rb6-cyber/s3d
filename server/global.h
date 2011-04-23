@@ -30,19 +30,19 @@
 #undef SHM
 #endif
 #endif
-#include <stdint.h>   /*  integer types */
+#include <stdint.h>		/*  integer types */
 #ifdef SHM
-#include <sys/shm.h> /* key_t */
+#include <sys/shm.h>		/* key_t */
 #endif
 /*  variables and defines */
-extern int frame_mode;   /*  SDL, ... ? */
-extern int running;   /*  server running flag */
+extern int frame_mode;		/*  SDL, ... ? */
+extern int running;		/*  server running flag */
 /*  relevance macros */
 #ifndef S3DUNUSED
 #if defined(UNUSEDPARAM_ATTRIBUTE)
 #define S3DUNUSED(x) (x)__attribute__((unused))
 #elif defined(UNUSEDPARAM_OMIT)
-#define S3DUNUSED(x) /* x */
+#define S3DUNUSED(x)		/* x */
 #else
 #define S3DUNUSED(x) x
 #endif
@@ -55,10 +55,10 @@ extern int running;   /*  server running flag */
 #endif
 
 #ifndef S3D_NAME_MAX
-#define S3D_NAME_MAX 256   /*  limit for names [e.g. process names] */
+#define S3D_NAME_MAX 256	/*  limit for names [e.g. process names] */
 #endif /* S3D_NAME_MAX */
 
-#define MCP   0   /*  the mcp's pid  */
+#define MCP   0			/*  the mcp's pid  */
 #define TEXTURE_MAX_W 4096
 #define TEXTURE_MAX_H 4096
 /*  server version */
@@ -71,7 +71,7 @@ extern int running;   /*  server running flag */
 
 #define RB_STD_SIZE  1024*512
 #define RB_MAX_SIZE  1048*4096
-#define SHM_SIZE  sizeof(key_t)*2    /* space for the keys */
+#define SHM_SIZE  sizeof(key_t)*2	/* space for the keys */
 
 #define RB_OVERHEAD  sizeof(struct buf_t)
 
@@ -79,7 +79,7 @@ extern int running;   /*  server running flag */
 typedef float t_mtrx[16];
 
 struct buf_t {
-	uint32_t start, end, bufsize; /* start/end of the data */
+	uint32_t start, end, bufsize;	/* start/end of the data */
 };
 
 /*  some graphic simple prototypes, they might get into some headerfile later ... */
@@ -97,39 +97,39 @@ struct t_texc {
 /*  and many vertexes have 2 or more polygons connected. OpenGL will optimize the lists for us */
 /*  anyways, so we shouldn't care ... */
 struct t_poly {
-	uint32_t v[3];      /*  we define a poly as set of 3 vertexes, as its usual */
-	struct t_vertex n[3];    /*  normal vectors */
-	uint32_t mat;       /*  material index */
-	struct t_texc tc[3];   /*  texture coords */
+	uint32_t v[3];		/*  we define a poly as set of 3 vertexes, as its usual */
+	struct t_vertex n[3];	/*  normal vectors */
+	uint32_t mat;		/*  material index */
+	struct t_texc tc[3];	/*  texture coords */
 };
 
 struct t_line {
 	uint32_t v[2];
-	struct t_vertex n[2];   /* normal vectors */
+	struct t_vertex n[2];	/* normal vectors */
 	uint32_t mat;
 };
 
 /*  material of surfaces, as it's usual in the OpenGL standard */
 struct t_mat {
-	float amb_r, amb_g, amb_b, amb_a,  /*  ambience */
-	      spec_r, spec_g, spec_b, spec_a, /*  specualar */
-	      diff_r, diff_g, diff_b, diff_a;   /*  diffusion */
-	int32_t tex;        /*  texture index, -1 if there is no */
+	float amb_r, amb_g, amb_b, amb_a,	/*  ambience */
+	 spec_r, spec_g, spec_b, spec_a,	/*  specualar */
+	 diff_r, diff_g, diff_b, diff_a;	/*  diffusion */
+	int32_t tex;		/*  texture index, -1 if there is no */
 };
 /*  this defines a texture */
 struct t_tex {
-	uint16_t w, h;  /*  width and height */
-	uint16_t tw, th;  /*  texture width */
-	uint8_t *buf;   /*  the data */
-	float xs, ys;  /*  scale data for gl-implementations which require 2^x */
-	int shmid;  /* shared memory id, is -1 if it's not attached */
+	uint16_t w, h;		/*  width and height */
+	uint16_t tw, th;	/*  texture width */
+	uint8_t *buf;		/*  the data */
+	float xs, ys;		/*  scale data for gl-implementations which require 2^x */
+	int shmid;		/* shared memory id, is -1 if it's not attached */
 	/*  texture sizes. */
-	int32_t gl_texnum;  /*  the gl texture number. */
+	int32_t gl_texnum;	/*  the gl texture number. */
 };
 
 /*  the object type */
 struct t_obj {
-	uint32_t oflags;    /*  flags, like this object beeing input etc. */
+	uint32_t oflags;	/*  flags, like this object beeing input etc. */
 #define OF_TURN_ON   1
 #define OF_TURN_OFF  2
 #define OF_TURN_SWAP  3
@@ -142,9 +142,8 @@ struct t_obj {
 #define OF_LINK_SRC  0x02000000
 #define OF_LINK   0x04000000
 
-
 #define OF_TYPE   0xF0000000
-#define OF_NODATA  0xF0000000 /* no data allowed! */
+#define OF_NODATA  0xF0000000	/* no data allowed! */
 
 #define OF_CLONE  0x10000000
 #define OF_VIRTUAL  0x20000000
@@ -155,24 +154,24 @@ struct t_obj {
 #define OF_3DPOINTER 0xB0000000
 
 #define OF_MASK   0x00FFFFFF
-	int32_t virtual_pid;  /* if virtual, this contains the pid */
-	int32_t clone_ooid;   /* if clone, this contains the oid of the original */
+	int32_t virtual_pid;	/* if virtual, this contains the pid */
+	int32_t clone_ooid;	/* if clone, this contains the oid of the original */
 
 	int32_t n_vertex, n_mat, n_poly, n_tex, n_line;
-	int32_t dplist;   /*  opengl display list number */
-	int32_t linkid;   /*  linking target, -1 if there is none */
+	int32_t dplist;		/*  opengl display list number */
+	int32_t linkid;		/*  linking target, -1 if there is none */
 	int32_t lsub, lnext, lprev;
 	/*  pointer to our objects; */
 	struct t_vertex *p_vertex;
 	struct t_mat *p_mat;
 	struct t_poly *p_poly;
-	struct t_line   *p_line;
+	struct t_line *p_line;
 	struct t_tex *p_tex;
 	struct t_vertex translate, rotate;
-	float    scale;
-	t_mtrx   m;
-	int    m_uptodate;
-	float r, o_r;     /*  radius, object radius */
+	float scale;
+	t_mtrx m;
+	int m_uptodate;
+	float r, o_r;		/*  radius, object radius */
 };
 
 #ifdef SHM
@@ -187,21 +186,21 @@ struct t_shmcb {
 
 /*  l_* is a list-type, t_* is the type itself */
 struct t_process {
-	char       name[S3D_NAME_MAX];   /*  process name */
-	struct t_obj  **object;     /*  initial pointer to object list */
-	int32_t      n_obj;     /*  number of objects */
-	int32_t      biggest_obj;    /*  the biggest object */
-	int32_t      mcp_oid;     /*  oid in mcp */
-	int       id;      /*  pid */
-	int       con_type;     /*  type of connection, one of following: */
+	char name[S3D_NAME_MAX];	/*  process name */
+	struct t_obj **object;	/*  initial pointer to object list */
+	int32_t n_obj;		/*  number of objects */
+	int32_t biggest_obj;	/*  the biggest object */
+	int32_t mcp_oid;	/*  oid in mcp */
+	int id;			/*  pid */
+	int con_type;		/*  type of connection, one of following: */
 #define CON_NULL 0
 #define CON_TCP  1
 #define CON_SHM  2
 #ifdef TCP
-	int       sockid;
+	int sockid;
 #endif
 #ifdef SHM
-	struct t_shmcb    shmsock;
+	struct t_shmcb shmsock;
 #endif
 };
 
@@ -223,8 +222,8 @@ void sigio_handler(int);
 int network_init(void);
 int network_quit(void);
 int network_main(void);
-int n_readn(struct t_process *p, uint8_t *str, int s);
-int n_writen(struct t_process *p, uint8_t *str, int s);
+int n_readn(struct t_process *p, uint8_t * str, int s);
+int n_writen(struct t_process *p, uint8_t * str, int s);
 int n_remove(struct t_process *p);
 #ifdef G_SDL
 int net_turn_off(int interval);
@@ -235,8 +234,8 @@ int tcp_quit(void);
 int tcp_pollport(void);
 int tcp_pollproc(void);
 int tcp_prot_com_in(struct t_process *p);
-int tcp_writen(int sock, uint8_t *str, int s);
-int tcp_readn(int sock, uint8_t *str, int s);
+int tcp_writen(int sock, uint8_t * str, int s);
+int tcp_readn(int sock, uint8_t * str, int s);
 int tcp_remove(int sock);
 /* shm.c/shm_ringbuf.c */
 int shm_init(void);
@@ -244,8 +243,8 @@ int shm_quit(void);
 int shm_main(void);
 int shm_next_key(void);
 int shm_remove(struct t_process *p);
-int shm_writen(struct buf_t *rb, uint8_t *buf, int n);
-int shm_readn(struct buf_t *rb, uint8_t *buf, int n);
+int shm_writen(struct buf_t *rb, uint8_t * buf, int n);
+int shm_readn(struct buf_t *rb, uint8_t * buf, int n);
 int shm_prot_com_in(struct t_process *p);
 /* shm_ringbuf.c */
 void ringbuf_init(char *data, uint32_t init_size);
@@ -253,8 +252,8 @@ int shm_write(struct buf_t *rb, char *buf, int n);
 int shm_read(struct buf_t *rb, char *buf, int n);
 /*  proto.c */
 extern int focus_oid;
-int prot_com_in(struct t_process *p, uint8_t *pbuf);
-int prot_com_out(struct t_process *p, uint8_t opcode, uint8_t *buf, uint16_t length);
+int prot_com_in(struct t_process *p, uint8_t * pbuf);
+int prot_com_out(struct t_process *p, uint8_t opcode, uint8_t * buf, uint16_t length);
 /* event.c */
 int event_obj_info(struct t_process *p, int32_t oid);
 int event_obj_click(struct t_process *p, int32_t oid);
@@ -285,17 +284,19 @@ void errnf(const char *func, int en);
 void errs(const char *func, const char *msg);
 void errsf(const char *func, const char *msg);
 #ifdef DEBUG
-void errds(int relevance, const char *func, const char *fmt, ...)  S3D_FORMAT(printf, 3, 4);
+void errds(int relevance, const char *func, const char *fmt, ...) S3D_FORMAT(printf, 3, 4);
 void s3dprintf(int relevance, const char *msg, ...) S3D_FORMAT(printf, 2, 3);
 #else
-static void errds(int relevance, const char *func, const char *fmt, ...)  S3D_FORMAT(printf, 3, 4);
+static void errds(int relevance, const char *func, const char *fmt, ...) S3D_FORMAT(printf, 3, 4);
 static void s3dprintf(int relevance, const char *msg, ...) S3D_FORMAT(printf, 2, 3);
 
-static __inline__ void errds(int relevance __attribute__((unused)),
-                             const char *func __attribute__((unused)),
-                             const char *fmt __attribute__((unused)), ...) {}
-static __inline__ void s3dprintf(int relevance __attribute__((unused)),
-                                 const char *msg __attribute__((unused)), ...) {}
+static __inline__ void errds(int relevance __attribute__ ((unused)), const char *func __attribute__ ((unused)), const char *fmt __attribute__ ((unused)), ...)
+{
+}
+
+static __inline__ void s3dprintf(int relevance __attribute__ ((unused)), const char *msg __attribute__ ((unused)), ...)
+{
+}
 #endif
 /*  graphics.c */
 extern int winw, winh;
@@ -325,7 +326,7 @@ void navi_pos(int xdif, int ydif);
 void navi_rot(int xdif, int ydif);
 void ptr_move(int x, int y);
 /*  process.c */
-extern struct t_process  *procs_p;
+extern struct t_process *procs_p;
 extern int procs_n;
 struct t_process *process_add(void);
 int process_del(int id);
@@ -343,22 +344,22 @@ int obj_unlink(struct t_process *p, int32_t oid);
 int obj_del(struct t_process *p, int32_t oid);
 int obj_push_vertex(struct t_process *p, int32_t oid, float *x, int32_t n);
 int obj_push_mat(struct t_process *p, int32_t oid, float *x, int32_t n);
-int obj_push_poly(struct t_process *p, int32_t oid, uint32_t *x, int32_t n);
-int obj_push_line(struct t_process *p, int32_t oid, uint32_t *x, int32_t n);
-int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n);
+int obj_push_poly(struct t_process *p, int32_t oid, uint32_t * x, int32_t n);
+int obj_push_line(struct t_process *p, int32_t oid, uint32_t * x, int32_t n);
+int obj_push_tex(struct t_process *p, int32_t oid, uint16_t * x, int32_t n);
 int obj_pep_poly_normal(struct t_process *p, int32_t oid, float *x, int32_t n);
 int obj_pep_line_normal(struct t_process *p, int32_t oid, float *x, int32_t n);
-int obj_pep_poly_texc(struct t_process *p, int32_t oid, float *x, int32_t  n);
+int obj_pep_poly_texc(struct t_process *p, int32_t oid, float *x, int32_t n);
 int obj_pep_mat(struct t_process *p, int32_t oid, float *x, int32_t n);
-int obj_pep_mat_tex(struct t_process *p, int32_t oid, uint32_t *x, int32_t n);
+int obj_pep_mat_tex(struct t_process *p, int32_t oid, uint32_t * x, int32_t n);
 int obj_pep_vertex(struct t_process *p, int32_t oid, float *x, int32_t n);
-int obj_pep_line(struct t_process *p, int32_t oid, uint32_t *x, int32_t n);
+int obj_pep_line(struct t_process *p, int32_t oid, uint32_t * x, int32_t n);
 int obj_load_poly_normal(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n);
 int obj_load_line_normal(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n);
 int obj_load_poly_texc(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n);
 int obj_load_mat(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n);
-int obj_load_tex(struct t_process *p, int32_t oid, int32_t tex, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *pixbuf);
-int obj_update_tex(struct t_process *p, int32_t oid, int32_t tid, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *pixbuf);
+int obj_load_tex(struct t_process *p, int32_t oid, int32_t tex, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t * pixbuf);
+int obj_update_tex(struct t_process *p, int32_t oid, int32_t tid, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t * pixbuf);
 int obj_del_vertex(struct t_process *p, int32_t oid, int32_t n);
 int obj_del_mat(struct t_process *p, int32_t oid, int32_t n);
 int obj_del_poly(struct t_process *p, int32_t oid, int32_t n);
@@ -396,11 +397,11 @@ void myLoadIdentity(void);
 void myTransform4f(float *v);
 void myTransform3f(float *v);
 void myTransformV(struct t_vertex *v);
-int  myInvert(void);
+int myInvert(void);
 
 /* cull.c */
 void cull_get_planes(void);
-int  cull_sphere_in_frustum(struct t_vertex *center, float radius);
+int cull_sphere_in_frustum(struct t_vertex *center, float radius);
 
 /* allocate.c */
 #if DEBUG <= HIGH
@@ -416,11 +417,11 @@ void debugFree(void *memoryParameter);
 #endif
 
 /* endian.c */
-void htonfb(float* netfloat, int num);
-void ntohfb(float* netfloat, int num);
-void htonlb(uint32_t* netint32, int num);
-void ntohlb(uint32_t* netint32, int num);
-void htonsb(uint16_t* netint16, int num);
-void ntohsb(uint16_t* netint16, int num);
+void htonfb(float *netfloat, int num);
+void ntohfb(float *netfloat, int num);
+void htonlb(uint32_t * netint32, int num);
+void ntohlb(uint32_t * netint32, int num);
+void htonsb(uint16_t * netint16, int num);
+void ntohsb(uint16_t * netint16, int num);
 
 #endif /* _GLOBAL_H_ */

@@ -21,7 +21,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 #include "global.h"
 /*  this file reads user input */
 static int ox, oy;
@@ -62,7 +61,7 @@ void user_key(uint16_t key, uint16_t unicode, uint16_t mod, int state)
 void user_mouse(int button, int state, int x, int y)
 {
 	switch (state) {
-	case 0: /*  mouse_down ... */
+	case 0:		/*  mouse_down ... */
 		switch (button) {
 		case 0:
 			graphics_pick_obj(x, y);
@@ -88,12 +87,12 @@ void user_mouse(int button, int state, int x, int y)
 		oy = y;
 		event_mbutton_clicked(button, state);
 		break;
-	case 1:  /*  mouse up */
+	case 1:		/*  mouse up */
 		ox = oy = 0xFFFFFF;
 		event_mbutton_clicked(button, state);
-		/*  s3dprintf(LOW,"state is: %d,button is %d",state,button);*/
+		/*  s3dprintf(LOW,"state is: %d,button is %d",state,button); */
 		break;
-	case 2:  /*  mouse still down */
+	case 2:		/*  mouse still down */
 		switch (button) {
 		case 1:
 			if ((ox != 0xFFFFFF) && (oy != 0xFFFFFF))

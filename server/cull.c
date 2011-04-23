@@ -23,13 +23,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 #include "global.h"
-#include <math.h> /* sqrt() */
+#include <math.h>		/* sqrt() */
 #if G_SDL
-#include <SDL_opengl.h>   /*  glGetFloatv */
+#include <SDL_opengl.h>		/*  glGetFloatv */
 #else
-#include <GL/gl.h>   /*  glGetFloatv */
+#include <GL/gl.h>		/*  glGetFloatv */
 #endif
 struct t_plane {
 	struct t_vertex n;
@@ -51,14 +50,13 @@ void cull_get_planes(void)
 	int i;
 	float d;
 
-
 	/* get matrices from opengl */
 	glGetFloatv(GL_MODELVIEW_MATRIX, mmodel);
 	glGetFloatv(GL_PROJECTION_MATRIX, mproj);
 
 	mySetMatrix(mproj);
 	myMultMatrix(mmodel);
-	myGetMatrix(m); /* multiply and have the result in m */
+	myGetMatrix(m);		/* multiply and have the result in m */
 
 	p = &frustumPlane[RIGHT];
 	p->n.x = m[3] - m[0];
@@ -115,9 +113,9 @@ int cull_sphere_in_frustum(struct t_vertex *center, float radius)
 	struct t_plane *p;
 	for (i = 0; i < 6; i++) {
 		p = &frustumPlane[i];
-		if (p->n.x*center->x + p->n.y*center->y + p->n.z*center->z + p->d <= -radius) {
-			return 0; /* sorry, no ... */
+		if (p->n.x * center->x + p->n.y * center->y + p->n.z * center->z + p->d <= -radius) {
+			return 0;	/* sorry, no ... */
 		}
 	}
-	return 1; /* it's inside */
+	return 1;		/* it's inside */
 }

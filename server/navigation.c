@@ -21,9 +21,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 #include "global.h"
-#include <math.h> /* atan() */
+#include <math.h>		/* atan() */
 
 void navi_right(void)
 {
@@ -70,10 +69,14 @@ void navi_rot(int xdif, int ydif)
 	rv[0] = (cam->rotate.x + ydif);
 	rv[1] = (cam->rotate.y + xdif);
 	rv[2] = 0.0F;
-	if (rv[0] > 90)  rv[0] = 90;
-	if (rv[0] < -90)  rv[0] = -90;
-	if (rv[1] > 360)  rv[1] -= 360;
-	if (rv[1] < 0)  rv[1] += 360;
+	if (rv[0] > 90)
+		rv[0] = 90;
+	if (rv[0] < -90)
+		rv[0] = -90;
+	if (rv[1] > 360)
+		rv[1] -= 360;
+	if (rv[1] < 0)
+		rv[1] += 360;
 	obj_rotate(get_proc_by_pid(MCP), 0, rv);
 }
 
@@ -92,7 +95,7 @@ void ptr_move(int x, int y)
 	tv[0] = (2.0 * x / ((float)winw) - 1.0) * xf;
 	tv[1] = -(2.0 * y / ((float)winh) - 1.0) * yf;
 	tv[2] = -1;
-	rv[0] = 1.5 * 180 / M_PI * atan(tv[1] / 2); /* TODO: Hm, this is not really correct ... */
+	rv[0] = 1.5 * 180 / M_PI * atan(tv[1] / 2);	/* TODO: Hm, this is not really correct ... */
 	rv[1] = 1.5 * 180 / M_PI * -atan(tv[0] / 2);
 	rv[2] = 0;
 	p = get_proc_by_pid(MCP);

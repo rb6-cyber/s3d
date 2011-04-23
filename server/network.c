@@ -21,18 +21,17 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 #include "global.h"
 #include <stdio.h>
-#include <stdlib.h>   /*  free() */
-#include <errno.h>   /*  errno() */
-#include <unistd.h>  /* close(), read(),write() */
-#include <signal.h>  /* SIGPIPE,SIG_ERR,SIGIO */
+#include <stdlib.h>		/*  free() */
+#include <errno.h>		/*  errno() */
+#include <unistd.h>		/* close(), read(),write() */
+#include <signal.h>		/* SIGPIPE,SIG_ERR,SIGIO */
 #ifdef G_SDL
-#include <SDL.h> /* SDL_SetTimer() */
+#include <SDL.h>		/* SDL_SetTimer() */
 #endif
 #ifdef SIGS
-#include <signal.h>  /*  sighandler_t SIG_PIPE */
+#include <signal.h>		/*  sighandler_t SIG_PIPE */
 #endif
 /*  here go all the network functions */
 /*  */
@@ -41,8 +40,8 @@
 
 /*  defines: */
 
-uint8_t ibuf[MAXPLEN]; /* input buffer for a packet */
-uint8_t obuf[MAXPLEN]; /* output buffer */
+uint8_t ibuf[MAXPLEN];		/* input buffer for a packet */
+uint8_t obuf[MAXPLEN];		/* output buffer */
 #ifdef SIGS
 static int sigio = 0;
 #endif
@@ -63,7 +62,7 @@ void sigio_handler(int S3DUNUSED(unused))
 int network_init(void)
 {
 #ifdef SIGS
-	/* struct sigaction act;*/
+	/* struct sigaction act; */
 #endif
 #ifdef TCP
 	tcp_init();
@@ -80,7 +79,7 @@ int network_init(void)
 	return 0;
 }
 
-volatile int      turn;
+volatile int turn;
 
 int net_turn_off(int S3DUNUSED(interval))
 {
@@ -96,13 +95,14 @@ int network_main(void)
 
 #ifdef TCP
 #ifdef SIGS
-	if (sigio == 1) { /*  as long as there is no locking/threadsafety, do like this ... */
+	if (sigio == 1) {	/*  as long as there is no locking/threadsafety, do like this ... */
 #endif
-		tcp_pollport(); /*  this polls for new processes */
+		tcp_pollport();	/*  this polls for new processes */
 #ifdef G_SDL
 		SDL_SetTimer(50, (SDL_TimerCallback) net_turn_off);
 #endif
-		while (turn && tcp_pollproc()) {}  /*  if there is new data, loop please. this is for testing now, and should be combined with timing later .. */
+		while (turn && tcp_pollproc()) {
+		}		/*  if there is new data, loop please. this is for testing now, and should be combined with timing later .. */
 #ifdef G_SDL
 		SDL_SetTimer(0, NULL);
 #endif
@@ -117,6 +117,7 @@ int network_main(void)
 #endif
 	return 0;
 }
+
 int n_remove(struct t_process *p)
 {
 	switch (p->con_type) {
@@ -135,7 +136,7 @@ int n_remove(struct t_process *p)
 	return -1;
 }
 
-int n_readn(struct t_process *p, uint8_t *str, int s)
+int n_readn(struct t_process *p, uint8_t * str, int s)
 {
 	switch (p->con_type) {
 #ifdef TCP
@@ -149,7 +150,8 @@ int n_readn(struct t_process *p, uint8_t *str, int s)
 	}
 	return -1;
 }
-int n_writen(struct t_process *p, uint8_t *str, int s)
+
+int n_writen(struct t_process *p, uint8_t * str, int s)
 {
 	switch (p->con_type) {
 #ifdef TCP

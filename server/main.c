@@ -21,29 +21,28 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
-#include "global.h"    /*  contains the prototypes of all modules */
+#include "global.h"		/*  contains the prototypes of all modules */
 #include "config.h"
-#include <time.h>   /* nanosleep() */
-#include <stdlib.h>   /* exit() */
-#include <unistd.h>   /* sleep(), fork() */
+#include <time.h>		/* nanosleep() */
+#include <stdlib.h>		/* exit() */
+#include <unistd.h>		/* sleep(), fork() */
 #define  X_RES 800
 #define  Y_RES 600
-#include <getopt.h>   /*  getopt() */
-#include <string.h>   /*  strcmp() */
+#include <getopt.h>		/*  getopt() */
+#include <string.h>		/*  strcmp() */
 #ifdef SIGS
-#include <signal.h>   /*  signal() */
+#include <signal.h>		/*  signal() */
 #endif
-#include <errno.h>   /*  errno() */
+#include <errno.h>		/*  errno() */
 int frame_mode = 0;
 static int kidpid = 0;
 static int norc = 0;
 int running;
 static const char *rc = NULL;
 static const char *homerc = "~/.s3drc";
-static const char *etcrc = S3D_CFG_INSTALL_DIR"/s3drc";
+static const char *etcrc = S3D_CFG_INSTALL_DIR "/s3drc";
 /*static int father_done=0;*/
-static const char **s3drc[] = {&rc, &homerc, &etcrc};
+static const char **s3drc[] = { &rc, &homerc, &etcrc };
 
 static void mainloop(void);
 #ifdef SIGS
@@ -75,8 +74,8 @@ int rc_init(void)
 #ifdef SIGS
 	int ret, i;
 	struct timespec t = {
-		0, 10*1000*1000
-	}; /* 10 mili seconds */
+		0, 10 * 1000 * 1000
+	};			/* 10 mili seconds */
 	kidpid = fork();
 	if (kidpid == -1) {
 		errsf("rc_init()", "*sobsob*, can't fork");
@@ -90,7 +89,7 @@ int rc_init(void)
 		 * and all his sockets up */
 		while (!running)
 			nanosleep(&t, NULL);
-		for (i = 0 ; i < ((int)(sizeof(s3drc) / sizeof(char **))) ; i++) {
+		for (i = 0; i < ((int)(sizeof(s3drc) / sizeof(char **))); i++) {
 			if ((*s3drc[i]) != NULL) {
 				s3dprintf(LOW, "[RC] launching %s", *s3drc[i]);
 				ret = system(*s3drc[i]);
@@ -105,7 +104,8 @@ int rc_init(void)
 		if (rc == NULL) {
 			errs("rc_init()", "You don't have an rc-script? Think about creating one (~/.s3drc), its handy :)");
 			errs("rc_init()", "Starting anyway ...");
-			while (1) sleep(1);
+			while (1)
+				sleep(1);
 		} else {
 			errs("rc_init()", "no usuable rc script found.");
 			errs("rc_init()", "Check your rc-script!");
@@ -134,8 +134,8 @@ static void mainloop(void)
 void one_time(void)
 {
 	struct timespec t = {
-		0, 10*1000*1000
-	}; /* 10 mili seconds */
+		0, 10 * 1000 * 1000
+	};			/* 10 mili seconds */
 
 	nanosleep(&t, NULL);
 	user_main();
@@ -155,7 +155,7 @@ int init(void)
 #else
 	s3dprintf(VHIGH, "rc-files won't work without signals :(");
 #endif
-	if (!frame_mode) { /*  turn default frame_mode on */
+	if (!frame_mode) {	/*  turn default frame_mode on */
 #ifdef G_SDL
 		frame_mode = FRAME_SDL;
 #else
@@ -190,7 +190,7 @@ void quit(void)
 		graphics_quit();
 		process_quit();
 #ifdef SIGS
-		if (kidpid != 0) { /* our kid is most probably still alive. kill it!! */
+		if (kidpid != 0) {	/* our kid is most probably still alive. kill it!! */
 			s3dprintf(HIGH, "kill all the kids!!");
 			kill(kidpid, SIGTERM);
 			kidpid = 0;
@@ -205,12 +205,11 @@ void quit(void)
 /*  processing arguments from the commandline */
 static int process_args(int argc, char **argv)
 {
-	int      lopt_idx;
-	int      c;
+	int lopt_idx;
+	int c;
 	struct option long_options[] = {
 		{
-			"multisample",  1, NULL, 'm'
-		}, {"rc",    1, NULL, 'r'}, {"help",   0, NULL, 'h'}, {"use-sdl",   0, NULL, 's'}, {"no-rc",   0, NULL, 'n'}, {NULL, 0, NULL, 0}
+		 "multisample", 1, NULL, 'm'}, {"rc", 1, NULL, 'r'}, {"help", 0, NULL, 'h'}, {"use-sdl", 0, NULL, 's'}, {"no-rc", 0, NULL, 'n'}, {NULL, 0, NULL, 0}
 	};
 	while (-1 != (c = getopt_long(argc, argv, "?hgsnr:m:", long_options, &lopt_idx))) {
 		switch (c) {

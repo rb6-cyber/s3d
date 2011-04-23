@@ -21,15 +21,14 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 #include "global.h"
-#include "proto.h"     /*  for S3D_P_OBJECT, to be integrated in proto.c */
+#include "proto.h"		/*  for S3D_P_OBJECT, to be integrated in proto.c */
 #ifdef WIN32
 #include <winsock2.h>
 #else
-#include <netinet/in.h>   /*  htonl() */
+#include <netinet/in.h>		/*  htonl() */
 #endif
-#include <string.h>    /*  strncpy() */
+#include <string.h>		/*  strncpy() */
 
 /*  this interacts with the actual mcp client */
 struct mcp_object {
@@ -51,7 +50,7 @@ int mcp_init(void)
 	i = p->n_obj;
 	while (i--) {
 		if (p->object[i] != NULL)
-			switch (p->object[i]->oflags&OF_TYPE) {
+			switch (p->object[i]->oflags & OF_TYPE) {
 			case OF_VIRTUAL:
 				mcp_rep_object(i);
 				break;
@@ -63,6 +62,7 @@ int mcp_init(void)
 	mcp_focus(-1);
 	return 0;
 }
+
 /*  report the mcp about our object */
 int mcp_rep_object(int32_t mcp_oid)
 {
@@ -78,7 +78,7 @@ int mcp_rep_object(int32_t mcp_oid)
 	htonfb(&mo.trans_x, 4);
 	ap = get_proc_by_pid(p->object[mcp_oid]->virtual_pid);
 	strncpy(mo.name, ap->name, S3D_NAME_MAX);
-	prot_com_out(p, S3D_P_MCP_OBJECT, (uint8_t *)&mo, sizeof(struct mcp_object));
+	prot_com_out(p, S3D_P_MCP_OBJECT, (uint8_t *) & mo, sizeof(struct mcp_object));
 	return 0;
 }
 
@@ -90,7 +90,7 @@ int mcp_del_object(int32_t mcp_oid)
 		s3dprintf(MED, "lost the focus of mcp-oid %d", mcp_oid);
 		mcp_focus(-1);
 	}
-	prot_com_out(get_proc_by_pid(MCP), S3D_P_MCP_DEL_OBJECT, (uint8_t *)&oid, 4);
+	prot_com_out(get_proc_by_pid(MCP), S3D_P_MCP_DEL_OBJECT, (uint8_t *) & oid, 4);
 	return 0;
 }
 
@@ -103,7 +103,7 @@ int mcp_focus(int oid)
 	p = get_proc_by_pid(MCP);
 	s3dprintf(MED, "request to focus %d", oid);
 	if (OBJ_VALID(p, oid, o))
-		if (o->oflags&OF_VIRTUAL) {
+		if (o->oflags & OF_VIRTUAL) {
 			focus_oid = oid;
 			obj_pos_update(p, 0, 0);
 		}

@@ -21,7 +21,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 /*  this defines the protocol */
 
 /*  simply put, a command can be issued from either the client or  */
@@ -29,16 +28,15 @@
 /*  as low as possible to keep the library added to the client's code */
 /*  small. */
 
-
 /*  S3D_P_(C=Client,S=Server)_(command) */
 /*  C/S defines if who can invoke the command  */
 /*  */
 /*  every command is 1 byte long, arguments differ. */
 #define S3D_P_C_INIT   1
 /*  max 256b:  name */
-#define S3D_P_C_QUIT   2  /*  no argument */
+#define S3D_P_C_QUIT   2	/*  no argument */
 
-#define S3D_P_C_NEW_OBJ   3  /*  add a new object */
+#define S3D_P_C_NEW_OBJ   3	/*  add a new object */
 /*  return: 4b: object id  */
 #define S3D_P_C_DEL_OBJ   4
 /*  4b:   object id */
@@ -133,7 +131,6 @@
 /*  4b:  position */
 /*  n*6f:  normals (2* x/y/z for each vertex of the line) */
 
-
 #define S3D_P_C_TOGGLE_FLAGS  32
 /*  4b:  object id */
 /*  1b:  type  */
@@ -149,7 +146,7 @@
 /*  1f:  scale */
 #define S3D_P_C_GET_SIZE  36
 /*  4b: object id */
-#define S3D_P_MCP_FOCUS   66   /*  set the app which should get the keystrokes etc */
+#define S3D_P_MCP_FOCUS   66	/*  set the app which should get the keystrokes etc */
 /*  4b:  object id/pid */
 /*  */
 /*  */

@@ -22,15 +22,15 @@
  */
 
 #include "global.h"
-#include <string.h>   /*  memcpy() */
+#include <string.h>		/*  memcpy() */
 #if G_SDL
-#include <SDL_opengl.h>   /*  GL_RESCALE_NORMAL */
-#include <SDL.h>  /*  SDL_GL_SwapBuffers */
+#include <SDL_opengl.h>		/*  GL_RESCALE_NORMAL */
+#include <SDL.h>		/*  SDL_GL_SwapBuffers */
 #else
-#include <GL/gl.h>   /*  GLint */
-#include <GL/glext.h>   /*  GL_RESCALE_NORMAL */
+#include <GL/gl.h>		/*  GLint */
+#include <GL/glext.h>		/*  GL_RESCALE_NORMAL */
 #endif
-#include <math.h>   /*  sin(),cos() */
+#include <math.h>		/*  sin(),cos() */
 #ifndef INFINITY
 #define INFINITY 1<<30
 #endif
@@ -45,7 +45,7 @@ int winw, winh;
 
 int graphics_init(void)
 {
-	GLfloat shin[] = {16.0};
+	GLfloat shin[] = { 16.0 };
 	switch (frame_mode) {
 #ifdef G_SDL
 	case FRAME_SDL:
@@ -78,7 +78,7 @@ int graphics_init(void)
 
 	/* normalizing */
 	glDisable(GL_AUTO_NORMAL);
-	glDisable(GL_NORMALIZE);   /* don't use the expensive GL_NORMALIZE, we use uniform scaling so GL_RESCALE_NORMAL is sufficent */
+	glDisable(GL_NORMALIZE);	/* don't use the expensive GL_NORMALIZE, we use uniform scaling so GL_RESCALE_NORMAL is sufficent */
 	glEnable(GL_RESCALE_NORMAL);
 
 	/* blending */
@@ -104,9 +104,9 @@ void graphics_reshape(int w, int h)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	if (w > h)
-		glFrustum(-((1.0*w) / h), (1.0*w) / h, -1.0, 1.0, 1.0, 5000);
+		glFrustum(-((1.0 * w) / h), (1.0 * w) / h, -1.0, 1.0, 1.0, 5000);
 	else
-		glFrustum(-1.0, 1.0, -(1.0*h) / w, (1.0*h) / w, 1.0, 5000);
+		glFrustum(-1.0, 1.0, -(1.0 * h) / w, (1.0 * h) / w, 1.0, 5000);
 	glMatrixMode(GL_MODELVIEW);
 	if (procs_p != NULL)
 		event_cam_changed();
@@ -123,15 +123,15 @@ static void render_virtual_object(struct t_obj *o)
 	glMultMatrixf(o->m);
 	glGetFloatv(GL_MODELVIEW_MATRIX, m);
 	cull_get_planes();
-	if (NULL == (ap = get_proc_by_pid(o->virtual_pid))) { /*  the clean way */
-		errds(HIGH, "render_by_mcp()", "not existing pid (%p) referenced by mcp-object!!", (void*)o);
+	if (NULL == (ap = get_proc_by_pid(o->virtual_pid))) {	/*  the clean way */
+		errds(HIGH, "render_by_mcp()", "not existing pid (%p) referenced by mcp-object!!", (void *)o);
 	} else {
 		/*  now go throu the objects of our app  */
 		for (j = 0; j < ap->n_obj; j++) {
 			if (ap->object[j] != NULL) {
-				if (((select_mode == 0) && ap->object[j]->oflags&OF_VISIBLE) || ((select_mode == 1) && (ap->object[j]->oflags&OF_SELECTABLE))) { /* either select mode is off or it's selectable */
+				if (((select_mode == 0) && ap->object[j]->oflags & OF_VISIBLE) || ((select_mode == 1) && (ap->object[j]->oflags & OF_SELECTABLE))) {	/* either select mode is off or it's selectable */
 					x.x = x.y = x.z = 0.0f;
-					mySetMatrix(ap->object[j]->m); /* get into position ... */
+					mySetMatrix(ap->object[j]->m);	/* get into position ... */
 					myTransformV(&x);
 					y.x = 1.0;
 					y.y = y.z = 0.0f;
@@ -164,11 +164,11 @@ int render_by_mcp(void)
 	struct t_obj *o;
 	struct t_vertex x, y;
 	int k;
-	for (i = 0 ; i < p->n_obj ; i++) {  /* check all mcp objects ... */
+	for (i = 0; i < p->n_obj; i++) {	/* check all mcp objects ... */
 		o = p->object[i];
 		if (o != NULL) {
-			if ((select_mode == 0 && o->oflags&OF_VISIBLE) || (select_mode == 1 && o->oflags&OF_SELECTABLE)) { /*  it's even visible ;) */
-				if (o->oflags&OF_VIRTUAL) { /*  we have an app here. */
+			if ((select_mode == 0 && o->oflags & OF_VISIBLE) || (select_mode == 1 && o->oflags & OF_SELECTABLE)) {	/*  it's even visible ;) */
+				if (o->oflags & OF_VIRTUAL) {	/*  we have an app here. */
 					if (o->r != 0.0) {
 						cull_get_planes();
 						mySetMatrix(o->m);
@@ -195,14 +195,14 @@ int render_by_mcp(void)
 							}
 						}
 					}
-				} else if ((o->oflags&OF_CLONE) && (p->object[o->clone_ooid]->oflags&OF_VIRTUAL)) { /* it's a clone of an app */
+				} else if ((o->oflags & OF_CLONE) && (p->object[o->clone_ooid]->oflags & OF_VIRTUAL)) {	/* it's a clone of an app */
 					if (select_mode == 1)
-						glLoadName(o->clone_ooid);/*TODO: what to do if a clone is selected?! */
+						glLoadName(o->clone_ooid);	/*TODO: what to do if a clone is selected?! */
 					glPushMatrix();
 					render_virtual_object(o);
 					render_virtual_object(p->object[o->clone_ooid]);
 					glPopMatrix();
-				} else { /* it's a "regular" mcp object */
+				} else {	/* it's a "regular" mcp object */
 					if (select_mode == 1) {
 						s3dprintf(VLOW, "mcp object no. %d", i);
 						glLoadName(-1);
@@ -249,10 +249,10 @@ int graphics_pick_obj(int x, int y)
 		xpos = ((x - winw / 2.0) / (winw / 2.0));
 		ypos = (((winh - y) - winh / 2.0) / (winh / 2.0)) * (((double)winh / winw));
 	}
-#define mnear 0.001  /*  omg this is so dirty ... but works after all */
+#define mnear 0.001		/*  omg this is so dirty ... but works after all */
 	glFrustum(xpos - mnear, xpos + mnear, ypos - mnear, ypos + mnear, 1, 5000);
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();  /*  get into position ... */
+	glLoadIdentity();	/*  get into position ... */
 	mySetMatrix(p->object[0]->m);
 	myInvert();
 	myGetMatrix(m);
@@ -269,12 +269,12 @@ int graphics_pick_obj(int x, int y)
 		ptr = select_buf;
 		mcp_o = o = names = -1;
 		/* check all the hits, only select the nearest ... */
-		for (i = 0 ; i < hits ; i++) {
+		for (i = 0; i < hits; i++) {
 			names = *ptr;
 			ptr++;
-			z1 = (float) * ptr / 0x7fffffff;
+			z1 = (float)*ptr / 0x7fffffff;
 			ptr++;
-			z2 = (float) * ptr / 0x7fffffff;
+			z2 = (float)*ptr / 0x7fffffff;
 			ptr++;
 			if (z1 < big) {
 				mcp_o = o = -1;
@@ -284,7 +284,7 @@ int graphics_pick_obj(int x, int y)
 						mcp_o = *ptr;
 						break;
 					case 1:
-						o =  *ptr;
+						o = *ptr;
 						break;
 					}
 					ptr++;
@@ -296,12 +296,12 @@ int graphics_pick_obj(int x, int y)
 			s3dprintf(VLOW, "[HIT %d] names %d [z1:%f|z2:%f] mcp_o=%d, o=%d ", i, names, z1, z2, mcp_o, o);
 		}
 		s3dprintf(VLOW, "mcp_o= %d, o= %d", mcp_o, o);
-		if (mcp_o == -1) { /* it's an mcp object */
+		if (mcp_o == -1) {	/* it's an mcp object */
 			s3dprintf(LOW, "clicked on mcp-object no. %d", o);
 			event_obj_click(p, o);
-		} else if ((names > 1) && ((mcp_o >= 0) && (mcp_o < p->n_obj))) { /* it's an usual object */
+		} else if ((names > 1) && ((mcp_o >= 0) && (mcp_o < p->n_obj))) {	/* it's an usual object */
 			s3dprintf(LOW, "clicked on mcp-object %d, object %d", mcp_o, o);
-			if (p->object[mcp_o] != NULL) { /*  that shouldn't happen anyways ... */
+			if (p->object[mcp_o] != NULL) {	/*  that shouldn't happen anyways ... */
 				obj_debug(get_proc_by_pid(p->object[mcp_o]->virtual_pid), o);
 				event_obj_click(get_proc_by_pid(p->object[mcp_o]->virtual_pid), o);
 			}
@@ -314,19 +314,18 @@ int graphics_pick_obj(int x, int y)
 	return 0;
 }
 
-
 void graphics_main(void)
 {
 	struct t_process *p = get_proc_by_pid(MCP);
 	t_mtrx m;
-	GLfloat pos[] = {0, 50, 50, 1.0};
-	GLfloat light0_spec[] = {0.7, 0.7, 0.7, 0.0};
-	GLfloat light0_shininess[] = {1.0};
-	GLfloat light0_diff[] = {0.5, 0.5, 0.5, 1.0};
-	GLfloat light0_amb[] = {1.0, 1.0, 1.0, 1.0};
+	GLfloat pos[] = { 0, 50, 50, 1.0 };
+	GLfloat light0_spec[] = { 0.7, 0.7, 0.7, 0.0 };
+	GLfloat light0_shininess[] = { 1.0 };
+	GLfloat light0_diff[] = { 0.5, 0.5, 0.5, 1.0 };
+	GLfloat light0_amb[] = { 1.0, 1.0, 1.0, 1.0 };
 
 	select_mode = 0;
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  /*  clear screen */
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	/*  clear screen */
 	/*  set up the cam ... */
 	glMatrixMode(GL_MODELVIEW);
 
@@ -343,9 +342,9 @@ void graphics_main(void)
 	glMultMatrixf(m);
 	glLightfv(GL_LIGHT0, GL_POSITION, pos);
 
-	glPushMatrix();  /*  save the cam */
+	glPushMatrix();		/*  save the cam */
 	render_by_mcp();
-	glPopMatrix();  /*  restore the cam */
+	glPopMatrix();		/*  restore the cam */
 	glLoadIdentity();
 	glMultMatrixf(m);
 

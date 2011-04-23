@@ -21,13 +21,12 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 #include "global.h"
-#include <stdio.h>  /*  for printf() */
-#include <stdarg.h>  /*  va_start, va_end */
-#include <string.h>  /*  for strerror() */
-#include <stdlib.h>  /*  for exit() */
-#define  DBM_MAX  1024  /*  debug message buffer size */
+#include <stdio.h>		/*  for printf() */
+#include <stdarg.h>		/*  va_start, va_end */
+#include <string.h>		/*  for strerror() */
+#include <stdlib.h>		/*  for exit() */
+#define  DBM_MAX  1024		/*  debug message buffer size */
 
 /*  this function writes an error somewhere */
 /*  basicly, this is for upcoming logfiles, or maybe draw error-messages into */

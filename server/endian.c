@@ -21,30 +21,30 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <arpa/inet.h> /*  htonl(),htons() */
+#include <arpa/inet.h>		/*  htonl(),htons() */
 #include <stdint.h>
 #include "global.h"
 
 /* convert buffer with floats from host to network endianess */
-void htonfb(float* netfloat, int num)
+void htonfb(float *netfloat, int num)
 {
 	int i;
 	for (i = 0; i < num; i++) {
-		*(uint32_t*)&netfloat[i] = htonl(*(uint32_t*)&netfloat[i]);
+		*(uint32_t *) & netfloat[i] = htonl(*(uint32_t *) & netfloat[i]);
 	}
 }
 
 /* convert buffer with floats from network to host endianess */
-void ntohfb(float* netfloat, int num)
+void ntohfb(float *netfloat, int num)
 {
 	int i;
 	for (i = 0; i < num; i++) {
-		*(uint32_t*)&netfloat[i] = ntohl(*(uint32_t*)&netfloat[i]);
+		*(uint32_t *) & netfloat[i] = ntohl(*(uint32_t *) & netfloat[i]);
 	}
 }
 
 /* convert buffer with uint32_ts from host to network endianess */
-void htonlb(uint32_t* netint32, int num)
+void htonlb(uint32_t * netint32, int num)
 {
 	int i;
 	for (i = 0; i < num; i++) {
@@ -53,7 +53,7 @@ void htonlb(uint32_t* netint32, int num)
 }
 
 /* convert buffer with uint32_ts from network to host endianess */
-void ntohlb(uint32_t* netint32, int num)
+void ntohlb(uint32_t * netint32, int num)
 {
 	int i;
 	for (i = 0; i < num; i++) {
@@ -62,7 +62,7 @@ void ntohlb(uint32_t* netint32, int num)
 }
 
 /* convert buffer with uint16_ts from host to network endianess */
-void htonsb(uint16_t* netint16, int num)
+void htonsb(uint16_t * netint16, int num)
 {
 	int i;
 	for (i = 0; i < num; i++) {
@@ -71,7 +71,7 @@ void htonsb(uint16_t* netint16, int num)
 }
 
 /* convert buffer with uint16_ts from network to host endianess */
-void ntohsb(uint16_t* netint16, int num)
+void ntohsb(uint16_t * netint16, int num)
 {
 	int i;
 	for (i = 0; i < num; i++) {

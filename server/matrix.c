@@ -24,7 +24,7 @@
 /*  this file gives some simple matrix functionality for things I was unable */
 /*  to do with OpenGL */
 #include "global.h"
-#include <string.h>  /*  memcpy() */
+#include <string.h>		/*  memcpy() */
 
 #define DEG2RAD (M_PI/180.0)
 
@@ -45,21 +45,21 @@ void myLoadIdentity(void)
 #define M(x, y)  MAT[I(x, y)]
 static void mat_debug(t_mtrx S)
 {
-	s3dprintf(MED, "MAT_0: %.2f %.2f %.2f %.2f", S[I(0,0)], S[I(1,0)], S[I(2,0)], S[I(3,0)]);
-	s3dprintf(MED, "MAT_1: %.2f %.2f %.2f %.2f", S[I(0,1)], S[I(1,1)], S[I(2,1)], S[I(3,1)]);
-	s3dprintf(MED, "MAT_2: %.2f %.2f %.2f %.2f", S[I(0,2)], S[I(1,2)], S[I(2,2)], S[I(3,2)]);
-	s3dprintf(MED, "MAT_3: %.2f %.2f %.2f %.2f", S[I(0,3)], S[I(1,3)], S[I(2,3)], S[I(3,3)]);
+	s3dprintf(MED, "MAT_0: %.2f %.2f %.2f %.2f", S[I(0, 0)], S[I(1, 0)], S[I(2, 0)], S[I(3, 0)]);
+	s3dprintf(MED, "MAT_1: %.2f %.2f %.2f %.2f", S[I(0, 1)], S[I(1, 1)], S[I(2, 1)], S[I(3, 1)]);
+	s3dprintf(MED, "MAT_2: %.2f %.2f %.2f %.2f", S[I(0, 2)], S[I(1, 2)], S[I(2, 2)], S[I(3, 2)]);
+	s3dprintf(MED, "MAT_3: %.2f %.2f %.2f %.2f", S[I(0, 3)], S[I(1, 3)], S[I(2, 3)], S[I(3, 3)]);
 }
 
 void myMultMatrix(t_mtrx mat2)
 {
 	int i, j, k;
-	t_mtrx mat_d;  /*  destination matrix */
+	t_mtrx mat_d;		/*  destination matrix */
 	for (i = 0; i < 4; i++)
 		for (j = 0; j < 4; j++) {
-			mat_d[I(i,j)] = 0.0F;
+			mat_d[I(i, j)] = 0.0F;
 			for (k = 0; k < 4; k++)
-				mat_d[I(i,j)] += M(k, j) * mat2[I(i,k)];
+				mat_d[I(i, j)] += M(k, j) * mat2[I(i, k)];
 		}
 	memcpy(MAT, mat_d, sizeof(t_mtrx));
 }
@@ -109,34 +109,34 @@ void myTransformV(struct t_vertex *v)
 int myInvert(void)
 {
 	t_mtrx Mm, Pm;
-	int l, lh; /* line*/
-	float f; /* factor */
-	int i; /* number */
-	memcpy(Mm, MAT, sizeof(t_mtrx)); /* backup matrix */
-	memcpy(Pm, Identity, sizeof(t_mtrx));  /* target */
+	int l, lh;		/* line */
+	float f;		/* factor */
+	int i;			/* number */
+	memcpy(Mm, MAT, sizeof(t_mtrx));	/* backup matrix */
+	memcpy(Pm, Identity, sizeof(t_mtrx));	/* target */
 
 	/* step 1 */
 	for (l = 0; l < 4; l++) {
 check:
-		if (M(l, l)*M(l, l) > 0.00000001F) { /* it won't work with real zero */
+		if (M(l, l) * M(l, l) > 0.00000001F) {	/* it won't work with real zero */
 
-			/*   s3dprintf(MED,"normalizing line %d",l);*/
+			/*   s3dprintf(MED,"normalizing line %d",l); */
 			/* normalize */
 			f = 1 / M(l, l);
 			M(l, l) = 1.0;
 			for (i = l + 1; i < 4; i++)
-				M(i, l) *= f; /* the left side ... */
+				M(i, l) *= f;	/* the left side ... */
 			for (i = 0; i < 4; i++)
-				P(i, l) *= f; /* ... and the right */
+				P(i, l) *= f;	/* ... and the right */
 
 			/* mult/fac */
 			for (lh = l + 1; lh < 4; lh++) {
-				if (M(l, lh) != 0) { /* "first" element of the line */
+				if (M(l, lh) != 0) {	/* "first" element of the line */
 					f = -M(l, lh);
-					M(l, lh) = 0.0; /* yes, this WILL be zero! ... */
-					for (i = l + 1; i < 4; i++) /* left side */
+					M(l, lh) = 0.0;	/* yes, this WILL be zero! ... */
+					for (i = l + 1; i < 4; i++)	/* left side */
 						M(i, lh) += f * M(i, l);
-					for (i = 0; i < 4; i++) /* ... and the right one! */
+					for (i = 0; i < 4; i++)	/* ... and the right one! */
 						P(i, lh) += f * P(i, l);
 				}
 			}
@@ -157,7 +157,7 @@ check:
 				}
 			s3dprintf(MED, "nothing to swap, can't reverse this matrix! returning ... ");
 			mat_debug(Mm);
-			return -1; /* the dead end!! */
+			return -1;	/* the dead end!! */
 		}
 	}
 	/* matrix should look like this now: */
@@ -173,17 +173,17 @@ check:
 	for (l = 3; l > 0; l--) {
 		/* mult/fac */
 		for (lh = l - 1; lh >= 0; lh--) {
-			if (M(l, lh) != 0) { /* "first" element of the line */
+			if (M(l, lh) != 0) {	/* "first" element of the line */
 				f = -M(l, lh);
 				M(l, lh) = 0;
-				for (i = 0; i < 4; i++) { /* ... and the right one! */
+				for (i = 0; i < 4; i++) {	/* ... and the right one! */
 					P(i, lh) += f * P(i, l);
 				}
 
 			}
 		}
 	}
-	/* now, Mm,is Identity and Pm is result!*/
-	memcpy(MAT, Pm, sizeof(t_mtrx)); /* copy result */
+	/* now, Mm,is Identity and Pm is result! */
+	memcpy(MAT, Pm, sizeof(t_mtrx));	/* copy result */
 	return 0;
 }

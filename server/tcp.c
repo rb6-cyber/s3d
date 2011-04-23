@@ -21,28 +21,27 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 #include "global.h"
 #ifdef TCP
-#include <errno.h>   /*  errno */
-#include <string.h>   /*  memset() */
-#ifdef WIN32  /*  sohn wars */
+#include <errno.h>		/*  errno */
+#include <string.h>		/*  memset() */
+#ifdef WIN32			/*  sohn wars */
 #include <winsock2.h>
-#else  /* sohn wars */
-#include <sys/types.h>   /* fd_set, FD*, socket, accept ... */
-#include <sys/socket.h>  /* socket, accept ... */
-#include <sys/select.h>  /* fd_set,FD* */
-#include <sys/time.h>  /* fd_set,FD* */
-#include <netinet/in.h>  /* ntohs(),htons(),htonl(),ntohl() */
-#include <arpa/inet.h>   /* network */
-#endif   /*  sohn wars */
-#include <time.h>   /*  select() timeval things */
-#include <fcntl.h>   /*  fcntl(),F_SETOWN */
-#ifndef F_SETOWN /* somehow it is not set with -ansi */
+#else /* sohn wars */
+#include <sys/types.h>		/* fd_set, FD*, socket, accept ... */
+#include <sys/socket.h>		/* socket, accept ... */
+#include <sys/select.h>		/* fd_set,FD* */
+#include <sys/time.h>		/* fd_set,FD* */
+#include <netinet/in.h>		/* ntohs(),htons(),htonl(),ntohl() */
+#include <arpa/inet.h>		/* network */
+#endif /*  sohn wars */
+#include <time.h>		/*  select() timeval things */
+#include <fcntl.h>		/*  fcntl(),F_SETOWN */
+#ifndef F_SETOWN		/* somehow it is not set with -ansi */
 #define F_SETOWN 8
 #endif
-#include <unistd.h>   /*  read(),write(),getpid(),close() */
-#include <stdlib.h>   /*  malloc(),free() */
+#include <unistd.h>		/*  read(),write(),getpid(),close() */
+#include <stdlib.h>		/*  malloc(),free() */
 #include <stdint.h>
 
 static int tcp_sockid;
@@ -52,11 +51,11 @@ int tcp_init(void)
 	int yes = 1;
 	struct sockaddr_in my_addr;
 	s3dprintf(LOW, "server: creating socket");
-#ifdef WIN32  /*  sohn wars */
+#ifdef WIN32			/*  sohn wars */
 	WSADATA datainfo;
 	if (WSAStartup(257, &datainfo) != 0)
 		errnf("startup()", 0);
-#endif  /*  auch sohn */
+#endif /*  auch sohn */
 	if ((tcp_sockid = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 		errnf("socket()", errno);
 
@@ -65,11 +64,11 @@ int tcp_init(void)
 	/*  this seems to have something to do with servers using one port */
 	if (setsockopt(tcp_sockid, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
 		errn("setsockopt(...,SO_REUSEADDR...)", errno);
-	memset((char *) &my_addr, 0, sizeof(my_addr));
+	memset((char *)&my_addr, 0, sizeof(my_addr));
 	my_addr.sin_family = AF_INET;
 	my_addr.sin_port = htons(S3D_PORT);
 	my_addr.sin_addr.s_addr = htons(INADDR_ANY);
-	if (bind(tcp_sockid , (struct sockaddr *) &my_addr, sizeof(my_addr)) < 0)
+	if (bind(tcp_sockid, (struct sockaddr *)&my_addr, sizeof(my_addr)) < 0)
 		errnf("bind()", errno);
 	if (listen(tcp_sockid, 5) < 0)
 		errnf("listen()", errno);
@@ -95,26 +94,26 @@ int tcp_quit(void)
 /*  watches the port for new connections */
 int tcp_pollport(void)
 {
-	fd_set     fs_port;   /*  filedescriptor set for listening port(s) */
-	int      newsd;   /*  new socket descriptor */
-	struct timeval   tv;   /*  time structure */
-	struct t_process *new_p;   /*  pointer to new process */
-	struct sockaddr   client_addr;  /*  new client's address */
-	socklen_t    clilen = sizeof(client_addr); /*  length of client's address */
+	fd_set fs_port;		/*  filedescriptor set for listening port(s) */
+	int newsd;		/*  new socket descriptor */
+	struct timeval tv;	/*  time structure */
+	struct t_process *new_p;	/*  pointer to new process */
+	struct sockaddr client_addr;	/*  new client's address */
+	socklen_t clilen = sizeof(client_addr);	/*  length of client's address */
 
 	FD_ZERO(&fs_port);
 	FD_SET(tcp_sockid, &fs_port);
 select_again:
 	tv.tv_sec = tv.tv_usec = 0;
 	if (select(FD_SETSIZE, &fs_port, NULL, NULL, &tv) < 0) {
-		if (errno == EINTR) { /*  interruption by some evil signal, just do again :) */
+		if (errno == EINTR) {	/*  interruption by some evil signal, just do again :) */
 			errn("tcp_pollport():select()", errno);
-			goto select_again;  /*  oh no, a goto!! that's evil */
+			goto select_again;	/*  oh no, a goto!! that's evil */
 		} else
 			errn("tcp_pollport():select()", errno);
-	} else if (FD_ISSET(tcp_sockid, &fs_port)) { /* redundant, I guess */
+	} else if (FD_ISSET(tcp_sockid, &fs_port)) {	/* redundant, I guess */
 		s3dprintf(HIGH, "select(): new connection!!");
-		if ((newsd = accept(tcp_sockid , (struct sockaddr *) & client_addr, &clilen)) < 0)
+		if ((newsd = accept(tcp_sockid, (struct sockaddr *)&client_addr, &clilen)) < 0)
 			errn("accept()", errno);
 		else {
 #ifdef SIGS
@@ -136,11 +135,11 @@ select_again:
 /*  returns 1 when there was new data. */
 int tcp_pollproc(void)
 {
-	fd_set     fs_proc;   /*  filedescriptor set for listening port(s) */
-	struct timeval   tv;   /*  time structure */
+	fd_set fs_proc;		/*  filedescriptor set for listening port(s) */
+	struct timeval tv;	/*  time structure */
 	struct t_process *p;
-	int      found = 0;
-	int      i, unfinished, n, off;
+	int found = 0;
+	int i, unfinished, n, off;
 	off = 0;
 	do {
 		FD_ZERO(&fs_proc);
@@ -151,7 +150,7 @@ int tcp_pollproc(void)
 			if (p->con_type == CON_TCP) {
 				FD_SET(p->sockid, &fs_proc);
 				n++;
-				if (n >= FD_SETSIZE) { /* don't overflow the setsize! */
+				if (n >= FD_SETSIZE) {	/* don't overflow the setsize! */
 					off = i;
 					unfinished = 1;
 					break;
@@ -175,7 +174,7 @@ select_again_poll:
 				p = &procs_p[i];
 				if (p->con_type == CON_TCP) {
 					if (FD_ISSET(p->sockid, &fs_proc)) {
-						FD_CLR(p->sockid, &fs_proc); /*  clear it from the fd */
+						FD_CLR(p->sockid, &fs_proc);	/*  clear it from the fd */
 						tcp_prot_com_in(p);
 						found = 1;
 					}
@@ -191,10 +190,10 @@ int tcp_prot_com_in(struct t_process *p)
 {
 	uint16_t length;
 	if (3 == tcp_readn(p->sockid, ibuf, 3)) {
-		length = ntohs(*((uint16_t *)((uint8_t *)ibuf + 1)));
+		length = ntohs(*((uint16_t *) ((uint8_t *) ibuf + 1)));
 		s3dprintf(VLOW, "command %d, length %d", ibuf[0], length);
 		if (length > 0) {
-			tcp_readn(p->sockid, ibuf + sizeof(int_least32_t), length);   /*  uint16_t is limited to 65536, so  */
+			tcp_readn(p->sockid, ibuf + sizeof(int_least32_t), length);	/*  uint16_t is limited to 65536, so  */
 			/*  length can't be bigger than that ... lucky */
 		}
 		prot_com_in(p, ibuf);
@@ -206,7 +205,7 @@ int tcp_prot_com_in(struct t_process *p)
 }
 
 /*  shamelessly ripped from simple ftp server */
-int tcp_readn(int sock, uint8_t *str, int s)
+int tcp_readn(int sock, uint8_t * str, int s)
 {
 	int no_left, no_read;
 	no_left = s;
@@ -216,14 +215,15 @@ int tcp_readn(int sock, uint8_t *str, int s)
 			errn("read()", errno);
 			return no_read;
 		}
-		if (no_read == 0) break;
+		if (no_read == 0)
+			break;
 		no_left -= no_read;
 		str += no_read;
 	}
 	return s - no_left;
 }
 
-int tcp_writen(int sock, uint8_t *str, int s)
+int tcp_writen(int sock, uint8_t * str, int s)
 {
 	int no_left, no_written;
 	no_left = s;

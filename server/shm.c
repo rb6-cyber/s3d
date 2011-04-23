@@ -21,27 +21,26 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 #include "global.h"
 #ifdef G_SDL
-#include <SDL.h> /* SDL_SetTimer() */
+#include <SDL.h>		/* SDL_SetTimer() */
 #endif
 #ifdef SHM
-#include <stdio.h>  /* printf(),fopen(),fclose() */
-#include <unistd.h> /* unlink(),usleep() */
-#include <stdlib.h> /* realloc(),free() */
-#include <string.h> /* memcpy() */
-#include <signal.h> /* signal() */
-#include <errno.h> /* errno */
-#ifdef WIN32  /*  sohn wars */
+#include <stdio.h>		/* printf(),fopen(),fclose() */
+#include <unistd.h>		/* unlink(),usleep() */
+#include <stdlib.h>		/* realloc(),free() */
+#include <string.h>		/* memcpy() */
+#include <signal.h>		/* signal() */
+#include <errno.h>		/* errno */
+#ifdef WIN32			/*  sohn wars */
 #include <winsock2.h>
-#else  /* sohn wars */
-#include <netinet/in.h>  /* ntohs(),htons(),htonl(),ntohl() */
-#endif   /*  sohn wars */
+#else /* sohn wars */
+#include <netinet/in.h>		/* ntohs(),htons(),htonl(),ntohl() */
+#endif /*  sohn wars */
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include <time.h> /* nanosleep() */
+#include <time.h>		/* nanosleep() */
 #include <stdint.h>
 
 static struct t_shmcb waiting_comblock;
@@ -49,9 +48,9 @@ static struct t_shmcb waiting_comblock;
 static key_t *data = NULL;
 static char ftoken[] = "/tmp/.s3d";
 static int shmid;
-static int mkey; /* increasing key */
+static int mkey;		/* increasing key */
 
-static int shm_new_comblock(key_t *data);
+static int shm_new_comblock(key_t * data);
 
 int shm_next_key(void)
 {
@@ -82,8 +81,8 @@ int shm_init(void)
 	}
 
 	/* attach to the segment to get a pointer to it: */
-	data = (key_t *)shmat(shmid, (void *)0, 0);
-	if (data == (key_t *)(-1)) {
+	data = (key_t *) shmat(shmid, (void *)0, 0);
+	if (data == (key_t *) (-1)) {
 		errnf("shm_init():shmat()", errno);
 		return 1;
 	}
@@ -102,7 +101,7 @@ static void comblock_init(struct t_shmcb *p_cb)
 }
 
 /* registers a communication block, and sets waiting_comblock */
-static int shm_new_comblock(key_t *data)
+static int shm_new_comblock(key_t * data)
 {
 	struct t_shmcb *mycb;
 	comblock_init(&waiting_comblock);
@@ -115,7 +114,7 @@ static int shm_new_comblock(key_t *data)
 		errn("shm_open_comblock:shmget()", errno);
 		return 1;
 	}
-	mycb->data_ctos = (char*)shmat(mycb->shmid_ctos, (void *)0, 0);
+	mycb->data_ctos = (char *)shmat(mycb->shmid_ctos, (void *)0, 0);
 	if (mycb->data_ctos == (char *)(-1)) {
 		errn("shm_open_comblock:shmat()", errno);
 		return 1;
@@ -125,7 +124,7 @@ static int shm_new_comblock(key_t *data)
 		errn("shm_open_comblock:shmget()", errno);
 		return 1;
 	}
-	mycb->data_stoc = (char*)shmat(mycb->shmid_stoc, (void *)0, 0);
+	mycb->data_stoc = (char *)shmat(mycb->shmid_stoc, (void *)0, 0);
 	if (mycb->data_stoc == (char *)(-1)) {
 		errn("shm_open_comblock:shmat()", errno);
 		return 1;
@@ -175,10 +174,10 @@ int shm_remove(struct t_process *p)
 
 int shm_main(void)
 {
-	int      i/*,found*/;
-	struct buf_t   *dai; /* data in, data out */
+	int i /*,found */ ;
+	struct buf_t *dai;	/* data in, data out */
 	struct t_process *new_p;
-	struct shmid_ds   d;
+	struct shmid_ds d;
 	int iterations;
 
 	iterations = 0;
@@ -188,22 +187,22 @@ int shm_main(void)
 		SDL_SetTimer(100, (SDL_TimerCallback) net_turn_off);
 #endif
 		if (procs_p[i].con_type == CON_SHM) {
-			dai = (struct buf_t *) procs_p[i].shmsock.data_ctos;
+			dai = (struct buf_t *)procs_p[i].shmsock.data_ctos;
 			if (dai->start != dai->end) {
-				/*     found=1;*/
+				/*     found=1; */
 				procs_p[i].shmsock.idle = 0;
 				shm_prot_com_in(&procs_p[i]);
 				if (turn)
-					i--; /* evil hack: decrease i so it will be our turn again in the next round */
+					i--;	/* evil hack: decrease i so it will be our turn again in the next round */
 				else {
 					s3dprintf(MED, "client %d [%s] seems to want to keep us busy ... ", i, procs_p[i].name);
-					SDL_SetTimer(100, (SDL_TimerCallback) net_turn_off); /* restart timer */
-					turn = 1; /* don't decrease, it's next connections turn */
+					SDL_SetTimer(100, (SDL_TimerCallback) net_turn_off);	/* restart timer */
+					turn = 1;	/* don't decrease, it's next connections turn */
 				}
 			} else {
-				if (procs_p[i].shmsock.idle++ > MAX_IDLE) { /* maybe the function timed out somehow ...? let's check ...*/
+				if (procs_p[i].shmsock.idle++ > MAX_IDLE) {	/* maybe the function timed out somehow ...? let's check ... */
 					shmctl(procs_p[i].shmsock.shmid_ctos, IPC_STAT, &d);
-					if (d.shm_nattch == 1) { /* we're all alone ... remove it!! */
+					if (d.shm_nattch == 1) {	/* we're all alone ... remove it!! */
 						s3dprintf(MED, "client [%s] detached, removing ... ", procs_p[i].name);
 						process_del(procs_p[i].id);
 					} else {
@@ -240,7 +239,7 @@ int shm_prot_com_in(struct t_process *p)
 	dai = (struct buf_t *)p->shmsock.data_ctos;
 	if (dai != NULL)
 		if (3 == shm_readn(dai, ibuf, 3)) {
-			length = ntohs(*((uint16_t *)((uint8_t *)ibuf + 1)));
+			length = ntohs(*((uint16_t *) ((uint8_t *) ibuf + 1)));
 			s3dprintf(VLOW, "command %d, length %d", ibuf[0], length);
 			if (length > 0) {
 				shm_readn(dai, ibuf + sizeof(int_least32_t), length);
@@ -252,10 +251,10 @@ int shm_prot_com_in(struct t_process *p)
 
 #define SHM_MAXLOOP  20
 static struct timespec t = {
-	0, 1000*1000
-}; /* 1 mili seconds */
+	0, 1000 * 1000
+};				/* 1 mili seconds */
 
-int shm_writen(struct buf_t *rb, uint8_t *buf, int n)
+int shm_writen(struct buf_t *rb, uint8_t * buf, int n)
 {
 	int no_left, no_written, wait = 0;
 	no_left = n;
@@ -269,12 +268,13 @@ int shm_writen(struct buf_t *rb, uint8_t *buf, int n)
 			s3dprintf(HIGH, "shm_writen():waited too long ...");
 			return -1;
 		}
-		if (wait > 10)  nanosleep(&t, NULL);
+		if (wait > 10)
+			nanosleep(&t, NULL);
 	}
 	return n - no_left;
 }
 
-int shm_readn(struct buf_t *rb, uint8_t *buf, int n)
+int shm_readn(struct buf_t *rb, uint8_t * buf, int n)
 {
 	int no_left, no_read, wait = 0;
 	no_left = n;
@@ -290,7 +290,8 @@ int shm_readn(struct buf_t *rb, uint8_t *buf, int n)
 			s3dprintf(HIGH, "shm_readn():waited too long ...");
 			return -1;
 		}
-		if (wait > 10)  nanosleep(&t, NULL);
+		if (wait > 10)
+			nanosleep(&t, NULL);
 	}
 	return n - no_left;
 }
