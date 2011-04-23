@@ -61,7 +61,6 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 	}
 	length = ntohs(*((uint16_t *)((uint8_t *)pbuf + 1)));
 	cptr = buf = pbuf + sizeof(int_least32_t);
-	/*  if (mcp_oid==-1) s3dprintf(HIGH,"couldn't find mcp-oid for pid %d!",p->id); */
 	switch (command) {
 	case S3D_P_C_INIT:
 		memset(name, 0, S3D_NAME_MAX);
@@ -76,7 +75,6 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 		break;
 	case S3D_P_C_NEW_OBJ:
 		oid = htonl(obj_new(p));
-		/*     s3dprintf(LOW,"pid %d registering new object %d",p->id,ntohl(oid)); */
 		prot_com_out(p, S3D_P_S_NEWOBJ, (uint8_t *)&oid, 4);
 		break;
 	case S3D_P_C_DEL_OBJ:
@@ -115,7 +113,6 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			cptr += 4;
 			num = (length - 4) / (4 * 3);
 			ntohfb((float *)cptr, num * 3);
-			/*      s3dprintf(LOW,"received %d new vertices for object oid...%d", num, oid); */
 			obj_push_vertex(p, oid, (float  *)cptr, num);
 		}
 		break;
@@ -125,7 +122,6 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			cptr += 4;
 			num = (length - 4) / (4 * 12);
 			ntohfb((float *)cptr, num * 12);
-			/*      s3dprintf(LOW,"received %d new materials for object oid...%d", num, oid); */
 			obj_push_mat(p, oid, (float *)cptr, num);
 		}
 		break;
@@ -134,7 +130,6 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			oid = ntohl(*((uint32_t *)cptr));
 			cptr += 4;
 			num = (length - 4) / (4 * 4);
-			/*      s3dprintf(LOW,"received %d new polygons for object oid...%d", num, oid); */
 			ntohlb((uint32_t *)cptr, num*4);
 			/*  convert index names */
 			obj_push_poly(p, oid, (uint32_t *)cptr, num);
@@ -326,7 +321,6 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			cptr += sizeof(uint32_t);
 			num = ntohl(*((uint32_t *)cptr));
 
-			/*      s3dprintf(LOW,"deleting %d vertices for object oid...%d", num, oid); */
 			obj_del_vertex(p, oid, num);
 		}
 		break;
@@ -336,7 +330,6 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			cptr += sizeof(uint32_t);
 			num = ntohl(*((uint32_t *)cptr));
 
-			/*      s3dprintf(LOW,"deleting %d vertices for object oid...%d", num, oid); */
 			obj_del_poly(p, oid, num);
 		}
 		break;
@@ -357,7 +350,6 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			cptr += sizeof(uint32_t);
 			num = ntohl(*((uint32_t *)cptr));
 
-			/*      s3dprintf(LOW,"deleting %d materials for object oid...%d", num, oid); */
 			obj_del_mat(p, oid, num);
 		}
 		break;
@@ -367,7 +359,6 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 			cptr += sizeof(uint32_t);
 			num = ntohl(*((uint32_t *)cptr));
 
-			/*      s3dprintf(LOW,"deleting %d textures for object oid...%d", num, oid); */
 			obj_del_tex(p, oid, num);
 		}
 		break;
@@ -417,6 +408,7 @@ int prot_com_in(struct t_process *p, uint8_t *pbuf)
 	}
 	return 0;
 }
+
 /*  this pushes some buffer out on the wire... */
 int prot_com_out(struct t_process *p, uint8_t opcode, uint8_t *buf, uint16_t length)
 {
@@ -435,4 +427,3 @@ int prot_com_out(struct t_process *p, uint8_t opcode, uint8_t *buf, uint16_t len
 	}
 	return -1;
 }
-

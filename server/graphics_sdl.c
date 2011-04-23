@@ -50,9 +50,7 @@ int graphics_init_sdl(void)
 		}
 		if (VideoInfo->blit_hw)
 			SDLFlags |= SDL_HWACCEL;
-		/*     if(SDL_WM_ToggleFullScreen(GLwin) == 0)         SDLerror("SDL_WM_ToggleFullScreen"); */
 	}
-
 
 	/*  set some opengl-attributes */
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -90,6 +88,7 @@ int graphics_init_sdl(void)
 	graphics_reshape(X_RES, Y_RES);
 	return 0;
 }
+
 int graphics_quit_sdl(void)
 {
 	SDL_Quit();

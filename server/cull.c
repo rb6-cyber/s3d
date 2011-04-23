@@ -41,7 +41,9 @@ struct t_plane {
 #define BOTTOM 3
 #define PNEAR 4
 #define PFAR 5
+
 static struct t_plane frustumPlane[6];
+
 void cull_get_planes(void)
 {
 	t_mtrx m, mproj, mmodel;
@@ -114,10 +116,8 @@ int cull_sphere_in_frustum(struct t_vertex *center, float radius)
 	for (i = 0; i < 6; i++) {
 		p = &frustumPlane[i];
 		if (p->n.x*center->x + p->n.y*center->y + p->n.z*center->z + p->d <= -radius) {
-			/*   s3dprintf(MED,"out of %d plane (n %f %f %f |d %f)",i,p->n.x,p->n.y,p->n.z,p->d);*/
 			return 0; /* sorry, no ... */
 		}
 	}
 	return 1; /* it's inside */
 }
-

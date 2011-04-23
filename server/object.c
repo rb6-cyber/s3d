@@ -51,6 +51,7 @@ static void obj_sys_update(struct t_process *p, int32_t oid);
 
 static int texture_shm_register(struct t_tex *tex, int bufsize);
 static void texture_delete(struct t_tex *tex);
+
 /*  debugging function for objects, prints out some stuff known about it... */
 int obj_debug(struct t_process *p, int32_t oid)
 {
@@ -73,6 +74,7 @@ int obj_debug(struct t_process *p, int32_t oid)
 	}
 	return 0;
 }
+
 /*  push a few new vertices onto the stack. */
 int obj_push_vertex(struct t_process *p, int32_t oid, float *x, int32_t n)
 {
@@ -109,11 +111,6 @@ int obj_push_vertex(struct t_process *p, int32_t oid, float *x, int32_t n)
 				            (a->y * a->y) +
 				            (a->z * a->z));
 				if (r > obj->r) obj->r = r;
-				/*    s3dprintf(VLOW,"added following vertex[%d]: %f, %f, %f",i,
-				        obj->p_vertex[m+i].x,
-				        obj->p_vertex[m+i].y,
-				        obj->p_vertex[m+i].z);*/
-
 			}
 			if (p->id != MCP) {
 				/* this is doing live update which is quite okay, but we need
@@ -228,6 +225,7 @@ int obj_push_poly(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 	}
 	return 0;
 }
+
 /*  its always the same ... this time we push some lines on the stack */
 int obj_push_line(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 {
@@ -312,6 +310,7 @@ static void texture_delete(struct t_tex *tex)
 	}
 
 }
+
 /* creates n new textures on the texture stack, of object oid, with (w,h)
  * given through *x */
 int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
@@ -329,12 +328,6 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 		m = obj->n_tex;    /*  saving the first number of textures */
 		px = x;    /*  movable pointer for x, later */
 		if (NULL != (p_tex = (struct t_tex*)realloc(obj->p_tex, sizeof(struct t_tex) * (n + (obj->n_tex))))) {
-			/*   if (obj->dplist)
-			   {
-			    s3dprintf(VLOW,"freeing display list %d to get new data",obj->dplist);
-			    glDeleteLists(obj->dplist,1);
-			    obj->dplist=0;
-			   }*/
 			obj->p_tex = p_tex;
 			for (i = 0; i < n; i++) {
 				obj->p_tex[m+i].gl_texnum = -1;
@@ -376,10 +369,6 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 						obj->p_tex[m+i].buf = (uint8_t*)malloc(bufsize);
 
 					memset(obj->p_tex[m+i].buf, 0, bufsize);
-
-
-
-
 				} else {
 					errds(MED, "obj_push_tex()", "bad size for texture %d (requested size: %dx%d, max %dx%d)", m + i,
 					      obj->p_tex[m+i].tw, obj->p_tex[m+i].th, TEXTURE_MAX_W, TEXTURE_MAX_H);
@@ -393,6 +382,7 @@ int obj_push_tex(struct t_process *p, int32_t oid, uint16_t *x, int32_t n)
 	}
 	return 0;
 }
+
 /*  add some normal information to the polygon buffer */
 int obj_pep_poly_normal(struct t_process *p, int32_t oid, float *x, int32_t n)
 {
@@ -437,6 +427,7 @@ int obj_pep_poly_normal(struct t_process *p, int32_t oid, float *x, int32_t n)
 	}
 	return 0;
 }
+
 /*  add some normal information to the line buffer */
 int obj_pep_line_normal(struct t_process *p, int32_t oid, float *x, int32_t n)
 {
@@ -518,6 +509,7 @@ int obj_pep_poly_texc(struct t_process *p, int32_t oid, float *x, int32_t n)
 	}
 	return 0;
 }
+
 /*  overwrite n latest materials with some other materials */
 int obj_pep_mat(struct t_process *p, int32_t oid, float *x, int32_t n)
 {
@@ -559,6 +551,7 @@ int obj_pep_mat(struct t_process *p, int32_t oid, float *x, int32_t n)
 	}
 	return 0;
 }
+
 /*  overwrite n latest lines with some other lines */
 int obj_pep_line(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 {
@@ -593,7 +586,6 @@ int obj_pep_line(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 	}
 	return 0;
 }
-
 
 /*  overwrite n latest vertices with some other vertices */
 int obj_pep_vertex(struct t_process *p, int32_t oid, float *x, int32_t n)
@@ -655,6 +647,7 @@ int obj_pep_vertex(struct t_process *p, int32_t oid, float *x, int32_t n)
 	}
 	return 0;
 }
+
 /*  assign textures to the last n materials */
 int obj_pep_mat_tex(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 {
@@ -684,6 +677,7 @@ int obj_pep_mat_tex(struct t_process *p, int32_t oid, uint32_t *x, int32_t n)
 	}
 	return 0;
 }
+
 /*  add some normal information to the polygon buffer */
 int obj_load_poly_normal(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n)
 {
@@ -727,6 +721,7 @@ int obj_load_poly_normal(struct t_process *p, int32_t oid, float *x, int32_t sta
 		return -1;
 	return 0;
 }
+
 /*  add some normal information to the line  buffer */
 int obj_load_line_normal(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n)
 {
@@ -770,6 +765,7 @@ int obj_load_line_normal(struct t_process *p, int32_t oid, float *x, int32_t sta
 		return -1;
 	return 0;
 }
+
 /*  add textures coordinates to each vertex of the polygon(s) */
 int obj_load_poly_texc(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n)
 {
@@ -802,7 +798,6 @@ int obj_load_poly_texc(struct t_process *p, int32_t oid, float *x, int32_t start
 		return -1;
 	return 0;
 }
-
 
 /*  load at position start n materials, overwriting old ones */
 int obj_load_mat(struct t_process *p, int32_t oid, float *x, int32_t start, int32_t n)
@@ -844,6 +839,7 @@ int obj_load_mat(struct t_process *p, int32_t oid, float *x, int32_t start, int3
 		return -1;
 	return 0;
 }
+
 /* notify graphic system that the texture is updated */
 int obj_update_tex(struct t_process *p, int32_t oid, int32_t tid, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *S3DUNUSED(pixbuf))
 {
@@ -868,7 +864,6 @@ int obj_update_tex(struct t_process *p, int32_t oid, int32_t tid, uint16_t x, ui
 		obj->dplist = 0;
 	}
 
-
 	if ((tex->gl_texnum) != -1) {
 		t = tex->gl_texnum;
 		s3dprintf(MED, "updating texture %d at [%d %d] with a [%d %d] pixbuf", t, x, y, w, h);
@@ -880,6 +875,7 @@ int obj_update_tex(struct t_process *p, int32_t oid, int32_t tid, uint16_t x, ui
 	}
 	return 0;
 }
+
 /*  loads some data into the pixbuf */
 int obj_load_tex(struct t_process *p, int32_t oid, int32_t tex, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t *pixbuf)
 {
@@ -931,6 +927,7 @@ int obj_load_tex(struct t_process *p, int32_t oid, int32_t tex, uint16_t x, uint
 	}
 	return -1;
 }
+
 int obj_toggle_flags(struct t_process *p, int32_t oid, uint8_t type, uint32_t flags)
 {
 	struct t_obj *obj;
@@ -951,10 +948,10 @@ int obj_toggle_flags(struct t_process *p, int32_t oid, uint8_t type, uint32_t fl
 		default:
 			return -1;
 		}
-		/*   s3dprintf(VLOW,"toggled %d->oflags=%010x with %010x [%d]",oid,obj->oflags,flags,type); */
 	}
 	return 0;
 }
+
 /*  deletes the last n vertices of the stack. if n>=n_vertex, delete all vertices */
 int obj_del_vertex(struct t_process *p, int32_t oid, int32_t n)
 {
@@ -991,6 +988,7 @@ int obj_del_vertex(struct t_process *p, int32_t oid, int32_t n)
 	}
 	return 0;
 }
+
 /*  deletes the last n materials of the stack. if n>=n_mat, delete all materials */
 int obj_del_mat(struct t_process *p, int32_t oid, int32_t n)
 {
@@ -1024,6 +1022,7 @@ int obj_del_mat(struct t_process *p, int32_t oid, int32_t n)
 		return -1;
 	return 0;
 }
+
 /*  deletes the last n polys of the stack. if n>=n_poly, delete all polys */
 int obj_del_poly(struct t_process *p, int32_t oid, int32_t n)
 {
@@ -1057,6 +1056,7 @@ int obj_del_poly(struct t_process *p, int32_t oid, int32_t n)
 		return -1;
 	return 0;
 }
+
 /*  deletes the last n lines of the stack. if n>=n_line, delete all lines */
 int obj_del_line(struct t_process *p, int32_t oid, int32_t n)
 {
@@ -1090,6 +1090,7 @@ int obj_del_line(struct t_process *p, int32_t oid, int32_t n)
 		return -1;
 	return 0;
 }
+
 /*  delete texture object */
 int obj_del_tex(struct t_process *p, int32_t oid, int32_t n)
 {
@@ -1147,10 +1148,6 @@ int obj_translate(struct t_process *p, int32_t oid, float *transv)
 				v[2] = transv[2];
 				mySetMatrix(mcp_p->object[p->mcp_oid]->m);
 				myTransform3f(v);
-				/*    mySetMatrix(mcp_p->object[oid]->m);
-				    myInvert();
-				    myTransform3f(v);
-				    s3dprintf(LOW,"%3.3f %3.3f %3.3f",v[0],v[1],v[2]);*/
 				obj_translate(mcp_p, oid, v);
 			}
 		} else {
@@ -1163,6 +1160,7 @@ int obj_translate(struct t_process *p, int32_t oid, float *transv)
 	}
 	return 0;
 }
+
 /*  set rotate vector .... */
 int obj_rotate(struct t_process *p, int32_t oid, float *rotv)
 {
@@ -1200,6 +1198,7 @@ int obj_rotate(struct t_process *p, int32_t oid, float *rotv)
 	}
 	return 0;
 }
+
 /*  and scaling ! */
 int obj_scale(struct t_process *p, int32_t oid, float scav)
 {
@@ -1209,15 +1208,13 @@ int obj_scale(struct t_process *p, int32_t oid, float scav)
 			if (!isinf(scav) && !isnan(scav) && !((scav < 1.0e-10) && (scav > -1.0e-10))) { /* ignore very low values */
 				s3dprintf(VLOW, "[scale|pid %d] obj %d to %f", p->id, oid, scav);
 				obj->scale = scav;
-				/*  obj->scale.x=*scav;
-				  obj->scale.y=*(scav+1);
-				  obj->scale.z=*(scav+2);*/
 				obj_size_update(p, oid);
 				obj_pos_update(p, oid, oid);
 			}
 	}
 	return 0;
 }
+
 /*  a recursive function to move/scale the object before rendering. */
 void into_position(struct t_process *p, struct t_obj *obj, int depth)
 {
@@ -1290,6 +1287,7 @@ void obj_size_update(struct t_process *p, int32_t oid)
 		}
 	}
 }
+
 /*  checks if the object is (still) the biggest object. assumes that oid */
 /*  is valid */
 void obj_check_biggest_object(struct t_process *p, int32_t oid)
@@ -1308,7 +1306,6 @@ void obj_check_biggest_object(struct t_process *p, int32_t oid)
 	if (r > mcp_o->r) {  /*  this is now the biggest object. */
 		mcp_o->r = r;
 		p->biggest_obj = oid;
-		/*  s3dprintf(MED,"there is a new biggest object in [%d:\"\"]",p->id,p->name);*/
 		mcp_rep_object(p->mcp_oid);   /*  and tell the mcp */
 	} else {
 		if (p->biggest_obj == oid) { /*  oid might now lose the status of the "biggest object". let's check: */
@@ -1332,6 +1329,7 @@ void obj_check_biggest_object(struct t_process *p, int32_t oid)
 		/*  radius */
 	}
 }
+
 /* calculates and saves the transformation matrix, if needed */
 void obj_recalc_tmat(struct t_process *p, int32_t oid)
 {
@@ -1348,6 +1346,7 @@ void obj_recalc_tmat(struct t_process *p, int32_t oid)
 		p->object[oid]->m_uptodate = 1;
 	}
 }
+
 static void obj_sys_update(struct t_process *p, int32_t oid)
 {
 	struct t_process *mcp_p = get_proc_by_pid(MCP);
@@ -1398,9 +1397,9 @@ static void obj_sys_update(struct t_process *p, int32_t oid)
 
 	p->object[oid]->scale = ss / sa;
 
-	/* obj_debug(p,oid);*/
 	obj_pos_update(p, oid, oid); /* now also update the matrix and the objects linking to our sys-object ... */
 }
+
 /*  recalculate the position of an object. this assumes that oid is valid. */
 void obj_pos_update(struct t_process *p, int32_t oid, int32_t first_oid)
 {
@@ -1456,6 +1455,7 @@ void obj_pos_update(struct t_process *p, int32_t oid, int32_t first_oid)
 	if (p->id != MCP)
 		obj_check_biggest_object(p, oid);
 }
+
 /*  calculates the normal for one polygon, if not present. */
 static int calc_normal(struct t_obj *obj, uint32_t pn)
 {
@@ -1546,6 +1546,7 @@ static void texture_gen(struct t_obj *obj)
 		}
 	}
 }
+
 /* activate/bind texture for object */
 static struct t_tex* get_texture(struct t_obj *obj, struct t_mat *m) {
 	struct t_tex *tex = NULL;
@@ -1574,6 +1575,7 @@ static struct t_tex* get_texture(struct t_obj *obj, struct t_mat *m) {
 	}
 	return tex;
 }
+
 /*  finally, the rendering portion. */
 int obj_render(struct t_process *p, int32_t oid)
 {
@@ -1591,7 +1593,6 @@ int obj_render(struct t_process *p, int32_t oid)
 	obj = p->object[oid];
 	glPushMatrix();
 	glMultMatrixf(obj->m);
-	/* into_position(p,obj,0);*/
 	if (obj->oflags&OF_SYSTEM)  return -1;      /* can't render system objects */
 	if (obj->oflags&OF_CLONE)  obj = p->object[obj->clone_ooid];  /* it's a clone - draw the clone! */
 	if (!obj->dplist) {
@@ -1607,7 +1608,6 @@ int obj_render(struct t_process *p, int32_t oid)
 				glPopMatrix(); /* clean up GL-stuff */
 				return -1;
 			}
-			/*   glNormal3f(-n.x,-n.y,-n.z); */
 			mat = obj->p_poly[pn].mat;
 			if (mat != omat) {
 				tex = NULL;
@@ -1615,25 +1615,21 @@ int obj_render(struct t_process *p, int32_t oid)
 					m = &obj->p_mat[mat];
 					if (m->tex != -1)  tex = get_texture(obj, m);
 					if (tex == NULL) { /* still NULL? then it couldn't get the texture. */
-						/*      s3dprintf(VLOW,"no texture, using standard material...");*/
 						glBindTexture(GL_TEXTURE_2D, 0);
 						matgl[0] = m->amb_r / 2;
 						matgl[1] = m->amb_g / 2;
 						matgl[2] = m->amb_b / 2;
 						matgl[3] = m->amb_a;
-						/*     glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,matgl); */
 						glMaterialfv(GL_FRONT, GL_AMBIENT, matgl);
 						matgl[0] = m->diff_r / 2;
 						matgl[1] = m->diff_g / 2;
 						matgl[2] = m->diff_b / 2;
 						matgl[3] = m->diff_a;
-						/*     glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,matgl); */
 						glMaterialfv(GL_FRONT, GL_DIFFUSE, matgl);
 						matgl[0] = m->spec_r / 2;
 						matgl[1] = m->spec_g / 2;
 						matgl[2] = m->spec_b / 2;
 						matgl[3] = m->spec_a;
-						/*     glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,matgl); */
 						glMaterialfv(GL_FRONT, GL_SPECULAR, matgl);
 					}
 				} else {
@@ -1650,11 +1646,6 @@ int obj_render(struct t_process *p, int32_t oid)
 				on = &(obj->p_poly[pn].n[i]);
 				glNormal3f(-on->x, -on->y, -on->z);
 				if (tex != NULL) {
-					/*      s3dprintf(MED,"using texture coordinate (%f,%f) for polygon %d point %d",
-					          obj->p_poly[pn].tc[i].x *tex->xs,
-					          obj->p_poly[pn].tc[i].y *tex->ys,
-					          pn,i);*/
-
 					glTexCoord2f(obj->p_poly[pn].tc[i].x *tex->xs,
 					             (obj->p_poly[pn].tc[i].y *tex->ys));
 				}
@@ -1683,19 +1674,16 @@ int obj_render(struct t_process *p, int32_t oid)
 					matgl[1] = m->amb_g / 2;
 					matgl[2] = m->amb_b / 2;
 					matgl[3] = m->amb_a;
-					/*    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,matgl); */
 					glMaterialfv(GL_FRONT, GL_AMBIENT, matgl);
 					matgl[0] = m->diff_r / 2;
 					matgl[1] = m->diff_g / 2;
 					matgl[2] = m->diff_b / 2;
 					matgl[3] = m->diff_a;
-					/*    glMaterialfv(GL_FRONT_AND_BACK,GL_DIFFUSE,matgl); */
 					glMaterialfv(GL_FRONT, GL_DIFFUSE, matgl);
 					matgl[0] = m->spec_r / 2;
 					matgl[1] = m->spec_g / 2;
 					matgl[2] = m->spec_b / 2;
 					matgl[3] = m->spec_a;
-					/*    glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,matgl); */
 					glMaterialfv(GL_FRONT, GL_SPECULAR, matgl);
 				} else {
 					s3dprintf(MED, "something is wrong with line %d! material: [%d,%d]", pn, mat, obj->n_mat);
@@ -1751,6 +1739,7 @@ void link_delete(struct t_process *p, int32_t oid)
 		o->oflags &= ~OF_LINK;
 	}
 }
+
 /* add an element into the link chain */
 void link_insert(struct t_process *p, int32_t oid, int32_t target)
 {
@@ -1768,6 +1757,7 @@ void link_insert(struct t_process *p, int32_t oid, int32_t target)
 		ot->lsub = oid;
 	}
 }
+
 /*  creates a link from object from an object to another  */
 /*  to have a translation or anything move with other things */
 int obj_link(struct t_process *p, int32_t oid_from, int32_t oid_to)
@@ -1806,6 +1796,7 @@ int obj_link(struct t_process *p, int32_t oid_from, int32_t oid_to)
 	}
 	return -1;
 }
+
 /*  this unlinks an object ... */
 int obj_unlink(struct t_process *p, int32_t oid)
 {
@@ -1823,6 +1814,7 @@ int obj_unlink(struct t_process *p, int32_t oid)
 	}
 	return -1;
 }
+
 /*  creates a new object, returning the object id */
 int obj_new(struct t_process *p)
 {
@@ -1850,7 +1842,6 @@ int obj_new(struct t_process *p)
 			if (p->object[pos] == NULL) {
 				reuse = 1;
 				break;
-				/*     s3dprintf(HIGH,"reusing position %d",pos); */
 			}
 		}
 		if (!reuse) {
@@ -2025,6 +2016,7 @@ int obj_free(struct t_process *p, int32_t oid)
 	}
 	return 0;
 }
+
 /* get the object of the pointer (that's 1, usually */
 int32_t get_pointer(struct t_process *p)
 {

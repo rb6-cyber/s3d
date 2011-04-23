@@ -61,7 +61,6 @@ int graphics_init(void)
 
 	/* depth test */
 	glEnable(GL_DEPTH_TEST);
-	/*     glDepthFunc( GL_LEQUAL ); */
 
 	/* textures */
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
@@ -76,8 +75,6 @@ int graphics_init(void)
 
 	/* polygon smoothing */
 	glDisable(GL_POLYGON_SMOOTH);
-	/*    glEnable(GL_POLYGON_SMOOTH);
-	    glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST); */
 
 	/* normalizing */
 	glDisable(GL_AUTO_NORMAL);
@@ -87,10 +84,8 @@ int graphics_init(void)
 	/* blending */
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	/*    glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);*/
 
 	/* set shininess */
-	/*  glMaterialfv(GL_FRONT_AND_BACK,GL_SHININESS,shin); */
 	glMaterialfv(GL_FRONT, GL_SHININESS, shin);
 	graphics_reshape(X_RES, Y_RES);
 
@@ -99,6 +94,7 @@ int graphics_init(void)
 	glEnable(GL_CULL_FACE);
 	return 0;
 }
+
 /*  this is to be called when the window is resized or created ... */
 void graphics_reshape(int w, int h)
 {
@@ -115,6 +111,7 @@ void graphics_reshape(int w, int h)
 	if (procs_p != NULL)
 		event_cam_changed();
 }
+
 static void render_virtual_object(struct t_obj *o)
 {
 	struct t_process *ap;
@@ -145,7 +142,6 @@ static void render_virtual_object(struct t_obj *o)
 
 					k = cull_sphere_in_frustum(&x, ap->object[j]->r * sqrt(y.x * y.x + y.y * y.y + y.z * y.z));
 					if (k) {
-						/*      s3dprintf(HIGH,"object %d is in %s frustum",j,k?"":"not");*/
 						if (select_mode == 1)
 							glPushName(j);
 						obj_render(ap, j);
@@ -158,6 +154,7 @@ static void render_virtual_object(struct t_obj *o)
 	}
 	glPopMatrix();
 }
+
 /*  this functions renders by going from mcp objects [as it should be],  */
 /*  recursively positiniong the objects into the space. */
 int render_by_mcp(void)
@@ -220,6 +217,7 @@ int render_by_mcp(void)
 	}
 	return 0;
 }
+
 /* this picks objects from their screen-positions and sends
  * OBK_CLICK-events for the selected object(s).
  * TODO: how big should the select buffer be? */
@@ -259,10 +257,6 @@ int graphics_pick_obj(int x, int y)
 	myInvert();
 	myGetMatrix(m);
 	glMultMatrixf(m);
-	/*
-	 glRotatef(-cam.rotate.x, 1.0,0.0,0.0);
-	 glRotatef(-cam.rotate.y, 0.0,1.0,0.0);
-	 glTranslatef(-cam.translate.x,-cam.translate.y,-cam.translate.z);*/
 
 	glInitNames();
 	glPushName(0);
@@ -348,11 +342,6 @@ void graphics_main(void)
 	myGetMatrix(m);
 	glMultMatrixf(m);
 	glLightfv(GL_LIGHT0, GL_POSITION, pos);
-
-	/*glRotatef(-cam.rotate.z, 0.0,0.0,1.0);
-	glRotatef(-cam.rotate.x, 1.0,0.0,0.0);
-	glRotatef(-cam.rotate.y, 0.0,1.0,0.0);
-	glTranslatef(-cam.translate.x,-cam.translate.y,-cam.translate.z);*/
 
 	glPushMatrix();  /*  save the cam */
 	render_by_mcp();

@@ -32,6 +32,7 @@ int user_init_sdl(void)
 	SDL_EnableUNICODE(1);
 	return 0;
 }
+
 int user_main_sdl(void)
 {
 	SDL_Event  event;
@@ -50,10 +51,6 @@ int user_main_sdl(void)
 			case SDL_BUTTON_RMASK:
 				user_mouse(2, 2, event.motion.x, event.motion.y);
 				break;
-				/*    case SDL_BUTTON_WHEELUP:
-				      user_mouse(3,2,event.motion.x,event.motion.y);break;
-				    case SDL_BUTTON_WHEELDOWN:
-				      user_mouse(4,2,event.motion.x,event.motion.y);break;*/
 			case 0:
 				user_mouse(-1, -1, event.motion.x, event.motion.y);
 				break;
@@ -157,8 +154,8 @@ int user_main_sdl(void)
 	return 0;
 
 }
+
 int user_quit_sdl(void)
 {
 	return 0;
 }
-

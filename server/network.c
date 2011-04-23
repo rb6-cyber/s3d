@@ -58,6 +58,7 @@ void sigio_handler(int S3DUNUSED(unused))
 	sigio = 1;
 }
 #endif
+
 /*  maybe change the errors to fatal errors ... */
 int network_init(void)
 {
@@ -73,15 +74,14 @@ int network_init(void)
 #ifdef SIGS
 	if (signal(SIGPIPE, sigpipe_handler) == SIG_ERR)
 		errn("network_init():signal()", errno);
-	/* act.sa_handler = (sig_t)sigio_handler;
-	 if ( sigaction(SIGIO, &act, 0) < 0 )
-	  errn("network_init():sigaction()",errno);*/
 	if (signal(SIGIO, sigio_handler) == SIG_ERR)
 		errn("s3d_init():signal()", errno);
 #endif
 	return 0;
 }
+
 volatile int      turn;
+
 int net_turn_off(int S3DUNUSED(interval))
 {
 	s3dprintf(VLOW, "Warning: High traffic on Network, interrupting read.");
@@ -174,4 +174,3 @@ int network_quit(void)
 #endif
 	return 0;
 }
-

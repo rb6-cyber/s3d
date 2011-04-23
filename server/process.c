@@ -86,6 +86,7 @@ struct t_process *process_protinit(struct t_process *p, const char *name) {
 	}
 	return p;
 }
+
 /* adds system objects to the app, like camera, pointers etc ... */
 static int process_sys_init(struct t_process *p)
 {
@@ -120,7 +121,6 @@ static int process_sys_init(struct t_process *p)
 	s3dprintf(MED, "process_sys_init(): added object ptr0 %d", ptr);
 	obj_pos_update(get_proc_by_pid(MCP), cam, cam);
 	obj_pos_update(get_proc_by_pid(MCP), ptr, ptr);
-	/* obj_recalc_tmat(p,0);*/
 	event_obj_info(p, 0); /* tell the new program about the thing */
 
 	return 0;
@@ -134,17 +134,15 @@ struct t_process *process_add(void) {
 	new_p = &procs_p[procs_n-1];
 
 	new_p->id   = procs_n - 1;
-	/* if (new_p->id==0)
-	  mcp_p=&procs_p[0];*/
 	new_p->object = NULL;
 	new_p->n_obj  = 0;
-	/* new_p->netin  = 0;*/
 	new_p->mcp_oid = -1;
 	new_p->biggest_obj = -1;
 	new_p->con_type = CON_NULL; /* this is to be changed by the caller */
 	new_p->name[0] = '\0';
 	return new_p;
 }
+
 /* deletes the process with pid */
 int process_del(int pid)
 {
@@ -161,6 +159,7 @@ int process_del(int pid)
 	}
 	return -1;
 }
+
 /* just kick process out of the process list, no network/mcp-oid cleanup */
 static int process_list_rm(int pid)
 {
@@ -177,11 +176,13 @@ static int process_list_rm(int pid)
   wipe the last one */
 	return 0;
 }
+
 struct t_process *get_proc_by_pid(int pid) {
 	if ((pid >= 0) && (pid < procs_n))
 		return &procs_p[pid];
 	return NULL;
 }
+
 /*  this actually deleted the process with all it's parts */
 /* it's quite the same as the original version, but without free() */
 static int p_del(struct t_process *p)
@@ -199,8 +200,7 @@ static int p_del(struct t_process *p)
 				}
 			obj_free(mcp_p, p->mcp_oid);  /*  free the mcp-app-object. */
 			mcp_del_object(p->mcp_oid);   /*  tell MCP that it's object is beeing deleted. */
-		} /* else
-   errs("p_del()","bad mcp_oid, unable to free mcp object");*/
+		}
 		if (i > 0) {
 			for (i = 0; i < p->n_obj; i++)
 				if (p->object[i]) obj_free(p, i);
@@ -219,6 +219,7 @@ static int p_del(struct t_process *p)
 	}
 	return 0;  /*  successfully deleted */
 }
+
 int process_init(void)
 {
 	procs_n = 0;
@@ -230,6 +231,7 @@ int process_init(void)
 	process_sys_init(mcp_p);
 	return 0;
 }
+
 int process_quit(void)
 {
 	int i;
@@ -237,7 +239,6 @@ int process_quit(void)
 	for (i = (procs_n - 1); i >= 0; i--) {
 		s3dprintf(HIGH, "[QUIT] for %d", i);
 		event_quit(&procs_p[i]);
-		/*  process_del(procs_p[i].id);*/
 	}
 	free(procs_p);
 	return 0;

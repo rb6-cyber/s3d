@@ -91,8 +91,6 @@ void *debugMalloc(unsigned int length, int tag)
 
 	checkIntegrity();
 
-	/*  printf("sizeof(struct chunkHeader) = %u, sizeof (struct chunkTrailer) = %u\n", sizeof (struct chunkHeader), sizeof (struct chunkTrailer)); */
-
 	memory = (unsigned char*)malloc(length + sizeof(struct chunkHeader) + sizeof(struct chunkTrailer));
 
 	if (memory == NULL) {

@@ -26,6 +26,7 @@
 #include <stdio.h> /* printf(), getchar() */
 #include <stdint.h> /* uint32_t */
 #include <string.h> /* memcpy() */
+
 int shm_write(struct buf_t *rb, char *buf, int n)
 {
 	int wrap = 0;
@@ -40,25 +41,8 @@ int shm_write(struct buf_t *rb, char *buf, int n)
 	if (e < s) {
 		wrap = 1;
 	}
-	while ((((s + size*(1 - wrap)) - e) < (n + 1))) { /* checking free space */
-		if /*((size*2)>RB_MAX_SIZE)*/ (1) {
-			printf("buffer reached maxsize, no resizing possible");
-			return -1;
-		}
-		/*  printf("buffer full!! resizing ... (to size %d)",(int)size*2);
-		  if (NULL==(realloc(rb, size*2+RB_OVERHEAD)))
-		  {
-		   printf("realloc failed - fatal!!");
-		   return -1;
-		  }
-		  if (wrap)
-		  {
-		   memcpy(data+size,data,e);
-		   e+=size;
-		   wrap=0;
-		  }
-		  size=rb->bufsize=size*2;
-		  rb->end=e;*/
+	if ((((s + size*(1 - wrap)) - e) < (n + 1))) { /* checking free space */
+		printf("buffer reached maxsize, no resizing possible");
 	}
 	if ((e + n) > size) {
 		rs = size - e;
@@ -71,6 +55,7 @@ int shm_write(struct buf_t *rb, char *buf, int n)
 	if (rb->end >= rb->bufsize) rb->end -= rb->bufsize;
 	return 0;
 }
+
 int shm_read(struct buf_t *rb, char *buf, int n)
 {
 	int wrap = 0;
@@ -97,13 +82,11 @@ int shm_read(struct buf_t *rb, char *buf, int n)
 	if (rb->start >= rb->bufsize) rb->start -= rb->bufsize;
 	return mn;
 }
+
 void ringbuf_init(char *data, uint32_t init_size)
 {
 	struct buf_t *ringbuf = (struct buf_t *)data;
-	/* ringbuf=malloc(init_size); */
 	ringbuf->start = 0;
 	ringbuf->end = 0;
 	ringbuf->bufsize = init_size - RB_OVERHEAD;
 }
-
-

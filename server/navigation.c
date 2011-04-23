@@ -29,39 +29,22 @@ void navi_right(void)
 {
 	navi_pos(1, 0);
 }
+
 void navi_left(void)
 {
 	navi_pos(-1, 0);
 }
+
 void navi_fwd(void)
 {
 	navi_pos(0, 1);
 }
+
 void navi_back(void)
 {
 	navi_pos(0, -1);
 }
-/* simple movements, not needed currently
-void navi_rot_right()
-{
- cam.rotate.y=cam.rotate.y+2;
- if (cam.rotate.y>360) cam.rotate.y-=360;
-}
-void navi_rot_left()
-{
- cam.rotate.y=cam.rotate.y-2;
- cam.rotate.y=(cam.rotate.y<0)?cam.rotate.y+360:cam.rotate.y;
-}
-void navi_rot_up()
-{
- cam.rotate.x=(cam.rotate.x+2);
- if (cam.rotate.x>90) cam.rotate.x=90;
-}
-void navi_rot_down()
-{
- cam.rotate.x=cam.rotate.x-2;
- if (cam.rotate.x<-90) cam.rotate.x=-90;
-}*/
+
 void navi_pos(int xdif, int ydif)
 {
 	float tv[3];
@@ -78,6 +61,7 @@ void navi_pos(int xdif, int ydif)
 	tv[2] -= xdif * sin((-cam->rotate.y * M_PI) / 180);
 	obj_translate(get_proc_by_pid(MCP), 0, tv);
 }
+
 void navi_rot(int xdif, int ydif)
 {
 	float rv[3];
@@ -92,6 +76,7 @@ void navi_rot(int xdif, int ydif)
 	if (rv[1] < 0)  rv[1] += 360;
 	obj_rotate(get_proc_by_pid(MCP), 0, rv);
 }
+
 void ptr_move(int x, int y)
 {
 	float tv[3], rv[3], xf, yf;

@@ -41,6 +41,7 @@ int event_obj_click(struct t_process *p, int32_t oid)
 	prot_com_out(p, S3D_P_S_CLICK, (uint8_t *)&moid, 4);
 	return 0;
 }
+
 /*  this functions sends keystroke events to the focused program. */
 /*  maybe mcp-keystrokes should be catched here. */
 /*  state = 0 -> pressed, 1 -> released */
@@ -58,7 +59,6 @@ int event_key_pressed(uint16_t key, uint16_t uni, uint16_t mod, int state)
 	return 0;
 }
 
-
 /* mouse button changes are sent to the client */
 int event_mbutton_clicked(uint8_t button, uint8_t state)
 {
@@ -71,6 +71,7 @@ int event_mbutton_clicked(uint8_t button, uint8_t state)
 	prot_com_out(get_proc_by_pid(MCP), S3D_P_S_MBUTTON, (uint8_t *)&b, 2); /* mcp always gets a copy */
 	return 0;
 }
+
 /*  tell the client something about us */
 int event_init(struct t_process *p)
 {
@@ -79,6 +80,7 @@ int event_init(struct t_process *p)
 	prot_com_out(p, S3D_P_S_INIT, (uint8_t *)s, strlen(S3D_SERVER_NAME) + 4);
 	return 0;
 }
+
 /*  this lets a process quit gracefully ... */
 int event_quit(struct t_process *p)
 {
@@ -87,6 +89,7 @@ int event_quit(struct t_process *p)
 	process_del(p->id);
 	return 0;
 }
+
 /* the cam changed?! we should run and tell this the mcp/focused client! */
 int event_cam_changed(void)
 {
@@ -98,6 +101,7 @@ int event_cam_changed(void)
 		event_obj_info(get_proc_by_pid(o->virtual_pid), 0);
 	return 0;
 }
+
 /* same for the mouse movement! */
 int event_ptr_changed(void)
 {

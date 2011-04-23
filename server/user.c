@@ -26,6 +26,7 @@
 /*  this file reads user input */
 static int ox, oy;
 int but = -1;
+
 int user_init(void)
 {
 	switch (frame_mode) {
@@ -40,6 +41,7 @@ int user_init(void)
 	ox = oy = 0xFFFFFF;
 	return 0;
 }
+
 int user_main(void)
 {
 	switch (frame_mode) {
@@ -51,10 +53,12 @@ int user_main(void)
 		return 0;
 	}
 }
+
 void user_key(uint16_t key, uint16_t unicode, uint16_t mod, int state)
 {
 	event_key_pressed(key, unicode, mod, state);
 }
+
 void user_mouse(int button, int state, int x, int y)
 {
 	switch (state) {
@@ -116,8 +120,8 @@ void user_mouse(int button, int state, int x, int y)
 	/* mouse changed? */
 	ptr_move(x, y);
 }
+
 int user_quit(void)
 {
 	return 0;
 }
-

@@ -53,6 +53,7 @@ static void sigint_handler(int S3DUNUSED(sig))
 	s3dprintf(HIGH, "oh my gosh there is a sigint/term signal! running away ...");
 	quit();
 }
+
 static void sigchld_handler(int S3DUNUSED(sig))
 {
 	if (kidpid != 0) {
@@ -62,6 +63,7 @@ static void sigchld_handler(int S3DUNUSED(sig))
 	}
 }
 #endif
+
 static void sigusr_handler(int S3DUNUSED(sig))
 {
 	s3dprintf(HIGH, "father told use he's done, so lets start to think about the rc file ...");
@@ -117,6 +119,7 @@ int rc_init(void)
 #endif
 	return 0;
 }
+
 /*  the mainloop, should be handling all signals */
 static void mainloop(void)
 {
@@ -139,6 +142,7 @@ void one_time(void)
 	network_main();
 	graphics_main();
 }
+
 /*  this initalizes all components.  */
 int init(void)
 {
@@ -197,6 +201,7 @@ void quit(void)
 	s3dprintf(VHIGH, "byebye, s3d quitting ...");
 	exit(0);
 }
+
 /*  processing arguments from the commandline */
 static int process_args(int argc, char **argv)
 {
@@ -251,6 +256,7 @@ static int process_args(int argc, char **argv)
 	}
 	return 0;
 }
+
 /*  things to be done when program is started */
 int main(int argc, char **argv)
 {

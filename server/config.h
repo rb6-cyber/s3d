@@ -41,4 +41,3 @@
 #define VHIGH 5
 /*  which is the minimum level of debugmessage we want to see? */
 /* #define DEBUG LOW */   /* should be set with compile, e.g. -DDEBUG=LOW */
-

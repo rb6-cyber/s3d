@@ -39,7 +39,9 @@ struct mcp_object {
 	/*  char event; */
 	char name[S3D_NAME_MAX];
 };
+
 #define MCP_NEW_OBJECT 1
+
 /*  call when a new mcp connects */
 int mcp_init(void)
 {
@@ -74,12 +76,12 @@ int mcp_rep_object(int32_t mcp_oid)
 	mo.r = p->object[mcp_oid]->r;
 
 	htonfb(&mo.trans_x, 4);
-	/*  mo.event=MCP_NEW_OBJECT; */
 	ap = get_proc_by_pid(p->object[mcp_oid]->virtual_pid);
 	strncpy(mo.name, ap->name, S3D_NAME_MAX);
 	prot_com_out(p, S3D_P_MCP_OBJECT, (uint8_t *)&mo, sizeof(struct mcp_object));
 	return 0;
 }
+
 /* tells the mcp that some program vanished ... */
 int mcp_del_object(int32_t mcp_oid)
 {
@@ -91,6 +93,7 @@ int mcp_del_object(int32_t mcp_oid)
 	prot_com_out(get_proc_by_pid(MCP), S3D_P_MCP_DEL_OBJECT, (uint8_t *)&oid, 4);
 	return 0;
 }
+
 /* sets a new focus */
 int mcp_focus(int oid)
 {
@@ -106,12 +109,3 @@ int mcp_focus(int oid)
 		}
 	return 0;
 }
-
-/*  clean up functions after the mcp left */
-
-/* TODO: move things from object.c to this place!
-int mcp_quit(void)
-{
- return 0;
-}
-*/

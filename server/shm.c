@@ -58,6 +58,7 @@ int shm_next_key(void)
 	mkey = mkey + 1;
 	return mkey;
 }
+
 int shm_init(void)
 {
 	FILE *fp;
@@ -89,6 +90,7 @@ int shm_init(void)
 	shm_new_comblock(data);
 	return 0;
 }
+
 static void comblock_init(struct t_shmcb *p_cb)
 {
 	p_cb->shmid_ctos = -1;
@@ -98,6 +100,7 @@ static void comblock_init(struct t_shmcb *p_cb)
 	p_cb->data_ctos = NULL;
 	p_cb->data_stoc = NULL;
 }
+
 /* registers a communication block, and sets waiting_comblock */
 static int shm_new_comblock(key_t *data)
 {
@@ -154,6 +157,7 @@ int shm_quit(void)
 	}
 	return 0;
 }
+
 int shm_remove(struct t_process *p)
 {
 	s3dprintf(MED, "shm_remove(): removing pid %d", p->id);
@@ -169,7 +173,6 @@ int shm_remove(struct t_process *p)
 	return 0;
 }
 
-
 int shm_main(void)
 {
 	int      i/*,found*/;
@@ -177,50 +180,47 @@ int shm_main(void)
 	struct t_process *new_p;
 	struct shmid_ds   d;
 	int iterations;
-	/* do*/
-	{
-		/*  found=0;*/
-		iterations = 0;
-		for (i = 0; i < procs_n; i++) {
-			iterations++;
+
+	iterations = 0;
+	for (i = 0; i < procs_n; i++) {
+		iterations++;
 #ifdef G_SDL
-			SDL_SetTimer(100, (SDL_TimerCallback) net_turn_off);
+		SDL_SetTimer(100, (SDL_TimerCallback) net_turn_off);
 #endif
-			if (procs_p[i].con_type == CON_SHM) {
-				dai = (struct buf_t *) procs_p[i].shmsock.data_ctos;
-				if (dai->start != dai->end) {
-					/*     found=1;*/
-					procs_p[i].shmsock.idle = 0;
-					shm_prot_com_in(&procs_p[i]);
-					if (turn)
-						i--; /* evil hack: decrease i so it will be our turn again in the next round */
-					else {
-						s3dprintf(MED, "client %d [%s] seems to want to keep us busy ... ", i, procs_p[i].name);
-						SDL_SetTimer(100, (SDL_TimerCallback) net_turn_off); /* restart timer */
-						turn = 1; /* don't decrease, it's next connections turn */
-					}
-				} else {
-					if (procs_p[i].shmsock.idle++ > MAX_IDLE) { /* maybe the function timed out somehow ...? let's check ...*/
-						shmctl(procs_p[i].shmsock.shmid_ctos, IPC_STAT, &d);
-						if (d.shm_nattch == 1) { /* we're all alone ... remove it!! */
-							s3dprintf(MED, "client [%s] detached, removing ... ", procs_p[i].name);
-							process_del(procs_p[i].id);
-						} else {
-							procs_p[i].shmsock.idle = 0;
-						}
+		if (procs_p[i].con_type == CON_SHM) {
+			dai = (struct buf_t *) procs_p[i].shmsock.data_ctos;
+			if (dai->start != dai->end) {
+				/*     found=1;*/
+				procs_p[i].shmsock.idle = 0;
+				shm_prot_com_in(&procs_p[i]);
+				if (turn)
+					i--; /* evil hack: decrease i so it will be our turn again in the next round */
+				else {
+					s3dprintf(MED, "client %d [%s] seems to want to keep us busy ... ", i, procs_p[i].name);
+					SDL_SetTimer(100, (SDL_TimerCallback) net_turn_off); /* restart timer */
+					turn = 1; /* don't decrease, it's next connections turn */
+				}
+			} else {
+				if (procs_p[i].shmsock.idle++ > MAX_IDLE) { /* maybe the function timed out somehow ...? let's check ...*/
+					shmctl(procs_p[i].shmsock.shmid_ctos, IPC_STAT, &d);
+					if (d.shm_nattch == 1) { /* we're all alone ... remove it!! */
+						s3dprintf(MED, "client [%s] detached, removing ... ", procs_p[i].name);
+						process_del(procs_p[i].id);
+					} else {
+						procs_p[i].shmsock.idle = 0;
 					}
 				}
 			}
-			if (iterations > 500) {
-				turn = 0;
-				iterations = 0;
-			}
-			/*   s3dprintf(MED, "iterations: %d, turn = %d, i = %d\n", iterations, turn, i);*/
 		}
+		if (iterations > 500) {
+			turn = 0;
+			iterations = 0;
+		}
+	}
 #ifdef G_SDL
-		SDL_SetTimer(0, NULL);
+	SDL_SetTimer(0, NULL);
 #endif
-	} /*while (found);*/
+
 	if ((data[0] == 0) && (data[1] == 0)) {
 		new_p = process_add();
 		new_p->con_type = CON_SHM;
@@ -232,13 +232,13 @@ int shm_main(void)
 	}
 	return 0;
 }
+
 int shm_prot_com_in(struct t_process *p)
 {
 	uint16_t length;
 	struct buf_t *dai;
 	dai = (struct buf_t *)p->shmsock.data_ctos;
 	if (dai != NULL)
-		/* if ((pid=get_proc_by_dai( */
 		if (3 == shm_readn(dai, ibuf, 3)) {
 			length = ntohs(*((uint16_t *)((uint8_t *)ibuf + 1)));
 			s3dprintf(VLOW, "command %d, length %d", ibuf[0], length);
@@ -249,10 +249,12 @@ int shm_prot_com_in(struct t_process *p)
 		}
 	return 0;
 }
+
 #define SHM_MAXLOOP  20
 static struct timespec t = {
 	0, 1000*1000
 }; /* 1 mili seconds */
+
 int shm_writen(struct buf_t *rb, uint8_t *buf, int n)
 {
 	int no_left, no_written, wait = 0;
@@ -271,6 +273,7 @@ int shm_writen(struct buf_t *rb, uint8_t *buf, int n)
 	}
 	return n - no_left;
 }
+
 int shm_readn(struct buf_t *rb, uint8_t *buf, int n)
 {
 	int no_left, no_read, wait = 0;

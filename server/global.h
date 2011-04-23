@@ -87,9 +87,11 @@ struct buf_t {
 struct t_vertex {
 	float x, y, z;
 };
+
 struct t_texc {
 	float x, y;
 };
+
 /*  polygon definition; */
 /*  it's all handled via list types as usually we have only one surface for many polygons, */
 /*  and many vertexes have 2 or more polygons connected. OpenGL will optimize the lists for us */
@@ -100,11 +102,13 @@ struct t_poly {
 	uint32_t mat;       /*  material index */
 	struct t_texc tc[3];   /*  texture coords */
 };
+
 struct t_line {
 	uint32_t v[2];
 	struct t_vertex n[2];   /* normal vectors */
 	uint32_t mat;
 };
+
 /*  material of surfaces, as it's usual in the OpenGL standard */
 struct t_mat {
 	float amb_r, amb_g, amb_b, amb_a,  /*  ambience */
@@ -122,6 +126,7 @@ struct t_tex {
 	/*  texture sizes. */
 	int32_t gl_texnum;  /*  the gl texture number. */
 };
+
 /*  the object type */
 struct t_obj {
 	uint32_t oflags;    /*  flags, like this object beeing input etc. */
@@ -169,6 +174,7 @@ struct t_obj {
 	int    m_uptodate;
 	float r, o_r;     /*  radius, object radius */
 };
+
 #ifdef SHM
 struct t_shmcb {
 	int shmid_ctos, shmid_stoc;

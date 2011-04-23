@@ -46,6 +46,7 @@
 #include <stdint.h>
 
 static int tcp_sockid;
+
 int tcp_init(void)
 {
 	int yes = 1;
@@ -81,6 +82,7 @@ int tcp_init(void)
 	return 0;
 
 }
+
 int tcp_quit(void)
 {
 	close(tcp_sockid);
@@ -89,17 +91,17 @@ int tcp_quit(void)
 #endif
 	return 0;
 }
+
 /*  watches the port for new connections */
 int tcp_pollport(void)
 {
 	fd_set     fs_port;   /*  filedescriptor set for listening port(s) */
 	int      newsd;   /*  new socket descriptor */
 	struct timeval   tv;   /*  time structure */
-	/* struct t_con   *new_con; */ /*  pointer to new connection */
 	struct t_process *new_p;   /*  pointer to new process */
 	struct sockaddr   client_addr;  /*  new client's address */
 	socklen_t    clilen = sizeof(client_addr); /*  length of client's address */
-	/* int i; */
+
 	FD_ZERO(&fs_port);
 	FD_SET(tcp_sockid, &fs_port);
 select_again:
@@ -129,6 +131,7 @@ select_again:
 	}
 	return 0;
 }
+
 /*  this is about looking for new data on the sockets */
 /*  returns 1 when there was new data. */
 int tcp_pollproc(void)
@@ -182,6 +185,7 @@ select_again_poll:
 	} while (unfinished);
 	return found;
 }
+
 /* read some data from the line, pushes it into the buffer and calls prot_com_in */
 int tcp_prot_com_in(struct t_process *p)
 {
@@ -200,6 +204,7 @@ int tcp_prot_com_in(struct t_process *p)
 	}
 	return 0;
 }
+
 /*  shamelessly ripped from simple ftp server */
 int tcp_readn(int sock, uint8_t *str, int s)
 {
@@ -217,6 +222,7 @@ int tcp_readn(int sock, uint8_t *str, int s)
 	}
 	return s - no_left;
 }
+
 int tcp_writen(int sock, uint8_t *str, int s)
 {
 	int no_left, no_written;
@@ -232,6 +238,7 @@ int tcp_writen(int sock, uint8_t *str, int s)
 	}
 	return s - no_left;
 }
+
 int tcp_remove(int sock)
 {
 	return close(sock);
