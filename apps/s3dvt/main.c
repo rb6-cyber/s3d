@@ -149,7 +149,10 @@ static int pty_init_terminal(void)
 	uid = getuid();
 	gid = getgid();
 	term_mode = M_PTY;
-	open_pty_pair(&curpty, &curtty);
+	if (!open_pty_pair(&curpty, &curtty)) {
+		printf("Error creating pty pair\n");
+		return 0;
+	}
 
 	if (curpty < 0) {
 		printf("Error opening pty\n");
