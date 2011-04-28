@@ -8,8 +8,25 @@ S3D v0.2.2 Release Notes
 
  * Support batman-adv visualisation output and IPv6 addresses in meshs3d.
 
+ * Stricter const usage for strings to better integrate into (e)glibc's stricter
+   const usage in version 2.10.
+
+ * Added better support for libraries in unusual places using pkg-config.
+
+ * Support of systems with unusual named OpenGL headers through SDL.
+
+ * Reduced library dependencies of compiled shared objects.
+
+ * Depend on libgps 2.90 for s3dosm GPS support as it is the first version with
+   longer binary and API stability.
+
+ * Removed BSD PTY support in favor of Unix98 PTYs for s3dvt.
+
+ * Support to build s3d as position independent executable using gcc's -pie and
+   -fPIE option without breaking libs3d(w).
+
 ---
 exec >/var/tmp/1
 echo O=`git describe master`
-O=v0.2.1.1-88-g2313b92
+O=v0.2.1.1-109-g0e8f0a1
 git shortlog --no-merges $O..master '^maint'
