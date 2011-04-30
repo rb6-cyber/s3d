@@ -114,8 +114,6 @@ Preparing a release:
 
  - Add files to berlios using http://developer.berlios.de/project/admin/editpackages.php?group_id=5908
 
- - Add files to https://www.ohloh.net/p/s3d/packages
-
  - Clone current webpage from git+ssh://git.berlios.de/home/groups/s3d/htdocs
 
  - Change index.xhtml to announce the new release
