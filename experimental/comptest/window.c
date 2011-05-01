@@ -1,7 +1,7 @@
 /*
  * window.c
  *
- * Copyright (C) 2007  Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2007-2011  Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of comptest, a proof-of-concept composite manager hack.
  * See http://s3d.berlios.de/ for more updates.

@@ -1,8 +1,8 @@
 /*
  * object.c
  *
- * Copyright (C) 2004-2008  Simon Wunderlich <dotslash@packetmixer.de>
- * Copyright (C) 2004-2008  Sven Eckelmann <sven@narfation.org>
+ * Copyright (C) 2004-2011  Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2004-2011  Sven Eckelmann <sven@narfation.org>
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.berlios.de/ for more updates.

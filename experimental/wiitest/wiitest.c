@@ -1,7 +1,7 @@
 /*
  * wiitest.c
  *
- * Copyright (C) 2007  Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2007-2011  Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of wiitest, ripped from wmdemo.c to
  * See http://s3d.berlios.de/ for more updates.

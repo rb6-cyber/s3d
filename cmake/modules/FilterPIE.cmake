@@ -2,7 +2,7 @@
 # This module will filter the PIE flags from CMAKE_C_FLAGS and
 # CMAKE_EXE_LINKER_FLAGS for this folder and all subfolders.
 #
-# Copyright (C) 2007-2008  Sven Eckelmann <sven@narfation.org>
+# Copyright (C) 2007-2011  Sven Eckelmann <sven@narfation.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions

@@ -1,7 +1,7 @@
 /*
  * endian.c
  *
- * Copyright (C) 2004-2008  S3D contributors
+ * Copyright (C) 2004-2011  S3D contributors
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.berlios.de/ for more updates.

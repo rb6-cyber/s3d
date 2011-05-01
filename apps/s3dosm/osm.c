@@ -1,8 +1,8 @@
 /*
  * osm.c
  *
- * Copyright (C) 2006-2008  Simon Wunderlich <dotslash@packetmixer.de>
- * Copyright (C) 2008  Sven Eckelmann <sven@narfation.org>
+ * Copyright (C) 2006-2011  Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2008-2011  Sven Eckelmann <sven@narfation.org>
  *
  * This file is part of s3dosm, a gps card application for s3d.
  * See http://s3d.berlios.de/ for more updates.

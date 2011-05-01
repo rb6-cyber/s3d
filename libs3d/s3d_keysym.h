@@ -1,8 +1,8 @@
 /*
  * s3d_keysym.h
  *
- * Copyright (C) 2004-2008  Simon Wunderlich <dotslash@packetmixer.de>
- * Copyright (C) 1997-2004  Sam Lantinga <slouken@libsdl.org>
+ * Copyright (C) 2004-2011  Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 1997-2011  Sam Lantinga <slouken@libsdl.org>
  *
  * This file is part of the s3d API, the API of s3d (the 3d network display server).
  * See http://s3d.berlios.de/ for more updates.
