@@ -106,7 +106,8 @@ Preparing a release:
      $ cd Documentation
      $ make
      $ mv doc_output s3dapi_doc-"$VERSION"
-     $ tar cf s3dapi_doc-"$VERSION".tar --owner 0 --group 0 --numeric-owner --mode 0644 s3dapi_doc-"$VERSION"
+     $ find s3dapi_doc-"$VERSION" -type f |sed 's/^\.*\/*//'|sort > manifest
+     $ tar cf s3dapi_doc-"$VERSION".tar --owner 0 --group 0 --numeric-owner --mode 0644 --files-from manifest
      $ gzip -n -m -c "s3dapi_doc-$VERSION.tar" > "s3dapi_doc-$VERSION.tar.gz"
      $ xz "s3dapi_doc-$VERSION.tar"
 
