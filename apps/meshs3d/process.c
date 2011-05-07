@@ -387,8 +387,8 @@ int process_main(void)
 	char *lbuf_ptr, *last_cr_ptr, *con_from, *con_from_end, *con_to, *con_to_end, *etx, *etx_end, *tmp_char;
 	struct hash_it_t *hashit;
 	struct node_con *con;
-	char hna_name[NAMEMAX];
-	char hna_node[NAMEMAX];
+	char tt_name[NAMEMAX];
+	char tt_node[NAMEMAX];
 
 	struct node *tmp_node;
 	struct node_id int_con_from, int_con_to;
@@ -451,8 +451,8 @@ int process_main(void)
 
 				/* if( Global.debug ) printf( "con_from: %s, con_to: %s, etx: %s\n", con_from, con_to, etx ); */
 
-				/* announced network via HNA */
-				if (strncmp(etx, "HNA", NAMEMAX) == 0) {
+				/* announced network via TT */
+				if (strncmp(etx, "HNA", NAMEMAX) == 0 || strncmp(etx, "TT", NAMEMAX) == 0) {
 
 					if (strncmp(con_to, "0.0.0.0/0.0.0.0", NAMEMAX) == 0) {
 
@@ -473,12 +473,12 @@ int process_main(void)
 
 					} else {
 
-						memmove(hna_node, con_to, NAMEMAX);
-						if ((tmp_char = strchr(hna_node, (int)'/'))) {
+						memmove(tt_node, con_to, NAMEMAX);
+						if ((tmp_char = strchr(tt_node, (int)'/'))) {
 							tmp_char++;
 							address = (int) - inet_network(tmp_char);
-							sprintf(hna_name, "%u", (unsigned int)(32 - ceil(log(address) / log(2))));
-							strcpy(tmp_char, hna_name);
+							sprintf(tt_name, "%u", (unsigned int)(32 - ceil(log(address) / log(2))));
+							strcpy(tmp_char, tt_name);
 							tmp_char--;
 						}
 
@@ -488,21 +488,21 @@ int process_main(void)
 							printf("%s is not a valid address\n", con_from);
 							continue;
 						}
-						if (parse_address(hna_node, &int_con_to) != 0) {
-							printf("%s is not a valid address\n", hna_node);
+						if (parse_address(tt_node, &int_con_to) != 0) {
+							printf("%s is not a valid address\n", tt_node);
 							continue;
 						}
 						if (tmp_char != NULL)
 							tmp_char[0] = '/';
 
 						handle_mesh_node(int_con_from, con_from);
-						tmp_node = handle_mesh_node(int_con_to, hna_node);
+						tmp_node = handle_mesh_node(int_con_to, tt_node);
 
 						if (tmp_node->node_type != 2) {
 
 							tmp_node->node_type = 2;
 							tmp_node->node_type_modified = 1;
-							if (Global.debug) printf("new hna network: %s\n", tmp_node->name_string);
+							if (Global.debug) printf("new tt network: %s\n", tmp_node->name_string);
 
 						}
 

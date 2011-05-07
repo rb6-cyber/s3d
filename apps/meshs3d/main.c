@@ -50,7 +50,7 @@ static struct timespec sleep_time = {
 static void init_globals(void)
 {
 	Global.debug = 1;
-	Global.obj_node_hna = 0;
+	Global.obj_node_tt = 0;
 	Global.obj_node_inet = 0;
 	Global.obj_node_normal = 0;
 	Global.obj_btn_close = 0;
@@ -129,7 +129,7 @@ static void handle_node(void)
 			if (node->node_type == 1)
 				node->obj_id = s3d_clone(Global.obj_node_inet);
 			else if (node->node_type == 2)
-				node->obj_id = s3d_clone(Global.obj_node_hna);
+				node->obj_id = s3d_clone(Global.obj_node_tt);
 			else
 				node->obj_id = s3d_clone(Global.obj_node_normal);
 
@@ -561,7 +561,7 @@ int main(int argc, char *argv[])
 
 			Global.obj_node_normal = s3d_import_model_file("objs/accesspoint.3ds");
 			Global.obj_node_inet = s3d_import_model_file("objs/accesspoint_inet.3ds");
-			Global.obj_node_hna = s3d_import_model_file("objs/internet.3ds");
+			Global.obj_node_tt = s3d_import_model_file("objs/internet.3ds");
 			Global.obj_btn_close = s3d_import_model_file("objs/btn_close.3ds");
 
 			Global.obj_s3d_url = s3d_import_model_file("objs/s3d_berlios_de.3ds");

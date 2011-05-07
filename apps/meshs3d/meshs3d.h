@@ -77,7 +77,7 @@ struct olsr_neigh_list {
 struct node {
 	struct node_id address;
 	char name_string[NAMEMAX];  /* host ip */
-	int node_type;     /* normal = 0, internet gateway = 1, via hna announced network = 2 */
+	int node_type;     /* normal = 0, internet gateway = 1, via tt announced network = 2 */
 	int node_type_modified;   /* node_type modified flag */
 	int last_seen;     /* last seen counter */
 	int visible;     /* is this node visible or vanished */
@@ -92,7 +92,7 @@ struct glob {
 	int debug;
 	int obj_node_normal;
 	int obj_node_inet;
-	int obj_node_hna;
+	int obj_node_tt;
 	int obj_btn_close;
 	int obj_s3d_url;
 	int obj_zero_point;
