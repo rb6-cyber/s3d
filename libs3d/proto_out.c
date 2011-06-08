@@ -60,7 +60,7 @@ int s3d_new_object(void)
  * parent-object and will change when the parent-object changes. Cloning
  * especially makes sense if you want to use the same object a lot of times.
  * Move and transform is independent from the parent. The function returns the
- * childs object id.
+ * children object id.
  */
 int s3d_clone(int oid)
 {
