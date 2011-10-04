@@ -5,7 +5,7 @@
  * Copyright (C) 2006-2011  Marek Lindner <lindner_marek@yahoo.de>
  *
  * This file is part of meshs3d, an olsr/batman topology visualizer for s3d.
- * See http://s3d.berlios.de/ for more updates.
+ * See http://s3d.sourceforge.net/ for more updates.
  *
  * olsrs3d is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

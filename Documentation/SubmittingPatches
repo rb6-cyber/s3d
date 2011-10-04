@@ -3,7 +3,8 @@ mail as text/plain without PGP  encryption  applied.  The  subject  line
 should  act  as  summary  of  your  patch  and  the  body  should have a
 meaningful commit message with information about  motivations  for  this
 patch  and how it changes the behavior.  Don’t commit commented code and
-follow the coding style described at http://s3d.berlios.de/style_guide
+follow the coding style described at
+http://s3d.sourceforge.net/style_guide
 
 The patch must apply without any problems on the desired branch.  So  if
 it is a bug fix then it must apply against the maint branch and if it is
@@ -30,7 +31,7 @@ Your  patch must be licensed under the GPL2+ (or LGPL2.1+ for libs3d and
 libs3dw).
 
 If you think that your patch is ready for inclusion then send it to
-                   s3d‐devel@lists.berlios.de
+                   s3d‐devel@lists.sourceforge.net 
 
 You must be subscribed to the mailing list or otherwise your  mail  will
 be dropped without further notice.

@@ -2,7 +2,7 @@
 
 # Copyright (C) 2007-2011  Simon Wunderlich <dotslash@packetmixer.de>
 #
-# See http://s3d.berlios.de/ for more updates.
+# See http://s3d.sourceforge.net/ for more updates.
 #
 # testvis is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

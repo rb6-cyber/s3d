@@ -76,7 +76,7 @@
 		
 	<refsect1> 
 		<title>SEE ALSO</title>
-		<para> <ulink url="http://s3d.berlios.de/"> s3d project page on berlios </ulink> </para>
+		<para> <ulink url="http://s3d.sourceforge.net/"> s3d project page on SourceForge </ulink> </para>
 		<!--TODO: ADD REFERENCE TO APPS AND /usr/share/doc/s3d/ -->
 	</refsect1>
 

@@ -6,7 +6,7 @@
  * which is (C) Ruud van Gaal
  *
  * This file is part of s3d, a 3d network display server.
- * See http://s3d.berlios.de/ for more updates.
+ * See http://s3d.sourceforge.net/ for more updates.
  *
  * s3d is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

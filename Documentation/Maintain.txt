@@ -111,11 +111,14 @@ Preparing a release:
      $ gzip -n -m -c "s3dapi_doc-$VERSION.tar" > "s3dapi_doc-$VERSION.tar.gz"
      $ xz "s3dapi_doc-$VERSION.tar"
 
- - Upload the compressed source tarballs to ftp://ftp.berlios.de/incoming/
+ - Add files to SourceForge using https://sourceforge.net/projects/s3d/files/
 
- - Add files to berlios using http://developer.berlios.de/project/admin/editpackages.php?group_id=5908
+ - Add RelNotes-* as README to the same folder
 
- - Clone current webpage from git+ssh://git.berlios.de/home/groups/s3d/htdocs
+ - Get current webpage from web.sourceforge.net
+
+     $ rsync -aPc USERNAME@web.sourceforge.net:/home/project-web/s3d/htdocs/ s3d_htdocs
+     $ s3d_htdocs
 
  - Change index.xhtml to announce the new release
 
@@ -123,7 +126,11 @@ Preparing a release:
 
  - Add it to repository with `git add doc/X.Y.Z` and insert it to doc/index.xhtml
 
- - Push committed changes to the htdocs repository
+ - Commit the changes
+
+ - Sync the webpage
+
+     $ rsync -aPc . USERNAME@web.sourceforge.net:/home/project-web/s3d/htdocs/
 
  - Add a release note to http://freshmeat.net/projects/s3d_
 
@@ -155,7 +162,7 @@ Preparing debian -1 revision:
     $ dch -r
     $ git buildpackage --git-tag
 
- - Push changes to berlios
+ - Push changes to SourceForge
 
     $ git push
     $ git push --tags

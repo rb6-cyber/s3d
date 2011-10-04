@@ -6,7 +6,7 @@
  * Copyright (C) 2004-2011  Andreas Langer <andreas_lbg@gmx.de>
  *
  * This file is part of olsrs3d, an olsr topology visualizer for s3d.
- * See http://s3d.berlios.de/ for more updates.
+ * See http://s3d.sourceforge.net/ for more updates.
  *
  * olsrs3d is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

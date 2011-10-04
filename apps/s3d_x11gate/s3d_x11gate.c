@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2011  Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of s3d_x11gate, a 3d gateway for x11 desktops.
- * See http://s3d.berlios.de/ for more updates.
+ * See http://s3d.sourceforge.net/ for more updates.
  *
  * s3d_x11gate is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

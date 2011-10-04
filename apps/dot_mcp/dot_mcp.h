@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2011  Simon Wunderlich <dotslash@packetmixer.de>
  *
  * This file is part of dot_mcp, a mcp for s3d.
- * See http://s3d.berlios.de/ for more updates.
+ * See http://s3d.sourceforge.net/ for more updates.
  *
  * dot_mcp is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
