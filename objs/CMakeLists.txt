@@ -5,7 +5,7 @@ set(s3d-objs abs2.3ds abs.3ds accesspoint.3ds accesspoint_inet.3ds arrow2.3ds
 	geometry.3ds go_button.3ds internet.3ds katze_body.3ds katze_leg.3ds
 	katze_tail.3ds lil_p.3ds materials.3ds meshnode.3ds miu.3ds
 	new_sphere.3ds notes.3ds reset.3ds ringsystem.3ds rotate.3ds
-	s3d_berlios_de.3ds s3dstart.3ds sec_p.3ds snow_body.3ds snow_foot.3ds
+	s3d_sf_net.3ds s3dstart.3ds sec_p.3ds snow_body.3ds snow_foot.3ds
 	snow_head.3ds sphere.3ds spikeybla.3ds star.3ds weirdball.3ds
 	wtf.3ds xyz.3ds)
 

@@ -1183,7 +1183,7 @@ int main(int argc, char *argv[])
 			Olsr_node_hna_net = s3d_import_model_file("objs/internet.3ds");
 			Btn_close_obj = s3d_import_model_file("objs/btn_close.3ds");
 
-			S3d_obj = s3d_import_model_file("objs/s3d_berlios_de.3ds");
+			S3d_obj = s3d_import_model_file("objs/s3d_sf_net.3ds");
 
 			s3d_translate(S3d_obj, 0.75, -0.75, -1);
 			s3d_scale(S3d_obj, 0.07);

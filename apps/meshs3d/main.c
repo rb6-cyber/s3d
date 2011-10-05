@@ -564,7 +564,7 @@ int main(int argc, char *argv[])
 			Global.obj_node_tt = s3d_import_model_file("objs/internet.3ds");
 			Global.obj_btn_close = s3d_import_model_file("objs/btn_close.3ds");
 
-			Global.obj_s3d_url = s3d_import_model_file("objs/s3d_berlios_de.3ds");
+			Global.obj_s3d_url = s3d_import_model_file("objs/s3d_sf_net.3ds");
 
 			s3d_translate(Global.obj_s3d_url, 0.75, -0.75, -1);
 			s3d_scale(Global.obj_s3d_url, 0.07);
