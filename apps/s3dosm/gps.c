@@ -147,7 +147,16 @@ int gps_init(const char *gpshost)
 {
 	int sock_opts;
 	const char *err_str;
+#if GPSD_API_MAJOR_VERSION >= 5
+	dgps = malloc(sizeof(*dgps));
+	if (dgps != NULL)
+		if (gps_open(gpshost, "2947", dgps)) {
+			free(dgps);
+			dgps = NULL;
+		}
+#else
 	dgps = gps_open(gpshost, "2947");
+#endif
 	if (dgps == NULL) {
 		switch (errno) {
 		case NL_NOSERVICE:
@@ -194,7 +203,11 @@ int gps_init(const char *gpshost)
 int gps_main(void)
 {
 	if (gps_active && ((frame % 6) == 0)) {
+#if GPSD_API_MAJOR_VERSION >= 5
+		if (gps_read(dgps) < 0) {
+#else
 		if (gps_poll(dgps) < 0) {
+#endif
 			if (errno != EWOULDBLOCK) {
 
 				printf("read error on server socket\n");
@@ -227,6 +240,10 @@ int gps_quit(void)
 		printf("deactivating gps-connection ...\n");
 		gps_active = 0;
 		gps_close(dgps);
+#if GPSD_API_MAJOR_VERSION >= 5
+		free(dgps);
+		dgps = NULL;
+#endif
 	}
 	return 0;
 }
