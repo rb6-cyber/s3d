@@ -3,7 +3,7 @@
 #  PTHREADS_INCLUDE_DIRS - where to find pthreads.h
 #  PTHREADS_LIBRARIES - the libraries to link against
 #
-# Copyright (C) 2007-2011  Sven Eckelmann <sven@narfation.org>
+# Copyright (C) 2007-2012  Sven Eckelmann <sven@narfation.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions

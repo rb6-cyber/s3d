@@ -1,7 +1,7 @@
 /*
  * testvis.c
  *
- * Copyright (C) 2007-2011  Andreas Langer <andreas_lbg@gmx.de>
+ * Copyright (C) 2007-2012  Andreas Langer <andreas_lbg@gmx.de>
  *
  * This file is part of testvis, a simple dot drawing application.
  * See http://s3d.sourceforge.net/ for more updates.
