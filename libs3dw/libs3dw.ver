@@ -1,0 +1,31 @@
+LIBS3DW_2 {
+global:
+	s3dw_ani_mate;
+	s3dw_button_new;
+	s3dw_delete;
+	s3dw_focus;
+	s3dw_getroot;
+	s3dw_handle_click;
+	s3dw_handle_key;
+	s3dw_input_change_text;
+	s3dw_input_gettext;
+	s3dw_input_new;
+	s3dw_label_change_text;
+	s3dw_label_new;
+	s3dw_moveit;
+	s3dw_object_info;
+	s3dw_show;
+	s3dw_surface_new;
+	s3dw_textbox_change_text;
+	s3dw_textbox_new;
+	s3dw_textbox_scrolldown;
+	s3dw_textbox_scrollleft;
+	s3dw_textbox_scrollright;
+	s3dw_textbox_scrollto;
+	s3dw_textbox_scrollup;
+};
+
+HIDDEN {
+local:
+	*;
+};

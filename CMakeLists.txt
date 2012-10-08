@@ -1,4 +1,4 @@
-project(s3d C)
+project(s3d C CXX)
 set(VERSION 0.2.2)
 
 # we require cmake 2.6.3 or higher

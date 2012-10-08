@@ -11,6 +11,12 @@ target_link_libraries(s3d ${S3D_LIBRARY_DEPENDENCIES})
 set_target_properties(s3d PROPERTIES VERSION ${VERSION} SOVERSION 2
                       LINK_INTERFACE_LIBRARIES "")
 
+include(${CMAKE_ROOT}/Modules/TestCXXAcceptsFlag.cmake)
+check_cxx_accepts_flag("-Wl,--version-script=${s3d_SOURCE_DIR}/libs3d/libs3d.ver" HAVE_LIBS3D_VERSIONSCRIPT)
+if (HAVE_LIBS3D_VERSIONSCRIPT)
+set_target_properties(s3d PROPERTIES LINK_FLAGS "-Wl,--version-script=${s3d_SOURCE_DIR}/libs3d/libs3d.ver")
+endif (HAVE_LIBS3D_VERSIONSCRIPT)
+
 # install
 install(TARGETS s3d
 	RUNTIME DESTINATION "${BIN_INSTALL_DIR}"

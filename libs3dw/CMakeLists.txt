@@ -9,6 +9,12 @@ target_link_libraries(s3dw ${S3DW_LIBRARY_DEPENDENCIES})
 set_target_properties(s3dw PROPERTIES VERSION ${VERSION} SOVERSION 2
                       LINK_INTERFACE_LIBRARIES "")
 
+include(${CMAKE_ROOT}/Modules/TestCXXAcceptsFlag.cmake)
+check_cxx_accepts_flag("-Wl,--version-script=${s3d_SOURCE_DIR}/libs3dw/libs3dw.ver" HAVE_LIBS3DW_VERSIONSCRIPT)
+if (HAVE_LIBS3DW_VERSIONSCRIPT)
+set_target_properties(s3dw PROPERTIES LINK_FLAGS "-Wl,--version-script=${s3d_SOURCE_DIR}/libs3dw/libs3dw.ver")
+endif (HAVE_LIBS3DW_VERSIONSCRIPT)
+
 # install
 install(TARGETS s3dw
 	RUNTIME DESTINATION "${BIN_INSTALL_DIR}"
