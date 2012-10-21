@@ -70,9 +70,6 @@ global:
 	s3d_vector_dot_product;
 	s3d_vector_length;
 	s3d_vector_subtract;
-};
-
-HIDDEN {
 local:
 	*;
 };

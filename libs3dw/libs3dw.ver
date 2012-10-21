@@ -23,9 +23,6 @@ global:
 	s3dw_textbox_scrollright;
 	s3dw_textbox_scrollto;
 	s3dw_textbox_scrollup;
-};
-
-HIDDEN {
 local:
 	*;
 };
