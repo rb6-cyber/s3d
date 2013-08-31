@@ -226,7 +226,7 @@ int n_readn(struct t_process *p, uint8_t * str, int s);
 int n_writen(struct t_process *p, uint8_t * str, int s);
 int n_remove(struct t_process *p);
 #ifdef G_SDL
-int net_turn_off(int interval);
+uint32_t net_turn_off(uint32_t interval, void *param);
 #endif
 /* tcp.c */
 int tcp_init(void);

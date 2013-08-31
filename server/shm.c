@@ -179,12 +179,15 @@ int shm_main(void)
 	struct t_process *new_p;
 	struct shmid_ds d;
 	int iterations;
+#ifdef G_SDL
+	SDL_TimerID net_off_timer;
+#endif
 
 	iterations = 0;
 	for (i = 0; i < procs_n; i++) {
 		iterations++;
 #ifdef G_SDL
-		SDL_SetTimer(100, (SDL_TimerCallback) net_turn_off);
+		net_off_timer = SDL_AddTimer(100, net_turn_off, NULL);
 #endif
 		if (procs_p[i].con_type == CON_SHM) {
 			dai = (struct buf_t *)procs_p[i].shmsock.data_ctos;
@@ -196,7 +199,10 @@ int shm_main(void)
 					i--;	/* evil hack: decrease i so it will be our turn again in the next round */
 				else {
 					s3dprintf(MED, "client %d [%s] seems to want to keep us busy ... ", i, procs_p[i].name);
-					SDL_SetTimer(100, (SDL_TimerCallback) net_turn_off);	/* restart timer */
+#ifdef G_SDL
+					SDL_RemoveTimer(net_off_timer); /* restart timer */
+					net_off_timer = SDL_AddTimer(100, net_turn_off, NULL);
+#endif
 					turn = 1;	/* don't decrease, it's next connections turn */
 				}
 			} else {
@@ -217,7 +223,7 @@ int shm_main(void)
 		}
 	}
 #ifdef G_SDL
-	SDL_SetTimer(0, NULL);
+	SDL_RemoveTimer(net_off_timer);
 #endif
 
 	if ((data[0] == 0) && (data[1] == 0)) {

@@ -81,7 +81,7 @@ int network_init(void)
 
 volatile int turn;
 
-int net_turn_off(int S3DUNUSED(interval))
+uint32_t net_turn_off(uint32_t S3DUNUSED(interval), void *S3DUNUSED(param))
 {
 	s3dprintf(VLOW, "Warning: High traffic on Network, interrupting read.");
 	turn = 0;
@@ -91,6 +91,9 @@ int net_turn_off(int S3DUNUSED(interval))
 /*  this basicly polls for new connection */
 int network_main(void)
 {
+#ifdef G_SDL
+	SDL_TimerID net_off_timer;
+#endif
 	turn = 1;
 
 #ifdef TCP
@@ -99,12 +102,12 @@ int network_main(void)
 #endif
 		tcp_pollport();	/*  this polls for new processes */
 #ifdef G_SDL
-		SDL_SetTimer(50, (SDL_TimerCallback) net_turn_off);
+		net_off_timer = SDL_AddTimer(50, net_turn_off, NULL);
 #endif
 		while (turn && tcp_pollproc()) {
 		}		/*  if there is new data, loop please. this is for testing now, and should be combined with timing later .. */
 #ifdef G_SDL
-		SDL_SetTimer(0, NULL);
+		SDL_RemoveTimer(net_off_timer);
 #endif
 
 #ifdef SIGS
