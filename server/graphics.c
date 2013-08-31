@@ -352,7 +352,11 @@ void graphics_main(void)
 #ifdef G_SDL
 	case FRAME_SDL:
 		/* SDL will glFlush itself */
+#if SDL_VERSION_ATLEAST(2,0,0)
+		SDL_GL_SwapWindow(sdl_window);
+#else
 		SDL_GL_SwapBuffers();
+#endif
 		break;
 #endif
 #ifdef G_GLX

@@ -34,7 +34,15 @@
 #ifdef SHM
 #include <sys/shm.h>		/* key_t */
 #endif
+#ifdef G_SDL
+#include <SDL.h>
+#endif
 /*  variables and defines */
+#ifdef G_SDL
+#if SDL_VERSION_ATLEAST(2,0,0)
+SDL_Window *sdl_window;
+#endif
+#endif
 extern int frame_mode;		/*  SDL, ... ? */
 extern int running;		/*  server running flag */
 /*  relevance macros */

@@ -63,13 +63,19 @@ endif (OPENGL_FOUND)
 
 
 # try to find lib and add include dir for SDL
-find_package(SDL)
-if (SDL_FOUND)
-	include_directories(${SDL_INCLUDE_DIR})
-	set(G_SDL SDL_FOUND)
-else (SDL_FOUND)
-	PkgError_Later("Could not find SDL (pkg name: libsdl-dev)")
-endif (SDL_FOUND)
+find_package(SDL2)
+if (SDL2_FOUND)
+	include_directories(${SDL2_INCLUDE_DIR})
+	set(G_SDL SDL2_FOUND)
+else (SDL2_FOUND)
+	find_package(SDL)
+	if (SDL_FOUND)
+		include_directories(${SDL_INCLUDE_DIR})
+		set(G_SDL SDL_FOUND)
+	else (SDL_FOUND)
+		PkgError_Later("Could not find SDL or SDL2 (pkg name: libsdl-dev/libsdl2-dev)")
+	endif (SDL_FOUND)
+endif (SDL2_FOUND)
 
 
 # find lib and add include dir for CWiid
