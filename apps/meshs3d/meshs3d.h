@@ -2,7 +2,7 @@
  * meshs3d.h
  *
  * Copyright (C) 2004-2012  Simon Wunderlich <dotslash@packetmixer.de>
- * Copyright (C) 2004-2012  Marek Lindner <lindner_marek@yahoo.de>
+ * Copyright (C) 2004-2012  Marek Lindner <mareklindner@neomailbox.ch>
  * Copyright (C) 2004-2012  Andreas Langer <andreas_lbg@gmx.de>
  *
  * This file is part of meshs3d, an olsr/batman topology visualizer for s3d.
