@@ -2,7 +2,7 @@
  * allocate.c
  *
  * Copyright (C) 2006-2012  Simon Wunderlich <dotslash@packetmixer.de>
- * Copyright (C) 2006-2012  Marek Lindner <lindner_marek@yahoo.de>
+ * Copyright (C) 2006-2012  Marek Lindner <mareklindner@neomailbox.ch>
  *
  * This file is part of meshs3d, an olsr/batman topology visualizer for s3d.
  * See http://s3d.sourceforge.net/ for more updates.
