@@ -1,7 +1,7 @@
 /*
  * main.c
  *
- * Copyright (C) 2004-2012  Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2004-2012  Simon Wunderlich <sw@simonwunderlich.de>
  * Copyright (C) 2004-2012  Marek Lindner <mareklindner@neomailbox.ch>
  * Copyright (C) 2004-2012  Andreas Langer <andreas_lbg@gmx.de>
  *

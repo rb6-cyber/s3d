@@ -1,7 +1,7 @@
 /*
  * hash.h
  *
- * Copyright (C) 2004-2012  Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2004-2012  Simon Wunderlich <sw@simonwunderlich.de>
  * Copyright (C) 2004-2012  Marek Lindner <mareklindner@neomailbox.ch>
  *
  * This file is part of the s3d API, the API of s3d (the 3d network display server).

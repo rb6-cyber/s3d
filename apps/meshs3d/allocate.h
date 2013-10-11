@@ -1,7 +1,7 @@
 /*
  * allocate.h
  *
- * Copyright (C) 2006-2012  Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2006-2012  Simon Wunderlich <sw@simonwunderlich.de>
  * Copyright (C) 2006-2012  Marek Lindner <mareklindner@neomailbox.ch>
  *
  * This file is part of meshs3d, an olsr/batman topology visualizer for s3d.
