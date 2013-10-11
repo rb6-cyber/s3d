@@ -112,7 +112,7 @@ diff -Naur MPlayer-1.0pre7try2/libvo/vo_s3d.c MPlayer-1.0pre7try2.s3d/libvo/vo_s
 +{
 +	"s3d video output",
 +	"s3d",
-+	"<dotslash@packetmixer.de>",
++	"<sw@simonwunderlich.de>",
 +	""
 +};
 +

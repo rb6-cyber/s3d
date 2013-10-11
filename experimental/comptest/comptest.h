@@ -1,7 +1,7 @@
 /*
  * comptest.h
  *
- * Copyright (C) 2007-2012  Simon Wunderlich <dotslash@packetmixer.de>
+ * Copyright (C) 2007-2012  Simon Wunderlich <sw@simonwunderlich.de>
  *
  * This file is part of comptest, a proof-of-concept composite manager hack.
  * See http://s3d.sourceforge.net/ for more updates.

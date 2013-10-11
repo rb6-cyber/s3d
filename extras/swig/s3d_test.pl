@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright (C) 2007-2012  Simon Wunderlich <dotslash@packetmixer.de>
+# Copyright (C) 2007-2012  Simon Wunderlich <sw@simonwunderlich.de>
 #
 # See http://s3d.sourceforge.net/ for more updates.
 #

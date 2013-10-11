@@ -1,7 +1,7 @@
 S3D v0.0.2 Release Notes
 ========================
 
-2005-01-30 Simon Wunderlich <dotslash@packetmixer.de>
+2005-01-30 Simon Wunderlich <sw@simonwunderlich.de>
 
  * args are now removed after read by s3d_init()
  * changed the s3d_init() call to use pointer
@@ -11,6 +11,6 @@ S3D v0.0.2 Release Notes
  * some Makefile changes and server bugfixes
  * client now listens to S3D-env again
 
-2005-01-28 Simon Wunderlich <dotslash@packetmixer.de>
+2005-01-28 Simon Wunderlich <sw@simonwunderlich.de>
 
  * have a standard url to connect to (s3d://127.0.0.1:6066)

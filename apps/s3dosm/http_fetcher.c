@@ -21,7 +21,7 @@
  *
  *
  * Changes:
- *  Simon Wunderlich <dotslash@packetmixer.de>
+ *  Simon Wunderlich <sw@simonwunderlich.de>
  *  + added http_setAuth() to support basic http-authentication and some minor fixes
  */
 
