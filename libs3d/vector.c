@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2004-2012  Simon Wunderlich <sw@simonwunderlich.de>
  * Copyright (C) 2004-2012  Marek Lindner <mareklindner@neomailbox.ch>
- * Copyright (C) 2004-2012  Andreas Langer <andreas_lbg@gmx.de>
+ * Copyright (C) 2004-2012  Andreas Langer <an.langer@gmx.de>
  *
  * This file is part of the s3d API, the API of s3d (the 3d network display server).
  * See http://s3d.sourceforge.net/ for more updates.
