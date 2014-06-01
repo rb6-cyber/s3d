@@ -618,6 +618,7 @@ int makeSocket(const char *host)
 	}
 
 	/* Copy host address from hostent to (server) socket address */
+	memset(&sa, 0, sizeof(sa));
 	memcpy((char *)&sa.sin_addr, (char *)hp->h_addr, hp->h_length);
 	sa.sin_family = hp->h_addrtype;  /* Set service sin_family to PF_INET */
 	sa.sin_port = htons(PORT_NUMBER); /* Put portnum into sockaddr */
@@ -628,7 +629,7 @@ int makeSocket(const char *host)
 		return -1;
 	}
 
-	ret = connect(sock, (struct sockaddr *) & sa, sizeof(sa));
+	ret = connect(sock, (struct sockaddr *)&sa, sizeof(sa));
 	if (ret == -1) {
 		errorSource = ERRNO;
 		return -1;
