@@ -74,6 +74,7 @@ int _tcp_init(const char *sv, int pn)
 		errn("_tcp_init()():socket()", errno);
 		return -1;
 	}
+	memset(&sock, 0, sizeof(sock));
 	sock.sin_family = AF_INET;
 	if (*sv == 0)  /*  no server argument */
 		sv = "127.0.0.1";
@@ -85,7 +86,7 @@ int _tcp_init(const char *sv, int pn)
 	}
 	sock.sin_port = htons(pn);
 
-	res = connect(sd, (struct sockaddr *) & sock, sizeof(struct sockaddr_in));
+	res = connect(sd, (struct sockaddr *)&sock, sizeof(struct sockaddr_in));
 	if (res < 0) {
 		errn("_tcp_init()():connect()", errno);
 		return -1;
