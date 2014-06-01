@@ -212,6 +212,8 @@ static int model_load(char *file)
 						s3d_push_texture(obj_id, face->tex_image->width, face->tex_image->height);
 						s3d_pep_material_texture(obj_id, texture_count);
 						s3d_load_texture(obj_id, texture_count, 0, 0, face->tex_image->width, face->tex_image->height, s3d_pixeldata);
+						free(s3d_pixeldata);
+						s3d_pixeldata = NULL;
 
 						mat2tex->texture_id = texture_count;
 						texture_count++;
