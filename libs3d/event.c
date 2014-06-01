@@ -99,10 +99,12 @@ struct s3d_evt *s3d_find_event(uint8_t event) {
 int s3d_delete_event(const struct s3d_evt *devt)
 {
 	struct s3d_evt *previous = NULL;
+	struct s3d_evt *next;
 	struct s3d_evt *p = s3d_stack;
 	while (p != NULL) {
 		/* if ((p->event==devt->event) && (p->length==devt->length)) */
 		/*  if (0==memcmp(p->buf,devt->buf)) */
+		next = p->next;
 		if (p == devt) {
 			if (p->length > 0)
 				free(p->buf);
@@ -110,10 +112,12 @@ int s3d_delete_event(const struct s3d_evt *devt)
 				s3d_stack = p->next;  /*  the first element!! */
 			else
 				previous->next = p->next;  /*  unlink */
+
 			free(p);
+		} else {
+			previous = p;
 		}
-		previous = p;
-		p = p->next;
+		p = next;
 	}
 	return -1;
 }
