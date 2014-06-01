@@ -215,7 +215,8 @@ static struct olsr_node* get_olsr_node(struct olsr_node **olsr_node, char *ip) {
 		(*olsr_node)->left = NULL;
 		(*olsr_node)->right = NULL;
 
-		strncpy((*olsr_node)->ip, ip, NAMEMAX);
+		strncpy((*olsr_node)->ip, ip, sizeof((*olsr_node)->ip));
+		(*olsr_node)->ip[sizeof((*olsr_node)->ip) - 1] = '\0';
 
 		(*olsr_node)->node_type = 0;
 		(*olsr_node)->node_type_modified = 1;
