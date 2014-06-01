@@ -201,7 +201,7 @@ int db_getint(void *tagid, int S3DOSMUNUSED(argc), char **argv, char **S3DOSMUNU
 static int db_getstr(void *string, int S3DOSMUNUSED(argc), char **argv, char **S3DOSMUNUSED(azColName))
 {
 	if (argv[0])
-		strncpy((char *)string, argv[0], MAXQ);
+		clean_string((char *)string, argv[0], MAXQ);
 	return 0;
 }
 
