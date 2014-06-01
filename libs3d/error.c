@@ -22,11 +22,10 @@
  */
 
 
-#include "s3d.h"
-#include "s3dlib.h"
-#include <stdarg.h>   /*  va_list */
-#include <stdio.h>    /*  perror(),fprintf() */
-#include <string.h>   /*  sterror */
+#include <stdarg.h>                     /* for va_start, va_end, va_list */
+#include <stdio.h>                      /* for fprintf, stderr */
+#include <string.h>                     /* for strerror */
+
 /*  s3dprintf is only for internal use. */
 #ifdef DEBUG
 void s3dprintf(int relevance, const char *fmt, ...)

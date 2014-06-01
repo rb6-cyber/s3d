@@ -23,6 +23,7 @@
 
 #include "s3d.h"
 #include "s3dlib.h"
+#include "hash.h"
 #ifdef SHM
 #include <sys/types.h>
 #include <sys/ipc.h>

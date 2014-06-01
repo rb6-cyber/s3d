@@ -22,10 +22,10 @@
  */
 
 
-#include "s3d.h"
-#include "s3dlib.h"
-#include "proto.h"
-#include <stdlib.h>   /*  malloc(), free() */
+#include <stdint.h>                  /* for uint8_t */
+#include <stdlib.h>                  /* for NULL, free */
+#include "s3d.h"                     /* for s3d_evt, s3d_get_callback, etc */
+#include "s3dlib.h"                  /* for s3dprintf, VLOW, etc */
 
 static struct s3d_evt *s3d_stack;
 int cb_lock = 2;  /*  callback lock */

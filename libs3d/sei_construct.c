@@ -40,6 +40,11 @@
 #include "sei_triangulate.h"
 #include <math.h>
 #include <string.h> /* memset() */
+#include <sys/types.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "s3d.h"
+#include "s3dlib.h"
 
 
 node_t qs[QSIZE];  /* Query structure */

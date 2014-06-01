@@ -40,6 +40,11 @@
 #include "sei_triangulate.h"
 #include <math.h>
 #include <string.h> /* memset() */
+#include <sys/types.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "s3d.h"
+#include "s3dlib.h"
 
 #define CROSS_SINE(v0, v1) ((v0).x * (v1).y - (v1).x * (v0).y)
 #define LENGTH(v0) (sqrt((v0).x * (v0).x + (v0).y * (v0).y))
