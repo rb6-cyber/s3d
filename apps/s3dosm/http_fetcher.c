@@ -314,20 +314,23 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 int http_setUserAgent(const char *newAgent)
 {
 	char *tmp;
+	size_t agent_len;
 
 	if (newAgent == NULL) {
 		if (freeOldAgent) free(userAgent);
 		userAgent = NULL;
 		hideUserAgent = 1;
 	} else {
-		tmp = (char *)malloc(strlen(newAgent));
+		agent_len = strlen(newAgent) + 1;
+		tmp = (char *)malloc(agent_len);
 		if (tmp == NULL) {
 			errorSource = ERRNO;
 			return -1;
 		}
 		if (freeOldAgent) free(userAgent);
 		userAgent = tmp;
-		strcpy(userAgent, newAgent);
+		strncpy(userAgent, newAgent, agent_len);
+		userAgent[agent_len - 1] = '\0';
 		freeOldAgent = 1;
 		hideUserAgent = 0;
 	}
@@ -343,20 +346,23 @@ int http_setUserAgent(const char *newAgent)
 int http_setReferer(const char *newReferer)
 {
 	char *tmp;
+	size_t referer_len;
 
 	if (newReferer == NULL) {
 		if (freeOldReferer) free(referer);
 		referer = NULL;
 		hideReferer = 1;
 	} else {
-		tmp = (char *)malloc(strlen(newReferer));
+		referer_len = strlen(newReferer) + 1;
+		tmp = (char *)malloc(referer_len);
 		if (tmp == NULL) {
 			errorSource = ERRNO;
 			return -1;
 		}
 		if (freeOldReferer) free(referer);
 		referer = tmp;
-		strcpy(referer, newReferer);
+		strncpy(referer, newReferer, referer_len);
+		referer[referer_len - 1] = '\0';
 		freeOldReferer = 1;
 		hideReferer = 0;
 	}
@@ -436,6 +442,7 @@ void http_setTimeout(int seconds)
 int http_parseFilename(const char *url, char **filename)
 {
 	char *ptr;
+	size_t ptr_len;
 
 	if (url == NULL) {
 		errorSource = FETCHER_ERROR;
@@ -451,12 +458,14 @@ int http_parseFilename(const char *url, char **filename)
 	ptr++;
 	if (*ptr == '\0') return 1;
 
-	*filename = (char *)malloc(strlen(ptr));
+	ptr_len = strlen(ptr) + 1;
+	*filename = (char *)malloc(ptr_len);
 	if (*filename == NULL) {
 		errorSource = ERRNO;
 		return -1;
 	}
-	strcpy(*filename, ptr);
+	strncpy(*filename, ptr, ptr_len);
+	*filename[ptr_len - 1] = '\0';
 
 	return 0;
 }
