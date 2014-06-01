@@ -28,7 +28,10 @@ int aa_level = 4;
 #include <SDL.h>
 
 int SDLFlags = 0;		/*  some flags for SDL */
+
+#if SDL_VERSION_ATLEAST(2,0,0)
 SDL_Window *sdl_window;
+#endif
 
 int graphics_init_sdl(void)
 {

@@ -40,7 +40,7 @@
 /*  variables and defines */
 #ifdef G_SDL
 #if SDL_VERSION_ATLEAST(2,0,0)
-SDL_Window *sdl_window;
+extern SDL_Window *sdl_window;
 #endif
 #endif
 extern int frame_mode;		/*  SDL, ... ? */
