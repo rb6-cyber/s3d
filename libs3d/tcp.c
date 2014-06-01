@@ -89,6 +89,7 @@ int _tcp_init(const char *sv, int pn)
 	res = connect(sd, (struct sockaddr *)&sock, sizeof(struct sockaddr_in));
 	if (res < 0) {
 		errn("_tcp_init()():connect()", errno);
+		close(sd);
 		return -1;
 	}
 	/*    if ( fcntl(sd, F_SETFL, O_ASYNC | O_NONBLOCK) < 0 ) */
