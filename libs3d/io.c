@@ -160,15 +160,17 @@ int s3d_init(int *argc, char ***argv, const char *name)
 	parse_args(argc, argv);
 	if (url == NULL) { /* no url specified or obtained through arguments */
 		/* trying standard ways to connect */
-		strncpy(urlc, "s3d:///tmp/.s3d:shm/", 256);
+		strncpy(urlc, "s3d:///tmp/.s3d:shm/", sizeof(urlc));
+		urlc[sizeof(urlc) - 1] = '\0';
 		if (s3d_net_init(urlc) == CON_NULL) {
-			strncpy(urlc, "s3d://127.0.0.1:6066/", 256);
+			strncpy(urlc, "s3d://127.0.0.1:6066/", sizeof(urlc));
+			urlc[sizeof(urlc) - 1] = '\0';
 			if (s3d_net_init(urlc) == CON_NULL)
 				return -1;
 		}
 	} else {
-		strncpy(urlc, url, 256);  /*  this should keep buffer overflows away, maybe */
-		urlc[255] = '\0';  /*  just to make sure */
+		strncpy(urlc, url, sizeof(urlc));  /*  this should keep buffer overflows away, maybe */
+		urlc[sizeof(urlc) - 1] = '\0';  /*  just to make sure */
 		if (!strncmp(urlc, "s3d:// ", 6)) {
 			if (s3d_net_init(urlc) == CON_NULL) return -1;
 		} else {
@@ -176,7 +178,8 @@ int s3d_init(int *argc, char ***argv, const char *name)
 			return -1;
 		}
 	}
-	strncpy(buf, name, 256);  /*  copy the name ... */
+	strncpy(buf, name, sizeof(buf));  /*  copy the name ... */
+	buf[sizeof(buf) - 1] = '\0';
 	net_send(S3D_P_C_INIT, buf, strlen(buf));
 
 	_queue_init();

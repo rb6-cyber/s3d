@@ -335,7 +335,8 @@ int s3d_select_font(const char *path)
 		if ((memory_font_size = s3d_open_file(c, p)) > 0) {
 			if (!s3d_ft_load_font()) { /* success */
 				if (oldfont != NULL)    free(oldfont);
-				strncpy(oldfontpath, path, 256);
+				strncpy(oldfontpath, path, sizeof(oldfontpath));
+				oldfontpath[sizeof(oldfontpath) - 1] = '\0';
 				return 0;
 			} else {
 				memory_font = oldfont;
