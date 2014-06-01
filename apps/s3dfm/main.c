@@ -23,6 +23,7 @@
 
 
 #include "s3dfm.h"
+#include <s3d.h>
 #include <string.h>  /*  strlen(), strncmp(), strrchr() */
 #include <time.h> /* nanosleep() */
 static struct timespec t = {
@@ -50,7 +51,7 @@ int main(int argc, char **argv)
 		cam.oid = 0;
 		/* set up file system representation */
 		node_init(&root);
-		strncpy(root.name, "/", M_NAME);
+		mstrncpy(root.name, "/", M_NAME);
 		focus = &root;
 		root.dscale = 0.1;
 		root.type = T_FOLDER;

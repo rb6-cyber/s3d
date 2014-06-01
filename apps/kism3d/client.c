@@ -50,7 +50,8 @@ struct wlan_client *get_wlan_client(char *mac) {
 
 	INIT_LIST_HEAD(&wlan_client->list);
 
-	strncpy(wlan_client->mac, mac, 18);
+	strncpy(wlan_client->mac, mac, sizeof(wlan_client->mac));
+	wlan_client->mac[sizeof(wlan_client->mac) - 1] = '\0';
 	wlan_client->wlan_network = NULL;
 
 	wlan_client->props_changed = 1;

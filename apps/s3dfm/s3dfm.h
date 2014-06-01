@@ -24,10 +24,8 @@
 #ifndef _S3DFM_H_
 #define _S3DFM_H_
 
-#include <s3d.h>
-#include <s3dw.h>
-#include <stdlib.h>  /* uintXX_t */
-#include <config-s3d.h>
+#include <config-s3d.h>              /* for UNUSEDPARAM_ATTRIBUTE */
+#include <s3dw.h>                    /* for s3dw_widget */
 
 #ifndef S3DFMUNUSED
 #if defined(UNUSEDPARAM_ATTRIBUTE)

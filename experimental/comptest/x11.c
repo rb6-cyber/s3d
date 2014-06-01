@@ -26,6 +26,14 @@
 #include <string.h>  /* memcpy() */
 #include <stdlib.h>  /* free() */
 #include <X11/Xproto.h> /* X_* request defines */
+#include <s3d.h>
+#include <X11/Xlib.h>       /* Ximage, Display, X*() */
+#include <X11/Xutil.h>       /* XDestroyImage() */
+#include <X11/Xatom.h>
+#include <config-s3d.h>
+#include <X11/extensions/Xcomposite.h>
+#include <X11/extensions/Xdamage.h>
+#include <X11/extensions/Xrender.h>
 
 #define XCOMPOSITE_VERSION_0_2 200
 

@@ -35,7 +35,7 @@ t_node *node_getbypath(const char *path)
 
 	if (path == NULL) return NULL;
 	if (path[0] == '/') {
-		strncpy(p, path, M_DIR - 1);
+		mstrncpy(p, path, M_DIR - 1);
 		s = p + 1;
 		cur = &root;
 	} else return NULL; /* TODO: also process local paths. right now, we are to lazy */

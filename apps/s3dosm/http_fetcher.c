@@ -35,6 +35,7 @@
 #include <sys/types.h>
 #include <sys/time.h>
 #include "http_fetcher.h"
+#include "http_error_codes.h"
 
 /* Globals */
 static int timeout = DEFAULT_READ_TIMEOUT;
@@ -66,6 +67,7 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 	char *url, *pageBuf, *host, *charIndex;
 	int sock, bytesRead = 0, contentLength = -1;
 	int ret = -1, i, selectRet;
+	size_t url_len;
 
 
 	if (url_tmp == NULL) {
@@ -75,12 +77,14 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 	}
 
 	/* Copy the url passed in into a buffer we can work with, change, etc. */
-	url = (char*)malloc(strlen(url_tmp) + 1);
+	url_len = strlen(url_tmp) + 1;
+	url = (char*)malloc(url_len);
 	if (url == NULL) {
 		errorSource = ERRNO;
 		return -1;
 	}
-	strncpy(url, url_tmp, strlen(url_tmp) + 1);
+	strncpy(url, url_tmp, url_len);
+	url[url_len - 1] = '\0';
 
 	/* Seek to the file path portion of the url */
 	charIndex = strstr(url, "://");
@@ -314,20 +318,23 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 int http_setUserAgent(const char *newAgent)
 {
 	char *tmp;
+	size_t agent_len;
 
 	if (newAgent == NULL) {
 		if (freeOldAgent) free(userAgent);
 		userAgent = NULL;
 		hideUserAgent = 1;
 	} else {
-		tmp = (char *)malloc(strlen(newAgent));
+		agent_len = strlen(newAgent) + 1;
+		tmp = (char *)malloc(agent_len);
 		if (tmp == NULL) {
 			errorSource = ERRNO;
 			return -1;
 		}
 		if (freeOldAgent) free(userAgent);
 		userAgent = tmp;
-		strcpy(userAgent, newAgent);
+		strncpy(userAgent, newAgent, agent_len);
+		userAgent[agent_len - 1] = '\0';
 		freeOldAgent = 1;
 		hideUserAgent = 0;
 	}
@@ -343,20 +350,23 @@ int http_setUserAgent(const char *newAgent)
 int http_setReferer(const char *newReferer)
 {
 	char *tmp;
+	size_t referer_len;
 
 	if (newReferer == NULL) {
 		if (freeOldReferer) free(referer);
 		referer = NULL;
 		hideReferer = 1;
 	} else {
-		tmp = (char *)malloc(strlen(newReferer));
+		referer_len = strlen(newReferer) + 1;
+		tmp = (char *)malloc(referer_len);
 		if (tmp == NULL) {
 			errorSource = ERRNO;
 			return -1;
 		}
 		if (freeOldReferer) free(referer);
 		referer = tmp;
-		strcpy(referer, newReferer);
+		strncpy(referer, newReferer, referer_len);
+		referer[referer_len - 1] = '\0';
 		freeOldReferer = 1;
 		hideReferer = 0;
 	}
@@ -436,6 +446,7 @@ void http_setTimeout(int seconds)
 int http_parseFilename(const char *url, char **filename)
 {
 	char *ptr;
+	size_t ptr_len;
 
 	if (url == NULL) {
 		errorSource = FETCHER_ERROR;
@@ -451,12 +462,14 @@ int http_parseFilename(const char *url, char **filename)
 	ptr++;
 	if (*ptr == '\0') return 1;
 
-	*filename = (char *)malloc(strlen(ptr));
+	ptr_len = strlen(ptr) + 1;
+	*filename = (char *)malloc(ptr_len);
 	if (*filename == NULL) {
 		errorSource = ERRNO;
 		return -1;
 	}
-	strcpy(*filename, ptr);
+	strncpy(*filename, ptr, ptr_len);
+	*filename[ptr_len - 1] = '\0';
 
 	return 0;
 }
@@ -618,6 +631,7 @@ int makeSocket(const char *host)
 	}
 
 	/* Copy host address from hostent to (server) socket address */
+	memset(&sa, 0, sizeof(sa));
 	memcpy((char *)&sa.sin_addr, (char *)hp->h_addr, hp->h_length);
 	sa.sin_family = hp->h_addrtype;  /* Set service sin_family to PF_INET */
 	sa.sin_port = htons(PORT_NUMBER); /* Put portnum into sockaddr */
@@ -628,8 +642,9 @@ int makeSocket(const char *host)
 		return -1;
 	}
 
-	ret = connect(sock, (struct sockaddr *) & sa, sizeof(sa));
+	ret = connect(sock, (struct sockaddr *)&sa, sizeof(sa));
 	if (ret == -1) {
+		close(sock);
 		errorSource = ERRNO;
 		return -1;
 	}

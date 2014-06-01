@@ -22,8 +22,11 @@
  */
 
 
-#include "s3d.h"
-#include "s3dlib.h"
+#include <stddef.h>                  /* for NULL */
+#include <stdint.h>                  /* for uint8_t */
+#include "s3d.h"                     /* for s3d_cb, s3d_process_stack */
+#include "s3dlib.h"                  /* for MAX_CB, S3DUNUSED */
+
 static int _s3d_ignore(struct s3d_evt *evt);
 /*  the s3d callback list */
 /* i know it's ugly, but it's better to have ugly code somewhere than provoke

@@ -45,7 +45,8 @@ struct wlan_network *get_wlan_network(char *bssid) {
 
 	INIT_LIST_HEAD(&wlan_network->list);
 
-	strncpy(wlan_network->bssid, bssid, 18);
+	strncpy(wlan_network->bssid, bssid, sizeof(wlan_network->bssid));
+	wlan_network->bssid[sizeof(wlan_network->bssid) - 1] = '\0';
 
 	wlan_network->type = -1;
 	wlan_network->chan = -1;

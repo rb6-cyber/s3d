@@ -77,7 +77,8 @@ int mcp_rep_object(int32_t mcp_oid)
 
 	htonfb(&mo.trans_x, 4);
 	ap = get_proc_by_pid(p->object[mcp_oid]->virtual_pid);
-	strncpy(mo.name, ap->name, S3D_NAME_MAX);
+	strncpy(mo.name, ap->name, sizeof(mo.name));
+	mo.name[sizeof(mo.name) - 1] = '\0';
 	prot_com_out(p, S3D_P_MCP_OBJECT, (uint8_t *) & mo, sizeof(struct mcp_object));
 	return 0;
 }

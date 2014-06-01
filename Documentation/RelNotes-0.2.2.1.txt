@@ -1,0 +1,25 @@
+S3D v0.2.2.1 Release Notes
+==========================
+
+ * Fix minor typographical errors in documentation.
+
+ * Change all references from berlios to the new hoster sourceforge.
+
+ * Update mail information for Marek Lindner, Simon Wunderlich and
+   Andreas Langer.
+
+ * Fail earlier in s3dvt during the start of the shell when setuid/setgid fails
+   to change euid/egid/fsuid/.. to the uid/gid and don't wait for bash to
+   handle it for the terminal emulator. Requested by
+   Hector Marco <hecmargi@upv.es>
+
+ * Use versioned symbols for exported libraries to make migration to an
+   incompatible ABI easier.
+
+ * Support libgps API 5 in s3dosm.
+
+---
+exec >/var/tmp/1
+echo O=`git describe maint`
+O=v0.2.2-14-g79bb09b
+git shortlog --no-merges $O..maint

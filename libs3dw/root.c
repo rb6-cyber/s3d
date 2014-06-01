@@ -24,6 +24,7 @@
 #include <s3d.h>
 #include <s3dw.h>
 #include <s3dw_int.h>
+#include <s3dlib.h>
 #include <stdlib.h> /* malloc() */
 #include <stdio.h>   /* printf() */
 s3dw_callback   s3dwcb_show[S3DW_NTYPES];

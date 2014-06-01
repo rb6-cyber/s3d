@@ -40,6 +40,11 @@
 #include "sei_triangulate.h"
 #include <sys/time.h>
 #include <math.h>
+#include <sys/types.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include "s3d.h"
+#include "s3dlib.h"
 
 
 static int choose_idx;

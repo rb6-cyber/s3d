@@ -24,7 +24,9 @@
 #ifndef LIBS3DW_INT_H
 #define LIBS3DW_INT_H
 
-#include <s3dlib.h> /* s3dprintf() */
+#include <s3dw.h>                    /* for s3dw_widget, ::S3DW_NTYPES, etc */
+#include <stdint.h>                  /* for uint32_t */
+
 #define MAXANI  128
 #define ZOOMS  5
 /* constructor and handler callbacks */
@@ -45,7 +47,7 @@ void s3dw_root_destroy(s3dw_widget *widget);
 const char *s3dw_get_type_string(int type);
 /* widget.c */
 s3dw_widget* s3dw_widget_new(s3dw_widget *widget);
-void s3dw_widget_append(s3dw_widget *parent, s3dw_widget *widget);
+int s3dw_widget_append(s3dw_widget *parent, s3dw_widget *widget);
 void s3dw_widget_visible(s3dw_widget *widget);
 int s3dw_widget_event_click(s3dw_widget *widget, uint32_t oid);
 int s3dw_widget_event_key(s3dw_widget *widget, struct s3d_key_event *keys);

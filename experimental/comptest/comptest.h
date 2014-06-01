@@ -24,14 +24,10 @@
 #ifndef _COMPTEST_H_
 #define _COMPTEST_H_
 
-#include <s3d.h>
-#include <X11/Xlib.h>       /* Ximage, Display, X*() */
-#include <X11/Xutil.h>       /* XDestroyImage() */
-#include <X11/Xatom.h>
-#include <config-s3d.h>
-#include <X11/extensions/Xcomposite.h>
-#include <X11/extensions/Xdamage.h>
-#include <X11/extensions/Xrender.h>
+#include <X11/X.h>                   /* for Window, Pixmap */
+#include <X11/Xlib.h>                /* for Display, XErrorEvent, etc */
+#include <X11/extensions/Xdamage.h>  /* for Damage */
+#include <config-s3d.h>              /* for UNUSEDPARAM_ATTRIBUTE */
 #ifndef COMPUNUSED
 #if defined(UNUSEDPARAM_ATTRIBUTE)
 #define COMPUNUSED(x) (x)__attribute__((unused))

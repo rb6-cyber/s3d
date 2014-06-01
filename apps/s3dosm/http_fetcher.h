@@ -29,8 +29,6 @@
 #ifndef HTTP_FETCHER_H
 #define HTTP_FETCHER_H
 
-#include "http_error_codes.h"
-
 #define PORT_NUMBER    80
 #define HTTP_VERSION    "HTTP/1.1"
 #define DEFAULT_USER_AGENT  "HTTP Fetcher"

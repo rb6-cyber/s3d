@@ -230,6 +230,7 @@ static void* del_app(int oid)
 			focus = NULL;
 		}
 		free(a);
+		a = NULL;
 		place_apps();
 	}
 	return a;
@@ -273,11 +274,12 @@ static int mcp_object(struct s3d_evt *hrmz)
 		a = (struct app*)malloc(sizeof(struct app));
 		a->oid = mo->object;
 		a->r = mo->r;
-		strncpy(a->name, mo->name, 256);
+		strncpy(a->name, mo->name, sizeof(a->name));
+		a->name[sizeof(a->name) - 1] = '\0';
 		a->init = 0;
+		printf("..%s\n", a->name);
 		add_app(a);
 		place_apps();
-		printf("..%s\n", a->name);
 	} else {
 		/*  printf("updating app %d\n",a->oid);*/
 		a->trans_x = mo->trans_x;

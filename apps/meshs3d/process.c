@@ -299,7 +299,9 @@ static struct node *handle_mesh_node(struct node_id id, char *name_string)
 	if (NULL == orig_node) {
 		orig_node = (struct node *)debugMalloc(sizeof(struct node), 101);
 		copy_mesh_node(&orig_node->address, &id);
-		strncpy(orig_node->name_string, name_string, NAMEMAX);
+		strncpy(orig_node->name_string, name_string,
+			sizeof(orig_node->name_string));
+		orig_node->name_string[sizeof(orig_node->name_string) - 1] = 0;
 
 		orig_node->node_type = 0;
 		orig_node->node_type_modified = 1;

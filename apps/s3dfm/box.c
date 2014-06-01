@@ -22,6 +22,7 @@
  */
 
 #include "s3dfm.h"
+#include <s3d.h>
 #include <stdio.h>   /*  printf() */
 #include <math.h>  /*  sin(),cos() */
 #include <string.h>  /*  strlen() */

@@ -1126,7 +1126,8 @@ int main(int argc, char *argv[])
 {
 
 	int optchar;
-	strncpy(Olsr_host, "127.0.0.1", 256);
+	strncpy(Olsr_host, "127.0.0.1", sizeof(Olsr_host));
+	Olsr_host[sizeof(Olsr_host) - 1] = '\0';
 	lbuf[0] = '\0';   /* init lbuf */
 
 	while ((optchar = getopt(argc, argv, "dhH:")) != -1) {
@@ -1138,7 +1139,8 @@ int main(int argc, char *argv[])
 			break;
 
 		case 'H':
-			strncpy(Olsr_host, optarg, 256);
+			strncpy(Olsr_host, optarg, sizeof(Olsr_host));
+			Olsr_host[sizeof(Olsr_host) - 1] = '\0';
 			break;
 
 		case 'h':

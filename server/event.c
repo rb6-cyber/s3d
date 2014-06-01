@@ -170,14 +170,17 @@ int event_obj_info(struct t_process *p, int32_t oid)
 		switch (o->oflags & OF_TYPE) {
 		case OF_VIRTUAL:
 			ap = get_proc_by_pid(o->virtual_pid);
-			strncpy(mo.name, ap->name, S3D_NAME_MAX);
+			strncpy(mo.name, ap->name, sizeof(mo.name));
+			mo.name[sizeof(mo.name) - 1] = '\0';
 			break;
 		case OF_CAM:
 			mo.scale = (float)((float)winw) / winh;	/* give aspect ratio to program */
-			strncpy(mo.name, "sys_camera0", S3D_NAME_MAX);
+			strncpy(mo.name, "sys_camera0", sizeof(mo.name));
+			mo.name[sizeof(mo.name) - 1] = '\0';
 			break;
 		case OF_POINTER:
-			strncpy(mo.name, "sys_pointer0", S3D_NAME_MAX);
+			strncpy(mo.name, "sys_pointer0", sizeof(mo.name));
+			mo.name[sizeof(mo.name) - 1] = '\0';
 			break;
 
 		}

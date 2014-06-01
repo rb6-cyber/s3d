@@ -90,17 +90,20 @@ static int display_dir(const char *dir, int S3DUNUSED(depth), int  posx, int pos
 		while (n--) {
 			item[n].type = T_DUNO;
 			nstr = namelist[n]->d_name;
-			strncpy(item[n].name, nstr, M_NAME);
+			strncpy(item[n].name, nstr, sizeof(item[n].name));
+			item[n].name[sizeof(item[n].name) - 1] = '\0';
 			if ((0 == strncmp(nstr, ".", 1)) && (strlen(nstr) == 1))
 				item[n].type = T_LOCALDIR;
 			else if (0 == strncmp(nstr, "..", strlen(nstr) < 2 ? strlen(nstr) : 2))
 				item[n].type = T_BACKDIR;
 			else {
 				ext = strrchr(nstr, '.');
-				strncpy(ndir, dir, M_DIR);
-				ndir[M_DIR] = 0;  /* just in case */
-				strncat(ndir, "/", M_DIR - strlen(ndir));
-				strncat(ndir, namelist[n]->d_name, M_DIR - strlen(ndir));
+				strncpy(ndir, dir, sizeof(ndir));
+				ndir[sizeof(ndir) - 1] = 0;  /* just in case */
+				strncat(ndir, "/",
+					sizeof(ndir) - 1 - strlen(ndir));
+				strncat(ndir, namelist[n]->d_name,
+					sizeof(ndir) - 1 - strlen(ndir));
 				/*     printf("displaying %s\n",ndir); */
 				stat(ndir, &s);
 				if (S_ISDIR(s.st_mode)) {

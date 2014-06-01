@@ -21,10 +21,8 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <arpa/inet.h> /*  htonl(),htons() */
-#include <stdint.h>
-#include "s3d.h"
-#include "s3dlib.h"
+#include <arpa/inet.h>               /* for htonl, ntohl, htons, ntohs */
+#include <stdint.h>                  /* for uint32_t, uint16_t */
 
 /* convert buffer with floats from host to network endianess */
 void htonfb(float* netfloat, int num)

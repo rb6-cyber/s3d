@@ -40,11 +40,7 @@
 #ifndef _triangulate_h
 #define _triangulate_h
 
-#include <sys/types.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include "s3d.h"
-#include "s3dlib.h"
+#include "config.h"
 
 typedef struct {
 	double x, y;
