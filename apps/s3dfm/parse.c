@@ -65,13 +65,13 @@ int parse_dir(t_node *dir)
 					dir->sub = (struct _t_node**)realloc(dir->sub , dir->n_sub * sizeof(t_node *));
 					dir->sub[i] = (struct _t_node*)malloc(sizeof(t_node));
 					node_init(dir->sub[i]);
-					strncpy(dir->sub[i]->name, nstr, M_NAME);
+					mstrncpy(dir->sub[i]->name, nstr, M_NAME);
 					dir->sub[i]->parent = dir;
 				}
 				/* find out the filetype ... very simple */
 				dir->sub[i]->type = T_DUNO;
 				dir->sub[i]->pindex = i;
-				strncpy(ndir, path, M_DIR);
+				mstrncpy(ndir, path, M_DIR);
 				mstrncat(ndir, "/", M_DIR);
 				mstrncat(ndir, namelist[n]->d_name, M_DIR);
 				if (fs_isdir(ndir))

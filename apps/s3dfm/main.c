@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 		cam.oid = 0;
 		/* set up file system representation */
 		node_init(&root);
-		strncpy(root.name, "/", M_NAME);
+		mstrncpy(root.name, "/", M_NAME);
 		focus = &root;
 		root.dscale = 0.1;
 		root.type = T_FOLDER;

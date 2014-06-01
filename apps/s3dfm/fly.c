@@ -66,7 +66,7 @@ t_node *fly_create_anode(t_node *node)
 	work->py = node->py;
 	work->pz = node->pz;
 	work->type = node->type;
-	strncpy(work->name, node->name, M_NAME);
+	mstrncpy(work->name, node->name, M_NAME);
 	fly_set_absolute_position(work);
 	icon_draw(work);
 
