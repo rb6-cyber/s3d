@@ -276,9 +276,9 @@ static int mcp_object(struct s3d_evt *hrmz)
 		a->r = mo->r;
 		strncpy(a->name, mo->name, 256);
 		a->init = 0;
+		printf("..%s\n", a->name);
 		add_app(a);
 		place_apps();
-		printf("..%s\n", a->name);
 	} else {
 		/*  printf("updating app %d\n",a->oid);*/
 		a->trans_x = mo->trans_x;
