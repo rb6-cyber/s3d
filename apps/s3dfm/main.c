@@ -23,6 +23,7 @@
 
 
 #include "s3dfm.h"
+#include <s3d.h>
 #include <string.h>  /*  strlen(), strncmp(), strrchr() */
 #include <time.h> /* nanosleep() */
 static struct timespec t = {

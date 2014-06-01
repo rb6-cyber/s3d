@@ -24,6 +24,7 @@
 #include "s3dfm.h"
 #include <stdio.h>   /*  printf(),NULL */
 #include <math.h>  /*  fabs() */
+#include <s3d.h>
 #define SCALE  1
 
 /* the animation stack */

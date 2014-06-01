@@ -22,6 +22,7 @@
  */
 
 #include "s3dfm.h"
+#include <s3d.h>
 #include <s3d_keysym.h>
 #include <stdio.h> /* printf() */
 

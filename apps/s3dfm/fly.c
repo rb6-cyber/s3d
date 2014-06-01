@@ -22,7 +22,10 @@
  */
 
 #include "s3dfm.h"
+#include <s3d.h> /* NULL */
 #include <stdio.h> /* NULL */
+#include <string.h> /* strncpy() */
+#include <stdlib.h> /* malloc() */
 #include <string.h> /* strncpy() */
 static void _get_pos(t_node *work, t_node *f)
 {
