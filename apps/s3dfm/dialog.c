@@ -278,6 +278,7 @@ void window_fs_mkdir(s3dw_widget *button)
 			/*   parse_again(item);*/
 		}
 	}
+	free(dir);
 	fs_lock = 0;
 	window_fs_abort(button); /* finish */
 
