@@ -159,7 +159,6 @@ static int model_load(char *file)
 			/* push vertices */
 			for (i = 0; i < object->vertex_count; i++) {
 				/* 2. and 3. coord have to change places otherwise the object will be turned */
-				object->vertex_data[i * 3 + 0] =  object->vertex_data[i * 3 + 0];
 				swaph =         object->vertex_data[i * 3 + 2];
 				object->vertex_data[i * 3 + 2] = -object->vertex_data[i * 3 + 1];
 				object->vertex_data[i * 3 + 1] = swaph;
