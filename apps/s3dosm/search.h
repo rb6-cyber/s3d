@@ -24,6 +24,8 @@
 #ifndef _SEARCH_H_
 #define _SEARCH_H_
 
+struct olsr_node;
+
 #define NOTHING 0  /* nothing ;) */
 #define ABORT 1   /* widget has no focus */
 #define WIDGET 2  /* focus on widget */

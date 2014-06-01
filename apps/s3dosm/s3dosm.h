@@ -24,9 +24,19 @@
 #ifndef _S3DOSM_H_
 #define _S3DOSM_H_
 
-#include <sqlite3.h>
-#include <s3d.h> /* s3devt structure */
-#include <config-s3d.h>
+#include <config-s3d.h>              /* for UNUSEDPARAM_ATTRIBUTE */
+#include <sqlite3.h>                 /* for sqlite3_callback */
+struct _adj_t;
+struct _icon_t;
+struct _layer_t;
+struct _layerset_t;
+struct _node_t;
+struct _object_t;
+struct _segment_t;
+struct _tag_t;
+struct _way_t;
+struct s3d_evt;
+
 #define ESIZE 637800  /* earth size */
 #define RESCALE 1
 #define VIEWHEIGHT 3

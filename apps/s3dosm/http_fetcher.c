@@ -35,6 +35,7 @@
 #include <sys/types.h>
 #include <sys/time.h>
 #include "http_fetcher.h"
+#include "http_error_codes.h"
 
 /* Globals */
 static int timeout = DEFAULT_READ_TIMEOUT;
