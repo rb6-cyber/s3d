@@ -503,7 +503,8 @@ int main(int argc, char *argv[])
 	char olsr_host[256];
 
 	init_globals();
-	strncpy(olsr_host, "127.0.0.1", 256);
+	strncpy(olsr_host, "127.0.0.1", sizeof(olsr_host));
+	olsr_host[sizeof(olsr_host) - 1] = '\0';
 	lbuf[0] = '\0';
 
 	while ((optchar = getopt(argc, argv, "dhH:")) != -1) {
@@ -515,7 +516,8 @@ int main(int argc, char *argv[])
 			break;
 
 		case 'H':
-			strncpy(olsr_host, optarg, 256);
+			strncpy(olsr_host, optarg, sizeof(olsr_host));
+			olsr_host[sizeof(olsr_host) - 1] = '\0';
 			break;
 
 		case 'h':
