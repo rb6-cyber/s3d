@@ -92,6 +92,7 @@ static void parse_buffer(struct kismet_src *kismet_src)
 	char *read_ptr, *line_ptr, *last_cr_ptr = NULL, *parse_begin_ptr, *parse_end_ptr;
 	char *bssid, *channel, *type, *ssid, *mac, *ip;
 	int count;
+	size_t ssid_len;
 
 	read_ptr = kismet_src->recv_buff;
 	line_ptr = kismet_src->recv_buff;
@@ -240,8 +241,10 @@ static void parse_buffer(struct kismet_src *kismet_src)
 				if (wlan_network->ssid != NULL)
 					free(wlan_network->ssid);
 
-				wlan_network->ssid = (char*)alloc_memory(strlen(ssid));
-				strcpy(wlan_network->ssid, ssid);
+				ssid_len = strlen(ssid) + 1;
+				wlan_network->ssid = (char*)alloc_memory(ssid_len);
+				strncpy(wlan_network->ssid, ssid, ssid_len);
+				wlan_network->ssid[ssid_len - 1] = '\0';
 
 				pthread_mutex_unlock(&Network_list_mutex);
 
