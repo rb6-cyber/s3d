@@ -27,6 +27,7 @@
 #include <math.h>
 #include <stdio.h> /* TODO can remove then no more printf needed */
 #include <string.h>
+#include <stdlib.h>
 #include "olsrs3d.h" /* for window_error(), structs */
 /* #include "structs.h"  already included by olsrs3d.h */
 #include "search.h"
@@ -308,6 +309,7 @@ static void _new_search_node(s3dw_widget *dummy)
 		else
 			(*search_node) = (*search_node)->left;
 	}
+	free(ip);
 	s3dw_delete(dummy->parent); /* remove the window cointaining the button */
 	_search_surface = NULL;
 	_search_input = NULL;
@@ -351,6 +353,7 @@ static void _search_node(s3dw_widget *OLSRS3DUNUSED(dummy))
 		else
 			(*search_node) = (*search_node)->left;
 	}
+	free(ip);
 
 	if ((*search_node) != NULL)
 		set_search_status(FOLLOW);
