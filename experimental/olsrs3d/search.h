@@ -29,6 +29,8 @@
 #define WIDGET 2  /* focus on widget */
 #define FOLLOW 3  /* follow search result */
 
+struct olsr_node;
+
 void create_search_widget(float x, float y, float z);
 void move_search_widget(float x, float y, float z);
 void move_to_search_widget(float cam_position_t[], float cam_position_r[]);
