@@ -44,11 +44,13 @@ char *read_file(const char *fname, int *fsize)
 	}
 	if (fstat(fileno(fp), &bf))    {
 		fprintf(stderr, "read_file( %s ):fopen(): %s", fname, strerror(errno));
+		fclose(fp);
 		return NULL;
 	}
 	filesize = bf.st_size;
 	if ((buf = (char*)malloc(filesize)) == NULL)  {
 		fprintf(stderr, "read_file( %s ):malloc(): %s", fname, strerror(errno));
+		fclose(fp);
 		return NULL;
 	}
 	fread(buf, filesize, 1, fp);
