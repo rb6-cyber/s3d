@@ -195,9 +195,12 @@ static int pty_init_terminal(void)
 		close(curtty);
 		exit(0);
 	} else if (pid < 0) {
+		close(curtty);
+		close(curpty);
 		printf("Cant fork()\n");
 		exit(0);
 	} else {
+		close(curtty);
 		pthread_create(&term_thread, NULL, thread_terminal, NULL);
 	}
 	return 1;
