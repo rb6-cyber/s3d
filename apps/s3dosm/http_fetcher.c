@@ -643,6 +643,7 @@ int makeSocket(const char *host)
 
 	ret = connect(sock, (struct sockaddr *)&sa, sizeof(sa));
 	if (ret == -1) {
+		close(sock);
 		errorSource = ERRNO;
 		return -1;
 	}
