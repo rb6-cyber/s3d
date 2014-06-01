@@ -230,6 +230,7 @@ static void* del_app(int oid)
 			focus = NULL;
 		}
 		free(a);
+		a = NULL;
 		place_apps();
 	}
 	return a;
