@@ -25,6 +25,16 @@
 #include <stdlib.h> /* malloc(), free() */
 #include <string.h> /* memcpy() */
 #include <stdio.h> /* printf() */
+#include <stdint.h>
+#include <s3d.h>
+#include <X11/Xlib.h>       /* Ximage, Display, X*() */
+#include <X11/Xutil.h>       /* XDestroyImage() */
+#include <X11/Xatom.h>
+#include <config-s3d.h>
+#include <X11/extensions/Xcomposite.h>
+#include <X11/extensions/Xdamage.h>
+#include <X11/extensions/Xrender.h>
+
 struct window   *window_head = NULL;
 
 void window_set_position(struct window *win)

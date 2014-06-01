@@ -22,6 +22,8 @@
  */
 
 #include "comptest.h"
+#include <s3d.h>
+#include <stdint.h>
 #include <s3d_keysym.h>
 #include <stdio.h>
 #include <stdlib.h>        /* malloc(), free() */
