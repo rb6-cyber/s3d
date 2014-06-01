@@ -26,6 +26,8 @@
 #ifndef _MESHS3D_H_
 #define _MESHS3D_H_
 
+#include <stdint.h>
+
 #define max(x,y) ((x)>(y)?(x):(y))
 #define min(x,y) ((x)<(y)?(x):(y))
 #define max_id(x,y) (id_comp(&(x), &(y)) > 0?(x):(y))
