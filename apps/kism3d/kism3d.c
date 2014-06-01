@@ -297,8 +297,12 @@ static void parse_buffer(struct kismet_src *kismet_src)
 
 				}*/
 
-				strncpy(wlan_client->bssid, bssid, 18);
-				strncpy(wlan_client->ip, ip, 16);
+				strncpy(wlan_client->bssid, bssid,
+					sizeof(wlan_client->bssid));
+				wlan_client->bssid[sizeof(wlan_client->bssid) - 1] = '\0';
+				strncpy(wlan_client->ip, ip,
+					sizeof(wlan_client->ip));
+				wlan_client->ip[sizeof(wlan_client->ip) - 1] = '\0';
 
 				wlan_network = find_wlan_network(wlan_client->bssid);
 
@@ -509,6 +513,7 @@ int main(int argc, char *argv[])
 
 								printf("ERROR: receive buffer filled without *any* carriage return within that data !\nClearing receive buffer to prevent buffer overflow.\n");
 								strncpy(kismet_src->recv_buff, buff, 1000);
+								kismet_src->recv_buff[999] = '\0';
 
 							}
 
