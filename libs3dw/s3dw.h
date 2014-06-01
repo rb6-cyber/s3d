@@ -23,10 +23,17 @@
 
 #ifndef LIBS3DW_H
 #define LIBS3DW_H
-#ifndef LIBS3D_H
-#include <s3d.h>
-#endif
-#include <stdint.h>  /* [u]intXX_t type definitions*/
+
+#include <stdint.h>                  /* for uint32_t */
+struct _s3dw_button;
+struct _s3dw_input;
+struct _s3dw_label;
+struct _s3dw_scrollbar;
+struct _s3dw_style;
+struct _s3dw_surface;
+struct _s3dw_textbox;
+struct _s3dw_widget;
+struct s3d_evt;
 
 #ifdef HAVE_GCCVISIBILITY
 #define S3DWEXPORT_VISIBILITY __attribute__ ((visibility("default")))

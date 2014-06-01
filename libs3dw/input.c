@@ -24,6 +24,7 @@
 
 #include <s3d.h>
 #include <s3d_keysym.h>
+#include <s3dlib.h>
 #include <s3dw.h>
 #include <s3dw_int.h>
 #include <stdlib.h> /* malloc() */

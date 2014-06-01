@@ -24,6 +24,7 @@
 #include <s3d.h>
 #include <s3dw.h>
 #include <s3dw_int.h>
+#include <s3dlib.h>
 #include <math.h>
 
 /* the animation stack */

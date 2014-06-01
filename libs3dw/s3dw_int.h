@@ -24,7 +24,9 @@
 #ifndef LIBS3DW_INT_H
 #define LIBS3DW_INT_H
 
-#include <s3dlib.h> /* s3dprintf() */
+#include <s3dw.h>                    /* for s3dw_widget, ::S3DW_NTYPES, etc */
+#include <stdint.h>                  /* for uint32_t */
+
 #define MAXANI  128
 #define ZOOMS  5
 /* constructor and handler callbacks */

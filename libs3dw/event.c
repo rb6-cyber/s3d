@@ -24,6 +24,7 @@
 #include <s3d.h>
 #include <s3dw.h>
 #include <s3dw_int.h>
+#include <stddef.h>
 
 /** \brief handle click on widget
  *
