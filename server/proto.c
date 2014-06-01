@@ -68,6 +68,7 @@ int prot_com_in(struct t_process *p, uint8_t * pbuf)
 		else
 			i = length;
 		strncpy(name, (char *)buf, i);
+		name[i - 1] = '\0';
 		s3dprintf(LOW, "[%d]\"%s\" logged in", p->id, name);
 		if (NULL == (np = process_protinit(p, name)))
 			event_quit(p);	/*  couldn't get process */
