@@ -25,7 +25,7 @@
 #define _S3DLIB_H_
 
 #include <stdint.h>
-#include <s3d.h>
+#include "s3d.h"
 #include "config.h"
 #ifdef __APPLE__
 #ifdef SHM
