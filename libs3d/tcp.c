@@ -82,6 +82,7 @@ int _tcp_init(const char *sv, int pn)
 		memcpy(&sock.sin_addr.s_addr, server->h_addr_list[0], 4);
 	else {
 		errn("_tcp_init()():gethostbyname()", errno);
+		close(sd);
 		return -1;
 	}
 	sock.sin_port = htons(pn);
