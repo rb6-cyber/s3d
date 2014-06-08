@@ -80,6 +80,7 @@ int s3dw_widget_append(s3dw_widget *parent, s3dw_widget *widget)
 	if (!new)
 		return -ENOMEM;
 
+	parent->pobj = new;
 	parent->pobj[parent->nobj-1] = widget;
 	widget->parent = parent;
 	widget->style = parent->style;
