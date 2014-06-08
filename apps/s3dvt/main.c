@@ -156,6 +156,8 @@ static int pty_init_terminal(void)
 
 	if (curpty < 0) {
 		printf("Error opening pty\n");
+		if (curtty >= 0)
+			close(curtty);
 		return 0;
 	}
 	/*  fnctl(F_SETFL,O_NONBLOCK); */
