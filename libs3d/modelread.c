@@ -191,8 +191,6 @@ static int model_load(char *file)
 					if (face->tex_image != NULL) {
 
 						/* reorder pixeldata - s3d wants rgba */
-						if (s3d_pixeldata != NULL) free(s3d_pixeldata);
-
 						s3d_pixeldata = (uint8_t*)malloc(sizeof(uint8_t) * face->tex_image->width * face->tex_image->height * 32);
 
 						if (s3d_pixeldata == NULL) {

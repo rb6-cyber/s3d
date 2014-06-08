@@ -364,9 +364,9 @@ static void waylist_add(struct waylist *p)
 {
 	if (waylist_n >= waylist_bufn) {
 		waylist_bufn += 64;
-		waylist_p = (struct waylist *)realloc(waylist_p, sizeof(struct waylist) * waylist_bufn);
-		nodelist_p = (struct nodelist *)realloc(nodelist_p, sizeof(struct nodelist) * waylist_bufn * 2); /* we can have twice as many nodes as there are segments in a graph. */
-		adjlist_p = (struct adjlist *)realloc(adjlist_p, sizeof(struct nodelist) * waylist_bufn * 2);
+		waylist_p = realloc(waylist_p, sizeof(*waylist_p) * waylist_bufn);
+		nodelist_p = realloc(nodelist_p, sizeof(*nodelist_p) * waylist_bufn * 2); /* we can have twice as many nodes as there are segments in a graph. */
+		adjlist_p = realloc(adjlist_p, sizeof(*adjlist_p) * waylist_bufn * 2);
 	}
 	waylist_p[waylist_n].node_to = p->node_to;
 	waylist_p[waylist_n].node_from = p->node_from;

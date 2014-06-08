@@ -65,7 +65,8 @@ int shm_init(void)
 
 	/* create an empty token file */
 	fp = fopen(ftoken, "wb");
-	fclose(fp);
+	if (fp)
+		fclose(fp);
 	/* make the key: */
 	if ((key = ftok(ftoken, 'R')) == -1) {
 		errnf("shm_init():ftok()", errno);
@@ -147,12 +148,12 @@ int shm_quit(void)
 	unlink(ftoken);
 	if (data != NULL) {
 		data[0] = data[1] = 0;
-		data = NULL;
 		s3dprintf(MED, "shm_quit():removing init block");
 		if (shmdt(data) == -1)
 			errn("shm_quit():shmdt()", errno);
 		if (shmctl(shmid, IPC_RMID, NULL) == -1)
 			errn("shm_quit():shmctl()", errno);
+		data = NULL;
 	}
 	return 0;
 }

@@ -114,13 +114,8 @@ static void show_position(struct gps_data_t *dgps)
 		nav_center(la, lo);
 		if (!finitef(heading)) {
 			heading = get_heading(lat_old, lon_old, la, lo);
-			if (!lastfix && fix)   {
+			if (!lastfix)   {
 				s3d_scale(user_icon, 1.0 / RESCALE);
-			}
-			if (lastfix && !fix)  {
-				s3d_scale(user_icon, 0.3 / RESCALE);
-				lat = tlat;
-				lon = tlon;
 			}
 		}
 		if (finitef(heading))  s3d_rotate(user_icon, 0, heading, 0); /* wrong rotation? */

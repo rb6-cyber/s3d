@@ -179,7 +179,7 @@ void mainloop(void);
 void debug_obj(object_t *obj, void *dummy);
 layer_t *parse_osm(const char *buf, int length);
 layer_t *load_osm_file(const char *filename);
-layer_t *load_osm_web(float minlon, float minlat, float maxlon, float maxlat);
+layer_t *load_osm_web(float minlat, float minlon, float maxlat, float maxlon);
 /* kismet.c */
 layer_t *parse_kismet(const char *buf, int length);
 layer_t *load_kismet_file(const char *filename);

@@ -109,34 +109,51 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 	if (charIndex != NULL)
 		*charIndex = 0;
 
-	strcat(requestBuf, "Host: ");
-	strcat(requestBuf, host);
-	strcat(requestBuf, "\r\n");
+	strncat(requestBuf, "Host: ",
+		sizeof(requestBuf) - 1 - strlen(requestBuf));
+	strncat(requestBuf, host, sizeof(requestBuf) - 1 - strlen(requestBuf));
+	strncat(requestBuf, "\r\n",
+		sizeof(requestBuf) - 1 - strlen(requestBuf));
 
 
 	if (!hideReferer && referer != NULL) { /* NO default referer */
-		strcat(requestBuf, "Referer: ");
-		strcat(requestBuf, referer);
-		strcat(requestBuf, "\r\n");
+		strncat(requestBuf, "Referer: ",
+			sizeof(requestBuf) - 1 - strlen(requestBuf));
+		strncat(requestBuf, referer,
+			sizeof(requestBuf) - 1 - strlen(requestBuf));
+		strncat(requestBuf, "\r\n",
+			sizeof(requestBuf) - 1 - strlen(requestBuf));
 	}
 
 	if (!hideUserAgent && userAgent == NULL) {
-		strcat(requestBuf, "User-Agent: ");
-		strcat(requestBuf, DEFAULT_USER_AGENT);
-		strcat(requestBuf, "/");
-		strcat(requestBuf, HTTP_FETCHER_VERSION);
-		strcat(requestBuf, "\r\n");
+		strncat(requestBuf, "User-Agent: ",
+			sizeof(requestBuf) - 1 - strlen(requestBuf));
+		strncat(requestBuf, DEFAULT_USER_AGENT,
+			sizeof(requestBuf) - 1 - strlen(requestBuf));
+		strncat(requestBuf, "/",
+			sizeof(requestBuf) - 1 - strlen(requestBuf));
+		strncat(requestBuf, HTTP_FETCHER_VERSION,
+			sizeof(requestBuf) - 1 - strlen(requestBuf));
+		strncat(requestBuf, "\r\n",
+			sizeof(requestBuf) - 1 - strlen(requestBuf));
 	} else if (!hideUserAgent) {
-		strcat(requestBuf, "User-Agent: ");
-		strcat(requestBuf, userAgent);
-		strcat(requestBuf, "\r\n");
+		strncat(requestBuf, "User-Agent: ",
+			sizeof(requestBuf) - 1 - strlen(requestBuf));
+		strncat(requestBuf, userAgent,
+			sizeof(requestBuf) - 1 - strlen(requestBuf));
+		strncat(requestBuf, "\r\n",
+			sizeof(requestBuf) - 1 - strlen(requestBuf));
 	}
 	if (auth != NULL) {
-		strcat(requestBuf, "Authorization: Basic ");
-		strcat(requestBuf, auth);
-		strcat(requestBuf, "\r\n");
+		strncat(requestBuf, "Authorization: Basic ",
+			sizeof(requestBuf) - 1 - strlen(requestBuf));
+		strncat(requestBuf, auth,
+			sizeof(requestBuf) - 1 - strlen(requestBuf));
+		strncat(requestBuf, "\r\n",
+			sizeof(requestBuf) - 1 - strlen(requestBuf));
 	}
-	strcat(requestBuf, "\r\n");
+	strncat(requestBuf, "\r\n",
+		sizeof(requestBuf) - 1 - strlen(requestBuf));
 
 	printf("[HTTP] creating connection ...\n");
 	sock = makeSocket(host);   /* errorSource set within makeSocket */
@@ -539,7 +556,8 @@ const char *http_strerror(void)
 			        abs(stringIndex - originalError));
 			sprintf(&convertedError[strlen(convertedError)], "%d", errorInt);
 			stringIndex += 2;  /* Skip past the %d */
-			strcat(convertedError, stringIndex);
+			strncat(convertedError, stringIndex,
+				sizeof(convertedError) - 1 - strlen(convertedError));
 
 			return convertedError;
 		}

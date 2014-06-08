@@ -24,6 +24,7 @@
 #include "global.h"
 #include <stdlib.h>		/*  for malloc, free */
 #include <string.h>		/*  strncmp(), strncpy() */
+#include <errno.h>
 /*  this piece of code handles processes */
 
 #define mcp_p (&procs_p[0])
@@ -230,6 +231,9 @@ int process_init(void)
 	procs_p = NULL;
 	process_add();
 	/* set up mcp */
+	if (!mcp_p)
+		return -ENOMEM;
+
 	strncpy(mcp_p->name, "mcp", sizeof(mcp_p->name));
 	mcp_p->name[sizeof(mcp_p->name) - 1] = '\0';
 	mcp_p->con_type = CON_NULL;
