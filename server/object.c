@@ -1,8 +1,8 @@
 /*
  * object.c
  *
- * Copyright (C) 2004-2012  Simon Wunderlich <sw@simonwunderlich.de>
- * Copyright (C) 2004-2012  Sven Eckelmann <sven@narfation.org>
+ * Copyright (C) 2004-2015  Simon Wunderlich <sw@simonwunderlich.de>
+ * Copyright (C) 2004-2015  Sven Eckelmann <sven@narfation.org>
  *
  * This file is part of s3d, a 3d network display server.
  * See http://s3d.sourceforge.net/ for more updates.

@@ -1,7 +1,7 @@
 /*
  * main.c
  *
- * Copyright (C) 2004-2012  Simon Wunderlich <sw@simonwunderlich.de>
+ * Copyright (C) 2004-2015  Simon Wunderlich <sw@simonwunderlich.de>
  * Copyright (C) 2002  Alexander Graf <helly@gmx.net>
  *
  * This file is part of s3dvt, a 3d terminal emulator for s3d.

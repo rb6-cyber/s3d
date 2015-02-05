@@ -1,7 +1,7 @@
 /*
  * sei_construct.c
  *
- * Copyright (C) 2006-2012  Simon Wunderlich <sw@simonwunderlich.de>
+ * Copyright (C) 2006-2015  Simon Wunderlich <sw@simonwunderlich.de>
  * Copyright (C) 1994  A. Narkhede and D .Manocha, who released their code
  * for public domain:
  * <snip>
