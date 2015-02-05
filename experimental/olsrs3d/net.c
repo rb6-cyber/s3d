@@ -64,6 +64,8 @@ int net_init(char *host)
 
 	if (connect(sockfd, (struct sockaddr *)&their_addr,
 	                sizeof(struct sockaddr)) == -1) {
+		close(sockfd);
+		sockfd = -1;
 		perror("connect");
 		return 1;
 	}
