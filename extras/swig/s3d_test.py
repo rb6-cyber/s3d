@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8; -*-
 
-# Copyright (C) 2007-2012  Simon Wunderlich <sw@simonwunderlich.de>
+# Copyright (C) 2007-2015  Simon Wunderlich <sw@simonwunderlich.de>
 #
 # See http://s3d.sourceforge.net/ for more updates.
 #

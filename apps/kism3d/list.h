@@ -1,7 +1,7 @@
 /*
  * list.h
  *
- * Copyright (C) 2006-2012  Marek Lindner <mareklindner@neomailbox.ch>
+ * Copyright (C) 2006-2015  Marek Lindner <mareklindner@neomailbox.ch>
  *
  * This file is part of kism3d, an 802.11 visualizer for s3d.
  * See http://s3d.sourceforge.net/ for more updates.

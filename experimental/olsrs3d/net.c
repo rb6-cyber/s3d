@@ -1,9 +1,9 @@
 /*
  * net.c
  *
- * Copyright (C) 2004-2012  Simon Wunderlich <sw@simonwunderlich.de>
- * Copyright (C) 2004-2012  Marek Lindner <mareklindner@neomailbox.ch>
- * Copyright (C) 2004-2012  Andreas Langer <an.langer@gmx.de>
+ * Copyright (C) 2004-2015  Simon Wunderlich <sw@simonwunderlich.de>
+ * Copyright (C) 2004-2015  Marek Lindner <mareklindner@neomailbox.ch>
+ * Copyright (C) 2004-2015  Andreas Langer <an.langer@gmx.de>
  *
  * This file is part of olsrs3d, an olsr topology visualizer for s3d.
  * See http://s3d.sourceforge.net/ for more updates.
@@ -64,6 +64,8 @@ int net_init(char *host)
 
 	if (connect(sockfd, (struct sockaddr *)&their_addr,
 	                sizeof(struct sockaddr)) == -1) {
+		close(sockfd);
+		sockfd = -1;
 		perror("connect");
 		return 1;
 	}

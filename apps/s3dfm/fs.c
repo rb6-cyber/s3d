@@ -1,6 +1,6 @@
 /*
  * fs.c
- * Copyright (C) 2004-2012  Simon Wunderlich <sw@simonwunderlich.de>
+ * Copyright (C) 2004-2015  Simon Wunderlich <sw@simonwunderlich.de>
  *
  * This file is part of s3dfm, a s3d file manager.
  * See http://s3d.sourceforge.net/ for more updates.

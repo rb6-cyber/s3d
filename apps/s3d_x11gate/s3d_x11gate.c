@@ -1,7 +1,7 @@
 /*
  * s3d_x11gate.c
  *
- * Copyright (C) 2004-2012  Simon Wunderlich <sw@simonwunderlich.de>
+ * Copyright (C) 2004-2015  Simon Wunderlich <sw@simonwunderlich.de>
  *
  * This file is part of s3d_x11gate, a 3d gateway for x11 desktops.
  * See http://s3d.sourceforge.net/ for more updates.
