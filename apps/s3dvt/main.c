@@ -168,12 +168,12 @@ static int pty_init_terminal(void)
 			printf("Error opening tty\n");
 			return 0;
 		}
-		if (setuid(uid) < 0) {
-			printf("Couldn't set uid %d\n", uid);
-			exit(255);
-		}
 		if (setgid(gid) < 0) {
 			printf("Couldn't set gid %d\n", gid);
+			exit(255);
+		}
+		if (setuid(uid) < 0) {
+			printf("Couldn't set uid %d\n", uid);
 			exit(255);
 		}
 		if (setsid() < 0)
@@ -239,12 +239,12 @@ static int pipe_init_terminal(void)
 	pid = fork();
 	if (pid == 0) { /*  the child */
 		char tmpstr[1024];
-		if (setuid(uid) < 0) {
-			printf("Couldn't set uid %d\n", uid);
-			exit(255);
-		}
 		if (setgid(gid) < 0) {
 			printf("Couldn't set gid %d\n", gid);
+			exit(255);
+		}
+		if (setuid(uid) < 0) {
+			printf("Couldn't set uid %d\n", uid);
 			exit(255);
 		}
 		if (setsid() < 0)
