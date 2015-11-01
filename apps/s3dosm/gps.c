@@ -64,9 +64,11 @@ void show_gpsdata(struct gps_data_t *dgps)
 	case STATUS_FIX:
 		printf("status: fix\n");
 		break;
+#ifdef STATUS_DGPS_FIX
 	case STATUS_DGPS_FIX:
 		printf("status: dgps fix\n");
 		break;
+#endif
 	}
 
 	switch (dgps->fix.mode) {
