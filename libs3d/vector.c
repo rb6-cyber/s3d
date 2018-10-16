@@ -39,7 +39,7 @@ float s3d_vector_length(const float vector[])
 
 }
 
-/** \brief substract two vectors
+/** \brief subtract two vectors
  *
  * Subtracts vector1 from vector2, writing result into result_vector. All vectors
  * should have the format float[3]. More info on wikipedia.
