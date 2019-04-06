@@ -200,7 +200,10 @@ int gps_init(const char *gpshost)
 int gps_main(void)
 {
 	if (gps_active && ((frame % 6) == 0)) {
-#if GPSD_API_MAJOR_VERSION >= 5
+
+#if GPSD_API_MAJOR_VERSION >= 7
+		if (gps_read(dgps, NULL, 0) < 0) {
+#elif GPSD_API_MAJOR_VERSION >= 5
 		if (gps_read(dgps) < 0) {
 #else
 		if (gps_poll(dgps) < 0) {
