@@ -30,7 +30,6 @@
 #include <fcntl.h>    /*  open() */
 #include <signal.h>   /*  signal() */
 #include <stdlib.h>   /*  exit(),getenv(),setenv(), getpt */
-#include <stropts.h>  /*  isastream */
 #include <sys/ioctl.h>   /*  ioctl() */
 #include <pthread.h>  /*  pthread_create() */
 #include <s3d.h>   /*  s3d_* */
@@ -121,11 +120,6 @@ static int open_pty_pair(int *amaster, int *aslave)
 	slave = open(name, O_RDWR);
 	if (slave == -1)
 		goto close_master;
-
-	if (isastream(slave)) {
-		if (ioctl (slave, I_PUSH, "ptem") < 0 || ioctl (slave, I_PUSH, "ldterm") < 0)
-			goto close_slave;
-	}
 
 	*amaster = master;
 	*aslave = slave;
