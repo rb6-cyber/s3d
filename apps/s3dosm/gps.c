@@ -50,7 +50,12 @@ static void     show_position(struct gps_data_t *dgps);
 
 void show_gpsdata(struct gps_data_t *dgps)
 {
+#if GPSD_API_MAJOR_VERSION >= 9
+	if (0 == dgps->online.tv_sec &&
+	    0 == dgps->online.tv_nsec)
+#else
 	if (!dgps->online)
+#endif
 		printf("WARNING: no connection to gps device\n");
 
 	printf("[%d] lat/long: [%f|%f], altitude %f\n", frame, dgps->fix.latitude, dgps->fix.longitude, dgps->fix.altitude);
@@ -93,8 +98,14 @@ static void show_position(struct gps_data_t *dgps)
 	float la, lo, heading, speed, slen;
 	char buf[BUFSIZE+1];
 
+#if GPSD_API_MAJOR_VERSION >= 9
+	if (0 == dgps->online.tv_sec &&
+	    0 == dgps->online.tv_nsec)
+#else
 	if (!dgps->online)
+#endif
 		fix = 0;
+
 	switch (dgps->fix.mode) {
 	case MODE_NOT_SEEN:
 		fix = 0;
