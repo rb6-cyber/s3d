@@ -125,9 +125,6 @@ static int open_pty_pair(int *amaster, int *aslave)
 	*aslave = slave;
 	return 1;
 
-close_slave:
-	close (slave);
-
 close_master:
 	close (master);
 	return 0;
