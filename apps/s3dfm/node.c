@@ -155,8 +155,10 @@ int node_delete(t_node *dir)
 	switch (dir->disp) {
 	case D_DIR:
 		box_undisplay(dir);
+		/* fall through */
 	case D_ICON:
 		icon_undisplay(dir);
+		/* fall through */
 	}
 
 	if (-1 != (i = ani_onstack(dir))) ani_del(i); /* tell animation stack too */

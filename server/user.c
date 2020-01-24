@@ -48,6 +48,7 @@ int user_main(void)
 	case FRAME_SDL:
 		user_main_sdl();
 #endif
+		/* fall through */
 	default:
 		return 0;
 	}
