@@ -178,16 +178,22 @@ static void waylist_draw(const char *filter)
 	switch (waytype) {
 	case 5:
 		s3d_push_material(way_obj, 0.2, 0.2, 0.6,  1.0, 1.0, 1.0, 0.3, 0.3, 1.0); /* motorway */
+		break;
 	case 4:
 		s3d_push_material(way_obj, 0.3, 0.3, 0.4,  1.0, 1.0, 1.0, 0.5, 0.5, 0.8); /* motorway_link*/
+		break;
 	case 3:
 		s3d_push_material(way_obj, 0.6, 0.3, 0.1,  1.0, 1.0, 1.0,  1.0, 0.6, 0.2); /* primary */
+		break;
 	case 2:
 		s3d_push_material(way_obj, 0.6, 0.6, 0.0,  1.0, 1.0, 1.0,  1.0, 1.0, 0.0); /* secondary */
+		break;
 	case 1:
 		s3d_push_material(way_obj, 0.6, 0.6, 0.6,  1.0, 1.0, 1.0,  1.0, 1.0, 1.0); /* residential */
+		break;
 	default:
 		s3d_push_material(way_obj, 0.6, 0.2, 0.6,  1.0, 1.0, 1.0, 1.0, 0.5, 1.0); /* default */
+		break;
 	}
 	street_width = (0.5 + waytype / 10) / RESCALE;
 	/* put nodes of the graph into a list */
