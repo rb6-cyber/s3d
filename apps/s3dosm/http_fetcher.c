@@ -67,7 +67,6 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 	char *url, *pageBuf, *host, *charIndex;
 	int sock, bytesRead = 0, contentLength = -1;
 	int ret = -1, i, selectRet;
-	size_t url_len;
 
 
 	if (url_tmp == NULL) {
@@ -77,14 +76,11 @@ int http_fetch(const char *url_tmp, char **fileBuf)
 	}
 
 	/* Copy the url passed in into a buffer we can work with, change, etc. */
-	url_len = strlen(url_tmp) + 1;
-	url = (char*)malloc(url_len);
-	if (url == NULL) {
+	url = strdup(url_tmp);
+	if (!url) {
 		errorSource = ERRNO;
 		return -1;
 	}
-	strncpy(url, url_tmp, url_len);
-	url[url_len - 1] = '\0';
 
 	/* Seek to the file path portion of the url */
 	charIndex = strstr(url, "://");

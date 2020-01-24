@@ -212,7 +212,7 @@ int s3dw_input_event_key(s3dw_widget *widget, struct s3d_key_event *keys)
 	case S3DK_BACKSPACE:
 		if ((len = strlen(input->text)) > 0) {
 			newtext = (char *)malloc(len + 0); /* +1 for the terminating byte, -1 for the deleted character */
-			strncpy(newtext, input->text, len);
+			memcpy(newtext, input->text, len);
 			newtext[len-1] = 0;
 			s3dw_input_change_text(input, newtext);
 			free(newtext);
