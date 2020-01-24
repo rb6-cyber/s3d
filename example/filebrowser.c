@@ -202,7 +202,7 @@ static int display_dir(const char *dir, int S3DUNUSED(depth), int  posx, int pos
 static int object_click(struct s3d_evt *evt)
 {
 	int i, oid;
-	char execstr[256];
+	char execstr[276];
 	oid = (int) * ((unsigned long *)evt->buf);
 	printf("!!!!!!!!! clicked object %d\n", oid);
 	for (i = 0; i < n_item; i++) {
@@ -219,13 +219,13 @@ static int object_click(struct s3d_evt *evt)
 				break;
 			case T_GEOMETRY:
 				printf("loading geometry %s\n", item[i].name);
-				snprintf(execstr, 256, "modelloader \"%s\"&\n", item[i].name);
+				snprintf(execstr, sizeof(execstr), "modelloader \"%s\"&\n", item[i].name);
 				system(execstr);
 				return 0;
 				break;
 			case T_MOVIE:
 				printf("playing %s\n", item[i].name);
-				snprintf(execstr, 256, "mplayer -vo s3d \"%s\"&\n", item[i].name);
+				snprintf(execstr, sizeof(execstr), "mplayer -vo s3d \"%s\"&\n", item[i].name);
 				system(execstr);
 				return 0;
 				break;

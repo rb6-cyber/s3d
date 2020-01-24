@@ -332,14 +332,14 @@ void window_info(char *path)
 	s3dw_surface *infwin;
 	s3dw_button  *button;
 	char string1[M_DIR];
-	char string2[M_DIR];
+	char string2[567];
 	int b, d, f;
 	char bd[M_DIR];
 	float l;
 	snprintf(string1, M_DIR, "Info for %s", path);
 	fs_approx(path, &f, &d, &b);
 	dotted_int(bd, b);
-	snprintf(string2 , M_DIR, "%s bytes in %d files and %d Directories", bd, f, d);
+	snprintf(string2, sizeof(string2), "%s bytes in %d files and %d Directories", bd, f, d);
 
 	l = ((strlen(string1) > strlen(string2)) ? strlen(string1) : strlen(string2)) * 0.7;
 

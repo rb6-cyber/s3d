@@ -56,7 +56,7 @@ static int ui_getinfo_node(void *S3DOSMUNUSED(data), int argc, char **argv, char
 	int i, tagid = -1;
 	char type[MAXQ];
 	char name[MAXQ];
-	char string[128];
+	char string[4102];
 	s3dw_surface *miniwin;
 	s3dw_button  *button;
 
@@ -69,9 +69,9 @@ static int ui_getinfo_node(void *S3DOSMUNUSED(data), int argc, char **argv, char
 	if (db_gettag(tagid, "name", name)) name[0] = 0;
 
 	miniwin = s3dw_surface_new("About node", 30, 6);
-	snprintf(string, 128, "name: %s", name);
+	snprintf(string, sizeof(string), "name: %s", name);
 	s3dw_label_new(miniwin, string, 1, 2);
-	snprintf(string, 128, "type: %s", type);
+	snprintf(string, sizeof(string), "type: %s", type);
 	s3dw_label_new(miniwin, string, 1, 4);
 	button = s3dw_button_new(miniwin, "OK", 2, 6);
 	button->onclick = key_button;
@@ -83,7 +83,7 @@ static int ui_getinfo_way(void *S3DOSMUNUSED(data), int argc, char **argv, char 
 {
 	int i, tagid = -1;
 	char name[MAXQ];
-	char string[128];
+	char string[4102];
 	s3dw_surface *miniwin;
 	s3dw_button  *button;
 
@@ -96,7 +96,7 @@ static int ui_getinfo_way(void *S3DOSMUNUSED(data), int argc, char **argv, char 
 	printf("reporting street %s\n", name);
 
 	miniwin = s3dw_surface_new("About street", 30, 6);
-	snprintf(string, 128, "name: %s", name);
+	snprintf(string, sizeof(string), "name: %s", name);
 	s3dw_label_new(miniwin, string, 1, 2);
 	button = s3dw_button_new(miniwin, "OK", 2, 4);
 	button->onclick = key_button;
