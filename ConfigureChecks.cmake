@@ -54,12 +54,12 @@ endif (MATH_FOUND)
 
 
 # find required lib and add include dir for OPENGL
-find_package(OpenGL)
-if (OPENGL_FOUND)
+find_package(OpenGL COMPONENTS OpenGL)
+if (TARGET OpenGL::OpenGL)
 	include_directories(${OPENGL_INCLUDE_DIR})
-else (OPENGL_FOUND)
-	PkgError_Later("Could not find OpenGL libs and headers")
-endif (OPENGL_FOUND)
+else (TARGET OpenGL::OpenGL)
+	PkgError_Later("Could not find OpenGL libs and headers (pkg name: libopengl-dev or libglvn-dev)")
+endif (TARGET OpenGL::OpenGL)
 
 
 # try to find lib and add include dir for SDL

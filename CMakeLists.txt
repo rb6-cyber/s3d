@@ -1,13 +1,12 @@
 project(s3d C CXX)
 set(VERSION 0.2.2)
 
-# we require cmake 2.6.3 or higher
-cmake_minimum_required(VERSION 2.6.3)
+cmake_minimum_required(VERSION 3.9)
 
 # set cmake policies
-if(COMMAND cmake_policy)
-	cmake_policy(SET CMP0003 NEW)
-endif(COMMAND cmake_policy)
+cmake_policy(SET CMP0003 NEW)
+cmake_policy(SET CMP0072 NEW)
+
 
 # Add directory with library checks to search path
 list(APPEND CMAKE_MODULE_PATH "${s3d_SOURCE_DIR}/cmake/modules")
