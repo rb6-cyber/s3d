@@ -56,7 +56,7 @@ static char    *url = NULL;
 /*  this file is the client-lib-implementation which holds the function to connect and control the server. */
 #ifdef SIGS
 int _s3d_sigio = 0;
-static void sigint_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? */
+static void sigint_handler(int S3DUNUSED(sig))  /*  ... ? */
 {
 	/*s3d_quit();*/ /* TODO: sometimes no clean quit ?!*/
 	exit(-1);

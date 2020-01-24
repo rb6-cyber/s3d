@@ -43,11 +43,11 @@
 static int s3d_socket;   /*  this is the socket which holds the tcp-socket .... */
 
 #ifdef SIGS
-static void sigpipe_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? */
+static void sigpipe_handler(int S3DUNUSED(sig))  /*  ... ? */
 {
 	errs("sigpipe_handler()", "there is a broken pipe somewhere");
 }
-static void sigio_handler(int S3DUNUSED(sig), int S3DUNUSED(code))  /*  ... ? */
+static void sigio_handler(int S3DUNUSED(sig))  /*  ... ? */
 {
 	_s3d_sigio = 1;
 }
