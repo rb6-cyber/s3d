@@ -1,7 +1,7 @@
 project(testvis C)
 
 if (PTHREADS_FOUND)
-	s3d_add_executable(testvis testvis.c)
+	add_executable(testvis testvis.c)
 	target_link_libraries(testvis ${PTHREADS_LIBRARIES})
 
 	# install

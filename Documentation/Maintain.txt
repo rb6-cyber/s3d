@@ -65,7 +65,7 @@ Preparing a release:
 
  - Test if the whole repository builds with all dependencies fulfilled.
 
-   - Try build with configure options -DENABLE_FINAL=ON and-DENABLE_FINAL=OFF
+   - Try build with configure options -DBUILD_LTO=ON and-DBUILD_LTO=OFF
 
    - Try to compile it with stricter linker flags to test correct linking
      behavior of all libraries and executables

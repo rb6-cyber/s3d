@@ -2,7 +2,7 @@ project(dot_mcp C)
 
 include_directories(${s3d_SOURCE_DIR}/libs3d)
 
-s3d_add_executable(dot_mcp main.c menu.c)
+add_executable(dot_mcp main.c menu.c)
 target_link_libraries(dot_mcp s3d ${MATH_LIBRARIES})
 
 # install

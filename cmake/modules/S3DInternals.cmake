@@ -51,46 +51,17 @@ set(HTML_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/share/doc/s3d" CACHE PATH "The s3d
 set(MAN_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/share/man" CACHE PATH "The s3d man install dir (default prefix/share/man/)")
 set(PKGCFG_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" CACHE PATH "The s3d pkg-config install dir (default prefix/lib/pkgconfig/)")
 
-# add option for enabling/disabling pseudo 'global' optimisation
-option(ENABLE_FINAL "Enable/disable support for 'global' optimisation" OFF)
+# add option for enabling/disabling link time optimisation
+option(BUILD_LTO "Enable/disable support for link time optimization" OFF)
 
-if (ENABLE_FINAL)
+if (BUILD_LTO)
+	include(CheckIPOSupported)
+	check_ipo_supported(RESULT HAVE_IPO)
+	if(HAVE_IPO)
+		set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+	endif()
 	# test for -fwhole-program
 	include(TestGCCExternally)
 	# test for -fdata-sections and -ffunction-sections
 	include(TestGCCSections)
-endif (ENABLE_FINAL)
-
-macro (s3d_add_library _target _type)
-	if (ENABLE_FINAL)
-		s3d_create_final_include(${CMAKE_CURRENT_BINARY_DIR}/${_target_NAME}/final_include.c excluded ${ARGN})
-		set(src ${CMAKE_CURRENT_BINARY_DIR}/${_target_NAME}/final_include.c ${excluded})
-	else (ENABLE_FINAL)
-		set(src ${ARGN})
-	endif (ENABLE_FINAL)
-
-	add_library(${_target} ${_type} ${src})
-endmacro (s3d_add_library)
-
-macro (s3d_add_executable _target)
-	if (ENABLE_FINAL)
-		s3d_create_final_include(${CMAKE_CURRENT_BINARY_DIR}/${_target_NAME}/final_include.c excluded ${ARGN})
-		set(src ${CMAKE_CURRENT_BINARY_DIR}/${_target_NAME}/final_include.c ${excluded})
-	else (ENABLE_FINAL)
-		set(src ${ARGN})
-	endif (ENABLE_FINAL)
-
-	add_executable(${_target} ${src})
-endmacro (s3d_add_executable)
-
-macro (s3d_create_final_include _output _excluded)
-	file(WRITE "${_output}" "/* GENERATED FILE - DO NOT EDIT */\n")
-	foreach (_file ${ARGN})
-		get_filename_component(_basename "${_file}" ABSOLUTE)
-		if ("${_basename}" MATCHES ".+\\.c$")
-			file(APPEND "${_output}" "#include \"${_basename}\"\n")
-		else ("${_basename}" MATCHES ".+\\.c$")
-			 list(APPEND ${_excluded} "${_basename}")
-		endif ("${_basename}" MATCHES ".+\\.c$")
-	endforeach (_file)
-endmacro (s3d_create_final_include)
+endif (BUILD_LTO)

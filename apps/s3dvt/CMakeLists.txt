@@ -3,7 +3,7 @@ project(s3dvt C)
 if (PTHREADS_FOUND)
 	include_directories(${s3d_SOURCE_DIR}/libs3d)
 
-	s3d_add_executable(s3dvt main.c terminal.c)
+	add_executable(s3dvt main.c terminal.c)
 	target_link_libraries(s3dvt s3d ${PTHREADS_LIBRARIES})
 
 	# install
