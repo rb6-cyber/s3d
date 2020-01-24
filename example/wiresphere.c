@@ -99,9 +99,10 @@ static int wire_sphere(int slices, int stacks)
 	free(l);
 	return o;
 }
-static void stop(struct s3d_evt *S3DUNUSED(evt))
+static int stop(struct s3d_evt *S3DUNUSED(evt))
 {
 	s3d_quit();
+	return 0;
 }
 
 static void mainloop(void)

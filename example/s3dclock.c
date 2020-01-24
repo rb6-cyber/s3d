@@ -36,9 +36,10 @@ static struct tm *mytime;
 static time_t now, onow;
 static char time_str[256];
 
-static void stop(struct s3d_evt *S3DUNUSED(evt))
+static int stop(struct s3d_evt *S3DUNUSED(evt))
 {
 	s3d_quit();
+	return 0;
 }
 
 static void mainloop(void)
