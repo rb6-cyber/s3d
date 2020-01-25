@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# SPDX-FileCopyrightText: 2007-2015  Sven Eckelmann <sven@narfation.org>
+
 include_directories(${s3d_SOURCE_DIR}/libs3d ${s3d_SOURCE_DIR}/libs3dw)
 
 set(S3DW_LIBRARY_DEPENDENCIES s3d ${MATH_LIBRARIES})

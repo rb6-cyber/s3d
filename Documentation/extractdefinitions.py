@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8; -*-
+# SPDX-License-Identifier: GPL-2.0-or-later
+# SPDX-FileCopyrightText: 2007-2015  Sven Eckelmann <sven@narfation.org>
 
 import xml.dom.minidom
 from xml.dom.minidom import Node

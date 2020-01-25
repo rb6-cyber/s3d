@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# SPDX-FileCopyrightText: 2007-2015  Simon Wunderlich <sw@simonwunderlich.de>
+
 PYTHON_MOD=_s3d.so
 PERL_MOD=s3d.so
 MODS=$(PYTHON_MOD) $(PERL_MOD)

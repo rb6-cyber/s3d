@@ -1,0 +1,32 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: s3d
+Upstream-Contact: Simon Wunderlich <sw@simonwunderlich.de>
+Source: http://s3d.sourceforge.net/
+
+Files: objs/*
+Copyright: 2006-2011, Andreas Langer <an.langer@gmx.de>
+           2006-2011, Christiane Weidauer <yd@freakkind.de>
+           2006-2011, Mike Graenz <mog@users.berlios.de>
+           2006-2011, Simon Wunderlich <sw@simonwunderlich.de>
+License: GPL-2.0-or-later
+
+Files: Documentation/*/*.docbook
+ Documentation/manpages/man*/*
+ Documentation/Maintain.txt
+ Documentation/README
+ Documentation/RelNotes*
+ Documentation/SubmittingPatches
+ Documentation/bookinfo.docbook
+ Documentation/*.docbook
+Copyright: 2006-2011, Simon Wunderlich <sw@simonwunderlich.de>
+License: GPL-2.0-or-later
+
+Files: */TODO TODO
+ experimental/ROADMAP
+ server/THREADS
+ CREDIT
+ INSTALL
+ */README README
+ apps/meshs3d/*.data
+Copyright: 2006-2011, Simon Wunderlich <sw@simonwunderlich.de>
+License: CC0-1.0

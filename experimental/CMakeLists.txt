@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# SPDX-FileCopyrightText: 2007-2015  Sven Eckelmann <sven@narfation.org>
+
 option(BUILD_EXPERIMENTAL "Enable/disable build of experimental programs" ON)
 
 if (BUILD_EXPERIMENTAL)

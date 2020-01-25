@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# SPDX-FileCopyrightText: 2007-2015  Sven Eckelmann <sven@narfation.org>
+
 set(s3d-objs abs2.3ds abs.3ds accesspoint.3ds accesspoint_inet.3ds arrow2.3ds
 	arrow.3ds big_p.3ds bigsphere.3ds btn_close.3ds btn_maximize.3ds
 	btn_minimize.3ds btn_rotate.3ds clock_bg.3ds comp.3ds cube.3ds cubey.3ds

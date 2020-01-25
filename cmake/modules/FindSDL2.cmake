@@ -58,7 +58,8 @@
 # SDL2 CMake modules.
 
 #=============================================================================
-# Copyright 2003-2009 Kitware, Inc.
+# SPDX-FileCopyrightText: 2003-2009 Kitware, Inc.
+# SPDX-License-Identifier: BSD-3-Clause
 #
 # Distributed under the OSI-approved BSD License (the "License");
 # see accompanying file Copyright.txt for details.

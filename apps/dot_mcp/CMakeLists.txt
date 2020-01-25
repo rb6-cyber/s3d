@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: BSD-3-Clause
+# SPDX-FileCopyrightText: 2007-2015  Sven Eckelmann <sven@narfation.org>
+
 project(dot_mcp C)
 
 include_directories(${s3d_SOURCE_DIR}/libs3d)

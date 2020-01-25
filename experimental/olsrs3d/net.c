@@ -1,26 +1,7 @@
-/*
- * net.c
- *
- * Copyright (C) 2004-2015  Simon Wunderlich <sw@simonwunderlich.de>
- * Copyright (C) 2004-2015  Marek Lindner <mareklindner@neomailbox.ch>
- * Copyright (C) 2004-2015  Andreas Langer <an.langer@gmx.de>
- *
- * This file is part of olsrs3d, an olsr topology visualizer for s3d.
- * See http://s3d.sourceforge.net/ for more updates.
- *
- * olsrs3d is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * olsrs3d is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with olsrs3d; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+// SPDX-License-Identifier: GPL-2.0-or-later
+/* SPDX-FileCopyrightText: 2004-2015  Simon Wunderlich <sw@simonwunderlich.de>
+ * SPDX-FileCopyrightText: 2004-2015  Marek Lindner <mareklindner@neomailbox.ch>
+ * SPDX-FileCopyrightText: 2004-2015  Andreas Langer <an.langer@gmx.de>
  */
 
 

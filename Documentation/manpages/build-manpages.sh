@@ -1,4 +1,6 @@
 #! /bin/sh -e
+# SPDX-License-Identifier: CC0-1.0
+# SPDX-FileCopyrightText: 2007-2015  Sven Eckelmann <sven@narfation.org>
 
 for i in 1 3 9; do
 	for man in man${i}/*.sgml; do
