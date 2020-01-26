@@ -156,7 +156,7 @@ static int _s3d_add_tessbuf(uint16_t a)
 			outl = -1;
 			/* find an outline */
 			for (i = 0; i < n; i++)
-				if (area[perm[i]] > 0) {
+				if (area[perm[i]] >= 0) {
 					outl = i; /* found. that was easy ;) */
 					break;
 				}
