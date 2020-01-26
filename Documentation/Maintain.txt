@@ -16,22 +16,6 @@ Layout:
    Further feature modifications are done in master and  maintenance  is
    done in maint.
 
- - 'debian' branch is used to prepare packages for debian. Modifications
-   to this branch should  only  be  done  by  people  currently  in  the
-   Maintainer  and  Uploaders field of debian/control. All other changes
-   should be send to the debian bugtracker for the source  package  s3d.
-   Don't forget to add a patch and mark the bug with the tag patch.
-
- - 'pristine‐tar'  branch  is  used  by  the debian branch to create the
-   orig.tar.gz from repository without storing the whole  tar.gz  inside
-   of it.
-
- - 'debian‐xxx'  branch  is  used  to create special debian releases for
-   already released debian versions. xxx  has  to  be  replaced  by  the
-   official  release  name. This could be for example 'etch', 'lenny' or
-   'squeeze'. Releases for unstable must always go into debian  and  not
-   in the named debian‐xxx branch.
-
 
 Feature release:
 
@@ -133,36 +117,3 @@ Preparing a release:
      $ rsync -aPc . USERNAME@web.sourceforge.net:/home/project-web/s3d/htdocs/
 
  - Add a release note to http://freshmeat.net/projects/s3d_
-
-
-Preparing debian -1 revision:
-
- - Check that ~/.devscripts says 'DEBCHANGE_RELEASE_HEURISTIC=changelog'
-
- - Rename tar.gz to s3d_$VERSION.orig.tar.gz
-
- - Merge release into debian `git merge v$VERSION`
-
- - Import orig.tar.gz into pristine-tar
-
-    $ pristine-tar commit s3d_$VERSION.orig.tar.gz v$VERSION
-
- - Create a 'New upstream release' entry inside debian/changelog
-
-    $ dch -v$VERSION-1
-
- - Check debian/copyright and debian/patches
-
- - Usual debian quality assurance
-
- - Testbuild package with `git-buildpackage`
-
- - Finally create release
-
-    $ dch -r
-    $ git buildpackage --git-tag
-
- - Push changes to SourceForge
-
-    $ git push
-    $ git push --tags
