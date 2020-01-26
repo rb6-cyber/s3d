@@ -17,10 +17,20 @@ S3D v0.2.2.1 Release Notes
  * Use versioned symbols for exported libraries to make migration to an
    incompatible ABI easier.
 
- * Support libgps API 5 in s3dosm.
+ * Support libgps API 9 in s3dosm.
+
+ * Add support for glibc 2.30
+
+ * Switch to SDL2 and vendor neutral OpenGL dispatcher
+
+ * Replace build optimization via ENABLE_FINAL with cmake 3.9 based BUILD_LTO
+
+ * Fix various memory and socket leaks
+
+ * Fix rendering of letters with unexpected 0 size areas
 
 ---
 exec >/var/tmp/1
 echo O=`git describe maint`
-O=v0.2.2-14-g79bb09b
+O=v0.2.2-100-g811ebbc
 git shortlog --no-merges $O..maint
