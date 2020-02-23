@@ -68,7 +68,7 @@ endif (TARGET OpenGL::OpenGL)
 # try to find lib and add include dir for SDL
 find_package(SDL2)
 if (SDL2_FOUND)
-	include_directories(${SDL2_INCLUDE_DIR})
+	include_directories(${SDL2_INCLUDE_DIRS})
 	set(G_SDL SDL2_FOUND)
 else (SDL2_FOUND)
 	find_package(SDL)

@@ -14,7 +14,7 @@ set(server_sdl_src graphics_sdl.c user_sdl.c)
 # add sdl files and libs
 if (SDL2_FOUND)
 	list(APPEND server_src ${server_sdl_src})
-	list(APPEND server_libs ${SDL2_LIBRARY})
+	list(APPEND server_libs ${SDL2_LIBRARIES})
 endif (SDL2_FOUND)
 
 if (SDL_FOUND)
