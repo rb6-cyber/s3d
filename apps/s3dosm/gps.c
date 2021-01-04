@@ -43,7 +43,11 @@ void show_gpsdata(struct gps_data_t *dgps)
 	printf("speed [kph]: %f\n", dgps->fix.speed / KNOTS_TO_KPH);
 	printf("used %d/%d satellits\n", dgps->satellites_used, dgps->satellites_visible);
 
+#if GPSD_API_MAJOR_VERSION >= 10
+	switch (dgps->fix.status) {
+#else
 	switch (dgps->status) {
+#endif
 	case STATUS_NO_FIX:
 		printf("status: no fix\n");
 		break;
